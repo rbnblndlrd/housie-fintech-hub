@@ -129,13 +129,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Create user profile in your custom users table
       if (data.user) {
         console.log('👤 Creating user profile for:', data.user.email);
+        console.log('🔍 Profile data being inserted:', {
+          id: data.user.id,
+          email: data.user.email,
+          full_name: fullName || '',
+          user_role: 'seeker', // Fixed: using user_role instead of current_role
+          can_provide: false,
+          can_seek: true,
+          subscription_tier: 'free',
+          subscription_status: 'active'
+        });
+
         const { error: profileError } = await supabase
           .from('users')
           .insert({
             id: data.user.id,
             email: data.user.email,
             full_name: fullName || '',
-            current_role: 'seeker',
+            user_role: 'seeker', // Fixed: using user_role instead of current_role
             can_provide: false,
             can_seek: true,
             subscription_tier: 'free',
@@ -143,7 +154,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
 
         if (profileError) {
-          console.error('❌ Error creating user profile:', profileError);
+          console.error('❌ Error creating user profile:', {
+            code: profileError.code,
+            message: profileError.message,
+            details: profileError.details,
+            hint: profileError.hint
+          });
+          // Don't throw here - let the user continue even if profile creation fails
+          console.log('⚠️ User can still continue without profile');
         } else {
           console.log('✅ User profile created successfully');
         }
