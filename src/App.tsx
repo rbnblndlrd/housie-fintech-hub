@@ -22,6 +22,7 @@ import BookingHistory from "./pages/BookingHistory";
 import ProviderProfile from "./pages/ProviderProfile";
 import ProviderSettings from "./pages/ProviderSettings";
 import Notifications from "./pages/Notifications";
+import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +52,7 @@ const App = () => (
               <Route path="/provider-profile" element={<ProviderProfile />} />
               <Route path="/provider-settings" element={<ProviderSettings />} />
               <Route path="/notifications" element={<Notifications />} />
+              <Route path="/faq" element={<FAQ />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
