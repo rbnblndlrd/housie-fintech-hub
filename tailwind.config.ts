@@ -28,6 +28,15 @@ export default {
 					black: '#000000',
 					red: '#DC3545'
 				},
+				// Dark mode colors
+				dark: {
+					primary: '#1a1a1a',
+					secondary: '#2d2d2d',
+					accent: '#3d3d3d',
+					text: '#ffffff',
+					'text-secondary': '#f0f0f0',
+					'text-muted': '#a0a0a0'
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
