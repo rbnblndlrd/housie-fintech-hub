@@ -173,6 +173,10 @@ const Services = () => {
     console.log('Booking completed:', bookingId);
     setShowBookingForm(false);
     setSelectedService(null);
+    toast({
+      title: "🎉 Réservation confirmée!",
+      description: "Votre réservation a été créée avec succès.",
+    });
   };
 
   const filteredServices = services.filter(service => {
@@ -214,13 +218,6 @@ const Services = () => {
           </p>
         </div>
 
-        {/* Sample Data Seeder - Show when no services */}
-        {!isLoading && services.length === 0 && (
-          <div className="mb-8">
-            <SampleDataSeeder />
-          </div>
-        )}
-
         {/* Search and Filters */}
         <div className="bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-lg mb-8 border dark:border-gray-700">
           <div className="grid md:grid-cols-4 gap-4">
@@ -238,7 +235,6 @@ const Services = () => {
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All Categories</SelectItem>
                 {categories.map(cat => (
                   <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
                 ))}
@@ -261,13 +257,13 @@ const Services = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-8">
-          {/* Service Categories */}
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Service Categories - Smaller sidebar */}
           <div className="lg:col-span-1">
             <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700 mb-6">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-black dark:text-white">
-                  <span>Service Categories</span>
+                <CardTitle className="flex items-center gap-2 text-black dark:text-white text-lg">
+                  Service Categories
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
@@ -291,7 +287,7 @@ const Services = () => {
             {/* Interactive Google Map */}
             <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700">
               <CardHeader>
-                <CardTitle className="dark:text-dark-text">Service Area Map</CardTitle>
+                <CardTitle className="dark:text-dark-text text-lg">Service Area Map</CardTitle>
               </CardHeader>
               <CardContent>
                 <GoogleMap
@@ -304,8 +300,15 @@ const Services = () => {
             </Card>
           </div>
 
-          {/* Services Grid */}
-          <div className="lg:col-span-2">
+          {/* Services Grid - Larger main content */}
+          <div className="lg:col-span-3">
+            {/* Sample Data Seeder - Show when no services */}
+            {!isLoading && services.length === 0 && (
+              <div className="mb-8">
+                <SampleDataSeeder />
+              </div>
+            )}
+
             {isLoading ? (
               <div className="text-center py-12">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
@@ -322,41 +325,43 @@ const Services = () => {
                 )}
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {filteredServices.map((service) => (
                   <Card key={service.id} className="bg-white dark:bg-dark-secondary shadow-lg hover:shadow-xl transition-shadow border dark:border-gray-700">
                     <CardContent className="p-6">
-                      <div className="flex items-start gap-4">
-                        <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                      <div className="flex items-start gap-6">
+                        <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shrink-0">
                           {service.provider.business_name.split(' ').map(n => n[0]).join('')}
                         </div>
                         
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between mb-2">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between mb-3">
                             <div>
-                              <h3 className="text-xl font-bold text-black dark:text-white">{service.title}</h3>
-                              <p className="text-gray-600 dark:text-gray-400">{service.provider.business_name}</p>
+                              <h3 className="text-xl font-bold text-black dark:text-white mb-1">{service.title}</h3>
+                              <p className="text-gray-600 dark:text-gray-400 font-medium">{service.provider.business_name}</p>
                             </div>
-                            <Badge 
-                              variant={service.provider.verified ? 'default' : 'secondary'}
-                              className={service.provider.verified ? 'bg-green-500' : 'bg-gray-500'}
-                            >
-                              {service.provider.verified ? 'Vérifié' : 'Non vérifié'}
-                            </Badge>
+                            <div className="flex items-center gap-2">
+                              <Badge 
+                                variant={service.provider.verified ? 'default' : 'secondary'}
+                                className={service.provider.verified ? 'bg-green-500' : 'bg-gray-500'}
+                              >
+                                {service.provider.verified ? 'Vérifié' : 'Non vérifié'}
+                              </Badge>
+                            </div>
                           </div>
 
-                          <div className="flex items-center gap-4 mb-4">
+                          <div className="flex items-center gap-6 mb-4">
                             <div className="flex items-center gap-1">
                               <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                               <span className="font-medium text-black dark:text-white">{service.provider.average_rating.toFixed(1)}</span>
-                              <span className="text-gray-500 dark:text-gray-400 text-sm">({service.provider.total_bookings} reviews)</span>
+                              <span className="text-gray-500 dark:text-gray-400 text-sm">({service.provider.total_bookings} avis)</span>
                             </div>
                             
                             <div className="flex items-center gap-1">
                               <DollarSign className="h-4 w-4 text-green-600" />
                               <span className="font-medium text-black dark:text-white">
                                 {service.pricing_type === 'hourly' 
-                                  ? `${service.provider.hourly_rate || service.base_price}$/hour`
+                                  ? `${service.provider.hourly_rate || service.base_price}$/heure`
                                   : `${service.base_price}$`
                                 }
                               </span>
@@ -370,12 +375,16 @@ const Services = () => {
                             </div>
                           </div>
 
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+                            {service.description}
+                          </p>
+
                           <div className="flex items-center justify-between">
-                            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">
-                              {service.description}
-                            </p>
+                            <div className="text-sm text-gray-500 dark:text-gray-400">
+                              <span className="font-medium">Tarification réelle + 6% frais HOUSIE</span>
+                            </div>
                             <Button 
-                              className="bg-purple-600 hover:bg-purple-700"
+                              className="bg-purple-600 hover:bg-purple-700 px-6"
                               onClick={() => handleBookNow(service)}
                             >
                               Book Now

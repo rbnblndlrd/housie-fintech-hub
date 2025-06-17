@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -113,74 +112,6 @@ const SampleDataSeeder = () => {
           base_price: 32
         }
       ]
-    },
-    {
-      business_name: "TechFix Pro",
-      description: "Réparations technologiques et installation d'équipements à domicile",
-      years_experience: 10,
-      hourly_rate: 45,
-      service_radius_km: 35,
-      verified: true,
-      average_rating: 4.6,
-      total_bookings: 156,
-      user_data: {
-        full_name: "David Chen",
-        city: "Montréal",
-        province: "QC",
-        phone: "(514) 555-0198"
-      },
-      services: [
-        {
-          title: "Installation TV et système audio",
-          description: "Installation professionnelle de télévisions, systèmes audio et équipements électroniques.",
-          category: "construction",
-          subcategory: "electrical",
-          pricing_type: "flat",
-          base_price: 120
-        },
-        {
-          title: "Réparation d'appareils électroménagers",
-          description: "Diagnostic et réparation d'électroménagers: lave-vaisselle, four, réfrigérateur.",
-          category: "construction",
-          subcategory: "appliance",
-          pricing_type: "hourly",
-          base_price: 45
-        }
-      ]
-    },
-    {
-      business_name: "Wellness Montreal",
-      description: "Services de bien-être à domicile: massage thérapeutique et relaxation",
-      years_experience: 5,
-      hourly_rate: 65,
-      service_radius_km: 15,
-      verified: true,
-      average_rating: 4.9,
-      total_bookings: 73,
-      user_data: {
-        full_name: "Alexandra Rousseau",
-        city: "Montréal",
-        province: "QC",
-        phone: "(514) 555-0143"
-      },
-      services: [
-        {
-          title: "Massage thérapeutique à domicile",
-          description: "Séance de massage professionnel dans le confort de votre domicile. Équipement inclus.",
-          category: "wellness",
-          subcategory: "massage",
-          pricing_type: "flat",
-          base_price: 95
-        },
-        {
-          title: "Séance de yoga privée",
-          description: "Cours de yoga personnalisé à domicile. Tous niveaux acceptés.",
-          category: "wellness",
-          subcategory: "fitness",
-          pricing_type: "hourly",
-          base_price: 65
-        }
-      ]
     }
   ];
 
@@ -223,7 +154,7 @@ const SampleDataSeeder = () => {
           continue;
         }
 
-        const userId = dummyUser?.id || user.id; // Fallback to current user if creation fails
+        const userId = dummyUser?.id || user.id;
 
         // Create provider profile
         const { data: provider, error: providerError } = await supabase
@@ -275,8 +206,8 @@ const SampleDataSeeder = () => {
       }
 
       toast({
-        title: "🎉 Données créées avec succès !",
-        description: `${sampleProviders.length} prestataires montréalais ajoutés avec tarification réaliste. Prêt pour tester le système de réservation et les frais HOUSIE de 6% !`,
+        title: "🎉 Prestataires créés avec succès!",
+        description: `${sampleProviders.length} prestataires montréalais ajoutés. Prêt pour tester les réservations!`,
       });
 
       // Refresh the page to show new data
@@ -295,43 +226,28 @@ const SampleDataSeeder = () => {
   };
 
   return (
-    <Card className="max-w-lg mx-auto border-2 border-gradient-to-r from-purple-400 to-purple-600 shadow-lg">
-      <CardHeader>
-        <CardTitle className="text-center">🚀 Données de Test Montréal</CardTitle>
-        <CardDescription className="text-center">
-          Ajouter des prestataires réalistes pour tester le système de réservation et les frais HOUSIE de 6%
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          <div className="text-sm text-gray-600 space-y-2">
-            <p><strong>Prestataires inclus:</strong></p>
-            <ul className="list-disc list-inside space-y-1 text-xs">
-              <li>Marie Nettoyage - Nettoyage (30$/h)</li>
-              <li>Jean Paysagiste - Paysagiste (35$/h)</li>
-              <li>Sophie Entretien - Entretien (28$/h)</li>
-              <li>TechFix Pro - Réparations (45$/h)</li>
-              <li>Wellness Montreal - Bien-être (65$/h)</li>
-            </ul>
-            <p className="text-purple-600 font-medium">💰 Tarification réelle + 6% frais HOUSIE</p>
-          </div>
-          
-          <Button 
-            onClick={seedSampleData}
-            disabled={isSeeding || !user}
-            className="w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800"
-          >
-            {isSeeding ? "Création en cours..." : "🎯 Créer les prestataires de test"}
-          </Button>
-          
-          {!user && (
-            <p className="text-sm text-red-500 text-center">
-              Connectez-vous pour ajouter les données de test
-            </p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <div className="text-center py-8">
+      <div className="max-w-md mx-auto bg-white dark:bg-dark-secondary rounded-lg border p-6 shadow-sm">
+        <h3 className="text-lg font-semibold mb-2">🚀 Données de Test Montreal</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+          Ajouter des prestataires pour tester le système de réservation
+        </p>
+        
+        <Button 
+          onClick={seedSampleData}
+          disabled={isSeeding || !user}
+          className="w-full bg-purple-600 hover:bg-purple-700"
+        >
+          {isSeeding ? "Création en cours..." : "Créer les prestataires de test"}
+        </Button>
+        
+        {!user && (
+          <p className="text-xs text-red-500 mt-2">
+            Connectez-vous pour ajouter les données
+          </p>
+        )}
+      </div>
+    </div>
   );
 };
 
