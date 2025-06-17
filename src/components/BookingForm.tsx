@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -80,13 +81,13 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
       const { data: booking, error } = await supabase
         .from('bookings')
         .insert({
-          user_id: user.id,
+          customer_id: user.id,
           service_id: service.id,
           provider_id: provider.id,
-          booking_date: bookingData.date,
-          booking_time: bookingData.time,
-          duration: bookingData.duration,
-          address: bookingData.address,
+          scheduled_date: bookingData.date,
+          scheduled_time: bookingData.time,
+          duration_hours: bookingData.duration,
+          service_address: bookingData.address,
           instructions: bookingData.instructions,
           total_amount: totalAmount,
           status: 'pending',
