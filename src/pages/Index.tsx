@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -72,9 +73,9 @@ const Index = () => {
                 </div>
                 
                 <h1 className="text-6xl font-black text-gray-900 dark:text-dark-text leading-tight">
-                  Le <span className="housie-text-gradient">Facebook</span><br />
-                  des Services<br />
-                  <span className="text-purple-600">au Canada</span>
+                  <span className="housie-text-gradient">Connecter</span><br />
+                  propriétaires et<br />
+                  <span className="text-purple-600">professionnels</span>
                 </h1>
                 
                 <p className="text-xl text-gray-700 dark:text-dark-text-secondary leading-relaxed max-w-lg">
