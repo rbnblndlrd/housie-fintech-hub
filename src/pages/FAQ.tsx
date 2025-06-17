@@ -147,17 +147,17 @@ const FAQ = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <div className="min-h-screen pt-20 bg-gradient-to-br from-blue-50 via-purple-50 to-orange-50">
         <div className="max-w-4xl mx-auto px-4 py-12">
           {/* Header Section */}
           <div className="text-center mb-12">
-            <Badge className="bg-orange-500 text-white px-4 py-2 text-sm font-bold mb-4">
+            <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 text-sm font-bold mb-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
               🤔 FREQUENTLY ASKED QUESTIONS
             </Badge>
-            <h1 className="text-4xl font-black text-gray-900 mb-4">
-              Got Questions? <span className="text-orange-500">We've Got Answers</span>
+            <h1 className="text-5xl font-black text-gray-900 mb-6 leading-tight">
+              Got Questions? <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">We've Got Answers</span>
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Everything you need to know about HOUSIE - from getting started to advanced features. 
               Can't find what you're looking for? Contact our support team!
             </p>
@@ -166,26 +166,26 @@ const FAQ = () => {
           {/* FAQ Sections */}
           <div className="space-y-8">
             {faqSections.map((section, sectionIndex) => (
-              <Card key={sectionIndex} className="bg-white/80 backdrop-blur-sm shadow-lg border-0">
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <span className="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
+              <Card key={sectionIndex} className="fintech-card">
+                <CardHeader className="p-8">
+                  <CardTitle className="text-2xl font-bold text-gray-900 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl flex items-center justify-center text-lg font-bold shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)]">
                       {sectionIndex + 1}
-                    </span>
+                    </div>
                     {section.title}
                   </CardTitle>
-                  <CardDescription className="text-gray-600">
+                  <CardDescription className="text-gray-600 text-lg mt-2">
                     Common questions about {section.title.toLowerCase()}
                   </CardDescription>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="px-8 pb-8">
                   <Accordion type="single" collapsible className="w-full">
                     {section.questions.map((faq, questionIndex) => (
-                      <AccordionItem key={questionIndex} value={`${sectionIndex}-${questionIndex}`}>
-                        <AccordionTrigger className="text-left font-semibold text-gray-800 hover:text-orange-600">
+                      <AccordionItem key={questionIndex} value={`${sectionIndex}-${questionIndex}`} className="border-b border-gray-100 last:border-b-0">
+                        <AccordionTrigger className="text-left font-semibold text-gray-800 hover:text-blue-600 py-6 text-lg hover:no-underline">
                           {faq.question}
                         </AccordionTrigger>
-                        <AccordionContent className="text-gray-600 leading-relaxed">
+                        <AccordionContent className="text-gray-600 leading-relaxed text-base pb-6">
                           {faq.answer}
                         </AccordionContent>
                       </AccordionItem>
@@ -197,20 +197,20 @@ const FAQ = () => {
           </div>
 
           {/* Contact Support Section */}
-          <Card className="bg-gradient-to-r from-orange-500 to-purple-600 text-white mt-12">
-            <CardContent className="text-center py-8">
-              <h3 className="text-2xl font-bold mb-4">Still have questions?</h3>
-              <p className="text-lg mb-6">
+          <Card className="bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 text-white mt-12 fintech-gradient-card">
+            <CardContent className="text-center py-12 px-8">
+              <h3 className="text-3xl font-bold mb-6">Still have questions?</h3>
+              <p className="text-xl mb-8 opacity-90">
                 Our friendly support team is here to help you get the most out of HOUSIE.
               </p>
-              <div className="flex flex-wrap justify-center gap-4 text-sm">
-                <div className="bg-white/20 px-4 py-2 rounded-full">
+              <div className="flex flex-wrap justify-center gap-6 text-base">
+                <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.1)]">
                   📧 support@housie.ca
                 </div>
-                <div className="bg-white/20 px-4 py-2 rounded-full">
+                <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.1)]">
                   💬 In-app chat assistant
                 </div>
-                <div className="bg-white/20 px-4 py-2 rounded-full">
+                <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.1)]">
                   📞 1-800-HOUSIE-1
                 </div>
               </div>
