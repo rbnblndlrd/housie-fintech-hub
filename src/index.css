@@ -85,11 +85,13 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background: rgb(255, 255, 255);
+    /* HOUSIE Gradient Background for Light Mode */
+    background: linear-gradient(135deg, #fef7cd 0%, #fed7aa 25%, #fdba74 50%, #fb923c 75%, #f97316 100%);
   }
 
   .dark body {
-    background: rgb(26, 26, 26);
+    /* Soft Dark Theme with Gradient Accent */
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%, #1a1a1a 100%);
   }
 
   /* HOUSIE Specific Styles */
@@ -102,7 +104,7 @@
   }
 
   .housie-card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 transition-all duration-200 hover:shadow-xl;
+    @apply bg-white/90 dark:bg-gray-800/90 rounded-xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 transition-all duration-200 hover:shadow-xl backdrop-blur-sm;
   }
 
   .housie-button-primary {
@@ -119,10 +121,23 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+
+  .housie-mascot-glow {
+    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
+  }
 }
 
-/* Smooth transitions for all interactive elements */
+/* Pop Art Elements */
 @layer components {
+  .pop-art-shadow {
+    box-shadow: 4px 4px 0px #FF6B35, 8px 8px 0px #9B59B6;
+  }
+
+  .pop-art-border {
+    border: 3px solid #000;
+    box-shadow: 3px 3px 0px #FF6B35;
+  }
+
   .smooth-transition {
     @apply transition-all duration-200 ease-in-out;
   }

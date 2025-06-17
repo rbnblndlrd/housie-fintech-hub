@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Header } from "@/components/Header";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { PricingSection } from "@/components/PricingSection";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [searchLocation, setSearchLocation] = useState("");
@@ -51,28 +52,28 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-dark-accent">
+    <div className="min-h-screen">
       <Header />
       
       {/* Hero Section with Pop Art Style */}
       <section className="pt-20 pb-16 px-4 relative overflow-hidden">
         {/* Background decorative elements */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-orange-400 rounded-full opacity-10 animate-pulse"></div>
-        <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-500 rounded-full opacity-10 animate-bounce"></div>
-        <div className="absolute top-40 left-10 w-16 h-16 bg-cyan-400 rounded-full opacity-20"></div>
+        <div className="absolute top-20 right-10 w-32 h-32 bg-orange-400/20 rounded-full opacity-50 animate-pulse"></div>
+        <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-500/20 rounded-full opacity-50 animate-bounce"></div>
+        <div className="absolute top-40 left-10 w-16 h-16 bg-cyan-400/20 rounded-full opacity-40"></div>
         
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Badge className="bg-orange-500 text-white px-4 py-2 text-sm font-medium">
+                  <Badge className="bg-gradient-to-r from-orange-500 to-purple-600 text-white px-4 py-2 text-sm font-medium border-0">
                     🚀 NOUVEAU: IA Fintech pour Entrepreneurs
                   </Badge>
                 </div>
                 
                 <h1 className="text-6xl font-black text-gray-900 dark:text-dark-text leading-tight">
-                  Le <span className="text-orange-500">Facebook</span><br />
+                  Le <span className="housie-text-gradient">Facebook</span><br />
                   des Services<br />
                   <span className="text-purple-600">au Canada</span>
                 </h1>
@@ -85,7 +86,7 @@ const Index = () => {
               </div>
 
               {/* Search Bar */}
-              <div className="bg-white dark:bg-dark-secondary rounded-2xl p-3 shadow-xl border-2 border-orange-200 dark:border-gray-600 max-w-lg">
+              <div className="housie-card p-3 max-w-lg">
                 <div className="flex items-center gap-3">
                   <MapPin className="h-6 w-6 text-orange-500 ml-2" />
                   <Input
@@ -94,10 +95,12 @@ const Index = () => {
                     onChange={(e) => setSearchLocation(e.target.value)}
                     className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium dark:text-dark-text"
                   />
-                  <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl px-8 py-3 font-bold text-white shadow-lg">
-                    CHERCHER
-                    <Search className="h-5 w-5 ml-2" />
-                  </Button>
+                  <Link to="/services">
+                    <Button className="housie-button-secondary rounded-xl px-8 py-3 font-bold text-white shadow-lg">
+                      CHERCHER
+                      <Search className="h-5 w-5 ml-2" />
+                    </Button>
+                  </Link>
                 </div>
               </div>
 
@@ -114,19 +117,23 @@ const Index = () => {
 
             {/* Interactive Assistant Preview */}
             <div className="relative">
-              <div className="bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 rounded-3xl p-8 text-white relative overflow-hidden shadow-2xl">
+              <div className="housie-card bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 p-8 text-white relative overflow-hidden shadow-2xl">
                 {/* Decorative elements */}
                 <div className="absolute top-4 right-4 bg-white/20 rounded-full p-3">
                   <MessageCircle className="h-7 w-7" />
                 </div>
-                <div className="absolute -top-6 -left-6 w-20 h-20 bg-orange-400 rounded-full opacity-30"></div>
-                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-cyan-400 rounded-full opacity-20"></div>
+                <div className="absolute -top-6 -left-6 w-20 h-20 bg-orange-400/30 rounded-full"></div>
+                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-cyan-400/20 rounded-full"></div>
                 
                 <div className="space-y-6 mb-8 relative z-10">
                   <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full flex items-center justify-center text-2xl">
-                        🤖
+                      <div className="w-12 h-12 rounded-full flex items-center justify-center housie-mascot-glow">
+                        <img 
+                          src="/lovable-uploads/ceb92e4c-4980-45ea-945a-eff3e55c13d8.png" 
+                          alt="HOUSIE Assistant" 
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
                       </div>
                       <div className="flex-1">
                         <p className="font-bold text-lg mb-2">Assistant HOUSIE IA</p>
@@ -140,9 +147,11 @@ const Index = () => {
                   </div>
                   
                   <div className="flex gap-2">
-                    <Button className="bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg flex-1">
-                      COMMENCER GRATUIT
-                    </Button>
+                    <Link to="/auth" className="flex-1">
+                      <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg">
+                        COMMENCER GRATUIT
+                      </Button>
+                    </Link>
                     <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-6 py-3 rounded-xl font-bold">
                       DÉMO IA
                     </Button>
@@ -155,7 +164,7 @@ const Index = () => {
       </section>
 
       {/* Service Categories */}
-      <section className="py-16 px-4 bg-white dark:bg-dark-secondary">
+      <section className="py-16 px-4 bg-white/80 dark:bg-dark-secondary/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black text-gray-900 dark:text-dark-text mb-4">Services Populaires</h2>
@@ -166,7 +175,7 @@ const Index = () => {
 
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
             {serviceCategories.map((category, index) => (
-              <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-2 border-gray-100 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-500 bg-white dark:bg-dark-accent">
+              <Card key={index} className="housie-card hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-orange-200 dark:hover:border-orange-500">
                 <CardHeader className="text-center pb-4">
                   <div className="text-4xl mb-3">{category.icon}</div>
                   <CardTitle className="text-lg font-bold text-gray-800 dark:text-dark-text">
@@ -185,11 +194,11 @@ const Index = () => {
       </section>
 
       {/* Value Propositions with Pop Art Style */}
-      <section className="py-20 px-4 bg-gradient-to-r from-orange-50 to-purple-50 dark:from-dark-accent dark:to-dark-primary">
+      <section className="py-20 px-4 bg-gradient-to-r from-orange-50/80 to-purple-50/80 dark:from-dark-accent/80 dark:to-dark-primary/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-black text-gray-900 dark:text-dark-text mb-6">
-              Pourquoi <span className="text-orange-500">HOUSIE</span> Révolutionne 
+              Pourquoi <span className="housie-text-gradient">HOUSIE</span> Révolutionne 
               <br />le Travail Autonome au Canada ?
             </h2>
             <p className="text-xl text-gray-600 dark:text-dark-text-muted max-w-3xl mx-auto leading-relaxed">
@@ -200,10 +209,10 @@ const Index = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {valueProps.map((prop, index) => (
-              <Card key={index} className="bg-white dark:bg-dark-secondary border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100 to-purple-100 dark:from-orange-900/20 dark:to-purple-900/20 rounded-full -translate-y-6 translate-x-6 opacity-50"></div>
+              <Card key={index} className="housie-card hover:shadow-2xl transition-all duration-300 hover:-translate-y-3 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100/50 to-purple-100/50 dark:from-orange-900/20 dark:to-purple-900/20 rounded-full -translate-y-6 translate-x-6"></div>
                 <CardHeader className="text-center pb-6 relative z-10">
-                  <div className="mx-auto mb-6 p-4 bg-gray-50 dark:bg-dark-accent rounded-2xl w-fit">
+                  <div className="mx-auto mb-6 p-4 bg-gray-50/80 dark:bg-dark-accent/80 rounded-2xl w-fit backdrop-blur-sm">
                     {prop.icon}
                   </div>
                   <CardTitle className="text-xl font-black text-gray-900 dark:text-dark-text leading-tight">
@@ -222,7 +231,7 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-4 bg-gray-900 dark:bg-black text-white">
+      <section className="py-16 px-4 bg-gray-900/95 dark:bg-black/95 text-white backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div>

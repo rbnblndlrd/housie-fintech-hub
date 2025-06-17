@@ -1,97 +1,86 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-interface GoogleMapProps {
-  center?: { lat: number; lng: number };
-  zoom?: number;
-  className?: string;
-  providers?: Array<{
-    id: number;
-    name: string;
-    lat: number;
-    lng: number;
-    service: string;
-  }>;
+interface Provider {
+  id: number;
+  name: string;
+  lat: number;
+  lng: number;
+  service: string;
+  rating: number;
+  availability: string;
 }
 
-export const GoogleMap: React.FC<GoogleMapProps> = ({
-  center = { lat: 45.5017, lng: -73.5673 }, // Montreal coordinates
-  zoom = 12,
-  className = "",
-  providers = []
+interface GoogleMapProps {
+  center: { lat: number; lng: number };
+  zoom: number;
+  className?: string;
+  providers?: Provider[];
+}
+
+export const GoogleMap: React.FC<GoogleMapProps> = ({ 
+  center, 
+  zoom, 
+  className = "", 
+  providers = [] 
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const [map, setMap] = useState<google.maps.Map | null>(null);
 
   useEffect(() => {
-    if (!mapRef.current) return;
+    if (!mapRef.current || !window.google) return;
 
-    // Initialize the map
-    const initMap = () => {
-      if (!window.google || !window.google.maps) {
-        console.error('Google Maps API not loaded');
-        return;
-      }
+    const mapInstance = new window.google.maps.Map(mapRef.current, {
+      center,
+      zoom,
+      styles: [
+        {
+          featureType: "all",
+          elementType: "geometry.fill",
+          stylers: [{ color: "#fef7cd" }]
+        },
+        {
+          featureType: "water",
+          elementType: "geometry",
+          stylers: [{ color: "#17a2b8" }]
+        }
+      ]
+    });
 
-      mapInstanceRef.current = new window.google.maps.Map(mapRef.current!, {
-        center,
-        zoom,
-        styles: [
-          {
-            featureType: 'poi',
-            elementType: 'labels',
-            stylers: [{ visibility: 'off' }]
-          }
-        ]
+    setMap(mapInstance);
+
+    // Add markers for providers
+    providers.forEach(provider => {
+      const marker = new window.google.maps.Marker({
+        position: { lat: provider.lat, lng: provider.lng },
+        map: mapInstance,
+        title: provider.name,
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 8,
+          fillColor: provider.availability === 'Available' ? '#10b981' : '#f59e0b',
+          fillOpacity: 1,
+          strokeColor: '#ffffff',
+          strokeWeight: 2
+        }
       });
 
-      // Add markers for providers
-      providers.forEach(provider => {
-        const marker = new window.google.maps.Marker({
-          position: { lat: provider.lat, lng: provider.lng },
-          map: mapInstanceRef.current!,
-          title: provider.name,
-          icon: {
-            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-              <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="12" fill="#FF6B35" stroke="#FFFFFF" stroke-width="2"/>
-                <text x="16" y="20" text-anchor="middle" fill="white" font-size="12" font-weight="bold">H</text>
-              </svg>
-            `),
-            scaledSize: new window.google.maps.Size(32, 32)
-          }
-        });
-
-        const infoWindow = new window.google.maps.InfoWindow({
-          content: `
-            <div style="padding: 8px;">
-              <h3 style="margin: 0 0 4px 0; color: #333;">${provider.name}</h3>
-              <p style="margin: 0; color: #666; font-size: 14px;">${provider.service}</p>
-            </div>
-          `
-        });
-
-        marker.addListener('click', () => {
-          infoWindow.open(mapInstanceRef.current!, marker);
-        });
+      const infoWindow = new window.google.maps.InfoWindow({
+        content: `
+          <div class="p-2">
+            <h3 class="font-bold">${provider.name}</h3>
+            <p class="text-sm">${provider.service}</p>
+            <p class="text-sm">Rating: ${provider.rating}⭐</p>
+            <p class="text-sm">Status: ${provider.availability}</p>
+          </div>
+        `
       });
-    };
 
-    // Load Google Maps API if not already loaded
-    if (!window.google || !window.google.maps) {
-      const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o&libraries=places`;
-      script.async = true;
-      script.defer = true;
-      script.onload = initMap;
-      document.head.appendChild(script);
-    } else {
-      initMap();
-    }
+      marker.addListener('click', () => {
+        infoWindow.open(mapInstance, marker);
+      });
+    });
 
-    return () => {
-      // Cleanup is handled by Google Maps API
-    };
   }, [center, zoom, providers]);
 
   return (
