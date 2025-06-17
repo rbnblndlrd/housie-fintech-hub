@@ -1,19 +1,15 @@
-
 import React, { useState } from 'react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Calendar } from "@/components/ui/calendar";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CalendarIcon, Clock, MapPin, DollarSign } from 'lucide-react';
-import { format } from "date-fns";
-import { cn } from "@/lib/utils";
-import { supabase } from "@/integrations/supabase/client";
+import { Calendar, Clock, MapPin, DollarSign, ArrowLeft } from 'lucide-react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface Service {
   id: string;
@@ -21,14 +17,16 @@ interface Service {
   description: string;
   base_price: number;
   pricing_type: string;
-  category: string;
 }
 
 interface Provider {
   id: string;
   business_name: string;
   hourly_rate: number;
-  service_radius_km: number;
+  user: {
+    city: string;
+    province: string;
+  };
 }
 
 interface BookingFormProps {
@@ -38,50 +36,39 @@ interface BookingFormProps {
   onCancel: () => void;
 }
 
-const BookingForm: React.FC<BookingFormProps> = ({ 
-  service, 
-  provider, 
-  onBookingComplete, 
-  onCancel 
-}) => {
+interface BookingData {
+  date: string;
+  time: string;
+  duration: number;
+  address: string;
+  instructions: string;
+}
+
+const BookingForm = ({ service, provider, onBookingComplete, onCancel }: BookingFormProps) => {
+  const [bookingData, setBookingData] = useState<BookingData>({
+    date: new Date().toISOString().split('T')[0],
+    time: '12:00',
+    duration: 1,
+    address: '',
+    instructions: '',
+  });
+
+  const [isLoading, setIsLoading] = useState(false);
+  const basePrice = service.pricing_type === 'hourly' ? provider.hourly_rate * bookingData.duration : service.base_price;
+  const houseFee = basePrice * 0.06;
+  const totalAmount = basePrice + houseFee;
+
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
-  
-  const [selectedDate, setSelectedDate] = useState<Date>();
-  const [selectedTime, setSelectedTime] = useState<string>("");
-  const [duration, setDuration] = useState<number>(2);
-  const [serviceAddress, setServiceAddress] = useState<string>("");
-  const [specialRequests, setSpecialRequests] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Calculate total amount including HOUSIE's 6% fee
-  const baseAmount = service.pricing_type === 'hourly' 
-    ? (provider.hourly_rate || service.base_price) * duration
-    : service.base_price;
-  
-  const housieFeePct = 0.06; // 6% transaction fee
-  const husieFee = baseAmount * housieFeePct;
-  const totalAmount = baseAmount + husieFee;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const timeSlots = [
-    "08:00", "09:00", "10:00", "11:00", "12:00", 
-    "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"
-  ];
-
-  const handleBookNow = async () => {
     if (!user) {
       toast({
         title: "Connexion requise",
-        description: "Veuillez vous connecter pour réserver ce service.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!selectedDate || !selectedTime || !serviceAddress.trim()) {
-      toast({
-        title: "Informations manquantes",
-        description: "Veuillez remplir tous les champs requis.",
+        description: "Veuillez vous connecter pour effectuer une réservation.",
         variant: "destructive",
       });
       return;
@@ -90,58 +77,65 @@ const BookingForm: React.FC<BookingFormProps> = ({
     setIsLoading(true);
 
     try {
-      // Create booking in database
-      const { data: booking, error: bookingError } = await supabase
+      const { data: booking, error } = await supabase
         .from('bookings')
         .insert({
-          customer_id: user.id,
-          provider_id: provider.id,
+          user_id: user.id,
           service_id: service.id,
-          scheduled_date: format(selectedDate, 'yyyy-MM-dd'),
-          scheduled_time: selectedTime,
-          duration_hours: duration,
+          provider_id: provider.id,
+          booking_date: bookingData.date,
+          booking_time: bookingData.time,
+          duration: bookingData.duration,
+          address: bookingData.address,
+          instructions: bookingData.instructions,
           total_amount: totalAmount,
-          service_address: serviceAddress,
           status: 'pending',
-          payment_status: 'pending'
         })
         .select()
         .single();
 
-      if (bookingError) {
-        console.error('Booking creation error:', bookingError);
-        throw bookingError;
+      if (error) {
+        console.error('Booking creation error:', error);
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la création de la réservation.",
+          variant: "destructive",
+        });
+        return;
       }
 
-      console.log('Booking created:', booking);
+      // Simulate payment processing (replace with actual Stripe integration)
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Call Stripe payment function
-      const { data: paymentData, error: paymentError } = await supabase.functions.invoke('create-payment', {
-        body: {
-          booking_id: booking.id,
-          amount: Math.round(totalAmount * 100), // Convert to cents
-          service_name: service.title,
-          provider_name: provider.business_name
-        }
+      // Update booking status to 'confirmed' after successful payment
+      const { error: updateError } = await supabase
+        .from('bookings')
+        .update({ status: 'confirmed' })
+        .eq('id', booking.id);
+
+      if (updateError) {
+        console.error('Booking update error:', updateError);
+        toast({
+          title: "Erreur",
+          description: "Une erreur est survenue lors de la confirmation de la réservation.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Réservation réussie!",
+        description: "Votre réservation a été effectuée avec succès.",
       });
 
-      if (paymentError) {
-        console.error('Payment creation error:', paymentError);
-        throw paymentError;
-      }
-
-      // Redirect to Stripe Checkout
-      if (paymentData?.url) {
-        window.location.href = paymentData.url;
-      } else {
-        throw new Error('No payment URL received');
-      }
+      onBookingComplete(booking.id);
+      navigate('/dashboard');
 
     } catch (error) {
       console.error('Booking error:', error);
       toast({
-        title: "Erreur de réservation",
-        description: "Une erreur est survenue lors de la création de votre réservation.",
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la réservation.",
         variant: "destructive",
       });
     } finally {
@@ -150,157 +144,183 @@ const BookingForm: React.FC<BookingFormProps> = ({
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <DollarSign className="h-5 w-5" />
-            Réserver ce service
-          </CardTitle>
-          <CardDescription>
-            {service.title} avec {provider.business_name}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Service Details */}
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-medium mb-2">{service.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">{service.description}</p>
-            <div className="flex justify-between items-center">
-              <span className="text-sm">
-                {service.pricing_type === 'hourly' ? 'Tarif horaire' : 'Prix fixe'}
-              </span>
-              <span className="font-medium">
-                {service.pricing_type === 'hourly' 
-                  ? `${provider.hourly_rate || service.base_price}$/h`
-                  : `${service.base_price}$`
-                }
-              </span>
-            </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
+      <div className="container mx-auto px-4 max-w-4xl">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-8">
+          <Button
+            variant="ghost"
+            onClick={onCancel}
+            className="flex items-center gap-2 dark:text-white dark:hover:bg-gray-800"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Retour aux services
+          </Button>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Service Summary */}
+          <div className="md:col-span-1">
+            <Card className="sticky top-8 dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="text-lg dark:text-white">{service.title}</CardTitle>
+                <CardDescription className="dark:text-gray-300">
+                  {provider.business_name}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
+                  <MapPin className="h-4 w-4" />
+                  <span>{provider.user.city}, {provider.user.province}</span>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <DollarSign className="h-4 w-4 text-green-600 dark:text-green-400" />
+                  <span className="font-semibold text-green-600 dark:text-green-400">
+                    {service.pricing_type === 'hourly' 
+                      ? `${provider.hourly_rate || service.base_price}$/heure`
+                      : `${service.base_price}$ forfait`
+                    }
+                  </span>
+                </div>
+
+                <div className="pt-4 border-t dark:border-gray-600">
+                  <h4 className="font-medium mb-2 dark:text-white">Résumé de la commande</h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between dark:text-gray-300">
+                      <span>Service de base</span>
+                      <span>${basePrice.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between dark:text-gray-300">
+                      <span>Frais HOUSIE (6%)</span>
+                      <span>${houseFee.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between font-semibold pt-2 border-t dark:border-gray-600 dark:text-white">
+                      <span>Total</span>
+                      <span>${totalAmount.toFixed(2)}</span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Date Selection */}
-          <div className="space-y-2">
-            <Label>Date souhaitée *</Label>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "w-full justify-start text-left font-normal",
-                    !selectedDate && "text-muted-foreground"
+          {/* Booking Form */}
+          <div className="md:col-span-2">
+            <Card className="dark:bg-gray-800 dark:border-gray-700">
+              <CardHeader>
+                <CardTitle className="dark:text-white">Détails de la réservation</CardTitle>
+                <CardDescription className="dark:text-gray-300">
+                  Complétez les informations pour votre réservation
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Date and Time */}
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="date" className="dark:text-white">Date souhaitée</Label>
+                      <div className="relative">
+                        <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Input
+                          id="date"
+                          type="date"
+                          value={bookingData.date}
+                          onChange={(e) => setBookingData(prev => ({ ...prev, date: e.target.value }))}
+                          className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          min={new Date().toISOString().split('T')[0]}
+                          required
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="time" className="dark:text-white">Heure préférée</Label>
+                      <div className="relative">
+                        <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                        <Input
+                          id="time"
+                          type="time"
+                          value={bookingData.time}
+                          onChange={(e) => setBookingData(prev => ({ ...prev, time: e.target.value }))}
+                          className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Duration (for hourly services) */}
+                  {service.pricing_type === 'hourly' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="duration" className="dark:text-white">Durée estimée (heures)</Label>
+                      <Select 
+                        value={bookingData.duration.toString()} 
+                        onValueChange={(value) => setBookingData(prev => ({ ...prev, duration: parseInt(value) }))}
+                      >
+                        <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                          <SelectValue placeholder="Sélectionnez la durée" />
+                        </SelectTrigger>
+                        <SelectContent className="dark:bg-gray-800 dark:border-gray-600">
+                          {[1, 2, 3, 4, 5, 6, 8].map((hour) => (
+                            <SelectItem key={hour} value={hour.toString()} className="dark:text-white dark:focus:bg-gray-700">
+                              {hour} heure{hour > 1 ? 's' : ''}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   )}
-                >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
-                  {selectedDate ? format(selectedDate, "PPP") : "Sélectionner une date"}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0">
-                <Calendar
-                  mode="single"
-                  selected={selectedDate}
-                  onSelect={setSelectedDate}
-                  disabled={(date) =>
-                    date < new Date() || date < new Date("1900-01-01")
-                  }
-                  initialFocus
-                />
-              </PopoverContent>
-            </Popover>
-          </div>
 
-          {/* Time Selection */}
-          <div className="space-y-2">
-            <Label>Heure souhaitée *</Label>
-            <Select value={selectedTime} onValueChange={setSelectedTime}>
-              <SelectTrigger>
-                <Clock className="mr-2 h-4 w-4" />
-                <SelectValue placeholder="Choisir une heure" />
-              </SelectTrigger>
-              <SelectContent>
-                {timeSlots.map((time) => (
-                  <SelectItem key={time} value={time}>
-                    {time}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+                  {/* Service Address */}
+                  <div className="space-y-2">
+                    <Label htmlFor="address" className="dark:text-white">Adresse du service</Label>
+                    <div className="relative">
+                      <MapPin className="absolute left-3 top-3 text-gray-400 h-4 w-4" />
+                      <Textarea
+                        id="address"
+                        placeholder="Entrez l'adresse complète où le service doit être effectué"
+                        value={bookingData.address}
+                        onChange={(e) => setBookingData(prev => ({ ...prev, address: e.target.value }))}
+                        className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                        rows={3}
+                        required
+                      />
+                    </div>
+                  </div>
 
-          {/* Duration (only for hourly services) */}
-          {service.pricing_type === 'hourly' && (
-            <div className="space-y-2">
-              <Label>Durée estimée (heures)</Label>
-              <Select value={duration.toString()} onValueChange={(value) => setDuration(Number(value))}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {[1, 2, 3, 4, 5, 6, 8].map((hours) => (
-                    <SelectItem key={hours} value={hours.toString()}>
-                      {hours} heure{hours > 1 ? 's' : ''}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
+                  {/* Special Instructions */}
+                  <div className="space-y-2">
+                    <Label htmlFor="instructions" className="dark:text-white">Instructions spéciales (optionnel)</Label>
+                    <Textarea
+                      id="instructions"
+                      placeholder="Décrivez toute instruction spéciale ou détail important pour le prestataire"
+                      value={bookingData.instructions}
+                      onChange={(e) => setBookingData(prev => ({ ...prev, instructions: e.target.value }))}
+                      className="dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
+                      rows={3}
+                    />
+                  </div>
 
-          {/* Service Address */}
-          <div className="space-y-2">
-            <Label htmlFor="address">Adresse du service *</Label>
-            <Input
-              id="address"
-              placeholder="123 Rue Example, Ville, Province"
-              value={serviceAddress}
-              onChange={(e) => setServiceAddress(e.target.value)}
-            />
+                  {/* Submit Button */}
+                  <div className="pt-6">
+                    <Button
+                      type="submit"
+                      disabled={isLoading}
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-3 text-lg"
+                    >
+                      {isLoading ? "Traitement en cours..." : `Payer ${totalAmount.toFixed(2)}$ et Réserver`}
+                    </Button>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+                      Vous serez redirigé vers Stripe pour le paiement sécurisé
+                    </p>
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
           </div>
-
-          {/* Special Requests */}
-          <div className="space-y-2">
-            <Label htmlFor="requests">Demandes spéciales</Label>
-            <Textarea
-              id="requests"
-              placeholder="Précisions sur le service souhaité..."
-              value={specialRequests}
-              onChange={(e) => setSpecialRequests(e.target.value)}
-              rows={3}
-            />
-          </div>
-
-          {/* Pricing Breakdown */}
-          <div className="bg-purple-50 p-4 rounded-lg space-y-2">
-            <h4 className="font-medium">Récapitulatif des coûts</h4>
-            <div className="flex justify-between text-sm">
-              <span>Service ({service.pricing_type === 'hourly' ? `${duration}h` : 'Prix fixe'})</span>
-              <span>{baseAmount.toFixed(2)}$</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>Frais HOUSIE (6%)</span>
-              <span>{husieFee.toFixed(2)}$</span>
-            </div>
-            <div className="border-t pt-2 flex justify-between font-medium">
-              <span>Total</span>
-              <span>{totalAmount.toFixed(2)}$</span>
-            </div>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
-            <Button variant="outline" onClick={onCancel} className="flex-1">
-              Annuler
-            </Button>
-            <Button 
-              onClick={handleBookNow} 
-              disabled={isLoading}
-              className="flex-1 bg-purple-600 hover:bg-purple-700"
-            >
-              {isLoading ? "Traitement..." : "Réserver maintenant"}
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

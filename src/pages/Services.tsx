@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import BookingForm from "@/components/BookingForm";
+import SampleDataSeeder from "@/components/SampleDataSeeder";
 
 interface Service {
   id: string;
@@ -128,15 +129,14 @@ const Services = () => {
                          service.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          service.provider.business_name.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesCategory = selecte
-dCategory === 'all' || service.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
     
     return matchesSearch && matchesCategory;
   });
 
   if (showBookingForm && selectedService) {
     return (
-      <div className="min-h-screen pt-20 bg-gray-50">
+      <div className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-900">
         <BookingForm
           service={selectedService}
           provider={selectedService.provider}
@@ -151,17 +151,24 @@ dCategory === 'all' || service.category === selectedCategory;
   }
 
   return (
-    <div className="min-h-screen pt-20 bg-gray-50">
+    <div className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Services disponibles
           </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Trouvez le prestataire parfait pour tous vos besoins
           </p>
         </div>
+
+        {/* Sample Data Seeder - Show when no services */}
+        {!isLoading && services.length === 0 && (
+          <div className="mb-8">
+            <SampleDataSeeder />
+          </div>
+        )}
 
         {/* Search and Filters */}
         <div className="max-w-4xl mx-auto mb-8 space-y-4">
@@ -172,18 +179,18 @@ dCategory === 'all' || service.category === selectedCategory;
                 placeholder="Rechercher un service ou prestataire..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:placeholder-gray-400"
               />
             </div>
             <div className="w-full md:w-64">
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
+                <SelectTrigger className="dark:bg-gray-800 dark:border-gray-600 dark:text-white">
                   <Filter className="mr-2 h-4 w-4" />
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="dark:bg-gray-800 dark:border-gray-600">
                   {categories.map((category) => (
-                    <SelectItem key={category.value} value={category.value}>
+                    <SelectItem key={category.value} value={category.value} className="dark:text-white dark:focus:bg-gray-700">
                       {category.label}
                     </SelectItem>
                   ))}
@@ -197,43 +204,48 @@ dCategory === 'all' || service.category === selectedCategory;
         {isLoading ? (
           <div className="text-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-            <p className="mt-4 text-gray-600">Chargement des services...</p>
+            <p className="mt-4 text-gray-600 dark:text-gray-300">Chargement des services...</p>
           </div>
         ) : filteredServices.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-gray-600 text-lg">Aucun service trouvé</p>
-            <p className="text-gray-500 mt-2">Essayez de modifier vos critères de recherche</p>
+            <p className="text-gray-600 dark:text-gray-300 text-lg">Aucun service trouvé</p>
+            <p className="text-gray-500 dark:text-gray-400 mt-2">Essayez de modifier vos critères de recherche</p>
+            {services.length === 0 && (
+              <div className="mt-6">
+                <SampleDataSeeder />
+              </div>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
             {filteredServices.map((service) => (
-              <Card key={service.id} className="hover:shadow-lg transition-shadow">
+              <Card key={service.id} className="hover:shadow-lg transition-shadow dark:bg-gray-800 dark:border-gray-700">
                 <CardHeader>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
-                      <CardTitle className="text-lg">{service.title}</CardTitle>
-                      <CardDescription className="text-sm">
+                      <CardTitle className="text-lg dark:text-white">{service.title}</CardTitle>
+                      <CardDescription className="text-sm dark:text-gray-300">
                         {service.provider.business_name}
                       </CardDescription>
                     </div>
-                    <Badge variant="secondary" className="ml-2">
+                    <Badge variant="secondary" className="ml-2 dark:bg-gray-700 dark:text-gray-200">
                       {categories.find(cat => cat.value === service.category)?.label}
                     </Badge>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <p className="text-sm text-gray-600 line-clamp-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
                     {service.description}
                   </p>
 
                   {/* Provider Info */}
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300">
                     <MapPin className="h-4 w-4" />
                     <span>
                       {service.provider.user.city}, {service.provider.user.province}
                     </span>
                     {service.provider.verified && (
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs dark:border-gray-600 dark:text-gray-300">
                         ✓ Vérifié
                       </Badge>
                     )}
@@ -243,11 +255,11 @@ dCategory === 'all' || service.category === selectedCategory;
                   <div className="flex items-center gap-4 text-sm">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                      <span>{service.provider.average_rating.toFixed(1)}</span>
+                      <span className="dark:text-white">{service.provider.average_rating.toFixed(1)}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4 text-gray-400" />
-                      <span>{service.provider.total_bookings} réservations</span>
+                      <span className="dark:text-gray-300">{service.provider.total_bookings} réservations</span>
                     </div>
                   </div>
 
@@ -255,14 +267,14 @@ dCategory === 'all' || service.category === selectedCategory;
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <DollarSign className="h-4 w-4 text-green-600" />
-                      <span className="font-semibold text-green-600">
+                      <span className="font-semibold text-green-600 dark:text-green-400">
                         {service.pricing_type === 'hourly' 
                           ? `${service.provider.hourly_rate || service.base_price}$/h`
                           : `${service.base_price}$`
                         }
                       </span>
                     </div>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
                       {service.pricing_type === 'hourly' ? 'par heure' : 'prix fixe'}
                     </span>
                   </div>
@@ -270,7 +282,7 @@ dCategory === 'all' || service.category === selectedCategory;
                   {/* Book Now Button */}
                   <Button 
                     onClick={() => handleBookNow(service)}
-                    className="w-full bg-purple-600 hover:bg-purple-700"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium"
                   >
                     Réserver maintenant
                   </Button>

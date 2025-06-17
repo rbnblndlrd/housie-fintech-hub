@@ -39,7 +39,7 @@ const Header = () => {
       <div className="container mx-auto py-4 px-6 flex items-center justify-between">
         {/* Logo Section */}
         <Link to="/" className="flex items-center">
-          <img src="/lovable-uploads/89886ba9-5881-408e-93f3-d899470b94ad.png" alt="HOUSIE Logo" className="h-12" />
+          <img src="/lovable-uploads/89886ba9-5881-408e-93f3-d899470b94ad.png" alt="HOUSIE Logo" className="h-16" />
         </Link>
 
         {/* Mobile Menu Button */}
@@ -54,13 +54,13 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link to="/services" className="text-white hover:text-gray-300">
+          <Link to="/services" className="text-white hover:text-gray-300 font-medium">
             Services
           </Link>
-          <Link to="/roadmap" className="text-white hover:text-gray-300">
+          <Link to="/roadmap" className="text-white hover:text-gray-300 font-medium">
             Roadmap
           </Link>
-          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">
+          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300 font-medium">
             Feature Requests
           </a>
         </div>
@@ -69,20 +69,23 @@ const Header = () => {
         <div className="hidden md:flex items-center space-x-4">
           {/* Theme Toggle */}
           <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-white hover:text-gray-300 hover:bg-gray-800">
-            {isDark ? <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" /> : <Moon className="h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />}
+            {isDark ? 
+              <Sun className="h-[1.2rem] w-[1.2rem] text-white" /> : 
+              <Moon className="h-[1.2rem] w-[1.2rem] text-white" />
+            }
             <span className="sr-only">Toggle theme</span>
           </Button>
           
           {user ? (
             <div className="flex items-center space-x-3">
-              <span className="text-sm text-white">
+              <span className="text-sm text-white font-medium">
                 Bonjour, {user.user_metadata?.full_name || user.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
-                className="flex items-center gap-2 border-white text-white hover:bg-white hover:text-black"
+                className="flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium"
               >
                 <LogOut className="h-4 w-4" />
                 Déconnexion
@@ -91,13 +94,13 @@ const Header = () => {
           ) : (
             <div className="flex items-center space-x-2">
               <Link to="/auth">
-                <Button variant="outline" size="sm" className="flex items-center gap-2 border-white text-white hover:bg-white hover:text-black">
+                <Button variant="outline" size="sm" className="flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium">
                   <User className="h-4 w-4" />
                   Connexion
                 </Button>
               </Link>
               <Link to="/auth">
-                <Button className="bg-purple-600 hover:bg-purple-700 text-white" size="sm">
+                <Button className="bg-purple-600 hover:bg-purple-700 text-white font-medium" size="sm">
                   S'inscrire
                 </Button>
               </Link>
@@ -105,29 +108,29 @@ const Header = () => {
           )}
         </div>
 
-        {/* Mobile Menu (Hidden by Default) */}
+        {/* Mobile Menu */}
         <div className={`md:hidden absolute top-full left-0 right-0 bg-black border-b border-gray-800 py-4 px-6 flex flex-col space-y-3 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-          <Link to="/services" className="text-white hover:text-gray-300">
+          <Link to="/services" className="text-white hover:text-gray-300 font-medium">
             Services
           </Link>
-          <Link to="/roadmap" className="text-white hover:text-gray-300">
+          <Link to="/roadmap" className="text-white hover:text-gray-300 font-medium">
             Roadmap
           </Link>
-          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300">
+          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300 font-medium">
             Feature Requests
           </a>
           
           {/* Mobile Auth Section */}
           {user ? (
             <div className="flex flex-col items-start space-y-3">
-              <span className="text-sm text-white">
+              <span className="text-sm text-white font-medium">
                 Bonjour, {user.user_metadata?.full_name || user.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
-                className="w-full justify-center flex items-center gap-2 border-white text-white hover:bg-white hover:text-black"
+                className="w-full justify-center flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium"
               >
                 <LogOut className="h-4 w-4" />
                 Déconnexion
@@ -136,13 +139,13 @@ const Header = () => {
           ) : (
             <div className="flex flex-col items-start space-y-2">
               <Link to="/auth" className="w-full">
-                <Button variant="outline" size="sm" className="w-full justify-center flex items-center gap-2 border-white text-white hover:bg-white hover:text-black">
+                <Button variant="outline" size="sm" className="w-full justify-center flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium">
                   <User className="h-4 w-4" />
                   Connexion
                 </Button>
               </Link>
               <Link to="/auth" className="w-full">
-                <Button className="bg-purple-600 hover:bg-purple-700 w-full justify-center text-white" size="sm">
+                <Button className="bg-purple-600 hover:bg-purple-700 w-full justify-center text-white font-medium" size="sm">
                   S'inscrire
                 </Button>
               </Link>

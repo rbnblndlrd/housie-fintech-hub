@@ -90,8 +90,9 @@
   }
 
   .dark body {
-    /* Soft Dark Theme with Gradient Accent */
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%, #1a1a1a 100%);
+    /* Dark Theme with Better Contrast */
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #1f1f1f 50%, #2d2d2d 75%, #1a1a1a 100%);
+    color: #ffffff;
   }
 
   /* HOUSIE Specific Styles */
@@ -125,6 +126,60 @@
   .housie-mascot-glow {
     filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
   }
+
+  /* Dark mode text contrast fixes */
+  .dark h1,
+  .dark h2,
+  .dark h3,
+  .dark h4,
+  .dark h5,
+  .dark h6 {
+    @apply text-white;
+  }
+
+  .dark p,
+  .dark span,
+  .dark div {
+    @apply text-gray-100;
+  }
+
+  .dark .text-gray-600 {
+    @apply text-gray-300;
+  }
+
+  .dark .text-gray-500 {
+    @apply text-gray-400;
+  }
+
+  .dark .text-gray-900 {
+    @apply text-white;
+  }
+
+  /* Input and form field fixes */
+  .dark input,
+  .dark textarea,
+  .dark select {
+    @apply bg-gray-800 border-gray-600 text-white placeholder-gray-400;
+  }
+
+  .dark input:focus,
+  .dark textarea:focus,
+  .dark select:focus {
+    @apply border-purple-500 ring-purple-500;
+  }
+
+  /* Button contrast fixes */
+  .dark button {
+    @apply text-white;
+  }
+
+  .dark .bg-gray-50 {
+    @apply bg-gray-900;
+  }
+
+  .dark .bg-gray-100 {
+    @apply bg-gray-800;
+  }
 }
 
 /* Pop Art Elements */
@@ -148,6 +203,23 @@
 
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+  }
+
+  /* Dark mode specific component fixes */
+  .dark .card {
+    @apply bg-gray-800 border-gray-700 text-white;
+  }
+
+  .dark .badge {
+    @apply bg-gray-700 text-gray-200;
+  }
+
+  .dark .dropdown-menu-content {
+    @apply bg-gray-800 border-gray-700;
+  }
+
+  .dark .dropdown-menu-item:hover {
+    @apply bg-gray-700;
   }
 }
 
