@@ -14,6 +14,14 @@ interface GoogleMapProps {
   }>;
 }
 
+// Declare global google maps types
+declare global {
+  interface Window {
+    google: typeof google;
+  }
+  const google: any;
+}
+
 export const GoogleMap: React.FC<GoogleMapProps> = ({
   center = { lat: 45.5017, lng: -73.5673 }, // Montreal coordinates
   zoom = 12,
@@ -21,14 +29,14 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   providers = []
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map | null>(null);
+  const mapInstanceRef = useRef<any>(null);
 
   useEffect(() => {
     if (!mapRef.current) return;
 
     // Initialize the map
     const initMap = () => {
-      if (!window.google) {
+      if (!window.google || !window.google.maps) {
         console.error('Google Maps API not loaded');
         return;
       }
@@ -78,7 +86,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
     };
 
     // Load Google Maps API if not already loaded
-    if (!window.google) {
+    if (!window.google || !window.google.maps) {
       const script = document.createElement('script');
       script.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o&libraries=places`;
       script.async = true;
@@ -102,10 +110,3 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
     />
   );
 };
-
-// Extend the Window interface to include google
-declare global {
-  interface Window {
-    google: typeof google;
-  }
-}
