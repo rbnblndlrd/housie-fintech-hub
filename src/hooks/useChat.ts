@@ -60,9 +60,8 @@ export const useChat = () => {
         .from('conversations')
         .select(`
           *,
-          participant_one:participant_one_id(id, full_name, profile_image),
-          participant_two:participant_two_id(id, full_name, profile_image),
-          chat_messages!inner(content, created_at)
+          participant_one:users!conversations_participant_one_id_fkey(id, full_name, profile_image),
+          participant_two:users!conversations_participant_two_id_fkey(id, full_name, profile_image)
         `)
         .or(`participant_one_id.eq.${user.id},participant_two_id.eq.${user.id}`)
         .eq('is_active', true)
@@ -78,7 +77,7 @@ export const useChat = () => {
         return {
           ...conv,
           other_participant: otherParticipant,
-          last_message: conv.chat_messages?.[0]?.content || 'No messages yet'
+          last_message: 'Start a conversation'
         };
       }) || [];
 
@@ -103,7 +102,7 @@ export const useChat = () => {
         .from('chat_messages')
         .select(`
           *,
-          sender:sender_id(full_name, profile_image)
+          sender:users!chat_messages_sender_id_fkey(full_name, profile_image)
         `)
         .eq('conversation_id', conversationId)
         .order('created_at', { ascending: true });

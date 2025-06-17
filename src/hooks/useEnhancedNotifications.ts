@@ -64,8 +64,9 @@ export const useEnhancedNotifications = () => {
           table: 'bookings'
         },
         async (payload) => {
-          if (payload.new.customer_id === user.id || payload.new.provider_id === user.id) {
-            const isCustomer = payload.new.customer_id === user.id;
+          const bookingData = payload.new as any;
+          if (bookingData?.customer_id === user.id || bookingData?.provider_id === user.id) {
+            const isCustomer = bookingData.customer_id === user.id;
             let notificationTitle = '';
             let notificationMessage = '';
 
@@ -77,9 +78,10 @@ export const useEnhancedNotifications = () => {
                   : 'You have received a new booking request';
                 break;
               case 'UPDATE':
-                if (payload.old.status !== payload.new.status) {
+                const oldData = payload.old as any;
+                if (oldData?.status !== bookingData?.status) {
                   notificationTitle = 'Booking Status Updated';
-                  notificationMessage = `Your booking is now ${payload.new.status}`;
+                  notificationMessage = `Your booking is now ${bookingData.status}`;
                 }
                 break;
             }
@@ -90,11 +92,11 @@ export const useEnhancedNotifications = () => {
                 'booking_update',
                 notificationTitle,
                 notificationMessage,
-                payload.new.id
+                bookingData.id
               );
 
               // Play sound for important updates
-              if (payload.new.status === 'confirmed' || payload.new.status === 'completed') {
+              if (bookingData.status === 'confirmed' || bookingData.status === 'completed') {
                 playNotificationSound();
               }
             }

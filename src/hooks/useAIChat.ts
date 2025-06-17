@@ -64,7 +64,12 @@ export const useAIChat = () => {
 
       if (error) throw error;
 
-      setMessages(data || []);
+      const typedMessages: AIMessage[] = (data || []).map(msg => ({
+        ...msg,
+        message_type: msg.message_type as 'user' | 'assistant' | 'system'
+      }));
+
+      setMessages(typedMessages);
       setActiveSession(sessionId);
     } catch (error) {
       console.error('Error loading AI messages:', error);
@@ -130,7 +135,11 @@ export const useAIChat = () => {
       if (userError) throw userError;
 
       // Update messages immediately with user message
-      setMessages(prev => [...prev, userMessage]);
+      const typedUserMessage: AIMessage = {
+        ...userMessage,
+        message_type: userMessage.message_type as 'user' | 'assistant' | 'system'
+      };
+      setMessages(prev => [...prev, typedUserMessage]);
 
       // Simulate AI response (replace with actual AI integration)
       const aiResponse = await generateAIResponse(content);
@@ -150,7 +159,11 @@ export const useAIChat = () => {
       if (aiError) throw aiError;
 
       // Update messages with AI response
-      setMessages(prev => [...prev, aiMessage]);
+      const typedAIMessage: AIMessage = {
+        ...aiMessage,
+        message_type: aiMessage.message_type as 'user' | 'assistant' | 'system'
+      };
+      setMessages(prev => [...prev, typedAIMessage]);
 
       // Update session last message time
       await supabase
@@ -162,7 +175,7 @@ export const useAIChat = () => {
 
       await loadSessions();
 
-      return aiMessage;
+      return typedAIMessage;
     } catch (error) {
       console.error('Error sending AI message:', error);
       return null;
