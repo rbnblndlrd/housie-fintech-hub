@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, Clock, CreditCard, Star, Calendar, X } from 'lucide-react';
+import { CheckCircle, Clock, CreditCard, Star, Calendar, X, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
