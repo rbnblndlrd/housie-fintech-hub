@@ -31,7 +31,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
-  </Query ientProvider>
+  </QueryClientProvider>
 );
 
 export default App;
