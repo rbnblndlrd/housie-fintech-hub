@@ -87,12 +87,40 @@
     @apply bg-background text-foreground font-sans antialiased;
     /* HOUSIE Gradient Background for Light Mode */
     background: linear-gradient(135deg, #fef7cd 0%, #fed7aa 25%, #fdba74 50%, #fb923c 75%, #f97316 100%);
+    /* Force dark text on light background */
+    color: #1a1a1a !important;
   }
 
   .dark body {
     /* Dark Theme with Better Contrast */
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #1f1f1f 50%, #2d2d2d 75%, #1a1a1a 100%);
-    color: #ffffff;
+    color: #ffffff !important;
+  }
+
+  /* Force dark text colors for light mode */
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-gray-900 !important;
+  }
+
+  p, span, div {
+    @apply text-gray-800 !important;
+  }
+
+  /* Specific text color overrides for light mode */
+  .text-gray-600 {
+    @apply text-gray-700 !important;
+  }
+
+  .text-gray-500 {
+    @apply text-gray-600 !important;
+  }
+
+  .text-gray-400 {
+    @apply text-gray-500 !important;
+  }
+
+  .text-muted-foreground {
+    @apply text-gray-600 !important;
   }
 
   /* HOUSIE Specific Styles */
@@ -134,25 +162,29 @@
   .dark h4,
   .dark h5,
   .dark h6 {
-    @apply text-white;
+    @apply text-white !important;
   }
 
   .dark p,
   .dark span,
   .dark div {
-    @apply text-gray-100;
+    @apply text-gray-100 !important;
   }
 
   .dark .text-gray-600 {
-    @apply text-gray-300;
+    @apply text-gray-300 !important;
   }
 
   .dark .text-gray-500 {
-    @apply text-gray-400;
+    @apply text-gray-400 !important;
   }
 
   .dark .text-gray-900 {
-    @apply text-white;
+    @apply text-white !important;
+  }
+
+  .dark .text-muted-foreground {
+    @apply text-gray-300 !important;
   }
 
   /* Input and form field fixes */
