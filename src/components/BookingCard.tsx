@@ -17,26 +17,32 @@ import {
   PlayCircle
 } from 'lucide-react';
 
+interface BookingCustomer {
+  full_name: string;
+  phone: string;
+  email: string;
+}
+
+interface BookingService {
+  title: string;
+  category: string;
+}
+
+interface Booking {
+  id: string;
+  scheduled_date: string;
+  scheduled_time: string;
+  duration_hours: number;
+  total_amount: number;
+  service_address: string;
+  status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
+  payment_status: 'pending' | 'paid' | 'refunded';
+  customer: BookingCustomer;
+  service: BookingService;
+}
+
 interface BookingCardProps {
-  booking: {
-    id: string;
-    scheduled_date: string;
-    scheduled_time: string;
-    duration_hours: number;
-    total_amount: number;
-    service_address: string;
-    status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-    payment_status: 'pending' | 'paid' | 'refunded';
-    customer: {
-      full_name: string;
-      phone: string;
-      email: string;
-    };
-    service: {
-      title: string;
-      category: string;
-    };
-  };
+  booking: Booking;
   onUpdateStatus: (bookingId: string, status: string) => void;
 }
 

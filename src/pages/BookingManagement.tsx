@@ -10,6 +10,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, DollarSign, TrendingUp, Clock } from 'lucide-react';
 
+interface BookingCustomer {
+  full_name: string;
+  phone: string;
+  email: string;
+}
+
+interface BookingService {
+  title: string;
+  category: string;
+}
+
 interface Booking {
   id: string;
   scheduled_date: string;
@@ -20,15 +31,8 @@ interface Booking {
   status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
   payment_status: 'pending' | 'paid' | 'refunded';
   created_at: string;
-  customer: {
-    full_name: string;
-    phone: string;
-    email: string;
-  };
-  service: {
-    title: string;
-    category: string;
-  };
+  customer: BookingCustomer;
+  service: BookingService;
 }
 
 const BookingManagement = () => {
@@ -93,12 +97,28 @@ const BookingManagement = () => {
           variant: "destructive",
         });
       } else {
-        // Type assertion to fix the TypeScript error
-        const typedBookings = (data || []).map(booking => ({
-          ...booking,
+        // Transform the data to match our Booking interface
+        const typedBookings: Booking[] = (data || []).map(booking => ({
+          id: booking.id,
+          scheduled_date: booking.scheduled_date,
+          scheduled_time: booking.scheduled_time,
+          duration_hours: booking.duration_hours || 0,
+          total_amount: booking.total_amount || 0,
+          service_address: booking.service_address || '',
           status: booking.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
-          payment_status: booking.payment_status as 'pending' | 'paid' | 'refunded'
+          payment_status: booking.payment_status as 'pending' | 'paid' | 'refunded',
+          created_at: booking.created_at,
+          customer: {
+            full_name: booking.customer?.full_name || '',
+            phone: booking.customer?.phone || '',
+            email: booking.customer?.email || ''
+          },
+          service: {
+            title: booking.service?.title || '',
+            category: booking.service?.category || ''
+          }
         }));
+        
         setBookings(typedBookings);
         setFilteredBookings(typedBookings);
       }
@@ -129,7 +149,7 @@ const BookingManagement = () => {
       setBookings(prev => 
         prev.map(booking => 
           booking.id === bookingId 
-            ? { ...booking, status: newStatus as any }
+            ? { ...booking, status: newStatus as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled' }
             : booking
         )
       );
