@@ -1,5 +1,7 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
+import { GoogleMap as ReactGoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
+import { useState } from 'react';
 
 interface Provider {
   id: number;
@@ -18,76 +20,75 @@ interface GoogleMapProps {
   providers?: Provider[];
 }
 
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+  minHeight: '300px'
+};
+
+const mapOptions = {
+  styles: [
+    {
+      featureType: "all",
+      elementType: "geometry.fill",
+      stylers: [{ color: "#fef7cd" }]
+    },
+    {
+      featureType: "water",
+      elementType: "geometry",
+      stylers: [{ color: "#17a2b8" }]
+    }
+  ]
+};
+
 export const GoogleMap: React.FC<GoogleMapProps> = ({ 
   center, 
   zoom, 
   className = "", 
   providers = [] 
 }) => {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-
-  useEffect(() => {
-    if (!mapRef.current || !window.google) return;
-
-    const mapInstance = new window.google.maps.Map(mapRef.current, {
-      center,
-      zoom,
-      styles: [
-        {
-          featureType: "all",
-          elementType: "geometry.fill",
-          stylers: [{ color: "#fef7cd" }]
-        },
-        {
-          featureType: "water",
-          elementType: "geometry",
-          stylers: [{ color: "#17a2b8" }]
-        }
-      ]
-    });
-
-    setMap(mapInstance);
-
-    // Add markers for providers
-    providers.forEach(provider => {
-      const marker = new window.google.maps.Marker({
-        position: { lat: provider.lat, lng: provider.lng },
-        map: mapInstance,
-        title: provider.name,
-        icon: {
-          path: window.google.maps.SymbolPath.CIRCLE,
-          scale: 8,
-          fillColor: provider.availability === 'Available' ? '#10b981' : '#f59e0b',
-          fillOpacity: 1,
-          strokeColor: '#ffffff',
-          strokeWeight: 2
-        }
-      });
-
-      const infoWindow = new window.google.maps.InfoWindow({
-        content: `
-          <div class="p-2">
-            <h3 class="font-bold">${provider.name}</h3>
-            <p class="text-sm">${provider.service}</p>
-            <p class="text-sm">Rating: ${provider.rating}⭐</p>
-            <p class="text-sm">Status: ${provider.availability}</p>
-          </div>
-        `
-      });
-
-      marker.addListener('click', () => {
-        infoWindow.open(mapInstance, marker);
-      });
-    });
-
-  }, [center, zoom, providers]);
+  const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
 
   return (
-    <div 
-      ref={mapRef} 
-      className={`w-full h-full rounded-lg ${className}`}
-      style={{ minHeight: '300px' }}
-    />
+    <div className={`w-full h-full rounded-lg ${className}`}>
+      <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}>
+        <ReactGoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={center}
+          zoom={zoom}
+          options={mapOptions}
+        >
+          {providers.map(provider => (
+            <Marker
+              key={provider.id}
+              position={{ lat: provider.lat, lng: provider.lng }}
+              onClick={() => setSelectedProvider(provider)}
+              icon={{
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 8,
+                fillColor: provider.availability === 'Available' ? '#10b981' : '#f59e0b',
+                fillOpacity: 1,
+                strokeColor: '#ffffff',
+                strokeWeight: 2
+              }}
+            />
+          ))}
+          
+          {selectedProvider && (
+            <InfoWindow
+              position={{ lat: selectedProvider.lat, lng: selectedProvider.lng }}
+              onCloseClick={() => setSelectedProvider(null)}
+            >
+              <div className="p-2">
+                <h3 className="font-bold">{selectedProvider.name}</h3>
+                <p className="text-sm">{selectedProvider.service}</p>
+                <p className="text-sm">Rating: {selectedProvider.rating}⭐</p>
+                <p className="text-sm">Status: {selectedProvider.availability}</p>
+              </div>
+            </InfoWindow>
+          )}
+        </ReactGoogleMap>
+      </LoadScript>
+    </div>
   );
 };
