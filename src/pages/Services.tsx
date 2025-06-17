@@ -1,16 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Search, MapPin, Star, Clock, DollarSign, Filter } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import BookingForm from "@/components/BookingForm";
 import SampleDataSeeder from "@/components/SampleDataSeeder";
+import ServiceCard from "@/components/ServiceCard";
+import ServiceFilters from "@/components/ServiceFilters";
+import ServiceCategories from "@/components/ServiceCategories";
 import { GoogleMap } from "@/components/GoogleMap";
 
 interface Service {
@@ -59,23 +57,6 @@ const Services = () => {
   const [selectedLocation, setSelectedLocation] = useState("montreal");
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-
-  const categories = [
-    { value: 'all', label: 'Toutes les catégories' },
-    { value: 'cleaning', label: 'Nettoyage' },
-    { value: 'lawn_care', label: 'Entretien paysager' },
-    { value: 'construction', label: 'Construction' },
-    { value: 'wellness', label: 'Bien-être' },
-    { value: 'care_pets', label: 'Soins aux animaux' },
-  ];
-
-  const serviceCategories = [
-    { id: "cleaning", name: "Cleaning", count: 234, color: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200" },
-    { id: "lawn_care", name: "Lawn/Snow", count: 156, color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
-    { id: "construction", name: "Construction", count: 89, color: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
-    { id: "wellness", name: "Wellness", count: 67, color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
-    { id: "care_pets", name: "Care/Pets", count: 123, color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" }
-  ];
 
   // Sample providers for the map
   const providers: Provider[] = [
@@ -210,16 +191,13 @@ const Services = () => {
 
       if (error) {
         console.error('Error fetching services:', error);
-        // Use fallback services if database fetch fails
         setServices(fallbackServices);
       } else {
-        // Combine database services with fallback if needed
         const allServices = data && data.length > 0 ? data : fallbackServices;
         setServices(allServices);
       }
     } catch (error) {
       console.error('Services fetch error:', error);
-      // Use fallback services on error
       setServices(fallbackServices);
     } finally {
       setIsLoading(false);
@@ -290,70 +268,19 @@ const Services = () => {
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-lg mb-8 border dark:border-gray-700">
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search services..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-              />
-            </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <SelectValue placeholder="All Categories" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map(cat => (
-                  <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-              <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                <SelectValue placeholder="Location" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="montreal">Montreal, QC</SelectItem>
-                <SelectItem value="toronto">Toronto, ON</SelectItem>
-                <SelectItem value="vancouver">Vancouver, BC</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button className="bg-orange-500 hover:bg-orange-600">
-              <Filter className="h-4 w-4 mr-2" />
-              Apply Filters
-            </Button>
-          </div>
-        </div>
+        <ServiceFilters
+          searchTerm={searchTerm}
+          selectedCategory={selectedCategory}
+          selectedLocation={selectedLocation}
+          onSearchChange={setSearchTerm}
+          onCategoryChange={setSelectedCategory}
+          onLocationChange={setSelectedLocation}
+        />
 
         <div className="grid lg:grid-cols-4 gap-8">
           {/* Service Categories - Smaller sidebar */}
           <div className="lg:col-span-1">
-            <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700 mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-black dark:text-white text-lg">
-                  Service Categories
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {serviceCategories.map(category => (
-                  <div
-                    key={category.id}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
-                    onClick={() => setSelectedCategory(category.id)}
-                  >
-                    <div className="flex items-center gap-3">
-                      <Badge className={category.color}>
-                        {category.name}
-                      </Badge>
-                    </div>
-                    <span className="text-sm text-gray-500 dark:text-gray-400">{category.count}</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            <ServiceCategories onCategorySelect={setSelectedCategory} />
 
             {/* Interactive Google Map */}
             <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700">
@@ -391,73 +318,11 @@ const Services = () => {
             ) : (
               <div className="space-y-6">
                 {filteredServices.map((service) => (
-                  <Card key={service.id} className="bg-white dark:bg-dark-secondary shadow-lg hover:shadow-xl transition-shadow border dark:border-gray-700">
-                    <CardContent className="p-6">
-                      <div className="flex items-start gap-6">
-                        <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shrink-0">
-                          {service.provider.business_name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-start justify-between mb-3">
-                            <div>
-                              <h3 className="text-xl font-bold text-black dark:text-white mb-1">{service.title}</h3>
-                              <p className="text-gray-600 dark:text-gray-400 font-medium">{service.provider.business_name}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <Badge 
-                                variant={service.provider.verified ? 'default' : 'secondary'}
-                                className={service.provider.verified ? 'bg-green-500' : 'bg-gray-500'}
-                              >
-                                {service.provider.verified ? 'Vérifié' : 'Non vérifié'}
-                              </Badge>
-                            </div>
-                          </div>
-
-                          <div className="flex items-center gap-6 mb-4">
-                            <div className="flex items-center gap-1">
-                              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                              <span className="font-medium text-black dark:text-white">{service.provider.average_rating.toFixed(1)}</span>
-                              <span className="text-gray-500 dark:text-gray-400 text-sm">({service.provider.total_bookings} avis)</span>
-                            </div>
-                            
-                            <div className="flex items-center gap-1">
-                              <DollarSign className="h-4 w-4 text-green-600" />
-                              <span className="font-medium text-black dark:text-white">
-                                {service.pricing_type === 'hourly' 
-                                  ? `${service.provider.hourly_rate || service.base_price}$/heure`
-                                  : `${service.base_price}$`
-                                }
-                              </span>
-                            </div>
-                            
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                              <span className="text-gray-500 dark:text-gray-400 text-sm">
-                                {service.provider.user.city}, {service.provider.user.province}
-                              </span>
-                            </div>
-                          </div>
-
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
-                            {service.description}
-                          </p>
-
-                          <div className="flex items-center justify-between">
-                            <div className="text-sm text-gray-500 dark:text-gray-400">
-                              <span className="font-medium">Tarification réelle + 6% frais HOUSIE</span>
-                            </div>
-                            <Button 
-                              className="bg-purple-600 hover:bg-purple-700 px-6"
-                              onClick={() => handleBookNow(service)}
-                            >
-                              Book Now
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <ServiceCard
+                    key={service.id}
+                    service={service}
+                    onBookNow={handleBookNow}
+                  />
                 ))}
               </div>
             )}
