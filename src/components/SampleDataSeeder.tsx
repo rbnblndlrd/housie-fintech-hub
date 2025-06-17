@@ -24,7 +24,8 @@ const SampleDataSeeder = () => {
         full_name: "Marie Dubois",
         city: "Montréal",
         province: "QC",
-        phone: "(514) 555-0123"
+        phone: "(514) 555-0123",
+        email: "marie.nettoyage@example.com"
       },
       services: [
         {
@@ -58,7 +59,8 @@ const SampleDataSeeder = () => {
         full_name: "Jean-Pierre Lavoie",
         city: "Montréal",
         province: "QC", 
-        phone: "(514) 555-0187"
+        phone: "(514) 555-0187",
+        email: "jean.paysagiste@example.com"
       },
       services: [
         {
@@ -92,7 +94,8 @@ const SampleDataSeeder = () => {
         full_name: "Sophie Martin",
         city: "Montréal", 
         province: "QC",
-        phone: "(514) 555-0156"
+        phone: "(514) 555-0156",
+        email: "sophie.entretien@example.com"
       },
       services: [
         {
@@ -133,11 +136,11 @@ const SampleDataSeeder = () => {
       for (const providerData of sampleProviders) {
         console.log(`Creating provider: ${providerData.business_name}`);
         
-        // Create a dummy user for this provider (using current user as fallback)
-        const { data: dummyUser, error: userError } = await supabase
+        // Create user for this provider
+        const { data: providerUser, error: userError } = await supabase
           .from('users')
           .insert({
-            email: `${providerData.business_name.toLowerCase().replace(/\s+/g, '')}@example.com`,
+            email: providerData.user_data.email,
             full_name: providerData.user_data.full_name,
             city: providerData.user_data.city,
             province: providerData.user_data.province,
@@ -149,12 +152,22 @@ const SampleDataSeeder = () => {
           .select()
           .single();
 
-        if (userError && !userError.message.includes('duplicate')) {
+        if (userError) {
           console.error('User creation error:', userError);
-          continue;
+          // If user already exists, try to find them
+          const { data: existingUser } = await supabase
+            .from('users')
+            .select('*')
+            .eq('email', providerData.user_data.email)
+            .single();
+          
+          if (!existingUser) {
+            continue;
+          }
+          var userId = existingUser.id;
+        } else {
+          var userId = providerUser.id;
         }
-
-        const userId = dummyUser?.id || user.id;
 
         // Create provider profile
         const { data: provider, error: providerError } = await supabase
@@ -226,27 +239,25 @@ const SampleDataSeeder = () => {
   };
 
   return (
-    <div className="text-center py-8">
-      <div className="max-w-md mx-auto bg-white dark:bg-dark-secondary rounded-lg border p-6 shadow-sm">
-        <h3 className="text-lg font-semibold mb-2">🚀 Données de Test Montreal</h3>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-          Ajouter des prestataires pour tester le système de réservation
+    <div className="bg-white dark:bg-dark-secondary rounded-lg border p-6 shadow-sm mb-6">
+      <h3 className="text-lg font-semibold mb-2">🚀 Données de Test Montreal</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        Ajouter des prestataires pour tester le système de réservation avec frais HOUSIE 6%
+      </p>
+      
+      <Button 
+        onClick={seedSampleData}
+        disabled={isSeeding || !user}
+        className="w-full bg-purple-600 hover:bg-purple-700"
+      >
+        {isSeeding ? "Création en cours..." : "Créer les prestataires de test"}
+      </Button>
+      
+      {!user && (
+        <p className="text-xs text-red-500 mt-2">
+          Connectez-vous pour ajouter les données
         </p>
-        
-        <Button 
-          onClick={seedSampleData}
-          disabled={isSeeding || !user}
-          className="w-full bg-purple-600 hover:bg-purple-700"
-        >
-          {isSeeding ? "Création en cours..." : "Créer les prestataires de test"}
-        </Button>
-        
-        {!user && (
-          <p className="text-xs text-red-500 mt-2">
-            Connectez-vous pour ajouter les données
-          </p>
-        )}
-      </div>
+      )}
     </div>
   );
 };
