@@ -24,6 +24,7 @@ import ProviderSettings from "./pages/ProviderSettings";
 import Notifications from "./pages/Notifications";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
+import AdminDashboard from "./pages/AdminDashboard";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
               <Route path="/provider-settings" element={<ProviderSettings />} />
               <Route path="/notifications" element={<Notifications />} />
               <Route path="/faq" element={<FAQ />} />
+              <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
