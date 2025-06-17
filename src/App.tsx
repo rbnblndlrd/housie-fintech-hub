@@ -18,6 +18,7 @@ import BookingManagement from "./pages/BookingManagement";
 import Analytics from "./pages/Analytics";
 import BookingHistory from "./pages/BookingHistory";
 import ProviderProfile from "./pages/ProviderProfile";
+import Notifications from "./pages/Notifications";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               <Route path="/analytics" element={<Analytics />} />
               <Route path="/booking-history" element={<BookingHistory />} />
               <Route path="/provider-profile" element={<ProviderProfile />} />
+              <Route path="/notifications" element={<Notifications />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

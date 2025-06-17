@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -9,92 +9,60 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useAuth } from '@/contexts/AuthContext';
-import { supabase } from '@/integrations/supabase/client';
 import NotificationDropdown from './NotificationDropdown';
 
-interface Notification {
-  id: string;
-  type: string;
-  title: string;
-  message: string;
-  read: boolean;
-  created_at: string;
-  booking_id?: string;
-}
+// Mock notifications data
+const mockNotifications = [
+  {
+    id: '1',
+    type: 'new_booking',
+    title: 'Nouvelle réservation',
+    message: 'Vous avez reçu une nouvelle réservation pour le service de nettoyage.',
+    read: false,
+    created_at: new Date().toISOString(),
+    booking_id: 'booking-1',
+  },
+  {
+    id: '2',
+    type: 'booking_confirmed',
+    title: 'Réservation confirmée',
+    message: 'Votre réservation a été confirmée par le prestataire.',
+    read: false,
+    created_at: new Date(Date.now() - 3600000).toISOString(),
+    booking_id: 'booking-2',
+  },
+  {
+    id: '3',
+    type: 'payment_received',
+    title: 'Paiement reçu',
+    message: 'Vous avez reçu un paiement de 150€ pour votre service.',
+    read: true,
+    created_at: new Date(Date.now() - 7200000).toISOString(),
+    booking_id: 'booking-3',
+  },
+  {
+    id: '4',
+    type: 'review_received',
+    title: 'Nouvel avis',
+    message: 'Un client a laissé un avis 5 étoiles pour votre service.',
+    read: true,
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+  },
+];
 
 const NotificationBell = () => {
   const { user } = useAuth();
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState(mockNotifications);
+  const [loading] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      fetchNotifications();
-      
-      // Setup realtime subscription
-      const channel = supabase
-        .channel(`notifications-${user.id}`)
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'notifications',
-            filter: `user_id=eq.${user.id}`,
-          },
-          (payload) => {
-            console.log('Notification change:', payload);
-            fetchNotifications();
-          }
-        )
-        .subscribe();
+  const unreadCount = notifications.filter(n => !n.read).length;
 
-      // Cleanup function
-      return () => {
-        supabase.removeChannel(channel);
-      };
-    }
-  }, [user]);
-
-  const fetchNotifications = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false })
-        .limit(20);
-
-      if (error) throw error;
-
-      setNotifications(data || []);
-      setUnreadCount(data?.filter(n => !n.read).length || 0);
-    } catch (error) {
-      console.error('Error fetching notifications:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const markAsRead = async (notificationId: string) => {
-    try {
-      const { error } = await supabase
-        .from('notifications')
-        .update({ read: true })
-        .eq('id', notificationId);
-
-      if (error) throw error;
-
-      setNotifications(prev =>
-        prev.map(n =>
-          n.id === notificationId ? { ...n, read: true } : n
-        )
-      );
-      setUnreadCount(prev => Math.max(0, prev - 1));
-    } catch (error) {
-      console.error('Error marking notification as read:', error);
-    }
+  const markAsRead = (notificationId: string) => {
+    setNotifications(prev =>
+      prev.map(n =>
+        n.id === notificationId ? { ...n, read: true } : n
+      )
+    );
   };
 
   if (!user) return null;
