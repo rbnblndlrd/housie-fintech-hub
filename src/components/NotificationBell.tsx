@@ -31,7 +31,29 @@ const NotificationBell = () => {
   useEffect(() => {
     if (user) {
       fetchNotifications();
-      setupRealtimeSubscription();
+      
+      // Setup realtime subscription
+      const channel = supabase
+        .channel(`notifications-${user.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'notifications',
+            filter: `user_id=eq.${user.id}`,
+          },
+          (payload) => {
+            console.log('Notification change:', payload);
+            fetchNotifications();
+          }
+        )
+        .subscribe();
+
+      // Cleanup function
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
@@ -53,29 +75,6 @@ const NotificationBell = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const setupRealtimeSubscription = () => {
-    const channel = supabase
-      .channel('notifications-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'notifications',
-          filter: `user_id=eq.${user?.id}`,
-        },
-        (payload) => {
-          console.log('Notification change:', payload);
-          fetchNotifications();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
   };
 
   const markAsRead = async (notificationId: string) => {
