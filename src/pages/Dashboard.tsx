@@ -1,284 +1,266 @@
+
+import React, { useState, useEffect } from 'react';
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { 
-  BarChart3, 
-  TrendingUp, 
-  DollarSign, 
-  Calendar,
-  Star,
-  MapPin,
-  Plus,
-  Settings,
-  PieChart,
-  LineChart
-} from "lucide-react";
-import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell } from "recharts";
+import { Calendar, DollarSign, TrendingUp, Clock, Users, Star, MapPin } from 'lucide-react';
 
-export const Dashboard = () => {
-  const monthlyData = [
-    { month: 'Aug', revenue: 2500 },
-    { month: 'Sep', revenue: 2750 },
-    { month: 'Oct', revenue: 2900 },
-    { month: 'Nov', revenue: 3100 },
-    { month: 'Dec', revenue: 3300 }
+interface DashboardStats {
+  totalBookings: number;
+  pendingBookings: number;
+  completedBookings: number;
+  totalRevenue: number;
+  averageRating: number;
+  activeServices: number;
+}
+
+interface RecentBooking {
+  id: string;
+  service_title: string;
+  customer_name: string;
+  scheduled_date: string;
+  status: string;
+  total_amount: number;
+}
+
+const Dashboard = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats>({
+    totalBookings: 0,
+    pendingBookings: 0,
+    completedBookings: 0,
+    totalRevenue: 0,
+    averageRating: 0,
+    activeServices: 0
+  });
+  const [recentBookings, setRecentBookings] = useState<RecentBooking[]>([]);
+
+  // Mock data for demonstration
+  const mockStats: DashboardStats = {
+    totalBookings: 45,
+    pendingBookings: 8,
+    completedBookings: 32,
+    totalRevenue: 12500,
+    averageRating: 4.8,
+    activeServices: 6
+  };
+
+  const mockRecentBookings: RecentBooking[] = [
+    {
+      id: '1',
+      service_title: 'Nettoyage résidentiel',
+      customer_name: 'Marie Dubois',
+      scheduled_date: '2024-01-20',
+      status: 'confirmed',
+      total_amount: 120
+    },
+    {
+      id: '2',
+      service_title: 'Jardinage',
+      customer_name: 'Pierre Martin',
+      scheduled_date: '2024-01-21',
+      status: 'pending',
+      total_amount: 180
+    },
+    {
+      id: '3',
+      service_title: 'Réparations',
+      customer_name: 'Sophie Bernard',
+      scheduled_date: '2024-01-22',
+      status: 'in_progress',
+      total_amount: 250
+    }
   ];
 
-  const serviceData = [
-    { name: 'Nettoyage Régulier', value: 65, color: '#4F46E5' },
-    { name: 'Grand Ménage', value: 20, color: '#06B6D4' },
-    { name: 'Nettoyage Commercial', value: 10, color: '#F59E0B' },
-    { name: 'Autres', value: 5, color: '#EF4444' }
-  ];
+  useEffect(() => {
+    // Set mock data for now
+    setStats(mockStats);
+    setRecentBookings(mockRecentBookings);
+    setLoading(false);
+  }, [user]);
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-100 to-orange-200">
-      <Header />
-      
-      <div className="pt-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-black mb-2">Business Dashboard</h1>
-              <p className="text-gray-600">Customizable widgets and comprehensive business insights</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-gray-500" />
-                <span className="text-sm font-medium">Toronto, ON</span>
-                <Badge variant="outline">Projected</Badge>
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-gradient-to-r from-yellow-400 to-orange-500';
+      case 'confirmed': return 'bg-gradient-to-r from-blue-500 to-blue-600';
+      case 'in_progress': return 'bg-gradient-to-r from-purple-500 to-purple-600';
+      case 'completed': return 'bg-gradient-to-r from-green-500 to-emerald-500';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'pending': return 'En Attente';
+      case 'confirmed': return 'Confirmée';
+      case 'in_progress': return 'En Cours';
+      case 'completed': return 'Terminée';
+      default: return status;
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+        <Header />
+        <div className="pt-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="animate-pulse space-y-6">
+              <div className="h-8 bg-white/60 rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+              <div className="grid md:grid-cols-3 gap-6">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-32 bg-white/60 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+                ))}
               </div>
-              <Button className="bg-purple-600 hover:bg-purple-700">
-                <Plus className="h-4 w-4 mr-2" />
-                Add Widget
-              </Button>
             </div>
           </div>
+        </div>
+      </div>
+    );
+  }
 
-          {/* Analytics Tabs */}
-          <Tabs defaultValue="intelligence" className="mb-8">
-            <TabsList className="bg-white">
-              <TabsTrigger value="intelligence">Intelligence</TabsTrigger>
-              <TabsTrigger value="insights">Insights</TabsTrigger>
-              <TabsTrigger value="reports">Reports</TabsTrigger>
-              <TabsTrigger value="performance">Performance</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="intelligence" className="space-y-6">
-              {/* Key Metrics Row */}
-              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {/* Mileage Tracking */}
-                <Card className="bg-white shadow-lg">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Mileage Tracking</CardTitle>
-                    <Settings className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-cyan-600">1,247</div>
-                    <p className="text-xs text-gray-500">Miles this month</p>
-                    <div className="flex items-center justify-between mt-4">
-                      <div>
-                        <div className="text-sm font-medium">Total Miles</div>
-                        <div className="text-lg font-bold">14,865</div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <Header />
+      
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+              Tableau de Bord
+            </h1>
+            <p className="text-gray-600">Bienvenue sur votre espace professionnel HOUSIE</p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Calendar className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-blue-100">Total Réservations</p>
+                    <p className="text-2xl font-bold text-white">{stats.totalBookings}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Clock className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-orange-100">En Attente</p>
+                    <p className="text-2xl font-bold text-white">{stats.pendingBookings}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-emerald-100">Terminées</p>
+                    <p className="text-2xl font-bold text-white">{stats.completedBookings}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <DollarSign className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-purple-100">Revenus</p>
+                    <p className="text-2xl font-bold text-white">${stats.totalRevenue.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Star className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-yellow-100">Note Moyenne</p>
+                    <p className="text-2xl font-bold text-white">{stats.averageRating}/5</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Users className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-indigo-100">Services Actifs</p>
+                    <p className="text-2xl font-bold text-white">{stats.activeServices}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Bookings */}
+          <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+            <CardHeader className="p-6 pb-4">
+              <CardTitle className="text-xl font-semibold text-gray-900">Réservations Récentes</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+              <div className="space-y-4">
+                {recentBookings.map((booking) => (
+                  <div key={booking.id} className="flex items-center justify-between p-4 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl shadow-inner hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white font-bold">
+                        {booking.customer_name.charAt(0)}
                       </div>
                       <div>
-                        <div className="text-sm font-medium text-green-600">Tax Deductible</div>
-                        <div className="text-lg font-bold text-green-600">$8,919</div>
+                        <h4 className="font-semibold text-gray-900">{booking.service_title}</h4>
+                        <p className="text-sm text-gray-600">{booking.customer_name}</p>
+                        <p className="text-xs text-gray-500">{new Date(booking.scheduled_date).toLocaleDateString('fr-FR')}</p>
                       </div>
                     </div>
-                    <div className="text-xs text-green-600 mt-2">+12% from last month</div>
-                  </CardContent>
-                </Card>
-
-                {/* Parking Analysis */}
-                <Card className="bg-white shadow-lg">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Parking Analysis</CardTitle>
-                    <Settings className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-red-500">3</div>
-                    <p className="text-xs text-gray-500">Tickets this year</p>
-                    <div className="flex items-center justify-between mt-4">
-                      <div>
-                        <div className="text-sm font-medium">Total Fees</div>
-                        <div className="text-lg font-bold text-red-500">$285</div>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-green-600">Dispute Success</div>
-                        <div className="text-lg font-bold text-green-600">67%</div>
-                      </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-gray-900">${booking.total_amount}</p>
+                      <Badge className={`${getStatusColor(booking.status)} text-white border-0 shadow-sm`}>
+                        {getStatusText(booking.status)}
+                      </Badge>
                     </div>
-                    <div className="text-xs text-gray-500 mt-2">Powered by Parking OCR analysis</div>
-                  </CardContent>
-                </Card>
-
-                {/* Expense Categories */}
-                <Card className="bg-white shadow-lg">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Expense Categories</CardTitle>
-                    <Settings className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-green-600">$3,216</div>
-                    <p className="text-xs text-gray-500">Total expenses</p>
-                    <div className="space-y-2 mt-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        <span className="text-sm">Supplies</span>
-                        <span className="ml-auto font-medium">$1247</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                        <span className="text-sm">Fuel</span>
-                        <span className="ml-auto font-medium">$892</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        <span className="text-sm">Equipment</span>
-                        <span className="ml-auto font-medium">$654</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                        <span className="text-sm">Insurance</span>
-                        <span className="ml-auto font-medium">$423</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Tax Analysis */}
-                <Card className="bg-white shadow-lg">
-                  <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                    <CardTitle className="text-sm font-medium">Year-over-Year Tax Analysis</CardTitle>
-                    <Settings className="h-4 w-4 text-gray-400" />
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-2xl font-bold text-purple-600">$14,945</div>
-                    <p className="text-xs text-gray-500">Estimated tax 2024</p>
-                    <div className="flex items-center justify-between mt-4">
-                      <div>
-                        <div className="text-sm font-medium">2023 Tax</div>
-                        <div className="text-lg font-bold">$12,340</div>
-                      </div>
-                      <div>
-                        <div className="text-sm font-medium text-red-500">Change</div>
-                        <div className="text-lg font-bold text-red-500">+21.1%</div>
-                      </div>
-                    </div>
-                    <div className="text-xs text-gray-500 mt-2">Based on current earnings trend</div>
-                  </CardContent>
-                </Card>
+                  </div>
+                ))}
               </div>
-
-              {/* Performance Metrics Row */}
-              <div className="grid md:grid-cols-4 gap-6">
-                <Card className="bg-white shadow-lg">
-                  <CardContent className="p-6 text-center">
-                    <DollarSign className="h-8 w-8 text-green-500 mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-green-600">$3,247</div>
-                    <p className="text-sm text-gray-500">Revenue This Month</p>
-                    <div className="text-xs text-green-600 mt-1">+18% from last month</div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white shadow-lg">
-                  <CardContent className="p-6 text-center">
-                    <Calendar className="h-8 w-8 text-blue-500 mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-blue-600">23</div>
-                    <p className="text-sm text-gray-500">Bookings</p>
-                    <div className="text-xs text-gray-500 mt-1">This week</div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white shadow-lg">
-                  <CardContent className="p-6 text-center">
-                    <Star className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-yellow-600">4.8</div>
-                    <p className="text-sm text-gray-500">Client Rating</p>
-                    <div className="text-xs text-gray-500 mt-1">5 recent</div>
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white shadow-lg">
-                  <CardContent className="p-6 text-center">
-                    <TrendingUp className="h-8 w-8 text-purple-500 mx-auto mb-2" />
-                    <div className="text-2xl font-bold text-purple-600">+22%</div>
-                    <p className="text-sm text-gray-500">Growth Rate</p>
-                    <div className="text-xs text-gray-500 mt-1">Above target</div>
-                  </CardContent>
-                </Card>
+              <div className="mt-6 text-center">
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200">
+                  Voir Toutes les Réservations
+                </Button>
               </div>
-
-              {/* Charts Row */}
-              <div className="grid lg:grid-cols-2 gap-6">
-                {/* Monthly Revenue Chart */}
-                <Card className="bg-white shadow-lg">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <LineChart className="h-5 w-5" />
-                      Monthly Revenue
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <RechartsLineChart data={monthlyData}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="month" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line 
-                          type="monotone" 
-                          dataKey="revenue" 
-                          stroke="#4F46E5" 
-                          strokeWidth={3}
-                          dot={{ fill: '#4F46E5', strokeWidth: 2, r: 6 }}
-                        />
-                      </RechartsLineChart>
-                    </ResponsiveContainer>
-                  </CardContent>
-                </Card>
-
-                {/* Service Distribution */}
-                <Card className="bg-white shadow-lg">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <PieChart className="h-5 w-5" />
-                      Service Distribution
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ResponsiveContainer width="100%" height={300}>
-                      <RechartsPieChart>
-                        <Tooltip />
-                        <RechartsPieChart data={serviceData} cx="50%" cy="50%" outerRadius={100}>
-                          {serviceData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </RechartsPieChart>
-                      </RechartsPieChart>
-                    </ResponsiveContainer>
-                    <div className="grid grid-cols-2 gap-2 mt-4">
-                      {serviceData.map((item, index) => (
-                        <div key={index} className="flex items-center gap-2">
-                          <div 
-                            className="w-3 h-3 rounded-full" 
-                            style={{ backgroundColor: item.color }}
-                          ></div>
-                          <span className="text-xs">{item.name}</span>
-                          <span className="text-xs font-medium ml-auto">{item.value}%</span>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-          </Tabs>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

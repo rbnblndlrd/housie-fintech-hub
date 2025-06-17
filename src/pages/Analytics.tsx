@@ -1,0 +1,360 @@
+
+import React, { useState, useEffect } from 'react';
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Calendar, 
+  DollarSign, 
+  TrendingUp, 
+  Download, 
+  PieChart,
+  BarChart3,
+  Star,
+  Clock,
+  Users
+} from 'lucide-react';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { LineChart, Line, BarChart, Bar, PieChart as RechartsPieChart, Cell, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+
+interface RevenueData {
+  month: string;
+  revenue: number;
+  bookings: number;
+  housie_fee: number;
+}
+
+interface ServicePerformance {
+  service_name: string;
+  total_revenue: number;
+  booking_count: number;
+  avg_rating: number;
+}
+
+const Analytics = () => {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [timeRange, setTimeRange] = useState<'week' | 'month' | 'year'>('month');
+  const [revenueData, setRevenueData] = useState<RevenueData[]>([]);
+  const [servicePerformance, setServicePerformance] = useState<ServicePerformance[]>([]);
+  const [totalStats, setTotalStats] = useState({
+    totalRevenue: 0,
+    totalBookings: 0,
+    averageBookingValue: 0,
+    housieFeesTotal: 0
+  });
+
+  // Mock data for demonstration
+  const mockRevenueData: RevenueData[] = [
+    { month: 'Jan', revenue: 2500, bookings: 15, housie_fee: 375 },
+    { month: 'Feb', revenue: 3200, bookings: 18, housie_fee: 480 },
+    { month: 'Mar', revenue: 2800, bookings: 16, housie_fee: 420 },
+    { month: 'Apr', revenue: 4100, bookings: 22, housie_fee: 615 },
+    { month: 'May', revenue: 3600, bookings: 20, housie_fee: 540 },
+    { month: 'Jun', revenue: 4500, bookings: 25, housie_fee: 675 }
+  ];
+
+  const mockServiceData: ServicePerformance[] = [
+    { service_name: 'Nettoyage résidentiel', total_revenue: 8500, booking_count: 35, avg_rating: 4.8 },
+    { service_name: 'Jardinage', total_revenue: 6200, booking_count: 28, avg_rating: 4.6 },
+    { service_name: 'Réparations', total_revenue: 4800, booking_count: 18, avg_rating: 4.7 },
+    { service_name: 'Peinture', total_revenue: 3200, booking_count: 12, avg_rating: 4.5 }
+  ];
+
+  const chartConfig = {
+    revenue: {
+      label: "Revenus",
+      color: "#3B82F6",
+    },
+    bookings: {
+      label: "Réservations",
+      color: "#8B5CF6",
+    },
+    housie_fee: {
+      label: "Frais HOUSIE",
+      color: "#F59E0B",
+    },
+  };
+
+  const pieData = [
+    { name: 'Vos revenus', value: 85, color: '#3B82F6' },
+    { name: 'Frais HOUSIE', value: 15, color: '#F59E0B' }
+  ];
+
+  useEffect(() => {
+    // Set mock data for now
+    setRevenueData(mockRevenueData);
+    setServicePerformance(mockServiceData);
+    setTotalStats({
+      totalRevenue: 20700,
+      totalBookings: 116,
+      averageBookingValue: 178,
+      housieFeesTotal: 3105
+    });
+    setLoading(false);
+  }, [user, timeRange]);
+
+  const exportData = () => {
+    const csvData = revenueData.map(item => ({
+      Mois: item.month,
+      Revenus: `$${item.revenue}`,
+      Réservations: item.bookings,
+      'Frais HOUSIE': `$${item.housie_fee}`
+    }));
+
+    const csvContent = [
+      Object.keys(csvData[0]).join(','),
+      ...csvData.map(row => Object.values(row).join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `housie-revenue-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export réussi",
+      description: "Vos données financières ont été exportées pour vos déclarations fiscales.",
+    });
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+        <Header />
+        <div className="pt-20 px-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="animate-pulse space-y-6">
+              <div className="h-8 bg-white/60 rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+              <div className="grid md:grid-cols-4 gap-6">
+                {[...Array(4)].map((_, i) => (
+                  <div key={i} className="h-32 bg-white/60 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <Header />
+      
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Page Header */}
+          <div className="mb-8 flex justify-between items-center">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                Tableau de Bord Financier
+              </h1>
+              <p className="text-gray-600">Analysez vos revenus et performances</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="flex bg-white/90 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 p-1">
+                {(['week', 'month', 'year'] as const).map((range) => (
+                  <Button
+                    key={range}
+                    variant={timeRange === range ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => setTimeRange(range)}
+                    className={`rounded-xl transition-all duration-200 ${
+                      timeRange === range 
+                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md' 
+                        : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    {range === 'week' ? 'Semaine' : range === 'month' ? 'Mois' : 'Année'}
+                  </Button>
+                ))}
+              </div>
+              <Button
+                onClick={exportData}
+                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Exporter (Impôts)
+              </Button>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid md:grid-cols-4 gap-6 mb-8">
+            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <DollarSign className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-blue-100">Revenus Totaux</p>
+                    <p className="text-2xl font-bold text-white">${totalStats.totalRevenue.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <Calendar className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-purple-100">Réservations</p>
+                    <p className="text-2xl font-bold text-white">{totalStats.totalBookings}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <TrendingUp className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-emerald-100">Valeur Moyenne</p>
+                    <p className="text-2xl font-bold text-white">${totalStats.averageBookingValue}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
+                    <PieChart className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-orange-100">Frais HOUSIE</p>
+                    <p className="text-2xl font-bold text-white">${totalStats.housieFeesTotal.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Charts Section */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-8">
+            {/* Revenue Chart */}
+            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+              <CardHeader className="p-6 pb-4">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-blue-600" />
+                  Évolution des Revenus
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <ChartContainer config={chartConfig} className="h-80">
+                  <LineChart data={revenueData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis dataKey="month" stroke="#666" />
+                    <YAxis stroke="#666" />
+                    <ChartTooltip content={<ChartTooltipContent />} />
+                    <Line 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stroke="url(#revenueGradient)" 
+                      strokeWidth={3}
+                      dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+                    />
+                    <defs>
+                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#3B82F6" />
+                        <stop offset="100%" stopColor="#8B5CF6" />
+                      </linearGradient>
+                    </defs>
+                  </LineChart>
+                </ChartContainer>
+              </CardContent>
+            </Card>
+
+            {/* Fee Breakdown */}
+            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+              <CardHeader className="p-6 pb-4">
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  <PieChart className="h-5 w-5 text-orange-600" />
+                  Répartition des Revenus
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 pt-0">
+                <div className="h-80 flex items-center justify-center">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RechartsPieChart>
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <RechartsPieChart data={pieData}>
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </RechartsPieChart>
+                    </RechartsPieChart>
+                  </ResponsiveContainer>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {pieData.map((item, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                        <span className="text-sm text-gray-700">{item.name}</span>
+                      </div>
+                      <span className="text-sm font-semibold text-gray-900">{item.value}%</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Service Performance */}
+          <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+            <CardHeader className="p-6 pb-4">
+              <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-600" />
+                Services les Plus Performants
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+              <div className="space-y-4">
+                {servicePerformance.map((service, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl shadow-inner hover:shadow-md transition-all duration-200">
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl text-white font-bold">
+                        {index + 1}
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-gray-900">{service.service_name}</h4>
+                        <p className="text-sm text-gray-600">{service.booking_count} réservations</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-lg font-bold text-gray-900">${service.total_revenue.toLocaleString()}</p>
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-500 fill-current" />
+                        <span className="text-sm text-gray-600">{service.avg_rating}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Analytics;

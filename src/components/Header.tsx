@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -85,6 +84,12 @@ const Header = () => {
               >
                 Réservations
               </Link>
+              <Link
+                to="/analytics"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+              >
+                Analytics
+              </Link>
             </div>
           </div>
           
@@ -148,12 +153,18 @@ const Header = () => {
             <Link to="/services" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Services
             </Link>
-            <Link to="/roadmap" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
-              Roadmap
+            <Link to="/calendar" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+              Calendrier
             </Link>
-            <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
-              Feature Requests
-            </a>
+            <Link to="/dashboard" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+              Tableau de bord
+            </Link>
+            <Link to="/booking-management" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+              Réservations
+            </Link>
+            <Link to="/analytics" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+              Analytics
+            </Link>
             
             {/* Mobile Auth Section */}
             {user ? (
