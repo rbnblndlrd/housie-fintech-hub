@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
@@ -68,19 +67,19 @@ export const Services = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-100 to-orange-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-darker">
       <Header />
       
       <div className="pt-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Page Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-black dark:text-white mb-2">Find Home Services</h1>
-            <p className="text-gray-600 dark:text-gray-400">Connect with verified professionals in your area</p>
+            <h1 className="text-4xl font-bold text-black dark:text-dark-text mb-2">Find Home Services</h1>
+            <p className="text-gray-600 dark:text-dark-text-muted">Connect with verified professionals in your area</p>
           </div>
 
           {/* Search and Filters */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg mb-8 border dark:border-gray-700">
+          <div className="bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-lg mb-8 border dark:border-gray-700">
             <div className="grid md:grid-cols-4 gap-4">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
@@ -122,7 +121,7 @@ export const Services = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Service Categories */}
             <div className="lg:col-span-1">
-              <Card className="bg-white dark:bg-gray-800 shadow-lg border dark:border-gray-700">
+              <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-black dark:text-white">
                     <span>Service Categories</span>
@@ -146,18 +145,18 @@ export const Services = () => {
                 </CardContent>
               </Card>
 
-              {/* Google Map */}
-              <Card className="bg-white dark:bg-gray-800 shadow-lg mt-6 border dark:border-gray-700">
+              {/* Interactive Google Map */}
+              <Card className="bg-white dark:bg-dark-secondary shadow-lg mt-6 border dark:border-gray-700">
                 <CardHeader>
-                  <CardTitle className="text-black dark:text-white">Service Area Map</CardTitle>
+                  <CardTitle className="dark:text-dark-text">Service Area Map</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 rounded-lg overflow-hidden">
-                    <GoogleMap 
-                      providers={providers}
-                      className="w-full h-full"
-                    />
-                  </div>
+                  <GoogleMap
+                    center={{ lat: 45.5017, lng: -73.5673 }}
+                    zoom={12}
+                    className="h-64"
+                    providers={providers}
+                  />
                 </CardContent>
               </Card>
             </div>
@@ -165,7 +164,7 @@ export const Services = () => {
             {/* Provider Listings */}
             <div className="lg:col-span-2 space-y-4">
               {providers.map(provider => (
-                <Card key={provider.id} className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow border dark:border-gray-700">
+                <Card key={provider.id} className="bg-white dark:bg-dark-secondary shadow-lg hover:shadow-xl transition-shadow border dark:border-gray-700">
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className="w-16 h-16 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -79,9 +78,7 @@ const Index = () => {
                 </h1>
                 
                 <p className="text-xl text-gray-700 dark:text-dark-text-secondary leading-relaxed max-w-lg">
-                  La première plateforme fintech qui connecte 2.9M d'entrepreneurs 
-                  canadiens avec des outils d'IA pour optimiser leurs finances et 
-                  développer leur clientèle.
+                  Vous oubliez de réclamer? Nous, jamais.
                 </p>
               </div>
 
