@@ -97,30 +97,40 @@
     color: #ffffff !important;
   }
 
-  /* Force dark text colors for light mode */
+  /* Force dark text colors for light mode - using direct colors to avoid circular dependencies */
   h1, h2, h3, h4, h5, h6 {
-    @apply text-gray-900 !important;
+    color: #111827 !important; /* gray-900 equivalent */
   }
 
   p, span, div {
-    @apply text-gray-800 !important;
+    color: #1f2937 !important; /* gray-800 equivalent */
   }
 
   /* Specific text color overrides for light mode */
   .text-gray-600 {
-    @apply text-gray-700 !important;
+    color: #374151 !important; /* gray-700 equivalent */
   }
 
   .text-gray-500 {
-    @apply text-gray-600 !important;
+    color: #4b5563 !important; /* gray-600 equivalent */
   }
 
   .text-gray-400 {
-    @apply text-gray-500 !important;
+    color: #6b7280 !important; /* gray-500 equivalent */
   }
 
   .text-muted-foreground {
-    @apply text-gray-600 !important;
+    color: #4b5563 !important; /* gray-600 equivalent */
+  }
+
+  /* Button text should be visible */
+  button {
+    color: inherit;
+  }
+
+  /* Card content should be dark */
+  .card p, .card span, .card div {
+    color: #1f2937 !important;
   }
 
   /* HOUSIE Specific Styles */
@@ -162,29 +172,29 @@
   .dark h4,
   .dark h5,
   .dark h6 {
-    @apply text-white !important;
+    color: #ffffff !important;
   }
 
   .dark p,
   .dark span,
   .dark div {
-    @apply text-gray-100 !important;
+    color: #f3f4f6 !important; /* gray-100 equivalent */
   }
 
   .dark .text-gray-600 {
-    @apply text-gray-300 !important;
+    color: #d1d5db !important; /* gray-300 equivalent */
   }
 
   .dark .text-gray-500 {
-    @apply text-gray-400 !important;
+    color: #9ca3af !important; /* gray-400 equivalent */
   }
 
   .dark .text-gray-900 {
-    @apply text-white !important;
+    color: #ffffff !important;
   }
 
   .dark .text-muted-foreground {
-    @apply text-gray-300 !important;
+    color: #d1d5db !important; /* gray-300 equivalent */
   }
 
   /* Input and form field fixes */
