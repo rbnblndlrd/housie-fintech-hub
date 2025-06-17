@@ -9,7 +9,354 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          created_at: string | null
+          customer_id: string
+          duration_hours: number | null
+          id: string
+          payment_status: string | null
+          provider_id: string
+          scheduled_date: string
+          scheduled_time: string
+          service_address: string | null
+          service_coordinates: unknown | null
+          service_id: string
+          status: string | null
+          stripe_payment_intent_id: string | null
+          total_amount: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          customer_id: string
+          duration_hours?: number | null
+          id?: string
+          payment_status?: string | null
+          provider_id: string
+          scheduled_date: string
+          scheduled_time: string
+          service_address?: string | null
+          service_coordinates?: unknown | null
+          service_id: string
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          customer_id?: string
+          duration_hours?: number | null
+          id?: string
+          payment_status?: string | null
+          provider_id?: string
+          scheduled_date?: string
+          scheduled_time?: string
+          service_address?: string | null
+          service_coordinates?: unknown | null
+          service_id?: string
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          total_amount?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          booking_id: string
+          content: string
+          created_at: string | null
+          id: string
+          message_type: string | null
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          booking_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          booking_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          message_type?: string | null
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      provider_profiles: {
+        Row: {
+          average_rating: number | null
+          business_name: string | null
+          cra_compliant: boolean | null
+          created_at: string | null
+          description: string | null
+          hourly_rate: number | null
+          id: string
+          insurance_verified: boolean | null
+          response_time_hours: number | null
+          service_radius_km: number | null
+          total_bookings: number | null
+          updated_at: string | null
+          user_id: string
+          verified: boolean | null
+          years_experience: number | null
+        }
+        Insert: {
+          average_rating?: number | null
+          business_name?: string | null
+          cra_compliant?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          hourly_rate?: number | null
+          id?: string
+          insurance_verified?: boolean | null
+          response_time_hours?: number | null
+          service_radius_km?: number | null
+          total_bookings?: number | null
+          updated_at?: string | null
+          user_id: string
+          verified?: boolean | null
+          years_experience?: number | null
+        }
+        Update: {
+          average_rating?: number | null
+          business_name?: string | null
+          cra_compliant?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          hourly_rate?: number | null
+          id?: string
+          insurance_verified?: boolean | null
+          response_time_hours?: number | null
+          service_radius_km?: number | null
+          total_bookings?: number | null
+          updated_at?: string | null
+          user_id?: string
+          verified?: boolean | null
+          years_experience?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "provider_profiles_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          booking_id: string
+          comment: string | null
+          created_at: string | null
+          id: string
+          provider_id: string
+          rating: number
+          reviewer_id: string
+        }
+        Insert: {
+          booking_id: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          provider_id: string
+          rating: number
+          reviewer_id: string
+        }
+        Update: {
+          booking_id?: string
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          provider_id?: string
+          rating?: number
+          reviewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      services: {
+        Row: {
+          active: boolean | null
+          base_price: number | null
+          category: string
+          created_at: string | null
+          description: string | null
+          id: string
+          pricing_type: string | null
+          provider_id: string
+          subcategory: string | null
+          title: string
+        }
+        Insert: {
+          active?: boolean | null
+          base_price?: number | null
+          category: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          pricing_type?: string | null
+          provider_id: string
+          subcategory?: string | null
+          title: string
+        }
+        Update: {
+          active?: boolean | null
+          base_price?: number | null
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          pricing_type?: string | null
+          provider_id?: string
+          subcategory?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "services_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      users: {
+        Row: {
+          address: string | null
+          can_provide: boolean | null
+          can_seek: boolean | null
+          city: string | null
+          coordinates: unknown | null
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          password_hash: string | null
+          phone: string | null
+          postal_code: string | null
+          profile_image: string | null
+          province: string | null
+          stripe_customer_id: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
+          updated_at: string | null
+          user_role: string | null
+        }
+        Insert: {
+          address?: string | null
+          can_provide?: boolean | null
+          can_seek?: boolean | null
+          city?: string | null
+          coordinates?: unknown | null
+          created_at?: string | null
+          email: string
+          full_name: string
+          id?: string
+          password_hash?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          profile_image?: string | null
+          province?: string | null
+          stripe_customer_id?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+          user_role?: string | null
+        }
+        Update: {
+          address?: string | null
+          can_provide?: boolean | null
+          can_seek?: boolean | null
+          city?: string | null
+          coordinates?: unknown | null
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          password_hash?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          profile_image?: string | null
+          province?: string | null
+          stripe_customer_id?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
+          updated_at?: string | null
+          user_role?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

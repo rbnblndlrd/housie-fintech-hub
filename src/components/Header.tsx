@@ -1,116 +1,178 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { Globe, User, Settings, LogOut, BarChart3, Calendar, MessageCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Menu, X, User, BarChart3, Calendar, Settings, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Header = () => {
-  const [currentRole, setCurrentRole] = useState<'seeker' | 'provider'>('seeker');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [userRole, setUserRole] = useState<'seeker' | 'provider'>('seeker');
 
-  const toggleRole = () => {
-    setCurrentRole(currentRole === 'seeker' ? 'provider' : 'seeker');
+  const switchRole = () => {
+    setUserRole(prev => prev === 'seeker' ? 'provider' : 'seeker');
   };
 
   return (
-    <header className="bg-black text-white px-4 py-3 fixed top-0 w-full z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-sm">H</span>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-orange-100 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-black text-xl">
+              H
             </div>
-            <span className="text-2xl font-bold">HOUSIE</span>
-          </div>
-          
-          <nav className="hidden md:flex items-center gap-6">
-            <Button variant="ghost" className="text-white hover:text-orange-400" onClick={() => navigate('/services')}>
+            <div className="font-black text-2xl">
+              <span className="text-orange-500">HOUSIE</span>
+              <span className="text-purple-600">.ca</span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden lg:flex items-center gap-8">
+            <Link to="/services" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
               Services
-            </Button>
-            <Button variant="ghost" className="text-white hover:text-orange-400" onClick={() => navigate('/roadmap')}>
-              Roadmap
-            </Button>
-            <Button variant="ghost" className="text-white hover:text-orange-400">
-              Support
-            </Button>
-            <Button variant="ghost" className="text-white hover:text-orange-400">
-              HOUSIE Pro
-            </Button>
+            </Link>
+            <Link to="/roadmap" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+              Comment ça marche
+            </Link>
+            <div className="text-gray-700 hover:text-orange-500 font-medium transition-colors cursor-pointer">
+              Tarifs
+            </div>
+            <Link to="/dashboard" className="text-gray-700 hover:text-orange-500 font-medium transition-colors">
+              Tableau de bord
+            </Link>
           </nav>
-        </div>
 
-        <div className="flex items-center gap-4">
-          <Button variant="ghost" size="sm" className="text-white hover:text-orange-400">
-            <Globe className="h-4 w-4 mr-1" />
-            FR
-          </Button>
+          {/* User Controls */}
+          <div className="hidden lg:flex items-center gap-4">
+            {/* Role Switcher */}
+            <div className="flex items-center gap-2 bg-gray-100 rounded-xl p-1">
+              <Button
+                variant={userRole === 'seeker' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setUserRole('seeker')}
+                className={`rounded-lg font-medium ${
+                  userRole === 'seeker' 
+                    ? 'bg-orange-500 hover:bg-orange-600 text-white' 
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Client
+              </Button>
+              <Button
+                variant={userRole === 'provider' ? 'default' : 'ghost'}
+                size="sm"
+                onClick={() => setUserRole('provider')}
+                className={`rounded-lg font-medium ${
+                  userRole === 'provider' 
+                    ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                    : 'text-gray-600 hover:text-gray-800'
+                }`}
+              >
+                Prestataire
+              </Button>
+            </div>
 
-          {isAuthenticated ? (
+            {/* User Menu */}
             <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar className="bg-cyan-500 border-2 border-cyan-400">
-                  <AvatarFallback className="bg-cyan-500 text-white font-bold">
-                    JD
-                  </AvatarFallback>
-                </Avatar>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" className="border-2 border-orange-200 hover:border-orange-300 rounded-xl">
+                  <User className="h-4 w-4 mr-2" />
+                  Mon Compte
+                </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
-                <div className="p-2">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm font-medium">Current Role:</span>
-                    <Badge 
-                      variant={currentRole === 'provider' ? 'default' : 'secondary'}
-                      className="cursor-pointer"
-                      onClick={toggleRole}
-                    >
-                      {currentRole === 'provider' ? 'Provider' : 'Customer'}
-                    </Badge>
-                  </div>
-                  <div className="text-xs text-gray-500 mb-2">
-                    Click badge to switch: Customer ↔ Provider
-                  </div>
+                <div className="px-3 py-2">
+                  <p className="text-sm font-medium">Mode actuel:</p>
+                  <Badge className={`mt-1 ${
+                    userRole === 'seeker' 
+                      ? 'bg-orange-100 text-orange-800' 
+                      : 'bg-purple-100 text-purple-800'
+                  }`}>
+                    {userRole === 'seeker' ? '👤 Client' : '🔧 Prestataire'}
+                  </Badge>
                 </div>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/dashboard')}>
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Dashboard
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate('/calendar')}>
-                  <Calendar className="h-4 w-4 mr-2" />
-                  Calendar
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Messages
-                </DropdownMenuItem>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={switchRole} className="cursor-pointer">
                   <User className="h-4 w-4 mr-2" />
-                  Profile
+                  Changer de rôle
                 </DropdownMenuItem>
-                <DropdownMenuItem>
+                <Link to="/dashboard">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <BarChart3 className="h-4 w-4 mr-2" />
+                    Tableau de bord
+                  </DropdownMenuItem>
+                </Link>
+                <Link to="/calendar">
+                  <DropdownMenuItem className="cursor-pointer">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    Calendrier
+                  </DropdownMenuItem>
+                </Link>
+                <DropdownMenuItem className="cursor-pointer">
                   <Settings className="h-4 w-4 mr-2" />
-                  Settings
+                  Paramètres
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsAuthenticated(false)}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </DropdownMenuItem>
+                <Link to="/auth">
+                  <DropdownMenuItem className="cursor-pointer text-red-600">
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Se déconnecter
+                  </DropdownMenuItem>
+                </Link>
               </DropdownMenuContent>
             </DropdownMenu>
-          ) : (
-            <Button 
-              className="bg-orange-500 hover:bg-orange-600"
-              onClick={() => navigate('/auth')}
-            >
-              Sign In
-            </Button>
-          )}
+
+            <Link to="/auth">
+              <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-6 py-2 rounded-xl shadow-lg">
+                CONNEXION
+              </Button>
+            </Link>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="lg:hidden p-2 text-gray-600 hover:text-orange-500"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
         </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="lg:hidden py-4 border-t border-orange-100">
+            <nav className="space-y-4">
+              <Link to="/services" className="block text-gray-700 hover:text-orange-500 font-medium py-2">
+                Services
+              </Link>
+              <Link to="/roadmap" className="block text-gray-700 hover:text-orange-500 font-medium py-2">
+                Comment ça marche
+              </Link>
+              <div className="block text-gray-700 hover:text-orange-500 font-medium py-2 cursor-pointer">
+                Tarifs
+              </div>
+              <Link to="/dashboard" className="block text-gray-700 hover:text-orange-500 font-medium py-2">
+                Tableau de bord
+              </Link>
+              <div className="pt-4 border-t border-gray-200">
+                <Link to="/auth">
+                  <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 rounded-xl">
+                    CONNEXION
+                  </Button>
+                </Link>
+              </div>
+            </nav>
+          </div>
+        )}
       </div>
     </header>
   );
