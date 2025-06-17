@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -80,11 +81,6 @@ const Analytics = () => {
     },
   };
 
-  const pieData = [
-    { name: 'Vos revenus', value: 85, color: '#3B82F6' },
-    { name: 'Frais HOUSIE', value: 15, color: '#F59E0B' }
-  ];
-
   useEffect(() => {
     // Set mock data for now
     setRevenueData(mockRevenueData);
@@ -127,15 +123,15 @@ const Analytics = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-white/60 rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
-              <div className="grid md:grid-cols-4 gap-6">
+              <div className="h-8 fintech-card w-1/3"></div>
+              <div className="fintech-stats-grid">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-32 bg-white/60 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+                  <div key={i} className="h-32 fintech-card"></div>
                 ))}
               </div>
             </div>
@@ -146,7 +142,7 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
@@ -160,7 +156,7 @@ const Analytics = () => {
               <p className="text-gray-600">Analysez vos revenus et performances</p>
             </div>
             <div className="flex gap-3">
-              <div className="flex bg-white/90 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 p-1">
+              <div className="flex fintech-card p-1">
                 {(['week', 'month', 'year'] as const).map((range) => (
                   <Button
                     key={range}
@@ -169,7 +165,7 @@ const Analytics = () => {
                     onClick={() => setTimeRange(range)}
                     className={`rounded-xl transition-all duration-200 ${
                       timeRange === range 
-                        ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md' 
+                        ? 'fintech-button-primary' 
                         : 'hover:bg-gray-50'
                     }`}
                   >
@@ -179,7 +175,7 @@ const Analytics = () => {
               </div>
               <Button
                 onClick={exportData}
-                className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+                className="fintech-button-secondary"
               >
                 <Download className="h-4 w-4 mr-2" />
                 Exporter (Impôts)
@@ -188,8 +184,8 @@ const Analytics = () => {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid md:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+          <div className="fintech-stats-grid mb-8">
+            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 fintech-gradient-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -203,7 +199,7 @@ const Analytics = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 fintech-gradient-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -217,7 +213,7 @@ const Analytics = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-gradient-to-br from-green-500 to-emerald-500 fintech-gradient-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -231,7 +227,7 @@ const Analytics = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="bg-gradient-to-br from-orange-500 to-orange-600 fintech-gradient-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
                   <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
@@ -249,7 +245,7 @@ const Analytics = () => {
           {/* Charts Section */}
           <div className="grid lg:grid-cols-2 gap-6 mb-8">
             {/* Revenue Chart */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+            <Card className="fintech-chart-container">
               <CardHeader className="p-6 pb-4">
                 <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <BarChart3 className="h-5 w-5 text-blue-600" />
@@ -275,8 +271,8 @@ const Analytics = () => {
               </CardContent>
             </Card>
 
-            {/* Fee Breakdown */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+            {/* HOUSIE Fee Breakdown */}
+            <Card className="fintech-chart-container">
               <CardHeader className="p-6 pb-4">
                 <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <PieChart className="h-5 w-5 text-orange-600" />
@@ -285,7 +281,7 @@ const Analytics = () => {
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <div className="h-80 flex items-center justify-center">
-                  <div className="space-y-4">
+                  <div className="space-y-6">
                     <div className="text-center">
                       <div className="text-6xl font-bold text-blue-600 mb-2">85%</div>
                       <div className="text-sm text-gray-600">Vos Revenus</div>
@@ -301,7 +297,7 @@ const Analytics = () => {
           </div>
 
           {/* Service Performance */}
-          <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+          <Card className="fintech-chart-container">
             <CardHeader className="p-6 pb-4">
               <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                 <Star className="h-5 w-5 text-yellow-600" />

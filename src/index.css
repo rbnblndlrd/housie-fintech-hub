@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* HOUSIE Design System - Fintech meets Pop Art */
+/* HOUSIE Design System - Clean White Background */
 
 @layer base {
   :root {
@@ -84,173 +84,47 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
-    /* HOUSIE Gradient Background for Light Mode */
-    background: linear-gradient(135deg, #fef7cd 0%, #fed7aa 25%, #fdba74 50%, #fb923c 75%, #f97316 100%);
-    /* Force dark text on light background */
-    color: #111827 !important;
+    @apply bg-white text-gray-900 font-sans antialiased;
   }
 
   .dark body {
-    /* Dark Theme with Better Contrast */
-    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 25%, #1f1f1f 50%, #2d2d2d 75%, #1a1a1a 100%);
-    color: #ffffff !important;
+    @apply bg-gray-900 text-white;
   }
 
-  /* COMPREHENSIVE TEXT COLOR FIXES FOR LIGHT MODE */
-  /* All text elements should be dark on yellow gradient */
-  h1, h2, h3, h4, h5, h6 {
-    color: #111827 !important; /* Very dark gray */
+  /* HOUSIE Fintech Card Styles */
+  .fintech-card {
+    @apply bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1;
   }
 
-  p, span, div, li, a, label, td, th {
-    color: #1f2937 !important; /* Dark gray */
+  .fintech-gradient-card {
+    @apply rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300;
   }
 
-  /* Override all text utility classes to be dark */
-  .text-white {
-    color: #111827 !important; /* Override white text to dark */
+  .fintech-button-primary {
+    @apply bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium px-6 py-3 rounded-2xl transition-all duration-200 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5;
   }
 
-  .text-gray-100,
-  .text-gray-200,
-  .text-gray-300,
-  .text-gray-400 {
-    color: #374151 !important; /* Medium dark gray */
+  .fintech-button-secondary {
+    @apply bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-medium px-6 py-3 rounded-2xl transition-all duration-200 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5;
   }
 
-  .text-gray-500,
-  .text-gray-600 {
-    color: #4b5563 !important; /* Darker gray */
+  .fintech-stats-grid {
+    @apply grid md:grid-cols-4 gap-6;
   }
 
-  .text-gray-700,
-  .text-gray-800,
-  .text-gray-900 {
-    color: #111827 !important; /* Very dark gray */
+  .fintech-chart-container {
+    @apply bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300;
   }
 
-  .text-muted-foreground {
-    color: #4b5563 !important; /* Ensure muted text is still readable */
+  /* Dark mode styles */
+  .dark .fintech-card {
+    @apply bg-gray-800 border-gray-700;
   }
 
-  .text-foreground {
-    color: #111827 !important; /* Dark foreground */
+  .dark .fintech-chart-container {
+    @apply bg-gray-800 border-gray-700;
   }
 
-  /* Button text fixes */
-  button {
-    color: #111827 !important;
-  }
-
-  button:not(.bg-gradient-to-r):not(.bg-blue-600):not(.bg-purple-600) {
-    color: #111827 !important;
-  }
-
-  /* Keep gradient button text white */
-  .bg-gradient-to-r button,
-  .bg-blue-600 button,
-  .bg-purple-600 button,
-  button.bg-gradient-to-r,
-  button.bg-blue-600,
-  button.bg-purple-600 {
-    color: #ffffff !important;
-  }
-
-  /* Card content text */
-  .card p, .card span, .card div, .card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
-    color: #1f2937 !important;
-  }
-
-  /* Navigation text */
-  nav a, nav span, nav div {
-    color: #111827 !important;
-  }
-
-  /* Form input text */
-  input, textarea, select {
-    color: #111827 !important;
-  }
-
-  /* Table text */
-  table, table td, table th {
-    color: #111827 !important;
-  }
-
-  /* HOUSIE Specific Styles */
-  .housie-gradient {
-    background: linear-gradient(135deg, #fef7cd 0%, #fed7aa 50%, #fdba74 100%);
-  }
-
-  .dark .housie-gradient {
-    background: linear-gradient(135deg, #2d2d2d 0%, #3d3d3d 50%, #4d4d4d 100%);
-  }
-
-  .housie-card {
-    @apply bg-white/90 dark:bg-gray-800/90 rounded-xl shadow-lg border border-gray-100/50 dark:border-gray-700/50 transition-all duration-200 hover:shadow-xl backdrop-blur-sm;
-  }
-
-  .housie-button-primary {
-    @apply bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl;
-  }
-
-  .housie-button-secondary {
-    @apply bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium px-6 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl;
-  }
-
-  .housie-text-gradient {
-    background: linear-gradient(135deg, #9B59B6 0%, #FF6B35 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .housie-mascot-glow {
-    filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
-  }
-
-  /* Dark mode text styles - keep existing */
-  .dark h1,
-  .dark h2,
-  .dark h3,
-  .dark h4,
-  .dark h5,
-  .dark h6 {
-    color: #ffffff !important;
-  }
-
-  .dark p,
-  .dark span,
-  .dark div,
-  .dark li,
-  .dark a,
-  .dark label,
-  .dark td,
-  .dark th {
-    color: #f3f4f6 !important;
-  }
-
-  .dark .text-gray-600 {
-    color: #d1d5db !important;
-  }
-
-  .dark .text-gray-500 {
-    color: #9ca3af !important;
-  }
-
-  .dark .text-gray-900 {
-    color: #ffffff !important;
-  }
-
-  .dark .text-muted-foreground {
-    color: #d1d5db !important;
-  }
-
-  .dark .text-white {
-    color: #ffffff !important;
-  }
-
-  /* Dark mode input and form field fixes */
   .dark input,
   .dark textarea,
   .dark select {
@@ -261,19 +135,6 @@
   .dark textarea:focus,
   .dark select:focus {
     @apply border-purple-500 ring-purple-500;
-  }
-
-  /* Dark mode button fixes */
-  .dark button {
-    color: #ffffff !important;
-  }
-
-  .dark .bg-gray-50 {
-    @apply bg-gray-900;
-  }
-
-  .dark .bg-gray-100 {
-    @apply bg-gray-800;
   }
 }
 
@@ -298,23 +159,6 @@
 
   .focus-ring {
     @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
-  }
-
-  /* Dark mode component fixes */
-  .dark .card {
-    @apply bg-gray-800 border-gray-700 text-white;
-  }
-
-  .dark .badge {
-    @apply bg-gray-700 text-gray-200;
-  }
-
-  .dark .dropdown-menu-content {
-    @apply bg-gray-800 border-gray-700;
-  }
-
-  .dark .dropdown-menu-item:hover {
-    @apply bg-gray-700;
   }
 }
 
