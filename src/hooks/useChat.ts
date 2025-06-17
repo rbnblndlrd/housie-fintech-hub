@@ -109,7 +109,13 @@ export const useChat = () => {
 
       if (error) throw error;
 
-      setMessages(data || []);
+      // Type cast the data to ensure message_type is properly typed
+      const typedMessages: ChatMessage[] = (data || []).map(msg => ({
+        ...msg,
+        message_type: msg.message_type as 'text' | 'image' | 'file' | 'system' | 'ai_response'
+      }));
+
+      setMessages(typedMessages);
       setActiveConversation(conversationId);
 
       // Mark messages as read
