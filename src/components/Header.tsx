@@ -38,9 +38,8 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
       <div className="container mx-auto py-4 px-6 flex items-center justify-between">
         {/* Logo Section */}
-        <Link to="/" className="flex items-center font-bold text-2xl text-white">
-          <img src="/lovable-uploads/89886ba9-5881-408e-93f3-d899470b94ad.png" alt="HOUSIE Logo" className="mr-2 h-8" />
-          HOUSIE
+        <Link to="/" className="flex items-center">
+          <img src="/lovable-uploads/89886ba9-5881-408e-93f3-d899470b94ad.png" alt="HOUSIE Logo" className="h-12" />
         </Link>
 
         {/* Mobile Menu Button */}

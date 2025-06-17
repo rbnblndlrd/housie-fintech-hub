@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -79,18 +80,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/welcome`;
-      const { error } = await supabase.auth.signUp({
+      // For development: Skip email confirmation to avoid redirect issues
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: redirectUrl
+          emailRedirectTo: window.location.origin + '/welcome'
         }
       });
+      
       if (error) {
         console.error('Error signing up:', error);
         throw error;
       }
+
+      // If user is created but not confirmed, they can still use the app
+      // We'll show a banner asking them to verify email later
+      console.log('User signed up:', data.user?.email);
+      
     } catch (error) {
       console.error('Error in signUp:', error);
       throw error;

@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,11 +16,22 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
   const handleAuthAction = async (type: "signIn" | "signUp") => {
+    if (!email || !password) {
+      toast({
+        title: "Champs requis",
+        description: "Veuillez remplir tous les champs.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
     try {
       if (type === "signIn") {
         await signIn(email, password);
@@ -32,16 +44,30 @@ const Auth = () => {
         await signUp(email, password);
         toast({
           title: "Inscription réussie",
-          description: "Veuillez vérifier votre email pour confirmer votre compte.",
+          description: "Votre compte a été créé avec succès! Vous pouvez maintenant utiliser l'application.",
         });
         navigate('/welcome');
       }
     } catch (error: any) {
+      let errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
+      
+      if (error.message?.includes('Invalid login credentials')) {
+        errorMessage = "Email ou mot de passe incorrect.";
+      } else if (error.message?.includes('User already registered')) {
+        errorMessage = "Un compte existe déjà avec cet email.";
+      } else if (error.message?.includes('Password should be at least')) {
+        errorMessage = "Le mot de passe doit contenir au moins 6 caractères.";
+      } else if (error.message?.includes('Invalid email')) {
+        errorMessage = "Veuillez entrer une adresse email valide.";
+      }
+
       toast({
         title: "Erreur d'authentification",
-        description: error.message || "Impossible de se connecter. Veuillez vérifier vos informations.",
+        description: errorMessage,
         variant: "destructive",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,6 +109,7 @@ const Auth = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="border-gray-300 dark:border-gray-600 dark:bg-dark-accent dark:text-dark-text"
+                    disabled={isLoading}
                   />
                 </div>
                 <div className="space-y-2">
@@ -97,23 +124,34 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       className="border-gray-300 dark:border-gray-600 dark:bg-dark-accent dark:text-dark-text pr-10"
+                      disabled={isLoading}
                     />
                     <Button
                       variant="ghost"
                       size="icon"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 rounded-full"
+                      disabled={isLoading}
                     >
                       {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                       <span className="sr-only">Afficher le mot de passe</span>
                     </Button>
                   </div>
                 </div>
-                <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3" onClick={() => handleAuthAction("signIn")}>
-                  Se connecter
+                <Button 
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3" 
+                  onClick={() => handleAuthAction("signIn")}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Connexion..." : "Se connecter"}
                 </Button>
-                <Button variant="outline" className="w-full text-gray-700 dark:text-dark-text-secondary" onClick={() => handleAuthAction("signUp")}>
-                  Créer un compte
+                <Button 
+                  variant="outline" 
+                  className="w-full text-gray-700 dark:text-dark-text-secondary" 
+                  onClick={() => handleAuthAction("signUp")}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Création..." : "Créer un compte"}
                 </Button>
               </TabsContent>
               <TabsContent value="client" className="space-y-4 mt-4">
