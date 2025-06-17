@@ -1,19 +1,9 @@
 
 import React from 'react';
-import { ChatBubble } from './chat/ChatBubble';
-import { NotificationBubbles } from './chat/NotificationBubbles';
-import { useEnhancedNotifications } from '@/hooks/useEnhancedNotifications';
+import { SimpleChatBubble } from './chat/SimpleChatBubble';
 
 export const ChatAssistant = () => {
-  // Initialize enhanced notification system
-  useEnhancedNotifications();
-
-  return (
-    <>
-      <ChatBubble />
-      <NotificationBubbles />
-    </>
-  );
+  return <SimpleChatBubble />;
 };
 
 export default ChatAssistant;
