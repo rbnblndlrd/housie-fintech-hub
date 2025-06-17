@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Services from "./pages/Services";
 import Dashboard from "./pages/Dashboard";
+import CustomerDashboard from "./pages/CustomerDashboard";
 import BookingSuccess from "./pages/BookingSuccess";
 import Welcome from "./pages/Welcome";
 import ProfileSetup from "./pages/ProfileSetup";
@@ -36,6 +37,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/services" element={<Services />} />
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/customer-dashboard" element={<CustomerDashboard />} />
               <Route path="/booking-success" element={<BookingSuccess />} />
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/profile-setup" element={<ProfileSetup />} />

@@ -69,6 +69,12 @@ const Header = () => {
                 Services
               </Link>
               <Link
+                to="/customer-dashboard"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+              >
+                Mon Tableau de Bord
+              </Link>
+              <Link
                 to="/calendar"
                 className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
@@ -78,7 +84,7 @@ const Header = () => {
                 to="/dashboard"
                 className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
-                Tableau de bord
+                Tableau de bord Pro
               </Link>
               <Link
                 to="/booking-management"
@@ -166,11 +172,14 @@ const Header = () => {
             <Link to="/services" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Services
             </Link>
+            <Link to="/customer-dashboard" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+              Mon Tableau de Bord
+            </Link>
             <Link to="/calendar" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Calendrier
             </Link>
             <Link to="/dashboard" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
-              Tableau de bord
+              Tableau de bord Pro
             </Link>
             <Link to="/booking-management" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Réservations
