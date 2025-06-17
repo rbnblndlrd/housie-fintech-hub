@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import Header from "@/components/Header";
 import BookingForm from "@/components/BookingForm";
 import SampleDataSeeder from "@/components/SampleDataSeeder";
 import ServiceCard from "@/components/ServiceCard";
@@ -239,103 +241,109 @@ const Services = () => {
 
   if (showBookingForm && selectedService) {
     return (
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
-        <BookingForm
-          service={selectedService}
-          provider={selectedService.provider}
-          onBookingComplete={handleBookingComplete}
-          onCancel={() => {
-            setShowBookingForm(false);
-            setSelectedService(null);
-          }}
-        />
-      </div>
+      <>
+        <Header />
+        <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+          <BookingForm
+            service={selectedService}
+            provider={selectedService.provider}
+            onBookingComplete={handleBookingComplete}
+            onCancel={() => {
+              setShowBookingForm(false);
+              setSelectedService(null);
+            }}
+          />
+        </div>
+      </>
     );
   }
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
-            Find Home Services
-          </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Connect with verified professionals in your area
-          </p>
-        </div>
-
-        {/* Search and Filters */}
-        <ServiceFilters
-          searchTerm={searchTerm}
-          selectedCategory={selectedCategory}
-          selectedLocation={selectedLocation}
-          onSearchChange={setSearchTerm}
-          onCategoryChange={setSelectedCategory}
-          onLocationChange={setSelectedLocation}
-        />
-
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Service Categories - Smaller sidebar */}
-          <div className="lg:col-span-1">
-            <ServiceCategories onCategorySelect={setSelectedCategory} />
-
-            {/* Interactive Google Map */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
-              <CardHeader>
-                <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Service Area Map</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <GoogleMap
-                  center={{ lat: 45.5017, lng: -73.5673 }}
-                  zoom={12}
-                  className="h-64 rounded-xl"
-                  providers={providers}
-                />
-              </CardContent>
-            </Card>
+    <>
+      <Header />
+      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+        <div className="container mx-auto px-4 py-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
+              Find Home Services
+            </h1>
+            <p className="text-xl text-gray-800 dark:text-gray-700 max-w-2xl mx-auto">
+              Connect with verified professionals in your area
+            </p>
           </div>
 
-          {/* Services Grid - Larger main content */}
-          <div className="lg:col-span-3">
-            {/* Sample Data Seeder - Show when no real services from DB */}
-            {!isLoading && services.length === fallbackServices.length && (
-              <SampleDataSeeder />
-            )}
+          {/* Search and Filters */}
+          <ServiceFilters
+            searchTerm={searchTerm}
+            selectedCategory={selectedCategory}
+            selectedLocation={selectedLocation}
+            onSearchChange={setSearchTerm}
+            onCategoryChange={setSelectedCategory}
+            onLocationChange={setSelectedLocation}
+          />
 
-            {isLoading ? (
-              <div className="text-center py-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-                <p className="mt-4 text-gray-600 dark:text-gray-300">Chargement des services...</p>
-              </div>
-            ) : filteredServices.length === 0 ? (
+          <div className="grid lg:grid-cols-4 gap-8">
+            {/* Service Categories - Smaller sidebar */}
+            <div className="lg:col-span-1">
+              <ServiceCategories onCategorySelect={setSelectedCategory} />
+
+              {/* Interactive Google Map */}
               <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
-                <CardContent className="p-12 text-center">
-                  <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
-                    <svg className="h-16 w-16 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Aucun service trouvé</h3>
-                  <p className="text-gray-600 mt-2">Essayez de modifier vos critères de recherche</p>
+                <CardHeader>
+                  <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Service Area Map</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <GoogleMap
+                    center={{ lat: 45.5017, lng: -73.5673 }}
+                    zoom={12}
+                    className="h-64 rounded-xl"
+                    providers={providers}
+                  />
                 </CardContent>
               </Card>
-            ) : (
-              <div className="space-y-6">
-                {filteredServices.map((service) => (
-                  <ServiceCard
-                    key={service.id}
-                    service={service}
-                    onBookNow={handleBookNow}
-                  />
-                ))}
-              </div>
-            )}
+            </div>
+
+            {/* Services Grid - Larger main content */}
+            <div className="lg:col-span-3">
+              {/* Sample Data Seeder - Show when no real services from DB */}
+              {!isLoading && services.length === fallbackServices.length && (
+                <SampleDataSeeder />
+              )}
+
+              {isLoading ? (
+                <div className="text-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
+                  <p className="mt-4 text-gray-800 dark:text-gray-700">Chargement des services...</p>
+                </div>
+              ) : filteredServices.length === 0 ? (
+                <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+                  <CardContent className="p-12 text-center">
+                    <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
+                      <svg className="h-16 w-16 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-800 mb-2">Aucun service trouvé</h3>
+                    <p className="text-gray-700 mt-2">Essayez de modifier vos critères de recherche</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-6">
+                  {filteredServices.map((service) => (
+                    <ServiceCard
+                      key={service.id}
+                      service={service}
+                      onBookNow={handleBookNow}
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
