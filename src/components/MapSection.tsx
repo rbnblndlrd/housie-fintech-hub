@@ -3,16 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ServiceCategories from "@/components/ServiceCategories";
 import { GoogleMap } from "@/components/GoogleMap";
-
-interface Provider {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  service: string;
-  rating: number;
-  availability: string;
-}
+import { Provider } from "@/types/service";
 
 interface MapSectionProps {
   onCategorySelect: (category: string) => void;

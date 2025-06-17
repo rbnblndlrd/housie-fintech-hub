@@ -2,16 +2,7 @@
 import React from 'react';
 import { GoogleMap as ReactGoogleMap, LoadScript, Marker, InfoWindow } from '@react-google-maps/api';
 import { useState } from 'react';
-
-interface Provider {
-  id: number;
-  name: string;
-  lat: number;
-  lng: number;
-  service: string;
-  rating: number;
-  availability: string;
-}
+import { Provider } from "@/types/service";
 
 interface GoogleMapProps {
   center: { lat: number; lng: number };

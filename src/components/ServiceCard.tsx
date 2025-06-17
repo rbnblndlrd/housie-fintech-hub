@@ -4,31 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, DollarSign, MapPin } from 'lucide-react';
-
-interface Service {
-  id: string;
-  title: string;
-  description: string;
-  base_price: number;
-  pricing_type: string;
-  category: string;
-  subcategory: string;
-  active: boolean;
-  provider: {
-    id: string;
-    business_name: string;
-    hourly_rate: number;
-    service_radius_km: number;
-    average_rating: number;
-    total_bookings: number;
-    verified: boolean;
-    user: {
-      full_name: string;
-      city: string;
-      province: string;
-    };
-  };
-}
+import { Service } from "@/types/service";
 
 interface ServiceCardProps {
   service: Service;
