@@ -1,0 +1,212 @@
+
+import React from 'react';
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  User, 
+  Phone, 
+  Mail, 
+  DollarSign,
+  CheckCircle,
+  XCircle,
+  RotateCcw,
+  PlayCircle
+} from 'lucide-react';
+
+interface BookingCardProps {
+  booking: {
+    id: string;
+    scheduled_date: string;
+    scheduled_time: string;
+    duration_hours: number;
+    total_amount: number;
+    service_address: string;
+    status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
+    payment_status: 'pending' | 'paid' | 'refunded';
+    customer: {
+      full_name: string;
+      phone: string;
+      email: string;
+    };
+    service: {
+      title: string;
+      category: string;
+    };
+  };
+  onUpdateStatus: (bookingId: string, status: string) => void;
+}
+
+const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) => {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-gradient-to-r from-yellow-400 to-orange-500';
+      case 'confirmed': return 'bg-gradient-to-r from-blue-500 to-blue-600';
+      case 'in_progress': return 'bg-gradient-to-r from-purple-500 to-purple-600';
+      case 'completed': return 'bg-gradient-to-r from-green-500 to-emerald-500';
+      case 'cancelled': return 'bg-gradient-to-r from-red-500 to-red-600';
+      default: return 'bg-gray-500';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'pending': return 'En Attente';
+      case 'confirmed': return 'Confirmée';
+      case 'in_progress': return 'En Cours';
+      case 'completed': return 'Terminée';
+      case 'cancelled': return 'Annulée';
+      default: return status;
+    }
+  };
+
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString('fr-FR', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  const formatTime = (time: string) => {
+    return time.slice(0, 5);
+  };
+
+  const getAvailableActions = () => {
+    switch (booking.status) {
+      case 'pending':
+        return [
+          { action: 'confirmed', label: 'Accepter', icon: CheckCircle, color: 'from-green-500 to-emerald-500' },
+          { action: 'cancelled', label: 'Décliner', icon: XCircle, color: 'from-red-500 to-red-600' }
+        ];
+      case 'confirmed':
+        return [
+          { action: 'in_progress', label: 'Commencer', icon: PlayCircle, color: 'from-purple-500 to-purple-600' },
+          { action: 'cancelled', label: 'Annuler', icon: XCircle, color: 'from-red-500 to-red-600' }
+        ];
+      case 'in_progress':
+        return [
+          { action: 'completed', label: 'Terminer', icon: CheckCircle, color: 'from-green-500 to-emerald-500' }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  return (
+    <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0 hover:shadow-xl transition-all duration-300">
+      <CardContent className="p-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left Section - Main Info */}
+          <div className="flex-1 space-y-4">
+            <div className="flex items-start justify-between">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-1">
+                  {booking.service.title}
+                </h3>
+                <Badge className={`${getStatusColor(booking.status)} text-white border-0`}>
+                  {getStatusText(booking.status)}
+                </Badge>
+              </div>
+              <div className="text-right">
+                <p className="text-2xl font-bold text-gray-900">
+                  ${Number(booking.total_amount).toFixed(0)}
+                </p>
+                <p className="text-sm text-gray-500">
+                  {booking.duration_hours}h de service
+                </p>
+              </div>
+            </div>
+
+            {/* Date & Time */}
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4 text-blue-500" />
+                <span className="text-sm font-medium text-gray-700">
+                  {formatDate(booking.scheduled_date)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="h-4 w-4 text-purple-500" />
+                <span className="text-sm font-medium text-gray-700">
+                  {formatTime(booking.scheduled_time)}
+                </span>
+              </div>
+            </div>
+
+            {/* Location */}
+            <div className="flex items-start gap-2">
+              <MapPin className="h-4 w-4 text-red-500 mt-0.5" />
+              <span className="text-sm text-gray-600">
+                {booking.service_address}
+              </span>
+            </div>
+
+            {/* Customer Info */}
+            <div className="bg-gray-50 rounded-xl p-4">
+              <h4 className="font-medium text-gray-900 mb-3">Informations Client</h4>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">{booking.customer.full_name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Phone className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">{booking.customer.phone}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-gray-500" />
+                  <span className="text-sm text-gray-700">{booking.customer.email}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Section - Actions */}
+          <div className="lg:w-64 space-y-3">
+            <h4 className="font-medium text-gray-900 mb-3">Actions</h4>
+            {getAvailableActions().map((actionItem) => (
+              <Button
+                key={actionItem.action}
+                onClick={() => onUpdateStatus(booking.id, actionItem.action)}
+                className={`w-full bg-gradient-to-r ${actionItem.color} hover:shadow-lg text-white border-0 rounded-xl py-3 transition-all duration-200`}
+              >
+                <actionItem.icon className="h-4 w-4 mr-2" />
+                {actionItem.label}
+              </Button>
+            ))}
+            
+            {booking.status !== 'cancelled' && booking.status !== 'completed' && (
+              <Button
+                variant="outline"
+                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl py-3"
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Reprogrammer
+              </Button>
+            )}
+
+            {/* Payment Status */}
+            <div className="mt-4 p-3 bg-blue-50 rounded-xl">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-gray-700">Paiement</span>
+                <Badge 
+                  variant={booking.payment_status === 'paid' ? 'default' : 'secondary'}
+                  className={booking.payment_status === 'paid' ? 'bg-green-500' : ''}
+                >
+                  {booking.payment_status === 'paid' ? 'Payé' : 'En attente'}
+                </Badge>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+export default BookingCard;
