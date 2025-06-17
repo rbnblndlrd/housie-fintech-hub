@@ -9,6 +9,89 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      ai_chat_sessions: {
+        Row: {
+          context_data: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_message_at: string | null
+          session_title: string | null
+          user_id: string
+        }
+        Insert: {
+          context_data?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          session_title?: string | null
+          user_id: string
+        }
+        Update: {
+          context_data?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          session_title?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_chat_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_messages: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          message_type: string
+          metadata: Json | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          message_type?: string
+          metadata?: Json | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "ai_chat_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ai_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           created_at: string | null
@@ -81,6 +164,137 @@ export type Database = {
             columns: ["service_id"]
             isOneToOne: false
             referencedRelation: "services"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          booking_id: string | null
+          content: string
+          conversation_id: string
+          created_at: string | null
+          file_name: string | null
+          file_size: number | null
+          file_url: string | null
+          id: string
+          is_ai_message: boolean | null
+          is_read: boolean | null
+          message_type: string
+          receiver_id: string
+          sender_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          content: string
+          conversation_id: string
+          created_at?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          is_ai_message?: boolean | null
+          is_read?: boolean | null
+          message_type?: string
+          receiver_id: string
+          sender_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          content?: string
+          conversation_id?: string
+          created_at?: string | null
+          file_name?: string | null
+          file_size?: number | null
+          file_url?: string | null
+          id?: string
+          is_ai_message?: boolean | null
+          is_read?: boolean | null
+          message_type?: string
+          receiver_id?: string
+          sender_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_receiver_id_fkey"
+            columns: ["receiver_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_message_at: string | null
+          last_message_id: string | null
+          participant_one_id: string
+          participant_two_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          last_message_id?: string | null
+          participant_one_id: string
+          participant_two_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_message_at?: string | null
+          last_message_id?: string | null
+          participant_one_id?: string
+          participant_two_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversations_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_participant_one_id_fkey"
+            columns: ["participant_one_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversations_participant_two_id_fkey"
+            columns: ["participant_two_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -470,6 +684,18 @@ export type Database = {
       cleanup_inactive_sessions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      get_or_create_conversation: {
+        Args: {
+          p_participant_one_id: string
+          p_participant_two_id: string
+          p_booking_id?: string
+        }
+        Returns: string
+      }
+      mark_messages_as_read: {
+        Args: { p_conversation_id: string; p_user_id: string }
+        Returns: number
       }
     }
     Enums: {

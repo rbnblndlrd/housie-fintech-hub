@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -25,6 +24,7 @@ import Notifications from "./pages/Notifications";
 import FAQ from "./pages/FAQ";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/AdminDashboard";
+import ChatAssistant from "@/components/ChatAssistant";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +57,8 @@ const App = () => (
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            {/* Add Chat System - Available on all authenticated pages */}
+            <ChatAssistant />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>
