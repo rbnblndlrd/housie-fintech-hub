@@ -118,6 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         hasUser: !!data.user,
         userEmail: data.user?.email,
         userId: data.user?.id,
+        emailConfirmed: data.user?.email_confirmed_at,
         error: error ? error.message : null
       });
       
@@ -133,7 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           id: data.user.id,
           email: data.user.email,
           full_name: fullName || '',
-          user_role: 'seeker', // Fixed: using user_role instead of current_role
+          user_role: 'seeker',
           can_provide: false,
           can_seek: true,
           subscription_tier: 'free',
@@ -146,7 +147,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             id: data.user.id,
             email: data.user.email,
             full_name: fullName || '',
-            user_role: 'seeker', // Fixed: using user_role instead of current_role
+            user_role: 'seeker',
             can_provide: false,
             can_seek: true,
             subscription_tier: 'free',
@@ -165,6 +166,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           console.log('✅ User profile created successfully');
         }
+      }
+
+      // Check if email confirmation is required
+      if (data.user && !data.user.email_confirmed_at) {
+        console.log('📧 Email confirmation required for user:', data.user.email);
+        console.log('💡 To disable email confirmation for development:');
+        console.log('   1. Go to Supabase Dashboard > Authentication > Settings');
+        console.log('   2. Turn OFF "Confirm email"');
+        console.log('   3. Or check your email for confirmation link');
+        
+        // Create a custom error to inform the user about email confirmation
+        const confirmationError = new Error('Email confirmation required. Please check your email or disable email confirmation in Supabase settings for development.');
+        confirmationError.name = 'EmailConfirmationRequired';
+        throw confirmationError;
       }
 
       console.log('✅ signUp process completed');

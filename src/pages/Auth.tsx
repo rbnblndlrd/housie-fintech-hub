@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,14 +74,26 @@ const Auth = () => {
       console.error('💥 Auth action failed:', error);
       let errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
       
-      if (error.message?.includes('Invalid login credentials')) {
+      if (error.name === 'EmailConfirmationRequired') {
+        errorMessage = "Inscription réussie! Veuillez confirmer votre email avant de vous connecter, ou désactivez la confirmation email dans les paramètres Supabase pour le développement.";
+        toast({
+          title: "Confirmation email requise",
+          description: errorMessage,
+          variant: "default", // Use default instead of destructive for this case
+        });
+        return; // Don't treat this as an error
+      } else if (error.message?.includes('Invalid login credentials')) {
         errorMessage = "Email ou mot de passe incorrect.";
+      } else if (error.message?.includes('Email not confirmed')) {
+        errorMessage = "Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte de réception.";
       } else if (error.message?.includes('User already registered')) {
         errorMessage = "Un compte existe déjà avec cet email.";
       } else if (error.message?.includes('Password should be at least')) {
         errorMessage = "Le mot de passe doit contenir au moins 6 caractères.";
       } else if (error.message?.includes('Invalid email')) {
         errorMessage = "Veuillez entrer une adresse email valide.";
+      } else if (error.message?.includes('over_email_send_rate_limit')) {
+        errorMessage = "Trop d'emails envoyés. Veuillez attendre quelques secondes avant de réessayer.";
       }
 
       toast({
