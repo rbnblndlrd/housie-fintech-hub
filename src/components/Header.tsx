@@ -63,6 +63,12 @@ const Header = () => {
                 Accueil
               </Link>
               <Link
+                to="/about"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+              >
+                À Propos
+              </Link>
+              <Link
                 to="/services"
                 className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
@@ -169,6 +175,9 @@ const Header = () => {
 
           {/* Mobile Menu */}
           <div className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-dark-primary border-b border-border py-4 px-6 flex flex-col space-y-3 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.2)] rounded-b-2xl ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+            <Link to="/about" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
+              À Propos
+            </Link>
             <Link to="/services" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Services
             </Link>

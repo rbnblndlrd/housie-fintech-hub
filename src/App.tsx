@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
+import About from "./pages/About";
 import Services from "./pages/Services";
 import Dashboard from "./pages/Dashboard";
 import CustomerDashboard from "./pages/CustomerDashboard";
@@ -36,6 +37,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/about" element={<About />} />
               <Route path="/services" element={<Services />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/customer-dashboard" element={<CustomerDashboard />} />
