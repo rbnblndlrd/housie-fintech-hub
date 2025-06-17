@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Moon, Sun } from "lucide-react";
-
 import { useAuth } from "@/contexts/AuthContext";
 import { User, LogOut } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -17,7 +16,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const { toast } = useToast();
 
-  async function handleSignOut() {
+  const handleSignOut = async () => {
     try {
       await signOut();
       toast({
@@ -35,7 +34,7 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black backdrop-blur-sm border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-b border-border">
       <div className="container mx-auto py-4 px-6 flex items-center justify-between">
         {/* Logo Section */}
         <Link to="/" className="flex items-center">
@@ -45,7 +44,7 @@ const Header = () => {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden text-white hover:text-gray-300 focus:outline-none"
+          className="md:hidden text-foreground hover:text-muted-foreground focus:outline-none"
         >
           <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -54,13 +53,13 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link to="/services" className="text-white hover:text-gray-300 font-medium">
+          <Link to="/services" className="text-foreground hover:text-muted-foreground font-medium">
             Services
           </Link>
-          <Link to="/roadmap" className="text-white hover:text-gray-300 font-medium">
+          <Link to="/roadmap" className="text-foreground hover:text-muted-foreground font-medium">
             Roadmap
           </Link>
-          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300 font-medium">
+          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-muted-foreground font-medium">
             Feature Requests
           </a>
         </div>
@@ -68,24 +67,24 @@ const Header = () => {
         {/* Desktop Navigation - Auth section */}
         <div className="hidden md:flex items-center space-x-4">
           {/* Theme Toggle */}
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-white hover:text-gray-300 hover:bg-gray-800">
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="text-foreground hover:text-muted-foreground">
             {isDark ? 
-              <Sun className="h-[1.2rem] w-[1.2rem] text-white" /> : 
-              <Moon className="h-[1.2rem] w-[1.2rem] text-white" />
+              <Sun className="h-[1.2rem] w-[1.2rem]" /> : 
+              <Moon className="h-[1.2rem] w-[1.2rem]" />
             }
             <span className="sr-only">Toggle theme</span>
           </Button>
           
           {user ? (
             <div className="flex items-center space-x-3">
-              <span className="text-sm text-white font-medium">
+              <span className="text-sm text-foreground font-medium">
                 Bonjour, {user.user_metadata?.full_name || user.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
-                className="flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium"
+                className="flex items-center gap-2 font-medium"
               >
                 <LogOut className="h-4 w-4" />
                 Déconnexion
@@ -94,7 +93,7 @@ const Header = () => {
           ) : (
             <div className="flex items-center space-x-2">
               <Link to="/auth">
-                <Button variant="outline" size="sm" className="flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium">
+                <Button variant="outline" size="sm" className="flex items-center gap-2 font-medium">
                   <User className="h-4 w-4" />
                   Connexion
                 </Button>
@@ -109,28 +108,28 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu */}
-        <div className={`md:hidden absolute top-full left-0 right-0 bg-black border-b border-gray-800 py-4 px-6 flex flex-col space-y-3 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-          <Link to="/services" className="text-white hover:text-gray-300 font-medium">
+        <div className={`md:hidden absolute top-full left-0 right-0 bg-background border-b border-border py-4 px-6 flex flex-col space-y-3 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+          <Link to="/services" className="text-foreground hover:text-muted-foreground font-medium">
             Services
           </Link>
-          <Link to="/roadmap" className="text-white hover:text-gray-300 font-medium">
+          <Link to="/roadmap" className="text-foreground hover:text-muted-foreground font-medium">
             Roadmap
           </Link>
-          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-white hover:text-gray-300 font-medium">
+          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-foreground hover:text-muted-foreground font-medium">
             Feature Requests
           </a>
           
           {/* Mobile Auth Section */}
           {user ? (
             <div className="flex flex-col items-start space-y-3">
-              <span className="text-sm text-white font-medium">
+              <span className="text-sm text-foreground font-medium">
                 Bonjour, {user.user_metadata?.full_name || user.email}
               </span>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={handleSignOut}
-                className="w-full justify-center flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium"
+                className="w-full justify-center flex items-center gap-2 font-medium"
               >
                 <LogOut className="h-4 w-4" />
                 Déconnexion
@@ -139,7 +138,7 @@ const Header = () => {
           ) : (
             <div className="flex flex-col items-start space-y-2">
               <Link to="/auth" className="w-full">
-                <Button variant="outline" size="sm" className="w-full justify-center flex items-center gap-2 border-white text-white hover:bg-white hover:text-black font-medium">
+                <Button variant="outline" size="sm" className="w-full justify-center flex items-center gap-2 font-medium">
                   <User className="h-4 w-4" />
                   Connexion
                 </Button>
