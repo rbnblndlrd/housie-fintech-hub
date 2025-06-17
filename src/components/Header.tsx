@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Moon, Sun } from "lucide-react";
@@ -11,11 +11,12 @@ import { useToast } from "@/hooks/use-toast";
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  const navigate = useNavigate();
   
   const { user, signOut } = useAuth();
   const { toast } = useToast();
 
-  const handleSignOut = async () => {
+  async function handleSignOut() {
     try {
       await signOut();
       toast({

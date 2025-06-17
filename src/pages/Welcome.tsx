@@ -1,10 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Search, User, ArrowRight, MapPin, Heart, Bell, UserCircle } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { Header } from "@/components/Header";
+import Header from "@/components/Header";
 
 export const Welcome = () => {
   const navigate = useNavigate();

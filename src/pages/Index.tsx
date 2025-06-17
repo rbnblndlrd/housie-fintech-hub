@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Search, MapPin, Star, MessageCircle, BarChart3, Shield, Clock, DollarSign, Users, Zap, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Header } from "@/components/Header";
+import Header from "@/components/Header";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { PricingSection } from "@/components/PricingSection";
 import { Link } from "react-router-dom";
