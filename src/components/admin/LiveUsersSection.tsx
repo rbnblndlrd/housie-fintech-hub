@@ -12,19 +12,19 @@ import { SessionTracker } from './SessionTracker';
 
 interface UserSession {
   id: string;
-  user_id: string;
+  user_id: string | null;
   session_token: string;
-  ip_address: string;
-  user_agent: string;
-  current_page: string;
-  city: string;
-  region: string;
-  country: string;
-  latitude: number;
-  longitude: number;
-  login_time: string;
-  last_activity: string;
-  is_active: boolean;
+  ip_address: string | null;
+  user_agent: string | null;
+  current_page: string | null;
+  city: string | null;
+  region: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  login_time: string | null;
+  last_activity: string | null;
+  is_active: boolean | null;
   user?: {
     full_name: string;
     email: string;
@@ -54,8 +54,15 @@ const LiveUsersSection = () => {
 
       if (error) throw error;
 
-      setSessions(data || []);
-      setTotalActiveUsers((data || []).length);
+      // Type the data properly
+      const typedSessions = (data || []).map(session => ({
+        ...session,
+        ip_address: session.ip_address ? String(session.ip_address) : null,
+        user: Array.isArray(session.users) ? session.users[0] : session.users
+      })) as UserSession[];
+
+      setSessions(typedSessions);
+      setTotalActiveUsers(typedSessions.length);
     } catch (error) {
       console.error('Error loading sessions:', error);
     } finally {
@@ -99,7 +106,7 @@ const LiveUsersSection = () => {
     };
   }, []);
 
-  const maskIpAddress = (ip: string) => {
+  const maskIpAddress = (ip: string | null) => {
     if (!ip) return 'Unknown';
     const parts = ip.split('.');
     if (parts.length === 4) {
@@ -108,7 +115,8 @@ const LiveUsersSection = () => {
     return ip.length > 8 ? `${ip.substring(0, 8)}...` : ip;
   };
 
-  const formatDuration = (loginTime: string) => {
+  const formatDuration = (loginTime: string | null) => {
+    if (!loginTime) return 'Unknown';
     const now = new Date();
     const login = new Date(loginTime);
     const diff = now.getTime() - login.getTime();
@@ -121,7 +129,9 @@ const LiveUsersSection = () => {
     return `${minutes}m`;
   };
 
-  const getActivityStatus = (lastActivity: string) => {
+  const getActivityStatus = (lastActivity: string | null) => {
+    if (!lastActivity) return { status: 'idle', label: 'Idle', color: 'bg-gray-500' };
+    
     const now = new Date();
     const activity = new Date(lastActivity);
     const diff = now.getTime() - activity.getTime();
@@ -218,7 +228,7 @@ const LiveUsersSection = () => {
         </Card>
       </div>
 
-      {/* Live Users Map */}
+      {/* Simplified Live Users Map */}
       <Card className="fintech-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-3 text-xl font-bold">

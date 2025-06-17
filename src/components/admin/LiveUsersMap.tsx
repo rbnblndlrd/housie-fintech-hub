@@ -3,10 +3,10 @@ import React, { useEffect, useRef } from 'react';
 
 interface UserSession {
   id: string;
-  city: string;
-  region: string;
-  latitude: number;
-  longitude: number;
+  city: string | null;
+  region: string | null;
+  latitude: number | null;
+  longitude: number | null;
   user?: {
     full_name: string;
     email: string;
@@ -24,7 +24,7 @@ export const LiveUsersMap: React.FC<LiveUsersMapProps> = ({ sessions }) => {
 
   // Initialize map
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || !window.google) return;
 
     // Quebec center coordinates
     const quebecCenter = { lat: 46.8139, lng: -71.2080 };
@@ -54,7 +54,7 @@ export const LiveUsersMap: React.FC<LiveUsersMapProps> = ({ sessions }) => {
 
   // Update markers when sessions change
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !window.google) return;
 
     // Clear existing markers
     markers.current.forEach(marker => marker.setMap(null));
@@ -65,7 +65,7 @@ export const LiveUsersMap: React.FC<LiveUsersMapProps> = ({ sessions }) => {
       .filter(session => session.latitude && session.longitude)
       .forEach(session => {
         const marker = new google.maps.Marker({
-          position: { lat: session.latitude, lng: session.longitude },
+          position: { lat: session.latitude!, lng: session.longitude! },
           map: map.current,
           title: `${session.user?.full_name || 'Utilisateur'} - ${session.city}`,
           icon: {
