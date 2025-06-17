@@ -1,227 +1,156 @@
-
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Menu, X, User, BarChart3, Calendar, Settings, LogOut, Moon, Sun } from "lucide-react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useAuth } from "@/hooks/useAuth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Moon, Sun } from "lucide-react";
 
-export const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [userRole, setUserRole] = useState<'seeker' | 'provider'>('seeker');
+import { useAuth } from "@/contexts/AuthContext";
+import { User, LogOut } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+
+const Header = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { isDark, toggleTheme } = useTheme();
+  
   const { user, signOut } = useAuth();
-
-  const switchRole = () => {
-    setUserRole(prev => prev === 'seeker' ? 'provider' : 'seeker');
-  };
+  const { toast } = useToast();
 
   const handleSignOut = async () => {
-    await signOut();
+    try {
+      await signOut();
+      toast({
+        title: "Déconnexion réussie",
+        description: "À bientôt sur HOUSIE!",
+      });
+      navigate('/');
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de vous déconnecter",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-orange-100 dark:border-gray-700 shadow-lg">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
-              <img 
-                src="/lovable-uploads/aff65f57-e3a9-4005-b373-1377467a60c8.png" 
-                alt="HOUSIE Logo" 
-                className="w-8 h-8 object-contain"
-              />
-            </div>
-            <div className="font-black text-2xl">
-              <span className="text-orange-500">HOUSIE</span>
-              <span className="text-purple-600">.ca</span>
-            </div>
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-dark-secondary/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+      <div className="container mx-auto py-4 px-6 flex items-center justify-between">
+        {/* Logo Section */}
+        <Link to="/" className="flex items-center font-bold text-2xl text-gray-800 dark:text-dark-text">
+          <img src="/housie-logo.svg" alt="HOUSIE Logo" className="mr-2 h-8" />
+          HOUSIE
+        </Link>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          className="md:hidden text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary focus:outline-none"
+        >
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center space-x-4">
+          <Link to="/services" className="text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary">
+            Services
           </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
-            <Link to="/services" className="text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium transition-colors">
-              Services
-            </Link>
-            <Link to="/roadmap" className="text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium transition-colors">
-              Roadmap
-            </Link>
-            <div className="text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium transition-colors cursor-pointer">
-              Support
+          <Link to="/roadmap" className="text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary">
+            Roadmap
+          </Link>
+          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary">
+            Feature Requests
+          </a>
+        </div>
+        
+        {/* Desktop Navigation - update the auth section */}
+        <div className="hidden md:flex items-center space-x-4">
+          {/* Theme Toggle */}
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            {isDark ? <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" /> : <Moon className="h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />}
+            <span className="sr-only">Toggle theme</span>
+          </Button>
+          
+          {user ? (
+            <div className="flex items-center space-x-3">
+              <span className="text-sm text-gray-700 dark:text-dark-text-secondary">
+                Bonjour, {user.user_metadata?.full_name || user.email}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSignOut}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Déconnexion
+              </Button>
             </div>
-            <div className="text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium transition-colors cursor-pointer">
-              Connexion
-            </div>
-            <div className="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-4 py-2 rounded-full text-sm font-bold">
-              HOUSIE Pro
-            </div>
-            <Link to="/dashboard" className="text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium transition-colors">
-              S'inscrire
-            </Link>
-          </nav>
-
-          {/* User Controls */}
-          <div className="hidden lg:flex items-center gap-4">
-            {/* Dark Mode Toggle */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={toggleTheme}
-              className="border-gray-300 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-500 rounded-xl"
-            >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-            </Button>
-
-            {user && (
-              <>
-                {/* Role Switcher */}
-                <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
-                  <Button
-                    variant={userRole === 'seeker' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setUserRole('seeker')}
-                    className={`rounded-lg font-medium ${
-                      userRole === 'seeker' 
-                        ? 'bg-orange-500 hover:bg-orange-600 text-white' 
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                    }`}
-                  >
-                    Client
-                  </Button>
-                  <Button
-                    variant={userRole === 'provider' ? 'default' : 'ghost'}
-                    size="sm"
-                    onClick={() => setUserRole('provider')}
-                    className={`rounded-lg font-medium ${
-                      userRole === 'provider' 
-                        ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200'
-                    }`}
-                  >
-                    Prestataire
-                  </Button>
-                </div>
-
-                {/* User Menu */}
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="border-2 border-orange-200 dark:border-gray-600 hover:border-orange-300 dark:hover:border-orange-500 rounded-xl">
-                      <User className="h-4 w-4 mr-2" />
-                      Mon Compte
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
-                    <div className="px-3 py-2">
-                      <p className="text-sm font-medium">Mode actuel:</p>
-                      <Badge className={`mt-1 ${
-                        userRole === 'seeker' 
-                          ? 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200' 
-                          : 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200'
-                      }`}>
-                        {userRole === 'seeker' ? '👤 Client' : '🔧 Prestataire'}
-                      </Badge>
-                    </div>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={switchRole} className="cursor-pointer">
-                      <User className="h-4 w-4 mr-2" />
-                      Changer de rôle
-                    </DropdownMenuItem>
-                    <Link to="/dashboard">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <BarChart3 className="h-4 w-4 mr-2" />
-                        Tableau de bord
-                      </DropdownMenuItem>
-                    </Link>
-                    <Link to="/calendar">
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Calendrier
-                      </DropdownMenuItem>
-                    </Link>
-                    <DropdownMenuItem className="cursor-pointer">
-                      <Settings className="h-4 w-4 mr-2" />
-                      Paramètres
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Se déconnecter
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </>
-            )}
-
-            {!user && (
+          ) : (
+            <div className="flex items-center space-x-2">
               <Link to="/auth">
-                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold px-6 py-2 rounded-xl shadow-lg">
-                  CONNEXION
+                <Button variant="outline" size="sm" className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Connexion
                 </Button>
               </Link>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2 text-gray-600 dark:text-gray-400 hover:text-orange-500"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+              <Link to="/auth">
+                <Button className="bg-purple-600 hover:bg-purple-700" size="sm">
+                  S'inscrire
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-orange-100 dark:border-gray-700">
-            <nav className="space-y-4">
-              <div className="flex justify-between items-center mb-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={toggleTheme}
-                  className="border-gray-300 dark:border-gray-600"
-                >
-                  {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        {/* Mobile Menu (Hidden by Default) */}
+        <div className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-dark-secondary border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex flex-col space-y-3 ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+          <Link to="/services" className="text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary">
+            Services
+          </Link>
+          <Link to="/roadmap" className="text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary">
+            Roadmap
+          </Link>
+          <a href="https://housie.canny.io/" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-dark-text hover:text-gray-800 dark:hover:text-dark-text-secondary">
+            Feature Requests
+          </a>
+          
+          {/* Mobile Auth Section */}
+          {user ? (
+            <div className="flex flex-col items-start space-y-3">
+              <span className="text-sm text-gray-700 dark:text-dark-text-secondary">
+                Bonjour, {user.user_metadata?.full_name || user.email}
+              </span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleSignOut}
+                className="w-full justify-center flex items-center gap-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Déconnexion
+              </Button>
+            </div>
+          ) : (
+            <div className="flex flex-col items-start space-y-2">
+              <Link to="/auth" className="w-full">
+                <Button variant="outline" size="sm" className="w-full justify-center flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  Connexion
                 </Button>
-              </div>
-              <Link to="/services" className="block text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium py-2">
-                Services
               </Link>
-              <Link to="/roadmap" className="block text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium py-2">
-                Roadmap
+              <Link to="/auth" className="w-full">
+                <Button className="bg-purple-600 hover:bg-purple-700 w-full justify-center" size="sm">
+                  S'inscrire
+                </Button>
               </Link>
-              <div className="block text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium py-2 cursor-pointer">
-                Support
-              </div>
-              <Link to="/dashboard" className="block text-gray-700 dark:text-gray-300 hover:text-orange-500 font-medium py-2">
-                Tableau de bord
-              </Link>
-              <div className="pt-4 border-t border-gray-200 dark:border-gray-600">
-                {user ? (
-                  <Button onClick={handleSignOut} className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl">
-                    SE DÉCONNECTER
-                  </Button>
-                ) : (
-                  <Link to="/auth">
-                    <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 rounded-xl">
-                      CONNEXION
-                    </Button>
-                  </Link>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
 };
+
+export default Header;
