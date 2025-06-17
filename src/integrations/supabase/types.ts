@@ -339,6 +339,63 @@ export type Database = {
           },
         ]
       }
+      user_sessions: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string | null
+          current_page: string | null
+          id: string
+          ip_address: unknown | null
+          is_active: boolean | null
+          last_activity: string | null
+          latitude: number | null
+          login_time: string | null
+          longitude: number | null
+          region: string | null
+          session_token: string
+          updated_at: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          current_page?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          latitude?: number | null
+          login_time?: string | null
+          longitude?: number | null
+          region?: string | null
+          session_token: string
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          current_page?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_active?: boolean | null
+          last_activity?: string | null
+          latitude?: number | null
+          login_time?: string | null
+          longitude?: number | null
+          region?: string | null
+          session_token?: string
+          updated_at?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           address: string | null
@@ -410,7 +467,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cleanup_inactive_sessions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

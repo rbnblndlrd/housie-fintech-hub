@@ -5,13 +5,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, Filter, Download, Search, Shield, AlertTriangle, Activity } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, Filter, Download, Search, Shield, AlertTriangle, Activity, Wifi } from 'lucide-react';
 import Header from '@/components/Header';
 import OverviewSection from '@/components/admin/OverviewSection';
 import UserManagementSection from '@/components/admin/UserManagementSection';
 import BookingAnalyticsSection from '@/components/admin/BookingAnalyticsSection';
 import FinancialInsightsSection from '@/components/admin/FinancialInsightsSection';
 import PlatformHealthSection from '@/components/admin/PlatformHealthSection';
+import LiveUsersSection from '@/components/admin/LiveUsersSection';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -48,12 +49,19 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-5 h-14 bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
+            <TabsList className="grid w-full grid-cols-6 h-14 bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100">
               <TabsTrigger 
                 value="overview" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
               >
                 Vue Générale
+              </TabsTrigger>
+              <TabsTrigger 
+                value="live-users" 
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
+              >
+                <Wifi className="h-4 w-4 mr-1" />
+                Utilisateurs Live
               </TabsTrigger>
               <TabsTrigger 
                 value="users" 
@@ -83,6 +91,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="overview" className="space-y-8">
               <OverviewSection />
+            </TabsContent>
+
+            <TabsContent value="live-users" className="space-y-8">
+              <LiveUsersSection />
             </TabsContent>
 
             <TabsContent value="users" className="space-y-8">
