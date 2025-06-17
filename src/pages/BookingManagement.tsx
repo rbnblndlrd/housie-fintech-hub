@@ -93,8 +93,14 @@ const BookingManagement = () => {
           variant: "destructive",
         });
       } else {
-        setBookings(data || []);
-        setFilteredBookings(data || []);
+        // Type assertion to fix the TypeScript error
+        const typedBookings = (data || []).map(booking => ({
+          ...booking,
+          status: booking.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
+          payment_status: booking.payment_status as 'pending' | 'paid' | 'refunded'
+        }));
+        setBookings(typedBookings);
+        setFilteredBookings(typedBookings);
       }
     } catch (error) {
       console.error('Error:', error);
@@ -178,15 +184,15 @@ const BookingManagement = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
         <Header />
         <div className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-8 bg-white/60 rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
               <div className="grid md:grid-cols-4 gap-6">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-32 bg-gray-200 rounded-2xl"></div>
+                  <div key={i} className="h-32 bg-white/60 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
                 ))}
               </div>
             </div>
@@ -197,7 +203,7 @@ const BookingManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
@@ -212,57 +218,57 @@ const BookingManagement = () => {
 
           {/* Stats Cards */}
           <div className="grid md:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                     <Calendar className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Total Réservations</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.total}</p>
+                    <p className="text-sm text-blue-100">Total Réservations</p>
+                    <p className="text-2xl font-bold text-white">{stats.total}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+            <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-xl">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                     <Clock className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">En Attente</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.pending}</p>
+                    <p className="text-sm text-orange-100">En Attente</p>
+                    <p className="text-2xl font-bold text-white">{stats.pending}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+            <Card className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-gradient-to-r from-green-500 to-emerald-500 rounded-xl">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                     <TrendingUp className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Confirmées</p>
-                    <p className="text-2xl font-bold text-gray-900">{stats.confirmed}</p>
+                    <p className="text-sm text-emerald-100">Confirmées</p>
+                    <p className="text-2xl font-bold text-white">{stats.confirmed}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl">
+                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
                     <DollarSign className="h-6 w-6 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600">Revenus</p>
-                    <p className="text-2xl font-bold text-gray-900">${stats.totalRevenue.toFixed(0)}</p>
+                    <p className="text-sm text-purple-100">Revenus</p>
+                    <p className="text-2xl font-bold text-white">${stats.totalRevenue.toFixed(0)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -280,13 +286,15 @@ const BookingManagement = () => {
           {/* Bookings List */}
           <div className="space-y-6">
             {filteredBookings.length === 0 ? (
-              <Card className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border-0">
+              <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
                 <CardContent className="p-12 text-center">
-                  <Calendar className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-gray-600 mb-2">
+                  <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
+                    <Calendar className="h-16 w-16 text-white mx-auto" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     Aucune réservation trouvée
                   </h3>
-                  <p className="text-gray-500">
+                  <p className="text-gray-600">
                     {statusFilter !== 'all' || dateFilter !== 'all' 
                       ? 'Essayez de modifier vos filtres.' 
                       : 'Vos nouvelles réservations apparaîtront ici.'}

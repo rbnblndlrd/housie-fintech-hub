@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { supabase } from "@/integrations/supabase/client";
@@ -240,7 +239,7 @@ const Services = () => {
 
   if (showBookingForm && selectedService) {
     return (
-      <div className="min-h-screen pt-20 bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
         <BookingForm
           service={selectedService}
           provider={selectedService.provider}
@@ -255,11 +254,11 @@ const Services = () => {
   }
 
   return (
-    <div className="min-h-screen pt-20 bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-darker">
+    <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
             Find Home Services
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -283,15 +282,15 @@ const Services = () => {
             <ServiceCategories onCategorySelect={setSelectedCategory} />
 
             {/* Interactive Google Map */}
-            <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700">
+            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
               <CardHeader>
-                <CardTitle className="dark:text-dark-text text-lg">Service Area Map</CardTitle>
+                <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Service Area Map</CardTitle>
               </CardHeader>
               <CardContent>
                 <GoogleMap
                   center={{ lat: 45.5017, lng: -73.5673 }}
                   zoom={12}
-                  className="h-64"
+                  className="h-64 rounded-xl"
                   providers={providers}
                 />
               </CardContent>
@@ -311,10 +310,17 @@ const Services = () => {
                 <p className="mt-4 text-gray-600 dark:text-gray-300">Chargement des services...</p>
               </div>
             ) : filteredServices.length === 0 ? (
-              <div className="text-center py-12">
-                <p className="text-gray-600 dark:text-gray-300 text-lg">Aucun service trouvé</p>
-                <p className="text-gray-500 dark:text-gray-400 mt-2">Essayez de modifier vos critères de recherche</p>
-              </div>
+              <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+                <CardContent className="p-12 text-center">
+                  <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
+                    <svg className="h-16 w-16 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Aucun service trouvé</h3>
+                  <p className="text-gray-600 mt-2">Essayez de modifier vos critères de recherche</p>
+                </CardContent>
+              </Card>
             ) : (
               <div className="space-y-6">
                 {filteredServices.map((service) => (

@@ -98,7 +98,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
   };
 
   return (
-    <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg border-0 hover:shadow-xl transition-all duration-300">
+    <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Section - Main Info */}
@@ -108,7 +108,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
                 <h3 className="text-xl font-semibold text-gray-900 mb-1">
                   {booking.service.title}
                 </h3>
-                <Badge className={`${getStatusColor(booking.status)} text-white border-0`}>
+                <Badge className={`${getStatusColor(booking.status)} text-white border-0 shadow-md`}>
                   {getStatusText(booking.status)}
                 </Badge>
               </div>
@@ -125,13 +125,17 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
             {/* Date & Time */}
             <div className="flex flex-wrap gap-4">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-blue-500" />
+                <div className="p-1.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
+                  <Calendar className="h-4 w-4 text-white" />
+                </div>
                 <span className="text-sm font-medium text-gray-700">
                   {formatDate(booking.scheduled_date)}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Clock className="h-4 w-4 text-purple-500" />
+                <div className="p-1.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg">
+                  <Clock className="h-4 w-4 text-white" />
+                </div>
                 <span className="text-sm font-medium text-gray-700">
                   {formatTime(booking.scheduled_time)}
                 </span>
@@ -140,14 +144,16 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
 
             {/* Location */}
             <div className="flex items-start gap-2">
-              <MapPin className="h-4 w-4 text-red-500 mt-0.5" />
+              <div className="p-1.5 bg-gradient-to-r from-red-500 to-red-600 rounded-lg">
+                <MapPin className="h-4 w-4 text-white" />
+              </div>
               <span className="text-sm text-gray-600">
                 {booking.service_address}
               </span>
             </div>
 
             {/* Customer Info */}
-            <div className="bg-gray-50 rounded-xl p-4">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-4 shadow-inner">
               <h4 className="font-medium text-gray-900 mb-3">Informations Client</h4>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
@@ -173,7 +179,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
               <Button
                 key={actionItem.action}
                 onClick={() => onUpdateStatus(booking.id, actionItem.action)}
-                className={`w-full bg-gradient-to-r ${actionItem.color} hover:shadow-lg text-white border-0 rounded-xl py-3 transition-all duration-200`}
+                className={`w-full bg-gradient-to-r ${actionItem.color} hover:shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] text-white border-0 rounded-xl py-3 transition-all duration-200 hover:-translate-y-0.5`}
               >
                 <actionItem.icon className="h-4 w-4 mr-2" />
                 {actionItem.label}
@@ -183,7 +189,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
             {booking.status !== 'cancelled' && booking.status !== 'completed' && (
               <Button
                 variant="outline"
-                className="w-full border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl py-3"
+                className="w-full border-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-xl py-3 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_15px_-2px_rgba(0,0,0,0.15)] transition-all duration-200"
               >
                 <RotateCcw className="h-4 w-4 mr-2" />
                 Reprogrammer
@@ -191,12 +197,12 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
             )}
 
             {/* Payment Status */}
-            <div className="mt-4 p-3 bg-blue-50 rounded-xl">
+            <div className="mt-4 p-3 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl shadow-inner">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">Paiement</span>
                 <Badge 
                   variant={booking.payment_status === 'paid' ? 'default' : 'secondary'}
-                  className={booking.payment_status === 'paid' ? 'bg-green-500' : ''}
+                  className={`${booking.payment_status === 'paid' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : 'bg-gray-200 text-gray-700'} shadow-sm`}
                 >
                   {booking.payment_status === 'paid' ? 'Payé' : 'En attente'}
                 </Badge>

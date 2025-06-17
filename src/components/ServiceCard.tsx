@@ -37,23 +37,23 @@ interface ServiceCardProps {
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBookNow }) => {
   return (
-    <Card className="bg-white dark:bg-dark-secondary shadow-lg hover:shadow-xl transition-shadow border dark:border-gray-700">
+    <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-start gap-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl shrink-0">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)]">
             {service.provider.business_name.split(' ').map(n => n[0]).join('')}
           </div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="text-xl font-bold text-black dark:text-white mb-1">{service.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400 font-medium">{service.provider.business_name}</p>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{service.title}</h3>
+                <p className="text-gray-600 font-medium">{service.provider.business_name}</p>
               </div>
               <div className="flex items-center gap-2">
                 <Badge 
                   variant={service.provider.verified ? 'default' : 'secondary'}
-                  className={service.provider.verified ? 'bg-green-500' : 'bg-gray-500'}
+                  className={`${service.provider.verified ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-xl shadow-sm`}
                 >
                   {service.provider.verified ? 'Vérifié' : 'Non vérifié'}
                 </Badge>
@@ -62,14 +62,18 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBookNow }) => {
 
             <div className="flex items-center gap-6 mb-4">
               <div className="flex items-center gap-1">
-                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                <span className="font-medium text-black dark:text-white">{service.provider.average_rating.toFixed(1)}</span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">({service.provider.total_bookings} avis)</span>
+                <div className="p-1 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg">
+                  <Star className="h-4 w-4 text-white" />
+                </div>
+                <span className="font-medium text-gray-900">{service.provider.average_rating.toFixed(1)}</span>
+                <span className="text-gray-500 text-sm">({service.provider.total_bookings} avis)</span>
               </div>
               
               <div className="flex items-center gap-1">
-                <DollarSign className="h-4 w-4 text-green-600" />
-                <span className="font-medium text-black dark:text-white">
+                <div className="p-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
+                  <DollarSign className="h-4 w-4 text-white" />
+                </div>
+                <span className="font-medium text-gray-900">
                   {service.pricing_type === 'hourly' 
                     ? `${service.provider.hourly_rate || service.base_price}$/heure`
                     : `${service.base_price}$`
@@ -78,23 +82,25 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBookNow }) => {
               </div>
               
               <div className="flex items-center gap-1">
-                <MapPin className="h-4 w-4 text-gray-500 dark:text-gray-400" />
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
+                <div className="p-1 bg-gradient-to-r from-red-500 to-red-600 rounded-lg">
+                  <MapPin className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-gray-500 text-sm">
                   {service.provider.user.city}, {service.provider.user.province}
                 </span>
               </div>
             </div>
 
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
               {service.description}
             </p>
 
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-sm text-gray-500">
                 <span className="font-medium">Tarification réelle + 6% frais HOUSIE</span>
               </div>
               <Button 
-                className="bg-purple-600 hover:bg-purple-700 px-6"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200"
                 onClick={() => onBookNow(service)}
               >
                 Book Now
