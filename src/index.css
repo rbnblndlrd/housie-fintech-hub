@@ -88,7 +88,7 @@
     /* HOUSIE Gradient Background for Light Mode */
     background: linear-gradient(135deg, #fef7cd 0%, #fed7aa 25%, #fdba74 50%, #fb923c 75%, #f97316 100%);
     /* Force dark text on light background */
-    color: #1a1a1a !important;
+    color: #111827 !important;
   }
 
   .dark body {
@@ -97,40 +97,84 @@
     color: #ffffff !important;
   }
 
-  /* Force dark text colors for light mode - using direct colors to avoid circular dependencies */
+  /* COMPREHENSIVE TEXT COLOR FIXES FOR LIGHT MODE */
+  /* All text elements should be dark on yellow gradient */
   h1, h2, h3, h4, h5, h6 {
-    color: #111827 !important; /* gray-900 equivalent */
+    color: #111827 !important; /* Very dark gray */
   }
 
-  p, span, div {
-    color: #1f2937 !important; /* gray-800 equivalent */
+  p, span, div, li, a, label, td, th {
+    color: #1f2937 !important; /* Dark gray */
   }
 
-  /* Specific text color overrides for light mode */
-  .text-gray-600 {
-    color: #374151 !important; /* gray-700 equivalent */
+  /* Override all text utility classes to be dark */
+  .text-white {
+    color: #111827 !important; /* Override white text to dark */
   }
 
-  .text-gray-500 {
-    color: #4b5563 !important; /* gray-600 equivalent */
-  }
-
+  .text-gray-100,
+  .text-gray-200,
+  .text-gray-300,
   .text-gray-400 {
-    color: #6b7280 !important; /* gray-500 equivalent */
+    color: #374151 !important; /* Medium dark gray */
+  }
+
+  .text-gray-500,
+  .text-gray-600 {
+    color: #4b5563 !important; /* Darker gray */
+  }
+
+  .text-gray-700,
+  .text-gray-800,
+  .text-gray-900 {
+    color: #111827 !important; /* Very dark gray */
   }
 
   .text-muted-foreground {
-    color: #4b5563 !important; /* gray-600 equivalent */
+    color: #4b5563 !important; /* Ensure muted text is still readable */
   }
 
-  /* Button text should be visible */
+  .text-foreground {
+    color: #111827 !important; /* Dark foreground */
+  }
+
+  /* Button text fixes */
   button {
-    color: inherit;
+    color: #111827 !important;
   }
 
-  /* Card content should be dark */
-  .card p, .card span, .card div {
+  button:not(.bg-gradient-to-r):not(.bg-blue-600):not(.bg-purple-600) {
+    color: #111827 !important;
+  }
+
+  /* Keep gradient button text white */
+  .bg-gradient-to-r button,
+  .bg-blue-600 button,
+  .bg-purple-600 button,
+  button.bg-gradient-to-r,
+  button.bg-blue-600,
+  button.bg-purple-600 {
+    color: #ffffff !important;
+  }
+
+  /* Card content text */
+  .card p, .card span, .card div, .card h1, .card h2, .card h3, .card h4, .card h5, .card h6 {
     color: #1f2937 !important;
+  }
+
+  /* Navigation text */
+  nav a, nav span, nav div {
+    color: #111827 !important;
+  }
+
+  /* Form input text */
+  input, textarea, select {
+    color: #111827 !important;
+  }
+
+  /* Table text */
+  table, table td, table th {
+    color: #111827 !important;
   }
 
   /* HOUSIE Specific Styles */
@@ -165,7 +209,7 @@
     filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.4));
   }
 
-  /* Dark mode text contrast fixes */
+  /* Dark mode text styles - keep existing */
   .dark h1,
   .dark h2,
   .dark h3,
@@ -177,16 +221,21 @@
 
   .dark p,
   .dark span,
-  .dark div {
-    color: #f3f4f6 !important; /* gray-100 equivalent */
+  .dark div,
+  .dark li,
+  .dark a,
+  .dark label,
+  .dark td,
+  .dark th {
+    color: #f3f4f6 !important;
   }
 
   .dark .text-gray-600 {
-    color: #d1d5db !important; /* gray-300 equivalent */
+    color: #d1d5db !important;
   }
 
   .dark .text-gray-500 {
-    color: #9ca3af !important; /* gray-400 equivalent */
+    color: #9ca3af !important;
   }
 
   .dark .text-gray-900 {
@@ -194,10 +243,14 @@
   }
 
   .dark .text-muted-foreground {
-    color: #d1d5db !important; /* gray-300 equivalent */
+    color: #d1d5db !important;
   }
 
-  /* Input and form field fixes */
+  .dark .text-white {
+    color: #ffffff !important;
+  }
+
+  /* Dark mode input and form field fixes */
   .dark input,
   .dark textarea,
   .dark select {
@@ -210,9 +263,9 @@
     @apply border-purple-500 ring-purple-500;
   }
 
-  /* Button contrast fixes */
+  /* Dark mode button fixes */
   .dark button {
-    @apply text-white;
+    color: #ffffff !important;
   }
 
   .dark .bg-gray-50 {
@@ -247,7 +300,7 @@
     @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
   }
 
-  /* Dark mode specific component fixes */
+  /* Dark mode component fixes */
   .dark .card {
     @apply bg-gray-800 border-gray-700 text-white;
   }
