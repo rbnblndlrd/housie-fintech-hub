@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,8 +20,27 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
+  // Simple test function to check basic functionality
+  const handleTestButton = () => {
+    console.log('🧪 Test button clicked!');
+    console.log('📧 Email state:', email);
+    console.log('🔐 Password state:', password);
+    console.log('📱 Active tab:', activeTab);
+    console.log('⚙️ Loading state:', isLoading);
+    
+    toast({
+      title: "Test successful!",
+      description: "Basic functionality is working. Check console for details.",
+    });
+  };
+
   const handleAuthAction = async (type: "signIn" | "signUp") => {
+    console.log('🎬 handleAuthAction called with type:', type);
+    console.log('📧 Email:', email);
+    console.log('🔐 Password length:', password.length);
+    
     if (!email || !password) {
+      console.log('⚠️ Missing required fields');
       toast({
         title: "Champs requis",
         description: "Veuillez remplir tous les champs.",
@@ -31,9 +49,11 @@ const Auth = () => {
       return;
     }
 
+    console.log('🚦 Starting auth process...');
     setIsLoading(true);
     try {
       if (type === "signIn") {
+        console.log('🔑 Attempting sign in...');
         await signIn(email, password);
         toast({
           title: "Connexion réussie",
@@ -41,6 +61,7 @@ const Auth = () => {
         });
         navigate('/dashboard');
       } else {
+        console.log('📝 Attempting sign up...');
         await signUp(email, password);
         toast({
           title: "Inscription réussie",
@@ -49,6 +70,7 @@ const Auth = () => {
         navigate('/welcome');
       }
     } catch (error: any) {
+      console.error('💥 Auth action failed:', error);
       let errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
       
       if (error.message?.includes('Invalid login credentials')) {
@@ -68,6 +90,7 @@ const Auth = () => {
       });
     } finally {
       setIsLoading(false);
+      console.log('🏁 Auth process completed');
     }
   };
 
@@ -86,6 +109,17 @@ const Auth = () => {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-8">
+            {/* Debug Test Button */}
+            <div className="mb-4">
+              <Button 
+                onClick={handleTestButton}
+                variant="outline"
+                className="w-full border-2 border-blue-500 text-blue-600 hover:bg-blue-50"
+              >
+                🧪 Test Basic Functionality
+              </Button>
+            </div>
+            
             <Tabs defaultValue="freelancer" className="w-full" onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="freelancer" className="text-gray-700 dark:text-dark-text-secondary data-[state=active]:bg-gray-100 dark:data-[state=active]:bg-dark-accent">
