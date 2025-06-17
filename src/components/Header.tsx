@@ -40,7 +40,7 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo Section */}
           <Link to="/" className="flex items-center">
-            <img src="/lovable-uploads/89886ba9-5881-408e-93f3-d899470b94ad.png" alt="HOUSIE Logo" className="h-16" />
+            <img src="/lovable-uploads/89886ba9-5881-408e-93f3-d899470b94ad.png" alt="HOUSIE Logo" className="h-12" />
           </Link>
 
           {/* Mobile Menu Button */}
@@ -55,60 +55,60 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-4">
+            <div className="ml-10 flex items-baseline space-x-2">
               <Link
                 to="/"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
                 Accueil
               </Link>
               <Link
                 to="/about"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
                 À Propos
               </Link>
               <Link
                 to="/services"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
                 Services
               </Link>
               <Link
                 to="/customer-dashboard"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
-                Mon Tableau de Bord
+                Client
               </Link>
               <Link
                 to="/calendar"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
                 Calendrier
               </Link>
               <Link
                 to="/dashboard"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
-                Tableau de bord Pro
+                Pro
               </Link>
               <Link
                 to="/booking-management"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
                 Réservations
               </Link>
               <Link
                 to="/analytics"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
                 Analytics
               </Link>
               <Link
                 to="/notifications"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-2 py-2 rounded-xl text-sm font-medium transition-all duration-200"
               >
-                Notifications
+                Notifs
               </Link>
             </div>
           </div>
@@ -182,13 +182,13 @@ const Header = () => {
               Services
             </Link>
             <Link to="/customer-dashboard" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
-              Mon Tableau de Bord
+              Client
             </Link>
             <Link to="/calendar" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Calendrier
             </Link>
             <Link to="/dashboard" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
-              Tableau de bord Pro
+              Pro
             </Link>
             <Link to="/booking-management" className="text-foreground hover:text-muted-foreground font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all duration-200">
               Réservations
