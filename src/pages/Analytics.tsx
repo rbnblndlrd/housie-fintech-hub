@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -267,16 +266,10 @@ const Analytics = () => {
                     <Line 
                       type="monotone" 
                       dataKey="revenue" 
-                      stroke="url(#revenueGradient)" 
+                      stroke="#3B82F6" 
                       strokeWidth={3}
                       dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
                     />
-                    <defs>
-                      <linearGradient id="revenueGradient" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="#3B82F6" />
-                        <stop offset="100%" stopColor="#8B5CF6" />
-                      </linearGradient>
-                    </defs>
                   </LineChart>
                 </ChartContainer>
               </CardContent>
@@ -292,27 +285,16 @@ const Analytics = () => {
               </CardHeader>
               <CardContent className="p-6 pt-0">
                 <div className="h-80 flex items-center justify-center">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RechartsPieChart>
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <RechartsPieChart data={pieData}>
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </RechartsPieChart>
-                    </RechartsPieChart>
-                  </ResponsiveContainer>
-                </div>
-                <div className="mt-4 space-y-2">
-                  {pieData.map((item, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                        <span className="text-sm text-gray-700">{item.name}</span>
-                      </div>
-                      <span className="text-sm font-semibold text-gray-900">{item.value}%</span>
+                  <div className="space-y-4">
+                    <div className="text-center">
+                      <div className="text-6xl font-bold text-blue-600 mb-2">85%</div>
+                      <div className="text-sm text-gray-600">Vos Revenus</div>
                     </div>
-                  ))}
+                    <div className="text-center">
+                      <div className="text-4xl font-bold text-orange-600 mb-2">15%</div>
+                      <div className="text-sm text-gray-600">Frais HOUSIE</div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
