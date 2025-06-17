@@ -8,7 +8,7 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -78,14 +78,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string) => {
+  const signUp = async (email: string, password: string, fullName?: string) => {
     try {
-      // For development: Skip email confirmation to avoid redirect issues
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin + '/welcome'
+          emailRedirectTo: window.location.origin + '/welcome',
+          data: {
+            full_name: fullName
+          }
         }
       });
       
@@ -94,8 +96,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
 
-      // If user is created but not confirmed, they can still use the app
-      // We'll show a banner asking them to verify email later
+      // Create user profile in your custom users table
+      if (data.user) {
+        const { error: profileError } = await supabase
+          .from('users')
+          .insert({
+            id: data.user.id,
+            email: data.user.email,
+            full_name: fullName || '',
+            current_role: 'seeker',
+            can_provide: false,
+            can_seek: true,
+            subscription_tier: 'free',
+            subscription_status: 'active'
+          });
+
+        if (profileError) {
+          console.error('Error creating user profile:', profileError);
+        }
+      }
+
       console.log('User signed up:', data.user?.email);
       
     } catch (error) {
