@@ -3,15 +3,18 @@ import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Slider } from "@/components/ui/slider";
 import { Search, Filter } from 'lucide-react';
 
 interface ServiceFiltersProps {
   searchTerm: string;
   selectedCategory: string;
   selectedLocation: string;
+  priceRange: [number, number];
   onSearchChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
   onLocationChange: (value: string) => void;
+  onPriceRangeChange: (value: [number, number]) => void;
 }
 
 const categories = [
@@ -27,13 +30,15 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   searchTerm,
   selectedCategory,
   selectedLocation,
+  priceRange,
   onSearchChange,
   onCategoryChange,
-  onLocationChange
+  onLocationChange,
+  onPriceRangeChange
 }) => {
   return (
     <div className="bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-lg mb-8 border dark:border-gray-700">
-      <div className="grid md:grid-cols-4 gap-4">
+      <div className="grid md:grid-cols-5 gap-4">
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
@@ -63,6 +68,19 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
             <SelectItem value="vancouver">Vancouver, BC</SelectItem>
           </SelectContent>
         </Select>
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            Price Range: ${priceRange[0]} - ${priceRange[1]}
+          </label>
+          <Slider
+            value={priceRange}
+            onValueChange={onPriceRangeChange}
+            max={200}
+            min={10}
+            step={5}
+            className="w-full"
+          />
+        </div>
         <Button className="bg-orange-500 hover:bg-orange-600">
           <Filter className="h-4 w-4 mr-2" />
           Apply Filters

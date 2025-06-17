@@ -56,6 +56,7 @@ const Services = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedLocation, setSelectedLocation] = useState("montreal");
+  const [priceRange, setPriceRange] = useState<[number, number]>([10, 200]);
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
@@ -236,7 +237,10 @@ const Services = () => {
     
     const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
     
-    return matchesSearch && matchesCategory;
+    const servicePrice = service.pricing_type === 'hourly' ? service.provider.hourly_rate : service.base_price;
+    const matchesPrice = servicePrice >= priceRange[0] && servicePrice <= priceRange[1];
+    
+    return matchesSearch && matchesCategory && matchesPrice;
   });
 
   if (showBookingForm && selectedService) {
@@ -278,9 +282,11 @@ const Services = () => {
             searchTerm={searchTerm}
             selectedCategory={selectedCategory}
             selectedLocation={selectedLocation}
+            priceRange={priceRange}
             onSearchChange={setSearchTerm}
             onCategoryChange={setSelectedCategory}
             onLocationChange={setSelectedLocation}
+            onPriceRangeChange={setPriceRange}
           />
 
           <div className="grid lg:grid-cols-4 gap-8">
