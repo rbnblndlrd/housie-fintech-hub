@@ -36,11 +36,11 @@ const Index = () => {
   ];
 
   const serviceCategories = [
-    { name: "Ménage Résidentiel", icon: "🏠", color: "bg-orange-100 text-orange-800" },
-    { name: "Entretien Paysager", icon: "🌿", color: "bg-green-100 text-green-800" },
-    { name: "Construction & Réno", icon: "🔨", color: "bg-blue-100 text-blue-800" },
-    { name: "Soins Personnels", icon: "💆‍♀️", color: "bg-purple-100 text-purple-800" },
-    { name: "Soins d'Animaux", icon: "🐕", color: "bg-pink-100 text-pink-800" }
+    { name: "Ménage Résidentiel", icon: "🏠", color: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
+    { name: "Entretien Paysager", icon: "🌿", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
+    { name: "Construction & Réno", icon: "🔨", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
+    { name: "Soins Personnels", icon: "💆‍♀️", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
+    { name: "Soins d'Animaux", icon: "🐕", color: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200" }
   ];
 
   const trustIndicators = [
@@ -51,7 +51,7 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-dark-accent">
       <Header />
       
       {/* Hero Section with Pop Art Style */}
@@ -71,13 +71,13 @@ const Index = () => {
                   </Badge>
                 </div>
                 
-                <h1 className="text-6xl font-black text-gray-900 leading-tight">
+                <h1 className="text-6xl font-black text-gray-900 dark:text-dark-text leading-tight">
                   Le <span className="text-orange-500">Facebook</span><br />
                   des Services<br />
                   <span className="text-purple-600">au Canada</span>
                 </h1>
                 
-                <p className="text-xl text-gray-700 leading-relaxed max-w-lg">
+                <p className="text-xl text-gray-700 dark:text-dark-text-secondary leading-relaxed max-w-lg">
                   La première plateforme fintech qui connecte 2.9M d'entrepreneurs 
                   canadiens avec des outils d'IA pour optimiser leurs finances et 
                   développer leur clientèle.
@@ -85,14 +85,14 @@ const Index = () => {
               </div>
 
               {/* Search Bar */}
-              <div className="bg-white rounded-2xl p-3 shadow-xl border-2 border-orange-200 max-w-lg">
+              <div className="bg-white dark:bg-dark-secondary rounded-2xl p-3 shadow-xl border-2 border-orange-200 dark:border-gray-600 max-w-lg">
                 <div className="flex items-center gap-3">
                   <MapPin className="h-6 w-6 text-orange-500 ml-2" />
                   <Input
                     placeholder="Montréal, Toronto, Vancouver..."
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium"
+                    className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium dark:text-dark-text"
                   />
                   <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 rounded-xl px-8 py-3 font-bold text-white shadow-lg">
                     CHERCHER
@@ -104,7 +104,7 @@ const Index = () => {
               {/* Trust Indicators */}
               <div className="grid grid-cols-2 gap-4 pt-4">
                 {trustIndicators.map((indicator, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm text-gray-600">
+                  <div key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-text-muted">
                     <CheckCircle className="h-4 w-4 text-green-500" />
                     <span>{indicator}</span>
                   </div>
@@ -155,21 +155,21 @@ const Index = () => {
       </section>
 
       {/* Service Categories */}
-      <section className="py-16 px-4 bg-white">
+      <section className="py-16 px-4 bg-white dark:bg-dark-secondary">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-black text-gray-900 mb-4">Services Populaires</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-black text-gray-900 dark:text-dark-text mb-4">Services Populaires</h2>
+            <p className="text-xl text-gray-600 dark:text-dark-text-muted max-w-2xl mx-auto">
               Plus de 50 catégories de services avec des professionnels vérifiés dans toutes les provinces canadiennes
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
             {serviceCategories.map((category, index) => (
-              <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-2 border-gray-100 hover:border-orange-200">
+              <Card key={index} className="hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-2 border-gray-100 dark:border-gray-700 hover:border-orange-200 dark:hover:border-orange-500 bg-white dark:bg-dark-accent">
                 <CardHeader className="text-center pb-4">
                   <div className="text-4xl mb-3">{category.icon}</div>
-                  <CardTitle className="text-lg font-bold text-gray-800">
+                  <CardTitle className="text-lg font-bold text-gray-800 dark:text-dark-text">
                     {category.name}
                   </CardTitle>
                 </CardHeader>
@@ -185,14 +185,14 @@ const Index = () => {
       </section>
 
       {/* Value Propositions with Pop Art Style */}
-      <section className="py-20 px-4 bg-gradient-to-r from-orange-50 to-purple-50">
+      <section className="py-20 px-4 bg-gradient-to-r from-orange-50 to-purple-50 dark:from-dark-accent dark:to-dark-primary">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-black text-gray-900 mb-6">
+            <h2 className="text-5xl font-black text-gray-900 dark:text-dark-text mb-6">
               Pourquoi <span className="text-orange-500">HOUSIE</span> Révolutionne 
               <br />le Travail Autonome au Canada ?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-dark-text-muted max-w-3xl mx-auto leading-relaxed">
               La seule plateforme qui combine marketplace de services ET 
               outils fintech avancés pour maximiser vos revenus et simplifier vos finances.
             </p>
@@ -200,18 +200,18 @@ const Index = () => {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {valueProps.map((prop, index) => (
-              <Card key={index} className="bg-white border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100 to-purple-100 rounded-full -translate-y-6 translate-x-6 opacity-50"></div>
+              <Card key={index} className="bg-white dark:bg-dark-secondary border-0 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-3 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100 to-purple-100 dark:from-orange-900/20 dark:to-purple-900/20 rounded-full -translate-y-6 translate-x-6 opacity-50"></div>
                 <CardHeader className="text-center pb-6 relative z-10">
-                  <div className="mx-auto mb-6 p-4 bg-gray-50 rounded-2xl w-fit">
+                  <div className="mx-auto mb-6 p-4 bg-gray-50 dark:bg-dark-accent rounded-2xl w-fit">
                     {prop.icon}
                   </div>
-                  <CardTitle className="text-xl font-black text-gray-900 leading-tight">
+                  <CardTitle className="text-xl font-black text-gray-900 dark:text-dark-text leading-tight">
                     {prop.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="relative z-10">
-                  <p className="text-gray-600 leading-relaxed text-center">
+                  <p className="text-gray-600 dark:text-dark-text-secondary leading-relaxed text-center">
                     {prop.description}
                   </p>
                 </CardContent>
@@ -222,24 +222,24 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-4 bg-gray-900 text-white">
+      <section className="py-16 px-4 bg-gray-900 dark:bg-black text-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-black text-orange-400 mb-2">2.9M</div>
-              <div className="text-gray-300">Travailleurs Autonomes Ciblés</div>
+              <div className="text-gray-300 dark:text-dark-text-muted">Travailleurs Autonomes Ciblés</div>
             </div>
             <div>
               <div className="text-4xl font-black text-purple-400 mb-2">$312M</div>
-              <div className="text-gray-300">Évaluation Projetée</div>
+              <div className="text-gray-300 dark:text-dark-text-muted">Évaluation Projetée</div>
             </div>
             <div>
               <div className="text-4xl font-black text-cyan-400 mb-2">40%</div>
-              <div className="text-gray-300">Économies Moyennes</div>
+              <div className="text-gray-300 dark:text-dark-text-muted">Économies Moyennes</div>
             </div>
             <div>
               <div className="text-4xl font-black text-green-400 mb-2">6%</div>
-              <div className="text-gray-300">Frais vs 15-30% Ailleurs</div>
+              <div className="text-gray-300 dark:text-dark-text-muted">Frais vs 15-30% Ailleurs</div>
             </div>
           </div>
         </div>

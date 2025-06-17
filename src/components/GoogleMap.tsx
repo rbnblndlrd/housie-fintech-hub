@@ -14,14 +14,6 @@ interface GoogleMapProps {
   }>;
 }
 
-// Declare global google maps types
-declare global {
-  interface Window {
-    google: typeof google;
-  }
-  const google: any;
-}
-
 export const GoogleMap: React.FC<GoogleMapProps> = ({
   center = { lat: 45.5017, lng: -73.5673 }, // Montreal coordinates
   zoom = 12,
@@ -29,7 +21,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   providers = []
 }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<any>(null);
+  const mapInstanceRef = useRef<google.maps.Map | null>(null);
 
   useEffect(() => {
     if (!mapRef.current) return;
@@ -57,7 +49,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
       providers.forEach(provider => {
         const marker = new window.google.maps.Marker({
           position: { lat: provider.lat, lng: provider.lng },
-          map: mapInstanceRef.current,
+          map: mapInstanceRef.current!,
           title: provider.name,
           icon: {
             url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
@@ -80,7 +72,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
         });
 
         marker.addListener('click', () => {
-          infoWindow.open(mapInstanceRef.current, marker);
+          infoWindow.open(mapInstanceRef.current!, marker);
         });
       });
     };

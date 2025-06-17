@@ -68,7 +68,7 @@ export const Services = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-100 to-orange-200 dark:from-dark-primary dark:via-dark-secondary dark:to-dark-accent">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-darker">
       <Header />
       
       <div className="pt-20 px-4">

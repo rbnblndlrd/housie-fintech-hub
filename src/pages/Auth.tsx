@@ -16,15 +16,15 @@ export const Auth = () => {
   const [userType, setUserType] = useState("seeker");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-100 via-orange-100 to-orange-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-dark-accent">
       <Header />
       
       <div className="pt-20 flex items-center justify-center min-h-screen px-4">
         <div className="max-w-md w-full">
           {/* Welcome Message */}
           <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-black dark:text-white mb-2">Bienvenue sur HOUSIE</h1>
-            <p className="text-gray-600 dark:text-gray-400">
+            <h1 className="text-3xl font-bold text-black dark:text-dark-text mb-2">Bienvenue sur HOUSIE</h1>
+            <p className="text-gray-600 dark:text-dark-text-muted">
               Connectez-vous à votre compte HOUSIE instantané
             </p>
             <p className="text-sm text-purple-600 dark:text-purple-400 mt-2">
@@ -40,12 +40,12 @@ export const Auth = () => {
           </div>
 
           {/* Auth Card */}
-          <Card className="bg-white dark:bg-gray-800 border-2 border-cyan-200 dark:border-gray-600 shadow-xl">
+          <Card className="bg-white dark:bg-dark-secondary border-2 border-cyan-200 dark:border-gray-600 shadow-xl">
             <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold text-black dark:text-white">
+              <CardTitle className="text-2xl font-bold text-black dark:text-dark-text">
                 {isLogin ? "Connexion" : "Créer un compte"}
               </CardTitle>
-              <CardDescription className="dark:text-gray-400">
+              <CardDescription className="dark:text-dark-text-muted">
                 {isLogin ? "Accédez à votre compte HOUSIE" : "Rejoignez la communauté HOUSIE"}
               </CardDescription>
             </CardHeader>
@@ -54,19 +54,19 @@ export const Auth = () => {
               {/* Role Selection for Signup */}
               {!isLogin && (
                 <div className="space-y-3">
-                  <Label className="text-sm font-medium text-black dark:text-white">Je souhaite :</Label>
+                  <Label className="text-sm font-medium text-black dark:text-dark-text">Je souhaite :</Label>
                   <RadioGroup value={userType} onValueChange={setUserType}>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="seeker" id="seeker" />
-                      <Label htmlFor="seeker" className="dark:text-gray-300">Trouver des services</Label>
+                      <Label htmlFor="seeker" className="dark:text-dark-text-secondary">Trouver des services</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="provider" id="provider" />
-                      <Label htmlFor="provider" className="dark:text-gray-300">Offrir mes services</Label>
+                      <Label htmlFor="provider" className="dark:text-dark-text-secondary">Offrir mes services</Label>
                     </div>
                     <div className="flex items-center space-x-2">
                       <RadioGroupItem value="both" id="both" />
-                      <Label htmlFor="both" className="dark:text-gray-300">Les deux</Label>
+                      <Label htmlFor="both" className="dark:text-dark-text-secondary">Les deux</Label>
                     </div>
                   </RadioGroup>
                 </div>
@@ -74,27 +74,27 @@ export const Auth = () => {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-black dark:text-white">Email</Label>
+                <Label htmlFor="email" className="text-black dark:text-dark-text">Email</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="votre@email.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="border-gray-300 dark:border-gray-600 dark:bg-dark-accent dark:text-dark-text"
                 />
               </div>
 
               {/* Password Field */}
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-black dark:text-white">Mot de passe</Label>
+                <Label htmlFor="password" className="text-black dark:text-dark-text">Mot de passe</Label>
                 <Input
                   id="password"
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
+                  className="border-gray-300 dark:border-gray-600 dark:bg-dark-accent dark:text-dark-text"
                 />
               </div>
 
@@ -107,7 +107,7 @@ export const Auth = () => {
                       checked={rememberMe}
                       onCheckedChange={(checked) => setRememberMe(checked === true)}
                     />
-                    <Label htmlFor="remember" className="text-sm dark:text-gray-300">
+                    <Label htmlFor="remember" className="text-sm dark:text-dark-text-secondary">
                       Se souvenir de moi
                     </Label>
                   </div>
@@ -127,7 +127,7 @@ export const Auth = () => {
 
               {/* Toggle Auth Mode */}
               <div className="text-center">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
+                <p className="text-sm text-gray-600 dark:text-dark-text-muted">
                   {isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"} 
                   <button 
                     className="text-purple-600 dark:text-purple-400 hover:underline ml-1 font-medium"
