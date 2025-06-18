@@ -2,217 +2,198 @@
 import React from 'react';
 import Header from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { MessageCircle, Mail, Phone, HelpCircle, BookOpen, CreditCard, Shield, Settings, Users, Star } from "lucide-react";
 
 const FAQ = () => {
-  const faqSections = [
+  const faqCategories = [
     {
+      icon: <HelpCircle className="h-8 w-8 text-blue-600" />,
       title: "Getting Started",
+      description: "New to HOUSIE? Start here",
       questions: [
-        {
-          question: "What is HOUSIE?",
-          answer: "HOUSIE is Canada's trusted marketplace for home services that combines service booking with smart financial management. We help Canadians find reliable service providers while automatically tracking expenses and optimizing taxes."
-        },
-        {
-          question: "How do I create an account?",
-          answer: "Simply click 'Get Started' on our homepage and choose whether you're seeking services or providing them. You can always switch roles later. Complete your profile, verify your email, and you're ready to go!"
-        },
-        {
-          question: "Can I be both a customer and a service provider?",
-          answer: "Absolutely! HOUSIE allows seamless role switching. You can book services as a customer and offer your own services as a provider using the same account."
-        }
+        "How do I create an account?",
+        "What is HOUSIE?",
+        "How do I book my first service?"
       ]
     },
     {
-      title: "Pricing & Fees",
+      icon: <BookOpen className="h-8 w-8 text-green-600" />,
+      title: "Booking & Scheduling",
+      description: "Everything about bookings",
       questions: [
-        {
-          question: "How does pricing work?",
-          answer: "Service providers set their own rates (hourly or flat fee). You'll see the exact price before booking. HOUSIE charges a small platform fee (6% vs 15-30% on other platforms) that's automatically included in the total."
-        },
-        {
-          question: "What is the HOUSIE fee?",
-          answer: "HOUSIE charges only 6% platform fee - significantly lower than competitors who charge 15-30%. This fee covers payment processing, insurance, customer support, and our advanced fintech features."
-        },
-        {
-          question: "Are there subscription plans?",
-          answer: "Yes! We offer Free (basic features), Starter ($8/month), Pro ($15/month - most popular), and Premium ($25/month) plans. Each tier includes enhanced financial tracking and business tools. All plans include our core booking platform."
-        },
-        {
-          question: "What's included in the subscription tiers?",
-          answer: "Free: Basic booking + expense tracking. Starter: Advanced analytics + email support. Pro: Unlimited services + AI features + group booking. Premium: Everything + OCR scanning + white-glove support + market insights."
-        }
+        "How to book a service?",
+        "Can I reschedule?",
+        "Group booking discounts"
       ]
     },
     {
-      title: "Payments & Security",
+      icon: <CreditCard className="h-8 w-8 text-purple-600" />,
+      title: "Payment & Billing",
+      description: "Payments and pricing info",
       questions: [
-        {
-          question: "How do payments work?",
-          answer: "All payments are processed securely through Stripe. Customers pay when booking, and providers receive payment after service completion. We hold funds in escrow for protection."
-        },
-        {
-          question: "When do providers get paid?",
-          answer: "Providers receive payment 24-48 hours after the customer marks the service as complete. This ensures quality and gives time for any issues to be resolved."
-        },
-        {
-          question: "What payment methods are accepted?",
-          answer: "We accept all major credit cards, debit cards, and bank transfers through our secure Stripe integration. Payment methods are saved for convenience on future bookings."
-        },
-        {
-          question: "Is my financial information secure?",
-          answer: "Yes! We use bank-level encryption and never store sensitive payment information. All transactions are processed through PCI-compliant systems. Your financial data is automatically categorized for tax purposes but remains completely private."
-        }
+        "Payment methods accepted",
+        "HOUSIE fees explained",
+        "Subscription plans"
       ]
     },
     {
-      title: "For Service Providers",
+      icon: <Shield className="h-8 w-8 text-orange-600" />,
+      title: "Service Issues",
+      description: "Problems with services",
       questions: [
-        {
-          question: "How do I become a provider?",
-          answer: "Switch to provider mode, complete your business profile, add your services with descriptions and pricing, set your availability, and upload verification documents. Our team reviews applications within 24-48 hours."
-        },
-        {
-          question: "What documents do I need to provide?",
-          answer: "Basic requirements include government ID, business license (if applicable), insurance certificate, and banking information for payments. Additional certifications may be required for specialized services."
-        },
-        {
-          question: "How do I set my pricing?",
-          answer: "You can set hourly rates or flat fees for each service. Our AI provides market rate suggestions based on your location and service type. You can adjust prices anytime and offer seasonal promotions."
-        },
-        {
-          question: "Can I manage my availability?",
-          answer: "Yes! Use our calendar system to block unavailable times, set recurring schedules, and manage bookings. You can accept/decline requests and communicate directly with customers through our messaging system."
-        }
+        "Service quality concerns",
+        "Refund policy",
+        "Provider disputes"
       ]
     },
     {
-      title: "Booking & Services",
+      icon: <Star className="h-8 w-8 text-yellow-600" />,
+      title: "Reviews & Ratings",
+      description: "Rating system help",
       questions: [
-        {
-          question: "How do I book a service?",
-          answer: "Search by location and service type, browse provider profiles and reviews, select your preferred provider, choose date/time, provide service details, and pay securely. You'll receive confirmation with provider contact info."
-        },
-        {
-          question: "Can I cancel or reschedule a booking?",
-          answer: "Yes, you can cancel or reschedule up to 24 hours before the service time without penalty. Last-minute cancellations may incur a small fee that goes to the provider for their time."
-        },
-        {
-          question: "What if I'm not satisfied with the service?",
-          answer: "Contact our support team immediately. We have a resolution process that includes refunds, service credits, or rebooking with another provider. Your satisfaction is guaranteed."
-        },
-        {
-          question: "How do reviews work?",
-          answer: "After each service, both customers and providers can leave reviews. This builds trust and helps maintain service quality. Reviews are verified and cannot be deleted once posted."
-        }
+        "How reviews work",
+        "Editing my review",
+        "Provider ratings"
       ]
     },
     {
-      title: "Financial Features",
+      icon: <Users className="h-8 w-8 text-cyan-600" />,
+      title: "Legal & Compliance",
+      description: "CRA compliance & legal",
       questions: [
-        {
-          question: "How does expense tracking work?",
-          answer: "All HOUSIE transactions are automatically categorized for tax purposes. Our AI learns your patterns and suggests business vs personal expense categories. Export reports anytime for your accountant."
-        },
-        {
-          question: "What are group bookings?",
-          answer: "Our AI identifies when multiple neighbors need similar services and coordinates group bookings for volume discounts. Everyone saves money and providers get multiple jobs efficiently."
-        },
-        {
-          question: "Is HOUSIE CRA compliant?",
-          answer: "Yes! All our financial tracking features are designed for Canadian tax compliance. We generate reports that work with popular accounting software and provide documentation for CRA audits."
-        }
+        "CRA compliance help",
+        "Tax documentation",
+        "Data protection"
       ]
+    }
+  ];
+
+  const quickActions = [
+    {
+      icon: <MessageCircle className="h-6 w-6" />,
+      title: "Live Chat",
+      description: "Get instant help",
+      action: "Start Chat"
     },
     {
-      title: "Account Management",
-      questions: [
-        {
-          question: "How do I change my subscription plan?",
-          answer: "Go to your account settings and select 'Subscription'. You can upgrade or downgrade anytime. Upgrades take effect immediately, downgrades at the next billing cycle."
-        },
-        {
-          question: "Can I delete my account?",
-          answer: "Yes, you can delete your account anytime from settings. Note that this removes all data permanently. If you have active bookings, please complete them first or contact support."
-        },
-        {
-          question: "How do I contact customer support?",
-          answer: "Use our in-app chat assistant, email support@housie.ca, or call our support line. Pro and Premium subscribers get priority support with faster response times."
-        }
-      ]
+      icon: <Mail className="h-6 w-6" />,
+      title: "Email Support",
+      description: "support@housie.ca",
+      action: "Send Email"
+    },
+    {
+      icon: <Phone className="h-6 w-6" />,
+      title: "Phone Support",
+      description: "1-800-HOUSIE-1",
+      action: "Call Now"
     }
   ];
 
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-blue-50 via-purple-50 to-orange-50">
-        <div className="max-w-4xl mx-auto px-4 py-12">
+      <div className="min-h-screen pt-20 bg-white dark:bg-gray-900">
+        <div className="max-w-7xl mx-auto px-4 py-12">
           {/* Header Section */}
-          <div className="text-center mb-12">
-            <Badge className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3 text-sm font-bold mb-6 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
-              🤔 FREQUENTLY ASKED QUESTIONS
+          <div className="text-center mb-16">
+            <Badge className="fintech-button-primary px-6 py-3 text-sm font-bold mb-6 rounded-2xl">
+              ❓ SUPPORT CENTER
             </Badge>
-            <h1 className="text-5xl font-black text-gray-900 mb-6 leading-tight">
-              Got Questions? <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">We've Got Answers</span>
+            <h1 className="text-5xl font-black text-gray-900 dark:text-white mb-6 leading-tight">
+              Comment pouvons-nous <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">vous aider</span> ?
             </h1>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Everything you need to know about HOUSIE - from getting started to advanced features. 
-              Can't find what you're looking for? Contact our support team!
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed mb-8">
+              Nous sommes là pour vous aider à tirer le meilleur parti de Housie. Recherchez dans notre FAQ ou contactez notre équipe de support.
             </p>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto mb-12">
+              <div className="fintech-card p-4">
+                <div className="flex items-center gap-3">
+                  <HelpCircle className="h-6 w-6 text-blue-600" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher des articles d'aide, guides et réponses..."
+                    className="flex-1 bg-transparent border-0 focus:outline-none text-lg font-medium text-gray-900 dark:text-white placeholder-gray-500"
+                  />
+                  <Button className="fintech-button-primary px-6 py-2 rounded-xl font-bold">
+                    Rechercher
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* FAQ Sections */}
-          <div className="space-y-8">
-            {faqSections.map((section, sectionIndex) => (
-              <Card key={sectionIndex} className="fintech-card">
-                <CardHeader className="p-8">
-                  <CardTitle className="text-2xl font-bold text-gray-900 flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-2xl flex items-center justify-center text-lg font-bold shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)]">
-                      {sectionIndex + 1}
-                    </div>
-                    {section.title}
-                  </CardTitle>
-                  <CardDescription className="text-gray-600 text-lg mt-2">
-                    Common questions about {section.title.toLowerCase()}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="px-8 pb-8">
-                  <Accordion type="single" collapsible className="w-full">
-                    {section.questions.map((faq, questionIndex) => (
-                      <AccordionItem key={questionIndex} value={`${sectionIndex}-${questionIndex}`} className="border-b border-gray-100 last:border-b-0">
-                        <AccordionTrigger className="text-left font-semibold text-gray-800 hover:text-blue-600 py-6 text-lg hover:no-underline">
-                          {faq.question}
-                        </AccordionTrigger>
-                        <AccordionContent className="text-gray-600 leading-relaxed text-base pb-6">
-                          {faq.answer}
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
+          {/* Quick Actions */}
+          <div className="grid md:grid-cols-3 gap-6 mb-16">
+            {quickActions.map((action, index) => (
+              <Card key={index} className="fintech-card hover:-translate-y-1 cursor-pointer">
+                <CardContent className="p-8 text-center">
+                  <div className="w-16 h-16 fintech-button-primary text-white rounded-2xl flex items-center justify-center mx-auto mb-4">
+                    {action.icon}
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{action.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">{action.description}</p>
+                  <Button variant="outline" className="rounded-xl font-medium border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
+                    {action.action}
+                  </Button>
                 </CardContent>
               </Card>
             ))}
           </div>
 
+          {/* FAQ Categories Mega Menu */}
+          <div className="mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white text-center mb-12">
+              Catégories d'Aide
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {faqCategories.map((category, index) => (
+                <Card key={index} className="fintech-card hover:-translate-y-2 cursor-pointer group">
+                  <CardHeader className="p-8">
+                    <div className="w-16 h-16 bg-gray-50 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-200">
+                      {category.icon}
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-900 dark:text-white mb-2">
+                      {category.title}
+                    </CardTitle>
+                    <CardDescription className="text-gray-600 dark:text-gray-400 mb-4">
+                      {category.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="px-8 pb-8">
+                    <ul className="space-y-2">
+                      {category.questions.map((question, qIndex) => (
+                        <li key={qIndex} className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors duration-200">
+                          • {question}
+                        </li>
+                      ))}
+                    </ul>
+                    <Button variant="ghost" className="w-full mt-4 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl font-medium">
+                      Voir tous les articles →
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
           {/* Contact Support Section */}
-          <Card className="bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 text-white mt-12 fintech-gradient-card">
-            <CardContent className="text-center py-12 px-8">
-              <h3 className="text-3xl font-bold mb-6">Still have questions?</h3>
-              <p className="text-xl mb-8 opacity-90">
-                Our friendly support team is here to help you get the most out of HOUSIE.
+          <Card className="fintech-gradient-card bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 text-white">
+            <CardContent className="text-center py-16 px-8">
+              <h3 className="text-4xl font-bold mb-6">Une question ? Une suggestion ?</h3>
+              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+                N'hésitez pas à nous contacter ! Notre équipe est disponible du lundi au vendredi de 9h à 18h.
               </p>
-              <div className="flex flex-wrap justify-center gap-6 text-base">
-                <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.1)]">
-                  📧 support@housie.ca
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.1)]">
-                  💬 In-app chat assistant
-                </div>
-                <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-2xl border border-white/20 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.1)]">
-                  📞 1-800-HOUSIE-1
-                </div>
+              <div className="flex flex-wrap justify-center gap-6">
+                <Button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-8 py-4 rounded-2xl border border-white/20 font-bold text-white text-lg">
+                  💬 Chat en Direct
+                </Button>
+                <Button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-8 py-4 rounded-2xl border border-white/20 font-bold text-white text-lg">
+                  📧 Nous Contacter
+                </Button>
               </div>
             </CardContent>
           </Card>

@@ -85,15 +85,20 @@
 
   body {
     @apply bg-white text-gray-900 font-sans antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   .dark body {
     @apply bg-gray-900 text-white;
   }
 
+  .dark {
+    color-scheme: dark;
+  }
+
   /* HOUSIE Fintech Card Styles */
   .fintech-card {
-    @apply bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1;
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 dark:border-gray-700/50 transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1;
   }
 
   .fintech-gradient-card {
@@ -113,18 +118,15 @@
   }
 
   .fintech-chart-container {
-    @apply bg-white rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300;
+    @apply bg-white dark:bg-gray-800 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 dark:border-gray-700/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300;
   }
 
-  /* Dark mode styles */
-  .dark .fintech-card {
-    @apply bg-gray-800 border-gray-700;
+  /* HOUSIE Brand Text Gradient */
+  .housie-text-gradient {
+    @apply bg-gradient-to-r from-orange-500 via-purple-600 to-cyan-500 bg-clip-text text-transparent;
   }
 
-  .dark .fintech-chart-container {
-    @apply bg-gray-800 border-gray-700;
-  }
-
+  /* Input and form styling for dark mode */
   .dark input,
   .dark textarea,
   .dark select {
@@ -135,6 +137,46 @@
   .dark textarea:focus,
   .dark select:focus {
     @apply border-purple-500 ring-purple-500;
+  }
+
+  /* Improved dropdown styling */
+  .dark [role="menu"],
+  .dark [role="menuitem"] {
+    @apply bg-gray-800 text-white border-gray-700;
+  }
+
+  /* Page background fix for dark mode */
+  .dark .min-h-screen {
+    @apply bg-gray-900;
+  }
+
+  /* Card improvements for dark mode */
+  .dark .bg-white {
+    @apply bg-gray-800;
+  }
+
+  .dark .text-gray-900 {
+    @apply text-white;
+  }
+
+  .dark .text-gray-800 {
+    @apply text-gray-200;
+  }
+
+  .dark .text-gray-700 {
+    @apply text-gray-300;
+  }
+
+  .dark .text-gray-600 {
+    @apply text-gray-400;
+  }
+
+  .dark .border-gray-200 {
+    @apply border-gray-700;
+  }
+
+  .dark .border-gray-100 {
+    @apply border-gray-800;
   }
 }
 
