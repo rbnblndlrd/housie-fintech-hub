@@ -10,7 +10,9 @@ import Header from "@/components/Header";
 import CalendarTierBanner from "@/components/CalendarTierBanner";
 import PremiumFeatureGate from "@/components/PremiumFeatureGate";
 import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
-import { Clock, MapPin, User, Calendar as CalendarIcon, Plus, Wifi, WifiOff } from 'lucide-react';
+import AddAppointmentDialog from "@/components/AddAppointmentDialog";
+import EditAppointmentDialog from "@/components/EditAppointmentDialog";
+import { Clock, MapPin, User, Calendar as CalendarIcon, Wifi, WifiOff } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useToast } from '@/hooks/use-toast';
 
@@ -30,11 +32,13 @@ const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
   const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
+  const [editingAppointment, setEditingAppointment] = useState<CalendarEvent | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
   const { isFeatureAvailable } = useSubscription();
   const { toast } = useToast();
 
   // Mock events data with source information
-  const mockEvents: CalendarEvent[] = [
+  const [mockEvents, setMockEvents] = useState<CalendarEvent[]>([
     {
       id: '1',
       title: 'Nettoyage résidentiel',
@@ -68,7 +72,7 @@ const Calendar = () => {
       amount: 0,
       source: 'google'
     }
-  ];
+  ]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -98,39 +102,98 @@ const Calendar = () => {
       return;
     }
     setIsGoogleSyncMode(checked);
+    updateSelectedEvents(date, checked);
   };
 
-  const getFilteredEvents = () => {
+  const getFilteredEvents = (selectedDate: Date | undefined, syncMode: boolean) => {
+    if (!selectedDate) return [];
+    
     const eventsForDate = mockEvents.filter(
-      event => event.date.toDateString() === date?.toDateString()
+      event => event.date.toDateString() === selectedDate.toDateString()
     );
     
-    if (isGoogleSyncMode) {
+    if (syncMode) {
       return eventsForDate; // Show all events when Google sync is on
     } else {
       return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
     }
   };
 
-  React.useEffect(() => {
-    setSelectedEvents(getFilteredEvents());
-  }, [date, isGoogleSyncMode]);
+  const updateSelectedEvents = (selectedDate: Date | undefined, syncMode?: boolean) => {
+    const currentSyncMode = syncMode !== undefined ? syncMode : isGoogleSyncMode;
+    setSelectedEvents(getFilteredEvents(selectedDate, currentSyncMode));
+  };
 
-  const handleAddEvent = () => {
-    console.log('Add new event');
+  const handleDateSelect = (newDate: Date | undefined) => {
+    setDate(newDate);
+    updateSelectedEvents(newDate);
+  };
+
+  const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
+    const appointment: CalendarEvent = {
+      ...newAppointment,
+      id: Date.now().toString()
+    };
+    
+    setMockEvents(prev => [...prev, appointment]);
+    updateSelectedEvents(date);
+  };
+
+  const handleUpdateAppointment = (updatedAppointment: CalendarEvent) => {
+    setMockEvents(prev => 
+      prev.map(event => 
+        event.id === updatedAppointment.id ? updatedAppointment : event
+      )
+    );
+    updateSelectedEvents(date);
+  };
+
+  const handleDeleteAppointment = (appointmentId: string) => {
+    setMockEvents(prev => prev.filter(event => event.id !== appointmentId));
+    updateSelectedEvents(date);
+  };
+
+  const handleEditAppointment = (appointment: CalendarEvent) => {
+    setEditingAppointment(appointment);
+    setEditDialogOpen(true);
   };
 
   const handleGoogleSync = () => {
+    toast({
+      title: "Synchronisation démarrée",
+      description: "Synchronisation avec Google Calendar en cours...",
+    });
     console.log('Google Calendar sync triggered');
   };
 
   const handleImportEvents = () => {
+    toast({
+      title: "Importation démarrée",
+      description: "Importation des événements Google Calendar...",
+    });
     console.log('Import events triggered');
   };
 
   const handleExportEvents = () => {
+    toast({
+      title: "Exportation démarrée",
+      description: "Exportation vers Google Calendar...",
+    });
     console.log('Export events triggered');
   };
+
+  const handleUpgradeToPremium = () => {
+    toast({
+      title: "Redirection vers l'abonnement",
+      description: "Vous allez être redirigé vers la page d'abonnement Premium...",
+    });
+    // Redirect to subscription page
+    window.location.href = '/';
+  };
+
+  React.useEffect(() => {
+    updateSelectedEvents(date);
+  }, [date, isGoogleSyncMode]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
@@ -205,18 +268,15 @@ const Calendar = () => {
                 <CalendarComponent
                   mode="single"
                   selected={date}
-                  onSelect={setDate}
+                  onSelect={handleDateSelect}
                   className="rounded-2xl border-0 shadow-inner bg-gradient-to-br from-gray-50 to-gray-100/50"
                 />
                 
                 <div className="mt-4 pt-4 border-t border-gray-200">
-                  <Button 
-                    onClick={handleAddEvent}
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Ajouter un Rendez-vous
-                  </Button>
+                  <AddAppointmentDialog 
+                    selectedDate={date}
+                    onAddAppointment={handleAddAppointment}
+                  />
                 </div>
               </CardContent>
             </Card>
@@ -253,12 +313,14 @@ const Calendar = () => {
                         : 'Vous n\'avez pas de rendez-vous HOUSIE pour cette date.'
                       }
                     </p>
-                    <Button 
-                      onClick={handleAddEvent}
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+                    <AddAppointmentDialog 
+                      selectedDate={date}
+                      onAddAppointment={handleAddAppointment}
                     >
-                      Ajouter un Rendez-vous
-                    </Button>
+                      <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200">
+                        Ajouter un Rendez-vous
+                      </Button>
+                    </AddAppointmentDialog>
                   </div>
                 ) : (
                   <div className="space-y-4">
@@ -310,6 +372,7 @@ const Calendar = () => {
                         <div className="mt-4 flex gap-2">
                           <Button 
                             size="sm" 
+                            onClick={() => handleEditAppointment(event)}
                             className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
                           >
                             Modifier
@@ -317,9 +380,10 @@ const Calendar = () => {
                           <Button 
                             size="sm" 
                             variant="outline" 
+                            onClick={() => handleDeleteAppointment(event.id)}
                             className="border-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-xl transition-all duration-200"
                           >
-                            Annuler
+                            Supprimer
                           </Button>
                         </div>
                       </div>
@@ -354,6 +418,18 @@ const Calendar = () => {
               </PremiumFeatureGate>
             </div>
           )}
+
+          {/* Edit Appointment Dialog */}
+          <EditAppointmentDialog
+            appointment={editingAppointment}
+            open={editDialogOpen}
+            onClose={() => {
+              setEditDialogOpen(false);
+              setEditingAppointment(null);
+            }}
+            onUpdateAppointment={handleUpdateAppointment}
+            onDeleteAppointment={handleDeleteAppointment}
+          />
         </div>
       </div>
     </div>
