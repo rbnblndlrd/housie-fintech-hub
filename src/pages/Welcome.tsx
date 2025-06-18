@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -24,7 +25,7 @@ export const Welcome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-dark-accent">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <div className="pt-20 flex items-center justify-center min-h-screen px-4">
@@ -36,10 +37,10 @@ export const Welcome = () => {
                 H
               </div>
             </div>
-            <h1 className="text-4xl font-black text-black dark:text-dark-text mb-4">
+            <h1 className="text-4xl font-black text-foreground mb-4">
               Bienvenue sur <span className="text-orange-500">HOUSIE</span>!
             </h1>
-            <p className="text-xl text-gray-600 dark:text-dark-text-muted max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Choisissez comment vous souhaitez commencer votre expérience
             </p>
           </div>
@@ -48,32 +49,32 @@ export const Welcome = () => {
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Browse Services Option */}
             <Card 
-              className={`bg-white dark:bg-dark-secondary border-2 border-orange-200 dark:border-gray-600 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer ${isAnimating ? 'animate-pulse' : ''}`}
+              className={`cursor-pointer ${isAnimating ? 'animate-pulse' : ''}`}
               onClick={handleBrowseServices}
             >
               <CardHeader className="text-center pb-4">
                 <div className="mx-auto mb-6 p-6 bg-orange-50 dark:bg-orange-900/20 rounded-2xl w-fit">
                   <Search className="h-12 w-12 text-orange-500" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-black dark:text-dark-text mb-2">
+                <CardTitle className="text-2xl font-bold text-card-foreground mb-2">
                   🔍 Commencer l'Exploration
                 </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-dark-text-muted text-lg">
+                <CardDescription className="text-muted-foreground text-lg">
                   Parcourez les services et prestataires dans votre région immédiatement
                 </CardDescription>
               </CardHeader>
               
               <CardContent className="space-y-6">
                 <div className="space-y-3">
-                  <div className="flex items-center gap-3 text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-3 text-card-foreground">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                     <span>Accès instantané à tous les services</span>
                   </div>
-                  <div className="flex items-center gap-3 text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-3 text-card-foreground">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                     <span>Voir les prestataires près de chez vous</span>
                   </div>
-                  <div className="flex items-center gap-3 text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-3 text-card-foreground">
                     <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                     <span>Comparer prix et évaluations</span>
                   </div>
@@ -88,36 +89,36 @@ export const Welcome = () => {
 
             {/* Complete Profile Option */}
             <Card 
-              className={`bg-white dark:bg-dark-secondary border-2 border-purple-200 dark:border-gray-600 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer ${isAnimating ? 'animate-pulse' : ''}`}
+              className={`cursor-pointer ${isAnimating ? 'animate-pulse' : ''}`}
               onClick={handleCompleteProfile}
             >
               <CardHeader className="text-center pb-4">
                 <div className="mx-auto mb-6 p-6 bg-purple-50 dark:bg-purple-900/20 rounded-2xl w-fit">
                   <User className="h-12 w-12 text-purple-600" />
                 </div>
-                <CardTitle className="text-2xl font-bold text-black dark:text-dark-text mb-2">
+                <CardTitle className="text-2xl font-bold text-card-foreground mb-2">
                   ⚡ Personnaliser l'Expérience
                 </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-dark-text-muted text-lg">
+                <CardDescription className="text-muted-foreground text-lg">
                   Configuration rapide pour de meilleures correspondances (2 minutes)
                 </CardDescription>
               </CardHeader>
               
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-2 text-sm text-card-foreground">
                     <MapPin className="h-4 w-4 text-purple-500" />
                     <span>Préférences géographiques</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-2 text-sm text-card-foreground">
                     <Heart className="h-4 w-4 text-purple-500" />
                     <span>Services d'intérêt</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-2 text-sm text-card-foreground">
                     <UserCircle className="h-4 w-4 text-purple-500" />
                     <span>Informations de base</span>
                   </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-dark-text-secondary">
+                  <div className="flex items-center gap-2 text-sm text-card-foreground">
                     <Bell className="h-4 w-4 text-purple-500" />
                     <span>Notifications</span>
                   </div>
@@ -133,11 +134,11 @@ export const Welcome = () => {
 
           {/* Skip Option */}
           <div className="text-center mt-8">
-            <p className="text-gray-600 dark:text-dark-text-muted mb-4">
+            <p className="text-muted-foreground mb-4">
               Vous pourrez toujours personnaliser votre profil plus tard
             </p>
             <Link to="/services">
-              <Button variant="ghost" className="text-gray-500 dark:text-dark-text-muted hover:text-gray-700 dark:hover:text-dark-text">
+              <Button variant="ghost" className="text-muted-foreground hover:text-foreground">
                 Passer cette étape →
               </Button>
             </Link>

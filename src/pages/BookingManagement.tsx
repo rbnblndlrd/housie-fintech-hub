@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -204,15 +203,15 @@ const BookingManagement = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <div className="min-h-screen bg-background">
         <Header />
         <div className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-white/60 rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+              <div className="h-8 bg-card rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
               <div className="grid md:grid-cols-4 gap-6">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-32 bg-white/60 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
+                  <div key={i} className="h-32 bg-card rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
                 ))}
               </div>
             </div>
@@ -223,7 +222,7 @@ const BookingManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
@@ -233,7 +232,7 @@ const BookingManagement = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               Gestion des Réservations
             </h1>
-            <p className="text-gray-600">Gérez vos réservations et suivez vos performances</p>
+            <p className="text-muted-foreground">Gérez vos réservations et suivez vos performances</p>
           </div>
 
           {/* Stats Cards */}
@@ -306,15 +305,15 @@ const BookingManagement = () => {
           {/* Bookings List */}
           <div className="space-y-6">
             {filteredBookings.length === 0 ? (
-              <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+              <Card className="bg-card backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-4 border-gray-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
                 <CardContent className="p-12 text-center">
                   <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
                     <Calendar className="h-16 w-16 text-white mx-auto" />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  <h3 className="text-xl font-semibold text-card-foreground mb-2">
                     Aucune réservation trouvée
                   </h3>
-                  <p className="text-gray-600">
+                  <p className="text-muted-foreground">
                     {statusFilter !== 'all' || dateFilter !== 'all' 
                       ? 'Essayez de modifier vos filtres.' 
                       : 'Vos nouvelles réservations apparaîtront ici.'}

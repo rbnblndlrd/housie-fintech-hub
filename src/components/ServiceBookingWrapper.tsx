@@ -18,7 +18,7 @@ const ServiceBookingWrapper: React.FC<ServiceBookingWrapperProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <div className="min-h-screen pt-20 bg-background">
         <BookingForm
           service={service}
           provider={service.provider}
