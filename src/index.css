@@ -7,9 +7,9 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 35 20% 96%; /* Warm cream background */
     --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
+    --card: 0 0% 100%; /* Pure white cards */
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
@@ -32,7 +32,7 @@
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 35 20% 98%; /* Cream sidebar */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -43,9 +43,9 @@
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222.2 84% 4.9%; /* Dark background */
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 84% 4.9%; /* Dark cards */
     --card-foreground: 210 40% 98%;
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
@@ -89,7 +89,7 @@
 }
 
 @layer components {
-  /* LIGHT MODE - White cards with gray borders */
+  /* LIGHT MODE - White cards with gray borders on CREAM background */
   .fintech-card {
     @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border-4 border-gray-300/70 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.12)] hover:border-gray-400/90 hover:-translate-y-1 transition-all duration-300;
   }
@@ -225,7 +225,11 @@
   }
 }
 
-/* POP ART MODE - Washed Neon Pastels */
+/* POP ART MODE - Light sage green background with pastel cards */
+.pop-art-mode {
+  @apply bg-green-50; /* Light sage green background */
+}
+
 .pop-art-mode .fintech-card {
   @apply bg-gradient-to-br from-pink-200/80 via-purple-200/80 to-blue-200/80 backdrop-blur-sm border-4 border-orange-300/70 shadow-[0_4px_20px_-4px_rgba(251,146,60,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(251,146,60,0.5)] hover:border-orange-300/90 transition-all duration-300;
 }
@@ -252,6 +256,11 @@
 
 .pop-art-mode .fintech-button-secondary {
   @apply bg-gradient-to-r from-cyan-200/80 to-blue-200/80 border-4 border-purple-300/70 hover:border-purple-300/90 shadow-[0_2px_10px_-2px_rgba(168,85,247,0.3)] hover:shadow-[0_4px_15px_-2px_rgba(168,85,247,0.4)];
+}
+
+/* Pop Art Dark Mode - Light purple background */
+.dark.pop-art-mode {
+  @apply bg-purple-100 text-gray-800; /* Light purple background for dark pop art */
 }
 
 /* Pop Art Mascot Effects */

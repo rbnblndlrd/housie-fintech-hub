@@ -48,7 +48,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-gray-50/50">
+      <div className="min-h-screen pt-20 bg-background">
         <div className="container mx-auto px-4 py-8 space-y-8">
           <ServicesHeader />
 
