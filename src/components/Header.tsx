@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -52,9 +51,9 @@ const Header = () => {
           {/* Logo Section */}
           <Link to="/" className="flex items-center">
             <img 
-              src="/lovable-uploads/new-housie-logo.png" 
+              src={isDark ? "/lovable-uploads/4d509664-91c9-4234-aba4-df90e07c4f60.png" : "/lovable-uploads/4fdced3a-4692-442d-9f25-748a2b467ce4.png"} 
               alt="HOUSIE Logo" 
-              className={`h-16 transition-all duration-200 ${isDark ? 'filter invert' : ''}`}
+              className="h-16 transition-all duration-200"
             />
           </Link>
 
