@@ -133,13 +133,13 @@ const Index = () => {
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
                 
                 <div className="flex items-center justify-center mb-8">
-                  {/* STATEMENT PIECE APP ICON - MUCH LARGER */}
-                  <div className="w-48 h-48 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden">
-                    <div className="w-44 h-44 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center">
+                  {/* STATEMENT PIECE APP ICON - FILLS ENTIRE YELLOW CONTAINER */}
+                  <div className="w-48 h-48 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden p-1">
+                    <div className="w-full h-full bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center p-1">
                       <img 
                         src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
                         alt="HOUSIE Mascot" 
-                        className="w-40 h-40 rounded-xl object-cover"
+                        className="w-full h-full rounded-xl object-cover"
                       />
                     </div>
                   </div>
