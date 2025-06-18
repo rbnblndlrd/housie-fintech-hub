@@ -1,5 +1,5 @@
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNotifications } from './useNotifications';
 import { useNotificationSound } from './useNotificationSound';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,13 +9,32 @@ export const useEnhancedNotifications = () => {
   const { user } = useAuth();
   const { createNotification } = useNotifications();
   const { playNotificationSound } = useNotificationSound();
+  
+  // Use refs to track subscription state
+  const chatChannelRef = useRef<any>(null);
+  const bookingChannelRef = useRef<any>(null);
 
   useEffect(() => {
     if (!user) return;
 
+    // Clean up existing channels first
+    if (chatChannelRef.current) {
+      console.log('🧹 Cleaning up existing chat notification channel');
+      supabase.removeChannel(chatChannelRef.current);
+      chatChannelRef.current = null;
+    }
+    
+    if (bookingChannelRef.current) {
+      console.log('🧹 Cleaning up existing booking notification channel');
+      supabase.removeChannel(bookingChannelRef.current);
+      bookingChannelRef.current = null;
+    }
+
+    console.log('🔔 Setting up enhanced notifications');
+
     // Listen for new chat messages
     const chatChannel = supabase
-      .channel('chat-notifications')
+      .channel(`chat-notifications-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -51,11 +70,15 @@ export const useEnhancedNotifications = () => {
           );
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Chat notification subscription status:', status);
+      });
+
+    chatChannelRef.current = chatChannel;
 
     // Listen for booking updates that should trigger notifications
     const bookingChannel = supabase
-      .channel('booking-notifications')
+      .channel(`booking-notifications-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -103,11 +126,22 @@ export const useEnhancedNotifications = () => {
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Booking notification subscription status:', status);
+      });
+
+    bookingChannelRef.current = bookingChannel;
 
     return () => {
-      supabase.removeChannel(chatChannel);
-      supabase.removeChannel(bookingChannel);
+      console.log('🧹 Cleaning up enhanced notification subscriptions');
+      if (chatChannelRef.current) {
+        supabase.removeChannel(chatChannelRef.current);
+        chatChannelRef.current = null;
+      }
+      if (bookingChannelRef.current) {
+        supabase.removeChannel(bookingChannelRef.current);
+        bookingChannelRef.current = null;
+      }
     };
   }, [user, createNotification, playNotificationSound]);
 

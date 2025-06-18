@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -50,6 +50,9 @@ export const useChat = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
+  
+  // Use ref to track subscription state
+  const channelRef = useRef<any>(null);
 
   // AI response patterns for validation
   const aiResponsePatterns = [
@@ -285,12 +288,21 @@ export const useChat = () => {
     }
   }, [user]);
 
-  // Set up real-time subscriptions with AI filtering
+  // Set up real-time subscriptions with proper cleanup
   useEffect(() => {
     if (!user) return;
 
+    // Clean up existing channel first
+    if (channelRef.current) {
+      console.log('🧹 Cleaning up existing chat channel');
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    console.log('🔗 Setting up chat real-time subscription');
+    
     const channel = supabase
-      .channel('chat-updates')
+      .channel(`chat-updates-${user.id}`) // Unique channel name per user
       .on(
         'postgres_changes',
         {
@@ -328,10 +340,18 @@ export const useChat = () => {
           loadConversations();
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Chat subscription status:', status);
+      });
+
+    channelRef.current = channel;
 
     return () => {
-      supabase.removeChannel(channel);
+      console.log('🧹 Cleaning up chat subscription');
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
     };
   }, [user, activeConversation, loadConversations, loadMessages]);
 

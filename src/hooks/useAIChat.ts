@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -30,6 +30,9 @@ export const useAIChat = () => {
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  
+  // Use ref to track subscription state
+  const channelRef = useRef<any>(null);
 
   // Load AI chat sessions
   const loadSessions = useCallback(async () => {
@@ -293,6 +296,48 @@ export const useAIChat = () => {
     // Default intelligent response
     return "🤖 HOUSIE AI here! I'm your intelligent home services assistant. I help with cleaning, repairs, costs, tax questions, pet services, and more. How can I assist you today?";
   };
+
+  // Set up real-time subscriptions with proper cleanup
+  useEffect(() => {
+    if (!user) return;
+
+    // Clean up existing channel first
+    if (channelRef.current) {
+      console.log('🧹 Cleaning up existing AI chat channel');
+      supabase.removeChannel(channelRef.current);
+      channelRef.current = null;
+    }
+
+    console.log('🔗 Setting up AI chat real-time subscription');
+    
+    const channel = supabase
+      .channel(`ai-chat-updates-${user.id}`) // Unique channel name per user
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'ai_chat_sessions',
+          filter: `user_id=eq.${user.id}`
+        },
+        () => {
+          loadSessions();
+        }
+      )
+      .subscribe((status) => {
+        console.log('📡 AI chat subscription status:', status);
+      });
+
+    channelRef.current = channel;
+
+    return () => {
+      console.log('🧹 Cleaning up AI chat subscription');
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+      }
+    };
+  }, [user, loadSessions]);
 
   // Load sessions on mount
   useEffect(() => {
