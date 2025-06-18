@@ -36,11 +36,45 @@ const Calendar = () => {
 
   // Calculate selected events based on current date and sync mode
   const selectedEvents = useMemo(() => {
-    if (!date) return [];
+    if (!date) {
+      console.log('No date selected');
+      return [];
+    }
     
-    const eventsForDate = allEvents.filter(
-      event => event.date.toDateString() === date.toDateString()
-    );
+    console.log('Filtering events for date:', {
+      selectedDate: date,
+      selectedDateString: date.toDateString(),
+      allEventsCount: allEvents.length,
+      allEvents: allEvents.map(event => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        dateString: event.date.toDateString(),
+        source: event.source
+      }))
+    });
+    
+    const eventsForDate = allEvents.filter(event => {
+      const eventDateString = event.date.toDateString();
+      const selectedDateString = date.toDateString();
+      const matches = eventDateString === selectedDateString;
+      
+      console.log('Event date comparison:', {
+        eventId: event.id,
+        eventTitle: event.title,
+        eventDateString,
+        selectedDateString,
+        matches
+      });
+      
+      return matches;
+    });
+    
+    console.log('Events found for selected date:', {
+      dateString: date.toDateString(),
+      eventsCount: eventsForDate.length,
+      events: eventsForDate
+    });
     
     if (isGoogleSyncMode) {
       return eventsForDate; // Show all events when Google sync is on
@@ -71,7 +105,13 @@ const Calendar = () => {
   };
 
   const handleDateSelect = (newDate: Date | undefined) => {
-    console.log('Date selected:', newDate, 'Total events:', allEvents.length);
+    console.log('Date selected:', {
+      newDate,
+      totalEvents: allEvents.length,
+      eventsForNewDate: newDate ? allEvents.filter(event => 
+        event.date.toDateString() === newDate.toDateString()
+      ).length : 0
+    });
     setDate(newDate);
   };
 
@@ -88,8 +128,11 @@ const Calendar = () => {
   };
 
   const handleAddAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
-    console.log('Creating appointment:', newAppointment);
-    await createAppointment(newAppointment);
+    console.log('Calendar: Creating appointment:', newAppointment);
+    const result = await createAppointment(newAppointment);
+    if (result) {
+      console.log('Calendar: Appointment created successfully:', result);
+    }
   };
 
   const handleUpdateAppointment = async (updatedAppointment: CalendarEvent) => {

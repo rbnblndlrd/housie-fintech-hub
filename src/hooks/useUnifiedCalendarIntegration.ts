@@ -15,33 +15,62 @@ export const useUnifiedCalendarIntegration = () => {
 
   // Convert database appointments to CalendarEvent format
   const appointmentEvents: CalendarEvent[] = useMemo(() => {
-    return appointments.map(appointment => ({
-      id: appointment.id,
-      title: appointment.title,
-      date: new Date(appointment.scheduled_date),
-      time: appointment.scheduled_time,
-      client: appointment.client_name,
-      location: appointment.location || '',
-      status: appointment.status as 'confirmed' | 'pending' | 'completed',
-      amount: Number(appointment.amount) || 0,
-      source: 'housie' as const,
-      booking_id: undefined,
-      is_provider: false
-    }));
+    console.log('Converting appointments to events:', appointments);
+    
+    return appointments.map(appointment => {
+      const appointmentDate = new Date(appointment.scheduled_date);
+      console.log('Processing appointment:', {
+        id: appointment.id,
+        title: appointment.title,
+        originalDate: appointment.scheduled_date,
+        parsedDate: appointmentDate,
+        time: appointment.scheduled_time
+      });
+      
+      return {
+        id: appointment.id,
+        title: appointment.title,
+        date: appointmentDate,
+        time: appointment.scheduled_time,
+        client: appointment.client_name,
+        location: appointment.location || '',
+        status: appointment.status as 'confirmed' | 'pending' | 'completed',
+        amount: Number(appointment.amount) || 0,
+        source: 'housie' as const,
+        booking_id: undefined,
+        is_provider: false
+      };
+    });
   }, [appointments]);
 
   // Combine all events
-  const allEvents = useMemo(() => [
-    ...bookingEvents,
-    ...appointmentEvents
-  ], [bookingEvents, appointmentEvents]);
+  const allEvents = useMemo(() => {
+    const combined = [
+      ...bookingEvents,
+      ...appointmentEvents
+    ];
+    
+    console.log('Combined events:', {
+      bookingEventsCount: bookingEvents.length,
+      appointmentEventsCount: appointmentEvents.length,
+      totalEvents: combined.length,
+      events: combined
+    });
+    
+    return combined;
+  }, [bookingEvents, appointmentEvents]);
 
   const loading = bookingsLoading || appointmentsLoading;
 
   const handleCreateAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
+    console.log('Creating new appointment:', newAppointment);
+    
+    // Ensure we're using the correct date format (YYYY-MM-DD)
+    const dateString = newAppointment.date.toISOString().split('T')[0];
+    
     const appointmentData = {
       title: newAppointment.title,
-      scheduled_date: newAppointment.date.toISOString().split('T')[0],
+      scheduled_date: dateString,
       scheduled_time: newAppointment.time,
       client_name: newAppointment.client,
       location: newAppointment.location,
@@ -49,6 +78,8 @@ export const useUnifiedCalendarIntegration = () => {
       amount: newAppointment.amount,
       appointment_type: 'personal' as const
     };
+    
+    console.log('Appointment data being sent to database:', appointmentData);
     
     return await createAppointment(appointmentData);
   };

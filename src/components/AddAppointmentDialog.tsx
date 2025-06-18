@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -43,10 +43,16 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
   });
   const { toast } = useToast();
 
+  // Debug logging for selected date
+  useEffect(() => {
+    console.log('AddAppointmentDialog - selectedDate changed:', selectedDate);
+  }, [selectedDate]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedDate) {
+      console.error('No date selected when trying to create appointment');
       toast({
         title: "Erreur",
         description: "Veuillez sélectionner une date",
@@ -64,9 +70,19 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
       return;
     }
 
+    // Create a new Date object to avoid mutation
+    const appointmentDate = new Date(selectedDate);
+    
+    console.log('Creating appointment for date:', {
+      originalSelectedDate: selectedDate,
+      appointmentDate: appointmentDate,
+      dateString: appointmentDate.toISOString().split('T')[0],
+      formData: formData
+    });
+
     const newAppointment: Omit<CalendarEvent, 'id'> = {
       title: formData.title,
-      date: selectedDate,
+      date: appointmentDate,
       time: formData.time,
       client: formData.client,
       location: formData.location,
@@ -91,7 +107,18 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
     
     toast({
       title: "Rendez-vous ajouté",
-      description: "Le nouveau rendez-vous a été créé avec succès",
+      description: `Rendez-vous créé pour le ${appointmentDate.toLocaleDateString('fr-FR')}`,
+    });
+  };
+
+  // Format the selected date for display
+  const formatSelectedDate = (date: Date | undefined) => {
+    if (!date) return 'Aucune date sélectionnée';
+    return date.toLocaleDateString('fr-FR', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
     });
   };
 
@@ -108,6 +135,9 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Ajouter un Rendez-vous</DialogTitle>
+          <p className="text-sm text-gray-600 mt-2">
+            Date sélectionnée: {formatSelectedDate(selectedDate)}
+          </p>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
@@ -188,7 +218,11 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
             <Button type="button" variant="outline" onClick={() => setOpen(false)}>
               Annuler
             </Button>
-            <Button type="submit" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+            <Button 
+              type="submit" 
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+              disabled={!selectedDate}
+            >
               Créer le Rendez-vous
             </Button>
           </div>
