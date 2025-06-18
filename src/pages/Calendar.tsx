@@ -88,7 +88,7 @@ const Calendar = () => {
 
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Calendar */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+            <Card className="fintech-card hover:shadow-xl transition-all duration-300">
               <CardHeader className="p-6 pb-4">
                 <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <CalendarIcon className="h-5 w-5 text-blue-600" />
@@ -106,7 +106,7 @@ const Calendar = () => {
             </Card>
 
             {/* Events for Selected Date */}
-            <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+            <Card className="fintech-card hover:shadow-xl transition-all duration-300">
               <CardHeader className="p-6 pb-4">
                 <CardTitle className="text-xl font-semibold text-gray-900">
                   Rendez-vous du {date?.toLocaleDateString('fr-FR', { 

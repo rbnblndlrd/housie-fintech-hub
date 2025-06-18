@@ -78,7 +78,7 @@ export const ProfileSetup = () => {
             </div>
           </div>
 
-          <Card className="bg-white dark:bg-dark-secondary border-2 border-gray-100 dark:border-gray-600 shadow-xl">
+          <Card className="fintech-card shadow-xl">
             <CardContent className="p-8">
               {/* Step 1: Location Preferences */}
               {currentStep === 1 && (

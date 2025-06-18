@@ -65,7 +65,7 @@ const Auth = () => {
       <Header />
 
       <div className="pt-20 flex items-center justify-center min-h-screen px-4">
-        <Card className="max-w-md w-full bg-white dark:bg-dark-secondary border-2 border-gray-200 dark:border-gray-700 shadow-xl">
+        <Card className="max-w-md w-full fintech-card shadow-xl">
           <CardHeader className="text-center">
             <CardTitle className="text-3xl font-bold text-gray-800 dark:text-dark-text">
               Connexion
