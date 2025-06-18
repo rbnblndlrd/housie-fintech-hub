@@ -37,7 +37,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     >
       <CardContent className="p-6">
         <div className="flex items-start gap-6">
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)]">
+          <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-lg">
             {service.provider.business_name.split(' ').map(n => n[0]).join('')}
           </div>
           
@@ -100,7 +100,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 <span className="font-medium">Tarification réelle + 6% frais HOUSIE</span>
               </div>
               <Button 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
                 onClick={() => onBookNow(service)}
               >
                 Book Now
