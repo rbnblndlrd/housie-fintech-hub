@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Bot, Plus, Clock, Zap, Home, Calculator, MessageSquare, Download, AlertCircle, Info, RefreshCw } from 'lucide-react';
+import { Bot, Plus, Clock, Zap, Home, Calculator, MessageSquare, Download, AlertCircle, Info, RefreshCw, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -22,7 +22,8 @@ const AIAssistantTab = () => {
     retryCount,
     sendMessage: sendWebLLMMessage,
     resetConversation,
-    retryInitialization
+    retryInitialization,
+    initializeEngine: startWebLLM
   } = useWebLLM();
   const { activatePopArt } = usePopArt();
   const [showConversation, setShowConversation] = useState(false);
@@ -45,6 +46,11 @@ const AIAssistantTab = () => {
   const handleBackToList = () => {
     setShowConversation(false);
     setCurrentSessionId(null);
+  };
+
+  const handleStartAI = () => {
+    console.log('🚀 User clicked Start AI Assistant');
+    startWebLLM();
   };
 
   const formatTime = (timestamp: string) => {
@@ -118,18 +124,29 @@ const AIAssistantTab = () => {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {debugInfo || (isDownloading ? 'Downloading AI model...' : 
                    webLLMReady ? 'Local AI ready' : 
-                   webLLMError ? 'Fallback mode' : 'Initializing AI...')}
+                   webLLMError ? 'Fallback mode' : 'Click to start AI')}
                 </p>
                 <Badge variant="outline" className={`text-xs ${
                   webLLMReady ? 'bg-green-50 text-green-700 border-green-200' :
                   webLLMError ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
                   'bg-blue-50 text-blue-700 border-blue-200'
                 }`}>
-                  {webLLMReady ? 'WebLLM Active' : webLLMError ? 'Fallback Mode' : 'Loading'}
+                  {webLLMReady ? 'WebLLM Active' : webLLMError ? 'Fallback Mode' : 'Not Started'}
                 </Badge>
               </div>
             </div>
           </div>
+
+          {/* Start AI Button - Show if not ready and not downloading */}
+          {!webLLMReady && !isDownloading && !webLLMError && (
+            <Button 
+              onClick={handleStartAI}
+              className="w-full mb-3 bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700 rounded-lg"
+            >
+              <Play className="h-4 w-4 mr-2" />
+              Start Local AI Assistant
+            </Button>
+          )}
 
           {/* Download Progress */}
           {isDownloading && (
@@ -145,7 +162,7 @@ const AIAssistantTab = () => {
           )}
 
           {/* Debug Info Alert */}
-          {debugInfo && !isDownloading && (
+          {debugInfo && !isDownloading && webLLMReady && (
             <Alert className="mb-3">
               <Info className="h-4 w-4" />
               <AlertDescription className="text-sm">
@@ -286,7 +303,7 @@ const AIAssistantTab = () => {
         {/* AI Footer with Enhanced Status */}
         <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
           <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-            <span>🤖 {webLLMReady ? 'WebLLM Active' : webLLMError ? 'Fallback Mode' : 'Loading...'}</span>
+            <span>🤖 {webLLMReady ? 'WebLLM Active' : webLLMError ? 'Fallback Mode' : 'Not Started'}</span>
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
                 {webLLMReady ? 'Local • Private • Fast' : 'Intelligent • Context-Aware'}

@@ -1,3 +1,4 @@
+
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 // Type-safe WebLLM imports with error handling
@@ -9,6 +10,7 @@ const loadWebLLM = async () => {
   if (webllmLoaded) return webllm;
   
   try {
+    console.log('🔄 Loading WebLLM module...');
     webllm = await import("@mlc-ai/web-llm");
     webllmLoaded = true;
     console.log('✅ WebLLM module loaded successfully');
@@ -36,9 +38,11 @@ export const useWebLLM = () => {
   const engineRef = useRef<any>(null);
   const conversationRef = useRef<WebLLMMessage[]>([]);
   const initializingRef = useRef(false);
+  const isMountedRef = useRef(false);
 
   // Browser compatibility check
   const checkBrowserCompatibility = useCallback(() => {
+    console.log('🔍 Checking browser compatibility...');
     const checks = {
       webAssembly: typeof WebAssembly !== 'undefined',
       webGPU: typeof navigator !== 'undefined' && 'gpu' in navigator,
@@ -69,6 +73,19 @@ export const useWebLLM = () => {
   }, []);
 
   const initializeEngine = useCallback(async (forceRetry = false) => {
+    console.log('🚀 WebLLM initializeEngine called', { 
+      isMounted: isMountedRef.current, 
+      initializing: initializingRef.current,
+      forceRetry,
+      isReady
+    });
+
+    // Critical: Only initialize if React component is mounted
+    if (!isMountedRef.current) {
+      console.log('⏸️ Component not mounted yet, skipping WebLLM initialization');
+      return;
+    }
+
     // Prevent multiple simultaneous initializations
     if (initializingRef.current && !forceRetry) {
       console.log('⏳ WebLLM initialization already in progress');
@@ -83,10 +100,15 @@ export const useWebLLM = () => {
     initializingRef.current = true;
     
     try {
+      console.log('🤖 Starting WebLLM initialization...');
       setIsDownloading(true);
       setError(null);
       setDebugInfo('🔧 Initializing WebLLM engine...');
-      console.log('🤖 Starting WebLLM initialization...');
+
+      // Check React hooks are available
+      if (typeof useState === 'undefined') {
+        throw new Error('React hooks not available - component not properly mounted');
+      }
 
       // Check browser compatibility first
       checkBrowserCompatibility();
@@ -99,6 +121,7 @@ export const useWebLLM = () => {
       }
 
       setDebugInfo('📦 Creating WebLLM engine instance...');
+      console.log('📦 Creating WebLLM engine instance...');
       
       // Create engine with error handling
       const engine = new webllmModule.MLCEngine();
@@ -110,6 +133,11 @@ export const useWebLLM = () => {
       // Set up progress callback with error handling
       engine.setInitProgressCallback((report: any) => {
         try {
+          if (!isMountedRef.current) {
+            console.log('⚠️ Component unmounted during progress callback');
+            return;
+          }
+
           console.log('📥 WebLLM progress:', report);
           const progressText = report.text || 'Loading model...';
           setDebugInfo(`📥 ${progressText}`);
@@ -124,6 +152,7 @@ export const useWebLLM = () => {
       });
 
       setDebugInfo('📦 Downloading Llama-3.2-1B model...');
+      console.log('📦 Starting model download...');
       
       // Load model with timeout
       const loadTimeout = setTimeout(() => {
@@ -138,6 +167,11 @@ export const useWebLLM = () => {
         throw loadError;
       }
       
+      if (!isMountedRef.current) {
+        console.log('⚠️ Component unmounted during initialization');
+        return;
+      }
+
       engineRef.current = engine;
       setIsReady(true);
       setIsDownloading(false);
@@ -183,18 +217,22 @@ SPECIAL COMMANDS:
       if (retryCount < 2 && (errorMsg.includes('fetch') || errorMsg.includes('network'))) {
         setRetryCount(prev => prev + 1);
         setDebugInfo(`🔄 Retrying initialization (attempt ${retryCount + 1}/3)...`);
-        setTimeout(() => initializeEngine(true), 3000);
+        setTimeout(() => {
+          if (isMountedRef.current) {
+            initializeEngine(true);
+          }
+        }, 3000);
       }
     } finally {
       initializingRef.current = false;
     }
-  }, [checkBrowserCompatibility, retryCount]);
+  }, [checkBrowserCompatibility, retryCount, isReady]);
 
   const sendMessage = useCallback(async (message: string): Promise<string> => {
     const lowerMessage = message.toLowerCase().trim();
     
     console.log('💬 Sending message to WebLLM:', message);
-    console.log('🔍 WebLLM Status - Ready:', isReady, 'Engine:', !!engineRef.current);
+    console.log('🔍 WebLLM Status - Ready:', isReady, 'Engine:', !!engineRef.current, 'Mounted:', isMountedRef.current);
 
     // Handle test commands immediately
     if (lowerMessage === 'test webllm') {
@@ -214,7 +252,8 @@ SPECIAL COMMANDS:
 - Downloading: ${isDownloading ? '📥' : '✅'}
 - Progress: ${downloadProgress}%
 - Debug: ${debugInfo}
-- Retry Count: ${retryCount}/3`;
+- Retry Count: ${retryCount}/3
+- Component Mounted: ${isMountedRef.current ? '✅' : '❌'}`;
     }
 
     // Handle pop art easter egg
@@ -223,7 +262,7 @@ SPECIAL COMMANDS:
     }
 
     // Use WebLLM if ready
-    if (engineRef.current && isReady) {
+    if (engineRef.current && isReady && isMountedRef.current) {
       try {
         setIsLoading(true);
         
@@ -328,24 +367,34 @@ SPECIAL COMMANDS:
   }, []);
 
   const retryInitialization = useCallback(() => {
+    console.log('🔄 Manual retry initialization triggered');
     setRetryCount(0);
     setError(null);
     cleanupEngine();
-    initializeEngine(true);
+    if (isMountedRef.current) {
+      initializeEngine(true);
+    }
   }, [cleanupEngine, initializeEngine]);
 
+  // Track component mount status
   useEffect(() => {
-    // Auto-initialize on mount with delay to ensure React context is ready
-    const initTimer = setTimeout(() => {
-      initializeEngine();
-    }, 100);
+    console.log('🏗️ useWebLLM component mounting...');
+    isMountedRef.current = true;
     
-    // Cleanup on unmount
     return () => {
-      clearTimeout(initTimer);
+      console.log('🏗️ useWebLLM component unmounting...');
+      isMountedRef.current = false;
       cleanupEngine();
     };
-  }, [initializeEngine, cleanupEngine]);
+  }, [cleanupEngine]);
+
+  // Manual initialization method (no auto-init)
+  const startWebLLM = useCallback(() => {
+    console.log('🚀 Manual WebLLM start requested');
+    if (isMountedRef.current && !initializingRef.current && !isReady) {
+      initializeEngine();
+    }
+  }, [initializeEngine, isReady]);
 
   return {
     isLoading,
@@ -357,7 +406,7 @@ SPECIAL COMMANDS:
     retryCount,
     sendMessage,
     resetConversation,
-    initializeEngine,
+    initializeEngine: startWebLLM, // Rename to make it clear this is manual
     retryInitialization
   };
 };
