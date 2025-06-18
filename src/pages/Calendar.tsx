@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,21 +14,24 @@ import EditAppointmentDialog from "@/components/EditAppointmentDialog";
 import { Clock, MapPin, User, Calendar as CalendarIcon, Wifi, WifiOff, Briefcase } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useToast } from '@/hooks/use-toast';
-import { useBookingCalendarIntegration, CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
+import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
+import { CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<CalendarEvent | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [personalEvents, setPersonalEvents] = useState<CalendarEvent[]>([]);
   
   const { isFeatureAvailable } = useSubscription();
   const { toast } = useToast();
-  const { calendarEvents: bookingEvents, loading, updateBookingStatus } = useBookingCalendarIntegration();
-
-  // Combine booking events with personal events
-  const allEvents = useMemo(() => [...bookingEvents, ...personalEvents], [bookingEvents, personalEvents]);
+  const { 
+    allEvents, 
+    loading, 
+    createAppointment, 
+    updateEvent, 
+    deleteEvent 
+  } = useUnifiedCalendarIntegration();
 
   // Calculate selected events based on current date and sync mode
   const selectedEvents = useMemo(() => {
@@ -46,26 +48,10 @@ const Calendar = () => {
     }
   }, [date, allEvents, isGoogleSyncMode]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return 'bg-gradient-to-r from-yellow-400 to-orange-500';
-      case 'confirmed': return 'bg-gradient-to-r from-blue-500 to-blue-600';
-      case 'completed': return 'bg-gradient-to-r from-green-500 to-emerald-500';
-      default: return 'bg-gray-500';
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'pending': return 'En Attente';
-      case 'confirmed': return 'Confirmée';
-      case 'completed': return 'Terminée';
-      default: return status;
-    }
-  };
+  // ... keep existing code (getStatusColor, getStatusText functions)
 
   const handleDateSelect = (newDate: Date | undefined) => {
-    console.log('Date selected:', newDate, 'Current personal events:', personalEvents.length);
+    console.log('Date selected:', newDate, 'Total events:', allEvents.length);
     setDate(newDate);
   };
 
@@ -81,44 +67,17 @@ const Calendar = () => {
     setIsGoogleSyncMode(checked);
   };
 
-  const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
-    const appointment: CalendarEvent = {
-      ...newAppointment,
-      id: Date.now().toString(),
-      source: 'housie'
-    };
-    
-    console.log('Adding appointment:', appointment);
-    setPersonalEvents(prev => {
-      const updated = [...prev, appointment];
-      console.log('Updated personal events:', updated.length);
-      return updated;
-    });
+  const handleAddAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
+    console.log('Creating appointment:', newAppointment);
+    await createAppointment(newAppointment);
   };
 
-  const handleUpdateAppointment = (updatedAppointment: CalendarEvent) => {
-    if (updatedAppointment.booking_id) {
-      // This is a booking - update via the booking system
-      updateBookingStatus(updatedAppointment.booking_id, updatedAppointment.status);
-    } else {
-      // This is a personal event
-      setPersonalEvents(prev => 
-        prev.map(event => 
-          event.id === updatedAppointment.id ? updatedAppointment : event
-        )
-      );
-    }
+  const handleUpdateAppointment = async (updatedAppointment: CalendarEvent) => {
+    await updateEvent(updatedAppointment.id, updatedAppointment);
   };
 
-  const handleDeleteAppointment = (appointmentId: string) => {
-    const event = allEvents.find(e => e.id === appointmentId);
-    if (event?.booking_id) {
-      // This is a booking - update status to cancelled
-      updateBookingStatus(event.booking_id, 'cancelled');
-    } else {
-      // This is a personal event - remove it
-      setPersonalEvents(prev => prev.filter(event => event.id !== appointmentId));
-    }
+  const handleDeleteAppointment = async (appointmentId: string) => {
+    await deleteEvent(appointmentId);
   };
 
   const handleEditAppointment = (appointment: CalendarEvent) => {

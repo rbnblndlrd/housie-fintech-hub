@@ -171,6 +171,54 @@ export type Database = {
           },
         ]
       }
+      calendar_appointments: {
+        Row: {
+          amount: number | null
+          appointment_type: string
+          client_name: string
+          created_at: string
+          id: string
+          location: string | null
+          notes: string | null
+          scheduled_date: string
+          scheduled_time: string
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          appointment_type?: string
+          client_name: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          scheduled_date: string
+          scheduled_time: string
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          appointment_type?: string
+          client_name?: string
+          created_at?: string
+          id?: string
+          location?: string | null
+          notes?: string | null
+          scheduled_date?: string
+          scheduled_time?: string
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           booking_id: string | null

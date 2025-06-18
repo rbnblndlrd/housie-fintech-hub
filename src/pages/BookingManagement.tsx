@@ -8,6 +8,7 @@ import BookingFilters from "@/components/BookingFilters";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, DollarSign, TrendingUp, Clock } from 'lucide-react';
+import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
 
 interface BookingCustomer {
   full_name: string;
@@ -32,6 +33,7 @@ interface Booking {
   created_at: string;
   customer: BookingCustomer;
   service: BookingService;
+  booking_type?: 'service' | 'appointment'; // New field to distinguish types
 }
 
 const BookingManagement = () => {
@@ -43,7 +45,10 @@ const BookingManagement = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
 
-  // Stats calculation
+  // Get unified calendar data
+  const { allEvents, updateEvent } = useUnifiedCalendarIntegration();
+
+  // Stats calculation including both bookings and appointments
   const stats = {
     total: bookings.length,
     pending: bookings.filter(b => b.status === 'pending').length,
@@ -65,64 +70,91 @@ const BookingManagement = () => {
         .eq('user_id', user.id)
         .single();
 
-      if (!providerProfile) {
-        setLoading(false);
-        return;
+      let serviceBookings: Booking[] = [];
+
+      if (providerProfile) {
+        // Fetch service bookings with customer and service details
+        const { data, error } = await supabase
+          .from('bookings')
+          .select(`
+            *,
+            customer:customer_id (
+              full_name,
+              phone,
+              email
+            ),
+            service:service_id (
+              title,
+              category
+            )
+          `)
+          .eq('provider_id', providerProfile.id)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching service bookings:', error);
+        } else {
+          serviceBookings = (data || []).map(booking => ({
+            id: booking.id,
+            scheduled_date: booking.scheduled_date,
+            scheduled_time: booking.scheduled_time,
+            duration_hours: booking.duration_hours || 0,
+            total_amount: booking.total_amount || 0,
+            service_address: booking.service_address || '',
+            status: booking.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
+            payment_status: booking.payment_status as 'pending' | 'paid' | 'refunded',
+            created_at: booking.created_at,
+            customer: {
+              full_name: booking.customer?.full_name || '',
+              phone: booking.customer?.phone || '',
+              email: booking.customer?.email || ''
+            },
+            service: {
+              title: booking.service?.title || '',
+              category: booking.service?.category || ''
+            },
+            booking_type: 'service' as const
+          }));
+        }
       }
 
-      // Then fetch bookings with customer and service details
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          customer:customer_id (
-            full_name,
-            phone,
-            email
-          ),
-          service:service_id (
-            title,
-            category
-          )
-        `)
-        .eq('provider_id', providerProfile.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Error fetching bookings:', error);
-        toast({
-          title: "Erreur",
-          description: "Impossible de charger les réservations.",
-          variant: "destructive",
-        });
-      } else {
-        // Transform the data to match our Booking interface
-        const typedBookings: Booking[] = (data || []).map(booking => ({
-          id: booking.id,
-          scheduled_date: booking.scheduled_date,
-          scheduled_time: booking.scheduled_time,
-          duration_hours: booking.duration_hours || 0,
-          total_amount: booking.total_amount || 0,
-          service_address: booking.service_address || '',
-          status: booking.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
-          payment_status: booking.payment_status as 'pending' | 'paid' | 'refunded',
-          created_at: booking.created_at,
+      // Convert calendar appointments to booking format
+      const appointmentBookings: Booking[] = allEvents
+        .filter(event => !event.booking_id) // Only personal appointments, not service bookings
+        .map(event => ({
+          id: event.id,
+          scheduled_date: event.date.toISOString().split('T')[0],
+          scheduled_time: event.time,
+          duration_hours: 1, // Default duration for appointments
+          total_amount: event.amount,
+          service_address: event.location,
+          status: event.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
+          payment_status: 'paid' as const, // Appointments don't have payment status
+          created_at: new Date().toISOString(), // Use current date as fallback
           customer: {
-            full_name: booking.customer?.full_name || '',
-            phone: booking.customer?.phone || '',
-            email: booking.customer?.email || ''
+            full_name: event.client,
+            phone: '',
+            email: ''
           },
           service: {
-            title: booking.service?.title || '',
-            category: booking.service?.category || ''
-          }
+            title: event.title,
+            category: 'appointment'
+          },
+          booking_type: 'appointment' as const
         }));
-        
-        setBookings(typedBookings);
-        setFilteredBookings(typedBookings);
-      }
+
+      // Combine both types
+      const allBookings = [...serviceBookings, ...appointmentBookings];
+      setBookings(allBookings);
+      setFilteredBookings(allBookings);
+
     } catch (error) {
       console.error('Error:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de charger les réservations.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -130,18 +162,26 @@ const BookingManagement = () => {
 
   const updateBookingStatus = async (bookingId: string, newStatus: string) => {
     try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
-        .eq('id', bookingId);
+      const booking = bookings.find(b => b.id === bookingId);
+      
+      if (booking?.booking_type === 'appointment') {
+        // Update appointment via unified calendar integration
+        await updateEvent(bookingId, { status: newStatus as any });
+      } else {
+        // Update service booking via Supabase
+        const { error } = await supabase
+          .from('bookings')
+          .update({ status: newStatus, updated_at: new Date().toISOString() })
+          .eq('id', bookingId);
 
-      if (error) {
-        toast({
-          title: "Erreur",
-          description: "Impossible de mettre à jour le statut.",
-          variant: "destructive",
-        });
-        return;
+        if (error) {
+          toast({
+            title: "Erreur",
+            description: "Impossible de mettre à jour le statut.",
+            variant: "destructive",
+          });
+          return;
+        }
       }
 
       // Update local state
@@ -195,7 +235,7 @@ const BookingManagement = () => {
 
   useEffect(() => {
     fetchBookings();
-  }, [user]);
+  }, [user, allEvents]); // Re-fetch when calendar events change
 
   useEffect(() => {
     applyFilters();
@@ -232,7 +272,7 @@ const BookingManagement = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
               Gestion des Réservations
             </h1>
-            <p className="text-muted-foreground">Gérez vos réservations et suivez vos performances</p>
+            <p className="text-muted-foreground">Gérez vos réservations de services et rendez-vous personnels</p>
           </div>
 
           {/* Stats Cards */}
@@ -316,17 +356,26 @@ const BookingManagement = () => {
                   <p className="text-muted-foreground">
                     {statusFilter !== 'all' || dateFilter !== 'all' 
                       ? 'Essayez de modifier vos filtres.' 
-                      : 'Vos nouvelles réservations apparaîtront ici.'}
+                      : 'Vos nouvelles réservations et rendez-vous apparaîtront ici.'}
                   </p>
                 </CardContent>
               </Card>
             ) : (
               filteredBookings.map((booking) => (
-                <BookingCard
-                  key={booking.id}
-                  booking={booking}
-                  onUpdateStatus={updateBookingStatus}
-                />
+                <div key={booking.id} className="relative">
+                  <BookingCard
+                    booking={booking}
+                    onUpdateStatus={updateBookingStatus}
+                  />
+                  {booking.booking_type === 'appointment' && (
+                    <Badge 
+                      variant="outline" 
+                      className="absolute top-4 right-4 bg-purple-100 text-purple-700 border-purple-300"
+                    >
+                      Rendez-vous Personnel
+                    </Badge>
+                  )}
+                </div>
               ))
             )}
           </div>
