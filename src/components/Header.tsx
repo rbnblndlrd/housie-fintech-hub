@@ -51,7 +51,11 @@ const Header = () => {
         <div className="flex h-16 items-center justify-between">
           {/* Logo Section */}
           <Link to="/" className="flex items-center">
-            <img src="/lovable-uploads/new-housie-logo.png" alt="HOUSIE Logo" className="h-12" />
+            <img 
+              src="/lovable-uploads/new-housie-logo.png" 
+              alt="HOUSIE Logo" 
+              className={`h-36 transition-all duration-200 ${isDark ? 'filter invert brightness-0 invert' : ''}`}
+            />
           </Link>
 
           {/* Mobile Menu Button */}
@@ -221,25 +225,27 @@ const Header = () => {
                   </Button>
                 </>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Link to="/auth">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex items-center gap-2 font-medium rounded-xl border-gray-200 dark:border-gray-600 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:hover:from-gray-800 dark:hover:to-gray-700 transition-all duration-200 text-gray-900 dark:text-white"
-                    >
-                      <User className="h-4 w-4" />
-                      Connexion
-                    </Button>
-                  </Link>
-                  <Link to="/onboarding">
-                    <Button 
-                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200" 
-                      size="sm"
-                    >
-                      S'inscrire
-                    </Button>
-                  </Link>
+                <>
+                  <div className="flex items-center space-x-2">
+                    <Link to="/auth">
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="flex items-center gap-2 font-medium rounded-xl border-gray-200 dark:border-gray-600 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 dark:hover:from-gray-800 dark:hover:to-gray-700 transition-all duration-200 text-gray-900 dark:text-white"
+                      >
+                        <User className="h-4 w-4" />
+                        Connexion
+                      </Button>
+                    </Link>
+                    <Link to="/onboarding">
+                      <Button 
+                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-medium rounded-xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200" 
+                        size="sm"
+                      >
+                        S'inscrire
+                      </Button>
+                    </Link>
+                  </div>
                   
                   {/* HOUSIE Pro Diamond - After signup button */}
                   <Button
@@ -251,7 +257,7 @@ const Header = () => {
                   >
                     <span className="text-lg">💎</span>
                   </Button>
-                </div>
+                </>
               )}
             </div>
           </div>
