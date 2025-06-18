@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CreamBadge } from '@/components/ui/cream-badge';
-import { Calendar as CalendarIcon, Sync, Download, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import { Calendar as CalendarIcon, RefreshCw, Download, Upload, CheckCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface GoogleCalendarIntegrationProps {
@@ -118,7 +118,7 @@ const GoogleCalendarIntegration: React.FC<GoogleCalendarIntegrationProps> = ({
                 disabled={isSyncing}
                 className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
               >
-                <Sync className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
                 {isSyncing ? 'Sync...' : 'Synchroniser'}
               </Button>
               
