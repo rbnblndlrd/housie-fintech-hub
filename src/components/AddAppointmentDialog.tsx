@@ -38,7 +38,7 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
     time: '',
     client: '',
     location: '',
-    status: 'confirmed' as const,
+    status: 'confirmed' as 'confirmed' | 'pending' | 'completed',
     amount: 0
   });
   const { toast } = useToast();
