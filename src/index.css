@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
@@ -88,7 +89,7 @@
 }
 
 @layer components {
-  /* FINTECH WHITE CARD SYSTEM WITH THICK BORDERS - Apply everywhere */
+  /* LIGHT MODE - White cards with gray borders */
   .fintech-card {
     @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border-4 border-gray-300/70 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.12)] hover:border-gray-400/90 hover:-translate-y-1 transition-all duration-300;
   }
@@ -138,58 +139,58 @@
     @apply bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* Dark mode overrides - keep white cards even in dark mode for consistency with thick borders */
+  /* DARK MODE - Dark gray cards with ORANGE borders and PURPLE shadows */
   .dark .fintech-card {
-    @apply bg-white/95 text-gray-900 border-4 border-gray-300/70 hover:border-gray-400/90;
+    @apply bg-gray-800/95 text-white border-4 border-orange-400/60 shadow-[0_4px_20px_-4px_rgba(147,51,234,0.25)] hover:shadow-[0_8px_30px_-4px_rgba(147,51,234,0.35)] hover:border-orange-400/80;
   }
 
   .dark .fintech-card-secondary {
-    @apply bg-white/90 text-gray-900 border-4 border-gray-200/80 hover:border-gray-300/90;
+    @apply bg-gray-700/90 text-white border-4 border-orange-300/50 shadow-[0_2px_15px_-3px_rgba(147,51,234,0.2)] hover:shadow-[0_6px_25px_-3px_rgba(147,51,234,0.3)] hover:border-orange-300/70;
   }
 
   .dark .fintech-metric-card {
-    @apply bg-white/95 text-gray-900 border-4 border-gray-200/90 hover:border-gray-300/90;
+    @apply bg-gray-800/95 text-white border-4 border-orange-400/60 shadow-[0_2px_12px_-2px_rgba(147,51,234,0.25)] hover:shadow-[0_4px_20px_-2px_rgba(147,51,234,0.35)] hover:border-orange-400/80;
   }
 
   .dark .fintech-chart-container {
-    @apply bg-white/95 text-gray-900 border-4 border-gray-300/70 hover:border-gray-400/90;
+    @apply bg-gray-800/95 text-white border-4 border-orange-400/60 shadow-[0_4px_20px_-4px_rgba(147,51,234,0.25)] hover:shadow-[0_8px_30px_-4px_rgba(147,51,234,0.35)] hover:border-orange-400/80;
   }
 
   .dark .fintech-input {
-    @apply bg-white/95 text-gray-900 border-4 border-gray-300/90 focus:border-blue-400/90;
+    @apply bg-gray-800/95 text-white border-4 border-orange-400/60 shadow-[0_2px_8px_-2px_rgba(147,51,234,0.2)] focus:shadow-[0_4px_12px_-2px_rgba(147,51,234,0.3)] focus:border-orange-400/80;
   }
 
   .dark .fintech-button-secondary {
-    @apply border-4 border-gray-300/80 hover:border-gray-400/90;
+    @apply bg-gray-800/90 text-white border-4 border-orange-400/60 hover:border-orange-400/80 shadow-[0_2px_10px_-2px_rgba(147,51,234,0.2)] hover:shadow-[0_4px_15px_-2px_rgba(147,51,234,0.3)];
   }
 }
 
-/* Service Categories - Transform to white cards with thick borders */
+/* Service Categories - Transform to theme-appropriate cards */
 .service-category-card {
   @apply fintech-card p-6 text-center;
 }
 
-/* Navigation and header elements with borders */
+/* Navigation and header elements */
 .nav-card {
   @apply fintech-card-secondary;
 }
 
-/* Form containers with prominent borders */
+/* Form containers */
 .form-container {
   @apply fintech-card p-8;
 }
 
-/* Stats and metric cards with thick borders */
+/* Stats and metric cards */
 .stats-card {
   @apply fintech-metric-card p-6;
 }
 
-/* Chart containers with extra thick borders */
+/* Chart containers */
 .chart-card {
   @apply fintech-chart-container p-6;
 }
 
-/* Custom scrollbar for white theme */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -201,16 +202,6 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-gray-300/70 rounded-full hover:bg-gray-400/70 transition-colors;
-}
-
-/* Ensure all card elements use white theme with thick borders */
-[class*="card"], [class*="Card"], .bg-gray-800, .bg-gray-900, .bg-slate-800, .bg-slate-900 {
-  @apply fintech-card !important;
-}
-
-/* Override any dark backgrounds in components */
-.dark\:bg-gray-800, .dark\:bg-gray-900, .dark\:bg-slate-800 {
-  @apply bg-white/95 text-gray-900 border-4 border-gray-300/70 !important;
 }
 
 /* Pop Art Easter Egg Styles */
@@ -234,25 +225,33 @@
   }
 }
 
-/* Pop Art Mode Card Transformations */
+/* POP ART MODE - Washed Neon Pastels */
 .pop-art-mode .fintech-card {
-  @apply bg-gradient-to-br from-pink-100/90 via-purple-100/90 to-blue-100/90 backdrop-blur-sm border-4 border-pink-300/80 shadow-[0_4px_20px_-4px_rgba(255,0,150,0.3)] hover:shadow-[0_8px_30px_-4px_rgba(255,0,150,0.4)] hover:border-pink-400/90 transition-all duration-300;
+  @apply bg-gradient-to-br from-pink-200/80 via-purple-200/80 to-blue-200/80 backdrop-blur-sm border-4 border-orange-300/70 shadow-[0_4px_20px_-4px_rgba(251,146,60,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(251,146,60,0.5)] hover:border-orange-300/90 transition-all duration-300;
 }
 
 .pop-art-mode .fintech-card-secondary {
-  @apply bg-gradient-to-br from-cyan-100/90 via-green-100/90 to-yellow-100/90 backdrop-blur-sm border-4 border-cyan-300/80 shadow-[0_2px_15px_-3px_rgba(0,255,200,0.3)] hover:shadow-[0_6px_25px_-3px_rgba(0,255,200,0.4)] hover:border-cyan-400/90 transition-all duration-200;
+  @apply bg-gradient-to-br from-cyan-200/80 via-green-200/80 to-yellow-200/80 backdrop-blur-sm border-4 border-purple-300/70 shadow-[0_2px_15px_-3px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_25px_-3px_rgba(168,85,247,0.45)] hover:border-purple-300/90 transition-all duration-200;
 }
 
 .pop-art-mode .fintech-gradient-card {
-  @apply bg-gradient-to-br from-orange-200/90 via-red-200/90 to-purple-200/90 backdrop-blur-sm border-4 border-orange-300/80 shadow-[0_4px_20px_-4px_rgba(255,100,0,0.3)] hover:shadow-[0_8px_30px_-4px_rgba(255,100,0,0.4)] hover:border-orange-400/90 transition-all duration-300;
+  @apply bg-gradient-to-br from-orange-200/80 via-red-200/80 to-purple-200/80 backdrop-blur-sm border-4 border-blue-300/70 shadow-[0_4px_20px_-4px_rgba(59,130,246,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.5)] hover:border-blue-300/90 transition-all duration-300;
 }
 
 .pop-art-mode .fintech-metric-card {
-  @apply bg-gradient-to-br from-green-100/90 via-blue-100/90 to-indigo-100/90 backdrop-blur-sm border-4 border-green-300/80 shadow-[0_2px_12px_-2px_rgba(0,200,100,0.3)] hover:shadow-[0_4px_20px_-2px_rgba(0,200,100,0.4)] hover:border-green-400/90 transition-all duration-200;
+  @apply bg-gradient-to-br from-green-200/80 via-blue-200/80 to-indigo-200/80 backdrop-blur-sm border-4 border-orange-300/70 shadow-[0_2px_12px_-2px_rgba(251,146,60,0.35)] hover:shadow-[0_4px_20px_-2px_rgba(251,146,60,0.45)] hover:border-orange-300/90 transition-all duration-200;
 }
 
 .pop-art-mode .fintech-chart-container {
-  @apply bg-gradient-to-br from-yellow-100/90 via-orange-100/90 to-red-100/90 backdrop-blur-sm border-4 border-yellow-300/80 shadow-[0_4px_20px_-4px_rgba(255,200,0,0.3)] hover:shadow-[0_8px_30px_-4px_rgba(255,200,0,0.4)] hover:border-yellow-400/90 transition-all duration-200;
+  @apply bg-gradient-to-br from-yellow-200/80 via-orange-200/80 to-red-200/80 backdrop-blur-sm border-4 border-purple-300/70 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.5)] hover:border-purple-300/90 transition-all duration-200;
+}
+
+.pop-art-mode .fintech-input {
+  @apply bg-gradient-to-r from-pink-200/80 to-purple-200/80 border-4 border-orange-300/70 shadow-[0_2px_8px_-2px_rgba(251,146,60,0.3)] focus:shadow-[0_4px_12px_-2px_rgba(251,146,60,0.4)] focus:border-orange-300/90;
+}
+
+.pop-art-mode .fintech-button-secondary {
+  @apply bg-gradient-to-r from-cyan-200/80 to-blue-200/80 border-4 border-purple-300/70 hover:border-purple-300/90 shadow-[0_2px_10px_-2px_rgba(168,85,247,0.3)] hover:shadow-[0_4px_15px_-2px_rgba(168,85,247,0.4)];
 }
 
 /* Pop Art Mascot Effects */
@@ -272,8 +271,9 @@
 
 /* Pop Art Text Effects */
 .pop-art-mode .housie-text-gradient {
-  @apply bg-gradient-to-r from-pink-500 via-purple-500 via-blue-500 via-green-500 to-yellow-500 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-pink-400 via-purple-400 via-blue-400 via-green-400 to-yellow-400 bg-clip-text text-transparent;
   animation: rainbow-text 3s ease-in-out infinite;
+  background-size: 200% 200%;
 }
 
 @keyframes rainbow-text {
@@ -284,9 +284,9 @@
 /* Pop Art Background Pattern */
 .pop-art-mode .fintech-grid-pattern {
   background-image: 
-    radial-gradient(circle at 25px 25px, rgba(255, 100, 255, 0.3) 3px, transparent 0),
-    radial-gradient(circle at 75px 75px, rgba(100, 255, 255, 0.2) 3px, transparent 0),
-    radial-gradient(circle at 50px 50px, rgba(255, 255, 100, 0.2) 2px, transparent 0);
+    radial-gradient(circle at 25px 25px, rgba(255, 100, 255, 0.2) 3px, transparent 0),
+    radial-gradient(circle at 75px 75px, rgba(100, 255, 255, 0.15) 3px, transparent 0),
+    radial-gradient(circle at 50px 50px, rgba(255, 255, 100, 0.15) 2px, transparent 0);
   background-size: 100px 100px;
   animation: pattern-shift 4s ease-in-out infinite;
 }

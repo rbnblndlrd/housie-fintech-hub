@@ -1,5 +1,6 @@
 
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface PopArtContextType {
   isPopArtMode: boolean;
@@ -24,6 +25,14 @@ interface PopArtProviderProps {
 
 export const PopArtProvider: React.FC<PopArtProviderProps> = ({ children }) => {
   const [isPopArtMode, setIsPopArtMode] = useState(false);
+  const { isDark } = useTheme();
+
+  // Disable pop art mode when theme changes
+  useEffect(() => {
+    if (isPopArtMode) {
+      setIsPopArtMode(false);
+    }
+  }, [isDark]);
 
   const activatePopArt = () => {
     setIsPopArtMode(true);
