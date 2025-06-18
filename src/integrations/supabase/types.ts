@@ -98,6 +98,7 @@ export type Database = {
           customer_id: string
           duration_hours: number | null
           id: string
+          instructions: string | null
           payment_status: string | null
           provider_id: string
           scheduled_date: string
@@ -115,6 +116,7 @@ export type Database = {
           customer_id: string
           duration_hours?: number | null
           id?: string
+          instructions?: string | null
           payment_status?: string | null
           provider_id: string
           scheduled_date: string
@@ -132,6 +134,7 @@ export type Database = {
           customer_id?: string
           duration_hours?: number | null
           id?: string
+          instructions?: string | null
           payment_status?: string | null
           provider_id?: string
           scheduled_date?: string
