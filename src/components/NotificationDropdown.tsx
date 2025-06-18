@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
 import { CheckCircle, Clock, CreditCard, Star, Calendar, X, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +27,8 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
   loading,
   onMarkAsRead,
 }) => {
+  const navigate = useNavigate();
+
   const getNotificationIcon = (type: string) => {
     switch (type) {
       case 'new_booking':
@@ -38,8 +41,40 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
         return <Star className="h-4 w-4 text-yellow-500" />;
       case 'booking_cancelled':
         return <X className="h-4 w-4 text-red-500" />;
+      case 'new_message':
+        return <Bell className="h-4 w-4 text-purple-500" />;
       default:
         return <Clock className="h-4 w-4 text-gray-500" />;
+    }
+  };
+
+  const handleNotificationClick = (notification: Notification) => {
+    // Mark as read if not already read
+    if (!notification.read) {
+      onMarkAsRead(notification.id);
+    }
+
+    // Navigate to appropriate page based on notification type
+    switch (notification.type) {
+      case 'new_booking':
+      case 'booking_confirmed':
+      case 'booking_cancelled':
+        navigate('/booking-management');
+        break;
+      case 'payment_received':
+        navigate('/analytics');
+        break;
+      case 'review_received':
+        navigate('/provider-profile');
+        break;
+      case 'new_message':
+        // For chat messages, we could navigate to a chat page if it exists
+        // For now, navigate to dashboard
+        navigate('/dashboard');
+        break;
+      default:
+        navigate('/dashboard');
+        break;
     }
   };
 
@@ -74,7 +109,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
               className={`p-4 hover:bg-gray-50 cursor-pointer transition-colors ${
                 !notification.read ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
               }`}
-              onClick={() => !notification.read && onMarkAsRead(notification.id)}
+              onClick={() => handleNotificationClick(notification)}
             >
               <div className="flex items-start space-x-3">
                 <div className="flex-shrink-0 mt-1">

@@ -38,6 +38,9 @@ export const useNotifications = () => {
         });
 
       if (error) throw error;
+      
+      // Refresh notifications after creating one
+      fetchNotifications();
     } catch (error) {
       console.error('Error creating notification:', error);
     }
@@ -104,6 +107,27 @@ export const useNotifications = () => {
 
   useEffect(() => {
     fetchNotifications();
+
+    // Set up real-time subscription for notifications
+    const channel = supabase
+      .channel('notifications')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user?.id}`
+        },
+        () => {
+          fetchNotifications();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
