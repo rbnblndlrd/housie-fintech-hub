@@ -113,8 +113,13 @@ export const useAIChat = () => {
     }
   }, [user, loadSessions]);
 
-  // Send message to AI with proper separation
-  const sendMessage = useCallback(async (content: string, sessionId?: string, onPopArtTrigger?: () => void) => {
+  // Send message to AI - now uses WebLLM properly
+  const sendMessage = useCallback(async (
+    content: string, 
+    sessionId?: string, 
+    onPopArtTrigger?: () => void,
+    webLLMSendMessage?: (message: string) => Promise<string>
+  ) => {
     if (!user || !content.trim()) return null;
 
     console.log('🤖 Sending AI message:', content.substring(0, 50) + '...');
@@ -143,13 +148,13 @@ export const useAIChat = () => {
       const newSession = await createSession();
       if (!newSession) return null;
       await loadMessages(newSession.id);
-      return sendMessage(content, newSession.id, onPopArtTrigger);
+      return sendMessage(content, newSession.id, onPopArtTrigger, webLLMSendMessage);
     }
 
     try {
       setIsTyping(true);
 
-      // Save user message to AI messages table ONLY
+      // Save user message to AI messages table
       const { data: userMessage, error: userError } = await supabase
         .from('ai_messages')
         .insert({
@@ -173,10 +178,17 @@ export const useAIChat = () => {
       };
       setMessages(prev => [...prev, typedUserMessage]);
 
-      // Generate AI response
-      const aiResponse = await generateAIResponse(content);
+      // Generate AI response using WebLLM if available, otherwise intelligent fallback
+      let aiResponse: string;
+      if (webLLMSendMessage) {
+        console.log('🧠 Using WebLLM for AI response...');
+        aiResponse = await webLLMSendMessage(content);
+      } else {
+        console.log('⚡ Using intelligent fallback for AI response...');
+        aiResponse = getIntelligentFallback(content);
+      }
 
-      // Save AI response to AI messages table ONLY
+      // Save AI response to AI messages table
       const { data: aiMessage, error: aiError } = await supabase
         .from('ai_messages')
         .insert({
@@ -184,7 +196,12 @@ export const useAIChat = () => {
           user_id: user.id,
           message_type: 'assistant',
           content: aiResponse,
-          metadata: { source: 'ai_chat', generated: true, timestamp: new Date().toISOString() }
+          metadata: { 
+            source: 'ai_chat', 
+            generated: true, 
+            engine: webLLMSendMessage ? 'webllm' : 'fallback',
+            timestamp: new Date().toISOString() 
+          }
         })
         .select()
         .single();
@@ -219,23 +236,62 @@ export const useAIChat = () => {
     }
   }, [user, activeSession, createSession, loadSessions, loadMessages]);
 
-  // Generate AI response (with clear AI markers)
-  const generateAIResponse = async (userMessage: string): Promise<string> => {
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 2000));
-
-    // Mark responses as clearly AI-generated to prevent confusion
-    const responses = [
-      "[AI Assistant] I'd be happy to help you with that! Can you provide more details about what specific service you're looking for?",
-      "[HOUSIE AI] Based on your request, I can recommend several excellent service providers in your area. What's your location?",
-      "[AI Assistant] That's a great question! For home services, I typically recommend getting quotes from 2-3 providers to compare. Would you like me to help you find some?",
-      "[HOUSIE AI] I can help you estimate costs for that service. The average price in your area is typically between $50-150, depending on the specifics. Would you like me to connect you with providers?",
-      "[AI Assistant] For that type of service, I recommend checking the provider's insurance and reviews first. Would you like me to show you some highly-rated options?",
-      "[HOUSIE AI] Let me help you find the perfect service provider! What's most important to you - price, availability, or specific expertise?",
-      "[AI Assistant] I can assist with booking that service. First, let me ask a few questions to match you with the right provider...",
-      "[HOUSIE AI] That service typically takes 2-4 hours depending on the scope. Would you like me to help you schedule a consultation?"
-    ];
-
-    return responses[Math.floor(Math.random() * responses.length)];
+  // Intelligent fallback responses (moved from useWebLLM)
+  const getIntelligentFallback = (message: string): string => {
+    const lowerMessage = message.toLowerCase();
+    
+    // Tax-related queries
+    if (lowerMessage.includes('tax') || lowerMessage === 'hi tax?' || lowerMessage === 'tax?') {
+      const taxResponses = [
+        "📋 Tax Help: Home office deductions (up to $5,000), property tax questions, and contractor expense tracking. What specific tax topic interests you?",
+        "💰 Tax-wise: Home offices save money! Workspace, utilities, repairs - all potentially deductible. Are you working from home?",
+        "🏠 Tax question? Home office deductions can save hundreds - office space, utilities, maintenance costs. What's your tax situation?"
+      ];
+      return taxResponses[Math.floor(Math.random() * taxResponses.length)];
+    }
+    
+    // Pet-related queries
+    if (lowerMessage.includes('pet') || lowerMessage.includes('dog') || lowerMessage.includes('cat') || lowerMessage === 'pets?') {
+      const petResponses = [
+        "🐕 Pet Services: Dog walking ($20-30/walk), pet sitting ($30-60/day), grooming ($40-100), plus pet-friendly home service providers. What does your furry friend need?",
+        "🐾 Pet care covered! Dog walkers, sitters, groomers, plus contractors who love animals. How can I help your pet?",
+        "🦴 Pets need love AND services! Walking, sitting, grooming, vet recommendations - plus animal-friendly contractors. What pet service interests you?"
+      ];
+      return petResponses[Math.floor(Math.random() * petResponses.length)];
+    }
+    
+    // Cleaning services
+    if (lowerMessage.includes('clean')) {
+      const cleanResponses = [
+        "🧹 House cleaning: $100-200 regular, $200-400 deep clean. I can help find reliable, insured cleaners nearby. What size space?",
+        "✨ Cleaning costs: Weekly $80-150, bi-weekly $100-200, monthly $150-300. Want vetted cleaners in your area?",
+        "🏠 Cleaning services: $25-50/hour or $100-250 flat rate by home size. I'll match you with top-rated, background-checked cleaners!"
+      ];
+      return cleanResponses[Math.floor(Math.random() * cleanResponses.length)];
+    }
+    
+    // Landscaping/lawn care
+    if (lowerMessage.includes('lawn') || lowerMessage.includes('garden') || lowerMessage.includes('landscape')) {
+      return "Lawn care runs $30-80 per visit for mowing, $150-400 for full landscaping service. Seasonal cleanups $200-600. I can help find licensed landscapers. What outdoor work do you need?";
+    }
+    
+    // Home repairs
+    if (lowerMessage.includes('repair') || lowerMessage.includes('fix') || lowerMessage.includes('broken')) {
+      return "Home repairs range from $150-500 for simple fixes to $1,000+ for major work. I help find licensed contractors, get multiple quotes, and avoid scams. What needs fixing?";
+    }
+    
+    // Price/cost inquiries
+    if (lowerMessage.includes('cost') || lowerMessage.includes('price') || lowerMessage.includes('how much')) {
+      return "Pricing varies by service and location! Cleaning $100-300, lawn care $30-80/visit, repairs $150-1,500+. I provide accurate local estimates based on your specific needs. What service interests you?";
+    }
+    
+    // Greeting responses
+    if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey')) {
+      return "Hi! I'm HOUSIE AI, your intelligent home services assistant. I understand context and can help with everything from tax deductions to pet services. What can I help you with?";
+    }
+    
+    // Default intelligent response
+    return "🤖 HOUSIE AI here! I'm your intelligent home services assistant. I help with cleaning, repairs, costs, tax questions, pet services, and more. How can I assist you today?";
   };
 
   // Load sessions on mount

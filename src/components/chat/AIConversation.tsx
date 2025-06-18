@@ -1,13 +1,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, Send, Bot, User, Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAIChat } from '@/hooks/useAIChat';
-import { useAuth } from '@/contexts/AuthContext';
-import { usePopArt } from '@/contexts/PopArtContext';
-import AIConversationHeader from './AIConversationHeader';
-import WelcomeMessage from './WelcomeMessage';
-import MessageBubble from './MessageBubble';
-import TypingIndicator from './TypingIndicator';
-import MessageInput from './MessageInput';
+import { Badge } from '@/components/ui/badge';
 
 interface AIConversationProps {
   sessionId: string;
@@ -18,19 +17,17 @@ interface AIConversationProps {
   onPopArtTrigger?: () => void;
 }
 
-const AIConversation: React.FC<AIConversationProps> = ({ 
+const AIConversation = ({ 
   sessionId, 
   onBack, 
-  webLLMSendMessage,
-  webLLMLoading = false,
-  webLLMReady = false,
-  onPopArtTrigger
-}) => {
-  const { user } = useAuth();
-  const { activatePopArt } = usePopArt();
+  webLLMSendMessage, 
+  webLLMLoading, 
+  webLLMReady,
+  onPopArtTrigger 
+}: AIConversationProps) => {
   const { messages, sendMessage, isTyping } = useAIChat();
   const [newMessage, setNewMessage] = useState('');
-  const [sending, setSending] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -39,99 +36,149 @@ const AIConversation: React.FC<AIConversationProps> = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isTyping]);
+  }, [messages]);
 
-  const handlePopArtTrigger = () => {
-    activatePopArt();
-    onPopArtTrigger?.();
-  };
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newMessage.trim() || isSending) return;
 
-  const handleSendMessage = async () => {
-    if (!newMessage.trim() || sending || webLLMLoading) return;
-
-    setSending(true);
-    const userMessage = newMessage.trim();
+    const messageToSend = newMessage.trim();
     setNewMessage('');
+    setIsSending(true);
 
     try {
-      console.log('📤 Sending user message:', userMessage);
-      
-      // First, save the user message to database
-      await sendMessage(userMessage, sessionId);
-
-      // ALWAYS try WebLLM first if available
-      if (webLLMSendMessage) {
-        console.log('🤖 Getting WebLLM AI response...');
-        const aiResponse = await webLLMSendMessage(userMessage);
-        
-        console.log('🤖 WebLLM AI Response:', aiResponse);
-        
-        // Check for pop art trigger in the response
-        if (aiResponse.includes('pop art') || aiResponse.includes('groovy') || aiResponse.includes('psychedelic')) {
-          console.log('🎨 Pop art trigger detected!');
-          handlePopArtTrigger();
-        }
-        
-        // Save AI response to database (unless it's the pop art activation message)
-        if (!aiResponse.includes('Activating HOUSIE\'s groovy pop art mode')) {
-          await sendMessage(aiResponse, sessionId);
-        }
-      } else {
-        console.log('⚠️ WebLLM not available, using fallback');
-        // Fallback to original AI chat system
-        await sendMessage(userMessage, sessionId, handlePopArtTrigger);
-      }
-      
+      // Pass the WebLLM function to sendMessage
+      await sendMessage(messageToSend, sessionId, onPopArtTrigger, webLLMSendMessage);
     } catch (error) {
-      console.error('❌ Error sending message:', error);
-      // Try fallback system on error
-      try {
-        await sendMessage(userMessage, sessionId, handlePopArtTrigger);
-      } catch (fallbackError) {
-        console.error('❌ Fallback also failed:', fallbackError);
-      }
+      console.error('Error sending message:', error);
     } finally {
-      setSending(false);
+      setIsSending(false);
     }
   };
 
-  const handleSuggestedPrompt = (prompt: string) => {
-    setNewMessage(prompt);
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
   return (
     <div className="h-full flex flex-col">
-      <AIConversationHeader
-        onBack={onBack}
-        webLLMReady={webLLMReady}
-        webLLMLoading={webLLMLoading}
-        isTyping={isTyping || sending}
-      />
-
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-b from-purple-50/20 to-blue-50/20 dark:from-gray-800 dark:to-gray-900">
-        {messages.length === 0 && (
-          <WelcomeMessage
-            webLLMReady={webLLMReady}
-            onSuggestedPrompt={handleSuggestedPrompt}
-          />
-        )}
-
-        {messages.map((message) => (
-          <MessageBubble key={message.id} message={message} />
-        ))}
-
-        {(isTyping || sending) && <TypingIndicator />}
-
-        <div ref={messagesEndRef} />
+      {/* Header */}
+      <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={onBack}>
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+            <Bot className="h-4 w-4 text-white" />
+          </div>
+          <div className="flex-1">
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">HOUSIE AI</h3>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-gray-600 dark:text-gray-400">Intelligent Assistant</p>
+              <Badge variant="outline" className={`text-xs ${
+                webLLMReady ? 'bg-green-50 text-green-700 border-green-200' :
+                'bg-blue-50 text-blue-700 border-blue-200'
+              }`}>
+                {webLLMReady ? 'WebLLM Active' : 'Fallback Mode'}
+              </Badge>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <MessageInput
-        newMessage={newMessage}
-        setNewMessage={setNewMessage}
-        onSendMessage={handleSendMessage}
-        disabled={sending || isTyping || webLLMLoading}
-        webLLMReady={webLLMReady}
-      />
+      {/* Messages */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex gap-3 ${
+                message.message_type === 'user' ? 'justify-end' : 'justify-start'
+              }`}
+            >
+              {message.message_type === 'assistant' && (
+                <Avatar className="w-8 h-8">
+                  <AvatarFallback className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                    <Bot className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+              
+              <div
+                className={`max-w-[80%] rounded-lg px-3 py-2 ${
+                  message.message_type === 'user'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
+                }`}
+              >
+                <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                <p className="text-xs opacity-70 mt-1">
+                  {formatTime(message.created_at)}
+                </p>
+              </div>
+
+              {message.message_type === 'user' && (
+                <Avatar className="w-8 h-8">
+                  <AvatarFallback className="bg-blue-600 text-white text-xs">
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+              )}
+            </div>
+          ))}
+
+          {(isTyping || webLLMLoading) && (
+            <div className="flex gap-3 justify-start">
+              <Avatar className="w-8 h-8">
+                <AvatarFallback className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                  <Bot className="h-4 w-4" />
+                </AvatarFallback>
+              </Avatar>
+              <div className="bg-gray-100 dark:bg-gray-800 rounded-lg px-3 py-2">
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                    {webLLMLoading ? 'WebLLM thinking...' : 'HOUSIE AI is typing...'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+        <div ref={messagesEndRef} />
+      </ScrollArea>
+
+      {/* Input */}
+      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+        <form onSubmit={handleSendMessage} className="flex gap-2">
+          <Input
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            placeholder="Ask HOUSIE AI anything about home services..."
+            disabled={isSending || webLLMLoading}
+            className="flex-1"
+          />
+          <Button 
+            type="submit" 
+            disabled={!newMessage.trim() || isSending || webLLMLoading}
+            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+          >
+            {isSending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+          </Button>
+        </form>
+        
+        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+          💡 Try: "tax?", "pets?", "cleaning costs", "test webllm", or "show me colors"
+        </div>
+      </div>
     </div>
   );
 };
