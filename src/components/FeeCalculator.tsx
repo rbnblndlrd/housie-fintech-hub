@@ -14,7 +14,7 @@ const FeeCalculator: React.FC<FeeCalculatorProps> = ({ baseAmount, className = "
   const totalAmount = baseAmount + houseFee;
 
   return (
-    <Card className={`bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200 ${className}`}>
+    <Card className={`fintech-card ${className}`}>
       <CardHeader className="pb-3">
         <CardTitle className="text-lg flex items-center gap-2">
           <DollarSign className="h-5 w-5 text-blue-600" />
@@ -54,8 +54,8 @@ const FeeCalculator: React.FC<FeeCalculatorProps> = ({ baseAmount, className = "
           </div>
         </div>
 
-        <div className="mt-4 p-3 bg-white/70 rounded-lg border border-blue-200">
-          <div className="text-sm text-gray-600 space-y-1">
+        <div className="mt-4 p-3 bg-stone-50 dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700">
+          <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
             <div className="flex justify-between">
               <span>Paiement au prestataire:</span>
               <span className="font-medium text-green-600">{baseAmount.toFixed(2)}$ CAD</span>

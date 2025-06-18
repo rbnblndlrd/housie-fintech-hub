@@ -1,304 +1,165 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { CreamBadge } from '@/components/ui/cream-badge';
 import { Progress } from '@/components/ui/progress';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
-import { Activity, AlertTriangle, CheckCircle, TrendingUp, Users, Zap, Star, Bell } from 'lucide-react';
+import { Activity, Server, Database, Wifi, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+
+const systemMetrics = [
+  { name: 'CPU Usage', value: 45, status: 'normal', color: 'bg-green-500' },
+  { name: 'Memory Usage', value: 68, status: 'warning', color: 'bg-yellow-500' },
+  { name: 'Database Load', value: 32, status: 'normal', color: 'bg-green-500' },
+  { name: 'API Response Time', value: 89, status: 'critical', color: 'bg-red-500' },
+];
+
+const services = [
+  { name: 'Web Application', status: 'operational', uptime: '99.99%' },
+  { name: 'Payment Gateway', status: 'operational', uptime: '99.95%' },
+  { name: 'Notification Service', status: 'degraded', uptime: '98.5%' },
+  { name: 'Search Engine', status: 'operational', uptime: '99.8%' },
+  { name: 'File Storage', status: 'maintenance', uptime: '95.2%' },
+];
 
 const PlatformHealthSection = () => {
-  // Mock system health data
-  const systemMetrics = [
-    { time: '00:00', uptime: 99.8, response: 120, users: 1250 },
-    { time: '04:00', uptime: 99.9, response: 98, users: 890 },
-    { time: '08:00', uptime: 99.7, response: 145, users: 2340 },
-    { time: '12:00', uptime: 99.9, response: 110, users: 3420 },
-    { time: '16:00', uptime: 99.8, response: 135, users: 2890 },
-    { time: '20:00', uptime: 99.9, response: 102, users: 1560 },
-  ];
-
-  const satisfactionData = [
-    { month: 'Jan', rating: 4.2, reviews: 234 },
-    { month: 'Fév', rating: 4.4, reviews: 289 },
-    { month: 'Mar', rating: 4.3, reviews: 312 },
-    { month: 'Avr', rating: 4.6, reviews: 345 },
-    { month: 'Mai', rating: 4.5, reviews: 398 },
-    { month: 'Jun', rating: 4.7, reviews: 423 },
-  ];
-
-  const featureAdoption = [
-    { feature: 'Réservation en ligne', adoption: 94, users: 14923 },
-    { feature: 'Chat en temps réel', adoption: 78, users: 12360 },
-    { feature: 'Paiements mobiles', adoption: 82, users: 13004 },
-    { feature: 'Notifications push', adoption: 67, users: 10618 },
-    { feature: 'Évaluations/Reviews', adoption: 89, users: 14103 },
-    { feature: 'Géolocalisation', adoption: 91, users: 14420 },
-  ];
-
-  const alerts = [
-    {
-      id: 1,
-      type: 'warning',
-      title: 'Temps de réponse élevé',
-      description: 'Les temps de réponse API dépassent 150ms',
-      time: '2024-06-17 14:30',
-      severity: 'medium'
-    },
-    {
-      id: 2,
-      type: 'info',
-      title: 'Mise à jour système planifiée',
-      description: 'Maintenance prévue ce soir de 02h00 à 04h00',
-      time: '2024-06-17 10:15',
-      severity: 'low'
-    },
-    {
-      id: 3,
-      type: 'success',
-      title: 'Pic de trafic géré avec succès',
-      description: 'Le système a bien géré 150% du trafic habituel',
-      time: '2024-06-17 09:45',
-      severity: 'low'
-    },
-  ];
-
-  const getAlertIcon = (type) => {
-    switch (type) {
-      case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-orange-600" />;
-      case 'success':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
-      default:
-        return <Bell className="h-4 w-4 text-blue-600" />;
+  const getServiceStatusVariant = (status: string) => {
+    switch (status) {
+      case 'operational': return 'success';
+      case 'degraded': return 'warning';
+      case 'maintenance': return 'info';
+      case 'outage': return 'error';
+      default: return 'neutral';
     }
   };
 
-  const getAlertBadge = (severity) => {
-    switch (severity) {
-      case 'high':
-        return <Badge className="bg-red-100 text-red-800">Critique</Badge>;
-      case 'medium':
-        return <Badge className="bg-orange-100 text-orange-800">Moyen</Badge>;
-      default:
-        return <Badge className="bg-blue-100 text-blue-800">Info</Badge>;
+  const getServiceStatusIcon = (status: string) => {
+    switch (status) {
+      case 'operational': return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case 'degraded': return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
+      case 'maintenance': return <Activity className="h-4 w-4 text-blue-600" />;
+      case 'outage': return <XCircle className="h-4 w-4 text-red-600" />;
+      default: return <Activity className="h-4 w-4 text-gray-600" />;
+    }
+  };
+
+  const getServiceStatusText = (status: string) => {
+    switch (status) {
+      case 'operational': return 'Opérationnel';
+      case 'degraded': return 'Dégradé';
+      case 'maintenance': return 'Maintenance';
+      case 'outage': return 'Panne';
+      default: return status;
     }
   };
 
   return (
-    <div className="space-y-8">
-      {/* System Health KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="fintech-card">
+    <div className="space-y-6">
+      {/* System Overview */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="fintech-metric-card">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Disponibilité</p>
-                <p className="text-3xl font-black text-gray-900">99.9%</p>
-                <p className="text-sm text-green-600 font-semibold mt-1">Excellent</p>
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Server className="h-6 w-6 text-blue-600" />
               </div>
-              <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl flex items-center justify-center">
-                <Activity className="h-6 w-6 text-white" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Uptime Global</p>
+                <p className="text-2xl font-bold text-gray-900">99.8%</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="fintech-card">
+        <Card className="fintech-metric-card">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Temps de Réponse</p>
-                <p className="text-3xl font-black text-gray-900">118ms</p>
-                <p className="text-sm text-green-600 font-semibold mt-1">Optimal</p>
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <Database className="h-6 w-6 text-green-600" />
               </div>
-              <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                <Zap className="h-6 w-6 text-white" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Base de Données</p>
+                <p className="text-2xl font-bold text-gray-900">Stable</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="fintech-card">
+        <Card className="fintech-metric-card">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Utilisateurs Actifs</p>
-                <p className="text-3xl font-black text-gray-900">2,840</p>
-                <p className="text-sm text-blue-600 font-semibold mt-1">En temps réel</p>
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Wifi className="h-6 w-6 text-purple-600" />
               </div>
-              <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl flex items-center justify-center">
-                <Users className="h-6 w-6 text-white" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">API Calls</p>
+                <p className="text-2xl font-bold text-gray-900">2.3M</p>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="fintech-card">
+        <Card className="fintech-metric-card">
           <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600 mb-1">Satisfaction</p>
-                <p className="text-3xl font-black text-gray-900">4.7★</p>
-                <p className="text-sm text-green-600 font-semibold mt-1">+0.2 ce mois</p>
+            <div className="flex items-center">
+              <div className="p-2 bg-orange-100 rounded-lg">
+                <Activity className="h-6 w-6 text-orange-600" />
               </div>
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
-                <Star className="h-6 w-6 text-white" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Temps Réponse</p>
+                <p className="text-2xl font-bold text-gray-900">245ms</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* System Monitoring Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* System Performance */}
-        <Card className="fintech-chart-container">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-xl font-bold">
-              <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
-                <Activity className="h-4 w-4 text-white" />
-              </div>
-              Performance Système (24h)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={systemMetrics}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="time" stroke="#6B7280" />
-                <YAxis stroke="#6B7280" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #E5E7EB', 
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-                  }} 
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="uptime" 
-                  stroke="#10B981" 
-                  strokeWidth={3}
-                  dot={{ fill: '#10B981', strokeWidth: 2, r: 4 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="response" 
-                  stroke="#F59E0B" 
-                  strokeWidth={2}
-                  dot={{ fill: '#F59E0B', strokeWidth: 2, r: 4 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-
-        {/* Customer Satisfaction */}
-        <Card className="fintech-chart-container">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3 text-xl font-bold">
-              <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                <Star className="h-4 w-4 text-white" />
-              </div>
-              Évolution Satisfaction Client
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={satisfactionData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
-                <XAxis dataKey="month" stroke="#6B7280" />
-                <YAxis domain={[3.5, 5]} stroke="#6B7280" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'white', 
-                    border: '1px solid #E5E7EB', 
-                    borderRadius: '12px',
-                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1)'
-                  }} 
-                />
-                <Area 
-                  type="monotone" 
-                  dataKey="rating" 
-                  stroke="#8B5CF6" 
-                  fill="url(#colorRating)" 
-                  strokeWidth={3}
-                />
-                <defs>
-                  <linearGradient id="colorRating" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                    <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.05}/>
-                  </linearGradient>
-                </defs>
-              </AreaChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Feature Adoption */}
-      <Card className="fintech-card">
+      {/* System Metrics */}
+      <Card className="fintech-chart-container">
         <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-xl font-bold">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <TrendingUp className="h-4 w-4 text-white" />
-            </div>
-            Adoption des Fonctionnalités
-          </CardTitle>
+          <CardTitle>Métriques Système</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {featureAdoption.map((feature, index) => (
-              <div key={index} className="p-6 bg-gradient-to-br from-gray-50 to-white rounded-2xl border border-gray-100">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900">{feature.feature}</h3>
-                  <span className="text-2xl font-black text-gray-900">{feature.adoption}%</span>
+        <CardContent className="space-y-6">
+          {systemMetrics.map((metric) => (
+            <div key={metric.name} className="space-y-2">
+              <div className="flex justify-between items-center">
+                <span className="text-sm font-medium text-gray-700">{metric.name}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600">{metric.value}%</span>
+                  <CreamBadge 
+                    variant={
+                      metric.status === 'normal' ? 'success' :
+                      metric.status === 'warning' ? 'warning' : 'error'
+                    }
+                  >
+                    {metric.status === 'normal' ? 'Normal' :
+                     metric.status === 'warning' ? 'Attention' : 'Critique'}
+                  </CreamBadge>
                 </div>
-                <Progress value={feature.adoption} className="h-3 mb-3" />
-                <p className="text-sm text-gray-600">
-                  {feature.users.toLocaleString()} utilisateurs actifs
-                </p>
               </div>
-            ))}
-          </div>
+              <Progress value={metric.value} className="h-2" />
+            </div>
+          ))}
         </CardContent>
       </Card>
 
-      {/* System Alerts */}
-      <Card className="fintech-card">
+      {/* Service Status */}
+      <Card className="fintech-chart-container">
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <CardTitle className="flex items-center gap-3 text-xl font-bold">
-              <div className="w-8 h-8 bg-gradient-to-r from-orange-600 to-red-600 rounded-lg flex items-center justify-center">
-                <Bell className="h-4 w-4 text-white" />
-              </div>
-              Alertes Système
-            </CardTitle>
-            <Button variant="outline" size="sm" className="rounded-lg">
-              Voir Toutes les Alertes
-            </Button>
-          </div>
+          <CardTitle>État des Services</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {alerts.map((alert) => (
-              <div key={alert.id} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
-                <div className="flex-shrink-0 mt-0.5">
-                  {getAlertIcon(alert.type)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-1">
-                    <h3 className="font-semibold text-gray-900">{alert.title}</h3>
-                    {getAlertBadge(alert.severity)}
+            {services.map((service) => (
+              <div key={service.name} className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="flex items-center space-x-3">
+                  {getServiceStatusIcon(service.status)}
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">{service.name}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">Uptime: {service.uptime}</p>
                   </div>
-                  <p className="text-gray-600 text-sm mb-2">{alert.description}</p>
-                  <p className="text-xs text-gray-500">{alert.time}</p>
                 </div>
-                <Button variant="ghost" size="sm" className="flex-shrink-0">
-                  Résoudre
-                </Button>
+                <CreamBadge variant={getServiceStatusVariant(service.status)}>
+                  {getServiceStatusText(service.status)}
+                </CreamBadge>
               </div>
             ))}
           </div>

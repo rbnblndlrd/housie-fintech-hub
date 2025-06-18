@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { CreamBadge } from "@/components/ui/cream-badge";
 import { 
   Calendar, 
   Clock, 
@@ -47,14 +47,14 @@ interface BookingCardProps {
 }
 
 const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) => {
-  const getStatusColor = (status: string) => {
+  const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-gradient-to-r from-yellow-400 to-orange-500';
-      case 'confirmed': return 'bg-gradient-to-r from-blue-500 to-blue-600';
-      case 'in_progress': return 'bg-gradient-to-r from-purple-500 to-purple-600';
-      case 'completed': return 'bg-gradient-to-r from-green-500 to-emerald-500';
-      case 'cancelled': return 'bg-gradient-to-r from-red-500 to-red-600';
-      default: return 'bg-gray-500';
+      case 'pending': return 'warning';
+      case 'confirmed': return 'info';
+      case 'in_progress': return 'info';
+      case 'completed': return 'success';
+      case 'cancelled': return 'error';
+      default: return 'default';
     }
   };
 
@@ -104,7 +104,7 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
   };
 
   return (
-    <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+    <Card className="fintech-card">
       <CardContent className="p-6">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Left Section - Main Info */}
@@ -114,9 +114,9 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
                 <h3 className="text-xl font-semibold text-gray-900 mb-1">
                   {booking.service.title}
                 </h3>
-                <Badge className={`${getStatusColor(booking.status)} text-white border-0 shadow-md`}>
+                <CreamBadge variant={getStatusVariant(booking.status)}>
                   {getStatusText(booking.status)}
-                </Badge>
+                </CreamBadge>
               </div>
               <div className="text-right">
                 <p className="text-2xl font-bold text-gray-900">
@@ -206,12 +206,11 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
             <div className="mt-4 p-3 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl shadow-inner">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-gray-700">Paiement</span>
-                <Badge 
-                  variant={booking.payment_status === 'paid' ? 'default' : 'secondary'}
-                  className={`${booking.payment_status === 'paid' ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : 'bg-gray-200 text-gray-700'} shadow-sm`}
+                <CreamBadge 
+                  variant={booking.payment_status === 'paid' ? 'success' : 'warning'}
                 >
                   {booking.payment_status === 'paid' ? 'Payé' : 'En attente'}
-                </Badge>
+                </CreamBadge>
               </div>
             </div>
           </div>

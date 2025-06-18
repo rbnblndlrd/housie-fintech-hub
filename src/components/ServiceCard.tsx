@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { CreamBadge } from "@/components/ui/cream-badge";
 import { Star, DollarSign, MapPin } from 'lucide-react';
 import { Service } from "@/types/service";
 
@@ -48,12 +48,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 <p className="text-gray-600 font-medium">{service.provider.business_name}</p>
               </div>
               <div className="flex items-center gap-2">
-                <Badge 
-                  variant={service.provider.verified ? 'default' : 'secondary'}
-                  className={`${service.provider.verified ? 'bg-gradient-to-r from-green-500 to-emerald-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-xl shadow-sm`}
+                <CreamBadge 
+                  variant={service.provider.verified ? 'success' : 'neutral'}
                 >
                   {service.provider.verified ? 'Vérifié' : 'Non vérifié'}
-                </Badge>
+                </CreamBadge>
               </div>
             </div>
 
