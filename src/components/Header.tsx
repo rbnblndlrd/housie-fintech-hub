@@ -54,7 +54,7 @@ const Header = () => {
             <img 
               src={isDark ? "/lovable-uploads/ed58b290-0139-422a-874e-4844fd060a4b.png" : "/lovable-uploads/08b330c8-74a3-4bdd-a97f-189117d89e2a.png"} 
               alt="HOUSIE Logo" 
-              className="h-14 transition-all duration-200 hover:scale-105"
+              className="h-12 transition-all duration-200 hover:scale-105"
             />
           </Link>
 
