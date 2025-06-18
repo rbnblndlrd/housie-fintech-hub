@@ -16,23 +16,73 @@ const MessagesTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showThread, setShowThread] = useState(false);
 
-  // Filter out conversations that are only AI conversations or system messages
-  const userConversations = conversations.filter(conv => {
-    // Only show conversations that have real users (not AI assistants)
+  // AI response patterns to filter out
+  const aiResponsePatterns = [
+    "I'd be happy to help you with that!",
+    "Can you provide more details about what specific service you're looking for?",
+    "Based on your request, I can recommend several excellent service providers",
+    "That's a great question! For home services, I typically recommend",
+    "I can help you estimate costs for that service",
+    "For that type of service, I recommend checking the provider's insurance",
+    "Let me help you find the perfect service provider!",
+    "I can assist with booking that service",
+    "That service typically takes",
+    "Hello! How can I help you find the perfect service today?",
+    "HOUSIE AI",
+    "AI Assistant",
+    "assistant",
+    "I'm an AI"
+  ];
+
+  // Check if a message or conversation contains AI-generated content
+  const isAIRelated = (text: string) => {
+    if (!text) return false;
+    const lowerText = text.toLowerCase();
+    return aiResponsePatterns.some(pattern => 
+      lowerText.includes(pattern.toLowerCase())
+    );
+  };
+
+  // Filter out conversations that are AI-related or contaminated
+  const humanConversations = conversations.filter(conv => {
+    // Exclude if other participant looks like AI
+    if (conv.other_participant) {
+      const participantName = conv.other_participant.full_name || '';
+      const lowerName = participantName.toLowerCase();
+      
+      // Filter out AI-related participant names
+      if (lowerName.includes('ai') || 
+          lowerName.includes('assistant') || 
+          lowerName.includes('bot') ||
+          conv.other_participant.id === 'ai-assistant') {
+        console.log('🚫 Filtered out AI participant:', participantName);
+        return false;
+      }
+    }
+
+    // Exclude if last message contains AI patterns
+    if (conv.last_message && isAIRelated(conv.last_message)) {
+      console.log('🚫 Filtered out AI message content:', conv.last_message);
+      return false;
+    }
+
+    // Only include conversations with real users
     return conv.other_participant && 
            conv.other_participant.id !== 'ai-assistant' &&
-           !conv.other_participant.full_name?.includes('AI') &&
-           !conv.other_participant.full_name?.includes('Assistant') &&
-           // Make sure it's not just AI responses
-           conv.last_message && 
-           !conv.last_message.includes('Hello! How can I help you find the perfect service today?');
+           conv.last_message &&
+           conv.last_message.trim() !== '' &&
+           conv.last_message !== 'Start a conversation';
   });
 
-  const filteredConversations = userConversations.filter(conv =>
+  console.log('💬 Total conversations:', conversations.length);
+  console.log('👥 Human conversations after filtering:', humanConversations.length);
+
+  const filteredConversations = humanConversations.filter(conv =>
     conv.other_participant?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleConversationClick = (conversationId: string) => {
+    console.log('🔍 Loading conversation:', conversationId);
     loadMessages(conversationId);
     setShowThread(true);
   };
@@ -87,7 +137,7 @@ const MessagesTab = () => {
               <Users className="h-8 w-8 text-gray-400" />
             </div>
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              Aucune conversation
+              Aucune conversation humaine
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Commencez à discuter avec des prestataires lorsque vous faites une réservation!
@@ -95,6 +145,11 @@ const MessagesTab = () => {
             <p className="text-xs text-gray-400 dark:text-gray-500">
               💡 Astuce: Les conversations AI se trouvent dans l'onglet "Assistant IA"
             </p>
+            {conversations.length > 0 && (
+              <p className="text-xs text-orange-500 mt-2">
+                🔍 {conversations.length} conversation(s) filtrée(s) (IA détectée)
+              </p>
+            )}
           </div>
         ) : (
           <div className="divide-y divide-gray-100 dark:divide-gray-800">
@@ -165,7 +220,7 @@ const MessagesTab = () => {
       {/* Quick Actions Footer */}
       <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>{filteredConversations.length} conversation{filteredConversations.length !== 1 ? 's' : ''}</span>
+          <span>{filteredConversations.length} conversation{filteredConversations.length !== 1 ? 's' : ''} humaine{filteredConversations.length !== 1 ? 's' : ''}</span>
           {totalUnreadCount > 0 && (
             <span className="text-blue-600 font-medium">
               {totalUnreadCount} message{totalUnreadCount !== 1 ? 's' : ''} non lu{totalUnreadCount !== 1 ? 's' : ''}
