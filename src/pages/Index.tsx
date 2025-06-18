@@ -55,8 +55,8 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with Pop Art Style */}
-      <section className="pt-20 pb-16 px-4 relative overflow-hidden">
+      {/* Hero Section with Pop Art Style and Mascot */}
+      <section className="pt-20 pb-16 px-4 relative overflow-hidden bg-gradient-to-br from-yellow-100 via-orange-50 to-purple-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-purple-900/20">
         {/* Background decorative elements */}
         <div className="absolute top-20 right-10 w-32 h-32 bg-orange-400/20 rounded-full opacity-50 animate-pulse"></div>
         <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-500/20 rounded-full opacity-50 animate-bounce"></div>
@@ -72,31 +72,34 @@ const Index = () => {
                   </Badge>
                 </div>
                 
-                <h1 className="text-6xl font-black text-gray-900 dark:text-dark-text leading-tight">
-                  <span className="housie-text-gradient">Connecter</span><br />
-                  propriétaires et<br />
-                  <span className="text-purple-600">professionnels</span>
+                <h1 className="text-5xl lg:text-6xl font-black text-gray-900 dark:text-dark-text leading-tight">
+                  Canada's Trusted<br />
+                  <span className="text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
+                    Marketplace for
+                  </span><br />
+                  <span className="text-purple-600">Home Services</span>
                 </h1>
                 
                 <p className="text-xl text-gray-700 dark:text-dark-text-secondary leading-relaxed max-w-lg">
-                  Vous oubliez de réclamer? Nous, jamais.
+                  We connect you with verified, CRA-compliant professionals for 
+                  cleaning, lawn care, and more across all Canadian provinces.
                 </p>
               </div>
 
               {/* Search Bar */}
-              <div className="housie-card p-3 max-w-lg">
+              <div className="housie-card p-3 max-w-lg bg-white dark:bg-dark-secondary shadow-lg">
                 <div className="flex items-center gap-3">
                   <MapPin className="h-6 w-6 text-orange-500 ml-2" />
                   <Input
-                    placeholder="Montréal, Toronto, Vancouver..."
+                    placeholder="Enter your city or postal code"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
                     className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium dark:text-dark-text"
                   />
                   <Link to="/services">
-                    <Button className="housie-button-secondary rounded-xl px-8 py-3 font-bold text-white shadow-lg">
-                      CHERCHER
-                      <Search className="h-5 w-5 ml-2" />
+                    <Button className="bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-xl px-8 py-3 font-bold text-white shadow-lg">
+                      <Search className="h-5 w-5 mr-2" />
+                      SEARCH
                     </Button>
                   </Link>
                 </div>
@@ -104,57 +107,68 @@ const Index = () => {
 
               {/* Trust Indicators */}
               <div className="grid grid-cols-2 gap-4 pt-4">
-                {trustIndicators.map((indicator, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-text-muted">
-                    <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span>{indicator}</span>
-                  </div>
-                ))}
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-text-muted">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>CRA compliance guaranteed</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-text-muted">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Verified professionals</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-text-muted">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Secure payment</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-dark-text-muted">
+                  <CheckCircle className="h-4 w-4 text-green-500" />
+                  <span>Liability insurance included</span>
+                </div>
               </div>
             </div>
 
-            {/* Interactive Assistant Preview */}
+            {/* Mascot and Assistant Preview */}
             <div className="relative">
-              <div className="housie-card bg-gradient-to-br from-purple-600 via-purple-700 to-purple-800 p-8 text-white relative overflow-hidden shadow-2xl">
-                {/* Decorative elements */}
-                <div className="absolute top-4 right-4 bg-white/20 rounded-full p-3">
-                  <MessageCircle className="h-7 w-7" />
-                </div>
-                <div className="absolute -top-6 -left-6 w-20 h-20 bg-orange-400/30 rounded-full"></div>
-                <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-cyan-400/20 rounded-full"></div>
+              {/* HOUSIE Mascot */}
+              <div className="bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-8 mb-6 relative overflow-hidden shadow-2xl">
+                <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
+                <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
                 
-                <div className="space-y-6 mb-8 relative z-10">
-                  <div className="bg-white/15 backdrop-blur-sm rounded-2xl p-5 border border-white/20">
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full flex items-center justify-center housie-mascot-glow">
-                        <img 
-                          src="/lovable-uploads/ceb92e4c-4980-45ea-945a-eff3e55c13d8.png" 
-                          alt="HOUSIE Assistant" 
-                          className="w-12 h-12 rounded-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-bold text-lg mb-2">Assistant HOUSIE IA</p>
-                        <p className="text-white/90 text-sm leading-relaxed">
-                          "Bonjour! Je peux vous aider à optimiser vos finances d'entreprise, 
-                          trouver des clients et gérer votre conformité CRA 2025. 
-                          Prêt à économiser 40% sur vos coûts?"
-                        </p>
-                      </div>
+                <div className="flex items-center justify-center mb-6">
+                  {/* Use the pop-art mascot from the GitHub link */}
+                  <div className="w-32 h-32 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden">
+                    <div className="w-28 h-28 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center">
+                      <img 
+                        src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
+                        alt="HOUSIE Mascot" 
+                        className="w-24 h-24 rounded-xl object-cover"
+                      />
                     </div>
                   </div>
+                </div>
+
+                <div className="text-center text-white">
+                  <p className="text-sm opacity-90 mb-2">Hello! I'm your HOUSIE assistant.</p>
+                  <p className="font-bold text-lg mb-4">Ready to help with CRA 2025 compliance across Canada!</p>
                   
                   <div className="flex gap-2">
-                    <Link to="/auth" className="flex-1">
+                    <Link to="/onboarding" className="flex-1">
                       <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-bold px-6 py-3 rounded-xl shadow-lg">
-                        COMMENCER GRATUIT
+                        GET STARTED
                       </Button>
                     </Link>
-                    <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-6 py-3 rounded-xl font-bold">
-                      DÉMO IA
-                    </Button>
                   </div>
                 </div>
+              </div>
+
+              {/* Pourquoi choisir HOUSIE section */}
+              <div className="bg-white dark:bg-dark-secondary rounded-2xl p-6 shadow-xl">
+                <h3 className="font-bold text-xl text-gray-800 dark:text-dark-text mb-4 text-center">
+                  Pourquoi choisir HOUSIE ?
+                </h3>
+                <p className="text-gray-600 dark:text-dark-text-muted text-center text-sm">
+                  Nous sommes plus qu'une plateforme - nous sommes votre partenaire pour 
+                  faire croître votre entreprise de ménage en toute simplicité.
+                </p>
               </div>
             </div>
           </div>
