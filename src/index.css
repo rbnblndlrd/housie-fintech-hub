@@ -89,25 +89,25 @@
 }
 
 @layer components {
-  /* LIGHT MODE - White cards with THICK, SOLID, DARK borders */
+  /* LIGHT MODE - White cards with THICK, SOLID, DARK borders - EXACT match to dashboard analytics cards */
   .fintech-card {
-    @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border-8 border-gray-500 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.12)] hover:border-gray-600 hover:-translate-y-1 transition-all duration-300;
+    @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border-4 border-gray-400 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.12)] hover:border-gray-500 hover:-translate-y-1 transition-all duration-300;
   }
 
   .fintech-card-secondary {
-    @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.06)] border-4 border-gray-500 hover:shadow-[0_6px_25px_-3px_rgba(0,0,0,0.1)] hover:border-gray-600 hover:-translate-y-0.5 transition-all duration-200;
+    @apply bg-white/90 backdrop-blur-sm rounded-xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.06)] border-4 border-gray-400 hover:shadow-[0_6px_25px_-3px_rgba(0,0,0,0.1)] hover:border-gray-500 hover:-translate-y-0.5 transition-all duration-200;
   }
 
   .fintech-gradient-card {
-    @apply rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm border-8 border-gray-500 hover:border-gray-600;
+    @apply rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.15)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.2)] hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm border-4 border-gray-400 hover:border-gray-500;
   }
 
   .fintech-metric-card {
-    @apply bg-white/95 backdrop-blur-sm rounded-xl shadow-[0_2px_12px_-2px_rgba(0,0,0,0.08)] border-4 border-gray-500 hover:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.12)] hover:border-gray-600 transition-all duration-200;
+    @apply bg-white/95 backdrop-blur-sm rounded-xl shadow-[0_2px_12px_-2px_rgba(0,0,0,0.08)] border-4 border-gray-400 hover:shadow-[0_4px_20px_-2px_rgba(0,0,0,0.12)] hover:border-gray-500 transition-all duration-200;
   }
 
   .fintech-chart-container {
-    @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border-8 border-gray-500 hover:border-gray-600 transition-all duration-200;
+    @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] border-4 border-gray-400 hover:border-gray-500 transition-all duration-200;
   }
 
   .fintech-button-primary {
@@ -115,11 +115,11 @@
   }
 
   .fintech-button-secondary {
-    @apply bg-white/90 hover:bg-white text-gray-800 rounded-xl px-6 py-3 font-semibold shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_15px_-2px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 transition-all duration-200 border-4 border-gray-500 hover:border-gray-600;
+    @apply bg-white/90 hover:bg-white text-gray-800 rounded-xl px-6 py-3 font-semibold shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_15px_-2px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 transition-all duration-200 border-4 border-gray-400 hover:border-gray-500;
   }
 
   .fintech-input {
-    @apply bg-white/95 backdrop-blur-sm rounded-xl border-4 border-gray-500 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] focus:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.1)] focus:border-gray-600 transition-all duration-200;
+    @apply bg-white/95 backdrop-blur-sm rounded-xl border-4 border-gray-400 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] focus:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.1)] focus:border-gray-500 transition-all duration-200;
   }
 
   .fintech-grid-pattern {
@@ -139,9 +139,9 @@
     @apply bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* DARK MODE - Dark gray cards with THICK, SOLID, LIGHT GRAY borders */
+  /* DARK MODE - Dark gray cards with THICK, SOLID, LIGHT GRAY borders - EXACT match to dashboard analytics cards */
   .dark .fintech-card {
-    @apply bg-gray-800/95 text-white border-8 border-gray-300 shadow-[0_4px_20px_-4px_rgba(147,51,234,0.25)] hover:shadow-[0_8px_30px_-4px_rgba(147,51,234,0.35)] hover:border-gray-200;
+    @apply bg-gray-800/95 text-white border-4 border-gray-300 shadow-[0_4px_20px_-4px_rgba(147,51,234,0.25)] hover:shadow-[0_8px_30px_-4px_rgba(147,51,234,0.35)] hover:border-gray-200;
   }
 
   .dark .fintech-card-secondary {
@@ -153,7 +153,7 @@
   }
 
   .dark .fintech-chart-container {
-    @apply bg-gray-800/95 text-white border-8 border-gray-300 shadow-[0_4px_20px_-4px_rgba(147,51,234,0.25)] hover:shadow-[0_8px_30px_-4px_rgba(147,51,234,0.35)] hover:border-gray-200;
+    @apply bg-gray-800/95 text-white border-4 border-gray-300 shadow-[0_4px_20px_-4px_rgba(147,51,234,0.25)] hover:shadow-[0_8px_30px_-4px_rgba(147,51,234,0.35)] hover:border-gray-200;
   }
 
   .dark .fintech-input {
@@ -231,7 +231,7 @@
 }
 
 .pop-art-mode .fintech-card {
-  @apply bg-gradient-to-br from-pink-200/80 via-purple-200/80 to-blue-200/80 backdrop-blur-sm border-8 border-orange-400 shadow-[0_4px_20px_-4px_rgba(251,146,60,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(251,146,60,0.5)] hover:border-purple-400 transition-all duration-300;
+  @apply bg-gradient-to-br from-pink-200/80 via-purple-200/80 to-blue-200/80 backdrop-blur-sm border-4 border-orange-400 shadow-[0_4px_20px_-4px_rgba(251,146,60,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(251,146,60,0.5)] hover:border-purple-400 transition-all duration-300;
 }
 
 .pop-art-mode .fintech-card-secondary {
@@ -239,7 +239,7 @@
 }
 
 .pop-art-mode .fintech-gradient-card {
-  @apply bg-gradient-to-br from-orange-200/80 via-red-200/80 to-purple-200/80 backdrop-blur-sm border-8 border-blue-400 shadow-[0_4px_20px_-4px_rgba(59,130,246,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.5)] hover:border-orange-400 transition-all duration-300;
+  @apply bg-gradient-to-br from-orange-200/80 via-red-200/80 to-purple-200/80 backdrop-blur-sm border-4 border-blue-400 shadow-[0_4px_20px_-4px_rgba(59,130,246,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(59,130,246,0.5)] hover:border-orange-400 transition-all duration-300;
 }
 
 .pop-art-mode .fintech-metric-card {
@@ -247,7 +247,7 @@
 }
 
 .pop-art-mode .fintech-chart-container {
-  @apply bg-gradient-to-br from-yellow-200/80 via-orange-200/80 to-red-200/80 backdrop-blur-sm border-8 border-purple-400 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.5)] hover:border-blue-400 transition-all duration-200;
+  @apply bg-gradient-to-br from-yellow-200/80 via-orange-200/80 to-red-200/80 backdrop-blur-sm border-4 border-purple-400 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.5)] hover:border-blue-400 transition-all duration-200;
 }
 
 .pop-art-mode .fintech-input {
@@ -265,7 +265,7 @@
 
 /* Pop Art Dark Mode - Same pastel cards but with light purple background */
 .dark.pop-art-mode .fintech-card {
-  @apply bg-gradient-to-br from-pink-200/80 via-purple-200/80 to-blue-200/80 backdrop-blur-sm border-8 border-orange-400 shadow-[0_4px_20px_-4px_rgba(251,146,60,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(251,146,60,0.5)] hover:border-purple-400 transition-all duration-300 text-gray-800;
+  @apply bg-gradient-to-br from-pink-200/80 via-purple-200/80 to-blue-200/80 backdrop-blur-sm border-4 border-orange-400 shadow-[0_4px_20px_-4px_rgba(251,146,60,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(251,146,60,0.5)] hover:border-purple-400 transition-all duration-300 text-gray-800;
 }
 
 .dark.pop-art-mode .fintech-card-secondary {
@@ -277,7 +277,7 @@
 }
 
 .dark.pop-art-mode .fintech-chart-container {
-  @apply bg-gradient-to-br from-yellow-200/80 via-orange-200/80 to-red-200/80 backdrop-blur-sm border-8 border-purple-400 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.5)] hover:border-blue-400 transition-all duration-200 text-gray-800;
+  @apply bg-gradient-to-br from-yellow-200/80 via-orange-200/80 to-red-200/80 backdrop-blur-sm border-4 border-purple-400 shadow-[0_4px_20px_-4px_rgba(168,85,247,0.4)] hover:shadow-[0_8px_30px_-4px_rgba(168,85,247,0.5)] hover:border-blue-400 transition-all duration-200 text-gray-800;
 }
 
 .dark.pop-art-mode .fintech-input {
