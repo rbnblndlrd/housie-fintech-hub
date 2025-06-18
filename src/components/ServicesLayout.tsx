@@ -52,7 +52,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
             onSearchChange={onSearchChange}
             onCategoryChange={onCategoryChange}
             onLocationChange={onLocationChange}
-            onPriceRangeChange={onPriceRangeRange}
+            onPriceRangeChange={onPriceRangeChange}
           />
 
           <div className="grid lg:grid-cols-4 gap-8">
