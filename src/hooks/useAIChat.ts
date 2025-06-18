@@ -103,18 +103,23 @@ export const useAIChat = () => {
     }
   }, [user, loadSessions]);
 
-  // Send message to AI
-  const sendMessage = useCallback(async (content: string, sessionId?: string) => {
+  // Send message to AI with pop art detection
+  const sendMessage = useCallback(async (content: string, sessionId?: string, onPopArtTrigger?: () => void) => {
     if (!user || !content.trim()) return null;
 
-    let currentSessionId = sessionId;
-
-    // Create new session if none provided
-    if (!currentSessionId) {
-      const newSession = await createSession();
-      if (!newSession) return null;
-      currentSessionId = newSession.id;
-      setActiveSession(currentSessionId);
+    // Check for pop art command
+    if (content.toLowerCase().includes('show me colors')) {
+      onPopArtTrigger?.();
+      // Return special pop art response without saving to DB
+      return {
+        id: 'pop-art-trigger',
+        session_id: sessionId || '',
+        user_id: user.id,
+        message_type: 'assistant' as const,
+        content: "Activating pop art mode... Behold colors! 🎨 Welcome to HOUSIE's groovy dimension! ✨",
+        metadata: {},
+        created_at: new Date().toISOString()
+      };
     }
 
     try {

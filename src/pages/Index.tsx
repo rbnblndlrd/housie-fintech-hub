@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import Header from "@/components/Header";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { PricingSection } from "@/components/PricingSection";
 import { Link } from "react-router-dom";
+import PopArtMascot from "@/components/PopArtMascot";
 
 const Index = () => {
   const [searchLocation, setSearchLocation] = useState("");
@@ -128,21 +128,13 @@ const Index = () => {
 
             {/* Mascot and Assistant Preview */}
             <div className="relative space-y-6">
-              {/* HOUSIE Mascot */}
+              {/* HOUSIE Mascot with Pop Art Easter Egg */}
               <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-8 relative overflow-hidden">
                 <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
                 
                 <div className="flex items-center justify-center mb-6">
-                  <div className="w-40 h-40 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden p-1">
-                    <div className="w-full h-full bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center p-1">
-                      <img 
-                        src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
-                        alt="HOUSIE Mascot" 
-                        className="w-full h-full rounded-xl object-cover"
-                      />
-                    </div>
-                  </div>
+                  <PopArtMascot />
                 </div>
 
                 <div className="text-center text-white">

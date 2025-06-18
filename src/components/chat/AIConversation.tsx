@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useAIChat } from '@/hooks/useAIChat';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePopArt } from '@/contexts/PopArtContext';
 import { cn } from '@/lib/utils';
 
 interface AIConversationProps {
@@ -16,6 +17,7 @@ interface AIConversationProps {
 
 const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) => {
   const { user } = useAuth();
+  const { activatePopArt } = usePopArt();
   const { messages, sendMessage, isTyping } = useAIChat();
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -34,7 +36,7 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
 
     setSending(true);
     try {
-      await sendMessage(newMessage, sessionId);
+      await sendMessage(newMessage, sessionId, activatePopArt);
       setNewMessage('');
     } catch (error) {
       console.error('Error sending AI message:', error);
@@ -123,6 +125,9 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
                 </ul>
                 <p className="text-sm text-gray-800 dark:text-gray-200 mt-3">
                   What can I help you with today? ✨
+                </p>
+                <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 italic">
+                  💡 Psst... try typing "show me colors" for a surprise! 🎨
                 </p>
               </div>
             </div>
