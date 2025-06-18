@@ -1,5 +1,23 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import * as webllm from "@mlc-ai/web-llm";
+
+// Type-safe WebLLM imports with error handling
+let webllm: any = null;
+let webllmLoaded = false;
+
+// Lazy load WebLLM to avoid SSR issues
+const loadWebLLM = async () => {
+  if (webllmLoaded) return webllm;
+  
+  try {
+    webllm = await import("@mlc-ai/web-llm");
+    webllmLoaded = true;
+    console.log('✅ WebLLM module loaded successfully');
+    return webllm;
+  } catch (error) {
+    console.error('❌ Failed to load WebLLM module:', error);
+    throw new Error('WebLLM module failed to load');
+  }
+};
 
 export interface WebLLMMessage {
   role: 'user' | 'assistant' | 'system';
@@ -13,42 +31,117 @@ export const useWebLLM = () => {
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>('');
+  const [retryCount, setRetryCount] = useState(0);
   
-  const engineRef = useRef<webllm.MLCEngineInterface | null>(null);
+  const engineRef = useRef<any>(null);
   const conversationRef = useRef<WebLLMMessage[]>([]);
+  const initializingRef = useRef(false);
 
-  const initializeEngine = useCallback(async () => {
-    if (engineRef.current || isDownloading) return;
+  // Browser compatibility check
+  const checkBrowserCompatibility = useCallback(() => {
+    const checks = {
+      webAssembly: typeof WebAssembly !== 'undefined',
+      webGPU: typeof navigator !== 'undefined' && 'gpu' in navigator,
+      sharedArrayBuffer: typeof SharedArrayBuffer !== 'undefined',
+      worker: typeof Worker !== 'undefined'
+    };
+    
+    console.log('🔍 Browser compatibility check:', checks);
+    
+    if (!checks.webAssembly) {
+      throw new Error('WebAssembly not supported');
+    }
+    
+    return checks;
+  }, []);
 
+  // Memory management
+  const cleanupEngine = useCallback(() => {
+    if (engineRef.current) {
+      try {
+        console.log('🧹 Cleaning up WebLLM engine');
+        engineRef.current.unload();
+        engineRef.current = null;
+      } catch (error) {
+        console.error('Error during cleanup:', error);
+      }
+    }
+  }, []);
+
+  const initializeEngine = useCallback(async (forceRetry = false) => {
+    // Prevent multiple simultaneous initializations
+    if (initializingRef.current && !forceRetry) {
+      console.log('⏳ WebLLM initialization already in progress');
+      return;
+    }
+    
+    if (engineRef.current && isReady && !forceRetry) {
+      console.log('✅ WebLLM engine already ready');
+      return;
+    }
+
+    initializingRef.current = true;
+    
     try {
       setIsDownloading(true);
       setError(null);
-      setDebugInfo('🤖 Starting WebLLM initialization...');
-      console.log('🤖 Initializing WebLLM engine...');
+      setDebugInfo('🔧 Initializing WebLLM engine...');
+      console.log('🤖 Starting WebLLM initialization...');
 
-      // Check if WebLLM is supported
-      if (typeof window !== 'undefined' && !window.WebAssembly) {
-        throw new Error('WebAssembly not supported in this browser');
+      // Check browser compatibility first
+      checkBrowserCompatibility();
+
+      // Load WebLLM module dynamically
+      const webllmModule = await loadWebLLM();
+      
+      if (!webllmModule || !webllmModule.MLCEngine) {
+        throw new Error('WebLLM MLCEngine not available');
       }
 
-      const engine = new webllm.MLCEngine();
+      setDebugInfo('📦 Creating WebLLM engine instance...');
       
-      engine.setInitProgressCallback((report) => {
-        console.log('📥 WebLLM progress:', report);
-        setDebugInfo(`📥 ${report.text || 'Loading model...'}`);
-        if (report.progress !== undefined) {
-          setDownloadProgress(Math.round(report.progress * 100));
+      // Create engine with error handling
+      const engine = new webllmModule.MLCEngine();
+      
+      if (!engine) {
+        throw new Error('Failed to create WebLLM engine instance');
+      }
+
+      // Set up progress callback with error handling
+      engine.setInitProgressCallback((report: any) => {
+        try {
+          console.log('📥 WebLLM progress:', report);
+          const progressText = report.text || 'Loading model...';
+          setDebugInfo(`📥 ${progressText}`);
+          
+          if (typeof report.progress === 'number') {
+            const progress = Math.max(0, Math.min(100, Math.round(report.progress * 100)));
+            setDownloadProgress(progress);
+          }
+        } catch (progressError) {
+          console.error('Error in progress callback:', progressError);
         }
       });
 
       setDebugInfo('📦 Downloading Llama-3.2-1B model...');
       
-      // Use a smaller, faster model for better performance
-      await engine.reload("Llama-3.2-1B-Instruct-q4f32_1-MLC");
+      // Load model with timeout
+      const loadTimeout = setTimeout(() => {
+        throw new Error('Model loading timeout (5 minutes)');
+      }, 300000); // 5 minute timeout
+      
+      try {
+        await engine.reload("Llama-3.2-1B-Instruct-q4f32_1-MLC");
+        clearTimeout(loadTimeout);
+      } catch (loadError) {
+        clearTimeout(loadTimeout);
+        throw loadError;
+      }
       
       engineRef.current = engine;
       setIsReady(true);
       setIsDownloading(false);
+      setRetryCount(0);
       setDebugInfo('✅ WebLLM ready and operational!');
       console.log('✅ WebLLM engine ready and operational!');
       
@@ -85,8 +178,17 @@ SPECIAL COMMANDS:
       setDebugInfo(`❌ WebLLM Error: ${errorMsg}`);
       setIsDownloading(false);
       setIsReady(false);
+      
+      // Implement retry logic for certain errors
+      if (retryCount < 2 && (errorMsg.includes('fetch') || errorMsg.includes('network'))) {
+        setRetryCount(prev => prev + 1);
+        setDebugInfo(`🔄 Retrying initialization (attempt ${retryCount + 1}/3)...`);
+        setTimeout(() => initializeEngine(true), 3000);
+      }
+    } finally {
+      initializingRef.current = false;
     }
-  }, [isDownloading]);
+  }, [checkBrowserCompatibility, retryCount]);
 
   const sendMessage = useCallback(async (message: string): Promise<string> => {
     const lowerMessage = message.toLowerCase().trim();
@@ -111,7 +213,8 @@ SPECIAL COMMANDS:
 - Engine: ${engineRef.current ? '✅' : '❌'}
 - Downloading: ${isDownloading ? '📥' : '✅'}
 - Progress: ${downloadProgress}%
-- Debug: ${debugInfo}`;
+- Debug: ${debugInfo}
+- Retry Count: ${retryCount}/3`;
     }
 
     // Handle pop art easter egg
@@ -128,12 +231,25 @@ SPECIAL COMMANDS:
         conversationRef.current.push({ role: 'user', content: message });
         
         console.log('🧠 Generating AI response with WebLLM...');
-        const response = await engineRef.current.chat.completions.create({
-          messages: conversationRef.current,
-          temperature: 0.7,
-          max_tokens: 300,
-          top_p: 0.9,
-        });
+        
+        // Generate response with timeout
+        const responseTimeout = setTimeout(() => {
+          throw new Error('Response generation timeout');
+        }, 30000); // 30 second timeout
+        
+        let response;
+        try {
+          response = await engineRef.current.chat.completions.create({
+            messages: conversationRef.current,
+            temperature: 0.7,
+            max_tokens: 300,
+            top_p: 0.9,
+          });
+          clearTimeout(responseTimeout);
+        } catch (responseError) {
+          clearTimeout(responseTimeout);
+          throw responseError;
+        }
 
         const aiResponse = response.choices[0]?.message?.content || "I apologize, but I couldn't generate a response. Please try again.";
         
@@ -161,7 +277,7 @@ SPECIAL COMMANDS:
     // Intelligent fallback responses
     console.log('⚠️ Using fallback - WebLLM not ready');
     return getIntelligentFallback(message);
-  }, [isReady, isDownloading, downloadProgress, debugInfo]);
+  }, [isReady, isDownloading, downloadProgress, debugInfo, retryCount]);
 
   const getIntelligentFallback = (message: string): string => {
     const lowerMessage = message.toLowerCase();
@@ -196,46 +312,6 @@ SPECIAL COMMANDS:
       return cleanResponses[Math.floor(Math.random() * cleanResponses.length)];
     }
     
-    // Landscaping/lawn care
-    if (lowerMessage.includes('lawn') || lowerMessage.includes('garden') || lowerMessage.includes('landscape')) {
-      const lawnResponses = [
-        "Lawn care runs $30-80 per visit for mowing, $150-400 for full landscaping service. Seasonal cleanups $200-600. I can help find licensed landscapers. What outdoor work do you need?",
-        "Landscaping costs vary widely - basic mowing $40-70, full service $200-500/month, major projects $2,000-20,000+. Tell me about your yard and I'll help estimate costs and find pros.",
-        "Yard work pricing: mowing $35-65, leaf cleanup $150-350, garden maintenance $50-150/visit. I know reliable landscapers who do quality work. What's your outdoor priority?"
-      ];
-      return lawnResponses[Math.floor(Math.random() * lawnResponses.length)];
-    }
-    
-    // Home repairs
-    if (lowerMessage.includes('repair') || lowerMessage.includes('fix') || lowerMessage.includes('broken')) {
-      const repairResponses = [
-        "Home repairs range from $150-500 for simple fixes to $1,000+ for major work. I help find licensed contractors, get multiple quotes, and avoid scams. What needs fixing?",
-        "Repair costs depend on complexity - plumbing $200-800, electrical $150-500, HVAC $300-1,500. I can connect you with vetted, insured contractors. What's broken?",
-        "For repairs, always get 2-3 quotes! Simple fixes $100-400, complex work $500-3,000+. I help find reliable contractors with good reviews and proper licensing. What repair do you need?"
-      ];
-      return repairResponses[Math.floor(Math.random() * repairResponses.length)];
-    }
-    
-    // Price/cost inquiries
-    if (lowerMessage.includes('cost') || lowerMessage.includes('price') || lowerMessage.includes('how much')) {
-      const priceResponses = [
-        "Pricing varies by service and location! Cleaning $100-300, lawn care $30-80/visit, repairs $150-1,500+. I provide accurate local estimates based on your specific needs. What service interests you?",
-        "Happy to help with pricing! I track local rates and can give you realistic cost ranges plus connect you with providers who offer competitive rates. What service pricing do you need?",
-        "Cost estimates are my specialty! I know current market rates, seasonal pricing, and can help you budget effectively. Tell me what service you're considering and I'll break down the costs."
-      ];
-      return priceResponses[Math.floor(Math.random() * priceResponses.length)];
-    }
-    
-    // Greeting responses
-    if (lowerMessage.includes('hi') || lowerMessage.includes('hello') || lowerMessage.includes('hey')) {
-      const greetingResponses = [
-        "Hi! I'm HOUSIE AI, your intelligent home services assistant. I understand context and can help with everything from tax deductions to pet services. What can I help you with?",
-        "Hello! I'm here to help with home services, pricing, bookings, and more. I'm context-aware, so feel free to ask things like 'tax?' or 'pets?' and I'll know what you mean. How can I assist?",
-        "Hey there! I'm HOUSIE AI - I understand what you're really asking for and provide intelligent responses about home services, costs, contractors, and more. What's on your mind?"
-      ];
-      return greetingResponses[Math.floor(Math.random() * greetingResponses.length)];
-    }
-    
     // Default intelligent response
     const responses = [
       `🤖 HOUSIE AI here! I'm your intelligent home services assistant. ${isReady ? '(WebLLM Ready)' : '(Fallback Mode)'} I help with cleaning, repairs, costs, tax questions, pet services, and more. What can I help with?`,
@@ -251,18 +327,25 @@ SPECIAL COMMANDS:
     console.log('🔄 Conversation reset');
   }, []);
 
+  const retryInitialization = useCallback(() => {
+    setRetryCount(0);
+    setError(null);
+    cleanupEngine();
+    initializeEngine(true);
+  }, [cleanupEngine, initializeEngine]);
+
   useEffect(() => {
-    // Auto-initialize on mount
-    initializeEngine();
+    // Auto-initialize on mount with delay to ensure React context is ready
+    const initTimer = setTimeout(() => {
+      initializeEngine();
+    }, 100);
     
     // Cleanup on unmount
     return () => {
-      if (engineRef.current) {
-        console.log('🧹 Cleaning up WebLLM engine');
-        engineRef.current.unload();
-      }
+      clearTimeout(initTimer);
+      cleanupEngine();
     };
-  }, [initializeEngine]);
+  }, [initializeEngine, cleanupEngine]);
 
   return {
     isLoading,
@@ -271,8 +354,10 @@ SPECIAL COMMANDS:
     isReady,
     error,
     debugInfo,
+    retryCount,
     sendMessage,
     resetConversation,
-    initializeEngine
+    initializeEngine,
+    retryInitialization
   };
 };
