@@ -51,7 +51,7 @@ const Header = () => {
           {/* Logo Section */}
           <Link to="/" className="flex items-center">
             <img 
-              src={isDark ? "/lovable-uploads/4d509664-91c9-4234-aba4-df90e07c4f60.png" : "/lovable-uploads/4fdced3a-4692-442d-9f25-748a2b467ce4.png"} 
+              src={isDark ? "/white_on_black.png" : "/black_on_white.png"} 
               alt="HOUSIE Logo" 
               className="h-16 transition-all duration-200"
             />
