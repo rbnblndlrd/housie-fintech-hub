@@ -1,9 +1,9 @@
 
 import React from 'react';
-import { SimpleChatBubble } from './chat/SimpleChatBubble';
+import { ChatBubble } from './chat/ChatBubble';
 
 export const ChatAssistant = () => {
-  return <SimpleChatBubble />;
+  return <ChatBubble />;
 };
 
 export default ChatAssistant;

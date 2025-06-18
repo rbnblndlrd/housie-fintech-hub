@@ -5,65 +5,54 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-
-interface Message {
-  id: string;
-  text: string;
-  sender: 'user' | 'bot';
-  timestamp: Date;
-}
+import { useChat } from '@/hooks/useChat';
+import { useAIChat } from '@/hooks/useAIChat';
+import { useWebLLM } from '@/hooks/useWebLLM';
+import { usePopArt } from '@/contexts/PopArtContext';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 export const SimpleChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'messages' | 'ai'>('messages');
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      text: 'Hello! How can I help you find the perfect service today?',
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
-  const [aiMessages, setAiMessages] = useState<Message[]>([
-    {
-      id: 'ai-1',
-      text: 'Hi! I\'m your AI assistant. I can help you find services, get pricing estimates, and answer questions about bookings. What can I help you with?',
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
+  const [activeTab, setActiveTab] = useState<'messages' | 'ai'>('ai');
   const [inputText, setInputText] = useState('');
-  const [unreadCount] = useState(3);
+  const [isSending, setIsSending] = useState(false);
+  
+  const { totalUnreadCount } = useChat();
+  const { messages: aiMessages, sendMessage: sendAIMessage, isTyping } = useAIChat();
+  const { 
+    sendMessage: sendWebLLMMessage,
+    isLoading: webLLMLoading,
+    isReady: webLLMReady
+  } = useWebLLM();
+  const { activatePopArt } = usePopArt();
 
-  const currentMessages = activeTab === 'messages' ? messages : aiMessages;
-  const setCurrentMessages = activeTab === 'messages' ? setMessages : setAiMessages;
-
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputText.trim()) return;
+    if (!inputText.trim() || isSending) return;
 
-    const newMessage: Message = {
-      id: Date.now().toString(),
-      text: inputText,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setCurrentMessages(prev => [...prev, newMessage]);
+    const messageToSend = inputText.trim();
     setInputText('');
+    setIsSending(true);
 
-    // Different bot responses based on active tab
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        text: activeTab === 'messages' 
-          ? "Thanks for your message! I'm here to help you with any questions about our services."
-          : "I'd be happy to help you with that! Can you tell me more about what kind of service you're looking for? I can provide recommendations and pricing estimates.",
-        sender: 'bot',
-        timestamp: new Date()
-      };
-      setCurrentMessages(prev => [...prev, botResponse]);
-    }, 1000);
+    try {
+      if (activeTab === 'ai') {
+        // Create a new AI session for this conversation
+        await sendAIMessage(messageToSend, undefined, activatePopArt, sendWebLLMMessage);
+      }
+    } catch (error) {
+      console.error('Error sending message:', error);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const formatTime = (timestamp: string) => {
+    return new Date(timestamp).toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true
+    });
   };
 
   return (
@@ -80,12 +69,12 @@ export const SimpleChatBubble = () => {
             )}
           >
             <MessageCircle className="h-7 w-7 text-white" />
-            {unreadCount > 0 && (
+            {totalUnreadCount > 0 && (
               <Badge
                 variant="destructive"
                 className="absolute -top-2 -right-2 h-6 w-6 flex items-center justify-center p-0 text-xs font-bold animate-pulse"
               >
-                {unreadCount > 99 ? '99+' : unreadCount}
+                {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
               </Badge>
             )}
           </Button>
@@ -126,9 +115,9 @@ export const SimpleChatBubble = () => {
               >
                 <Users className="h-4 w-4" />
                 Messages
-                {unreadCount > 0 && activeTab !== 'messages' && (
+                {totalUnreadCount > 0 && activeTab !== 'messages' && (
                   <Badge variant="destructive" className="h-5 px-1.5 text-xs">
-                    {unreadCount}
+                    {totalUnreadCount}
                   </Badge>
                 )}
               </button>
@@ -143,47 +132,111 @@ export const SimpleChatBubble = () => {
               >
                 <Bot className="h-4 w-4" />
                 AI Assistant
+                <Badge variant="outline" className={`text-xs ${
+                  webLLMReady ? 'bg-green-50 text-green-700 border-green-200' :
+                  'bg-blue-50 text-blue-700 border-blue-200'
+                }`}>
+                  {webLLMReady ? 'WebLLM' : 'Fallback'}
+                </Badge>
               </button>
             </div>
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {currentMessages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex",
-                    message.sender === 'user' ? 'justify-end' : 'justify-start'
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
-                      message.sender === 'user'
-                        ? "bg-blue-600 text-white rounded-br-md"
-                        : activeTab === 'ai'
-                        ? "bg-purple-100 dark:bg-purple-900/30 text-purple-900 dark:text-purple-100 rounded-bl-md"
-                        : "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-bl-md"
+            <ScrollArea className="flex-1 p-4">
+              <div className="space-y-4">
+                {activeTab === 'ai' ? (
+                  <>
+                    {aiMessages.length === 0 && (
+                      <div className="text-center py-8">
+                        <Bot className="h-12 w-12 text-purple-400 mx-auto mb-3" />
+                        <p className="text-gray-600 dark:text-gray-400 text-sm">
+                          Hi! I'm HOUSIE AI. Try asking about services, pricing, or type "test webllm"!
+                        </p>
+                        {webLLMReady && (
+                          <Badge className="mt-2 bg-green-100 text-green-800">
+                            Local WebLLM Active
+                          </Badge>
+                        )}
+                      </div>
                     )}
-                  >
-                    <p>{message.text}</p>
-                    <p className={cn(
-                      "text-xs mt-1 opacity-70",
-                      message.sender === 'user' 
-                        ? 'text-blue-100' 
-                        : activeTab === 'ai'
-                        ? 'text-purple-600 dark:text-purple-300'
-                        : 'text-gray-500'
-                    )}>
-                      {message.timestamp.toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                      })}
+                    
+                    {aiMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={cn(
+                          "flex gap-3",
+                          message.message_type === 'user' ? 'justify-end' : 'justify-start'
+                        )}
+                      >
+                        {message.message_type === 'assistant' && (
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                              <Bot className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                        
+                        <div
+                          className={cn(
+                            "max-w-[80%] rounded-2xl px-4 py-2 text-sm",
+                            message.message_type === 'user'
+                              ? "bg-blue-600 text-white rounded-br-md"
+                              : "bg-purple-100 dark:bg-purple-900/30 text-purple-900 dark:text-purple-100 rounded-bl-md"
+                          )}
+                        >
+                          <p className="whitespace-pre-wrap">{message.content}</p>
+                          <p className={cn(
+                            "text-xs mt-1 opacity-70",
+                            message.message_type === 'user' 
+                              ? 'text-blue-100' 
+                              : 'text-purple-600 dark:text-purple-300'
+                          )}>
+                            {formatTime(message.created_at)}
+                          </p>
+                        </div>
+
+                        {message.message_type === 'user' && (
+                          <Avatar className="w-8 h-8">
+                            <AvatarFallback className="bg-blue-600 text-white text-xs">
+                              <Users className="h-4 w-4" />
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                      </div>
+                    ))}
+
+                    {(isTyping || webLLMLoading) && (
+                      <div className="flex gap-3 justify-start">
+                        <Avatar className="w-8 h-8">
+                          <AvatarFallback className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
+                            <Bot className="h-4 w-4" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="bg-purple-100 dark:bg-purple-900/30 rounded-2xl px-4 py-2">
+                          <div className="flex items-center gap-2">
+                            <div className="flex space-x-1">
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                              <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+                            </div>
+                            <span className="text-sm text-purple-600 dark:text-purple-300">
+                              {webLLMLoading ? 'WebLLM thinking...' : 'HOUSIE AI is typing...'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <div className="text-center py-8">
+                    <Users className="h-12 w-12 text-blue-400 mx-auto mb-3" />
+                    <p className="text-gray-600 dark:text-gray-400 text-sm">
+                      Human-to-human messages will appear here when you book services!
                     </p>
                   </div>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            </ScrollArea>
 
             {/* Input */}
             <div className="p-4 border-t border-gray-200 dark:border-gray-700">
@@ -191,13 +244,14 @@ export const SimpleChatBubble = () => {
                 <Input
                   value={inputText}
                   onChange={(e) => setInputText(e.target.value)}
-                  placeholder={activeTab === 'ai' ? "Ask me anything about services..." : "Type your message..."}
+                  placeholder={activeTab === 'ai' ? "Ask HOUSIE AI anything..." : "Type your message..."}
+                  disabled={isSending || (activeTab === 'ai' && webLLMLoading)}
                   className="flex-1"
                 />
                 <Button 
                   type="submit" 
                   size="icon" 
-                  disabled={!inputText.trim()}
+                  disabled={!inputText.trim() || isSending || (activeTab === 'ai' && webLLMLoading)}
                   className={cn(
                     activeTab === 'ai' 
                       ? "bg-purple-600 hover:bg-purple-700" 
@@ -207,23 +261,29 @@ export const SimpleChatBubble = () => {
                   <Send className="h-4 w-4" />
                 </Button>
               </form>
+              
+              {activeTab === 'ai' && (
+                <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
+                  💡 Try: "tax?", "pets?", "cleaning costs", "test webllm", or "show me colors"
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* Left Border Notification Bubbles (Classic Facebook Style) */}
-      {!isOpen && unreadCount > 0 && (
+      {/* Left Border Notification Bubbles */}
+      {!isOpen && totalUnreadCount > 0 && (
         <div className="fixed left-0 top-1/2 transform -translate-y-1/2 z-40">
           <div className="flex flex-col gap-2 p-2">
-            {[...Array(Math.min(unreadCount, 5))].map((_, index) => (
+            {[...Array(Math.min(totalUnreadCount, 5))].map((_, index) => (
               <div
                 key={index}
                 className="w-3 h-3 bg-red-500 rounded-full animate-pulse shadow-lg"
                 style={{ animationDelay: `${index * 0.2}s` }}
               />
             ))}
-            {unreadCount > 5 && (
+            {totalUnreadCount > 5 && (
               <div className="w-3 h-8 bg-gradient-to-b from-red-500 to-red-600 rounded-full animate-pulse shadow-lg flex items-center justify-center">
                 <span className="text-white text-xs font-bold">+</span>
               </div>

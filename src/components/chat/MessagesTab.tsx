@@ -16,7 +16,7 @@ const MessagesTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showThread, setShowThread] = useState(false);
 
-  // AI response patterns to filter out
+  // Enhanced AI response patterns to filter out
   const aiResponsePatterns = [
     "I'd be happy to help you with that!",
     "Can you provide more details about what specific service you're looking for?",
@@ -31,10 +31,15 @@ const MessagesTab = () => {
     "HOUSIE AI",
     "AI Assistant",
     "assistant",
-    "I'm an AI"
+    "I'm an AI",
+    "webllm",
+    "fallback mode",
+    "local ai",
+    "test webllm",
+    "tax?", "pets?", "cleaning costs"
   ];
 
-  // Check if a message or conversation contains AI-generated content
+  // Enhanced AI detection function
   const isAIRelated = (text: string) => {
     if (!text) return false;
     const lowerText = text.toLowerCase();
@@ -43,19 +48,23 @@ const MessagesTab = () => {
     );
   };
 
-  // Filter out conversations that are AI-related or contaminated
+  // Strict human-only conversation filtering
   const humanConversations = conversations.filter(conv => {
     // Exclude if other participant looks like AI
     if (conv.other_participant) {
       const participantName = conv.other_participant.full_name || '';
+      const participantId = conv.other_participant.id || '';
       const lowerName = participantName.toLowerCase();
       
-      // Filter out AI-related participant names
+      // Filter out AI-related participant names and IDs
       if (lowerName.includes('ai') || 
           lowerName.includes('assistant') || 
           lowerName.includes('bot') ||
-          conv.other_participant.id === 'ai-assistant') {
-        console.log('🚫 Filtered out AI participant:', participantName);
+          lowerName.includes('housie ai') ||
+          participantId === 'ai-assistant' ||
+          participantId.includes('ai') ||
+          participantId.includes('bot')) {
+        console.log('🚫 Filtered out AI participant:', participantName, participantId);
         return false;
       }
     }
@@ -66,23 +75,42 @@ const MessagesTab = () => {
       return false;
     }
 
-    // Only include conversations with real users
+    // Additional validation: exclude conversations with typical AI conversation markers
+    if (conv.last_message) {
+      const lowerMessage = conv.last_message.toLowerCase();
+      
+      // Filter out common AI test patterns
+      if (lowerMessage.includes('webllm is working') ||
+          lowerMessage.includes('local ai') ||
+          lowerMessage.includes('fallback mode') ||
+          lowerMessage.includes('✅') ||
+          lowerMessage.includes('🤖') ||
+          lowerMessage.includes('🎨') ||
+          lowerMessage.match(/tax\?|pets\?|cleaning costs/)) {
+        console.log('🚫 Filtered out AI test message:', conv.last_message);
+        return false;
+      }
+    }
+
+    // Only include conversations with verified human participants
     return conv.other_participant && 
            conv.other_participant.id !== 'ai-assistant' &&
            conv.last_message &&
            conv.last_message.trim() !== '' &&
-           conv.last_message !== 'Start a conversation';
+           conv.last_message !== 'Start a conversation' &&
+           !conv.last_message.toLowerCase().includes('ai') &&
+           !conv.last_message.toLowerCase().includes('assistant');
   });
 
   console.log('💬 Total conversations:', conversations.length);
-  console.log('👥 Human conversations after filtering:', humanConversations.length);
+  console.log('👥 Human conversations after strict filtering:', humanConversations.length);
 
   const filteredConversations = humanConversations.filter(conv =>
     conv.other_participant?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleConversationClick = (conversationId: string) => {
-    console.log('🔍 Loading conversation:', conversationId);
+    console.log('🔍 Loading human conversation:', conversationId);
     loadMessages(conversationId);
     setShowThread(true);
   };
@@ -121,7 +149,7 @@ const MessagesTab = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Rechercher des conversations..."
+            placeholder="Rechercher des conversations humaines..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-gray-50 dark:bg-gray-800 border-0 focus:bg-white dark:focus:bg-gray-700"
@@ -142,12 +170,20 @@ const MessagesTab = () => {
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               Commencez à discuter avec des prestataires lorsque vous faites une réservation!
             </p>
-            <p className="text-xs text-gray-400 dark:text-gray-500">
-              💡 Astuce: Les conversations AI se trouvent dans l'onglet "Assistant IA"
-            </p>
+            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg p-3 text-center">
+              <p className="text-xs text-blue-600 dark:text-blue-400 font-medium mb-1">
+                💡 Séparation stricte des chats
+              </p>
+              <p className="text-xs text-blue-500 dark:text-blue-300">
+                Messages = Humain vers Humain uniquement
+              </p>
+              <p className="text-xs text-purple-500 dark:text-purple-300">
+                Assistant IA = WebLLM uniquement
+              </p>
+            </div>
             {conversations.length > 0 && (
-              <p className="text-xs text-orange-500 mt-2">
-                🔍 {conversations.length} conversation(s) filtrée(s) (IA détectée)
+              <p className="text-xs text-orange-500 mt-3">
+                🔍 {conversations.length} conversation(s) filtrée(s) (IA/Bot détecté)
               </p>
             )}
           </div>
@@ -166,8 +202,8 @@ const MessagesTab = () => {
                         src={conversation.other_participant?.profile_image} 
                         alt={conversation.other_participant?.full_name}
                       />
-                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white font-semibold">
-                        {conversation.other_participant?.full_name?.charAt(0) || 'U'}
+                      <AvatarFallback className="bg-gradient-to-br from-blue-500 to-green-600 text-white font-semibold">
+                        {conversation.other_participant?.full_name?.charAt(0) || 'H'}
                       </AvatarFallback>
                     </Avatar>
                     <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-gray-900 rounded-full"></div>
@@ -176,7 +212,7 @@ const MessagesTab = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">
-                        {conversation.other_participant?.full_name || 'Utilisateur Inconnu'}
+                        {conversation.other_participant?.full_name || 'Utilisateur Humain'}
                       </p>
                       <div className="flex items-center gap-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
@@ -202,13 +238,16 @@ const MessagesTab = () => {
                       </div>
                     </div>
 
-                    {conversation.booking_id && (
-                      <div className="mt-1">
+                    <div className="mt-2 flex items-center gap-2">
+                      {conversation.booking_id && (
                         <Badge variant="outline" className="text-xs">
                           Chat Réservation
                         </Badge>
-                      </div>
-                    )}
+                      )}
+                      <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                        👤 Humain Vérifié
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -220,7 +259,7 @@ const MessagesTab = () => {
       {/* Quick Actions Footer */}
       <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>{filteredConversations.length} conversation{filteredConversations.length !== 1 ? 's' : ''} humaine{filteredConversations.length !== 1 ? 's' : ''}</span>
+          <span>👥 {filteredConversations.length} conversation{filteredConversations.length !== 1 ? 's' : ''} humaine{filteredConversations.length !== 1 ? 's' : ''}</span>
           {totalUnreadCount > 0 && (
             <span className="text-blue-600 font-medium">
               {totalUnreadCount} message{totalUnreadCount !== 1 ? 's' : ''} non lu{totalUnreadCount !== 1 ? 's' : ''}
