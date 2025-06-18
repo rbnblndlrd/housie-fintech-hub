@@ -21,27 +21,31 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({
   onBookNow
 }) => {
   return (
-    <div className="lg:col-span-3">
+    <div className="lg:col-span-3 space-y-6">
       {/* Sample Data Seeder - Show when no real services from DB */}
       {!isLoading && services.length === fallbackServices.length && (
-        <SampleDataSeeder />
+        <div className="mb-8">
+          <SampleDataSeeder />
+        </div>
       )}
 
       {isLoading ? (
-        <div className="text-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto"></div>
-          <p className="mt-4 text-gray-800 dark:text-gray-700">Chargement des services...</p>
+        <div className="text-center py-16">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-6"></div>
+          <p className="text-xl text-gray-800 dark:text-gray-700 font-medium">Chargement des services...</p>
         </div>
       ) : filteredServices.length === 0 ? (
-        <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
-          <CardContent className="p-12 text-center">
-            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
-              <svg className="h-16 w-16 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <Card className="fintech-card text-center py-16">
+          <CardContent className="space-y-6">
+            <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-8 inline-block mb-8">
+              <svg className="h-20 w-20 text-white mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </div>
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Aucun service trouvé</h3>
-            <p className="text-gray-700 mt-2">Essayez de modifier vos critères de recherche</p>
+            <div className="space-y-4">
+              <h3 className="text-2xl font-bold text-gray-800">Aucun service trouvé</h3>
+              <p className="text-gray-600 text-lg">Essayez de modifier vos critères de recherche</p>
+            </div>
           </CardContent>
         </Card>
       ) : (

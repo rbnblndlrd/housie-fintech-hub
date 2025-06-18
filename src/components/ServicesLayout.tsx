@@ -40,26 +40,30 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
-        <div className="container mx-auto px-4 py-8">
+      <div className="min-h-screen pt-20 bg-gray-50/50">
+        <div className="container mx-auto px-4 py-8 space-y-8">
           <ServicesHeader />
 
-          <ServiceFilters
-            searchTerm={searchTerm}
-            selectedCategory={selectedCategory}
-            selectedLocation={selectedLocation}
-            priceRange={priceRange}
-            onSearchChange={onSearchChange}
-            onCategoryChange={onCategoryChange}
-            onLocationChange={onLocationChange}
-            onPriceRangeChange={onPriceRangeChange}
-          />
+          <div className="mb-8">
+            <ServiceFilters
+              searchTerm={searchTerm}
+              selectedCategory={selectedCategory}
+              selectedLocation={selectedLocation}
+              priceRange={priceRange}
+              onSearchChange={onSearchChange}
+              onCategoryChange={onCategoryChange}
+              onLocationChange={onLocationChange}
+              onPriceRangeChange={onPriceRangeChange}
+            />
+          </div>
 
           <div className="grid lg:grid-cols-4 gap-8">
-            <MapSection
-              onCategorySelect={onCategoryChange}
-              providers={sampleProviders}
-            />
+            <div className="lg:col-span-1">
+              <MapSection
+                onCategorySelect={onCategoryChange}
+                providers={sampleProviders}
+              />
+            </div>
 
             <ServicesGrid
               services={services}

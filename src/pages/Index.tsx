@@ -126,16 +126,15 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Mascot and Assistant Preview - LARGER AND MORE PROMINENT */}
-            <div className="relative">
-              {/* HOUSIE Mascot - MUCH LARGER */}
-              <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-10 mb-6 relative overflow-hidden">
+            {/* Mascot and Assistant Preview */}
+            <div className="relative space-y-6">
+              {/* HOUSIE Mascot */}
+              <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-8 relative overflow-hidden">
                 <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
                 
-                <div className="flex items-center justify-center mb-8">
-                  {/* STATEMENT PIECE APP ICON - FILLS ENTIRE YELLOW CONTAINER */}
-                  <div className="w-48 h-48 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden p-1">
+                <div className="flex items-center justify-center mb-6">
+                  <div className="w-40 h-40 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden p-1">
                     <div className="w-full h-full bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center p-1">
                       <img 
                         src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
@@ -152,7 +151,7 @@ const Index = () => {
                   
                   <div className="flex gap-2">
                     <Link to="/onboarding" className="flex-1">
-                      <Button className="w-full fintech-button-secondary text-white font-bold px-8 py-4 rounded-xl text-lg">
+                      <Button className="w-full fintech-button-secondary text-purple-600 font-bold px-8 py-4 rounded-xl text-lg">
                         GET STARTED
                       </Button>
                     </Link>
@@ -176,26 +175,26 @@ const Index = () => {
       </section>
 
       {/* Service Categories */}
-      <section className="py-16 px-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm">
+      <section className="py-20 px-4 bg-gray-50/50">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-4">Services Populaires</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-6">Services Populaires</h2>
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Plus de 50 catégories de services avec des professionnels vérifiés dans toutes les provinces canadiennes
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {serviceCategories.map((category, index) => (
-              <Card key={index} className="fintech-card hover:-translate-y-2 hover:border-orange-200 dark:hover:border-orange-500">
-                <CardHeader className="text-center pb-4">
-                  <div className="text-4xl mb-3">{category.icon}</div>
+              <Card key={index} className="fintech-card text-center group">
+                <CardHeader className="pb-4 pt-8">
+                  <div className="text-5xl mb-4 transition-transform duration-300 group-hover:scale-110">{category.icon}</div>
                   <CardTitle className="text-lg font-bold text-gray-800 dark:text-white">
                     {category.name}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="text-center">
-                  <Badge className={`${category.color} text-sm font-medium rounded-2xl`}>
+                <CardContent className="pb-8">
+                  <Badge className={`${category.color} text-sm font-medium rounded-2xl px-4 py-2`}>
                     Disponible 24/7
                   </Badge>
                 </CardContent>
@@ -205,8 +204,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Value Propositions with Pop Art Style */}
-      <section className="py-20 px-4 bg-gradient-to-r from-orange-50/80 to-purple-50/80 dark:from-gray-800/80 dark:to-gray-900/80 backdrop-blur-sm">
+      {/* Value Propositions */}
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-black text-gray-900 dark:text-white mb-6">
@@ -219,19 +218,19 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {valueProps.map((prop, index) => (
-              <Card key={index} className="fintech-card hover:-translate-y-3 relative overflow-hidden">
+              <Card key={index} className="fintech-card relative overflow-hidden group">
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100/50 to-purple-100/50 dark:from-orange-900/20 dark:to-purple-900/20 rounded-full -translate-y-6 translate-x-6"></div>
-                <CardHeader className="text-center pb-6 relative z-10">
-                  <div className="mx-auto mb-6 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl w-fit backdrop-blur-sm">
+                <CardHeader className="text-center pb-6 relative z-10 pt-8">
+                  <div className="mx-auto mb-6 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl w-fit backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
                     {prop.icon}
                   </div>
                   <CardTitle className="text-xl font-black text-gray-900 dark:text-white leading-tight">
                     {prop.title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="relative z-10">
+                <CardContent className="relative z-10 pb-8">
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-center">
                     {prop.description}
                   </p>
@@ -243,24 +242,24 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-4 bg-gray-900/95 dark:bg-black/95 text-white backdrop-blur-sm">
+      <section className="py-20 px-4 bg-gray-900/95 dark:bg-black/95 text-white backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-black text-orange-400 mb-2">2.9M</div>
-              <div className="text-gray-300">Travailleurs Autonomes Ciblés</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            <div className="space-y-3">
+              <div className="text-4xl font-black text-orange-400">2.9M</div>
+              <div className="text-gray-300 text-lg">Travailleurs Autonomes Ciblés</div>
             </div>
-            <div>
-              <div className="text-4xl font-black text-purple-400 mb-2">$312M</div>
-              <div className="text-gray-300">Évaluation Projetée</div>
+            <div className="space-y-3">
+              <div className="text-4xl font-black text-purple-400">$312M</div>
+              <div className="text-gray-300 text-lg">Évaluation Projetée</div>
             </div>
-            <div>
-              <div className="text-4xl font-black text-cyan-400 mb-2">40%</div>
-              <div className="text-gray-300">Économies Moyennes</div>
+            <div className="space-y-3">
+              <div className="text-4xl font-black text-cyan-400">40%</div>
+              <div className="text-gray-300 text-lg">Économies Moyennes</div>
             </div>
-            <div>
-              <div className="text-4xl font-black text-green-400 mb-2">6%</div>
-              <div className="text-gray-300">Frais vs 15-30% Ailleurs</div>
+            <div className="space-y-3">
+              <div className="text-4xl font-black text-green-400">6%</div>
+              <div className="text-gray-300 text-lg">Frais vs 15-30% Ailleurs</div>
             </div>
           </div>
         </div>
