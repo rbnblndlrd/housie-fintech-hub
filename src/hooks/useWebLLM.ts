@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useRef, useEffect } from 'react';
 import * as webllm from "@mlc-ai/web-llm";
 
@@ -13,6 +12,7 @@ export const useWebLLM = () => {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isReady, setIsReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState<string>('');
   
   const engineRef = useRef<webllm.MLCEngineInterface | null>(null);
   const conversationRef = useRef<WebLLMMessage[]>([]);
@@ -23,72 +23,99 @@ export const useWebLLM = () => {
     try {
       setIsDownloading(true);
       setError(null);
+      setDebugInfo('🤖 Starting WebLLM initialization...');
       console.log('🤖 Initializing WebLLM engine...');
+
+      // Check if WebLLM is supported
+      if (typeof window !== 'undefined' && !window.WebAssembly) {
+        throw new Error('WebAssembly not supported in this browser');
+      }
 
       const engine = new webllm.MLCEngine();
       
       engine.setInitProgressCallback((report) => {
         console.log('📥 WebLLM progress:', report);
+        setDebugInfo(`📥 ${report.text || 'Loading model...'}`);
         if (report.progress !== undefined) {
           setDownloadProgress(Math.round(report.progress * 100));
         }
       });
 
-      // Use Llama-3.2-1B-Instruct for better performance
+      setDebugInfo('📦 Downloading Llama-3.2-1B model...');
+      
+      // Use a smaller, faster model for better performance
       await engine.reload("Llama-3.2-1B-Instruct-q4f32_1-MLC");
       
       engineRef.current = engine;
       setIsReady(true);
       setIsDownloading(false);
-      console.log('✅ WebLLM engine ready!');
+      setDebugInfo('✅ WebLLM ready and operational!');
+      console.log('✅ WebLLM engine ready and operational!');
       
-      // Initialize with comprehensive system prompt for home services
+      // Initialize with system prompt
       conversationRef.current = [{
         role: 'system',
-        content: `You are HOUSIE AI, an intelligent assistant specialized in home services and property management. You provide contextual, helpful responses based on what users ask.
+        content: `You are HOUSIE AI, an intelligent assistant for home services. You understand context and provide helpful responses.
+
+TESTING COMMANDS:
+- "test webllm" → Respond: "✅ WebLLM is working perfectly! Local AI is operational."
+- "webllm status" → Report your operational status
+
+CORE FUNCTIONALITY:
+🏠 HOME SERVICES: cleaning, landscaping, repairs, maintenance
+💰 PRICING: cost estimates and comparisons  
+📅 BOOKING: scheduling assistance
+🐕 PET SERVICES: pet care, pet-friendly providers
+🏛️ TAX HELP: home office deductions, property tax
 
 RESPONSE STYLE:
-- Be conversational, intelligent, and context-aware
-- Give specific, actionable advice
-- Ask follow-up questions to better help users
-- Keep responses 2-4 sentences unless more detail is needed
+- Be conversational and context-aware
+- Provide specific, actionable advice
+- Keep responses 2-4 sentences unless more detail needed
 - Always relate back to home services when possible
 
-EXPERTISE AREAS:
-🏠 HOME SERVICES: cleaning, landscaping, repairs, maintenance, contractors
-💰 COSTS & PRICING: estimates, comparisons, typical price ranges
-📅 BOOKING: scheduling, appointments, service coordination  
-🏛️ TAX & FINANCIAL: home office deductions, property tax, contractor expenses
-🐕 PET SERVICES: pet sitting, dog walking, grooming, pet-friendly providers
-
-CONTEXT UNDERSTANDING:
-- "tax" or "hi tax?" → Focus on tax deductions, home office, property tax
-- "pets" or "pet?" → Focus on pet services, pet-friendly options
-- "clean" → House cleaning services and pricing
-- "lawn" or "garden" → Landscaping and outdoor maintenance
-- "repair" or "fix" → Home repairs and contractors
-- Short questions like "?" after topics → Give focused overview of that topic
-
 SPECIAL COMMANDS:
-- "show me colors" → Respond: "🎨✨ Activating HOUSIE's groovy pop art mode! Behold the colors! Welcome to our psychedelic dimension! ✨🌈"
-
-Always be helpful, intelligent, and context-aware. Understand what users are really asking for.`
+- "show me colors" → Activate pop art mode response`
       }];
 
     } catch (err) {
       console.error('❌ WebLLM initialization error:', err);
-      setError('Failed to initialize AI model. Using intelligent fallback responses.');
+      const errorMsg = err instanceof Error ? err.message : 'Unknown WebLLM error';
+      setError(`WebLLM failed: ${errorMsg}`);
+      setDebugInfo(`❌ WebLLM Error: ${errorMsg}`);
       setIsDownloading(false);
       setIsReady(false);
     }
   }, [isDownloading]);
 
   const sendMessage = useCallback(async (message: string): Promise<string> => {
+    const lowerMessage = message.toLowerCase().trim();
+    
     console.log('💬 Sending message to WebLLM:', message);
+    console.log('🔍 WebLLM Status - Ready:', isReady, 'Engine:', !!engineRef.current);
 
-    // Handle pop art easter egg immediately
-    if (message.toLowerCase().includes('show me colors') || 
-        message.toLowerCase().includes('colors') && message.toLowerCase().includes('show')) {
+    // Handle test commands immediately
+    if (lowerMessage === 'test webllm') {
+      if (engineRef.current && isReady) {
+        console.log('✅ WebLLM test command - engine is ready!');
+        return "✅ WebLLM is working perfectly! Local AI is operational. 🤖🚀";
+      } else {
+        console.log('❌ WebLLM test command - engine not ready');
+        return "❌ WebLLM is not ready yet. Status: " + (isDownloading ? "downloading..." : "not initialized");
+      }
+    }
+
+    if (lowerMessage === 'webllm status') {
+      return `🤖 WebLLM Status Report:
+- Ready: ${isReady ? '✅' : '❌'}
+- Engine: ${engineRef.current ? '✅' : '❌'}
+- Downloading: ${isDownloading ? '📥' : '✅'}
+- Progress: ${downloadProgress}%
+- Debug: ${debugInfo}`;
+    }
+
+    // Handle pop art easter egg
+    if (lowerMessage.includes('show me colors')) {
       return "🎨✨ Activating HOUSIE's groovy pop art mode! Behold the colors! Welcome to our psychedelic dimension! ✨🌈";
     }
 
@@ -131,19 +158,20 @@ Always be helpful, intelligent, and context-aware. Understand what users are rea
       }
     }
 
-    // Intelligent fallback responses based on message content
+    // Intelligent fallback responses
+    console.log('⚠️ Using fallback - WebLLM not ready');
     return getIntelligentFallback(message);
-  }, [isReady]);
+  }, [isReady, isDownloading, downloadProgress, debugInfo]);
 
   const getIntelligentFallback = (message: string): string => {
     const lowerMessage = message.toLowerCase();
     
-    // Tax-related queries - be more specific and contextual
+    // Tax-related queries
     if (lowerMessage.includes('tax') || lowerMessage === 'hi tax?' || lowerMessage === 'tax?') {
       const taxResponses = [
-        "For home-related taxes, I can help with home office deductions (up to $5,000), property tax questions, and tracking contractor expenses for tax purposes. What specific tax topic interests you?",
-        "Tax wise - home office deductions are big! You can deduct workspace expenses, utilities (proportional), and home maintenance costs. Are you working from home or need property tax help?",
-        "Tax question? Home offices can save you hundreds - office space, utilities, repairs all potentially deductible. Plus contractor receipts for maintenance. What's your tax situation?"
+        "📋 Tax Help: Home office deductions (up to $5,000), property tax questions, and contractor expense tracking. What specific tax topic interests you?",
+        "💰 Tax-wise: Home offices save money! Workspace, utilities, repairs - all potentially deductible. Are you working from home?",
+        "🏠 Tax question? Home office deductions can save hundreds - office space, utilities, maintenance costs. What's your tax situation?"
       ];
       return taxResponses[Math.floor(Math.random() * taxResponses.length)];
     }
@@ -151,9 +179,9 @@ Always be helpful, intelligent, and context-aware. Understand what users are rea
     // Pet-related queries
     if (lowerMessage.includes('pet') || lowerMessage.includes('dog') || lowerMessage.includes('cat') || lowerMessage === 'pets?') {
       const petResponses = [
-        "For pets, I help find dog walking ($20-30/walk), pet sitting ($30-60/day), grooming ($40-100), and pet-friendly home service providers who won't disturb your furry friends. What pet service do you need?",
-        "Pet services? I've got you covered! Dog walkers, pet sitters, groomers, plus I know which cleaning and repair services are pet-friendly. What does your pet need?",
-        "Pets need love AND services! Dog walking, pet sitting, grooming, vet recommendations - plus finding contractors who are comfortable around animals. How can I help your pet?"
+        "🐕 Pet Services: Dog walking ($20-30/walk), pet sitting ($30-60/day), grooming ($40-100), plus pet-friendly home service providers. What does your furry friend need?",
+        "🐾 Pet care covered! Dog walkers, sitters, groomers, plus contractors who love animals. How can I help your pet?",
+        "🦴 Pets need love AND services! Walking, sitting, grooming, vet recommendations - plus animal-friendly contractors. What pet service interests you?"
       ];
       return petResponses[Math.floor(Math.random() * petResponses.length)];
     }
@@ -161,9 +189,9 @@ Always be helpful, intelligent, and context-aware. Understand what users are rea
     // Cleaning services
     if (lowerMessage.includes('clean')) {
       const cleanResponses = [
-        "House cleaning typically runs $100-200 for regular service, $200-400 for deep cleaning. I can help find reliable, insured cleaners in your area. What size space and cleaning type?",
-        "Cleaning services vary by home size and frequency. Weekly: $80-150, bi-weekly: $100-200, monthly: $150-300. Want me to help find vetted cleaners nearby?",
-        "For cleaning, expect $25-50/hour or flat rates $100-250 depending on home size. I can match you with top-rated, background-checked cleaners. What's your cleaning situation?"
+        "🧹 House cleaning: $100-200 regular, $200-400 deep clean. I can help find reliable, insured cleaners nearby. What size space?",
+        "✨ Cleaning costs: Weekly $80-150, bi-weekly $100-200, monthly $150-300. Want vetted cleaners in your area?",
+        "🏠 Cleaning services: $25-50/hour or $100-250 flat rate by home size. I'll match you with top-rated, background-checked cleaners!"
       ];
       return cleanResponses[Math.floor(Math.random() * cleanResponses.length)];
     }
@@ -210,10 +238,9 @@ Always be helpful, intelligent, and context-aware. Understand what users are rea
     
     // Default intelligent response
     const responses = [
-      "I'm HOUSIE AI - I understand context and provide intelligent help with home services, pricing, tax questions, pet services, and more. What specific help do you need?",
-      "I'm here to give you smart, contextual answers about home services! I understand shorthand like 'tax?' or 'pets?' and provide relevant, helpful responses. How can I assist you?",
-      "As your intelligent home services assistant, I provide context-aware help with everything from contractor pricing to tax deductions. I understand what you're really asking for. What can I help with?",
-      "I'm designed to understand context and give you relevant, intelligent responses about home services, costs, booking, taxes, pets, and more. What's your question?"
+      `🤖 HOUSIE AI here! I'm your intelligent home services assistant. ${isReady ? '(WebLLM Ready)' : '(Fallback Mode)'} I help with cleaning, repairs, costs, tax questions, pet services, and more. What can I help with?`,
+      `👋 Hi! I understand context and provide smart answers about home services, pricing, bookings, and more. ${isReady ? '✅ Local AI Active' : '⚠️ Using Fallback'} How can I assist you today?`,
+      `🏠 Welcome! I'm context-aware and ready to help with home services, cost estimates, tax deductions, pet care, and booking assistance. ${isReady ? '(Powered by WebLLM)' : '(Intelligent Fallback)'} What's your question?`
     ];
     
     return responses[Math.floor(Math.random() * responses.length)];
@@ -243,6 +270,7 @@ Always be helpful, intelligent, and context-aware. Understand what users are rea
     downloadProgress,
     isReady,
     error,
+    debugInfo,
     sendMessage,
     resetConversation,
     initializeEngine
