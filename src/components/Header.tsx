@@ -54,7 +54,7 @@ const Header = () => {
             <img 
               src="/lovable-uploads/new-housie-logo.png" 
               alt="HOUSIE Logo" 
-              className={`h-36 transition-all duration-200 ${isDark ? 'filter invert brightness-0 invert' : ''}`}
+              className={`h-16 transition-all duration-200 ${isDark ? 'filter invert' : ''}`}
             />
           </Link>
 
