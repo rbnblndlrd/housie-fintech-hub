@@ -104,119 +104,117 @@ const BookingCard: React.FC<BookingCardProps> = ({ booking, onUpdateStatus }) =>
   };
 
   return (
-    <Card className="fintech-card">
-      <CardContent className="p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Section - Main Info */}
-          <div className="flex-1 space-y-4">
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-1">
-                  {booking.service.title}
-                </h3>
-                <CreamBadge variant={getStatusVariant(booking.status)}>
-                  {getStatusText(booking.status)}
-                </CreamBadge>
-              </div>
-              <div className="text-right">
-                <p className="text-2xl font-bold text-gray-900">
-                  ${Number(booking.total_amount).toFixed(0)}
-                </p>
-                <p className="text-sm text-gray-500">
-                  {booking.duration_hours}h de service
-                </p>
-              </div>
+    <div className="bg-white border-2 border-gray-300 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1">
+      <div className="flex flex-col lg:flex-row gap-6">
+        {/* Left Section - Main Info */}
+        <div className="flex-1 space-y-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                {booking.service.title}
+              </h3>
+              <CreamBadge variant={getStatusVariant(booking.status)}>
+                {getStatusText(booking.status)}
+              </CreamBadge>
             </div>
-
-            {/* Date & Time */}
-            <div className="flex flex-wrap gap-4">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg">
-                  <Calendar className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm font-medium text-gray-700">
-                  {formatDate(booking.scheduled_date)}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-r from-purple-500 to-purple-600 rounded-lg">
-                  <Clock className="h-4 w-4 text-white" />
-                </div>
-                <span className="text-sm font-medium text-gray-700">
-                  {formatTime(booking.scheduled_time)}
-                </span>
-              </div>
-            </div>
-
-            {/* Location */}
-            <div className="flex items-start gap-2">
-              <div className="p-1.5 bg-gradient-to-r from-red-500 to-red-600 rounded-lg">
-                <MapPin className="h-4 w-4 text-white" />
-              </div>
-              <span className="text-sm text-gray-600">
-                {booking.service_address}
-              </span>
-            </div>
-
-            {/* Customer Info */}
-            <div className="bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl p-4 shadow-inner">
-              <h4 className="font-medium text-gray-900 mb-3">Informations Client</h4>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-700">{booking.customer.full_name}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-700">{booking.customer.phone}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Mail className="h-4 w-4 text-gray-500" />
-                  <span className="text-sm text-gray-700">{booking.customer.email}</span>
-                </div>
-              </div>
+            <div className="text-right">
+              <p className="text-2xl font-bold text-gray-900">
+                ${Number(booking.total_amount).toFixed(0)}
+              </p>
+              <p className="text-sm text-gray-500">
+                {booking.duration_hours}h de service
+              </p>
             </div>
           </div>
 
-          {/* Right Section - Actions */}
-          <div className="lg:w-64 space-y-3">
-            <h4 className="font-medium text-gray-900 mb-3">Actions</h4>
-            {getAvailableActions().map((actionItem) => (
-              <Button
-                key={actionItem.action}
-                onClick={() => onUpdateStatus(booking.id, actionItem.action)}
-                className={`w-full bg-gradient-to-r ${actionItem.color} hover:shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] text-white border-0 rounded-xl py-3 transition-all duration-200 hover:-translate-y-0.5`}
-              >
-                <actionItem.icon className="h-4 w-4 mr-2" />
-                {actionItem.label}
-              </Button>
-            ))}
-            
-            {booking.status !== 'cancelled' && booking.status !== 'completed' && (
-              <Button
-                variant="outline"
-                className="w-full border-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-xl py-3 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_15px_-2px_rgba(0,0,0,0.15)] transition-all duration-200"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reprogrammer
-              </Button>
-            )}
+          {/* Date & Time */}
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Calendar className="h-4 w-4 text-blue-600" />
+              </div>
+              <span className="text-sm font-medium text-gray-700">
+                {formatDate(booking.scheduled_date)}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Clock className="h-4 w-4 text-purple-600" />
+              </div>
+              <span className="text-sm font-medium text-gray-700">
+                {formatTime(booking.scheduled_time)}
+              </span>
+            </div>
+          </div>
 
-            {/* Payment Status */}
-            <div className="mt-4 p-3 bg-gradient-to-br from-blue-50 to-blue-100/50 rounded-2xl shadow-inner">
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">Paiement</span>
-                <CreamBadge 
-                  variant={booking.payment_status === 'paid' ? 'success' : 'warning'}
-                >
-                  {booking.payment_status === 'paid' ? 'Payé' : 'En attente'}
-                </CreamBadge>
+          {/* Location */}
+          <div className="flex items-start gap-2">
+            <div className="p-2 bg-red-100 rounded-lg">
+              <MapPin className="h-4 w-4 text-red-600" />
+            </div>
+            <span className="text-sm text-gray-600">
+              {booking.service_address}
+            </span>
+          </div>
+
+          {/* Customer Info */}
+          <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
+            <h4 className="font-medium text-gray-900 mb-3">Informations Client</h4>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <User className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-700">{booking.customer.full_name}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Phone className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-700">{booking.customer.phone}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Mail className="h-4 w-4 text-gray-500" />
+                <span className="text-sm text-gray-700">{booking.customer.email}</span>
               </div>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Right Section - Actions */}
+        <div className="lg:w-64 space-y-3">
+          <h4 className="font-medium text-gray-900 mb-3">Actions</h4>
+          {getAvailableActions().map((actionItem) => (
+            <Button
+              key={actionItem.action}
+              onClick={() => onUpdateStatus(booking.id, actionItem.action)}
+              className={`w-full bg-gradient-to-r ${actionItem.color} hover:shadow-lg text-white border-0 rounded-xl py-3 transition-all duration-200 hover:-translate-y-0.5`}
+            >
+              <actionItem.icon className="h-4 w-4 mr-2" />
+              {actionItem.label}
+            </Button>
+          ))}
+          
+          {booking.status !== 'cancelled' && booking.status !== 'completed' && (
+            <Button
+              variant="outline"
+              className="w-full border-2 border-gray-300 text-gray-700 hover:bg-gray-50 rounded-xl py-3 transition-all duration-200"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reprogrammer
+            </Button>
+          )}
+
+          {/* Payment Status */}
+          <div className="mt-4 p-3 bg-gray-50 rounded-xl border border-gray-200">
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-gray-700">Paiement</span>
+              <CreamBadge 
+                variant={booking.payment_status === 'paid' ? 'success' : 'warning'}
+              >
+                {booking.payment_status === 'paid' ? 'Payé' : 'En attente'}
+              </CreamBadge>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
