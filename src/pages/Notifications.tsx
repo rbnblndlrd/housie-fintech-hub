@@ -128,9 +128,9 @@ const Notifications = () => {
                   <div>
                     <CardTitle className="text-2xl font-bold text-gray-900">Notifications</CardTitle>
                     {unreadCount > 0 && (
-                      <Badge className="bg-gradient-to-r from-red-500 to-red-600 text-white border-0 shadow-[0_2px_10px_-2px_rgba(239,68,68,0.3)] mt-2">
+                      <div className="bg-stone-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full mt-2 border border-stone-200 shadow-sm">
                         {unreadCount} non lue{unreadCount > 1 ? 's' : ''}
-                      </Badge>
+                      </div>
                     )}
                   </div>
                 </div>

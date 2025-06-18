@@ -28,30 +28,32 @@ export const NotificationBubbles = () => {
           <div
             key={bubble.id}
             className={cn(
-              "w-2 h-2 rounded-full shadow-lg transition-all duration-500",
-              "bg-gradient-to-r from-red-500 to-pink-500",
+              "px-2 py-1 rounded-full shadow-lg transition-all duration-500",
+              "bg-stone-100 border border-stone-200",
               "animate-pulse hover:animate-bounce"
             )}
             style={{ 
               animationDelay: `${bubble.delay}s`,
               transform: `translateX(${Math.sin(bubble.id * 0.5) * 3}px)`
             }}
-          />
+          >
+            <div className="w-2 h-2 bg-gray-800 rounded-full" />
+          </div>
         ))}
         
         {totalUnreadCount > 6 && (
           <div className={cn(
-            "w-2 h-6 rounded-full shadow-lg",
-            "bg-gradient-to-b from-red-500 via-pink-500 to-red-600",
-            "animate-pulse flex items-center justify-center"
+            "px-2 py-1 rounded-full shadow-lg",
+            "bg-stone-100 border border-stone-200",
+            "animate-pulse flex items-center justify-center min-w-[24px] h-6"
           )}>
-            <div className="w-1 h-1 bg-white rounded-full animate-ping" />
+            <div className="w-1 h-1 bg-gray-800 rounded-full animate-ping" />
           </div>
         )}
         
         {bubbles.length > 0 && (
           <div 
-            className="text-xs text-red-500 font-bold mt-1 animate-pulse"
+            className="text-xs text-gray-800 font-bold mt-1 animate-pulse bg-stone-100 px-2 py-1 rounded-full border border-stone-200 shadow-sm"
             style={{ writingMode: 'vertical-lr', textOrientation: 'mixed' }}
           >
             {totalUnreadCount > 99 ? '99+' : totalUnreadCount}
