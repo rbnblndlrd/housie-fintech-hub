@@ -16,7 +16,19 @@ const MessagesTab = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showThread, setShowThread] = useState(false);
 
-  const filteredConversations = conversations.filter(conv =>
+  // Filter out conversations that are only AI conversations or system messages
+  const userConversations = conversations.filter(conv => {
+    // Only show conversations that have real users (not AI assistants)
+    return conv.other_participant && 
+           conv.other_participant.id !== 'ai-assistant' &&
+           !conv.other_participant.full_name?.includes('AI') &&
+           !conv.other_participant.full_name?.includes('Assistant') &&
+           // Make sure it's not just AI responses
+           conv.last_message && 
+           !conv.last_message.includes('Hello! How can I help you find the perfect service today?');
+  });
+
+  const filteredConversations = userConversations.filter(conv =>
     conv.other_participant?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -35,11 +47,11 @@ const MessagesTab = () => {
     const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60);
 
     if (diffInHours < 1) {
-      return 'Just now';
+      return 'À l\'instant';
     } else if (diffInHours < 24) {
-      return `${Math.floor(diffInHours)}h ago`;
+      return `Il y a ${Math.floor(diffInHours)}h`;
     } else {
-      return date.toLocaleDateString();
+      return date.toLocaleDateString('fr-FR');
     }
   };
 
@@ -59,7 +71,7 @@ const MessagesTab = () => {
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
           <Input
-            placeholder="Search conversations..."
+            placeholder="Rechercher des conversations..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-gray-50 dark:bg-gray-800 border-0 focus:bg-white dark:focus:bg-gray-700"
@@ -75,10 +87,13 @@ const MessagesTab = () => {
               <Users className="h-8 w-8 text-gray-400" />
             </div>
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-              No conversations yet
+              Aucune conversation
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              Start chatting with service providers when you make a booking!
+              Commencez à discuter avec des prestataires lorsque vous faites une réservation!
+            </p>
+            <p className="text-xs text-gray-400 dark:text-gray-500">
+              💡 Astuce: Les conversations AI se trouvent dans l'onglet "Assistant IA"
             </p>
           </div>
         ) : (
@@ -106,7 +121,7 @@ const MessagesTab = () => {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
                       <p className="font-semibold text-gray-900 dark:text-gray-100 truncate">
-                        {conversation.other_participant?.full_name || 'Unknown User'}
+                        {conversation.other_participant?.full_name || 'Utilisateur Inconnu'}
                       </p>
                       <div className="flex items-center gap-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
@@ -116,7 +131,7 @@ const MessagesTab = () => {
                     
                     <div className="flex items-center justify-between">
                       <p className="text-sm text-gray-600 dark:text-gray-400 truncate flex-1">
-                        {conversation.last_message || 'No messages yet'}
+                        {conversation.last_message || 'Aucun message'}
                       </p>
                       
                       <div className="flex items-center gap-2 ml-2">
@@ -135,7 +150,7 @@ const MessagesTab = () => {
                     {conversation.booking_id && (
                       <div className="mt-1">
                         <Badge variant="outline" className="text-xs">
-                          Booking Chat
+                          Chat Réservation
                         </Badge>
                       </div>
                     )}
@@ -150,10 +165,10 @@ const MessagesTab = () => {
       {/* Quick Actions Footer */}
       <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>{conversations.length} conversation{conversations.length !== 1 ? 's' : ''}</span>
+          <span>{filteredConversations.length} conversation{filteredConversations.length !== 1 ? 's' : ''}</span>
           {totalUnreadCount > 0 && (
             <span className="text-blue-600 font-medium">
-              {totalUnreadCount} unread message{totalUnreadCount !== 1 ? 's' : ''}
+              {totalUnreadCount} message{totalUnreadCount !== 1 ? 's' : ''} non lu{totalUnreadCount !== 1 ? 's' : ''}
             </span>
           )}
         </div>
