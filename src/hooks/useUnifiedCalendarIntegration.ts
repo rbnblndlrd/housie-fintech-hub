@@ -18,12 +18,15 @@ export const useUnifiedCalendarIntegration = () => {
     console.log('Converting appointments to events:', appointments);
     
     return appointments.map(appointment => {
-      const appointmentDate = new Date(appointment.scheduled_date);
+      // Parse the date string properly - it comes as YYYY-MM-DD from database
+      const appointmentDate = new Date(appointment.scheduled_date + 'T00:00:00.000Z');
+      
       console.log('Processing appointment:', {
         id: appointment.id,
         title: appointment.title,
         originalDate: appointment.scheduled_date,
         parsedDate: appointmentDate,
+        dateString: appointmentDate.toDateString(),
         time: appointment.scheduled_time
       });
       
@@ -54,7 +57,13 @@ export const useUnifiedCalendarIntegration = () => {
       bookingEventsCount: bookingEvents.length,
       appointmentEventsCount: appointmentEvents.length,
       totalEvents: combined.length,
-      events: combined
+      events: combined.map(event => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        dateString: event.date.toDateString(),
+        source: event.source
+      }))
     });
     
     return combined;
@@ -67,6 +76,12 @@ export const useUnifiedCalendarIntegration = () => {
     
     // Ensure we're using the correct date format (YYYY-MM-DD)
     const dateString = newAppointment.date.toISOString().split('T')[0];
+    
+    console.log('Date conversion:', {
+      originalDate: newAppointment.date,
+      isoString: newAppointment.date.toISOString(),
+      dateString: dateString
+    });
     
     const appointmentData = {
       title: newAppointment.title,

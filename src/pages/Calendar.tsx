@@ -34,55 +34,6 @@ const Calendar = () => {
     deleteEvent 
   } = useUnifiedCalendarIntegration();
 
-  // Calculate selected events based on current date and sync mode
-  const selectedEvents = useMemo(() => {
-    if (!date) {
-      console.log('No date selected');
-      return [];
-    }
-    
-    console.log('Filtering events for date:', {
-      selectedDate: date,
-      selectedDateString: date.toDateString(),
-      allEventsCount: allEvents.length,
-      allEvents: allEvents.map(event => ({
-        id: event.id,
-        title: event.title,
-        date: event.date,
-        dateString: event.date.toDateString(),
-        source: event.source
-      }))
-    });
-    
-    const eventsForDate = allEvents.filter(event => {
-      const eventDateString = event.date.toDateString();
-      const selectedDateString = date.toDateString();
-      const matches = eventDateString === selectedDateString;
-      
-      console.log('Event date comparison:', {
-        eventId: event.id,
-        eventTitle: event.title,
-        eventDateString,
-        selectedDateString,
-        matches
-      });
-      
-      return matches;
-    });
-    
-    console.log('Events found for selected date:', {
-      dateString: date.toDateString(),
-      eventsCount: eventsForDate.length,
-      events: eventsForDate
-    });
-    
-    if (isGoogleSyncMode) {
-      return eventsForDate; // Show all events when Google sync is on
-    } else {
-      return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
-    }
-  }, [date, allEvents, isGoogleSyncMode]);
-
   // Helper functions for status styling
   const getStatusColor = (status: string) => {
     switch(status) {
@@ -104,13 +55,68 @@ const Calendar = () => {
     }
   };
 
+  // Calculate selected events based on current date and sync mode
+  const selectedEvents = useMemo(() => {
+    if (!date) {
+      console.log('No date selected');
+      return [];
+    }
+    
+    // Convert selected date to the same format as stored dates (UTC midnight)
+    const selectedDateUTC = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+    const selectedDateString = selectedDateUTC.toDateString();
+    
+    console.log('Filtering events for date:', {
+      selectedDate: date,
+      selectedDateUTC: selectedDateUTC,
+      selectedDateString: selectedDateString,
+      allEventsCount: allEvents.length,
+      allEvents: allEvents.map(event => ({
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        dateString: event.date.toDateString(),
+        source: event.source
+      }))
+    });
+    
+    const eventsForDate = allEvents.filter(event => {
+      const eventDateString = event.date.toDateString();
+      const matches = eventDateString === selectedDateString;
+      
+      console.log('Event date comparison:', {
+        eventId: event.id,
+        eventTitle: event.title,
+        eventDate: event.date,
+        eventDateString,
+        selectedDateString,
+        matches
+      });
+      
+      return matches;
+    });
+    
+    console.log('Events found for selected date:', {
+      dateString: selectedDateString,
+      eventsCount: eventsForDate.length,
+      events: eventsForDate
+    });
+    
+    if (isGoogleSyncMode) {
+      return eventsForDate; // Show all events when Google sync is on
+    } else {
+      return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
+    }
+  }, [date, allEvents, isGoogleSyncMode]);
+
   const handleDateSelect = (newDate: Date | undefined) => {
     console.log('Date selected:', {
       newDate,
       totalEvents: allEvents.length,
-      eventsForNewDate: newDate ? allEvents.filter(event => 
-        event.date.toDateString() === newDate.toDateString()
-      ).length : 0
+      eventsForNewDate: newDate ? allEvents.filter(event => {
+        const newDateUTC = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
+        return event.date.toDateString() === newDateUTC.toDateString();
+      }).length : 0
     });
     setDate(newDate);
   };
