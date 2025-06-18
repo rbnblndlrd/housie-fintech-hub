@@ -5,7 +5,7 @@ import { CheckCircle, Clock, CreditCard, Star, Calendar, X, Bell } from 'lucide-
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { CreamBadge } from '@/components/ui/cream-badge';
 import Header from '@/components/Header';
 
 interface Notification {
@@ -128,9 +128,9 @@ const Notifications = () => {
                   <div>
                     <CardTitle className="text-2xl font-bold text-gray-900">Notifications</CardTitle>
                     {unreadCount > 0 && (
-                      <div className="bg-stone-100 text-gray-800 text-sm font-semibold px-3 py-1 rounded-full mt-2 border border-stone-200 shadow-sm">
+                      <CreamBadge variant="info" className="mt-2">
                         {unreadCount} non lue{unreadCount > 1 ? 's' : ''}
-                      </div>
+                      </CreamBadge>
                     )}
                   </div>
                 </div>

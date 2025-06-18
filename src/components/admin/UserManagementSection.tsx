@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { CreamBadge } from '@/components/ui/cream-badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Search, Filter, UserCheck, UserX, Mail, Phone, MapPin, Calendar } from 'lucide-react';
 
@@ -84,23 +84,23 @@ const UserManagementSection = () => {
     if (type === 'provider') {
       switch (status) {
         case 'verified':
-          return <Badge className="bg-green-100 text-green-800 hover:bg-green-200">Vérifié</Badge>;
+          return <CreamBadge variant="success">Vérifié</CreamBadge>;
         case 'pending':
-          return <Badge className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">En attente</Badge>;
+          return <CreamBadge variant="warning">En attente</CreamBadge>;
         case 'rejected':
-          return <Badge className="bg-red-100 text-red-800 hover:bg-red-200">Rejeté</Badge>;
+          return <CreamBadge variant="error">Rejeté</CreamBadge>;
         default:
-          return <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200">Inactif</Badge>;
+          return <CreamBadge variant="neutral">Inactif</CreamBadge>;
       }
     } else {
-      return <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-200">Actif</Badge>;
+      return <CreamBadge variant="info">Actif</CreamBadge>;
     }
   };
 
   const getTypeBadge = (type) => {
     return type === 'provider' 
-      ? <Badge variant="outline" className="border-purple-200 text-purple-800">Prestataire</Badge>
-      : <Badge variant="outline" className="border-blue-200 text-blue-800">Client</Badge>;
+      ? <CreamBadge variant="default">Prestataire</CreamBadge>
+      : <CreamBadge variant="info">Client</CreamBadge>;
   };
 
   return (
