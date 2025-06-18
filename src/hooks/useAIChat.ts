@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -122,6 +121,17 @@ export const useAIChat = () => {
       };
     }
 
+    // Use provided sessionId or activeSession
+    const currentSessionId = sessionId || activeSession;
+    
+    // Create a new session if none exists
+    if (!currentSessionId) {
+      const newSession = await createSession();
+      if (!newSession) return null;
+      await loadMessages(newSession.id);
+      return sendMessage(content, newSession.id, onPopArtTrigger);
+    }
+
     try {
       setIsTyping(true);
 
@@ -187,7 +197,7 @@ export const useAIChat = () => {
     } finally {
       setIsTyping(false);
     }
-  }, [user, createSession, loadSessions]);
+  }, [user, activeSession, createSession, loadSessions, loadMessages]);
 
   // Simulate AI response (replace with actual AI service)
   const generateAIResponse = async (userMessage: string): Promise<string> => {
