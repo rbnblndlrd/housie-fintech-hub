@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -92,19 +91,6 @@ const Calendar = () => {
     }
   };
 
-  const handleModeToggle = (checked: boolean) => {
-    if (checked && !isFeatureAvailable('google_calendar')) {
-      toast({
-        title: "Fonctionnalité Premium",
-        description: "La synchronisation Google Calendar nécessite un abonnement Premium.",
-        variant: "destructive",
-      });
-      return;
-    }
-    setIsGoogleSyncMode(checked);
-    updateSelectedEvents(date, checked);
-  };
-
   const getFilteredEvents = (selectedDate: Date | undefined, syncMode: boolean) => {
     if (!selectedDate) return [];
     
@@ -125,8 +111,22 @@ const Calendar = () => {
   };
 
   const handleDateSelect = (newDate: Date | undefined) => {
+    console.log('Date selected:', newDate);
     setDate(newDate);
     updateSelectedEvents(newDate);
+  };
+
+  const handleModeToggle = (checked: boolean) => {
+    if (checked && !isFeatureAvailable('google_calendar')) {
+      toast({
+        title: "Fonctionnalité Premium",
+        description: "La synchronisation Google Calendar nécessite un abonnement Premium.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsGoogleSyncMode(checked);
+    updateSelectedEvents(date, checked);
   };
 
   const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
