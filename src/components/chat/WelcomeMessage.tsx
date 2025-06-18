@@ -12,10 +12,10 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
   onSuggestedPrompt
 }) => {
   const suggestedPrompts = [
-    "Find cleaning services near me",
-    "How much does lawn care cost?",
-    "Hi tax ?",
-    "Pet sitting services?",
+    "hi tax?",
+    "pets?", 
+    "How much does cleaning cost?",
+    "Find lawn care services",
     "Home repair estimates",
     "show me colors"
   ];
@@ -28,25 +28,26 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
         </div>
         <div className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50 rounded-2xl rounded-bl-md p-4 max-w-[80%] border border-purple-200 dark:border-purple-700">
           <p className="text-sm text-gray-800 dark:text-gray-200 mb-3">
-            🏠 Hi! I'm your HOUSIE AI assistant{webLLMReady ? ' powered by WebLLM running locally on your device' : ' with intelligent responses'}. I understand context and can help with:
+            🏠 Hi! I'm HOUSIE AI - your intelligent assistant {webLLMReady ? 'powered by WebLLM running locally' : 'with smart contextual responses'}. I understand what you're asking and provide relevant help with:
           </p>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
-            <li>Home services (cleaning, landscaping, repairs)</li>
-            <li>Tax questions and home office deductions</li>
-            <li>Pet services and pet-friendly providers</li>
-            <li>Price estimates and booking assistance</li>
+            <li>🏛️ Tax questions (home office deductions, property tax)</li>
+            <li>🐕 Pet services (sitting, walking, grooming, pet-friendly providers)</li>
+            <li>🏠 Home services (cleaning, landscaping, repairs, maintenance)</li>
+            <li>💰 Price estimates and cost comparisons</li>
+            <li>📅 Booking assistance and scheduling</li>
           </ul>
           <p className="text-sm text-gray-800 dark:text-gray-200 mt-3">
-            Ask me anything - I understand context! Try "hi tax?" or "pets?" ✨
+            I understand context! Try "hi tax?" or "pets?" - I'll know what you mean! ✨
           </p>
           {webLLMReady && (
             <div className="mt-2 flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
               <Cpu className="h-3 w-3" />
-              <span>Local AI model loaded for complete privacy</span>
+              <span>Local AI model loaded - truly intelligent responses!</span>
             </div>
           )}
           <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 italic">
-            💡 Secret command: try "show me colors" for a surprise! 🎨
+            💡 Secret command: try "show me colors" for a groovy surprise! 🎨
           </p>
         </div>
       </div>

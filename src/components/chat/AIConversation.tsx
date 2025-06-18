@@ -52,11 +52,12 @@ const AIConversation: React.FC<AIConversationProps> = ({
       // First, save the user message to database
       await sendMessage(userMessage, sessionId);
 
-      if (webLLMSendMessage && (webLLMReady || true)) { // Allow fallback responses too
-        console.log('🤖 Getting AI response...');
+      // ALWAYS try WebLLM first if available
+      if (webLLMSendMessage) {
+        console.log('🤖 Getting WebLLM AI response...');
         const aiResponse = await webLLMSendMessage(userMessage);
         
-        console.log('🤖 AI Response:', aiResponse);
+        console.log('🤖 WebLLM AI Response:', aiResponse);
         
         // Check for pop art trigger in the response
         if (aiResponse.includes('pop art') || aiResponse.includes('groovy') || aiResponse.includes('psychedelic')) {
