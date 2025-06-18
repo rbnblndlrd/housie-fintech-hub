@@ -40,7 +40,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-28 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <div className="min-h-screen pt-32 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
         <div className="container mx-auto px-4 py-8">
           <ServicesHeader />
 
@@ -52,7 +52,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
             onSearchChange={onSearchChange}
             onCategoryChange={onCategoryChange}
             onLocationChange={onLocationChange}
-            onPriceRangeChange={onPriceRangeChange}
+            onPriceRangeChange={onPriceRangeRange}
           />
 
           <div className="grid lg:grid-cols-4 gap-8">

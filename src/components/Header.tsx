@@ -48,13 +48,13 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/20 dark:border-gray-700/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-24 items-center justify-between">
-          {/* Logo Section - STATEMENT PIECE */}
+        <div className="flex h-28 items-center justify-between">
+          {/* Logo Section - STATEMENT PIECE - HUGE LOGO */}
           <Link to="/" className="flex items-center py-2">
             <img 
               src={isDark ? "/white_on_black.png" : "/black_on_white.png"} 
               alt="HOUSIE Logo" 
-              className="h-20 transition-all duration-200 hover:scale-105"
+              className="h-24 transition-all duration-200 hover:scale-105"
             />
           </Link>
 
