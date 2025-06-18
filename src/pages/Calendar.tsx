@@ -1,14 +1,18 @@
+
 import React, { useState } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import Header from "@/components/Header";
 import CalendarTierBanner from "@/components/CalendarTierBanner";
 import PremiumFeatureGate from "@/components/PremiumFeatureGate";
 import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
-import { Clock, MapPin, User, Calendar as CalendarIcon, Plus } from 'lucide-react';
+import { Clock, MapPin, User, Calendar as CalendarIcon, Plus, Wifi, WifiOff } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface CalendarEvent {
   id: string;
@@ -25,7 +29,9 @@ interface CalendarEvent {
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
+  const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
   const { isFeatureAvailable } = useSubscription();
+  const { toast } = useToast();
 
   // Mock events data with source information
   const mockEvents: CalendarEvent[] = [
@@ -50,6 +56,17 @@ const Calendar = () => {
       status: 'pending',
       amount: 180,
       source: 'housie'
+    },
+    {
+      id: '3',
+      title: 'Réunion équipe',
+      date: new Date(),
+      time: '16:00',
+      client: 'Google Calendar',
+      location: 'Bureau principal',
+      status: 'confirmed',
+      amount: 0,
+      source: 'google'
     }
   ];
 
@@ -71,16 +88,35 @@ const Calendar = () => {
     }
   };
 
-  React.useEffect(() => {
-    // Filter events for selected date
+  const handleModeToggle = (checked: boolean) => {
+    if (checked && !isFeatureAvailable('google_calendar')) {
+      toast({
+        title: "Fonctionnalité Premium",
+        description: "La synchronisation Google Calendar nécessite un abonnement Premium.",
+        variant: "destructive",
+      });
+      return;
+    }
+    setIsGoogleSyncMode(checked);
+  };
+
+  const getFilteredEvents = () => {
     const eventsForDate = mockEvents.filter(
       event => event.date.toDateString() === date?.toDateString()
     );
-    setSelectedEvents(eventsForDate);
-  }, [date]);
+    
+    if (isGoogleSyncMode) {
+      return eventsForDate; // Show all events when Google sync is on
+    } else {
+      return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
+    }
+  };
+
+  React.useEffect(() => {
+    setSelectedEvents(getFilteredEvents());
+  }, [date, isGoogleSyncMode]);
 
   const handleAddEvent = () => {
-    // Handle adding new event
     console.log('Add new event');
   };
 
@@ -114,14 +150,57 @@ const Calendar = () => {
           <CalendarTierBanner />
 
           <div className="grid lg:grid-cols-2 gap-8">
-            {/* Calendar */}
+            {/* Unified Calendar */}
             <Card className="fintech-card hover:shadow-xl transition-all duration-300">
               <CardHeader className="p-6 pb-4">
-                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <CalendarIcon className="h-5 w-5 text-blue-600" />
-                  Calendrier Local HOUSIE
-                </CardTitle>
+                <div className="flex items-center justify-between mb-4">
+                  <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                    <CalendarIcon className="h-5 w-5 text-blue-600" />
+                    Calendrier Unifié
+                  </CardTitle>
+                  
+                  {/* Mode Status Indicator */}
+                  <div className="flex items-center gap-2">
+                    {isGoogleSyncMode ? (
+                      <Badge className="bg-gradient-to-r from-green-500 to-emerald-500 text-white">
+                        <Wifi className="h-3 w-3 mr-1" />
+                        Synchronisé
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">
+                        <WifiOff className="h-3 w-3 mr-1" />
+                        Local
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+
+                {/* Mode Toggle */}
+                <div className="flex items-center justify-between p-4 bg-gradient-to-r from-gray-50 to-gray-100/50 rounded-xl">
+                  <div className="flex items-center gap-3">
+                    <Label htmlFor="sync-mode" className="text-sm font-medium text-gray-700">
+                      Mode Calendrier
+                    </Label>
+                    <div className="text-xs text-gray-500">
+                      {isGoogleSyncMode ? 'Google Calendar Sync' : 'HOUSIE Local'}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Switch
+                      id="sync-mode"
+                      checked={isGoogleSyncMode}
+                      onCheckedChange={handleModeToggle}
+                      className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-green-500 data-[state=checked]:to-emerald-500"
+                    />
+                    {!isFeatureAvailable('google_calendar') && isGoogleSyncMode === false && (
+                      <Badge variant="outline" className="text-xs">
+                        Premium requis
+                      </Badge>
+                    )}
+                  </div>
+                </div>
               </CardHeader>
+              
               <CardContent className="p-6 pt-0">
                 <CalendarComponent
                   mode="single"
@@ -145,13 +224,18 @@ const Calendar = () => {
             {/* Events for Selected Date */}
             <Card className="fintech-card hover:shadow-xl transition-all duration-300">
               <CardHeader className="p-6 pb-4">
-                <CardTitle className="text-xl font-semibold text-gray-900">
-                  Rendez-vous du {date?.toLocaleDateString('fr-FR', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                  })}
+                <CardTitle className="text-xl font-semibold text-gray-900 flex items-center justify-between">
+                  <span>
+                    Rendez-vous du {date?.toLocaleDateString('fr-FR', { 
+                      weekday: 'long', 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric' 
+                    })}
+                  </span>
+                  <Badge variant="outline" className="text-xs">
+                    {selectedEvents.length} événement{selectedEvents.length !== 1 ? 's' : ''}
+                  </Badge>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
@@ -164,7 +248,10 @@ const Calendar = () => {
                       Aucun rendez-vous
                     </h3>
                     <p className="text-gray-600 mb-6">
-                      Vous n'avez pas de rendez-vous prévu pour cette date.
+                      {isGoogleSyncMode 
+                        ? 'Aucun événement synchronisé pour cette date.'
+                        : 'Vous n\'avez pas de rendez-vous HOUSIE pour cette date.'
+                      }
                     </p>
                     <Button 
                       onClick={handleAddEvent}
@@ -184,16 +271,19 @@ const Calendar = () => {
                               <Badge className={`${getStatusColor(event.status)} text-white border-0 shadow-sm`}>
                                 {getStatusText(event.status)}
                               </Badge>
-                              {event.source === 'housie' && (
-                                <Badge variant="outline" className="text-xs">
-                                  HOUSIE
-                                </Badge>
-                              )}
+                              <Badge 
+                                variant="outline" 
+                                className={`text-xs ${event.source === 'google' ? 'border-green-300 text-green-700' : 'border-blue-300 text-blue-700'}`}
+                              >
+                                {event.source === 'google' ? 'Google' : 'HOUSIE'}
+                              </Badge>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-lg font-bold text-gray-900">${event.amount}</p>
-                          </div>
+                          {event.amount > 0 && (
+                            <div className="text-right">
+                              <p className="text-lg font-bold text-gray-900">${event.amount}</p>
+                            </div>
+                          )}
                         </div>
                         
                         <div className="space-y-2">
@@ -240,47 +330,30 @@ const Calendar = () => {
             </Card>
           </div>
 
-          {/* Premium Features Section */}
-          <div className="mt-8 grid lg:grid-cols-2 gap-8">
-            {/* Google Calendar Integration */}
-            <PremiumFeatureGate
-              feature="google_calendar"
-              title="Synchronisation Google Calendar"
-              description="Synchronisez automatiquement vos rendez-vous HOUSIE avec Google Calendar pour un accès cross-platform."
-              previewMode={true}
-            >
+          {/* Google Calendar Integration Panel (Only shown when Premium) */}
+          {isFeatureAvailable('google_calendar') && (
+            <div className="mt-8">
               <GoogleCalendarIntegration
                 onSync={handleGoogleSync}
                 onImport={handleImportEvents}
                 onExport={handleExportEvents}
               />
-            </PremiumFeatureGate>
+            </div>
+          )}
 
-            {/* Import/Export Features */}
-            <PremiumFeatureGate
-              feature="export_import"
-              title="Import & Export"
-              description="Importez et exportez vos événements depuis/vers d'autres applications de calendrier."
-              previewMode={false}
-            >
-              <Card className="fintech-card">
-                <CardHeader>
-                  <CardTitle>Gestion des Données</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button className="w-full" variant="outline">
-                    Importer depuis .ics
-                  </Button>
-                  <Button className="w-full" variant="outline">
-                    Exporter vers .ics
-                  </Button>
-                  <Button className="w-full" variant="outline">
-                    Synchroniser avec Outlook
-                  </Button>
-                </CardContent>
-              </Card>
-            </PremiumFeatureGate>
-          </div>
+          {/* Premium Upsell for Non-Subscribers */}
+          {!isFeatureAvailable('google_calendar') && (
+            <div className="mt-8">
+              <PremiumFeatureGate
+                feature="google_calendar"
+                title="Synchronisation Google Calendar"
+                description="Activez la synchronisation bidirectionnelle avec Google Calendar pour accéder à tous vos événements en un seul endroit."
+                previewMode={false}
+              >
+                <div />
+              </PremiumFeatureGate>
+            </div>
+          )}
         </div>
       </div>
     </div>
