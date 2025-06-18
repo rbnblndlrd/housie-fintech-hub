@@ -89,7 +89,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   return (
     <div className={`w-full h-full rounded-lg ${className}`}>
       <LoadScript 
-        googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY || ''}
+        googleMapsApiKey="AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o"
         libraries={libraries}
         onLoad={handleLoad}
         onError={handleError}
