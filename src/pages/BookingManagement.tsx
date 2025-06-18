@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
@@ -275,59 +276,59 @@ const BookingManagement = () => {
             <p className="text-muted-foreground">Gérez vos réservations de services et rendez-vous personnels</p>
           </div>
 
-          {/* Stats Cards */}
+          {/* Stats Cards - Updated to Fintech Style */}
           <div className="grid md:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="fintech-metric-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                    <Calendar className="h-6 w-6 text-white" />
+                  <div className="p-3 bg-blue-100 rounded-xl">
+                    <Calendar className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-blue-100">Total Réservations</p>
-                    <p className="text-2xl font-bold text-white">{stats.total}</p>
+                    <p className="text-sm text-muted-foreground font-medium">Total Réservations</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.total}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="fintech-metric-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                    <Clock className="h-6 w-6 text-white" />
+                  <div className="p-3 bg-orange-100 rounded-xl">
+                    <Clock className="h-6 w-6 text-orange-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-orange-100">En Attente</p>
-                    <p className="text-2xl font-bold text-white">{stats.pending}</p>
+                    <p className="text-sm text-muted-foreground font-medium">En Attente</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="fintech-metric-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                    <TrendingUp className="h-6 w-6 text-white" />
+                  <div className="p-3 bg-green-100 rounded-xl">
+                    <TrendingUp className="h-6 w-6 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-emerald-100">Confirmées</p>
-                    <p className="text-2xl font-bold text-white">{stats.confirmed}</p>
+                    <p className="text-sm text-muted-foreground font-medium">Confirmées</p>
+                    <p className="text-2xl font-bold text-foreground">{stats.confirmed}</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-0 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+            <Card className="fintech-metric-card">
               <CardContent className="p-6">
                 <div className="flex items-center gap-4">
-                  <div className="p-3 bg-white/20 rounded-xl backdrop-blur-sm">
-                    <DollarSign className="h-6 w-6 text-white" />
+                  <div className="p-3 bg-purple-100 rounded-xl">
+                    <DollarSign className="h-6 w-6 text-purple-600" />
                   </div>
                   <div>
-                    <p className="text-sm text-purple-100">Revenus</p>
-                    <p className="text-2xl font-bold text-white">${stats.totalRevenue.toFixed(0)}</p>
+                    <p className="text-sm text-muted-foreground font-medium">Revenus</p>
+                    <p className="text-2xl font-bold text-foreground">${stats.totalRevenue.toFixed(0)}</p>
                   </div>
                 </div>
               </CardContent>
@@ -345,7 +346,7 @@ const BookingManagement = () => {
           {/* Bookings List */}
           <div className="space-y-6">
             {filteredBookings.length === 0 ? (
-              <Card className="bg-card backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border-4 border-gray-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+              <Card className="fintech-card">
                 <CardContent className="p-12 text-center">
                   <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
                     <Calendar className="h-16 w-16 text-white mx-auto" />
