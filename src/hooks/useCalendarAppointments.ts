@@ -37,7 +37,24 @@ export const useCalendarAppointments = () => {
         .order('scheduled_date', { ascending: true });
 
       if (error) throw error;
-      setAppointments(data || []);
+      
+      // Type cast the data to match our interface
+      const typedAppointments: CalendarAppointment[] = (data || []).map(item => ({
+        id: item.id,
+        title: item.title,
+        scheduled_date: item.scheduled_date,
+        scheduled_time: item.scheduled_time,
+        client_name: item.client_name,
+        location: item.location || '',
+        status: item.status as 'pending' | 'confirmed' | 'completed' | 'cancelled',
+        amount: Number(item.amount) || 0,
+        notes: item.notes,
+        appointment_type: item.appointment_type as 'personal' | 'service',
+        created_at: item.created_at,
+        updated_at: item.updated_at
+      }));
+      
+      setAppointments(typedAppointments);
     } catch (error) {
       console.error('Error fetching appointments:', error);
       toast({
@@ -65,13 +82,28 @@ export const useCalendarAppointments = () => {
 
       if (error) throw error;
 
-      setAppointments(prev => [...prev, data]);
+      const newAppointment: CalendarAppointment = {
+        id: data.id,
+        title: data.title,
+        scheduled_date: data.scheduled_date,
+        scheduled_time: data.scheduled_time,
+        client_name: data.client_name,
+        location: data.location || '',
+        status: data.status as 'pending' | 'confirmed' | 'completed' | 'cancelled',
+        amount: Number(data.amount) || 0,
+        notes: data.notes,
+        appointment_type: data.appointment_type as 'personal' | 'service',
+        created_at: data.created_at,
+        updated_at: data.updated_at
+      };
+
+      setAppointments(prev => [...prev, newAppointment]);
       toast({
         title: "Succès",
         description: "Rendez-vous créé avec succès.",
       });
 
-      return data;
+      return newAppointment;
     } catch (error) {
       console.error('Error creating appointment:', error);
       toast({
@@ -97,8 +129,23 @@ export const useCalendarAppointments = () => {
 
       if (error) throw error;
 
+      const updatedAppointment: CalendarAppointment = {
+        id: data.id,
+        title: data.title,
+        scheduled_date: data.scheduled_date,
+        scheduled_time: data.scheduled_time,
+        client_name: data.client_name,
+        location: data.location || '',
+        status: data.status as 'pending' | 'confirmed' | 'completed' | 'cancelled',
+        amount: Number(data.amount) || 0,
+        notes: data.notes,
+        appointment_type: data.appointment_type as 'personal' | 'service',
+        created_at: data.created_at,
+        updated_at: data.updated_at
+      };
+
       setAppointments(prev => 
-        prev.map(app => app.id === id ? data : app)
+        prev.map(app => app.id === id ? updatedAppointment : app)
       );
 
       toast({
@@ -106,7 +153,7 @@ export const useCalendarAppointments = () => {
         description: "Rendez-vous mis à jour.",
       });
 
-      return data;
+      return updatedAppointment;
     } catch (error) {
       console.error('Error updating appointment:', error);
       toast({

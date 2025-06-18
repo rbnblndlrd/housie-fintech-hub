@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -48,7 +49,26 @@ const Calendar = () => {
     }
   }, [date, allEvents, isGoogleSyncMode]);
 
-  // ... keep existing code (getStatusColor, getStatusText functions)
+  // Helper functions for status styling
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'confirmed': return 'bg-green-100 text-green-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      case 'completed': return 'bg-blue-100 text-blue-800';
+      case 'cancelled': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusText = (status: string) => {
+    switch(status) {
+      case 'confirmed': return 'Confirmé';
+      case 'pending': return 'En attente';
+      case 'completed': return 'Terminé';
+      case 'cancelled': return 'Annulé';
+      default: return status;
+    }
+  };
 
   const handleDateSelect = (newDate: Date | undefined) => {
     console.log('Date selected:', newDate, 'Total events:', allEvents.length);
