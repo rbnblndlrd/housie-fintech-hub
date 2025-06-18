@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -19,7 +19,6 @@ import { useBookingCalendarIntegration, CalendarEvent } from '@/hooks/useBooking
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
-  const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
   const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<CalendarEvent | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -30,7 +29,22 @@ const Calendar = () => {
   const { calendarEvents: bookingEvents, loading, updateBookingStatus } = useBookingCalendarIntegration();
 
   // Combine booking events with personal events
-  const allEvents = [...bookingEvents, ...personalEvents];
+  const allEvents = useMemo(() => [...bookingEvents, ...personalEvents], [bookingEvents, personalEvents]);
+
+  // Calculate selected events based on current date and sync mode
+  const selectedEvents = useMemo(() => {
+    if (!date) return [];
+    
+    const eventsForDate = allEvents.filter(
+      event => event.date.toDateString() === date.toDateString()
+    );
+    
+    if (isGoogleSyncMode) {
+      return eventsForDate; // Show all events when Google sync is on
+    } else {
+      return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
+    }
+  }, [date, allEvents, isGoogleSyncMode]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -50,29 +64,9 @@ const Calendar = () => {
     }
   };
 
-  const getFilteredEvents = (selectedDate: Date | undefined, syncMode: boolean) => {
-    if (!selectedDate) return [];
-    
-    const eventsForDate = allEvents.filter(
-      event => event.date.toDateString() === selectedDate.toDateString()
-    );
-    
-    if (syncMode) {
-      return eventsForDate; // Show all events when Google sync is on
-    } else {
-      return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
-    }
-  };
-
-  const updateSelectedEvents = (selectedDate: Date | undefined, syncMode?: boolean) => {
-    const currentSyncMode = syncMode !== undefined ? syncMode : isGoogleSyncMode;
-    setSelectedEvents(getFilteredEvents(selectedDate, currentSyncMode));
-  };
-
   const handleDateSelect = (newDate: Date | undefined) => {
-    console.log('Date selected:', newDate);
+    console.log('Date selected:', newDate, 'Current personal events:', personalEvents.length);
     setDate(newDate);
-    updateSelectedEvents(newDate);
   };
 
   const handleModeToggle = (checked: boolean) => {
@@ -85,7 +79,6 @@ const Calendar = () => {
       return;
     }
     setIsGoogleSyncMode(checked);
-    updateSelectedEvents(date, checked);
   };
 
   const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
@@ -95,8 +88,12 @@ const Calendar = () => {
       source: 'housie'
     };
     
-    setPersonalEvents(prev => [...prev, appointment]);
-    updateSelectedEvents(date);
+    console.log('Adding appointment:', appointment);
+    setPersonalEvents(prev => {
+      const updated = [...prev, appointment];
+      console.log('Updated personal events:', updated.length);
+      return updated;
+    });
   };
 
   const handleUpdateAppointment = (updatedAppointment: CalendarEvent) => {
@@ -111,7 +108,6 @@ const Calendar = () => {
         )
       );
     }
-    updateSelectedEvents(date);
   };
 
   const handleDeleteAppointment = (appointmentId: string) => {
@@ -123,7 +119,6 @@ const Calendar = () => {
       // This is a personal event - remove it
       setPersonalEvents(prev => prev.filter(event => event.id !== appointmentId));
     }
-    updateSelectedEvents(date);
   };
 
   const handleEditAppointment = (appointment: CalendarEvent) => {
@@ -154,10 +149,6 @@ const Calendar = () => {
     });
     console.log('Export events triggered');
   };
-
-  React.useEffect(() => {
-    updateSelectedEvents(date);
-  }, [date, isGoogleSyncMode, allEvents]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
