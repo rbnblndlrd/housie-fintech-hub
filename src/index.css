@@ -90,7 +90,7 @@
 @layer components {
   /* LIGHT MODE - White cards with THICK, SOLID, DARK borders - EXACT match to Service Categories card */
   .fintech-card {
-    @apply bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+    @apply bg-white dark:bg-dark-secondary shadow-lg border border-black dark:border-gray-700 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
   }
 
   .fintech-card-secondary {
