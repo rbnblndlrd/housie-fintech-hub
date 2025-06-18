@@ -40,7 +40,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-36 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
         <div className="container mx-auto px-4 py-8">
           <ServicesHeader />
 
