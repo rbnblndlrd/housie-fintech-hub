@@ -1,11 +1,14 @@
-
 import React, { useState } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
-import { Clock, MapPin, User, Calendar as CalendarIcon } from 'lucide-react';
+import CalendarTierBanner from "@/components/CalendarTierBanner";
+import PremiumFeatureGate from "@/components/PremiumFeatureGate";
+import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
+import { Clock, MapPin, User, Calendar as CalendarIcon, Plus } from 'lucide-react';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 
 interface CalendarEvent {
   id: string;
@@ -16,13 +19,15 @@ interface CalendarEvent {
   location: string;
   status: 'confirmed' | 'pending' | 'completed';
   amount: number;
+  source: 'housie' | 'google';
 }
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [selectedEvents, setSelectedEvents] = useState<CalendarEvent[]>([]);
+  const { isFeatureAvailable } = useSubscription();
 
-  // Mock events data
+  // Mock events data with source information
   const mockEvents: CalendarEvent[] = [
     {
       id: '1',
@@ -32,7 +37,8 @@ const Calendar = () => {
       client: 'Marie Dubois',
       location: '123 Rue Saint-Denis, Montréal',
       status: 'confirmed',
-      amount: 120
+      amount: 120,
+      source: 'housie'
     },
     {
       id: '2',
@@ -42,7 +48,8 @@ const Calendar = () => {
       client: 'Pierre Martin',
       location: '456 Avenue du Parc, Montréal',
       status: 'pending',
-      amount: 180
+      amount: 180,
+      source: 'housie'
     }
   ];
 
@@ -72,6 +79,23 @@ const Calendar = () => {
     setSelectedEvents(eventsForDate);
   }, [date]);
 
+  const handleAddEvent = () => {
+    // Handle adding new event
+    console.log('Add new event');
+  };
+
+  const handleGoogleSync = () => {
+    console.log('Google Calendar sync triggered');
+  };
+
+  const handleImportEvents = () => {
+    console.log('Import events triggered');
+  };
+
+  const handleExportEvents = () => {
+    console.log('Export events triggered');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
       <Header />
@@ -86,13 +110,16 @@ const Calendar = () => {
             <p className="text-gray-600">Gérez votre planning et vos rendez-vous</p>
           </div>
 
+          {/* Subscription Tier Banner */}
+          <CalendarTierBanner />
+
           <div className="grid lg:grid-cols-2 gap-8">
             {/* Calendar */}
             <Card className="fintech-card hover:shadow-xl transition-all duration-300">
               <CardHeader className="p-6 pb-4">
                 <CardTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <CalendarIcon className="h-5 w-5 text-blue-600" />
-                  Sélectionner une Date
+                  Calendrier Local HOUSIE
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
@@ -102,6 +129,16 @@ const Calendar = () => {
                   onSelect={setDate}
                   className="rounded-2xl border-0 shadow-inner bg-gradient-to-br from-gray-50 to-gray-100/50"
                 />
+                
+                <div className="mt-4 pt-4 border-t border-gray-200">
+                  <Button 
+                    onClick={handleAddEvent}
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Ajouter un Rendez-vous
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -129,7 +166,10 @@ const Calendar = () => {
                     <p className="text-gray-600 mb-6">
                       Vous n'avez pas de rendez-vous prévu pour cette date.
                     </p>
-                    <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200">
+                    <Button 
+                      onClick={handleAddEvent}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200"
+                    >
                       Ajouter un Rendez-vous
                     </Button>
                   </div>
@@ -140,9 +180,16 @@ const Calendar = () => {
                         <div className="flex items-start justify-between mb-3">
                           <div>
                             <h4 className="font-semibold text-gray-900">{event.title}</h4>
-                            <Badge className={`${getStatusColor(event.status)} text-white border-0 shadow-sm mt-1`}>
-                              {getStatusText(event.status)}
-                            </Badge>
+                            <div className="flex items-center gap-2 mt-1">
+                              <Badge className={`${getStatusColor(event.status)} text-white border-0 shadow-sm`}>
+                                {getStatusText(event.status)}
+                              </Badge>
+                              {event.source === 'housie' && (
+                                <Badge variant="outline" className="text-xs">
+                                  HOUSIE
+                                </Badge>
+                              )}
+                            </div>
                           </div>
                           <div className="text-right">
                             <p className="text-lg font-bold text-gray-900">${event.amount}</p>
@@ -191,6 +238,48 @@ const Calendar = () => {
                 )}
               </CardContent>
             </Card>
+          </div>
+
+          {/* Premium Features Section */}
+          <div className="mt-8 grid lg:grid-cols-2 gap-8">
+            {/* Google Calendar Integration */}
+            <PremiumFeatureGate
+              feature="google_calendar"
+              title="Synchronisation Google Calendar"
+              description="Synchronisez automatiquement vos rendez-vous HOUSIE avec Google Calendar pour un accès cross-platform."
+              previewMode={true}
+            >
+              <GoogleCalendarIntegration
+                onSync={handleGoogleSync}
+                onImport={handleImportEvents}
+                onExport={handleExportEvents}
+              />
+            </PremiumFeatureGate>
+
+            {/* Import/Export Features */}
+            <PremiumFeatureGate
+              feature="export_import"
+              title="Import & Export"
+              description="Importez et exportez vos événements depuis/vers d'autres applications de calendrier."
+              previewMode={false}
+            >
+              <Card className="fintech-card">
+                <CardHeader>
+                  <CardTitle>Gestion des Données</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <Button className="w-full" variant="outline">
+                    Importer depuis .ics
+                  </Button>
+                  <Button className="w-full" variant="outline">
+                    Exporter vers .ics
+                  </Button>
+                  <Button className="w-full" variant="outline">
+                    Synchroniser avec Outlook
+                  </Button>
+                </CardContent>
+              </Card>
+            </PremiumFeatureGate>
           </div>
         </div>
       </div>
