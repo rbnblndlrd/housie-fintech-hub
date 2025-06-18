@@ -70,14 +70,19 @@ const AddAppointmentDialog: React.FC<AddAppointmentDialogProps> = ({
       return;
     }
 
-    // Create a proper date object that matches the selected date exactly
-    // Use UTC to avoid timezone issues when comparing dates
-    const appointmentDate = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+    // Create a local date object without timezone conversion
+    const appointmentDate = new Date(
+      selectedDate.getFullYear(),
+      selectedDate.getMonth(),
+      selectedDate.getDate()
+    );
     
     console.log('Creating appointment for date:', {
       originalSelectedDate: selectedDate,
       appointmentDate: appointmentDate,
-      dateString: appointmentDate.toISOString().split('T')[0],
+      appointmentYear: appointmentDate.getFullYear(),
+      appointmentMonth: appointmentDate.getMonth(),
+      appointmentDay: appointmentDate.getDate(),
       appointmentDateString: appointmentDate.toDateString(),
       selectedDateString: selectedDate.toDateString(),
       formData: formData

@@ -1,4 +1,3 @@
-
 import { useMemo } from 'react';
 import { useBookingCalendarIntegration, CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
 import { useCalendarAppointments } from '@/hooks/useCalendarAppointments';
@@ -18,13 +17,18 @@ export const useUnifiedCalendarIntegration = () => {
     console.log('Converting appointments to events:', appointments);
     
     return appointments.map(appointment => {
-      // Parse the date string properly - it comes as YYYY-MM-DD from database
-      const appointmentDate = new Date(appointment.scheduled_date + 'T00:00:00.000Z');
+      // Parse the date string properly - create local date without timezone conversion
+      const dateParts = appointment.scheduled_date.split('-');
+      const appointmentDate = new Date(
+        parseInt(dateParts[0]), // year
+        parseInt(dateParts[1]) - 1, // month (0-based)
+        parseInt(dateParts[2]) // day
+      );
       
       console.log('Processing appointment:', {
         id: appointment.id,
         title: appointment.title,
-        originalDate: appointment.scheduled_date,
+        originalDateString: appointment.scheduled_date,
         parsedDate: appointmentDate,
         dateString: appointmentDate.toDateString(),
         time: appointment.scheduled_time
@@ -74,12 +78,17 @@ export const useUnifiedCalendarIntegration = () => {
   const handleCreateAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
     console.log('Creating new appointment:', newAppointment);
     
-    // Ensure we're using the correct date format (YYYY-MM-DD)
-    const dateString = newAppointment.date.toISOString().split('T')[0];
+    // Format date as YYYY-MM-DD for database storage
+    const year = newAppointment.date.getFullYear();
+    const month = String(newAppointment.date.getMonth() + 1).padStart(2, '0');
+    const day = String(newAppointment.date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
     
     console.log('Date conversion:', {
       originalDate: newAppointment.date,
-      isoString: newAppointment.date.toISOString(),
+      year,
+      month,
+      day,
       dateString: dateString
     });
     

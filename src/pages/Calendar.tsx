@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -62,34 +61,49 @@ const Calendar = () => {
       return [];
     }
     
-    // Convert selected date to the same format as stored dates (UTC midnight)
-    const selectedDateUTC = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    const selectedDateString = selectedDateUTC.toDateString();
+    // Create a local date for comparison without timezone conversion
+    const selectedYear = date.getFullYear();
+    const selectedMonth = date.getMonth();
+    const selectedDay = date.getDate();
     
     console.log('Filtering events for date:', {
       selectedDate: date,
-      selectedDateUTC: selectedDateUTC,
-      selectedDateString: selectedDateString,
+      selectedYear,
+      selectedMonth,
+      selectedDay,
+      selectedDateString: date.toDateString(),
       allEventsCount: allEvents.length,
       allEvents: allEvents.map(event => ({
         id: event.id,
         title: event.title,
         date: event.date,
+        eventYear: event.date.getFullYear(),
+        eventMonth: event.date.getMonth(),
+        eventDay: event.date.getDate(),
         dateString: event.date.toDateString(),
         source: event.source
       }))
     });
     
     const eventsForDate = allEvents.filter(event => {
-      const eventDateString = event.date.toDateString();
-      const matches = eventDateString === selectedDateString;
+      const eventYear = event.date.getFullYear();
+      const eventMonth = event.date.getMonth();
+      const eventDay = event.date.getDate();
+      
+      const matches = eventYear === selectedYear && 
+                     eventMonth === selectedMonth && 
+                     eventDay === selectedDay;
       
       console.log('Event date comparison:', {
         eventId: event.id,
         eventTitle: event.title,
         eventDate: event.date,
-        eventDateString,
-        selectedDateString,
+        eventYear,
+        eventMonth,
+        eventDay,
+        selectedYear,
+        selectedMonth,
+        selectedDay,
         matches
       });
       
@@ -97,7 +111,7 @@ const Calendar = () => {
     });
     
     console.log('Events found for selected date:', {
-      dateString: selectedDateString,
+      selectedDateString: date.toDateString(),
       eventsCount: eventsForDate.length,
       events: eventsForDate
     });
@@ -114,8 +128,9 @@ const Calendar = () => {
       newDate,
       totalEvents: allEvents.length,
       eventsForNewDate: newDate ? allEvents.filter(event => {
-        const newDateUTC = new Date(newDate.getFullYear(), newDate.getMonth(), newDate.getDate());
-        return event.date.toDateString() === newDateUTC.toDateString();
+        return event.date.getFullYear() === newDate.getFullYear() &&
+               event.date.getMonth() === newDate.getMonth() &&
+               event.date.getDate() === newDate.getDate();
       }).length : 0
     });
     setDate(newDate);
