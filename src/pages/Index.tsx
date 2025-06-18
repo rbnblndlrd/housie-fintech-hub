@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,7 +55,7 @@ const Index = () => {
       <Header />
       
       {/* Hero Section with Pop Art Style and Mascot */}
-      <section className="pt-20 pb-16 px-4 relative overflow-hidden bg-gradient-to-br from-yellow-100 via-orange-50 to-purple-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-purple-900/20">
+      <section className="pt-28 pb-16 px-4 relative overflow-hidden bg-gradient-to-br from-yellow-100 via-orange-50 to-purple-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-purple-900/20">
         {/* Background decorative elements */}
         <div className="absolute top-20 right-10 w-32 h-32 bg-orange-400/20 rounded-full opacity-50 animate-pulse"></div>
         <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-500/20 rounded-full opacity-50 animate-bounce"></div>
@@ -126,33 +125,33 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Mascot and Assistant Preview */}
+            {/* Mascot and Assistant Preview - LARGER AND MORE PROMINENT */}
             <div className="relative">
-              {/* HOUSIE Mascot */}
-              <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-8 mb-6 relative overflow-hidden">
+              {/* HOUSIE Mascot - MUCH LARGER */}
+              <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-10 mb-6 relative overflow-hidden">
                 <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
                 
-                <div className="flex items-center justify-center mb-6">
-                  {/* Use the pop-art mascot from the GitHub link */}
-                  <div className="w-32 h-32 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden">
-                    <div className="w-28 h-28 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center">
+                <div className="flex items-center justify-center mb-8">
+                  {/* STATEMENT PIECE APP ICON - MUCH LARGER */}
+                  <div className="w-48 h-48 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden">
+                    <div className="w-44 h-44 bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center">
                       <img 
                         src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
                         alt="HOUSIE Mascot" 
-                        className="w-24 h-24 rounded-xl object-cover"
+                        className="w-40 h-40 rounded-xl object-cover"
                       />
                     </div>
                   </div>
                 </div>
 
                 <div className="text-center text-white">
-                  <p className="text-sm opacity-90 mb-2">Hello! I'm your HOUSIE assistant.</p>
-                  <p className="font-bold text-lg mb-4">Ready to help with CRA 2025 compliance across Canada!</p>
+                  <p className="text-base opacity-90 mb-3">Hello! I'm your HOUSIE assistant.</p>
+                  <p className="font-bold text-xl mb-6">Ready to help with CRA 2025 compliance across Canada!</p>
                   
                   <div className="flex gap-2">
                     <Link to="/onboarding" className="flex-1">
-                      <Button className="w-full fintech-button-secondary text-white font-bold px-6 py-3 rounded-xl">
+                      <Button className="w-full fintech-button-secondary text-white font-bold px-8 py-4 rounded-xl text-lg">
                         GET STARTED
                       </Button>
                     </Link>
