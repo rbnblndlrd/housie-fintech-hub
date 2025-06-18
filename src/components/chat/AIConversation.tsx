@@ -2,6 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAIChat } from '@/hooks/useAIChat';
 import { useAuth } from '@/contexts/AuthContext';
+import { usePopArt } from '@/contexts/PopArtContext';
 import AIConversationHeader from './AIConversationHeader';
 import WelcomeMessage from './WelcomeMessage';
 import MessageBubble from './MessageBubble';
@@ -26,6 +27,7 @@ const AIConversation: React.FC<AIConversationProps> = ({
   onPopArtTrigger
 }) => {
   const { user } = useAuth();
+  const { activatePopArt } = usePopArt();
   const { messages, sendMessage, isTyping } = useAIChat();
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -38,6 +40,11 @@ const AIConversation: React.FC<AIConversationProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  const handlePopArtTrigger = () => {
+    activatePopArt();
+    onPopArtTrigger?.();
+  };
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || sending || webLLMLoading) return;
@@ -62,7 +69,7 @@ const AIConversation: React.FC<AIConversationProps> = ({
         // Check for pop art trigger in the response
         if (aiResponse.includes('pop art') || aiResponse.includes('groovy') || aiResponse.includes('psychedelic')) {
           console.log('🎨 Pop art trigger detected!');
-          onPopArtTrigger?.();
+          handlePopArtTrigger();
         }
         
         // Save AI response to database (unless it's the pop art activation message)
@@ -72,14 +79,14 @@ const AIConversation: React.FC<AIConversationProps> = ({
       } else {
         console.log('⚠️ WebLLM not available, using fallback');
         // Fallback to original AI chat system
-        await sendMessage(userMessage, sessionId, onPopArtTrigger);
+        await sendMessage(userMessage, sessionId, handlePopArtTrigger);
       }
       
     } catch (error) {
       console.error('❌ Error sending message:', error);
       // Try fallback system on error
       try {
-        await sendMessage(userMessage, sessionId, onPopArtTrigger);
+        await sendMessage(userMessage, sessionId, handlePopArtTrigger);
       } catch (fallbackError) {
         console.error('❌ Fallback also failed:', fallbackError);
       }
