@@ -1,23 +1,31 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowLeft, Send, Bot, User, Sparkles, Copy, RefreshCw } from 'lucide-react';
+import { ArrowLeft, Send, Bot, User, Sparkles, Copy, Cpu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { useAIChat } from '@/hooks/useAIChat';
 import { useAuth } from '@/contexts/AuthContext';
-import { usePopArt } from '@/contexts/PopArtContext';
 import { cn } from '@/lib/utils';
 
 interface AIConversationProps {
   sessionId: string;
   onBack: () => void;
+  webLLMSendMessage?: (message: string) => Promise<string>;
+  webLLMLoading?: boolean;
+  webLLMReady?: boolean;
+  onPopArtTrigger?: () => void;
 }
 
-const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) => {
+const AIConversation: React.FC<AIConversationProps> = ({ 
+  sessionId, 
+  onBack, 
+  webLLMSendMessage,
+  webLLMLoading = false,
+  webLLMReady = false,
+  onPopArtTrigger
+}) => {
   const { user } = useAuth();
-  const { activatePopArt } = usePopArt();
   const { messages, sendMessage, isTyping } = useAIChat();
   const [newMessage, setNewMessage] = useState('');
   const [sending, setSending] = useState(false);
@@ -32,14 +40,33 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
   }, [messages, isTyping]);
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || sending) return;
+    if (!newMessage.trim() || sending || webLLMLoading) return;
 
     setSending(true);
     try {
-      await sendMessage(newMessage, sessionId, activatePopArt);
+      // Check for pop art easter egg
+      if (newMessage.toLowerCase().includes('show me colors')) {
+        onPopArtTrigger?.();
+      }
+
+      if (webLLMSendMessage && webLLMReady) {
+        // Use WebLLM for AI responses
+        const aiResponse = await webLLMSendMessage(newMessage);
+        
+        // Save both user message and AI response to database
+        await sendMessage(newMessage, sessionId);
+        if (aiResponse && !newMessage.toLowerCase().includes('show me colors')) {
+          // Don't save the pop art response to database
+          await sendMessage(aiResponse, sessionId);
+        }
+      } else {
+        // Fallback to original AI chat system
+        await sendMessage(newMessage, sessionId, onPopArtTrigger);
+      }
+      
       setNewMessage('');
     } catch (error) {
-      console.error('Error sending AI message:', error);
+      console.error('Error sending message:', error);
     } finally {
       setSending(false);
     }
@@ -67,7 +94,8 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
     "Find cleaning services near me",
     "How much does lawn care cost?",
     "Best time to schedule maintenance",
-    "Home improvement recommendations"
+    "Home improvement recommendations",
+    "show me colors"
   ];
 
   return (
@@ -91,15 +119,19 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               HOUSIE AI Assistant
-              <Sparkles className="h-4 w-4 text-purple-500 animate-pulse" />
+              {webLLMReady ? <Cpu className="h-4 w-4 text-green-500" /> : <Sparkles className="h-4 w-4 text-purple-500 animate-pulse" />}
             </h3>
             <p className="text-xs text-purple-600 dark:text-purple-400">
-              {isTyping ? 'AI is thinking...' : 'Ready to help'}
+              {webLLMLoading ? 'AI is thinking...' : 
+               isTyping ? 'AI is typing...' : 
+               webLLMReady ? 'Local AI ready' : 'Ready to help'}
             </p>
           </div>
           
-          <Badge className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0">
-            AI
+          <Badge className={`border-0 text-white ${
+            webLLMReady ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-purple-500 to-blue-500'
+          }`}>
+            {webLLMReady ? 'Local AI' : 'AI'}
           </Badge>
         </div>
       </div>
@@ -115,7 +147,7 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
               </div>
               <div className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50 rounded-2xl rounded-bl-md p-4 max-w-[80%] border border-purple-200 dark:border-purple-700">
                 <p className="text-sm text-gray-800 dark:text-gray-200 mb-3">
-                  🏠 Hi! I'm your HOUSIE AI assistant. I'm here to help you with:
+                  🏠 Hi! I'm your HOUSIE AI assistant{webLLMReady ? ' powered by local WebLLM' : ''}. I'm here to help you with:
                 </p>
                 <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
                   <li>Finding the perfect service providers</li>
@@ -126,6 +158,12 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
                 <p className="text-sm text-gray-800 dark:text-gray-200 mt-3">
                   What can I help you with today? ✨
                 </p>
+                {webLLMReady && (
+                  <div className="mt-2 flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
+                    <Cpu className="h-3 w-3" />
+                    <span>Running locally on your device for privacy</span>
+                  </div>
+                )}
                 <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 italic">
                   💡 Psst... try typing "show me colors" for a surprise! 🎨
                 </p>
@@ -140,7 +178,7 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
                   onClick={() => setNewMessage(prompt)}
                   className="px-3 py-1 text-xs bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-700 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/50 transition-colors"
                 >
-                  {prompt}
+                  {prompt === 'show me colors' ? '🎨 ' + prompt : prompt}
                 </button>
               ))}
             </div>
@@ -234,20 +272,20 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <Input
-              placeholder="Ask me anything about home services..."
+              placeholder={webLLMReady ? "Ask your local AI about home services..." : "Ask me anything about home services..."}
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
               onKeyPress={handleKeyPress}
-              disabled={sending || isTyping}
+              disabled={sending || isTyping || webLLMLoading}
               className="pr-12 rounded-full border-purple-300 dark:border-purple-600 focus:border-purple-500 dark:focus:border-purple-400 bg-white dark:bg-gray-800"
             />
             <Button
               onClick={handleSendMessage}
-              disabled={!newMessage.trim() || sending || isTyping}
+              disabled={!newMessage.trim() || sending || isTyping || webLLMLoading}
               size="sm"
               className="absolute right-1 top-1/2 transform -translate-y-1/2 rounded-full w-8 h-8 p-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
             >
-              {sending ? (
+              {sending || webLLMLoading ? (
                 <div className="animate-spin rounded-full h-3 w-3 border-b border-white"></div>
               ) : (
                 <Send className="h-3 w-3" />
@@ -257,7 +295,7 @@ const AIConversation: React.FC<AIConversationProps> = ({ sessionId, onBack }) =>
         </div>
         
         <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
-          AI responses are generated and may not always be accurate. Verify important information.
+          {webLLMReady ? 'AI runs locally on your device for complete privacy.' : 'AI responses are generated and may not always be accurate. Verify important information.'}
         </p>
       </div>
     </div>

@@ -1,29 +1,48 @@
 
 import React, { useState } from 'react';
-import { Bot, Plus, Clock, Zap, Home, Calculator, MessageSquare } from 'lucide-react';
+import { Bot, Plus, Clock, Zap, Home, Calculator, MessageSquare, Download, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useAIChat } from '@/hooks/useAIChat';
+import { useWebLLM } from '@/hooks/useWebLLM';
+import { usePopArt } from '@/contexts/PopArtContext';
 import AIConversation from './AIConversation';
 
 const AIAssistantTab = () => {
   const { sessions, activeSession, loadMessages, createSession } = useAIChat();
+  const { 
+    isLoading: webLLMLoading, 
+    isDownloading, 
+    downloadProgress, 
+    isReady: webLLMReady, 
+    error: webLLMError,
+    sendMessage: sendWebLLMMessage,
+    resetConversation,
+    initializeEngine
+  } = useWebLLM();
+  const { activatePopArt } = usePopArt();
   const [showConversation, setShowConversation] = useState(false);
+  const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
 
   const handleSessionClick = (sessionId: string) => {
     loadMessages(sessionId);
+    setCurrentSessionId(sessionId);
     setShowConversation(true);
   };
 
   const handleNewChat = async () => {
-    const newSession = await createSession();
+    const newSession = await createSession('WebLLM Chat Session');
     if (newSession) {
+      resetConversation();
       handleSessionClick(newSession.id);
     }
   };
 
   const handleBackToList = () => {
     setShowConversation(false);
+    setCurrentSessionId(null);
   };
 
   const formatTime = (timestamp: string) => {
@@ -67,11 +86,15 @@ const AIAssistantTab = () => {
     }
   ];
 
-  if (showConversation && activeSession) {
+  if (showConversation && currentSessionId) {
     return (
       <AIConversation
-        sessionId={activeSession}
+        sessionId={currentSessionId}
         onBack={handleBackToList}
+        webLLMSendMessage={sendWebLLMMessage}
+        webLLMLoading={webLLMLoading}
+        webLLMReady={webLLMReady}
+        onPopArtTrigger={activatePopArt}
       />
     );
   }
@@ -84,18 +107,55 @@ const AIAssistantTab = () => {
           <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
             <Bot className="h-5 w-5 text-white" />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100">HOUSIE AI Assistant</h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Your smart service companion</p>
+            <div className="flex items-center gap-2">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                {isDownloading ? 'Downloading AI model...' : 
+                 webLLMReady ? 'Local AI ready' : 
+                 webLLMError ? 'Fallback mode' : 'Initializing AI...'}
+              </p>
+              <Badge variant="outline" className={`text-xs ${
+                webLLMReady ? 'bg-green-50 text-green-700 border-green-200' :
+                webLLMError ? 'bg-yellow-50 text-yellow-700 border-yellow-200' :
+                'bg-blue-50 text-blue-700 border-blue-200'
+              }`}>
+                {webLLMReady ? 'Local AI' : webLLMError ? 'Fallback' : 'Loading'}
+              </Badge>
+            </div>
           </div>
         </div>
+
+        {/* Download Progress */}
+        {isDownloading && (
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-2">
+              <Download className="h-4 w-4 text-purple-600" />
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                Downloading AI model: {downloadProgress}%
+              </span>
+            </div>
+            <Progress value={downloadProgress} className="h-2" />
+          </div>
+        )}
+
+        {/* Error Alert */}
+        {webLLMError && (
+          <Alert className="mb-3">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className="text-sm">
+              {webLLMError} The AI will still work with fallback responses.
+            </AlertDescription>
+          </Alert>
+        )}
         
         <Button 
           onClick={handleNewChat}
-          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg"
+          disabled={isDownloading}
+          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 rounded-lg disabled:opacity-50"
         >
           <Plus className="h-4 w-4 mr-2" />
-          Start New Chat
+          {webLLMReady ? 'Start Local AI Chat' : 'Start New Chat'}
         </Button>
       </div>
 
@@ -108,7 +168,8 @@ const AIAssistantTab = () => {
               <button
                 key={index}
                 onClick={handleNewChat}
-                className="p-3 text-left bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 transition-colors group"
+                disabled={isDownloading}
+                className="p-3 text-left bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-600 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <div className="flex items-center gap-2 mb-1">
                   <action.icon className="h-4 w-4 text-purple-600 group-hover:text-purple-700" />
@@ -132,7 +193,10 @@ const AIAssistantTab = () => {
               Welcome to HOUSIE AI!
             </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-              I'm here to help you find services, get estimates, and answer questions.
+              {webLLMReady ? 'Local AI powered by WebLLM' : 'AI assistant for home services'}
+            </p>
+            <p className="text-xs text-purple-600 dark:text-purple-400 italic">
+              💡 Try typing "show me colors" for a surprise! 🎨
             </p>
           </div>
         ) : (
@@ -165,7 +229,7 @@ const AIAssistantTab = () => {
                     
                     <div className="mt-2">
                       <Badge variant="outline" className="text-xs bg-purple-50 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-700">
-                        AI Assistant
+                        {webLLMReady ? 'Local AI' : 'AI Assistant'}
                       </Badge>
                     </div>
                   </div>
@@ -179,9 +243,9 @@ const AIAssistantTab = () => {
       {/* AI Footer */}
       <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-          <span>🤖 Powered by HOUSIE AI</span>
+          <span>🤖 {webLLMReady ? 'Local WebLLM' : 'HOUSIE AI'}</span>
           <Badge variant="outline" className="text-xs">
-            Smart • Fast • Helpful
+            {webLLMReady ? 'Private • Fast • Local' : 'Smart • Fast • Helpful'}
           </Badge>
         </div>
       </div>
