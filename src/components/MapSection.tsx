@@ -8,9 +8,14 @@ import { Provider } from "@/types/service";
 interface MapSectionProps {
   onCategorySelect: (category: string) => void;
   providers: Provider[];
+  hoveredProviderId?: string | null;
 }
 
-const MapSection: React.FC<MapSectionProps> = ({ onCategorySelect, providers }) => {
+const MapSection: React.FC<MapSectionProps> = ({ 
+  onCategorySelect, 
+  providers,
+  hoveredProviderId 
+}) => {
   return (
     <div className="lg:col-span-1">
       <ServiceCategories onCategorySelect={onCategorySelect} />
@@ -26,6 +31,7 @@ const MapSection: React.FC<MapSectionProps> = ({ onCategorySelect, providers }) 
             zoom={12}
             className="h-64 rounded-xl"
             providers={providers}
+            hoveredProviderId={hoveredProviderId}
           />
         </CardContent>
       </Card>

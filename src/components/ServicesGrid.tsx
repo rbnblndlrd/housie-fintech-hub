@@ -11,6 +11,7 @@ interface ServicesGridProps {
   isLoading: boolean;
   fallbackServices: Service[];
   onBookNow: (service: Service) => void;
+  onHoverProvider?: (providerId: string | null) => void;
 }
 
 const ServicesGrid: React.FC<ServicesGridProps> = ({
@@ -18,7 +19,8 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({
   filteredServices,
   isLoading,
   fallbackServices,
-  onBookNow
+  onBookNow,
+  onHoverProvider
 }) => {
   return (
     <div className="lg:col-span-3 space-y-6">
@@ -55,6 +57,7 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({
               key={service.id}
               service={service}
               onBookNow={onBookNow}
+              onHoverProvider={onHoverProvider}
             />
           ))}
         </div>

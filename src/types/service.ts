@@ -32,4 +32,5 @@ export interface Provider {
   service: string;
   rating: number;
   availability: string;
+  serviceRadius?: number; // in kilometers
 }

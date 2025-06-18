@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import Header from "@/components/Header";
 import ServicesHeader from "@/components/ServicesHeader";
 import ServiceFilters from "@/components/ServiceFilters";
@@ -37,6 +37,14 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   onPriceRangeChange,
   onBookNow
 }) => {
+  const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
+
+  // Convert services to providers for map display
+  const providersWithRadius = sampleProviders.map(provider => ({
+    ...provider,
+    serviceRadius: 10 // Default 10km radius, you can get this from the service data
+  }));
+
   return (
     <>
       <Header />
@@ -61,7 +69,8 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
             <div className="lg:col-span-1">
               <MapSection
                 onCategorySelect={onCategoryChange}
-                providers={sampleProviders}
+                providers={providersWithRadius}
+                hoveredProviderId={hoveredProviderId}
               />
             </div>
 
@@ -71,6 +80,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
               isLoading={isLoading}
               fallbackServices={services}
               onBookNow={onBookNow}
+              onHoverProvider={setHoveredProviderId}
             />
           </div>
         </div>

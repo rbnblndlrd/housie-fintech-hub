@@ -9,11 +9,32 @@ import { Service } from "@/types/service";
 interface ServiceCardProps {
   service: Service;
   onBookNow: (service: Service) => void;
+  onHoverProvider?: (providerId: string | null) => void;
 }
 
-const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBookNow }) => {
+const ServiceCard: React.FC<ServiceCardProps> = ({ 
+  service, 
+  onBookNow, 
+  onHoverProvider 
+}) => {
+  const handleMouseEnter = () => {
+    if (onHoverProvider) {
+      onHoverProvider(service.provider.id);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (onHoverProvider) {
+      onHoverProvider(null);
+    }
+  };
+
   return (
-    <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300">
+    <Card 
+      className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all duration-300"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <CardContent className="p-6">
         <div className="flex items-start gap-6">
           <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)]">
@@ -63,6 +84,9 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service, onBookNow }) => {
                 </div>
                 <span className="text-gray-500 text-sm">
                   {service.provider.user.city}, {service.provider.user.province}
+                </span>
+                <span className="text-gray-400 text-xs ml-1">
+                  ({service.provider.service_radius_km}km radius)
                 </span>
               </div>
             </div>
