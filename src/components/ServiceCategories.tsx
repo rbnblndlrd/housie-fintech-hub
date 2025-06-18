@@ -17,7 +17,7 @@ interface ServiceCategoriesProps {
 
 const ServiceCategories: React.FC<ServiceCategoriesProps> = ({ onCategorySelect }) => {
   return (
-    <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700 mb-6">
+    <Card className="fintech-card mb-6">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-black dark:text-white text-lg">
           Service Categories
