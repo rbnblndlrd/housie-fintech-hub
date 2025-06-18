@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,21 +12,10 @@ import PremiumFeatureGate from "@/components/PremiumFeatureGate";
 import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
 import AddAppointmentDialog from "@/components/AddAppointmentDialog";
 import EditAppointmentDialog from "@/components/EditAppointmentDialog";
-import { Clock, MapPin, User, Calendar as CalendarIcon, Wifi, WifiOff } from 'lucide-react';
+import { Clock, MapPin, User, Calendar as CalendarIcon, Wifi, WifiOff, Briefcase } from 'lucide-react';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useToast } from '@/hooks/use-toast';
-
-interface CalendarEvent {
-  id: string;
-  title: string;
-  date: Date;
-  time: string;
-  client: string;
-  location: string;
-  status: 'confirmed' | 'pending' | 'completed';
-  amount: number;
-  source: 'housie' | 'google';
-}
+import { useBookingCalendarIntegration, CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -33,45 +23,14 @@ const Calendar = () => {
   const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<CalendarEvent | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [personalEvents, setPersonalEvents] = useState<CalendarEvent[]>([]);
+  
   const { isFeatureAvailable } = useSubscription();
   const { toast } = useToast();
+  const { calendarEvents: bookingEvents, loading, updateBookingStatus } = useBookingCalendarIntegration();
 
-  // Mock events data with source information
-  const [mockEvents, setMockEvents] = useState<CalendarEvent[]>([
-    {
-      id: '1',
-      title: 'Nettoyage résidentiel',
-      date: new Date(),
-      time: '09:00',
-      client: 'Marie Dubois',
-      location: '123 Rue Saint-Denis, Montréal',
-      status: 'confirmed',
-      amount: 120,
-      source: 'housie'
-    },
-    {
-      id: '2',
-      title: 'Jardinage',
-      date: new Date(),
-      time: '14:00',
-      client: 'Pierre Martin',
-      location: '456 Avenue du Parc, Montréal',
-      status: 'pending',
-      amount: 180,
-      source: 'housie'
-    },
-    {
-      id: '3',
-      title: 'Réunion équipe',
-      date: new Date(),
-      time: '16:00',
-      client: 'Google Calendar',
-      location: 'Bureau principal',
-      status: 'confirmed',
-      amount: 0,
-      source: 'google'
-    }
-  ]);
+  // Combine booking events with personal events
+  const allEvents = [...bookingEvents, ...personalEvents];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -94,7 +53,7 @@ const Calendar = () => {
   const getFilteredEvents = (selectedDate: Date | undefined, syncMode: boolean) => {
     if (!selectedDate) return [];
     
-    const eventsForDate = mockEvents.filter(
+    const eventsForDate = allEvents.filter(
       event => event.date.toDateString() === selectedDate.toDateString()
     );
     
@@ -132,24 +91,38 @@ const Calendar = () => {
   const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
     const appointment: CalendarEvent = {
       ...newAppointment,
-      id: Date.now().toString()
+      id: Date.now().toString(),
+      source: 'housie'
     };
     
-    setMockEvents(prev => [...prev, appointment]);
+    setPersonalEvents(prev => [...prev, appointment]);
     updateSelectedEvents(date);
   };
 
   const handleUpdateAppointment = (updatedAppointment: CalendarEvent) => {
-    setMockEvents(prev => 
-      prev.map(event => 
-        event.id === updatedAppointment.id ? updatedAppointment : event
-      )
-    );
+    if (updatedAppointment.booking_id) {
+      // This is a booking - update via the booking system
+      updateBookingStatus(updatedAppointment.booking_id, updatedAppointment.status);
+    } else {
+      // This is a personal event
+      setPersonalEvents(prev => 
+        prev.map(event => 
+          event.id === updatedAppointment.id ? updatedAppointment : event
+        )
+      );
+    }
     updateSelectedEvents(date);
   };
 
   const handleDeleteAppointment = (appointmentId: string) => {
-    setMockEvents(prev => prev.filter(event => event.id !== appointmentId));
+    const event = allEvents.find(e => e.id === appointmentId);
+    if (event?.booking_id) {
+      // This is a booking - update status to cancelled
+      updateBookingStatus(event.booking_id, 'cancelled');
+    } else {
+      // This is a personal event - remove it
+      setPersonalEvents(prev => prev.filter(event => event.id !== appointmentId));
+    }
     updateSelectedEvents(date);
   };
 
@@ -182,18 +155,9 @@ const Calendar = () => {
     console.log('Export events triggered');
   };
 
-  const handleUpgradeToPremium = () => {
-    toast({
-      title: "Redirection vers l'abonnement",
-      description: "Vous allez être redirigé vers la page d'abonnement Premium...",
-    });
-    // Redirect to subscription page
-    window.location.href = '/';
-  };
-
   React.useEffect(() => {
     updateSelectedEvents(date);
-  }, [date, isGoogleSyncMode]);
+  }, [date, isGoogleSyncMode, allEvents]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
@@ -299,7 +263,12 @@ const Calendar = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                {selectedEvents.length === 0 ? (
+                {loading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="text-gray-600 mt-2">Chargement...</p>
+                  </div>
+                ) : selectedEvents.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
                       <CalendarIcon className="h-16 w-16 text-white mx-auto" />
@@ -328,7 +297,15 @@ const Calendar = () => {
                       <div key={event.id} className="p-4 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-2xl shadow-inner hover:shadow-md transition-all duration-200">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h4 className="font-semibold text-gray-900">{event.title}</h4>
+                            <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                              {event.title}
+                              {event.booking_id && (
+                                <Badge variant="outline" className="text-xs">
+                                  <Briefcase className="h-3 w-3 mr-1" />
+                                  Réservation
+                                </Badge>
+                              )}
+                            </h4>
                             <div className="flex items-center gap-2 mt-1">
                               <Badge className={`${getStatusColor(event.status)} text-white border-0 shadow-sm`}>
                                 {getStatusText(event.status)}
@@ -339,6 +316,11 @@ const Calendar = () => {
                               >
                                 {event.source === 'google' ? 'Google' : 'HOUSIE'}
                               </Badge>
+                              {event.is_provider && (
+                                <Badge variant="outline" className="text-xs border-purple-300 text-purple-700">
+                                  Prestataire
+                                </Badge>
+                              )}
                             </div>
                           </div>
                           {event.amount > 0 && (
@@ -383,7 +365,7 @@ const Calendar = () => {
                             onClick={() => handleDeleteAppointment(event.id)}
                             className="border-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-xl transition-all duration-200"
                           >
-                            Supprimer
+                            {event.booking_id ? 'Annuler' : 'Supprimer'}
                           </Button>
                         </div>
                       </div>
