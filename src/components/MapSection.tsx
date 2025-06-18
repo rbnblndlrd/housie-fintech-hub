@@ -21,7 +21,7 @@ const MapSection: React.FC<MapSectionProps> = ({
       <ServiceCategories onCategorySelect={onCategorySelect} />
 
       {/* Interactive Google Map */}
-      <Card className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-gray-100/50 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
+      <Card className="fintech-card">
         <CardHeader>
           <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Service Area Map</CardTitle>
         </CardHeader>

@@ -37,7 +37,7 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   onPriceRangeChange
 }) => {
   return (
-    <div className="bg-white dark:bg-dark-secondary rounded-xl p-6 shadow-lg mb-8 border dark:border-gray-700">
+    <div className="fintech-card p-6 mb-8">
       <div className="grid md:grid-cols-5 gap-4">
         <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
