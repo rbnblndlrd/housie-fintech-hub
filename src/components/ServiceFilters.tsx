@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -11,7 +12,7 @@ const serviceCategories = [
   { id: 'cleaning', name: 'Cleaning', count: '15+' },
   { id: 'wellness', name: 'Wellness', count: '12+' },
   { id: 'care_pets', name: 'Pet Care', count: '8+' },
-  { id: 'lawn_care', name: 'Lawn & Snow', count: '10+' },
+  { id: 'lawn_snow', name: 'Lawn & Snow', count: '10+' },
   { id: 'construction', name: 'Construction', count: '20+' }
 ];
 

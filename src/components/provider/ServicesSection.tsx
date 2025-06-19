@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -57,7 +58,7 @@ const serviceCategories: ServiceCategory[] = [
   { id: 'cleaning', name: 'Cleaning' },
   { id: 'wellness', name: 'Wellness' },
   { id: 'care_pets', name: 'Care/Pets' },
-  { id: 'lawn_care', name: 'Lawn & Snow' },
+  { id: 'lawn_snow', name: 'Lawn & Snow' },
   { id: 'construction', name: 'Construction' }
 ];
 

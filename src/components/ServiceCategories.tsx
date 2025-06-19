@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +28,7 @@ const serviceCategories = [
     icon: '🐕'
   },
   { 
-    id: 'lawn_care', 
+    id: 'lawn_snow', 
     name: 'Lawn & Snow', 
     color: 'bg-yellow-100 text-yellow-700 border-yellow-300',
     icon: '🌳'
