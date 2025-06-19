@@ -5,16 +5,15 @@ import { useToast } from "@/hooks/use-toast";
 import { useServices } from "@/hooks/useServices";
 import { useServiceFilters } from "@/hooks/useServiceFilters";
 import { Service } from "@/types/service";
-import { fallbackServices } from "@/data/sampleServices";
 import ServicesLayout from "@/components/ServicesLayout";
 import ServiceBookingWrapper from "@/components/ServiceBookingWrapper";
 
 const ServicesPage: React.FC = () => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const { services, isLoading } = useServices();
+  const { services: allServices, isLoading: servicesLoading } = useServices();
   
-  // Use the new unified service filters hook
+  // Use the unified service filters hook
   const {
     services: filteredServices,
     filters,
@@ -28,41 +27,6 @@ const ServicesPage: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState("montreal");
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
-
-  // Create a custom filtering function for backward compatibility
-  const useServiceFilters = (options: any) => {
-    // Filter services based on the provided criteria
-    let filtered = services;
-    
-    if (options.searchTerm) {
-      filtered = filtered.filter(service =>
-        service.title.toLowerCase().includes(options.searchTerm.toLowerCase()) ||
-        service.description?.toLowerCase().includes(options.searchTerm.toLowerCase())
-      );
-    }
-    
-    if (options.selectedCategory && options.selectedCategory !== 'all') {
-      filtered = filtered.filter(service => service.category === options.selectedCategory);
-    }
-    
-    if (options.priceRange) {
-      const [min, max] = options.priceRange;
-      filtered = filtered.filter(service => {
-        const price = service.provider.hourly_rate || service.base_price || 0;
-        return price >= min && price <= max;
-      });
-    }
-    
-    return filtered;
-  };
-
-  // Use the legacy filtering for now to maintain compatibility
-  const legacyFilteredServices = useServiceFilters({
-    services,
-    searchTerm: filters.searchTerm,
-    selectedCategory: filters.category,
-    priceRange: [filters.priceRange.min, filters.priceRange.max]
-  });
 
   const handleBookNow = (service: Service) => {
     if (!user) {
@@ -105,9 +69,9 @@ const ServicesPage: React.FC = () => {
 
   return (
     <ServicesLayout
-      services={services}
-      filteredServices={legacyFilteredServices}
-      isLoading={isLoading}
+      services={allServices}
+      filteredServices={filteredServices}
+      isLoading={servicesLoading || filtersLoading}
       searchTerm={filters.searchTerm}
       selectedCategory={filters.category}
       selectedLocation={selectedLocation}
