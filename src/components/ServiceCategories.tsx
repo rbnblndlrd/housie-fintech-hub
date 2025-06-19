@@ -12,35 +12,30 @@ const serviceCategories = [
   { 
     id: 'cleaning', 
     name: 'Cleaning', 
-    count: '15+',
     color: 'bg-blue-100 text-blue-700 border-blue-300',
     icon: '🏠'
   },
   { 
     id: 'wellness', 
     name: 'Wellness', 
-    count: '12+',
     color: 'bg-green-100 text-green-700 border-green-300',
     icon: '💪'
   },
   { 
     id: 'care_pets', 
     name: 'Pet Care', 
-    count: '8+',
     color: 'bg-purple-100 text-purple-700 border-purple-300',
     icon: '🐕'
   },
   { 
     id: 'lawn_snow', 
     name: 'Lawn & Snow', 
-    count: '10+',
     color: 'bg-yellow-100 text-yellow-700 border-yellow-300',
     icon: '🌳'
   },
   { 
     id: 'construction', 
     name: 'Construction', 
-    count: '20+',
     color: 'bg-orange-100 text-orange-700 border-orange-300',
     icon: '🔧'
   }

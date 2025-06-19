@@ -8,7 +8,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Trash2, AlertTriangle, Shield, Award } from 'lucide-react';
-import { serviceCategories, getSubcategoryById } from '@/data/serviceCategories';
 
 interface Service {
   id: string;
@@ -31,14 +30,42 @@ interface ProviderProfile {
   verification_level: string;
 }
 
+interface ServiceCategory {
+  id: string;
+  name: string;
+}
+
+interface ServiceSubcategory {
+  id: string;
+  category: string;
+  subcategory: string;
+  subcategory_id: string;
+  icon: string;
+  background_check_required: boolean;
+  professional_license_required: boolean;
+  professional_license_type: string | null;
+  ccq_rbq_required: boolean;
+  risk_category: string;
+  description: string;
+}
+
 interface ServicesSectionProps {
   providerId: string;
 }
+
+const serviceCategories: ServiceCategory[] = [
+  { id: 'cleaning', name: 'Cleaning' },
+  { id: 'wellness', name: 'Wellness' },
+  { id: 'care_pets', name: 'Care/Pets' },
+  { id: 'lawn_snow', name: 'Lawn & Snow' },
+  { id: 'construction', name: 'Construction' }
+];
 
 const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
   const { toast } = useToast();
   const [services, setServices] = useState<Service[]>([]);
   const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
+  const [subcategories, setSubcategories] = useState<ServiceSubcategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newService, setNewService] = useState({
@@ -54,6 +81,14 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     fetchServices();
     fetchProviderProfile();
   }, [providerId]);
+
+  useEffect(() => {
+    if (newService.category) {
+      fetchSubcategories(newService.category);
+    } else {
+      setSubcategories([]);
+    }
+  }, [newService.category]);
 
   const fetchProviderProfile = async () => {
     try {
@@ -91,17 +126,31 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     }
   };
 
-  const getAvailableSubcategories = () => {
-    if (!newService.category) return [];
-    const category = serviceCategories.find(cat => cat.id === newService.category);
-    return category?.subcategories || [];
+  const fetchSubcategories = async (category: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('service_subcategories')
+        .select('*')
+        .eq('category', category)
+        .order('subcategory', { ascending: true });
+
+      if (error) throw error;
+      setSubcategories(data || []);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+      setSubcategories([]);
+    }
   };
 
-  const canOfferSubcategory = (subcategory: any) => {
+  const getSelectedSubcategory = () => {
+    return subcategories.find(sub => sub.subcategory_id === newService.subcategory);
+  };
+
+  const canOfferSubcategory = (subcategory: ServiceSubcategory) => {
     if (!providerProfile) return false;
     
-    const needsBackgroundCheck = subcategory.backgroundCheckRequired;
-    const needsCcqRbq = subcategory.ccqRbqRequired;
+    const needsBackgroundCheck = subcategory.background_check_required;
+    const needsCcqRbq = subcategory.ccq_rbq_required;
     
     if (needsBackgroundCheck && !providerProfile.background_check_verified) {
       return false;
@@ -114,10 +163,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     return true;
   };
 
-  const getVerificationBadges = (subcategory: any) => {
+  const getVerificationBadges = (subcategory: ServiceSubcategory) => {
     const badges = [];
     
-    if (subcategory.backgroundCheckRequired) {
+    if (subcategory.background_check_required) {
       badges.push(
         <Badge 
           key="bg-check" 
@@ -130,7 +179,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
       );
     }
     
-    if (subcategory.ccqRbqRequired) {
+    if (subcategory.ccq_rbq_required) {
       badges.push(
         <Badge 
           key="ccq-rbq" 
@@ -156,7 +205,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
       return;
     }
 
-    const subcategoryData = getSubcategoryById(newService.category, newService.subcategory);
+    const subcategoryData = getSelectedSubcategory();
     if (!subcategoryData) {
       toast({
         title: "Error",
@@ -187,9 +236,9 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
           subcategory: newService.subcategory,
           base_price: newService.base_price,
           pricing_type: newService.pricing_type,
-          background_check_required: subcategoryData.backgroundCheckRequired,
-          ccq_rbq_required: subcategoryData.ccqRbqRequired,
-          risk_category: subcategoryData.riskCategory,
+          background_check_required: subcategoryData.background_check_required,
+          ccq_rbq_required: subcategoryData.ccq_rbq_required,
+          risk_category: subcategoryData.risk_category,
         })
         .select()
         .single();
@@ -355,17 +404,20 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
                     <SelectValue placeholder="Select subcategory" />
                   </SelectTrigger>
                   <SelectContent>
-                    {getAvailableSubcategories().map(subcategory => {
+                    {subcategories.map(subcategory => {
                       const canOffer = canOfferSubcategory(subcategory);
                       return (
                         <SelectItem 
                           key={subcategory.id} 
-                          value={subcategory.id}
+                          value={subcategory.subcategory_id}
                           disabled={!canOffer}
                           className={!canOffer ? 'opacity-50' : ''}
                         >
                           <div className="flex items-center justify-between w-full">
-                            <span>{subcategory.name}</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-lg">{subcategory.icon}</span>
+                              <span>{subcategory.subcategory}</span>
+                            </div>
                             {!canOffer && <AlertTriangle className="h-4 w-4 text-red-500" />}
                           </div>
                         </SelectItem>
@@ -373,9 +425,9 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
                     })}
                   </SelectContent>
                 </Select>
-                {newService.subcategory && (
+                {newService.subcategory && getSelectedSubcategory() && (
                   <div className="mt-2 flex gap-1 flex-wrap">
-                    {getVerificationBadges(getSubcategoryById(newService.category, newService.subcategory))}
+                    {getVerificationBadges(getSelectedSubcategory()!)}
                   </div>
                 )}
               </div>
