@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -16,10 +17,11 @@ import {
   BarChart3,
   Star,
   Clock,
-  Users
+  Users,
+  ArrowLeft
 } from 'lucide-react';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
-import { LineChart, Line, BarChart, Bar, PieChart as RechartsPieChart, Cell, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 
 interface RevenueData {
   month: string;
@@ -36,6 +38,7 @@ interface ServicePerformance {
 }
 
 const Analytics = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
@@ -123,7 +126,7 @@ const Analytics = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
         <div className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
@@ -142,44 +145,57 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
-          <div className="mb-8 flex justify-between items-center">
-            <div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                Tableau de Bord Financier
-              </h1>
-              <p className="text-gray-600">Analysez vos revenus et performances</p>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex fintech-card p-1">
-                {(['week', 'month', 'year'] as const).map((range) => (
-                  <Button
-                    key={range}
-                    variant={timeRange === range ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => setTimeRange(range)}
-                    className={`rounded-xl transition-all duration-200 ${
-                      timeRange === range 
-                        ? 'fintech-button-primary' 
-                        : 'hover:bg-gray-50'
-                    }`}
-                  >
-                    {range === 'week' ? 'Semaine' : range === 'month' ? 'Mois' : 'Année'}
-                  </Button>
-                ))}
-              </div>
+          {/* Navigation Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={exportData}
-                className="fintech-button-secondary"
+                onClick={() => navigate('/analytics-dashboard')}
+                variant="outline"
+                className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                <Download className="h-4 w-4 mr-2" />
-                Exporter (Impôts)
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Analytics Dashboard
               </Button>
+            </div>
+            
+            <div className="flex justify-between items-center">
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                  Tableau de Bord Financier
+                </h1>
+                <p className="text-gray-600">Analysez vos revenus et performances</p>
+              </div>
+              <div className="flex gap-3">
+                <div className="flex fintech-card p-1">
+                  {(['week', 'month', 'year'] as const).map((range) => (
+                    <Button
+                      key={range}
+                      variant={timeRange === range ? "default" : "ghost"}
+                      size="sm"
+                      onClick={() => setTimeRange(range)}
+                      className={`rounded-xl transition-all duration-200 ${
+                        timeRange === range 
+                          ? 'fintech-button-primary' 
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      {range === 'week' ? 'Semaine' : range === 'month' ? 'Mois' : 'Année'}
+                    </Button>
+                  ))}
+                </div>
+                <Button
+                  onClick={exportData}
+                  className="fintech-button-secondary"
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Exporter (Impôts)
+                </Button>
+              </div>
             </div>
           </div>
 
