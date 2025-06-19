@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { User, Edit, Phone, Mail, Image, ArrowLeft, Home } from 'lucide-react';
+import { User, Edit, Phone, Mail, Image } from 'lucide-react';
+import Header from '@/components/Header';
 import BusinessInfoSection from '@/components/provider/BusinessInfoSection';
 import ServicesSection from '@/components/provider/ServicesSection';
 import ContactInfoSection from '@/components/provider/ContactInfoSection';
@@ -140,10 +141,13 @@ const ProviderProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+        <Header />
+        <div className="pt-16 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading profile...</p>
+          </div>
         </div>
       </div>
     );
@@ -151,119 +155,85 @@ const ProviderProfile = () => {
 
   if (!providerProfile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-6">
-        <div className="max-w-4xl mx-auto">
-          {/* Navigation Header */}
-          <div className="mb-6 flex items-center gap-4">
-            <Button
-              variant="outline"
-              onClick={() => navigate(-1)}
-              className="flex items-center gap-2 bg-white/90 backdrop-blur-sm shadow-lg"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate('/')}
-              className="flex items-center gap-2 bg-white/90 backdrop-blur-sm shadow-lg"
-            >
-              <Home className="h-4 w-4" />
-              Home
-            </Button>
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+        <Header />
+        <div className="pt-16 p-6">
+          <div className="max-w-4xl mx-auto">
+            <Card className="fintech-card">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl font-bold text-gray-900">
+                  Become a Service Provider
+                </CardTitle>
+                <CardDescription className="text-gray-600">
+                  Create your provider profile to start offering services on HOUSIE
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="text-center">
+                <Button 
+                  onClick={createProviderProfile}
+                  disabled={saving}
+                  className="fintech-button-primary"
+                >
+                  {saving ? 'Creating Profile...' : 'Create Provider Profile'}
+                </Button>
+              </CardContent>
+            </Card>
           </div>
-
-          <Card className="fintech-card">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl font-bold text-gray-900">
-                Become a Service Provider
-              </CardTitle>
-              <CardDescription className="text-gray-600">
-                Create your provider profile to start offering services on HOUSIE
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="text-center">
-              <Button 
-                onClick={createProviderProfile}
-                disabled={saving}
-                className="fintech-button-primary"
-              >
-                {saving ? 'Creating Profile...' : 'Create Provider Profile'}
-              </Button>
-            </CardContent>
-          </Card>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100 p-6">
-      <div className="max-w-6xl mx-auto space-y-8">
-        {/* Navigation Header */}
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            onClick={() => navigate(-1)}
-            className="flex items-center gap-2 bg-white/90 backdrop-blur-sm shadow-lg"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => navigate('/')}
-            className="flex items-center gap-2 bg-white/90 backdrop-blur-sm shadow-lg"
-          >
-            <Home className="h-4 w-4" />
-            Home
-          </Button>
-        </div>
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+      <Header />
+      <div className="pt-16 p-6">
+        <div className="max-w-6xl mx-auto space-y-8">
+          {/* Header */}
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>
+            <p className="text-gray-600">Manage your business information and services</p>
+          </div>
 
-        {/* Header */}
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>
-          <p className="text-gray-600">Manage your business information and services</p>
-        </div>
-
-        {/* Profile Overview Card */}
-        <Card className="fintech-card">
-          <CardHeader className="flex flex-row items-center space-y-0 pb-4">
-            <div className="flex items-center space-x-4">
-              <Avatar className="h-16 w-16">
-                <AvatarImage src={userProfile?.profile_image} />
-                <AvatarFallback className="bg-gray-100 text-gray-700">
-                  <User className="h-8 w-8" />
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <CardTitle className="text-xl text-gray-900">
-                  {providerProfile.business_name || userProfile?.full_name}
-                </CardTitle>
-                <CardDescription className="text-gray-600">
-                  {providerProfile.verified ? '✅ Verified Provider' : '⏳ Pending Verification'}
-                </CardDescription>
+          {/* Profile Overview Card */}
+          <Card className="fintech-card">
+            <CardHeader className="flex flex-row items-center space-y-0 pb-4">
+              <div className="flex items-center space-x-4">
+                <Avatar className="h-16 w-16">
+                  <AvatarImage src={userProfile?.profile_image} />
+                  <AvatarFallback className="bg-gray-100 text-gray-700">
+                    <User className="h-8 w-8" />
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <CardTitle className="text-xl text-gray-900">
+                    {providerProfile.business_name || userProfile?.full_name}
+                  </CardTitle>
+                  <CardDescription className="text-gray-600">
+                    {providerProfile.verified ? '✅ Verified Provider' : '⏳ Pending Verification'}
+                  </CardDescription>
+                </div>
               </div>
-            </div>
-          </CardHeader>
-        </Card>
+            </CardHeader>
+          </Card>
 
-        {/* Profile Sections */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <BusinessInfoSection 
-            providerProfile={providerProfile}
-            setProviderProfile={setProviderProfile}
-          />
-          <ContactInfoSection 
-            userProfile={userProfile}
-            setUserProfile={setUserProfile}
-          />
-          <ServicesSection 
-            providerId={providerProfile.id}
-          />
-          <AvailabilitySection 
-            providerId={providerProfile.id}
-          />
+          {/* Profile Sections */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <BusinessInfoSection 
+              providerProfile={providerProfile}
+              setProviderProfile={setProviderProfile}
+            />
+            <ContactInfoSection 
+              userProfile={userProfile}
+              setUserProfile={setUserProfile}
+            />
+            <ServicesSection 
+              providerId={providerProfile.id}
+            />
+            <AvailabilitySection 
+              providerId={providerProfile.id}
+            />
+          </div>
         </div>
       </div>
     </div>
