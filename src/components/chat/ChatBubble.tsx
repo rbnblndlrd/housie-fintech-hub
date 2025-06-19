@@ -1,18 +1,18 @@
 
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { MessageCircle, X, Users, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
 import ChatPanel from './ChatPanel';
-import { PopArtContext } from '@/contexts/PopArtContext';
+import { usePopArt } from '@/contexts/PopArtContext';
 
 export const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'messages' | 'ai'>('messages');
   const { totalUnreadCount } = useChat();
-  const { triggerPopArt } = useContext(PopArtContext);
+  const { triggerPopArt } = usePopArt();
 
   return (
     <>

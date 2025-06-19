@@ -7,9 +7,10 @@ interface PopArtContextType {
   activatePopArt: () => void;
   deactivatePopArt: () => void;
   togglePopArt: () => void;
+  triggerPopArt: () => void;
 }
 
-const PopArtContext = createContext<PopArtContextType | undefined>(undefined);
+export const PopArtContext = createContext<PopArtContextType | undefined>(undefined);
 
 export const usePopArt = () => {
   const context = useContext(PopArtContext);
@@ -55,12 +56,17 @@ export const PopArtProvider: React.FC<PopArtProviderProps> = ({ children }) => {
     }
   };
 
+  const triggerPopArt = () => {
+    activatePopArt();
+  };
+
   return (
     <PopArtContext.Provider value={{
       isPopArtMode,
       activatePopArt,
       deactivatePopArt,
-      togglePopArt
+      togglePopArt,
+      triggerPopArt
     }}>
       <div className={isPopArtMode ? 'pop-art-mode' : ''}>
         {children}
