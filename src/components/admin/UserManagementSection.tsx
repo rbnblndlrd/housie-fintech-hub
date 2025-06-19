@@ -6,7 +6,8 @@ import { Input } from '@/components/ui/input';
 import { CreamBadge } from '@/components/ui/cream-badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
-import { Search, Filter, UserCheck, UserX, Mail, Phone, MapPin, Calendar, Trash2, RefreshCw } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Search, Filter, UserCheck, UserX, Mail, Phone, MapPin, Calendar, Trash2, RefreshCw, Crown, Star, Zap } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -19,6 +20,7 @@ interface User {
   can_provide?: boolean;
   city?: string;
   province?: string;
+  subscription_tier?: string;
   created_at: string;
   provider_profile?: {
     verified?: boolean;
@@ -33,6 +35,7 @@ const UserManagementSection = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [updatingSubscription, setUpdatingSubscription] = useState<string | null>(null);
   const { toast } = useToast();
 
   const fetchUsers = async () => {
@@ -49,6 +52,7 @@ const UserManagementSection = () => {
           can_provide,
           city,
           province,
+          subscription_tier,
           created_at,
           provider_profiles (
             verified,
@@ -86,6 +90,46 @@ const UserManagementSection = () => {
     }
   };
 
+  const updateUserSubscription = async (userId: string, newTier: string) => {
+    try {
+      setUpdatingSubscription(userId);
+      
+      const { error } = await supabase
+        .from('users')
+        .update({ subscription_tier: newTier })
+        .eq('id', userId);
+
+      if (error) {
+        console.error('Error updating subscription:', error);
+        toast({
+          title: "Erreur",
+          description: "Impossible de mettre à jour l'abonnement",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      // Update local state
+      setUsers(prev => prev.map(user => 
+        user.id === userId ? { ...user, subscription_tier: newTier } : user
+      ));
+
+      toast({
+        title: "Succès",
+        description: `Abonnement mis à jour vers ${newTier}`,
+      });
+    } catch (error) {
+      console.error('Error updating subscription:', error);
+      toast({
+        title: "Erreur",
+        description: "Une erreur est survenue lors de la mise à jour",
+        variant: "destructive",
+      });
+    } finally {
+      setUpdatingSubscription(null);
+    }
+  };
+
   const deleteUser = async (userId: string) => {
     try {
       setDeleting(userId);
@@ -110,7 +154,6 @@ const UserManagementSection = () => {
         description: "Utilisateur supprimé avec succès",
       });
 
-      // Refresh the users list
       await fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -143,6 +186,44 @@ const UserManagementSection = () => {
     return user.can_provide 
       ? <CreamBadge variant="default">Prestataire</CreamBadge>
       : <CreamBadge variant="info">Client</CreamBadge>;
+  };
+
+  const getSubscriptionBadge = (tier?: string) => {
+    switch (tier) {
+      case 'Premium':
+        return (
+          <div className="flex items-center gap-1">
+            <Crown className="h-3 w-3 text-yellow-600" />
+            <span className="text-yellow-700 font-semibold text-xs bg-gradient-to-r from-yellow-100 to-orange-100 px-2 py-1 rounded-full border border-yellow-200">
+              Premium
+            </span>
+          </div>
+        );
+      case 'Pro':
+        return (
+          <div className="flex items-center gap-1">
+            <Star className="h-3 w-3 text-purple-600" />
+            <span className="text-purple-700 font-semibold text-xs bg-gradient-to-r from-purple-100 to-blue-100 px-2 py-1 rounded-full border border-purple-200">
+              Pro
+            </span>
+          </div>
+        );
+      case 'Starter':
+        return (
+          <div className="flex items-center gap-1">
+            <Zap className="h-3 w-3 text-blue-600" />
+            <span className="text-blue-700 font-semibold text-xs bg-gradient-to-r from-blue-100 to-cyan-100 px-2 py-1 rounded-full border border-blue-200">
+              Starter
+            </span>
+          </div>
+        );
+      default:
+        return (
+          <span className="text-gray-600 font-semibold text-xs bg-gray-100 px-2 py-1 rounded-full border border-gray-200">
+            Free
+          </span>
+        );
+    }
   };
 
   const filteredUsers = users.filter(user => {
@@ -283,6 +364,7 @@ const UserManagementSection = () => {
                     <TableHead className="font-semibold text-gray-700">Utilisateur</TableHead>
                     <TableHead className="font-semibold text-gray-700">Type</TableHead>
                     <TableHead className="font-semibold text-gray-700">Statut</TableHead>
+                    <TableHead className="font-semibold text-gray-700">Abonnement</TableHead>
                     <TableHead className="font-semibold text-gray-700">Localisation</TableHead>
                     <TableHead className="font-semibold text-gray-700">Réservations</TableHead>
                     <TableHead className="font-semibold text-gray-700">Note</TableHead>
@@ -312,6 +394,29 @@ const UserManagementSection = () => {
                       </TableCell>
                       <TableCell>
                         {getStatusBadge(user)}
+                      </TableCell>
+                      <TableCell>
+                        <Select
+                          value={user.subscription_tier || 'free'}
+                          onValueChange={(value) => updateUserSubscription(user.id, value)}
+                          disabled={updatingSubscription === user.id}
+                        >
+                          <SelectTrigger className="w-28 h-8 text-xs">
+                            <SelectValue>
+                              {updatingSubscription === user.id ? (
+                                <RefreshCw className="h-3 w-3 animate-spin" />
+                              ) : (
+                                getSubscriptionBadge(user.subscription_tier)
+                              )}
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="free">Free</SelectItem>
+                            <SelectItem value="starter">Starter</SelectItem>
+                            <SelectItem value="pro">Pro</SelectItem>
+                            <SelectItem value="premium">Premium</SelectItem>
+                          </SelectContent>
+                        </Select>
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1 text-gray-600">
@@ -377,7 +482,7 @@ const UserManagementSection = () => {
                   ))}
                   {filteredUsers.length === 0 && !loading && (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8 text-gray-500">
+                      <TableCell colSpan={8} className="text-center py-8 text-gray-500">
                         Aucun utilisateur trouvé
                       </TableCell>
                     </TableRow>

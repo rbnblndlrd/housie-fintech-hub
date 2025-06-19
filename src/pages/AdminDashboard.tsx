@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, Filter, Download, Search, Shield, AlertTriangle, Activity, Wifi, Coins } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, Filter, Download, Search, Shield, AlertTriangle, Activity, Wifi, Coins, Wrench } from 'lucide-react';
 import Header from '@/components/Header';
 import OverviewSection from '@/components/admin/OverviewSection';
 import UserManagementSection from '@/components/admin/UserManagementSection';
@@ -15,6 +15,7 @@ import PlatformHealthSection from '@/components/admin/PlatformHealthSection';
 import LiveUsersSection from '@/components/admin/LiveUsersSection';
 import EmergencyControlsSection from '@/components/admin/EmergencyControlsSection';
 import CreditAnalyticsSection from '@/components/admin/CreditAnalyticsSection';
+import DevelopmentToolsSection from '@/components/admin/DevelopmentToolsSection';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -51,7 +52,7 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-8 h-14 fintech-card rounded-2xl">
+            <TabsList className="grid w-full grid-cols-9 h-14 fintech-card rounded-2xl">
               <TabsTrigger 
                 value="overview" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
@@ -59,25 +60,32 @@ const AdminDashboard = () => {
                 Vue Générale
               </TabsTrigger>
               <TabsTrigger 
+                value="dev-tools" 
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-600 data-[state=active]:to-red-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
+              >
+                <Wrench className="h-4 w-4 mr-1" />
+                Dev Tools
+              </TabsTrigger>
+              <TabsTrigger 
                 value="emergency" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-orange-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
               >
                 <Shield className="h-4 w-4 mr-1" />
-                Contrôles d'Urgence
+                Urgence
               </TabsTrigger>
               <TabsTrigger 
                 value="credits" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
               >
                 <Coins className="h-4 w-4 mr-1" />
-                Crédits & IA
+                Crédits
               </TabsTrigger>
               <TabsTrigger 
                 value="live-users" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
               >
                 <Wifi className="h-4 w-4 mr-1" />
-                Utilisateurs Live
+                Live
               </TabsTrigger>
               <TabsTrigger 
                 value="users" 
@@ -101,12 +109,16 @@ const AdminDashboard = () => {
                 value="health" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
               >
-                Santé Plateforme
+                Santé
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-8">
               <OverviewSection />
+            </TabsContent>
+
+            <TabsContent value="dev-tools" className="space-y-8">
+              <DevelopmentToolsSection />
             </TabsContent>
 
             <TabsContent value="emergency" className="space-y-8">

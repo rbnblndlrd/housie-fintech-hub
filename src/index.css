@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
@@ -84,6 +85,13 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+  }
+
+  /* Apply gradient background to all pages except home */
+  body:not(.home-page) {
+    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%);
+    background-attachment: fixed;
+    min-height: 100vh;
   }
 }
 
