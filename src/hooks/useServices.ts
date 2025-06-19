@@ -35,18 +35,6 @@ export const useServices = () => {
         .order('created_at', { ascending: false });
 
       console.log('Services query result:', { data, error });
-      console.log('Raw data details:', data?.map(service => ({
-        id: service.id,
-        title: service.title,
-        category: service.category,
-        subcategory: service.subcategory,
-        provider_id: service.provider_id,
-        has_provider: !!service.provider,
-        provider_details: service.provider ? {
-          business_name: service.provider.business_name,
-          has_user: !!service.provider.user
-        } : null
-      })));
 
       if (error) {
         console.error('Error fetching services:', error);
@@ -91,23 +79,12 @@ export const useServices = () => {
       const validServices = data.filter(service => {
         const hasProvider = service.provider && service.provider.user;
         if (!hasProvider) {
-          console.warn('Service missing provider or user data:', {
-            service_id: service.id,
-            title: service.title,
-            category: service.category,
-            provider_id: service.provider_id,
-            has_provider: !!service.provider,
-            provider_user: service.provider?.user || null
-          });
+          console.warn('Service missing provider or user data:', service);
         }
         return hasProvider;
       });
 
       console.log(`${validServices.length} services have complete provider data`);
-      console.log('Valid services by category:', validServices.reduce((acc, service) => {
-        acc[service.category] = (acc[service.category] || 0) + 1;
-        return acc;
-      }, {} as Record<string, number>));
 
       // If no valid services but we have services in DB, it means provider profiles are missing
       if (validServices.length === 0 && data.length > 0) {

@@ -14,42 +14,18 @@ const ServicesPage = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([10, 200]);
 
   const filteredServicesList = useMemo(() => {
-    console.log('Filtering services:', {
-      totalServices: services.length,
-      selectedCategory,
-      searchTerm
-    });
-
     return services.filter((service: Service) => {
       const matchesSearch = service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            service.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            service.provider?.business_name?.toLowerCase().includes(searchTerm.toLowerCase());
       
-      // Handle both lawn_care and lawn_snow categories
-      const matchesCategory = selectedCategory === 'all' || 
-                             service.category === selectedCategory ||
-                             (selectedCategory === 'lawn_snow' && service.category === 'lawn_care') ||
-                             (selectedCategory === 'lawn_care' && service.category === 'lawn_snow');
-      
+      const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
       const matchesSubcategory = selectedSubcategory === 'all' || service.subcategory === selectedSubcategory;
       const matchesLocation = selectedLocation === 'montreal' || 
                              service.provider?.user?.city?.toLowerCase().includes(selectedLocation.toLowerCase());
       const matchesPrice = service.base_price >= priceRange[0] && service.base_price <= priceRange[1];
 
-      const result = matchesSearch && matchesCategory && matchesSubcategory && matchesLocation && matchesPrice;
-      
-      if (selectedCategory !== 'all') {
-        console.log(`Service "${service.title}" (category: ${service.category}):`, {
-          matchesSearch,
-          matchesCategory,
-          matchesSubcategory,
-          matchesLocation,
-          matchesPrice,
-          finalResult: result
-        });
-      }
-
-      return result;
+      return matchesSearch && matchesCategory && matchesSubcategory && matchesLocation && matchesPrice;
     });
   }, [services, searchTerm, selectedCategory, selectedSubcategory, selectedLocation, priceRange]);
 
@@ -58,7 +34,6 @@ const ServicesPage = () => {
   };
 
   const handleCategoryChange = (category: string) => {
-    console.log('Category changed to:', category);
     setSelectedCategory(category);
     // Reset subcategory when category changes
     setSelectedSubcategory('all');
