@@ -8,6 +8,9 @@ export interface Service {
   category: string;
   subcategory: string;
   active: boolean;
+  background_check_required: boolean;
+  ccq_rbq_required: boolean;
+  risk_category: string;
   provider: {
     id: string;
     business_name: string;
@@ -16,6 +19,10 @@ export interface Service {
     average_rating: number;
     total_bookings: number;
     verified: boolean;
+    verification_level: 'basic' | 'background_check' | 'professional_license';
+    background_check_verified: boolean;
+    ccq_verified: boolean;
+    rbq_verified: boolean;
     user: {
       full_name: string;
       city: string;

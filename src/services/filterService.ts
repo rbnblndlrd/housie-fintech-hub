@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { BookingFilters, ServiceFilters, UserFilters } from '@/types/filters';
 import { isDateInRange } from '@/utils/dateFilters';
@@ -71,6 +72,10 @@ export const fetchFilteredServices = async (filters: ServiceFilters) => {
         average_rating,
         total_bookings,
         verified,
+        verification_level,
+        background_check_verified,
+        ccq_verified,
+        rbq_verified,
         user:users(full_name, city, province)
       )
     `)
@@ -81,8 +86,24 @@ export const fetchFilteredServices = async (filters: ServiceFilters) => {
     query = query.eq('category', filters.category);
   }
 
+  if (filters.subcategory !== 'all') {
+    query = query.eq('subcategory', filters.subcategory);
+  }
+
   if (filters.verified !== null) {
     query = query.eq('provider.verified', filters.verified);
+  }
+
+  if (filters.backgroundCheckRequired !== null) {
+    query = query.eq('background_check_required', filters.backgroundCheckRequired);
+  }
+
+  if (filters.ccqRbqRequired !== null) {
+    query = query.eq('ccq_rbq_required', filters.ccqRbqRequired);
+  }
+
+  if (filters.riskCategory !== 'all') {
+    query = query.eq('risk_category', filters.riskCategory);
   }
 
   const { data, error } = await query;
@@ -116,7 +137,11 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
       provider_profiles (
         verified,
         total_bookings,
-        average_rating
+        average_rating,
+        verification_level,
+        background_check_verified,
+        ccq_verified,
+        rbq_verified
       )
     `)
     .order('created_at', { ascending: false });
@@ -135,6 +160,10 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
     query = query.ilike('province', `%${filters.province}%`);
   }
 
+  if (filters.verificationLevel !== 'all') {
+    query = query.eq('provider_profiles.verification_level', filters.verificationLevel);
+  }
+
   const { data, error } = await query;
 
   if (error) throw error;
@@ -149,4 +178,20 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
   }
 
   return filteredData;
+};
+
+export const fetchServiceSubcategories = async (category?: string) => {
+  let query = supabase
+    .from('service_subcategories')
+    .select('*')
+    .order('category', { ascending: true })
+    .order('subcategory', { ascending: true });
+
+  if (category && category !== 'all') {
+    query = query.eq('category', category);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data || [];
 };

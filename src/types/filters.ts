@@ -24,9 +24,13 @@ export interface BookingFilters extends BaseFilters {
 
 export interface ServiceFilters extends BaseFilters {
   category: string;
+  subcategory: string;
   location: string;
   priceRange: PriceRange;
   verified: boolean | null;
+  backgroundCheckRequired: boolean | null;
+  ccqRbqRequired: boolean | null;
+  riskCategory: string;
 }
 
 export interface UserFilters extends BaseFilters {
@@ -34,6 +38,7 @@ export interface UserFilters extends BaseFilters {
   verified: boolean | null;
   city: string;
   province: string;
+  verificationLevel: string;
 }
 
 export interface CalendarFilters extends BaseFilters {
@@ -52,4 +57,15 @@ export interface FilterState<T extends BaseFilters> {
   isLoading: boolean;
   error: string | null;
   resultCount: number;
+}
+
+export interface ServiceSubcategory {
+  id: string;
+  category: string;
+  subcategory: string;
+  background_check_required: boolean;
+  ccq_rbq_required: boolean;
+  risk_category: string;
+  description: string;
+  created_at: string;
 }

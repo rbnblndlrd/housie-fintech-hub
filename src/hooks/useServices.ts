@@ -22,6 +22,10 @@ export const useServices = () => {
             average_rating,
             total_bookings,
             verified,
+            verification_level,
+            background_check_verified,
+            ccq_verified,
+            rbq_verified,
             user:users(full_name, city, province)
           )
         `)
@@ -30,14 +34,52 @@ export const useServices = () => {
 
       if (error) {
         console.error('Error fetching services:', error);
-        setServices(fallbackServices);
+        // Map fallback services to include new fields
+        const updatedFallbackServices = fallbackServices.map(service => ({
+          ...service,
+          background_check_required: service.category === 'wellness' || service.category === 'care_pets',
+          ccq_rbq_required: service.category === 'construction',
+          risk_category: service.category === 'wellness' || service.category === 'care_pets' ? 'high' : 'low',
+          provider: {
+            ...service.provider,
+            verification_level: 'basic' as const,
+            background_check_verified: false,
+            ccq_verified: false,
+            rbq_verified: false
+          }
+        }));
+        setServices(updatedFallbackServices);
       } else {
-        const allServices = data && data.length > 0 ? data : fallbackServices;
+        const allServices = data && data.length > 0 ? data : fallbackServices.map(service => ({
+          ...service,
+          background_check_required: false,
+          ccq_rbq_required: false,
+          risk_category: 'low',
+          provider: {
+            ...service.provider,
+            verification_level: 'basic' as const,
+            background_check_verified: false,
+            ccq_verified: false,
+            rbq_verified: false
+          }
+        }));
         setServices(allServices);
       }
     } catch (error) {
       console.error('Services fetch error:', error);
-      setServices(fallbackServices);
+      setServices(fallbackServices.map(service => ({
+        ...service,
+        background_check_required: false,
+        ccq_rbq_required: false,
+        risk_category: 'low',
+        provider: {
+          ...service.provider,
+          verification_level: 'basic' as const,
+          background_check_verified: false,
+          ccq_verified: false,
+          rbq_verified: false
+        }
+      })));
     } finally {
       setIsLoading(false);
     }

@@ -454,52 +454,79 @@ export type Database = {
       provider_profiles: {
         Row: {
           average_rating: number | null
+          background_check_verified: boolean | null
           business_name: string | null
+          ccq_license_number: string | null
+          ccq_verified: boolean | null
           cra_compliant: boolean | null
           created_at: string | null
           description: string | null
           hourly_rate: number | null
           id: string
           insurance_verified: boolean | null
+          professional_license_verified: boolean | null
+          rbq_license_number: string | null
+          rbq_verified: boolean | null
           response_time_hours: number | null
           service_radius_km: number | null
           total_bookings: number | null
           updated_at: string | null
           user_id: string
+          verification_level:
+            | Database["public"]["Enums"]["verification_level"]
+            | null
           verified: boolean | null
           years_experience: number | null
         }
         Insert: {
           average_rating?: number | null
+          background_check_verified?: boolean | null
           business_name?: string | null
+          ccq_license_number?: string | null
+          ccq_verified?: boolean | null
           cra_compliant?: boolean | null
           created_at?: string | null
           description?: string | null
           hourly_rate?: number | null
           id?: string
           insurance_verified?: boolean | null
+          professional_license_verified?: boolean | null
+          rbq_license_number?: string | null
+          rbq_verified?: boolean | null
           response_time_hours?: number | null
           service_radius_km?: number | null
           total_bookings?: number | null
           updated_at?: string | null
           user_id: string
+          verification_level?:
+            | Database["public"]["Enums"]["verification_level"]
+            | null
           verified?: boolean | null
           years_experience?: number | null
         }
         Update: {
           average_rating?: number | null
+          background_check_verified?: boolean | null
           business_name?: string | null
+          ccq_license_number?: string | null
+          ccq_verified?: boolean | null
           cra_compliant?: boolean | null
           created_at?: string | null
           description?: string | null
           hourly_rate?: number | null
           id?: string
           insurance_verified?: boolean | null
+          professional_license_verified?: boolean | null
+          rbq_license_number?: string | null
+          rbq_verified?: boolean | null
           response_time_hours?: number | null
           service_radius_km?: number | null
           total_bookings?: number | null
           updated_at?: string | null
           user_id?: string
+          verification_level?:
+            | Database["public"]["Enums"]["verification_level"]
+            | null
           verified?: boolean | null
           years_experience?: number | null
         }
@@ -565,40 +592,82 @@ export type Database = {
           },
         ]
       }
+      service_subcategories: {
+        Row: {
+          background_check_required: boolean | null
+          category: string
+          ccq_rbq_required: boolean | null
+          created_at: string | null
+          description: string | null
+          id: string
+          risk_category: string | null
+          subcategory: string
+        }
+        Insert: {
+          background_check_required?: boolean | null
+          category: string
+          ccq_rbq_required?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          risk_category?: string | null
+          subcategory: string
+        }
+        Update: {
+          background_check_required?: boolean | null
+          category?: string
+          ccq_rbq_required?: boolean | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          risk_category?: string | null
+          subcategory?: string
+        }
+        Relationships: []
+      }
       services: {
         Row: {
           active: boolean | null
+          background_check_required: boolean | null
           base_price: number | null
           category: string
+          ccq_rbq_required: boolean | null
           created_at: string | null
           description: string | null
           id: string
           pricing_type: string | null
           provider_id: string
+          risk_category: string | null
           subcategory: string | null
           title: string
         }
         Insert: {
           active?: boolean | null
+          background_check_required?: boolean | null
           base_price?: number | null
           category: string
+          ccq_rbq_required?: boolean | null
           created_at?: string | null
           description?: string | null
           id?: string
           pricing_type?: string | null
           provider_id: string
+          risk_category?: string | null
           subcategory?: string | null
           title: string
         }
         Update: {
           active?: boolean | null
+          background_check_required?: boolean | null
           base_price?: number | null
           category?: string
+          ccq_rbq_required?: boolean | null
           created_at?: string | null
           description?: string | null
           id?: string
           pricing_type?: string | null
           provider_id?: string
+          risk_category?: string | null
           subcategory?: string | null
           title?: string
         }
@@ -766,7 +835,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      verification_level: "basic" | "background_check" | "professional_license"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -881,6 +950,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      verification_level: ["basic", "background_check", "professional_license"],
+    },
   },
 } as const
