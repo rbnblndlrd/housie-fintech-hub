@@ -18,7 +18,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   onHoverProvider 
 }) => {
   const handleMouseEnter = () => {
-    if (onHoverProvider) {
+    if (onHoverProvider && service.provider?.id) {
       onHoverProvider(service.provider.id);
     }
   };
@@ -29,6 +29,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     }
   };
 
+  // Safely get provider data with fallbacks
+  const businessName = service.provider?.business_name || 'Unknown Provider';
+  const userCity = service.provider?.user?.city || 'Unknown';
+  const userProvince = service.provider?.user?.province || 'Location';
+  const averageRating = service.provider?.average_rating || 0;
+  const totalBookings = service.provider?.total_bookings || 0;
+  const hourlyRate = service.provider?.hourly_rate || service.base_price || 0;
+  const serviceRadius = service.provider?.service_radius_km || 10;
+  const verified = service.provider?.verified || false;
+
   return (
     <Card 
       className="fintech-card"
@@ -38,20 +48,20 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
       <CardContent className="p-6">
         <div className="flex items-start gap-6">
           <div className="w-20 h-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-lg">
-            {service.provider.business_name.split(' ').map(n => n[0]).join('')}
+            {businessName.split(' ').map(n => n[0]).join('').slice(0, 2)}
           </div>
           
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{service.title}</h3>
-                <p className="text-gray-600 font-medium">{service.provider.business_name}</p>
+                <p className="text-gray-600 font-medium">{businessName}</p>
               </div>
               <div className="flex items-center gap-2">
                 <CreamBadge 
-                  variant={service.provider.verified ? 'success' : 'neutral'}
+                  variant={verified ? 'success' : 'neutral'}
                 >
-                  {service.provider.verified ? 'Vérifié' : 'Non vérifié'}
+                  {verified ? 'Vérifié' : 'Non vérifié'}
                 </CreamBadge>
               </div>
             </div>
@@ -61,8 +71,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 <div className="p-1 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg">
                   <Star className="h-4 w-4 text-white" />
                 </div>
-                <span className="font-medium text-gray-900">{service.provider.average_rating.toFixed(1)}</span>
-                <span className="text-gray-500 text-sm">({service.provider.total_bookings} avis)</span>
+                <span className="font-medium text-gray-900">{averageRating.toFixed(1)}</span>
+                <span className="text-gray-500 text-sm">({totalBookings} avis)</span>
               </div>
               
               <div className="flex items-center gap-1">
@@ -71,7 +81,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 </div>
                 <span className="font-medium text-gray-900">
                   {service.pricing_type === 'hourly' 
-                    ? `${service.provider.hourly_rate || service.base_price}$/heure`
+                    ? `${hourlyRate}$/heure`
                     : `${service.base_price}$`
                   }
                 </span>
@@ -82,16 +92,16 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                   <MapPin className="h-4 w-4 text-white" />
                 </div>
                 <span className="text-gray-500 text-sm">
-                  {service.provider.user.city}, {service.provider.user.province}
+                  {userCity}, {userProvince}
                 </span>
                 <span className="text-gray-400 text-xs ml-1">
-                  ({service.provider.service_radius_km}km radius)
+                  ({serviceRadius}km radius)
                 </span>
               </div>
             </div>
 
             <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-              {service.description}
+              {service.description || 'No description available'}
             </p>
 
             <div className="flex items-center justify-between">

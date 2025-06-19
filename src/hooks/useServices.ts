@@ -10,11 +10,13 @@ export const useServices = () => {
 
   const fetchServices = async () => {
     try {
+      console.log('Fetching services from database...');
+      
       const { data, error } = await supabase
         .from('services')
         .select(`
           *,
-          provider:provider_profiles(
+          provider:provider_profiles!inner(
             id,
             business_name,
             hourly_rate,
@@ -26,16 +28,18 @@ export const useServices = () => {
             background_check_verified,
             ccq_verified,
             rbq_verified,
-            user:users(full_name, city, province)
+            user:users!inner(full_name, city, province)
           )
         `)
         .eq('active', true)
         .order('created_at', { ascending: false });
 
+      console.log('Services query result:', { data, error });
+
       if (error) {
         console.error('Error fetching services:', error);
-        // Map fallback services to include new fields
-        const updatedFallbackServices = fallbackServices.map(service => ({
+        console.log('Using fallback services due to query error');
+        setServices(fallbackServices.map(service => ({
           ...service,
           background_check_required: service.category === 'wellness' || service.category === 'care_pets',
           ccq_rbq_required: service.category === 'construction',
@@ -47,10 +51,13 @@ export const useServices = () => {
             ccq_verified: false,
             rbq_verified: false
           }
-        }));
-        setServices(updatedFallbackServices);
-      } else {
-        const allServices = data && data.length > 0 ? data : fallbackServices.map(service => ({
+        })));
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        console.log('No services found in database, using fallback services');
+        setServices(fallbackServices.map(service => ({
           ...service,
           background_check_required: false,
           ccq_rbq_required: false,
@@ -62,9 +69,73 @@ export const useServices = () => {
             ccq_verified: false,
             rbq_verified: false
           }
-        }));
-        setServices(allServices);
+        })));
+        return;
       }
+
+      console.log(`Found ${data.length} services in database`);
+      
+      // Filter out services with incomplete provider data and log them
+      const validServices = data.filter(service => {
+        const hasProvider = service.provider && service.provider.user;
+        if (!hasProvider) {
+          console.warn('Service missing provider or user data:', service);
+        }
+        return hasProvider;
+      });
+
+      console.log(`${validServices.length} services have complete provider data`);
+
+      // If no valid services but we have services in DB, it means provider profiles are missing
+      if (validServices.length === 0 && data.length > 0) {
+        console.warn('Services found but no provider profiles or user data. This suggests missing provider_profiles or users records.');
+        
+        // Show fallback services but also show a message about the issue
+        setServices(fallbackServices.map(service => ({
+          ...service,
+          background_check_required: false,
+          ccq_rbq_required: false,
+          risk_category: 'low',
+          provider: {
+            ...service.provider,
+            verification_level: 'basic' as const,
+            background_check_verified: false,
+            ccq_verified: false,
+            rbq_verified: false
+          }
+        })));
+        return;
+      }
+
+      const processedServices = validServices.map(service => ({
+        ...service,
+        provider: {
+          ...service.provider,
+          verification_level: service.provider.verification_level || 'basic' as const,
+          background_check_verified: service.provider.background_check_verified || false,
+          ccq_verified: service.provider.ccq_verified || false,
+          rbq_verified: service.provider.rbq_verified || false
+        }
+      }));
+
+      // Combine database services with fallback services
+      const allServices = [...processedServices, ...fallbackServices.map(service => ({
+        ...service,
+        background_check_required: false,
+        ccq_rbq_required: false,
+        risk_category: 'low',
+        provider: {
+          ...service.provider,
+          verification_level: 'basic' as const,
+          background_check_verified: false,
+          ccq_verified: false,
+          rbq_verified: false
+        }
+      }))];
+
+      console.log(`Setting ${allServices.length} total services (${processedServices.length} from DB + ${fallbackServices.length} fallback)`);
+      setServices(allServices);
+      
     } catch (error) {
       console.error('Services fetch error:', error);
       setServices(fallbackServices.map(service => ({
