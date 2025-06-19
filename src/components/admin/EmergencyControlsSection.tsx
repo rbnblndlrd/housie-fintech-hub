@@ -166,7 +166,7 @@ const EmergencyControlsSection = () => {
               <Shield className="h-5 w-5" />
               Claude API Status
             </span>
-            <Badge variant={controls.claude_api_enabled ? 'success' : 'error'}>
+            <Badge variant={controls.claude_api_enabled ? 'default' : 'destructive'} className={controls.claude_api_enabled ? 'bg-green-100 text-green-800' : ''}>
               {controls.claude_api_enabled ? 'ACTIVE' : 'DISABLED'}
             </Badge>
           </CardTitle>
