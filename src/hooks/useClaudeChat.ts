@@ -2,6 +2,7 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 export interface ClaudeMessage {
   id: string;
@@ -16,6 +17,22 @@ export const useClaudeChat = () => {
   const [messages, setMessages] = useState<ClaudeMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
 
+  const checkEmergencyControls = async (): Promise<boolean> => {
+    try {
+      const { data, error } = await supabase.rpc('is_claude_api_enabled');
+      
+      if (error) {
+        console.error('Error checking emergency controls:', error);
+        return false;
+      }
+      
+      return data === true;
+    } catch (error) {
+      console.error('Error checking emergency controls:', error);
+      return false;
+    }
+  };
+
   const sendMessage = useCallback(async (
     content: string, 
     sessionId: string,
@@ -25,6 +42,24 @@ export const useClaudeChat = () => {
 
     try {
       setIsTyping(true);
+
+      // Check emergency controls first
+      const isEnabled = await checkEmergencyControls();
+      
+      if (!isEnabled) {
+        // Add system message about API being disabled
+        const systemMessage: ClaudeMessage = {
+          id: `system-${Date.now()}`,
+          session_id: sessionId,
+          message_type: 'assistant',
+          content: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
+          created_at: new Date().toISOString()
+        };
+
+        setMessages(prev => [...prev, systemMessage]);
+        toast.error('Claude AI is temporarily unavailable');
+        return;
+      }
 
       // Add user message to local state immediately
       const userMessage: ClaudeMessage = {
@@ -86,6 +121,7 @@ export const useClaudeChat = () => {
       };
 
       setMessages(prev => [...prev, errorMessage]);
+      toast.error('Failed to send message to Claude AI');
     } finally {
       setIsTyping(false);
     }

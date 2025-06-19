@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,6 +13,7 @@ import BookingAnalyticsSection from '@/components/admin/BookingAnalyticsSection'
 import FinancialInsightsSection from '@/components/admin/FinancialInsightsSection';
 import PlatformHealthSection from '@/components/admin/PlatformHealthSection';
 import LiveUsersSection from '@/components/admin/LiveUsersSection';
+import EmergencyControlsSection from '@/components/admin/EmergencyControlsSection';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -48,12 +50,19 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-6 h-14 fintech-card rounded-2xl">
+            <TabsList className="grid w-full grid-cols-7 h-14 fintech-card rounded-2xl">
               <TabsTrigger 
                 value="overview" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
               >
                 Vue Générale
+              </TabsTrigger>
+              <TabsTrigger 
+                value="emergency" 
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-red-600 data-[state=active]:to-orange-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
+              >
+                <Shield className="h-4 w-4 mr-1" />
+                Contrôles d'Urgence
               </TabsTrigger>
               <TabsTrigger 
                 value="live-users" 
@@ -90,6 +99,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="overview" className="space-y-8">
               <OverviewSection />
+            </TabsContent>
+
+            <TabsContent value="emergency" className="space-y-8">
+              <EmergencyControlsSection />
             </TabsContent>
 
             <TabsContent value="live-users" className="space-y-8">

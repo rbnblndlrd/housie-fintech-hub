@@ -22,6 +22,19 @@ interface ChatRequest {
   }>;
 }
 
+// Estimate API cost based on token usage (approximate)
+const estimateAPICost = (inputTokens: number, outputTokens: number): number => {
+  // Claude 3.5 Sonnet pricing: $3 per 1M input tokens, $15 per 1M output tokens
+  const inputCost = (inputTokens / 1000000) * 3;
+  const outputCost = (outputTokens / 1000000) * 15;
+  return inputCost + outputCost;
+};
+
+// Rough token estimation (actual tokens may vary)
+const estimateTokens = (text: string): number => {
+  return Math.ceil(text.length / 4); // Rough approximation: 1 token ≈ 4 characters
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -33,6 +46,28 @@ serve(async (req) => {
 
     if (!anthropicApiKey) {
       throw new Error('Anthropic API key not configured');
+    }
+
+    // Check emergency controls
+    const { data: isEnabled, error: controlsError } = await supabase.rpc('is_claude_api_enabled');
+    
+    if (controlsError) {
+      console.error('Error checking emergency controls:', controlsError);
+      throw new Error('Failed to check API availability');
+    }
+
+    if (!isEnabled) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'API temporarily disabled',
+          response: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
+          success: false
+        }),
+        {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
     }
 
     // Build the conversation context
@@ -66,6 +101,10 @@ Current context: User is asking about home services through the HOUSIE platform.
       { role: 'user', content: `${systemPrompt}\n\nConversation history: ${JSON.stringify(conversationHistory)}\n\nUser message: ${message}` }
     ];
 
+    // Estimate input tokens
+    const inputText = JSON.stringify(messages);
+    const estimatedInputTokens = estimateTokens(inputText);
+
     // Call Anthropic Claude API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
@@ -87,6 +126,39 @@ Current context: User is asking about home services through the HOUSIE platform.
 
     const data = await response.json();
     const claudeResponse = data.content[0].text;
+
+    // Estimate output tokens and total cost
+    const estimatedOutputTokens = estimateTokens(claudeResponse);
+    const estimatedCost = estimateAPICost(estimatedInputTokens, estimatedOutputTokens);
+
+    // Log API usage
+    const { error: logError } = await supabase
+      .from('api_usage_logs')
+      .insert({
+        user_id: userId,
+        session_id: sessionId,
+        tokens_used: estimatedInputTokens + estimatedOutputTokens,
+        estimated_cost: estimatedCost,
+        request_type: 'claude-chat',
+        status: 'success'
+      });
+
+    if (logError) {
+      console.error('Error logging API usage:', logError);
+    }
+
+    // Update daily spend and check if we need to disable API
+    const { data: stillEnabled, error: spendError } = await supabase.rpc('update_daily_spend', { 
+      spend_amount: estimatedCost 
+    });
+
+    if (spendError) {
+      console.error('Error updating daily spend:', spendError);
+    }
+
+    if (!stillEnabled) {
+      console.log('Daily spend limit reached, API will be disabled for future requests');
+    }
 
     // Save the conversation to database
     const { error: saveError } = await supabase
@@ -119,7 +191,11 @@ Current context: User is asking about home services through the HOUSIE platform.
     return new Response(
       JSON.stringify({ 
         response: claudeResponse,
-        success: true 
+        success: true,
+        cost_info: {
+          estimated_tokens: estimatedInputTokens + estimatedOutputTokens,
+          estimated_cost: estimatedCost
+        }
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -128,6 +204,25 @@ Current context: User is asking about home services through the HOUSIE platform.
 
   } catch (error) {
     console.error('Error in claude-chat function:', error);
+    
+    // Log failed request
+    try {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey);
+      const { message, sessionId, userId }: ChatRequest = await req.json();
+      
+      await supabase
+        .from('api_usage_logs')
+        .insert({
+          user_id: userId,
+          session_id: sessionId,
+          tokens_used: 0,
+          estimated_cost: 0,
+          request_type: 'claude-chat',
+          status: 'error'
+        });
+    } catch (logError) {
+      console.error('Error logging failed request:', logError);
+    }
     
     return new Response(
       JSON.stringify({ 

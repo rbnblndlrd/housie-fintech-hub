@@ -92,6 +92,39 @@ export type Database = {
           },
         ]
       }
+      api_usage_logs: {
+        Row: {
+          created_at: string | null
+          estimated_cost: number | null
+          id: string
+          request_type: string | null
+          session_id: string | null
+          status: string | null
+          tokens_used: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_cost?: number | null
+          id?: string
+          request_type?: string | null
+          session_id?: string | null
+          status?: string | null
+          tokens_used?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estimated_cost?: number | null
+          id?: string
+          request_type?: string | null
+          session_id?: string | null
+          status?: string | null
+          tokens_used?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           created_at: string | null
@@ -357,6 +390,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      emergency_controls: {
+        Row: {
+          claude_api_enabled: boolean | null
+          created_at: string | null
+          current_daily_spend: number | null
+          daily_spend_limit: number | null
+          disabled_at: string | null
+          disabled_by_user_id: string | null
+          disabled_reason: string | null
+          id: string
+          last_updated_at: string | null
+          spend_reset_date: string | null
+        }
+        Insert: {
+          claude_api_enabled?: boolean | null
+          created_at?: string | null
+          current_daily_spend?: number | null
+          daily_spend_limit?: number | null
+          disabled_at?: string | null
+          disabled_by_user_id?: string | null
+          disabled_reason?: string | null
+          id?: string
+          last_updated_at?: string | null
+          spend_reset_date?: string | null
+        }
+        Update: {
+          claude_api_enabled?: boolean | null
+          created_at?: string | null
+          current_daily_spend?: number | null
+          daily_spend_limit?: number | null
+          disabled_at?: string | null
+          disabled_by_user_id?: string | null
+          disabled_reason?: string | null
+          id?: string
+          last_updated_at?: string | null
+          spend_reset_date?: string | null
+        }
+        Relationships: []
       }
       messages: {
         Row: {
@@ -848,6 +920,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      get_current_daily_spend: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       get_or_create_conversation: {
         Args: {
           p_participant_one_id: string
@@ -856,9 +932,17 @@ export type Database = {
         }
         Returns: string
       }
+      is_claude_api_enabled: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       mark_messages_as_read: {
         Args: { p_conversation_id: string; p_user_id: string }
         Returns: number
+      }
+      update_daily_spend: {
+        Args: { spend_amount: number }
+        Returns: boolean
       }
     }
     Enums: {
