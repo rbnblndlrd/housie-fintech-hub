@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, Filter, Download, Search, Shield, AlertTriangle, Activity, Wifi } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, Filter, Download, Search, Shield, AlertTriangle, Activity, Wifi, Coins } from 'lucide-react';
 import Header from '@/components/Header';
 import OverviewSection from '@/components/admin/OverviewSection';
 import UserManagementSection from '@/components/admin/UserManagementSection';
@@ -14,6 +14,7 @@ import FinancialInsightsSection from '@/components/admin/FinancialInsightsSectio
 import PlatformHealthSection from '@/components/admin/PlatformHealthSection';
 import LiveUsersSection from '@/components/admin/LiveUsersSection';
 import EmergencyControlsSection from '@/components/admin/EmergencyControlsSection';
+import CreditAnalyticsSection from '@/components/admin/CreditAnalyticsSection';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -50,7 +51,7 @@ const AdminDashboard = () => {
 
           {/* Main Dashboard Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-7 h-14 fintech-card rounded-2xl">
+            <TabsList className="grid w-full grid-cols-8 h-14 fintech-card rounded-2xl">
               <TabsTrigger 
                 value="overview" 
                 className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-600 data-[state=active]:to-blue-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
@@ -63,6 +64,13 @@ const AdminDashboard = () => {
               >
                 <Shield className="h-4 w-4 mr-1" />
                 Contrôles d'Urgence
+              </TabsTrigger>
+              <TabsTrigger 
+                value="credits" 
+                className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-600 data-[state=active]:to-emerald-600 data-[state=active]:text-white rounded-xl font-semibold transition-all duration-200"
+              >
+                <Coins className="h-4 w-4 mr-1" />
+                Crédits & IA
               </TabsTrigger>
               <TabsTrigger 
                 value="live-users" 
@@ -103,6 +111,10 @@ const AdminDashboard = () => {
 
             <TabsContent value="emergency" className="space-y-8">
               <EmergencyControlsSection />
+            </TabsContent>
+
+            <TabsContent value="credits" className="space-y-8">
+              <CreditAnalyticsSection />
             </TabsContent>
 
             <TabsContent value="live-users" className="space-y-8">

@@ -15,7 +15,7 @@ export interface ClaudeMessage {
   feature_used?: string;
 }
 
-export const useClaudeChat = () => {
+export const useEnhancedClaudeChat = () => {
   const { user } = useAuth();
   const { checkRateLimit, consumeCredits, features } = useCredits();
   const [messages, setMessages] = useState<ClaudeMessage[]>([]);
@@ -125,16 +125,7 @@ export const useClaudeChat = () => {
             errorMessage += rateLimitResult.reason;
         }
 
-        const rateLimitMessage: ClaudeMessage = {
-          id: `rate-limit-${Date.now()}`,
-          session_id: sessionId,
-          message_type: 'assistant',
-          content: `⚠️ **${errorMessage}**\n\nTo unlock unlimited access:\n• Purchase credits for premium features\n• Get 4x higher daily limits\n• Remove cooldown restrictions\n• Access advanced AI capabilities`,
-          created_at: new Date().toISOString()
-        };
-
-        setMessages(prev => [...prev, rateLimitMessage]);
-        toast.error(errorMessage.split('.')[0]);
+        toast.error(errorMessage);
         return;
       }
 
@@ -165,15 +156,6 @@ export const useClaudeChat = () => {
             errorMessage += creditResult.reason;
           }
 
-          const creditErrorMessage: ClaudeMessage = {
-            id: `credit-error-${Date.now()}`,
-            session_id: sessionId,
-            message_type: 'assistant',
-            content: `💳 **${errorMessage}**\n\n**Feature Pricing:**\n• ${feature?.description}: ${feature?.credit_cost} credits\n• Route Optimization: 3 credits\n• Business Insights: 2 credits\n\nPurchase credits to unlock these powerful AI features!`,
-            created_at: new Date().toISOString()
-          };
-
-          setMessages(prev => [...prev, creditErrorMessage]);
           toast.error(errorMessage);
           return;
         }

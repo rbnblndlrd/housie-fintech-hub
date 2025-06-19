@@ -9,6 +9,47 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      abuse_logs: {
+        Row: {
+          abuse_type: string
+          action_taken: string
+          created_at: string | null
+          expires_at: string | null
+          id: string
+          metadata: Json | null
+          severity: string | null
+          user_id: string
+        }
+        Insert: {
+          abuse_type: string
+          action_taken: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          severity?: string | null
+          user_id: string
+        }
+        Update: {
+          abuse_type?: string
+          action_taken?: string
+          created_at?: string | null
+          expires_at?: string | null
+          id?: string
+          metadata?: Json | null
+          severity?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "abuse_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ai_chat_sessions: {
         Row: {
           context_data: Json | null
@@ -46,6 +87,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      ai_feature_costs: {
+        Row: {
+          created_at: string | null
+          credit_cost: number
+          daily_free_limit: number | null
+          description: string | null
+          estimated_api_cost: number | null
+          feature_name: string
+          id: string
+          is_active: boolean | null
+          is_free_tier: boolean | null
+          min_profit_margin: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          credit_cost: number
+          daily_free_limit?: number | null
+          description?: string | null
+          estimated_api_cost?: number | null
+          feature_name: string
+          id?: string
+          is_active?: boolean | null
+          is_free_tier?: boolean | null
+          min_profit_margin?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          credit_cost?: number
+          daily_free_limit?: number | null
+          description?: string | null
+          estimated_api_cost?: number | null
+          feature_name?: string
+          id?: string
+          is_active?: boolean | null
+          is_free_tier?: boolean | null
+          min_profit_margin?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       ai_messages: {
         Row: {
@@ -385,6 +468,86 @@ export type Database = {
           {
             foreignKeyName: "conversations_participant_two_id_fkey"
             columns: ["participant_two_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      credit_packages: {
+        Row: {
+          base_credits: number
+          bonus_credits: number | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          is_popular: boolean | null
+          name: string
+          price_cad: number
+          total_credits: number | null
+        }
+        Insert: {
+          base_credits: number
+          bonus_credits?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name: string
+          price_cad: number
+          total_credits?: number | null
+        }
+        Update: {
+          base_credits?: number
+          bonus_credits?: number | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_popular?: boolean | null
+          name?: string
+          price_cad?: number
+          total_credits?: number | null
+        }
+        Relationships: []
+      }
+      credit_usage_logs: {
+        Row: {
+          api_cost_estimate: number | null
+          created_at: string | null
+          credits_spent: number
+          feature_used: string
+          id: string
+          profit_margin: number | null
+          session_id: string | null
+          user_id: string
+        }
+        Insert: {
+          api_cost_estimate?: number | null
+          created_at?: string | null
+          credits_spent: number
+          feature_used: string
+          id?: string
+          profit_margin?: number | null
+          session_id?: string | null
+          user_id: string
+        }
+        Update: {
+          api_cost_estimate?: number | null
+          created_at?: string | null
+          credits_spent?: number
+          feature_used?: string
+          id?: string
+          profit_margin?: number | null
+          session_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "credit_usage_logs_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
@@ -780,6 +943,91 @@ export type Database = {
           },
         ]
       }
+      user_credits: {
+        Row: {
+          created_at: string | null
+          id: string
+          last_purchase_at: string | null
+          remaining_credits: number | null
+          total_credits: number | null
+          updated_at: string | null
+          used_credits: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          last_purchase_at?: string | null
+          remaining_credits?: number | null
+          total_credits?: number | null
+          updated_at?: string | null
+          used_credits?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          last_purchase_at?: string | null
+          remaining_credits?: number | null
+          total_credits?: number | null
+          updated_at?: string | null
+          used_credits?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_credits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_rate_limits: {
+        Row: {
+          abuse_flags: number | null
+          basic_messages_used: number | null
+          cooldown_until: string | null
+          created_at: string | null
+          date: string
+          last_message_time: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          abuse_flags?: number | null
+          basic_messages_used?: number | null
+          cooldown_until?: string | null
+          created_at?: string | null
+          date?: string
+          last_message_time?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          abuse_flags?: number | null
+          basic_messages_used?: number | null
+          cooldown_until?: string | null
+          created_at?: string | null
+          date?: string
+          last_message_time?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_rate_limits_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_sessions: {
         Row: {
           city: string | null
@@ -916,9 +1164,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_rate_limit: {
+        Args: {
+          user_uuid: string
+          feature_name: string
+          message_length?: number
+        }
+        Returns: Json
+      }
       cleanup_inactive_sessions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
+      }
+      consume_credits: {
+        Args: {
+          user_uuid: string
+          feature_name: string
+          api_cost_estimate?: number
+          session_uuid?: string
+        }
+        Returns: Json
       }
       get_current_daily_spend: {
         Args: Record<PropertyKey, never>
@@ -931,6 +1196,14 @@ export type Database = {
           p_booking_id?: string
         }
         Returns: string
+      }
+      get_user_credits: {
+        Args: { user_uuid: string }
+        Returns: {
+          total_credits: number
+          used_credits: number
+          remaining_credits: number
+        }[]
       }
       is_claude_api_enabled: {
         Args: Record<PropertyKey, never>

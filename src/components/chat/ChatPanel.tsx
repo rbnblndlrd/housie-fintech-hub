@@ -1,52 +1,69 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MessageSquare, Users, Bot, Settings } from 'lucide-react';
 import MessagesTab from './MessagesTab';
 import ClaudeConversation from './ClaudeConversation';
-import { Bot } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import CreditsWidget from '@/components/credits/CreditsWidget';
+import { useAuth } from '@/contexts/AuthContext';
 
-interface ChatPanelProps {
-  activeTab: 'messages' | 'ai';
-  onPopArtTrigger?: () => void;
-}
+const ChatPanel = () => {
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState('messages');
 
-const ChatPanel: React.FC<ChatPanelProps> = ({ activeTab, onPopArtTrigger }) => {
-  const [showAIConversation, setShowAIConversation] = useState(false);
-  
-  if (activeTab === 'ai') {
-    if (showAIConversation) {
-      return (
-        <ClaudeConversation
-          sessionId={`session-${Date.now()}`}
-          onBack={() => setShowAIConversation(false)}
-          onPopArtTrigger={onPopArtTrigger}
-        />
-      );
-    }
+  return (
+    <div className="h-full flex flex-col">
+      {/* Credits Widget at the top */}
+      {user && (
+        <div className="p-4 border-b bg-white">
+          <CreditsWidget compact />
+        </div>
+      )}
 
-    return (
-      <div className="flex flex-col items-center justify-center h-full text-center p-6">
-        <Bot className="h-16 w-16 text-purple-400 mb-4" />
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          Claude 4 AI Assistant
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          Intelligent assistance powered by Anthropic's Claude 4
-        </p>
-        <Badge className="mb-4 bg-green-100 text-green-800">
-          Ready to Chat
-        </Badge>
-        <button
-          onClick={() => setShowAIConversation(true)}
-          className="px-4 py-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-lg hover:from-purple-700 hover:to-blue-700 transition-colors"
-        >
-          Start Conversation
-        </button>
-      </div>
-    );
-  }
+      {/* Chat Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <TabsList className="grid w-full grid-cols-2 m-4 mb-0">
+          <TabsTrigger value="messages" className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4" />
+            Messages
+          </TabsTrigger>
+          <TabsTrigger value="claude" className="flex items-center gap-2">
+            <Bot className="h-4 w-4" />
+            AI Assistant
+          </TabsTrigger>
+        </TabsList>
 
-  return <MessagesTab />;
+        <TabsContent value="messages" className="flex-1 m-4 mt-0">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <MessageSquare className="h-5 w-5" />
+                Direct Messages
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="h-full">
+              <MessagesTab />
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="claude" className="flex-1 m-4 mt-0">
+          <Card className="h-full">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="h-5 w-5" />
+                HOUSIE AI Assistant
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="h-full p-0">
+              <ClaudeConversation />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 };
 
 export default ChatPanel;
