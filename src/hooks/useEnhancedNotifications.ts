@@ -10,80 +10,55 @@ export const useEnhancedNotifications = () => {
   const { createNotification } = useNotifications();
   const { playNotificationSound } = useNotificationSound();
   
-  // Use refs to track subscription state and prevent double subscriptions
-  const subscriptionRefs = useRef<{
-    chatChannel: {
-      channel: any | null;
-      isSubscribed: boolean;
-      isSubscribing: boolean;
-    };
-    bookingChannel: {
-      channel: any | null;
-      isSubscribed: boolean;
-      isSubscribing: boolean;
-    };
-  }>({
-    chatChannel: {
-      channel: null,
-      isSubscribed: false,
-      isSubscribing: false
-    },
-    bookingChannel: {
-      channel: null,
-      isSubscribed: false,
-      isSubscribing: false
-    }
-  });
+  // Use refs to track channels and prevent duplicate subscriptions
+  const chatChannelRef = useRef<any>(null);
+  const bookingChannelRef = useRef<any>(null);
+  const isSubscribedRef = useRef<boolean>(false);
 
-  // Cleanup subscription helper
-  const cleanupSubscriptions = () => {
-    // Clean up chat channel
-    if (subscriptionRefs.current.chatChannel.channel) {
-      console.log('🧹 Cleaning up enhanced chat notification channel');
+  // Cleanup function to remove channels
+  const cleanupChannels = () => {
+    console.log('🧹 Cleaning up enhanced notification channels');
+    
+    if (chatChannelRef.current) {
       try {
-        supabase.removeChannel(subscriptionRefs.current.chatChannel.channel);
+        supabase.removeChannel(chatChannelRef.current);
       } catch (error) {
         console.warn('⚠️ Error removing chat channel:', error);
       }
-      subscriptionRefs.current.chatChannel = {
-        channel: null,
-        isSubscribed: false,
-        isSubscribing: false
-      };
+      chatChannelRef.current = null;
     }
     
-    // Clean up booking channel
-    if (subscriptionRefs.current.bookingChannel.channel) {
-      console.log('🧹 Cleaning up enhanced booking notification channel');
+    if (bookingChannelRef.current) {
       try {
-        supabase.removeChannel(subscriptionRefs.current.bookingChannel.channel);
+        supabase.removeChannel(bookingChannelRef.current);
       } catch (error) {
         console.warn('⚠️ Error removing booking channel:', error);
       }
-      subscriptionRefs.current.bookingChannel = {
-        channel: null,
-        isSubscribed: false,
-        isSubscribing: false
-      };
+      bookingChannelRef.current = null;
     }
+    
+    isSubscribedRef.current = false;
   };
 
   useEffect(() => {
-    if (!user) {
-      cleanupSubscriptions();
+    // Clean up any existing subscriptions first
+    cleanupChannels();
+
+    if (!user || isSubscribedRef.current) {
       return;
     }
 
     console.log('🔔 Setting up enhanced notifications for user:', user.id);
 
-    // Set up chat notifications only if not already subscribing or subscribed
-    if (!subscriptionRefs.current.chatChannel.isSubscribing && !subscriptionRefs.current.chatChannel.isSubscribed) {
-      subscriptionRefs.current.chatChannel.isSubscribing = true;
+    // Create unique channel names to avoid conflicts
+    const chatChannelName = `enhanced-chat-${user.id}-${Date.now()}`;
+    const bookingChannelName = `enhanced-booking-${user.id}-${Date.now()}`;
 
-      const chatChannelName = `chat-notifications-${user.id}-${Date.now()}`;
-      const chatChannel = supabase.channel(chatChannelName);
+    // Set up chat notifications
+    const setupChatNotifications = () => {
+      chatChannelRef.current = supabase.channel(chatChannelName);
 
-      chatChannel
+      chatChannelRef.current
         .on(
           'postgres_changes',
           {
@@ -92,13 +67,13 @@ export const useEnhancedNotifications = () => {
             table: 'chat_messages',
             filter: `receiver_id=eq.${user.id}`
           },
-          async (payload) => {
+          async (payload: any) => {
             // Only process human messages
             if (payload.new.is_ai_message) {
               return;
             }
 
-            console.log('New message notification:', payload);
+            console.log('📨 New message notification:', payload);
             
             // Play notification sound
             playNotificationSound();
@@ -124,29 +99,16 @@ export const useEnhancedNotifications = () => {
             );
           }
         )
-        .subscribe((status) => {
-          console.log('📡 Enhanced chat notification subscription status:', status);
-          
-          if (status === 'SUBSCRIBED') {
-            subscriptionRefs.current.chatChannel.isSubscribed = true;
-            subscriptionRefs.current.chatChannel.isSubscribing = false;
-            subscriptionRefs.current.chatChannel.channel = chatChannel;
-          } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-            subscriptionRefs.current.chatChannel.isSubscribed = false;
-            subscriptionRefs.current.chatChannel.isSubscribing = false;
-            subscriptionRefs.current.chatChannel.channel = null;
-          }
+        .subscribe((status: string) => {
+          console.log('📡 Enhanced chat notification status:', status);
         });
-    }
+    };
 
-    // Set up booking notifications only if not already subscribing or subscribed
-    if (!subscriptionRefs.current.bookingChannel.isSubscribing && !subscriptionRefs.current.bookingChannel.isSubscribed) {
-      subscriptionRefs.current.bookingChannel.isSubscribing = true;
+    // Set up booking notifications
+    const setupBookingNotifications = () => {
+      bookingChannelRef.current = supabase.channel(bookingChannelName);
 
-      const bookingChannelName = `booking-notifications-${user.id}-${Date.now()}`;
-      const bookingChannel = supabase.channel(bookingChannelName);
-
-      bookingChannel
+      bookingChannelRef.current
         .on(
           'postgres_changes',
           {
@@ -154,7 +116,7 @@ export const useEnhancedNotifications = () => {
             schema: 'public',
             table: 'bookings'
           },
-          async (payload) => {
+          async (payload: any) => {
             const bookingData = payload.new as any;
             if (bookingData?.customer_id === user.id || bookingData?.provider_id === user.id) {
               const isCustomer = bookingData.customer_id === user.id;
@@ -194,26 +156,22 @@ export const useEnhancedNotifications = () => {
             }
           }
         )
-        .subscribe((status) => {
-          console.log('📡 Enhanced booking notification subscription status:', status);
-          
-          if (status === 'SUBSCRIBED') {
-            subscriptionRefs.current.bookingChannel.isSubscribed = true;
-            subscriptionRefs.current.bookingChannel.isSubscribing = false;
-            subscriptionRefs.current.bookingChannel.channel = bookingChannel;
-          } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
-            subscriptionRefs.current.bookingChannel.isSubscribed = false;
-            subscriptionRefs.current.bookingChannel.isSubscribing = false;
-            subscriptionRefs.current.bookingChannel.channel = null;
-          }
+        .subscribe((status: string) => {
+          console.log('📡 Enhanced booking notification status:', status);
         });
-    }
+    };
+
+    // Set up both notification types
+    setupChatNotifications();
+    setupBookingNotifications();
+    
+    isSubscribedRef.current = true;
 
     return () => {
       console.log('🧹 Enhanced notifications cleanup triggered');
-      cleanupSubscriptions();
+      cleanupChannels();
     };
-  }, [user, createNotification, playNotificationSound]);
+  }, [user?.id, createNotification, playNotificationSound]);
 
   // Request notification permission on mount
   useEffect(() => {
