@@ -13,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bell } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { getUserDropdownItems, getNavigationItems } from '@/utils/navigationConfig';
+import { getUserDropdownItems, getNavigationItems, NavigationItem } from '@/utils/navigationConfig';
 import { useNotifications } from '@/hooks/useNotifications';
 import { CreamPill } from '@/components/ui/cream-pill';
 import DynamicNavigation from './DynamicNavigation';
@@ -37,7 +37,7 @@ const Header = () => {
     }
   };
 
-  const handleDropdownAction = (item: any) => {
+  const handleDropdownAction = (item: NavigationItem) => {
     if (item.action === 'logout') {
       handleLogout();
     } else if (item.action === 'notifications') {
@@ -58,8 +58,8 @@ const Header = () => {
   const userDropdownItems = getUserDropdownItems(user);
   const navigationItems = getNavigationItems(user);
 
-  // Add notifications as first item in dropdown
-  const enhancedDropdownItems = user ? [
+  // Add notifications as first item in dropdown with proper NavigationItem interface
+  const enhancedDropdownItems: NavigationItem[] = user ? [
     { 
       label: "Notifications", 
       href: "", 
@@ -90,6 +90,7 @@ const Header = () => {
             
             {user && (
               <div className="flex items-center space-x-4">
+                {/* User Dropdown Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
