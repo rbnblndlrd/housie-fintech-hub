@@ -23,7 +23,7 @@ const ServicesPage = () => {
       const matchesSubcategory = selectedSubcategory === 'all' || service.subcategory === selectedSubcategory;
       const matchesLocation = selectedLocation === 'montreal' || 
                              service.provider?.user?.city?.toLowerCase().includes(selectedLocation.toLowerCase());
-      const matchesPrice = service.price >= priceRange[0] && service.price <= priceRange[1];
+      const matchesPrice = service.base_price >= priceRange[0] && service.base_price <= priceRange[1];
 
       return matchesSearch && matchesCategory && matchesSubcategory && matchesLocation && matchesPrice;
     });
