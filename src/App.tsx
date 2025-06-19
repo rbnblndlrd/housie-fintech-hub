@@ -15,6 +15,10 @@ import Dashboard from "@/pages/Dashboard";
 import Services from "@/pages/Services";
 import Calendar from "@/pages/Calendar";
 import Analytics from "@/pages/Analytics";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import PerformanceDashboard from "@/pages/PerformanceDashboard";
+import BusinessInsights from "@/pages/BusinessInsights";
+import TaxReports from "@/pages/TaxReports";
 import Notifications from "@/pages/Notifications";
 import BookingHistory from "@/pages/BookingHistory";
 import BookingSuccess from "@/pages/BookingSuccess";
@@ -47,6 +51,10 @@ const App = () => (
                 <Route path="/services" element={<Services />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/analytics" element={<Analytics />} />
+                <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+                <Route path="/business-insights" element={<BusinessInsights />} />
+                <Route path="/tax-reports" element={<TaxReports />} />
                 <Route path="/notifications" element={<Notifications />} />
                 <Route path="/booking-history" element={<BookingHistory />} />
                 <Route path="/booking-success" element={<BookingSuccess />} />

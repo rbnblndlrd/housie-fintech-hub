@@ -45,8 +45,8 @@ export const getUserDropdownItems = (user: any): NavigationItem[] => {
   return [
     { label: "Account Settings", href: "/provider-settings", icon: "⚙️" },
     { label: "Payment Methods", href: "/provider-settings", icon: "💳" },
+    { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
     { label: "Verification Status", href: "/provider-profile", icon: "✅" },
-    { label: "Business Analytics", href: "/analytics", icon: "📊" },
     { label: "Performance Reports", href: "/booking-history", icon: "📈" },
     { separator: true, label: "", href: "", icon: "" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
