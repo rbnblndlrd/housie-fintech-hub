@@ -9,6 +9,8 @@ import { User, LogOut, Settings, Calendar, BarChart3, MessageCircle, Bell, Chevr
 import { useToast } from "@/hooks/use-toast";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import NotificationBell from "./NotificationBell";
+import DynamicNavigation from "./DynamicNavigation";
+import { getNavigationItems, getUserDropdownItems } from "@/utils/navigationConfig";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -17,6 +19,9 @@ const Header = () => {
   
   const { user, signOut } = useAuth();
   const { toast } = useToast();
+
+  const navigationItems = getNavigationItems(user);
+  const dropdownItems = getUserDropdownItems(user);
 
   const handleSignOut = async () => {
     try {
@@ -35,6 +40,14 @@ const Header = () => {
     }
   };
 
+  const handleDropdownAction = (action?: string, href?: string) => {
+    if (action === "logout") {
+      handleSignOut();
+    } else if (href) {
+      navigate(href);
+    }
+  };
+
   const scrollToPricing = () => {
     navigate('/', { replace: true });
     setTimeout(() => {
@@ -49,8 +62,8 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200/20 dark:border-gray-700/20 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]">
       <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
-          {/* Logo Section - Using new cropped logos */}
-          <Link to="/" className="flex items-center">
+          {/* Logo Section */}
+          <Link to={navigationItems[0]?.href || "/"} className="flex items-center">
             <img 
               src={isDark ? "/lovable-uploads/ed58b290-0139-422a-874e-4844fd060a4b.png" : "/lovable-uploads/08b330c8-74a3-4bdd-a97f-189117d89e2a.png"} 
               alt="HOUSIE Logo" 
@@ -68,25 +81,12 @@ const Header = () => {
             </svg>
           </button>
 
-          {/* Desktop Navigation - Simplified */}
+          {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-6">
-              <Link
-                to="/dashboard"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-              >
-                Dashboard
-              </Link>
-              <Link
-                to="/services"
-                className="text-gray-900 dark:text-white hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200"
-              >
-                Services
-              </Link>
-            </div>
+            <DynamicNavigation items={navigationItems} />
           </div>
           
-          {/* Desktop Navigation - Auth section */}
+          {/* Desktop Auth Section */}
           <div className="hidden md:block">
             <div className="flex items-center space-x-3">
               {/* Theme Toggle */}
@@ -133,87 +133,28 @@ const Header = () => {
                       
                       <DropdownMenuSeparator />
                       
-                      {/* Gestion Section */}
-                      <DropdownMenuLabel className="text-xs text-gray-500 uppercase tracking-wider px-3 py-2">
-                        Gestion
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem asChild>
-                        <Link to="/provider-profile" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <User className="h-4 w-4" />
-                          <span>Mon Profil</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/calendar" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <Calendar className="h-4 w-4" />
-                          <span>Calendrier</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/booking-management" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <Calendar className="h-4 w-4" />
-                          <span>Réservations</span>
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-                      
-                      {/* Analytics & Growth Section */}
-                      <DropdownMenuLabel className="text-xs text-gray-500 uppercase tracking-wider px-3 py-2">
-                        Analytics & Growth
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem asChild>
-                        <Link to="/analytics" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <BarChart3 className="h-4 w-4" />
-                          <span>Dashboard</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/analytics" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <BarChart3 className="h-4 w-4" />
-                          <span>Insights Avancées</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/booking-history" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <BarChart3 className="h-4 w-4" />
-                          <span>Rapports Professionnels</span>
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-                      
-                      {/* Communication & Support Section */}
-                      <DropdownMenuLabel className="text-xs text-gray-500 uppercase tracking-wider px-3 py-2">
-                        Communication & Support
-                      </DropdownMenuLabel>
-                      <DropdownMenuItem className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                        <MessageCircle className="h-4 w-4" />
-                        <span>Messages</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/faq" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <Bell className="h-4 w-4" />
-                          <span>FAQ & Support</span>
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/provider-settings" className="flex items-center space-x-2 px-3 py-2 text-gray-900 dark:text-white">
-                          <Settings className="h-4 w-4" />
-                          <span>Paramètres</span>
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-                      
-                      <DropdownMenuItem onClick={handleSignOut} className="flex items-center space-x-2 px-3 py-2 text-red-600">
-                        <LogOut className="h-4 w-4" />
-                        <span>Déconnexion</span>
-                      </DropdownMenuItem>
+                      {dropdownItems.map((item, index) => {
+                        if (item.separator) {
+                          return <DropdownMenuSeparator key={index} />;
+                        }
+                        
+                        return (
+                          <DropdownMenuItem 
+                            key={index}
+                            onClick={() => handleDropdownAction(item.action, item.href)}
+                            className={`flex items-center space-x-2 px-3 py-2 cursor-pointer ${
+                              item.action === 'logout' ? 'text-red-600' : 'text-gray-900 dark:text-white'
+                            }`}
+                          >
+                            <span>{item.icon}</span>
+                            <span>{item.label}</span>
+                          </DropdownMenuItem>
+                        );
+                      })}
                     </DropdownMenuContent>
                   </DropdownMenu>
                   
-                  {/* HOUSIE Pro Diamond - After user dropdown */}
+                  {/* HOUSIE Pro Diamond */}
                   <Button
                     onClick={scrollToPricing}
                     variant="ghost"
@@ -247,7 +188,7 @@ const Header = () => {
                     </Link>
                   </div>
                   
-                  {/* HOUSIE Pro Diamond - After signup button */}
+                  {/* HOUSIE Pro Diamond */}
                   <Button
                     onClick={scrollToPricing}
                     variant="ghost"
@@ -263,17 +204,13 @@ const Header = () => {
           </div>
 
           {/* Mobile Menu */}
-          <div className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex flex-col space-y-3 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.2)] rounded-b-2xl ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
-            <Link to="/dashboard" className="text-gray-900 dark:text-white hover:text-gray-600 font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-200">
-              Dashboard
-            </Link>
-            <Link to="/services" className="text-gray-900 dark:text-white hover:text-gray-600 font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-200">
-              Services
-            </Link>
+          <div className={`md:hidden absolute top-full left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 py-4 px-6 shadow-[0_8px_30px_-4px_rgba(0,0,0,0.2)] rounded-b-2xl ${isMobileMenuOpen ? 'block' : 'hidden'}`}>
+            <DynamicNavigation items={navigationItems} isMobile className="mb-4" />
+            
             <Button
               onClick={scrollToPricing}
               variant="ghost"
-              className="justify-start text-gray-900 dark:text-white hover:text-gray-600 font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-purple-50 hover:to-orange-50 dark:hover:from-purple-900/20 dark:hover:to-orange-900/20 transition-all duration-200"
+              className="w-full justify-start text-gray-900 dark:text-white hover:text-gray-600 font-medium rounded-xl px-3 py-2 hover:bg-gradient-to-r hover:from-purple-50 hover:to-orange-50 dark:hover:from-purple-900/20 dark:hover:to-orange-900/20 transition-all duration-200 mb-4"
             >
               💎 HOUSIE Pro
             </Button>
