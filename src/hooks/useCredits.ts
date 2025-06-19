@@ -115,7 +115,7 @@ export const useCredits = () => {
       });
 
       if (error) throw error;
-      return data as RateLimitResult;
+      return data as unknown as RateLimitResult;
     } catch (error) {
       console.error('Error checking rate limit:', error);
       return { allowed: false, reason: 'Rate limit check failed' };
@@ -135,7 +135,7 @@ export const useCredits = () => {
 
       if (error) throw error;
 
-      const result = data as CreditConsumptionResult;
+      const result = data as unknown as CreditConsumptionResult;
 
       if (result?.success) {
         // Refresh credits after consumption

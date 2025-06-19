@@ -28,6 +28,12 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
     }
   }, [externalActiveTab]);
 
+  const handleTabChange = (value: string) => {
+    if (value === 'messages' || value === 'ai') {
+      setActiveTab(value);
+    }
+  };
+
   const handleBackToTabs = () => {
     setActiveTab('messages');
   };
@@ -42,7 +48,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
       )}
 
       {/* Chat Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col">
         <TabsList className="grid w-full grid-cols-2 m-4 mb-0">
           <TabsTrigger value="messages" className="flex items-center gap-2">
             <MessageSquare className="h-4 w-4" />
