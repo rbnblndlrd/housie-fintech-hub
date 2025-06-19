@@ -1,7 +1,7 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import { BookingFilters, ServiceFilters, UserFilters } from '@/types/filters';
-import { isDateInRange, matchesSearch, matchesPriceRange, matchesStatus } from '@/utils/filterUtils';
+import { isDateInRange } from '@/utils/dateFilters';
+import { matchesSearch, matchesPriceRange, matchesStatus } from '@/utils/filterUtils';
 
 export const fetchFilteredBookings = async (filters: BookingFilters) => {
   let query = supabase
