@@ -68,7 +68,7 @@ const Header = () => {
       badge: unreadCount > 0 ? unreadCount : undefined,
       separator: false
     },
-    { separator: true, label: "", href: "", icon: "", separator: true },
+    { separator: true, label: "", href: "", icon: "" },
     ...userDropdownItems
   ] : userDropdownItems;
 
@@ -78,15 +78,15 @@ const Header = () => {
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-6">
-              {/* HOUSIE Logo with SVG */}
+              {/* HOUSIE Text Logo */}
               <button
                 onClick={handleLogoClick}
                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
               >
                 <img 
-                  src="/HOUSIE_branding.svg" 
+                  src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
                   alt="HOUSIE" 
-                  className="h-8 w-auto filter invert"
+                  className="h-8 w-auto"
                 />
               </button>
               
