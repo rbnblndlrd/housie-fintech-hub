@@ -1,19 +1,18 @@
 
-import React, { useState } from 'react';
-import { MessageCircle, X, Send, Users, Bot } from 'lucide-react';
+import React, { useState, useContext } from 'react';
+import { MessageCircle, X, Users, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import MessagesTab from './MessagesTab';
+import ChatPanel from './ChatPanel';
+import { PopArtContext } from '@/contexts/PopArtContext';
 
 export const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'messages' | 'ai'>('messages');
   const { totalUnreadCount } = useChat();
+  const { triggerPopArt } = useContext(PopArtContext);
 
   return (
     <>
@@ -91,30 +90,15 @@ export const ChatBubble = () => {
               >
                 <Bot className="h-4 w-4" />
                 AI Assistant
-                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
-                  Coming Soon
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  Claude 4
                 </Badge>
               </button>
             </div>
 
             {/* Chat Content */}
             <div className="flex-1 overflow-hidden">
-              {activeTab === 'messages' ? (
-                <MessagesTab />
-              ) : (
-                <div className="flex flex-col items-center justify-center h-full text-center p-6">
-                  <Bot className="h-16 w-16 text-purple-400 mb-4" />
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-                    Claude 4 AI Assistant
-                  </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Our powerful AI assistant is coming soon!
-                  </p>
-                  <Badge className="mt-3 bg-purple-100 text-purple-800">
-                    Under Development
-                  </Badge>
-                </div>
-              )}
+              <ChatPanel activeTab={activeTab} onPopArtTrigger={triggerPopArt} />
             </div>
           </div>
         )}

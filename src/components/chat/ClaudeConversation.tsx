@@ -5,27 +5,21 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAIChat } from '@/hooks/useAIChat';
+import { useClaudeChat } from '@/hooks/useClaudeChat';
 import { Badge } from '@/components/ui/badge';
 
-interface AIConversationProps {
+interface ClaudeConversationProps {
   sessionId: string;
   onBack: () => void;
-  webLLMSendMessage?: (message: string) => Promise<string>;
-  webLLMLoading?: boolean;
-  webLLMReady?: boolean;
   onPopArtTrigger?: () => void;
 }
 
-const AIConversation = ({ 
+const ClaudeConversation = ({ 
   sessionId, 
   onBack, 
-  webLLMSendMessage, 
-  webLLMLoading, 
-  webLLMReady,
   onPopArtTrigger 
-}: AIConversationProps) => {
-  const { messages, sendMessage, isTyping } = useAIChat();
+}: ClaudeConversationProps) => {
+  const { messages, sendMessage, isTyping } = useClaudeChat();
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -47,8 +41,7 @@ const AIConversation = ({
     setIsSending(true);
 
     try {
-      // Pass the WebLLM function to sendMessage
-      await sendMessage(messageToSend, sessionId, onPopArtTrigger, webLLMSendMessage);
+      await sendMessage(messageToSend, sessionId, onPopArtTrigger);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
@@ -78,12 +71,9 @@ const AIConversation = ({
           <div className="flex-1">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100">HOUSIE AI</h3>
             <div className="flex items-center gap-2">
-              <p className="text-sm text-gray-600 dark:text-gray-400">Intelligent Assistant</p>
-              <Badge variant="outline" className={`text-xs ${
-                webLLMReady ? 'bg-green-50 text-green-700 border-green-200' :
-                'bg-blue-50 text-blue-700 border-blue-200'
-              }`}>
-                {webLLMReady ? 'WebLLM Active' : 'Fallback Mode'}
+              <p className="text-sm text-gray-600 dark:text-gray-400">Powered by Claude 4</p>
+              <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                Active
               </Badge>
             </div>
           </div>
@@ -131,7 +121,7 @@ const AIConversation = ({
             </div>
           ))}
 
-          {(isTyping || webLLMLoading) && (
+          {isTyping && (
             <div className="flex gap-3 justify-start">
               <Avatar className="w-8 h-8">
                 <AvatarFallback className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs">
@@ -142,7 +132,7 @@ const AIConversation = ({
                 <div className="flex items-center gap-2">
                   <Loader2 className="h-3 w-3 animate-spin" />
                   <span className="text-sm text-gray-600 dark:text-gray-400">
-                    {webLLMLoading ? 'WebLLM thinking...' : 'HOUSIE AI is typing...'}
+                    Claude is thinking...
                   </span>
                 </div>
               </div>
@@ -159,12 +149,12 @@ const AIConversation = ({
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
             placeholder="Ask HOUSIE AI anything about home services..."
-            disabled={isSending || webLLMLoading}
+            disabled={isSending || isTyping}
             className="flex-1"
           />
           <Button 
             type="submit" 
-            disabled={!newMessage.trim() || isSending || webLLMLoading}
+            disabled={!newMessage.trim() || isSending || isTyping}
             className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
           >
             {isSending ? (
@@ -176,11 +166,11 @@ const AIConversation = ({
         </form>
         
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-          💡 Try: "tax?", "pets?", "cleaning costs", "test webllm", or "show me colors"
+          💡 Try: "tax?", "pets?", "cleaning costs", "test claude", or "show me colors"
         </div>
       </div>
     </div>
   );
 };
 
-export default AIConversation;
+export default ClaudeConversation;
