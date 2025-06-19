@@ -13,6 +13,7 @@ const serviceCategories = [
   { id: 'wellness', name: 'Wellness', count: '12+' },
   { id: 'care_pets', name: 'Pet Care', count: '8+' },
   { id: 'lawn_snow', name: 'Lawn & Snow', count: '10+' },
+  { id: 'lawn_care', name: 'Lawn Care', count: '10+' }, // Add both variations
   { id: 'construction', name: 'Construction', count: '20+' }
 ];
 
