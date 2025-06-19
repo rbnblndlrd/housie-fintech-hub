@@ -161,7 +161,9 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
   }
 
   if (filters.verificationLevel !== 'all') {
-    query = query.eq('provider_profiles.verification_level', filters.verificationLevel);
+    // Cast the string to the proper enum type for the query
+    const verificationLevel = filters.verificationLevel as 'basic' | 'background_check' | 'professional_license';
+    query = query.eq('provider_profiles.verification_level', verificationLevel);
   }
 
   const { data, error } = await query;

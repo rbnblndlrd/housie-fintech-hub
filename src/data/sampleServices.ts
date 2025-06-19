@@ -1,3 +1,4 @@
+
 import { Service, Provider } from "@/types/service";
 
 export const sampleProviders = [
@@ -61,8 +62,11 @@ export const fallbackServices: Service[] = [
     base_price: 30,
     pricing_type: "hourly",
     category: "cleaning",
-    subcategory: "residential",
+    subcategory: "residential_interior",
     active: true,
+    background_check_required: true,
+    ccq_rbq_required: false,
+    risk_category: "high",
     provider: {
       id: 'provider-1',
       business_name: "Marie Nettoyage",
@@ -71,6 +75,10 @@ export const fallbackServices: Service[] = [
       average_rating: 4.8,
       total_bookings: 127,
       verified: true,
+      verification_level: 'basic',
+      background_check_verified: false,
+      ccq_verified: false,
+      rbq_verified: false,
       user: {
         full_name: "Marie Dubois",
         city: "Montréal",
@@ -85,8 +93,11 @@ export const fallbackServices: Service[] = [
     base_price: 75,
     pricing_type: "flat",
     category: "lawn_care",
-    subcategory: "mowing",
+    subcategory: "lawn_mowing",
     active: true,
+    background_check_required: false,
+    ccq_rbq_required: false,
+    risk_category: "low",
     provider: {
       id: 'provider-2',
       business_name: "Jean Paysagiste",
@@ -95,6 +106,10 @@ export const fallbackServices: Service[] = [
       average_rating: 4.9,
       total_bookings: 89,
       verified: true,
+      verification_level: 'basic',
+      background_check_verified: false,
+      ccq_verified: false,
+      rbq_verified: false,
       user: {
         full_name: "Jean-Pierre Lavoie",
         city: "Montréal",
@@ -109,8 +124,11 @@ export const fallbackServices: Service[] = [
     base_price: 28,
     pricing_type: "hourly",
     category: "cleaning",
-    subcategory: "maintenance",
+    subcategory: "commercial_cleaning",
     active: true,
+    background_check_required: false,
+    ccq_rbq_required: false,
+    risk_category: "low",
     provider: {
       id: 'provider-3',
       business_name: "Sophie Entretien",
@@ -119,6 +137,10 @@ export const fallbackServices: Service[] = [
       average_rating: 4.7,
       total_bookings: 94,
       verified: true,
+      verification_level: 'basic',
+      background_check_verified: false,
+      ccq_verified: false,
+      rbq_verified: false,
       user: {
         full_name: "Sophie Martin",
         city: "Montréal",
