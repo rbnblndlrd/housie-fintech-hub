@@ -10,10 +10,12 @@ import { serviceCategories } from "@/data/serviceCategories";
 interface ServiceFiltersProps {
   searchTerm: string;
   selectedCategory: string;
+  selectedSubcategory?: string;
   selectedLocation: string;
   priceRange: [number, number];
   onSearchChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
+  onSubcategoryChange?: (value: string) => void;
   onLocationChange: (value: string) => void;
   onPriceRangeChange: (value: [number, number]) => void;
 }
@@ -21,13 +23,37 @@ interface ServiceFiltersProps {
 const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   searchTerm,
   selectedCategory,
+  selectedSubcategory = 'all',
   selectedLocation,
   priceRange,
   onSearchChange,
   onCategoryChange,
+  onSubcategoryChange,
   onLocationChange,
   onPriceRangeChange
 }) => {
+  // Get all subcategories from the selected category or all categories
+  const getAvailableSubcategories = () => {
+    if (selectedCategory === 'all') {
+      // Return all subcategories from all categories
+      return serviceCategories.flatMap(category => 
+        category.subcategories.map(sub => ({
+          ...sub,
+          categoryName: category.name
+        }))
+      );
+    } else {
+      // Return subcategories from selected category only
+      const category = serviceCategories.find(cat => cat.id === selectedCategory);
+      return category ? category.subcategories.map(sub => ({
+        ...sub,
+        categoryName: category.name
+      })) : [];
+    }
+  };
+
+  const availableSubcategories = getAvailableSubcategories();
+
   return (
     <div className="fintech-card p-6 mb-8">
       <div className="grid md:grid-cols-5 gap-4">
@@ -40,17 +66,21 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
             className="pl-10 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
           />
         </div>
-        <Select value={selectedCategory} onValueChange={onCategoryChange}>
+        
+        <Select value={selectedSubcategory} onValueChange={onSubcategoryChange}>
           <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder="All Subcategories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {serviceCategories.map(category => (
-              <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
+            <SelectItem value="all">All Subcategories</SelectItem>
+            {availableSubcategories.map(subcategory => (
+              <SelectItem key={subcategory.id} value={subcategory.id}>
+                {selectedCategory === 'all' ? `${subcategory.categoryName} - ${subcategory.name}` : subcategory.name}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>
+        
         <Select value={selectedLocation} onValueChange={onLocationChange}>
           <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
             <SelectValue placeholder="Location" />
@@ -61,6 +91,7 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
             <SelectItem value="vancouver">Vancouver, BC</SelectItem>
           </SelectContent>
         </Select>
+        
         <div className="space-y-2">
           <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
             Price Range: ${priceRange[0]} - ${priceRange[1]}
@@ -74,6 +105,7 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
             className="w-full"
           />
         </div>
+        
         <Button className="bg-orange-500 hover:bg-orange-600">
           <Filter className="h-4 w-4 mr-2" />
           Apply Filters

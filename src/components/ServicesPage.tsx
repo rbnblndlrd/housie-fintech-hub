@@ -1,117 +1,59 @@
 
-import React, { useState } from 'react';
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import { useServices } from "@/hooks/useServices";
-import { useServiceFilters } from "@/hooks/useServiceFilters";
-import { Service } from "@/types/service";
-import { fallbackServices } from "@/data/sampleServices";
-import ServicesLayout from "@/components/ServicesLayout";
-import ServiceBookingWrapper from "@/components/ServiceBookingWrapper";
+import React, { useState, useMemo } from 'react';
+import { toast } from 'sonner';
+import ServicesLayout from './ServicesLayout';
+import { useServices } from '@/hooks/useServices';
+import { Service } from '@/types/service';
 
-const ServicesPage: React.FC = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
+const ServicesPage = () => {
   const { services, isLoading } = useServices();
-  
-  // Use the new unified service filters hook
-  const serviceFiltersResult = useServiceFilters();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedSubcategory, setSelectedSubcategory] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('montreal');
+  const [priceRange, setPriceRange] = useState<[number, number]>([10, 200]);
 
-  const [selectedLocation, setSelectedLocation] = useState("montreal");
-  const [showBookingForm, setShowBookingForm] = useState(false);
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const filteredServicesList = useMemo(() => {
+    return services.filter((service: Service) => {
+      const matchesSearch = service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           service.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           service.provider?.business_name?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
+      const matchesSubcategory = selectedSubcategory === 'all' || service.subcategory === selectedSubcategory;
+      const matchesLocation = selectedLocation === 'montreal' || 
+                             service.provider?.user?.city?.toLowerCase().includes(selectedLocation.toLowerCase());
+      const matchesPrice = service.price >= priceRange[0] && service.price <= priceRange[1];
 
-  // Create a custom filtering function for backward compatibility
-  const filterServicesLocally = (options: {
-    services: Service[];
-    searchTerm: string;
-    selectedCategory: string;
-    priceRange: [number, number];
-  }) => {
-    let filtered = options.services;
-    
-    if (options.searchTerm) {
-      filtered = filtered.filter(service =>
-        service.title.toLowerCase().includes(options.searchTerm.toLowerCase()) ||
-        service.description?.toLowerCase().includes(options.searchTerm.toLowerCase())
-      );
-    }
-    
-    if (options.selectedCategory && options.selectedCategory !== 'all') {
-      filtered = filtered.filter(service => service.category === options.selectedCategory);
-    }
-    
-    if (options.priceRange) {
-      const [min, max] = options.priceRange;
-      filtered = filtered.filter(service => {
-        const price = service.provider.hourly_rate || service.base_price || 0;
-        return price >= min && price <= max;
-      });
-    }
-    
-    return filtered;
-  };
-
-  // Use the legacy filtering for now to maintain compatibility
-  const legacyFilteredServices = filterServicesLocally({
-    services,
-    searchTerm: serviceFiltersResult.filters.searchTerm,
-    selectedCategory: serviceFiltersResult.filters.category,
-    priceRange: [serviceFiltersResult.filters.priceRange.min, serviceFiltersResult.filters.priceRange.max]
-  });
+      return matchesSearch && matchesCategory && matchesSubcategory && matchesLocation && matchesPrice;
+    });
+  }, [services, searchTerm, selectedCategory, selectedSubcategory, selectedLocation, priceRange]);
 
   const handleBookNow = (service: Service) => {
-    if (!user) {
-      toast({
-        title: "Connexion requise",
-        description: "Veuillez vous connecter pour réserver ce service.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setSelectedService(service);
-    setShowBookingForm(true);
+    toast.success(`Booking request sent for ${service.title}`);
   };
 
-  const handleBookingComplete = (bookingId: string) => {
-    console.log('Booking completed:', bookingId);
-    setShowBookingForm(false);
-    setSelectedService(null);
-    toast({
-      title: "🎉 Réservation confirmée!",
-      description: "Votre réservation a été créée avec succès.",
-    });
+  const handleCategoryChange = (category: string) => {
+    setSelectedCategory(category);
+    // Reset subcategory when category changes
+    setSelectedSubcategory('all');
   };
-
-  const handleBookingCancel = () => {
-    setShowBookingForm(false);
-    setSelectedService(null);
-  };
-
-  if (showBookingForm && selectedService) {
-    return (
-      <ServiceBookingWrapper
-        service={selectedService}
-        onBookingComplete={handleBookingComplete}
-        onCancel={handleBookingCancel}
-      />
-    );
-  }
 
   return (
     <ServicesLayout
       services={services}
-      filteredServices={legacyFilteredServices}
+      filteredServices={filteredServicesList}
       isLoading={isLoading}
-      searchTerm={serviceFiltersResult.filters.searchTerm}
-      selectedCategory={serviceFiltersResult.filters.category}
+      searchTerm={searchTerm}
+      selectedCategory={selectedCategory}
+      selectedSubcategory={selectedSubcategory}
       selectedLocation={selectedLocation}
-      priceRange={[serviceFiltersResult.filters.priceRange.min, serviceFiltersResult.filters.priceRange.max]}
-      onSearchChange={serviceFiltersResult.setSearchTerm}
-      onCategoryChange={serviceFiltersResult.setCategory}
+      priceRange={priceRange}
+      onSearchChange={setSearchTerm}
+      onCategoryChange={handleCategoryChange}
+      onSubcategoryChange={setSelectedSubcategory}
       onLocationChange={setSelectedLocation}
-      onPriceRangeChange={(range) => serviceFiltersResult.setPriceRange(range[0], range[1])}
+      onPriceRangeChange={setPriceRange}
       onBookNow={handleBookNow}
     />
   );

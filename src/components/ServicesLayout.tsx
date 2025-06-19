@@ -14,10 +14,12 @@ interface ServicesLayoutProps {
   isLoading: boolean;
   searchTerm: string;
   selectedCategory: string;
+  selectedSubcategory: string;
   selectedLocation: string;
   priceRange: [number, number];
   onSearchChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
+  onSubcategoryChange: (value: string) => void;
   onLocationChange: (value: string) => void;
   onPriceRangeChange: (value: [number, number]) => void;
   onBookNow: (service: Service) => void;
@@ -29,10 +31,12 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   isLoading,
   searchTerm,
   selectedCategory,
+  selectedSubcategory,
   selectedLocation,
   priceRange,
   onSearchChange,
   onCategoryChange,
+  onSubcategoryChange,
   onLocationChange,
   onPriceRangeChange,
   onBookNow
@@ -56,10 +60,12 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
             <ServiceFilters
               searchTerm={searchTerm}
               selectedCategory={selectedCategory}
+              selectedSubcategory={selectedSubcategory}
               selectedLocation={selectedLocation}
               priceRange={priceRange}
               onSearchChange={onSearchChange}
               onCategoryChange={onCategoryChange}
+              onSubcategoryChange={onSubcategoryChange}
               onLocationChange={onLocationChange}
               onPriceRangeChange={onPriceRangeChange}
             />
