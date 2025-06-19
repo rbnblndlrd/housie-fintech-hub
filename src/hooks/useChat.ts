@@ -51,8 +51,16 @@ export const useChat = () => {
   const [loading, setLoading] = useState(false);
   const [totalUnreadCount, setTotalUnreadCount] = useState(0);
   
-  // Use ref to track subscription state
-  const channelRef = useRef<any>(null);
+  // Use ref to track subscription state and prevent double subscriptions
+  const subscriptionRef = useRef<{
+    channel: any | null;
+    isSubscribed: boolean;
+    isSubscribing: boolean;
+  }>({
+    channel: null,
+    isSubscribed: false,
+    isSubscribing: false
+  });
 
   // AI response patterns for validation
   const aiResponsePatterns = [
@@ -288,21 +296,45 @@ export const useChat = () => {
     }
   }, [user]);
 
-  // Set up real-time subscriptions with proper cleanup
-  useEffect(() => {
-    if (!user) return;
+  // Cleanup subscription helper
+  const cleanupSubscription = useCallback(() => {
+    if (subscriptionRef.current.channel) {
+      console.log('🧹 Cleaning up chat subscription');
+      try {
+        supabase.removeChannel(subscriptionRef.current.channel);
+      } catch (error) {
+        console.warn('⚠️ Error removing channel:', error);
+      }
+      subscriptionRef.current = {
+        channel: null,
+        isSubscribed: false,
+        isSubscribing: false
+      };
+    }
+  }, []);
 
-    // Clean up existing channel first
-    if (channelRef.current) {
-      console.log('🧹 Cleaning up existing chat channel');
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
+  // Set up real-time subscriptions with bulletproof cleanup
+  useEffect(() => {
+    if (!user) {
+      cleanupSubscription();
+      return;
     }
 
-    console.log('🔗 Setting up chat real-time subscription');
+    // Prevent multiple subscriptions
+    if (subscriptionRef.current.isSubscribing || subscriptionRef.current.isSubscribed) {
+      console.log('🔄 Subscription already in progress or active, skipping');
+      return;
+    }
+
+    // Mark as subscribing to prevent race conditions
+    subscriptionRef.current.isSubscribing = true;
+
+    console.log('🔗 Setting up chat real-time subscription for user:', user.id);
     
-    const channel = supabase
-      .channel(`chat-updates-${user.id}`) // Unique channel name per user
+    const channelName = `chat-updates-${user.id}-${Date.now()}`; // Add timestamp for uniqueness
+    const channel = supabase.channel(channelName);
+
+    channel
       .on(
         'postgres_changes',
         {
@@ -342,18 +374,23 @@ export const useChat = () => {
       )
       .subscribe((status) => {
         console.log('📡 Chat subscription status:', status);
+        
+        if (status === 'SUBSCRIBED') {
+          subscriptionRef.current.isSubscribed = true;
+          subscriptionRef.current.isSubscribing = false;
+          subscriptionRef.current.channel = channel;
+        } else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') {
+          subscriptionRef.current.isSubscribed = false;
+          subscriptionRef.current.isSubscribing = false;
+          subscriptionRef.current.channel = null;
+        }
       });
 
-    channelRef.current = channel;
-
     return () => {
-      console.log('🧹 Cleaning up chat subscription');
-      if (channelRef.current) {
-        supabase.removeChannel(channelRef.current);
-        channelRef.current = null;
-      }
+      console.log('🧹 useChat cleanup triggered');
+      cleanupSubscription();
     };
-  }, [user, activeConversation, loadConversations, loadMessages]);
+  }, [user, activeConversation, loadConversations, loadMessages, cleanupSubscription]);
 
   // Load conversations on mount
   useEffect(() => {
