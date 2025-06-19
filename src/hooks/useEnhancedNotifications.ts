@@ -93,6 +93,11 @@ export const useEnhancedNotifications = () => {
             filter: `receiver_id=eq.${user.id}`
           },
           async (payload) => {
+            // Only process human messages
+            if (payload.new.is_ai_message) {
+              return;
+            }
+
             console.log('New message notification:', payload);
             
             // Play notification sound

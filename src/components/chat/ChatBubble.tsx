@@ -1,11 +1,14 @@
 
 import React, { useState } from 'react';
-import { MessageCircle, X, Users, Bot } from 'lucide-react';
+import { MessageCircle, X, Send, Users, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
-import ChatPanel from './ChatPanel';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import MessagesTab from './MessagesTab';
 
 export const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -36,8 +39,8 @@ export const ChatBubble = () => {
             )}
           </Button>
         ) : (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-96 h-[600px] flex flex-col overflow-hidden animate-scale-in">
-            {/* Chat Header */}
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-96 h-[600px] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+            {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
@@ -88,18 +91,36 @@ export const ChatBubble = () => {
               >
                 <Bot className="h-4 w-4" />
                 AI Assistant
+                <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 border-blue-200">
+                  Coming Soon
+                </Badge>
               </button>
             </div>
 
             {/* Chat Content */}
             <div className="flex-1 overflow-hidden">
-              <ChatPanel activeTab={activeTab} />
+              {activeTab === 'messages' ? (
+                <MessagesTab />
+              ) : (
+                <div className="flex flex-col items-center justify-center h-full text-center p-6">
+                  <Bot className="h-16 w-16 text-purple-400 mb-4" />
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+                    Claude 4 AI Assistant
+                  </h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Our powerful AI assistant is coming soon!
+                  </p>
+                  <Badge className="mt-3 bg-purple-100 text-purple-800">
+                    Under Development
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
 
-      {/* Left Border Notification Bubbles (Classic Facebook Style) */}
+      {/* Left Border Notification Bubbles */}
       {!isOpen && totalUnreadCount > 0 && (
         <div className="fixed left-0 top-1/2 transform -translate-y-1/2 z-40">
           <div className="flex flex-col gap-2 p-2">

@@ -8,14 +8,13 @@ export interface ChatMessage {
   conversation_id: string;
   sender_id: string;
   receiver_id: string;
-  message_type: 'text' | 'image' | 'file' | 'system' | 'ai_response';
+  message_type: 'text' | 'image' | 'file' | 'system';
   content: string;
   file_url?: string;
   file_name?: string;
   file_size?: number;
   booking_id?: string;
   is_read: boolean;
-  is_ai_message: boolean;
   created_at: string;
   updated_at: string;
   sender?: {
@@ -62,32 +61,7 @@ export const useChat = () => {
     isSubscribing: false
   });
 
-  // AI response patterns for validation
-  const aiResponsePatterns = [
-    "I'd be happy to help you with that!",
-    "Can you provide more details about what specific service you're looking for?",
-    "Based on your request, I can recommend several excellent service providers",
-    "That's a great question! For home services, I typically recommend",
-    "I can help you estimate costs for that service",
-    "For that type of service, I recommend checking the provider's insurance",
-    "Let me help you find the perfect service provider!",
-    "I can assist with booking that service",
-    "That service typically takes",
-    "Hello! How can I help you find the perfect service today?",
-    "HOUSIE AI",
-    "AI Assistant"
-  ];
-
-  // Validate if content looks like AI response
-  const isAIContent = useCallback((content: string) => {
-    if (!content) return false;
-    const lowerContent = content.toLowerCase();
-    return aiResponsePatterns.some(pattern => 
-      lowerContent.includes(pattern.toLowerCase())
-    );
-  }, []);
-
-  // Load conversations with enhanced filtering
+  // Load conversations
   const loadConversations = useCallback(async () => {
     if (!user) return;
 
@@ -112,23 +86,12 @@ export const useChat = () => {
           ? conv.participant_two 
           : conv.participant_one;
         
-        // Additional validation for AI participants
-        if (otherParticipant && (
-          otherParticipant.id === 'ai-assistant' ||
-          otherParticipant.full_name?.toLowerCase().includes('ai') ||
-          otherParticipant.full_name?.toLowerCase().includes('assistant') ||
-          otherParticipant.full_name?.toLowerCase().includes('bot')
-        )) {
-          console.log('🚫 Filtering out AI participant:', otherParticipant.full_name);
-          return null;
-        }
-        
         return {
           ...conv,
           other_participant: otherParticipant,
           last_message: 'Start a conversation'
         };
-      }).filter(Boolean) || [];
+      }) || [];
 
       console.log('💬 Processed conversations:', processedConversations.length);
       setConversations(processedConversations);
@@ -142,7 +105,7 @@ export const useChat = () => {
     }
   }, [user]);
 
-  // Load messages with AI content filtering
+  // Load messages for a conversation
   const loadMessages = useCallback(async (conversationId: string) => {
     if (!user) return;
 
@@ -157,29 +120,18 @@ export const useChat = () => {
           sender:users!chat_messages_sender_id_fkey(full_name, profile_image)
         `)
         .eq('conversation_id', conversationId)
-        .neq('message_type', 'ai_response') // Exclude AI responses
-        .neq('is_ai_message', true) // Exclude AI messages
+        .eq('is_ai_message', false) // Only load human messages
         .order('created_at', { ascending: true });
 
       if (error) throw error;
 
-      // Additional filtering for AI content
-      const humanMessages = (data || []).filter(msg => {
-        // Filter out messages that look like AI responses
-        if (isAIContent(msg.content)) {
-          console.log('🚫 Filtered out AI content:', msg.content.substring(0, 50) + '...');
-          return false;
-        }
-        return true;
-      });
-
-      // Type cast the filtered data
-      const typedMessages: ChatMessage[] = humanMessages.map(msg => ({
+      // Type cast the data
+      const typedMessages: ChatMessage[] = (data || []).map(msg => ({
         ...msg,
-        message_type: msg.message_type as 'text' | 'image' | 'file' | 'system' | 'ai_response'
+        message_type: msg.message_type as 'text' | 'image' | 'file' | 'system'
       }));
 
-      console.log('✅ Loaded human messages:', typedMessages.length);
+      console.log('✅ Loaded messages:', typedMessages.length);
       setMessages(typedMessages);
       setActiveConversation(conversationId);
 
@@ -191,9 +143,9 @@ export const useChat = () => {
     } finally {
       setLoading(false);
     }
-  }, [user, isAIContent]);
+  }, [user]);
 
-  // Send a message with AI content validation
+  // Send a message
   const sendMessage = useCallback(async (
     receiverId: string,
     content: string,
@@ -202,12 +154,6 @@ export const useChat = () => {
     fileData?: { url: string; name: string; size: number }
   ) => {
     if (!user || !content.trim()) return null;
-
-    // Validate that we're not sending AI-like content
-    if (isAIContent(content)) {
-      console.warn('⚠️ Blocking potential AI content from being sent:', content.substring(0, 50));
-      return null;
-    }
 
     try {
       console.log('📤 Sending message to:', receiverId);
@@ -224,7 +170,7 @@ export const useChat = () => {
 
       const conversationId = conversationData;
 
-      // Send message with explicit human flags
+      // Send message
       const { data: messageData, error: msgError } = await supabase
         .from('chat_messages')
         .insert({
@@ -260,7 +206,7 @@ export const useChat = () => {
       console.error('❌ Error sending message:', error);
       return null;
     }
-  }, [user, isAIContent]);
+  }, [user]);
 
   // Mark messages as read
   const markMessagesAsRead = useCallback(async (conversationId: string) => {
@@ -286,7 +232,7 @@ export const useChat = () => {
         .select('*', { count: 'exact', head: true })
         .eq('receiver_id', user.id)
         .eq('is_read', false)
-        .neq('is_ai_message', true); // Exclude AI messages from unread count
+        .eq('is_ai_message', false); // Only count human messages
 
       if (error) throw error;
       return count || 0;
@@ -313,7 +259,7 @@ export const useChat = () => {
     }
   }, []);
 
-  // Set up real-time subscriptions with bulletproof cleanup
+  // Set up real-time subscriptions
   useEffect(() => {
     if (!user) {
       cleanupSubscription();
@@ -326,12 +272,11 @@ export const useChat = () => {
       return;
     }
 
-    // Mark as subscribing to prevent race conditions
     subscriptionRef.current.isSubscribing = true;
 
     console.log('🔗 Setting up chat real-time subscription for user:', user.id);
     
-    const channelName = `chat-updates-${user.id}-${Date.now()}`; // Add timestamp for uniqueness
+    const channelName = `chat-updates-${user.id}-${Date.now()}`;
     const channel = supabase.channel(channelName);
 
     channel
@@ -347,7 +292,7 @@ export const useChat = () => {
           console.log('📨 New message received:', payload);
           
           // Filter out AI messages from real-time updates
-          if (payload.new.is_ai_message || payload.new.message_type === 'ai_response') {
+          if (payload.new.is_ai_message) {
             console.log('🚫 Filtered out AI message from real-time update');
             return;
           }
