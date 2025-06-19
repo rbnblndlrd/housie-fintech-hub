@@ -158,7 +158,7 @@ const Index = () => {
                 </h3>
                 <p className="text-gray-600 dark:text-gray-400 text-center text-sm">
                   Nous sommes plus qu'une plateforme - nous sommes votre partenaire pour 
-                  faire croître votre entreprise de ménage en toute simplicité.
+                  faire croître votre entreprise en toute simplicité.
                 </p>
               </div>
             </div>
