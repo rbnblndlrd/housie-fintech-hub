@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -18,7 +17,14 @@ const SubscriptionStatusModal: React.FC<SubscriptionStatusModalProps> = ({ open,
 
   const handleCompareTiers = () => {
     onOpenChange(false);
-    navigate('/#pricing');
+    navigate('/');
+    // Use setTimeout to ensure navigation completes before scrolling
+    setTimeout(() => {
+      const pricingSection = document.getElementById('pricing-section');
+      if (pricingSection) {
+        pricingSection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   // Define features for each tier
