@@ -2,9 +2,10 @@
 export interface NavigationItem {
   label: string;
   href: string;
-  icon: string;
+  icon: string | React.ReactNode;
   separator?: boolean;
   action?: string;
+  badge?: number;
 }
 
 export const visitorNav: NavigationItem[] = [

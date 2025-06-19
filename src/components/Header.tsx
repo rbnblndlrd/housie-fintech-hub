@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -9,18 +10,22 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Diamond } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserDropdownItems, getNavigationItems } from '@/utils/navigationConfig';
+import { useNotifications } from '@/hooks/useNotifications';
+import { CreamPill } from '@/components/ui/cream-pill';
 import DynamicNavigation from './DynamicNavigation';
-import NotificationBell from './NotificationBell';
+import NotificationDropdown from './NotificationDropdown';
 import SubscriptionStatusModal from './SubscriptionStatusModal';
 
 const Header = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
+  const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
+  const { notifications, loading, unreadCount, markAsRead } = useNotifications();
 
   const handleLogout = async () => {
     try {
@@ -35,6 +40,8 @@ const Header = () => {
   const handleDropdownAction = (item: any) => {
     if (item.action === 'logout') {
       handleLogout();
+    } else if (item.action === 'notifications') {
+      setNotificationDropdownOpen(true);
     } else if (item.href) {
       navigate(item.href);
     }
@@ -50,6 +57,19 @@ const Header = () => {
 
   const userDropdownItems = getUserDropdownItems(user);
   const navigationItems = getNavigationItems(user);
+
+  // Add notifications as first item in dropdown
+  const enhancedDropdownItems = user ? [
+    { 
+      label: "Notifications", 
+      href: "", 
+      icon: <Bell className="h-4 w-4" />, 
+      action: "notifications",
+      badge: unreadCount > 0 ? unreadCount : undefined
+    },
+    { separator: true, label: "", href: "", icon: "" },
+    ...userDropdownItems
+  ] : userDropdownItems;
 
   return (
     <>
@@ -70,19 +90,6 @@ const Header = () => {
             
             {user && (
               <div className="flex items-center space-x-4">
-                <NotificationBell />
-                
-                {/* Diamond Icon for Subscription Status */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDiamondClick}
-                  className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
-                  title="View current subscription plan and features"
-                >
-                  <Diamond className="h-5 w-5" />
-                </Button>
-                
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full">
@@ -109,7 +116,7 @@ const Header = () => {
                     </div>
                     <DropdownMenuSeparator />
                     
-                    {userDropdownItems.map((item, index) => {
+                    {enhancedDropdownItems.map((item, index) => {
                       if (item.separator) {
                         return <DropdownMenuSeparator key={index} />;
                       }
@@ -121,12 +128,28 @@ const Header = () => {
                           className="cursor-pointer"
                         >
                           <span className="mr-2">{item.icon}</span>
-                          {item.label}
+                          <span className="flex-1">{item.label}</span>
+                          {item.badge && (
+                            <CreamPill variant="notification" size="default" className="ml-2">
+                              {item.badge > 99 ? '99+' : item.badge}
+                            </CreamPill>
+                          )}
                         </DropdownMenuItem>
                       );
                     })}
                   </DropdownMenuContent>
                 </DropdownMenu>
+                
+                {/* Diamond Icon for Subscription Status - Far Right */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDiamondClick}
+                  className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 text-lg"
+                  title="View current subscription plan and features"
+                >
+                  💎
+                </Button>
               </div>
             )}
           </div>
@@ -137,6 +160,19 @@ const Header = () => {
         open={subscriptionModalOpen} 
         onOpenChange={setSubscriptionModalOpen} 
       />
+
+      {/* Notification Dropdown Modal */}
+      {notificationDropdownOpen && (
+        <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setNotificationDropdownOpen(false)}>
+          <div className="fixed top-16 right-4 w-96 bg-white rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
+            <NotificationDropdown
+              notifications={notifications}
+              loading={loading}
+              onMarkAsRead={markAsRead}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 };
