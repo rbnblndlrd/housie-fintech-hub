@@ -1209,6 +1209,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
+      is_user_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       mark_messages_as_read: {
         Args: { p_conversation_id: string; p_user_id: string }
         Returns: number

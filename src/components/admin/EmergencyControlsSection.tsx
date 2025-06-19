@@ -26,26 +26,6 @@ const EmergencyControlsSection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const createDefaultControls = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('emergency_controls')
-        .insert({
-          claude_api_enabled: true,
-          daily_spend_limit: 100.00,
-          current_daily_spend: 0.00
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-      return data;
-    } catch (error) {
-      console.error('Error creating default controls:', error);
-      throw error;
-    }
-  };
-
   const fetchControls = async () => {
     try {
       const { data, error } = await supabase
@@ -56,14 +36,7 @@ const EmergencyControlsSection = () => {
         .maybeSingle();
 
       if (error) throw error;
-
-      if (!data) {
-        console.log('No emergency controls found, creating default...');
-        const defaultControls = await createDefaultControls();
-        setControls(defaultControls);
-      } else {
-        setControls(data);
-      }
+      setControls(data);
     } catch (error) {
       console.error('Error fetching emergency controls:', error);
       toast.error('Failed to load emergency controls');
@@ -173,7 +146,7 @@ const EmergencyControlsSection = () => {
         </CardHeader>
         <CardContent>
           <div className="text-center p-8">
-            <p className="text-gray-600 mb-4">Emergency controls not found</p>
+            <p className="text-gray-600 mb-4">No emergency controls found. Please contact system administrator.</p>
             <Button onClick={fetchControls} className="fintech-button-primary">
               Retry Loading
             </Button>
