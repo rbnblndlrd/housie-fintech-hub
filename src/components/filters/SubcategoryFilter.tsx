@@ -2,8 +2,22 @@
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Award } from 'lucide-react';
-import { serviceCategories, getSubcategoryById } from '@/data/serviceCategories';
+import { Shield, Award, Briefcase } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+
+interface SubcategoryData {
+  id: string;
+  category: string;
+  subcategory: string;
+  subcategory_id: string;
+  icon: string;
+  background_check_required: boolean;
+  professional_license_required: boolean;
+  professional_license_type: string | null;
+  ccq_rbq_required: boolean;
+  risk_category: string;
+  description: string;
+}
 
 interface SubcategoryFilterProps {
   category: string;
@@ -18,16 +32,39 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
   onChange,
   className = ""
 }) => {
-  const [subcategories, setSubcategories] = useState<any[]>([]);
+  const [subcategories, setSubcategories] = useState<SubcategoryData[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if (category === 'all') {
-      setSubcategories([]);
-      return;
-    }
+    const fetchSubcategories = async () => {
+      if (category === 'all') {
+        setSubcategories([]);
+        return;
+      }
 
-    const categoryData = serviceCategories.find(cat => cat.id === category);
-    setSubcategories(categoryData?.subcategories || []);
+      setIsLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('service_subcategories')
+          .select('*')
+          .eq('category', category)
+          .order('subcategory', { ascending: true });
+
+        if (error) {
+          console.error('Error fetching subcategories:', error);
+          setSubcategories([]);
+        } else {
+          setSubcategories(data || []);
+        }
+      } catch (error) {
+        console.error('Error fetching subcategories:', error);
+        setSubcategories([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchSubcategories();
   }, [category]);
 
   const getRiskBadgeColor = (risk: string) => {
@@ -44,28 +81,37 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
   }
 
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange} disabled={isLoading}>
       <SelectTrigger className={`h-12 rounded-2xl border-gray-200 ${className}`}>
-        <SelectValue placeholder="Toutes les sous-catégories" />
+        <SelectValue placeholder={isLoading ? "Loading..." : "All Subcategories"} />
       </SelectTrigger>
       <SelectContent className="fintech-dropdown">
-        <SelectItem value="all">Toutes les sous-catégories</SelectItem>
+        <SelectItem value="all">All Subcategories</SelectItem>
         {subcategories.map((subcategory) => (
-          <SelectItem key={subcategory.id} value={subcategory.id}>
+          <SelectItem key={subcategory.id} value={subcategory.subcategory_id}>
             <div className="flex items-center justify-between w-full">
-              <span className="flex-1">{subcategory.name}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-lg">{subcategory.icon}</span>
+                <span className="flex-1">{subcategory.subcategory}</span>
+              </div>
               <div className="flex gap-1 ml-2">
-                <Badge variant="outline" className={getRiskBadgeColor(subcategory.riskCategory)}>
-                  {subcategory.riskCategory}
+                <Badge variant="outline" className={getRiskBadgeColor(subcategory.risk_category)}>
+                  {subcategory.risk_category}
                 </Badge>
-                {subcategory.backgroundCheckRequired && (
+                {subcategory.background_check_required && (
                   <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300">
                     <Shield className="h-3 w-3 mr-1" />
                     BC
                   </Badge>
                 )}
-                {subcategory.ccqRbqRequired && (
+                {subcategory.professional_license_required && (
                   <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-300">
+                    <Briefcase className="h-3 w-3 mr-1" />
+                    {subcategory.professional_license_type?.toUpperCase()}
+                  </Badge>
+                )}
+                {subcategory.ccq_rbq_required && (
+                  <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300">
                     <Award className="h-3 w-3 mr-1" />
                     CCQ/RBQ
                   </Badge>

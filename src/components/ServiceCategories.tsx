@@ -1,14 +1,77 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { serviceCategories } from "@/data/serviceCategories";
+import { supabase } from '@/integrations/supabase/client';
 
 interface ServiceCategoriesProps {
   onCategorySelect: (categoryId: string) => void;
 }
 
+const serviceCategories = [
+  { 
+    id: 'cleaning', 
+    name: 'Cleaning', 
+    count: '15+',
+    color: 'bg-blue-100 text-blue-700 border-blue-300',
+    icon: '🏠'
+  },
+  { 
+    id: 'wellness', 
+    name: 'Wellness', 
+    count: '12+',
+    color: 'bg-green-100 text-green-700 border-green-300',
+    icon: '💪'
+  },
+  { 
+    id: 'care_pets', 
+    name: 'Pet Care', 
+    count: '8+',
+    color: 'bg-purple-100 text-purple-700 border-purple-300',
+    icon: '🐕'
+  },
+  { 
+    id: 'lawn_snow', 
+    name: 'Lawn & Snow', 
+    count: '10+',
+    color: 'bg-yellow-100 text-yellow-700 border-yellow-300',
+    icon: '🌳'
+  },
+  { 
+    id: 'construction', 
+    name: 'Construction', 
+    count: '20+',
+    color: 'bg-orange-100 text-orange-700 border-orange-300',
+    icon: '🔧'
+  }
+];
+
 const ServiceCategories: React.FC<ServiceCategoriesProps> = ({ onCategorySelect }) => {
+  const [categoryCounts, setCategoryCounts] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const fetchCategoryCounts = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('services')
+          .select('category')
+          .eq('active', true);
+
+        if (!error && data) {
+          const counts = data.reduce((acc, service) => {
+            acc[service.category] = (acc[service.category] || 0) + 1;
+            return acc;
+          }, {} as Record<string, number>);
+          setCategoryCounts(counts);
+        }
+      } catch (error) {
+        console.error('Error fetching category counts:', error);
+      }
+    };
+
+    fetchCategoryCounts();
+  }, []);
+
   return (
     <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700 mb-6">
       <CardHeader>
@@ -24,11 +87,14 @@ const ServiceCategories: React.FC<ServiceCategoriesProps> = ({ onCategorySelect 
             onClick={() => onCategorySelect(category.id)}
           >
             <div className="flex items-center gap-3">
+              <span className="text-lg">{category.icon}</span>
               <Badge className={category.color}>
                 {category.name}
               </Badge>
             </div>
-            <span className="text-sm text-gray-500 dark:text-gray-400">{category.count}</span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">
+              {categoryCounts[category.id] || 0}
+            </span>
           </div>
         ))}
       </CardContent>

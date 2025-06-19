@@ -5,7 +5,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Search, Filter } from 'lucide-react';
-import { serviceCategories } from "@/data/serviceCategories";
+import SubcategoryFilter from './filters/SubcategoryFilter';
+
+const serviceCategories = [
+  { id: 'all', name: 'All Categories', count: 'All' },
+  { id: 'cleaning', name: 'Cleaning', count: '15+' },
+  { id: 'wellness', name: 'Wellness', count: '12+' },
+  { id: 'care_pets', name: 'Pet Care', count: '8+' },
+  { id: 'lawn_snow', name: 'Lawn & Snow', count: '10+' },
+  { id: 'construction', name: 'Construction', count: '20+' }
+];
 
 interface ServiceFiltersProps {
   searchTerm: string;
@@ -32,28 +41,6 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   onLocationChange,
   onPriceRangeChange
 }) => {
-  // Get all subcategories from the selected category or all categories
-  const getAvailableSubcategories = () => {
-    if (selectedCategory === 'all') {
-      // Return all subcategories from all categories
-      return serviceCategories.flatMap(category => 
-        category.subcategories.map(sub => ({
-          ...sub,
-          categoryName: category.name
-        }))
-      );
-    } else {
-      // Return subcategories from selected category only
-      const category = serviceCategories.find(cat => cat.id === selectedCategory);
-      return category ? category.subcategories.map(sub => ({
-        ...sub,
-        categoryName: category.name
-      })) : [];
-    }
-  };
-
-  const availableSubcategories = getAvailableSubcategories();
-
   return (
     <div className="fintech-card p-6 mb-8">
       <div className="grid md:grid-cols-5 gap-4">
@@ -67,19 +54,24 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           />
         </div>
         
-        <Select value={selectedSubcategory} onValueChange={onSubcategoryChange}>
+        <Select value={selectedCategory} onValueChange={onCategoryChange}>
           <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-            <SelectValue placeholder="All Subcategories" />
+            <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Subcategories</SelectItem>
-            {availableSubcategories.map(subcategory => (
-              <SelectItem key={subcategory.id} value={subcategory.id}>
-                {selectedCategory === 'all' ? `${subcategory.categoryName} - ${subcategory.name}` : subcategory.name}
+            {serviceCategories.map(category => (
+              <SelectItem key={category.id} value={category.id}>
+                {category.name}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
+        
+        <SubcategoryFilter
+          category={selectedCategory}
+          value={selectedSubcategory}
+          onChange={onSubcategoryChange || (() => {})}
+        />
         
         <Select value={selectedLocation} onValueChange={onLocationChange}>
           <SelectTrigger className="dark:bg-gray-700 dark:border-gray-600 dark:text-white">

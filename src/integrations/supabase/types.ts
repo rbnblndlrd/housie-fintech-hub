@@ -464,6 +464,9 @@ export type Database = {
           hourly_rate: number | null
           id: string
           insurance_verified: boolean | null
+          professional_license_type:
+            | Database["public"]["Enums"]["professional_license_type"]
+            | null
           professional_license_verified: boolean | null
           rbq_license_number: string | null
           rbq_verified: boolean | null
@@ -490,6 +493,9 @@ export type Database = {
           hourly_rate?: number | null
           id?: string
           insurance_verified?: boolean | null
+          professional_license_type?:
+            | Database["public"]["Enums"]["professional_license_type"]
+            | null
           professional_license_verified?: boolean | null
           rbq_license_number?: string | null
           rbq_verified?: boolean | null
@@ -516,6 +522,9 @@ export type Database = {
           hourly_rate?: number | null
           id?: string
           insurance_verified?: boolean | null
+          professional_license_type?:
+            | Database["public"]["Enums"]["professional_license_type"]
+            | null
           professional_license_verified?: boolean | null
           rbq_license_number?: string | null
           rbq_verified?: boolean | null
@@ -599,9 +608,15 @@ export type Database = {
           ccq_rbq_required: boolean | null
           created_at: string | null
           description: string | null
+          icon: string
           id: string
+          professional_license_required: boolean | null
+          professional_license_type:
+            | Database["public"]["Enums"]["professional_license_type"]
+            | null
           risk_category: string | null
           subcategory: string
+          subcategory_id: string
         }
         Insert: {
           background_check_required?: boolean | null
@@ -609,9 +624,15 @@ export type Database = {
           ccq_rbq_required?: boolean | null
           created_at?: string | null
           description?: string | null
+          icon: string
           id?: string
+          professional_license_required?: boolean | null
+          professional_license_type?:
+            | Database["public"]["Enums"]["professional_license_type"]
+            | null
           risk_category?: string | null
           subcategory: string
+          subcategory_id: string
         }
         Update: {
           background_check_required?: boolean | null
@@ -619,9 +640,15 @@ export type Database = {
           ccq_rbq_required?: boolean | null
           created_at?: string | null
           description?: string | null
+          icon?: string
           id?: string
+          professional_license_required?: boolean | null
+          professional_license_type?:
+            | Database["public"]["Enums"]["professional_license_type"]
+            | null
           risk_category?: string | null
           subcategory?: string
+          subcategory_id?: string
         }
         Relationships: []
       }
@@ -835,6 +862,15 @@ export type Database = {
       }
     }
     Enums: {
+      professional_license_type:
+        | "rmt"
+        | "physio"
+        | "osteo"
+        | "chiro"
+        | "veterinary"
+        | "ccq"
+        | "rbq"
+        | "pest_control"
       verification_level: "basic" | "background_check" | "professional_license"
     }
     CompositeTypes: {
@@ -951,6 +987,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      professional_license_type: [
+        "rmt",
+        "physio",
+        "osteo",
+        "chiro",
+        "veterinary",
+        "ccq",
+        "rbq",
+        "pest_control",
+      ],
       verification_level: ["basic", "background_check", "professional_license"],
     },
   },

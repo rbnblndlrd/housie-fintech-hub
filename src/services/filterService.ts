@@ -1,8 +1,7 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { BookingFilters, ServiceFilters, UserFilters } from '@/types/filters';
-import { isDateInRange } from '@/utils/dateFilters';
-import { matchesSearch, matchesPriceRange, matchesStatus } from '@/utils/filterUtils';
+import { BookingFilters, ServiceFilters, UserFilters, ServiceSubcategory } from '@/types/filters';
+import { matchesSearch, matchesPriceRange } from '@/utils/filterUtils';
 
 export const fetchFilteredBookings = async (filters: BookingFilters) => {
   let query = supabase
@@ -76,6 +75,8 @@ export const fetchFilteredServices = async (filters: ServiceFilters) => {
         background_check_verified,
         ccq_verified,
         rbq_verified,
+        professional_license_verified,
+        professional_license_type,
         user:users(full_name, city, province)
       )
     `)
@@ -141,7 +142,9 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
         verification_level,
         background_check_verified,
         ccq_verified,
-        rbq_verified
+        rbq_verified,
+        professional_license_verified,
+        professional_license_type
       )
     `)
     .order('created_at', { ascending: false });
@@ -161,7 +164,6 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
   }
 
   if (filters.verificationLevel !== 'all') {
-    // Cast the string to the proper enum type for the query
     const verificationLevel = filters.verificationLevel as 'basic' | 'background_check' | 'professional_license';
     query = query.eq('provider_profiles.verification_level', verificationLevel);
   }
@@ -182,7 +184,7 @@ export const fetchFilteredUsers = async (filters: UserFilters) => {
   return filteredData;
 };
 
-export const fetchServiceSubcategories = async (category?: string) => {
+export const fetchServiceSubcategories = async (category?: string): Promise<ServiceSubcategory[]> => {
   let query = supabase
     .from('service_subcategories')
     .select('*')
