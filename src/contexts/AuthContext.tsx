@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName?: string) => Promise<void>;
   signOut: () => Promise<void>;
+  logout: () => Promise<void>; // Add logout alias for signOut
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -205,13 +206,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Add logout as an alias for signOut
+  const logout = signOut;
+
   const value = {
     user,
     session,
     loading,
     signIn,
     signUp,
-    signOut
+    signOut,
+    logout
   };
 
   console.log('🎯 AuthProvider rendering with state:', {
