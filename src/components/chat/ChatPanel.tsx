@@ -8,9 +8,29 @@ import ClaudeConversation from './ClaudeConversation';
 import CreditsWidget from '@/components/credits/CreditsWidget';
 import { useAuth } from '@/contexts/AuthContext';
 
-const ChatPanel = () => {
+interface ChatPanelProps {
+  activeTab?: 'messages' | 'ai';
+  onPopArtTrigger?: () => void;
+}
+
+const ChatPanel: React.FC<ChatPanelProps> = ({ 
+  activeTab: externalActiveTab, 
+  onPopArtTrigger 
+}) => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState('messages');
+  const [activeTab, setActiveTab] = useState(externalActiveTab || 'messages');
+  const [claudeSessionId] = useState(() => crypto.randomUUID());
+
+  // Update internal state when external activeTab changes
+  useEffect(() => {
+    if (externalActiveTab) {
+      setActiveTab(externalActiveTab);
+    }
+  }, [externalActiveTab]);
+
+  const handleBackToTabs = () => {
+    setActiveTab('messages');
+  };
 
   return (
     <div className="h-full flex flex-col">
@@ -28,7 +48,7 @@ const ChatPanel = () => {
             <MessageSquare className="h-4 w-4" />
             Messages
           </TabsTrigger>
-          <TabsTrigger value="claude" className="flex items-center gap-2">
+          <TabsTrigger value="ai" className="flex items-center gap-2">
             <Bot className="h-4 w-4" />
             AI Assistant
           </TabsTrigger>
@@ -48,7 +68,7 @@ const ChatPanel = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="claude" className="flex-1 m-4 mt-0">
+        <TabsContent value="ai" className="flex-1 m-4 mt-0">
           <Card className="h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -57,7 +77,11 @@ const ChatPanel = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="h-full p-0">
-              <ClaudeConversation />
+              <ClaudeConversation 
+                sessionId={claudeSessionId}
+                onBack={handleBackToTabs}
+                onPopArtTrigger={onPopArtTrigger}
+              />
             </CardContent>
           </Card>
         </TabsContent>

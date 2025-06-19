@@ -30,6 +30,25 @@ export interface AIFeatureCost {
   description: string;
 }
 
+interface RateLimitResult {
+  allowed: boolean;
+  reason?: string;
+  retry_after?: string;
+  cooldown_until?: string;
+  daily_used?: number;
+  daily_limit?: number;
+}
+
+interface CreditConsumptionResult {
+  success: boolean;
+  reason?: string;
+  required?: number;
+  available?: number;
+  credits_spent?: number;
+  remaining?: number;
+  is_free?: boolean;
+}
+
 export const useCredits = () => {
   const { user } = useAuth();
   const [credits, setCredits] = useState<UserCredits>({ total_credits: 0, used_credits: 0, remaining_credits: 0 });
@@ -85,7 +104,7 @@ export const useCredits = () => {
     }
   };
 
-  const checkRateLimit = async (featureName: string, messageLength = 0) => {
+  const checkRateLimit = async (featureName: string, messageLength = 0): Promise<RateLimitResult> => {
     if (!user) return { allowed: false, reason: 'User not authenticated' };
 
     try {
@@ -96,14 +115,14 @@ export const useCredits = () => {
       });
 
       if (error) throw error;
-      return data;
+      return data as RateLimitResult;
     } catch (error) {
       console.error('Error checking rate limit:', error);
       return { allowed: false, reason: 'Rate limit check failed' };
     }
   };
 
-  const consumeCredits = async (featureName: string, apiCostEstimate = 0, sessionId?: string) => {
+  const consumeCredits = async (featureName: string, apiCostEstimate = 0, sessionId?: string): Promise<CreditConsumptionResult> => {
     if (!user) return { success: false, reason: 'User not authenticated' };
 
     try {
@@ -116,16 +135,18 @@ export const useCredits = () => {
 
       if (error) throw error;
 
-      if (data?.success) {
+      const result = data as CreditConsumptionResult;
+
+      if (result?.success) {
         // Refresh credits after consumption
         await fetchCredits();
         
-        if (!data.is_free) {
-          toast.success(`${data.credits_spent} credits used. ${data.remaining} remaining.`);
+        if (!result.is_free) {
+          toast.success(`${result.credits_spent} credits used. ${result.remaining} remaining.`);
         }
       }
 
-      return data;
+      return result;
     } catch (error) {
       console.error('Error consuming credits:', error);
       return { success: false, reason: 'Credit consumption failed' };

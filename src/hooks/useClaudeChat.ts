@@ -15,6 +15,25 @@ export interface ClaudeMessage {
   feature_used?: string;
 }
 
+interface RateLimitResult {
+  allowed: boolean;
+  reason?: string;
+  retry_after?: string;
+  cooldown_until?: string;
+  daily_used?: number;
+  daily_limit?: number;
+}
+
+interface CreditConsumptionResult {
+  success: boolean;
+  reason?: string;
+  required?: number;
+  available?: number;
+  credits_spent?: number;
+  remaining?: number;
+  is_free?: boolean;
+}
+
 export const useClaudeChat = () => {
   const { user } = useAuth();
   const { checkRateLimit, consumeCredits, features } = useCredits();
@@ -111,14 +130,14 @@ export const useClaudeChat = () => {
             errorMessage += "You've reached your daily limit for free messages. Purchase credits to continue with enhanced limits.";
             break;
           case 'Cooldown period active':
-            const retryTime = new Date(rateLimitResult.retry_after).toLocaleTimeString();
+            const retryTime = rateLimitResult.retry_after ? new Date(rateLimitResult.retry_after).toLocaleTimeString() : 'soon';
             errorMessage += `Please wait until ${retryTime} before sending another message.`;
             break;
           case 'Message too long for free tier':
             errorMessage += "Your message is too long for the free tier. Upgrade to credits for longer messages (up to 300 characters).";
             break;
           case 'User is in cooldown':
-            const cooldownTime = new Date(rateLimitResult.cooldown_until).toLocaleTimeString();
+            const cooldownTime = rateLimitResult.cooldown_until ? new Date(rateLimitResult.cooldown_until).toLocaleTimeString() : 'later';
             errorMessage += `You're in cooldown until ${cooldownTime} due to rapid messaging.`;
             break;
           default:
@@ -178,7 +197,7 @@ export const useClaudeChat = () => {
           return;
         }
         
-        creditsConsumed = creditResult.credits_spent;
+        creditsConsumed = creditResult.credits_spent || 0;
       }
 
       // Get conversation history for context

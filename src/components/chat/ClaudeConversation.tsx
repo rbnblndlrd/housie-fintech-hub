@@ -10,15 +10,15 @@ import { Badge } from '@/components/ui/badge';
 
 interface ClaudeConversationProps {
   sessionId: string;
-  onBack: () => void;
+  onBack?: () => void;
   onPopArtTrigger?: () => void;
 }
 
-const ClaudeConversation = ({ 
+const ClaudeConversation: React.FC<ClaudeConversationProps> = ({ 
   sessionId, 
   onBack, 
   onPopArtTrigger 
-}: ClaudeConversationProps) => {
+}) => {
   const { messages, sendMessage, isTyping } = useClaudeChat();
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -60,25 +60,27 @@ const ClaudeConversation = ({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
-            <Bot className="h-4 w-4 text-white" />
-          </div>
-          <div className="flex-1">
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">HOUSIE AI</h3>
-            <div className="flex items-center gap-2">
-              <p className="text-sm text-gray-600 dark:text-gray-400">Powered by Claude 4</p>
-              <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-                Active
-              </Badge>
+      {onBack && (
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={onBack}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+              <Bot className="h-4 w-4 text-white" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100">HOUSIE AI</h3>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400">Powered by Claude 4</p>
+                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  Active
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Messages */}
       <ScrollArea className="flex-1 p-4">
