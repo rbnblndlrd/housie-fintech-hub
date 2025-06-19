@@ -56,10 +56,10 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
           to={item.href}
           className={cn(
             "px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
-            "hover:text-transparent hover:bg-gradient-to-r hover:from-blue-600 hover:to-purple-600 hover:bg-clip-text",
+            "hover:text-white hover:bg-gray-800",
             isActive(item.href)
-              ? "text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text"
-              : "text-gray-900 dark:text-white"
+              ? "text-white bg-gray-800"
+              : "text-gray-300"
           )}
         >
           {item.label}

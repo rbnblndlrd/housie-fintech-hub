@@ -65,24 +65,29 @@ const Header = () => {
       href: "", 
       icon: <Bell className="h-4 w-4" />, 
       action: "notifications",
-      badge: unreadCount > 0 ? unreadCount : undefined
+      badge: unreadCount > 0 ? unreadCount : undefined,
+      separator: false
     },
-    { separator: true, label: "", href: "", icon: "" },
+    { separator: true, label: "", href: "", icon: "", separator: true },
     ...userDropdownItems
   ] : userDropdownItems;
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-200">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-6">
-              {/* HOUSIE Logo/Home Link */}
+              {/* HOUSIE Logo with SVG */}
               <button
                 onClick={handleLogoClick}
-                className="text-xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text hover:from-blue-700 hover:to-purple-700 transition-all duration-200"
+                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
               >
-                HOUSIE
+                <img 
+                  src="/HOUSIE_branding.svg" 
+                  alt="HOUSIE" 
+                  className="h-8 w-auto filter invert"
+                />
               </button>
               
               <DynamicNavigation items={navigationItems} />
@@ -93,10 +98,10 @@ const Header = () => {
                 {/* User Dropdown Menu */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={user.user_metadata?.profile_image || undefined} alt={user.user_metadata?.full_name || user.email} />
-                        <AvatarFallback>
+                        <AvatarFallback className="bg-gray-700 text-white">
                           {user.user_metadata?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
@@ -146,7 +151,7 @@ const Header = () => {
                   variant="ghost"
                   size="sm"
                   onClick={handleDiamondClick}
-                  className="text-purple-600 hover:text-purple-700 hover:bg-purple-50 text-lg"
+                  className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg"
                   title="View current subscription plan and features"
                 >
                   💎
