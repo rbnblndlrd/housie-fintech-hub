@@ -4,18 +4,31 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, AlertTriangle, Shield, Award } from 'lucide-react';
+import { serviceCategories, getSubcategoryById } from '@/data/serviceCategories';
 
 interface Service {
   id: string;
   title: string;
   description: string;
   category: string;
+  subcategory: string;
   base_price: number;
   pricing_type: string;
   active: boolean;
+  background_check_required: boolean;
+  ccq_rbq_required: boolean;
+  risk_category: string;
+}
+
+interface ProviderProfile {
+  background_check_verified: boolean;
+  ccq_verified: boolean;
+  rbq_verified: boolean;
+  verification_level: string;
 }
 
 interface ServicesSectionProps {
@@ -25,19 +38,37 @@ interface ServicesSectionProps {
 const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
   const { toast } = useToast();
   const [services, setServices] = useState<Service[]>([]);
+  const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [newService, setNewService] = useState({
     title: '',
     description: '',
-    category: 'Home Maintenance',
+    category: '',
+    subcategory: '',
     base_price: 0,
     pricing_type: 'hourly',
   });
 
   useEffect(() => {
     fetchServices();
+    fetchProviderProfile();
   }, [providerId]);
+
+  const fetchProviderProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('provider_profiles')
+        .select('background_check_verified, ccq_verified, rbq_verified, verification_level')
+        .eq('id', providerId)
+        .single();
+
+      if (error) throw error;
+      setProviderProfile(data);
+    } catch (error) {
+      console.error('Error fetching provider profile:', error);
+    }
+  };
 
   const fetchServices = async () => {
     try {
@@ -60,11 +91,85 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     }
   };
 
+  const getAvailableSubcategories = () => {
+    if (!newService.category) return [];
+    const category = serviceCategories.find(cat => cat.id === newService.category);
+    return category?.subcategories || [];
+  };
+
+  const canOfferSubcategory = (subcategory: any) => {
+    if (!providerProfile) return false;
+    
+    const needsBackgroundCheck = subcategory.backgroundCheckRequired;
+    const needsCcqRbq = subcategory.ccqRbqRequired;
+    
+    if (needsBackgroundCheck && !providerProfile.background_check_verified) {
+      return false;
+    }
+    
+    if (needsCcqRbq && !providerProfile.ccq_verified && !providerProfile.rbq_verified) {
+      return false;
+    }
+    
+    return true;
+  };
+
+  const getVerificationBadges = (subcategory: any) => {
+    const badges = [];
+    
+    if (subcategory.backgroundCheckRequired) {
+      badges.push(
+        <Badge 
+          key="bg-check" 
+          variant="outline" 
+          className={`${providerProfile?.background_check_verified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
+        >
+          <Shield className="h-3 w-3 mr-1" />
+          Background Check
+        </Badge>
+      );
+    }
+    
+    if (subcategory.ccqRbqRequired) {
+      badges.push(
+        <Badge 
+          key="ccq-rbq" 
+          variant="outline" 
+          className={`${(providerProfile?.ccq_verified || providerProfile?.rbq_verified) ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}
+        >
+          <Award className="h-3 w-3 mr-1" />
+          CCQ/RBQ
+        </Badge>
+      );
+    }
+
+    return badges;
+  };
+
   const addService = async () => {
-    if (!newService.title || !newService.category) {
+    if (!newService.title || !newService.category || !newService.subcategory) {
       toast({
         title: "Error",
         description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const subcategoryData = getSubcategoryById(newService.category, newService.subcategory);
+    if (!subcategoryData) {
+      toast({
+        title: "Error",
+        description: "Invalid subcategory selected",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!canOfferSubcategory(subcategoryData)) {
+      toast({
+        title: "Verification Required",
+        description: "You need the required verifications to offer this service",
         variant: "destructive",
       });
       return;
@@ -76,7 +181,15 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
         .from('services')
         .insert({
           provider_id: providerId,
-          ...newService,
+          title: newService.title,
+          description: newService.description,
+          category: newService.category,
+          subcategory: newService.subcategory,
+          base_price: newService.base_price,
+          pricing_type: newService.pricing_type,
+          background_check_required: subcategoryData.backgroundCheckRequired,
+          ccq_rbq_required: subcategoryData.ccqRbqRequired,
+          risk_category: subcategoryData.riskCategory,
         })
         .select()
         .single();
@@ -87,7 +200,8 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
       setNewService({
         title: '',
         description: '',
-        category: 'Home Maintenance',
+        category: '',
+        subcategory: '',
         base_price: 0,
         pricing_type: 'hourly',
       });
@@ -132,6 +246,15 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     }
   };
 
+  const getRiskBadgeColor = (risk: string) => {
+    switch (risk) {
+      case 'high': return 'bg-red-100 text-red-700';
+      case 'medium': return 'bg-yellow-100 text-yellow-700';
+      case 'low': return 'bg-green-100 text-green-700';
+      default: return 'bg-gray-100 text-gray-700';
+    }
+  };
+
   if (loading) {
     return (
       <Card className="fintech-card">
@@ -148,6 +271,23 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
         <CardTitle className="text-gray-900">Services Offered</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Verification Status */}
+        {providerProfile && (
+          <div className="p-4 bg-gray-50 rounded-lg">
+            <h4 className="font-medium text-gray-900 mb-2">Your Verification Status</h4>
+            <div className="flex gap-2 flex-wrap">
+              <Badge variant={providerProfile.background_check_verified ? "default" : "secondary"}>
+                <Shield className="h-3 w-3 mr-1" />
+                Background Check: {providerProfile.background_check_verified ? 'Verified' : 'Not Verified'}
+              </Badge>
+              <Badge variant={(providerProfile.ccq_verified || providerProfile.rbq_verified) ? "default" : "secondary"}>
+                <Award className="h-3 w-3 mr-1" />
+                CCQ/RBQ: {(providerProfile.ccq_verified || providerProfile.rbq_verified) ? 'Verified' : 'Not Verified'}
+              </Badge>
+            </div>
+          </div>
+        )}
+
         {/* Existing Services */}
         <div className="space-y-3">
           {services.map((service) => (
@@ -155,7 +295,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-1">
                   <h4 className="font-medium text-gray-900">{service.title}</h4>
-                  <Badge variant="secondary">{service.category}</Badge>
+                  <Badge variant="secondary">{service.category.replace('_', ' ')}</Badge>
+                  <Badge variant="outline" className={getRiskBadgeColor(service.risk_category)}>
+                    {service.risk_category} risk
+                  </Badge>
                 </div>
                 <p className="text-sm text-gray-600 mb-1">{service.description}</p>
                 <p className="text-sm font-medium text-gray-900">
@@ -181,33 +324,73 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Service Title
+                  Category *
                 </label>
-                <Input
-                  value={newService.title}
-                  onChange={(e) => setNewService({...newService, title: e.target.value})}
-                  placeholder="e.g., Plumbing Repairs"
-                  className="border-gray-300"
-                />
+                <Select 
+                  value={newService.category} 
+                  onValueChange={(value) => setNewService({...newService, category: value, subcategory: ''})}
+                >
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {serviceCategories.map(category => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
+                  Subcategory *
                 </label>
-                <select
-                  value={newService.category}
-                  onChange={(e) => setNewService({...newService, category: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Select 
+                  value={newService.subcategory} 
+                  onValueChange={(value) => setNewService({...newService, subcategory: value})}
+                  disabled={!newService.category}
                 >
-                  <option value="Home Maintenance">Home Maintenance</option>
-                  <option value="Cleaning">Cleaning</option>
-                  <option value="Landscaping">Landscaping</option>
-                  <option value="Electrical">Electrical</option>
-                  <option value="Plumbing">Plumbing</option>
-                  <option value="HVAC">HVAC</option>
-                  <option value="Other">Other</option>
-                </select>
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue placeholder="Select subcategory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {getAvailableSubcategories().map(subcategory => {
+                      const canOffer = canOfferSubcategory(subcategory);
+                      return (
+                        <SelectItem 
+                          key={subcategory.id} 
+                          value={subcategory.id}
+                          disabled={!canOffer}
+                          className={!canOffer ? 'opacity-50' : ''}
+                        >
+                          <div className="flex items-center justify-between w-full">
+                            <span>{subcategory.name}</span>
+                            {!canOffer && <AlertTriangle className="h-4 w-4 text-red-500" />}
+                          </div>
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
+                {newService.subcategory && (
+                  <div className="mt-2 flex gap-1 flex-wrap">
+                    {getVerificationBadges(getSubcategoryById(newService.category, newService.subcategory))}
+                  </div>
+                )}
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Service Title *
+              </label>
+              <Input
+                value={newService.title}
+                onChange={(e) => setNewService({...newService, title: e.target.value})}
+                placeholder="e.g., Professional House Cleaning"
+                className="border-gray-300"
+              />
             </div>
 
             <div>
@@ -226,7 +409,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Base Price ($)
+                  Base Price ($) *
                 </label>
                 <Input
                   type="number"
@@ -240,23 +423,27 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pricing Type
+                  Pricing Type *
                 </label>
-                <select
-                  value={newService.pricing_type}
-                  onChange={(e) => setNewService({...newService, pricing_type: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                <Select 
+                  value={newService.pricing_type} 
+                  onValueChange={(value) => setNewService({...newService, pricing_type: value})}
                 >
-                  <option value="hourly">Hourly</option>
-                  <option value="fixed">Fixed Price</option>
-                  <option value="per_service">Per Service</option>
-                </select>
+                  <SelectTrigger className="border-gray-300">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hourly">Hourly</SelectItem>
+                    <SelectItem value="flat">Fixed Price</SelectItem>
+                    <SelectItem value="per_service">Per Service</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
             <Button
               onClick={addService}
-              disabled={saving}
+              disabled={saving || !newService.title || !newService.category || !newService.subcategory}
               className="w-full fintech-button-primary"
             >
               <Plus className="h-4 w-4 mr-2" />
