@@ -15,24 +15,20 @@ const ServicesPage: React.FC = () => {
   const { services, isLoading } = useServices();
   
   // Use the new unified service filters hook
-  const {
-    services: filteredServices,
-    filters,
-    isLoading: filtersLoading,
-    setSearchTerm,
-    setCategory,
-    setLocation,
-    setPriceRange
-  } = useServiceFilters();
+  const serviceFiltersResult = useServiceFilters();
 
   const [selectedLocation, setSelectedLocation] = useState("montreal");
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   // Create a custom filtering function for backward compatibility
-  const useServiceFilters = (options: any) => {
-    // Filter services based on the provided criteria
-    let filtered = services;
+  const filterServicesLocally = (options: {
+    services: Service[];
+    searchTerm: string;
+    selectedCategory: string;
+    priceRange: [number, number];
+  }) => {
+    let filtered = options.services;
     
     if (options.searchTerm) {
       filtered = filtered.filter(service =>
@@ -57,11 +53,11 @@ const ServicesPage: React.FC = () => {
   };
 
   // Use the legacy filtering for now to maintain compatibility
-  const legacyFilteredServices = useServiceFilters({
+  const legacyFilteredServices = filterServicesLocally({
     services,
-    searchTerm: filters.searchTerm,
-    selectedCategory: filters.category,
-    priceRange: [filters.priceRange.min, filters.priceRange.max]
+    searchTerm: serviceFiltersResult.filters.searchTerm,
+    selectedCategory: serviceFiltersResult.filters.category,
+    priceRange: [serviceFiltersResult.filters.priceRange.min, serviceFiltersResult.filters.priceRange.max]
   });
 
   const handleBookNow = (service: Service) => {
@@ -108,14 +104,14 @@ const ServicesPage: React.FC = () => {
       services={services}
       filteredServices={legacyFilteredServices}
       isLoading={isLoading}
-      searchTerm={filters.searchTerm}
-      selectedCategory={filters.category}
+      searchTerm={serviceFiltersResult.filters.searchTerm}
+      selectedCategory={serviceFiltersResult.filters.category}
       selectedLocation={selectedLocation}
-      priceRange={[filters.priceRange.min, filters.priceRange.max]}
-      onSearchChange={setSearchTerm}
-      onCategoryChange={setCategory}
+      priceRange={[serviceFiltersResult.filters.priceRange.min, serviceFiltersResult.filters.priceRange.max]}
+      onSearchChange={serviceFiltersResult.setSearchTerm}
+      onCategoryChange={serviceFiltersResult.setCategory}
       onLocationChange={setSelectedLocation}
-      onPriceRangeChange={(range) => setPriceRange(range[0], range[1])}
+      onPriceRangeChange={(range) => serviceFiltersResult.setPriceRange(range[0], range[1])}
       onBookNow={handleBookNow}
     />
   );

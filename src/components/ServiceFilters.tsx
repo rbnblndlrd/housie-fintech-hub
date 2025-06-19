@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Search, Filter } from 'lucide-react';
+import { serviceCategories } from "@/data/serviceCategories";
 
 interface ServiceFiltersProps {
   searchTerm: string;
@@ -16,15 +17,6 @@ interface ServiceFiltersProps {
   onLocationChange: (value: string) => void;
   onPriceRangeChange: (value: [number, number]) => void;
 }
-
-const categories = [
-  { value: 'all', label: 'Toutes les catégories' },
-  { value: 'cleaning', label: 'Nettoyage' },
-  { value: 'lawn_care', label: 'Entretien paysager' },
-  { value: 'construction', label: 'Construction' },
-  { value: 'wellness', label: 'Bien-être' },
-  { value: 'care_pets', label: 'Soins aux animaux' },
-];
 
 const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   searchTerm,
@@ -53,8 +45,9 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
-            {categories.map(cat => (
-              <SelectItem key={cat.value} value={cat.value}>{cat.label}</SelectItem>
+            <SelectItem value="all">All Categories</SelectItem>
+            {serviceCategories.map(category => (
+              <SelectItem key={category.id} value={category.id}>{category.name}</SelectItem>
             ))}
           </SelectContent>
         </Select>

@@ -147,5 +147,98 @@ export const fallbackServices: Service[] = [
         province: "QC"
       }
     }
+  },
+  {
+    id: 'fallback-4',
+    title: "Réparations domiciliaires",
+    description: "Réparations mineures, installation d'étagères, réparation de robinets, petits travaux de peinture.",
+    base_price: 45,
+    pricing_type: "hourly",
+    category: "construction",
+    subcategory: "handyman_repairs",
+    active: true,
+    background_check_required: true,
+    ccq_rbq_required: false,
+    risk_category: "high",
+    provider: {
+      id: 'provider-4',
+      business_name: "Bob Réparations",
+      hourly_rate: 45,
+      service_radius_km: 20,
+      average_rating: 4.6,
+      total_bookings: 156,
+      verified: true,
+      verification_level: 'background_check',
+      background_check_verified: true,
+      ccq_verified: false,
+      rbq_verified: false,
+      user: {
+        full_name: "Robert Tremblay",
+        city: "Montréal",
+        province: "QC"
+      }
+    }
+  },
+  {
+    id: 'fallback-5',
+    title: "Massage thérapeutique à domicile",
+    description: "Massage thérapeutique professionnel dans le confort de votre domicile. Relaxation et soulagement des tensions.",
+    base_price: 80,
+    pricing_type: "flat",
+    category: "wellness",
+    subcategory: "massage_therapy",
+    active: true,
+    background_check_required: true,
+    ccq_rbq_required: false,
+    risk_category: "high",
+    provider: {
+      id: 'provider-5',
+      business_name: "Zen Massage",
+      hourly_rate: 80,
+      service_radius_km: 15,
+      average_rating: 4.9,
+      total_bookings: 87,
+      verified: true,
+      verification_level: 'background_check',
+      background_check_verified: true,
+      ccq_verified: false,
+      rbq_verified: false,
+      user: {
+        full_name: "Isabelle Côté",
+        city: "Montréal",
+        province: "QC"
+      }
+    }
+  },
+  {
+    id: 'fallback-6',
+    title: "Promenade de chiens",
+    description: "Service professionnel de promenade pour vos compagnons à quatre pattes. Assurance incluse.",
+    base_price: 25,
+    pricing_type: "flat",
+    category: "care_pets",
+    subcategory: "dog_walking",
+    active: true,
+    background_check_required: true,
+    ccq_rbq_required: false,
+    risk_category: "high",
+    provider: {
+      id: 'provider-6',
+      business_name: "Pattes Heureuses",
+      hourly_rate: 25,
+      service_radius_km: 12,
+      average_rating: 4.8,
+      total_bookings: 203,
+      verified: true,
+      verification_level: 'background_check',
+      background_check_verified: true,
+      ccq_verified: false,
+      rbq_verified: false,
+      user: {
+        full_name: "Julie Lessard",
+        city: "Montréal",
+        province: "QC"
+      }
+    }
   }
 ];
