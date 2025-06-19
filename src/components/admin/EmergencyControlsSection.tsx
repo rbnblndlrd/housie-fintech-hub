@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -27,6 +26,26 @@ const EmergencyControlsSection = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const createDefaultControls = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('emergency_controls')
+        .insert({
+          claude_api_enabled: true,
+          daily_spend_limit: 100.00,
+          current_daily_spend: 0.00
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    } catch (error) {
+      console.error('Error creating default controls:', error);
+      throw error;
+    }
+  };
+
   const fetchControls = async () => {
     try {
       const { data, error } = await supabase
@@ -34,10 +53,17 @@ const EmergencyControlsSection = () => {
         .select('*')
         .order('created_at', { ascending: false })
         .limit(1)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
-      setControls(data);
+
+      if (!data) {
+        console.log('No emergency controls found, creating default...');
+        const defaultControls = await createDefaultControls();
+        setControls(defaultControls);
+      } else {
+        setControls(data);
+      }
     } catch (error) {
       console.error('Error fetching emergency controls:', error);
       toast.error('Failed to load emergency controls');
@@ -146,7 +172,12 @@ const EmergencyControlsSection = () => {
           <CardTitle>Emergency Controls</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-600">Unable to load emergency controls</p>
+          <div className="text-center p-8">
+            <p className="text-gray-600 mb-4">Emergency controls not found</p>
+            <Button onClick={fetchControls} className="fintech-button-primary">
+              Retry Loading
+            </Button>
+          </div>
         </CardContent>
       </Card>
     );
