@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { User, Edit, Phone, Mail, Image } from 'lucide-react';
+import { User, Edit, Phone, Mail, Image, ArrowLeft, Home } from 'lucide-react';
 import BusinessInfoSection from '@/components/provider/BusinessInfoSection';
 import ServicesSection from '@/components/provider/ServicesSection';
 import ContactInfoSection from '@/components/provider/ContactInfoSection';
@@ -40,6 +41,7 @@ interface UserProfile {
 
 const ProviderProfile = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -138,7 +140,7 @@ const ProviderProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading profile...</p>
@@ -149,8 +151,28 @@ const ProviderProfile = () => {
 
   if (!providerProfile) {
     return (
-      <div className="min-h-screen bg-white p-6">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
         <div className="max-w-4xl mx-auto">
+          {/* Navigation Header */}
+          <div className="mb-6 flex items-center gap-4">
+            <Button
+              variant="outline"
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate('/')}
+              className="flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Home
+            </Button>
+          </div>
+
           <Card className="fintech-card">
             <CardHeader className="text-center">
               <CardTitle className="text-2xl font-bold text-gray-900">
@@ -176,8 +198,28 @@ const ProviderProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
       <div className="max-w-6xl mx-auto space-y-8">
+        {/* Navigation Header */}
+        <div className="flex items-center gap-4">
+          <Button
+            variant="outline"
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2 bg-white/80 backdrop-blur-sm"
+          >
+            <Home className="h-4 w-4" />
+            Home
+          </Button>
+        </div>
+
         {/* Header */}
         <div className="text-center">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>
