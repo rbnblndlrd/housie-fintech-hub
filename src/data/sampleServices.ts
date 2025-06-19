@@ -92,7 +92,7 @@ export const fallbackServices: Service[] = [
     description: "Tonte, bordures et ramassage des résidus. Service hebdomadaire ou ponctuel disponible.",
     base_price: 75,
     pricing_type: "flat",
-    category: "lawn_care",
+    category: "landscaping",
     subcategory: "lawn_mowing",
     active: true,
     background_check_required: false,
@@ -143,6 +143,68 @@ export const fallbackServices: Service[] = [
       rbq_verified: false,
       user: {
         full_name: "Sophie Martin",
+        city: "Montréal",
+        province: "QC"
+      }
+    }
+  },
+  {
+    id: 'fallback-4',
+    title: "Installation électrique résidentielle",
+    description: "Installation de prises, éclairage, et réparations électriques. Électricien certifié.",
+    base_price: 85,
+    pricing_type: "hourly",
+    category: "electrical",
+    subcategory: "residential_electrical",
+    active: true,
+    background_check_required: true,
+    ccq_rbq_required: true,
+    risk_category: "high",
+    provider: {
+      id: 'provider-4',
+      business_name: "Électro Pro",
+      hourly_rate: 85,
+      service_radius_km: 40,
+      average_rating: 4.9,
+      total_bookings: 156,
+      verified: true,
+      verification_level: 'professional_license',
+      background_check_verified: true,
+      ccq_verified: true,
+      rbq_verified: true,
+      user: {
+        full_name: "Michel Électricien",
+        city: "Montréal",
+        province: "QC"
+      }
+    }
+  },
+  {
+    id: 'fallback-5',
+    title: "Réparation de plomberie d'urgence",
+    description: "Débouchage, réparation de fuites, remplacement de robinets. Service 24h/7j.",
+    base_price: 95,
+    pricing_type: "hourly",
+    category: "plumbing",
+    subcategory: "emergency_plumbing",
+    active: true,
+    background_check_required: true,
+    ccq_rbq_required: true,
+    risk_category: "high",
+    provider: {
+      id: 'provider-5',
+      business_name: "Plomberie Express",
+      hourly_rate: 95,
+      service_radius_km: 35,
+      average_rating: 4.6,
+      total_bookings: 203,
+      verified: true,
+      verification_level: 'professional_license',
+      background_check_verified: true,
+      ccq_verified: false,
+      rbq_verified: true,
+      user: {
+        full_name: "André Plombier",
         city: "Montréal",
         province: "QC"
       }
