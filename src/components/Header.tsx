@@ -109,6 +109,11 @@ const Header = () => {
     ...userDropdownItems
   ] : userDropdownItems;
 
+  const handleRoleToggle = (checked: boolean) => {
+    console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
+    toggleRole();
+  };
+
   return (
     <TooltipProvider>
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
@@ -180,7 +185,12 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       
                       {/* Role Toggle */}
-                      <div className="px-2 py-2" onMouseDown={(e) => e.stopPropagation()}>
+                      <div 
+                        className="px-2 py-2" 
+                        onClick={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                        onMouseUp={(e) => e.stopPropagation()}
+                      >
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Mode:</span>
                           <div className="flex items-center gap-2">
@@ -189,11 +199,10 @@ const Header = () => {
                             </span>
                             <Switch
                               checked={currentRole === 'provider'}
-                              onCheckedChange={(checked) => {
-                                console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
-                                toggleRole();
-                              }}
+                              onCheckedChange={handleRoleToggle}
+                              onClick={(e) => e.stopPropagation()}
                               onMouseDown={(e) => e.stopPropagation()}
+                              onMouseUp={(e) => e.stopPropagation()}
                             />
                             <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
                               Prestataire
