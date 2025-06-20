@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { adminService } from '@/services/adminService';
 import UserStatsCards from './user-management/UserStatsCards';
 import UserManagementTable from './user-management/UserManagementTable';
 
@@ -33,31 +35,20 @@ const UserManagementSection = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [adminCheckLoading, setAdminCheckLoading] = useState(true);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const checkAdminStatus = async () => {
     try {
       setAdminCheckLoading(true);
-      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
+      if (!user) {
         setIsAdmin(false);
         return;
       }
 
-      const { data, error } = await supabase.functions.invoke('check-admin-status', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('Admin status check error:', error);
-        setIsAdmin(false);
-        return;
-      }
-
-      setIsAdmin(data.isAdmin || false);
-      console.log('Admin status:', data.isAdmin);
+      const isUserAdmin = await adminService.checkAdminStatus(user.id);
+      setIsAdmin(isUserAdmin);
+      console.log('Admin status:', isUserAdmin);
     } catch (error) {
       console.error('Error checking admin status:', error);
       setIsAdmin(false);
@@ -130,29 +121,13 @@ const UserManagementSection = () => {
 
     try {
       setUpdatingSubscription(userId);
-      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
+      const result = await adminService.updateUserSubscription(userId, newTier);
+
+      if (!result.success) {
         toast({
           title: "Erreur",
-          description: "Session expirée",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('admin-update-subscription', {
-        body: { userId, newTier },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('Subscription update error:', error);
-        toast({
-          title: "Erreur",
-          description: error.message || "Impossible de mettre à jour l'abonnement",
+          description: result.error || "Impossible de mettre à jour l'abonnement",
           variant: "destructive",
         });
         return;
@@ -191,29 +166,13 @@ const UserManagementSection = () => {
 
     try {
       setDeleting(userId);
-      const { data: { session } } = await supabase.auth.getSession();
       
-      if (!session) {
+      const result = await adminService.deleteUser(userId);
+
+      if (!result.success) {
         toast({
           title: "Erreur",
-          description: "Session expirée",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
-        body: { userId },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) {
-        console.error('User deletion error:', error);
-        toast({
-          title: "Erreur",
-          description: error.message || "Impossible de supprimer l'utilisateur",
+          description: result.error || "Impossible de supprimer l'utilisateur",
           variant: "destructive",
         });
         return;
@@ -239,7 +198,7 @@ const UserManagementSection = () => {
 
   useEffect(() => {
     checkAdminStatus();
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     if (!adminCheckLoading) {
