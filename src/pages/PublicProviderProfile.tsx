@@ -87,7 +87,7 @@ const PublicProviderProfile = () => {
 
   // Create provider data for map display
   const mapProvider = provider ? {
-    id: provider.id.toString(),
+    id: parseInt(provider.id) || 0, // Convert string UUID to number for the Provider interface
     name: provider.business_name || 'Unknown Business',
     service: provider.services?.[0]?.category || 'General Services',
     rating: provider.average_rating || 0,
@@ -163,7 +163,9 @@ const PublicProviderProfile = () => {
                     <MapSection
                       onCategorySelect={() => {}} // Not needed for provider profile
                       providers={mapProvider ? [mapProvider] : []}
-                      hoveredProviderId={mapProvider?.id}
+                      hoveredProviderId={mapProvider?.id.toString()}
+                      showCategories={false}
+                      title="Service Area"
                     />
                   </div>
                   <div className="mt-4 text-sm text-gray-600">
