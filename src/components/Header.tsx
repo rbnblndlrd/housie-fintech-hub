@@ -113,7 +113,7 @@ const Header = () => {
             <div className="flex justify-start">
               <button
                 onClick={handleLogoClick}
-                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200 w-24 h-8"
+                className="flex items-center space-x-2 w-24 h-8"
               >
                 <img 
                   src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
