@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -27,7 +27,15 @@ const Header = () => {
   const navigate = useNavigate();
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
+  const [logoLoaded, setLogoLoaded] = useState(false);
   const { notifications, loading, unreadCount, markAsRead } = useNotifications();
+
+  // Preload the logo image
+  useEffect(() => {
+    const img = new Image();
+    img.onload = () => setLogoLoaded(true);
+    img.src = '/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png';
+  }, []);
 
   const handleLogout = async () => {
     try {
@@ -101,26 +109,31 @@ const Header = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-3 items-center h-16">
-            {/* Left: Logo */}
+            {/* Left: Logo - Fixed width container */}
             <div className="flex justify-start">
               <button
                 onClick={handleLogoClick}
-                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
+                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200 w-24 h-8"
               >
                 <img 
                   src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
                   alt="HOUSIE" 
-                  className="h-8 w-auto"
+                  className={`h-8 w-auto transition-opacity duration-200 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
+                  style={{ 
+                    imageRendering: 'crisp-edges',
+                    backfaceVisibility: 'hidden',
+                    transform: 'translateZ(0)'
+                  }}
                 />
               </button>
             </div>
             
-            {/* Center: Navigation */}
+            {/* Center: Navigation - Fixed positioning */}
             <div className="flex justify-center">
               <DynamicNavigation items={navigationItems} />
             </div>
             
-            {/* Right: User Menu */}
+            {/* Right: User Menu - Fixed width container */}
             <div className="flex justify-end">
               {user && (
                 <div className="flex items-center space-x-4">
