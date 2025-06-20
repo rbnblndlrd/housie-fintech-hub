@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -114,9 +113,8 @@ const Header = () => {
     toggleRole();
   };
 
-  const handleSwitchEvents = (e: React.MouseEvent | React.SyntheticEvent) => {
+  const handleSwitchContainerClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault();
   };
 
   return (
@@ -195,9 +193,7 @@ const Header = () => {
                           <span className="text-sm">Mode:</span>
                           <div 
                             className="flex items-center gap-2"
-                            onClick={handleSwitchEvents}
-                            onMouseDown={handleSwitchEvents}
-                            onMouseUp={handleSwitchEvents}
+                            onClick={handleSwitchContainerClick}
                           >
                             <span className={`text-xs ${currentRole === 'customer' ? 'font-medium' : 'text-gray-500'}`}>
                               Client
@@ -205,9 +201,6 @@ const Header = () => {
                             <Switch
                               checked={currentRole === 'provider'}
                               onCheckedChange={handleRoleToggle}
-                              onClick={handleSwitchEvents}
-                              onMouseDown={handleSwitchEvents}
-                              onMouseUp={handleSwitchEvents}
                             />
                             <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
                               Prestataire

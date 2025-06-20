@@ -50,16 +50,11 @@ export const getNavigationItems = (user: any): NavigationItem[] => {
 };
 
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
-  console.log('🔧 getUserDropdownItems called with role:', currentRole);
-  
   if (!user) return [];
 
   // Dynamic dashboard and profile links based on current role
   const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
-
-  console.log('🔧 Dashboard href for', currentRole, ':', dashboardHref);
-  console.log('🔧 Profile href for', currentRole, ':', profileHref);
 
   return [
     { label: "Dashboard", href: dashboardHref, icon: "⚙️" },
