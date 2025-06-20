@@ -11,6 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
 import { User, Edit, Phone, Mail, Image } from 'lucide-react';
 import Header from '@/components/Header';
+import ProfileNavigation from '@/components/ProfileNavigation';
 import BusinessInfoSection from '@/components/provider/BusinessInfoSection';
 import ServicesSection from '@/components/provider/ServicesSection';
 import ContactInfoSection from '@/components/provider/ContactInfoSection';
@@ -159,6 +160,7 @@ const ProviderProfile = () => {
         <Header />
         <div className="pt-16 p-6">
           <div className="max-w-4xl mx-auto">
+            <ProfileNavigation profileType="provider" />
             <Card className="fintech-card">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-bold text-gray-900">
@@ -189,6 +191,8 @@ const ProviderProfile = () => {
       <Header />
       <div className="pt-16 p-6">
         <div className="max-w-6xl mx-auto space-y-8">
+          <ProfileNavigation profileType="provider" />
+          
           {/* Header */}
           <div className="text-center">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>

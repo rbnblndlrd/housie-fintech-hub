@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { User, Edit, Phone, Mail, MapPin, Settings, Heart, Clock } from 'lucide-react';
 import Header from '@/components/Header';
+import ProfileNavigation from '@/components/ProfileNavigation';
 
 interface CustomerProfile {
   id: string;
@@ -173,6 +173,7 @@ const CustomerProfile = () => {
         <Header />
         <div className="pt-16 p-6">
           <div className="max-w-4xl mx-auto">
+            <ProfileNavigation profileType="customer" />
             <Card className="fintech-card">
               <CardHeader className="text-center">
                 <CardTitle className="text-2xl font-bold text-gray-900">Profile Not Found</CardTitle>
@@ -192,9 +193,11 @@ const CustomerProfile = () => {
       <Header />
       <div className="pt-16 p-6">
         <div className="max-w-6xl mx-auto space-y-8">
+          <ProfileNavigation profileType="customer" />
+          
           {/* Header */}
           <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Customer Profile</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile</h1>
             <p className="text-gray-600">Manage your personal information and service preferences</p>
           </div>
 
