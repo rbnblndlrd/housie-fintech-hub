@@ -373,23 +373,3 @@
   0%, 100% { background-position: 0 0, 0 0, 0 0; }
   50% { background-position: 50px 50px, -25px -25px, 25px 25px; }
 }
-
-:root {
-  --main-gradient: linear-gradient(135deg, #fef9e7 0%, #fde68a 50%, #fb923c 100%);
-}
-
-body {
-  background: var(--main-gradient);
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: cover;
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
-}
-
-/* Ensure pages don't override */
-#root {
-  background: transparent;
-  min-height: 100vh;
-}
