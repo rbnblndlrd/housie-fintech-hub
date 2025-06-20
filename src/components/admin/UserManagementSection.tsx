@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -123,6 +124,7 @@ const UserManagementSection = () => {
       setUpdatingSubscription(userId);
       
       // OPTIMISTIC UPDATE: Update UI immediately
+      const previousUser = users.find(u => u.id === userId);
       setUsers(prev => prev.map(user => 
         user.id === userId ? { ...user, subscription_tier: newTier } : user
       ));
@@ -131,9 +133,11 @@ const UserManagementSection = () => {
 
       if (!result.success) {
         // Revert optimistic update on error
-        setUsers(prev => prev.map(user => 
-          user.id === userId ? { ...user, subscription_tier: user.subscription_tier } : user
-        ));
+        if (previousUser) {
+          setUsers(prev => prev.map(user => 
+            user.id === userId ? { ...user, subscription_tier: previousUser.subscription_tier } : user
+          ));
+        }
         toast({
           title: "Erreur",
           description: result.error || "Impossible de mettre à jour l'abonnement",
@@ -142,19 +146,21 @@ const UserManagementSection = () => {
         return;
       }
 
-      // IMMEDIATE REFRESH: Refresh users list after successful update
-      await fetchUsers();
-
       toast({
         title: "Succès",
         description: `Abonnement mis à jour vers ${newTier}`,
       });
+
+      // Real-time will handle the refresh automatically
     } catch (error) {
       console.error('Error updating subscription:', error);
       // Revert optimistic update on error
-      setUsers(prev => prev.map(user => 
-        user.id === userId ? { ...user, subscription_tier: user.subscription_tier } : user
-      ));
+      const previousUser = users.find(u => u.id === userId);
+      if (previousUser) {
+        setUsers(prev => prev.map(user => 
+          user.id === userId ? { ...user, subscription_tier: previousUser.subscription_tier } : user
+        ));
+      }
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour",
@@ -178,9 +184,19 @@ const UserManagementSection = () => {
     try {
       setDeleting(userId);
       
+      // OPTIMISTIC UPDATE: Remove user from UI immediately
+      const userToDelete = users.find(u => u.id === userId);
+      setUsers(prev => prev.filter(user => user.id !== userId));
+
       const result = await adminService.deleteUser(userId);
 
       if (!result.success) {
+        // Revert optimistic update on error
+        if (userToDelete) {
+          setUsers(prev => [...prev, userToDelete].sort((a, b) => 
+            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+          ));
+        }
         toast({
           title: "Erreur",
           description: result.error || "Impossible de supprimer l'utilisateur",
@@ -194,10 +210,16 @@ const UserManagementSection = () => {
         description: "Utilisateur supprimé avec succès",
       });
 
-      // IMMEDIATE REFRESH: Refresh users list after successful deletion
-      await fetchUsers();
+      // Real-time will handle the refresh automatically
     } catch (error) {
       console.error('Error deleting user:', error);
+      // Revert optimistic update on error
+      const userToDelete = users.find(u => u.id === userId);
+      if (userToDelete) {
+        setUsers(prev => [...prev, userToDelete].sort((a, b) => 
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        ));
+      }
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la suppression",
