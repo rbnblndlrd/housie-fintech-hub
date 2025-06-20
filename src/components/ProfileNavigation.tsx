@@ -24,7 +24,8 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({ profileType }) =>
     if (window.history.length > 1) {
       navigate(-1);
     } else {
-      navigate('/customer-dashboard');
+      const dashboardPath = profileType === 'provider' ? '/analytics' : '/customer-dashboard';
+      navigate(dashboardPath);
     }
   };
 
@@ -33,22 +34,13 @@ const ProfileNavigation: React.FC<ProfileNavigationProps> = ({ profileType }) =>
 
   return (
     <div className="mb-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center gap-3 mb-4">
         <Button
           onClick={handleBack}
           variant="outline"
-          className="flex items-center gap-2 hover:bg-gray-50"
+          className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </Button>
-        
-        <Button
-          onClick={() => navigate(dashboardHref)}
-          variant="ghost"
-          className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-        >
-          Go to Dashboard
+          ← Back
         </Button>
       </div>
       
