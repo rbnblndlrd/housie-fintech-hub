@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -7,9 +6,17 @@ import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CreamBadge } from '@/components/ui/cream-badge';
-import { Star, MapPin, Clock, Shield, DollarSign, Phone, Mail } from 'lucide-react';
+import { Star, MapPin, Clock, Shield, DollarSign, Phone, Mail, ArrowLeft, Home } from 'lucide-react';
 import { Service } from '@/types/service';
 import ServiceBookingWrapper from '@/components/ServiceBookingWrapper';
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 
 const PublicProviderProfile = () => {
   const { id } = useParams<{ id: string }>();
@@ -36,6 +43,15 @@ const PublicProviderProfile = () => {
     },
     enabled: !!id
   });
+
+  const handleBack = () => {
+    // Try to go back in browser history, fallback to services page
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/services');
+    }
+  };
 
   const handleBookNow = (service: any) => {
     if (!provider) return;
@@ -135,6 +151,57 @@ const PublicProviderProfile = () => {
       <Header />
       <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
         <div className="container mx-auto px-4 py-8 max-w-6xl">
+          {/* Back Navigation and Breadcrumb */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                onClick={handleBack}
+                variant="outline"
+                className="flex items-center gap-2 hover:bg-gray-50"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back
+              </Button>
+              
+              <Button
+                onClick={() => navigate('/services')}
+                variant="ghost"
+                className="text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+              >
+                Browse More Providers
+              </Button>
+            </div>
+            
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink 
+                    onClick={() => navigate('/')}
+                    className="cursor-pointer flex items-center gap-1"
+                  >
+                    <Home className="h-4 w-4" />
+                    Home
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink 
+                    onClick={() => navigate('/services')}
+                    className="cursor-pointer"
+                  >
+                    Find Services
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="font-medium">
+                    {provider.business_name}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+
           {/* Provider Header */}
           <Card className="fintech-card mb-8">
             <CardContent className="p-8">
