@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -32,6 +33,8 @@ const Header = () => {
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
   const { notifications, loading, unreadCount, markAsRead } = useNotifications();
 
+  console.log('🔧 Header render - currentRole:', currentRole);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -43,6 +46,8 @@ const Header = () => {
   };
 
   const handleDropdownAction = (item: NavigationItem) => {
+    console.log('🔧 Dropdown action clicked:', item.label, 'href:', item.href);
+    
     if (item.action === 'logout') {
       handleLogout();
     } else if (item.action === 'notifications') {
@@ -83,8 +88,13 @@ const Header = () => {
     return `Current plan: ${tier.charAt(0).toUpperCase() + tier.slice(1)}`;
   };
 
-  const userDropdownItems = getUserDropdownItems(user, currentRole);
   const navigationItems = getNavigationItems(user);
+  
+  // Memoize dropdown items with currentRole as dependency to force re-calculation
+  const userDropdownItems = useMemo(() => {
+    console.log('🔧 Recalculating dropdown items for role:', currentRole);
+    return getUserDropdownItems(user, currentRole);
+  }, [user, currentRole]);
 
   const enhancedDropdownItems: NavigationItem[] = user ? [
     { 
@@ -143,7 +153,7 @@ const Header = () => {
                     </TooltipContent>
                   </Tooltip>
 
-                  <DropdownMenu>
+                  <DropdownMenu key={`dropdown-${currentRole}`}>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
                         <Avatar className="h-8 w-8">
@@ -179,7 +189,10 @@ const Header = () => {
                             </span>
                             <Switch
                               checked={currentRole === 'provider'}
-                              onCheckedChange={toggleRole}
+                              onCheckedChange={(checked) => {
+                                console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
+                                toggleRole();
+                              }}
                             />
                             <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
                               Prestataire
@@ -196,7 +209,7 @@ const Header = () => {
                         
                         return (
                           <DropdownMenuItem
-                            key={index}
+                            key={`${index}-${item.label}-${item.href}`}
                             onClick={() => handleDropdownAction(item)}
                             className="cursor-pointer"
                           >
