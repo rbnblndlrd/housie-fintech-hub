@@ -38,6 +38,11 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
     }
   };
 
+  const handleBookNow = () => {
+    // Ensure we pass the complete service with all provider data
+    onBookNow(service);
+  };
+
   // Safely get provider data with fallbacks
   const businessName = service.provider?.business_name || 'Unknown Provider';
   const userCity = service.provider?.user?.city || 'Unknown';
@@ -134,7 +139,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 </Button>
                 <Button 
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-                  onClick={() => onBookNow(service)}
+                  onClick={handleBookNow}
                 >
                   Book Now
                 </Button>
