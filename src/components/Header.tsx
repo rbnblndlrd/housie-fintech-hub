@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import {
@@ -28,15 +29,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
-  const [logoLoaded, setLogoLoaded] = useState(false);
   const { notifications, loading, unreadCount, markAsRead } = useNotifications();
-
-  // Preload the logo image
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => setLogoLoaded(true);
-    img.src = '/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png';
-  }, []);
 
   const handleLogout = async () => {
     try {
@@ -119,12 +112,7 @@ const Header = () => {
                 <img 
                   src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
                   alt="HOUSIE" 
-                  className={`h-8 w-auto transition-opacity duration-200 ${logoLoaded ? 'opacity-100' : 'opacity-0'}`}
-                  style={{ 
-                    imageRendering: 'crisp-edges',
-                    backfaceVisibility: 'hidden',
-                    transform: 'translateZ(0)'
-                  }}
+                  className="h-8 w-auto"
                 />
               </button>
             </div>
@@ -232,3 +220,4 @@ const Header = () => {
 };
 
 export default Header;
+
