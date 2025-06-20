@@ -1,67 +1,67 @@
 
 import React from 'react';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle, XCircle, Clock, Shield } from 'lucide-react';
+import { CreamBadge } from '@/components/ui/cream-badge';
+import { Crown, Star, Zap } from 'lucide-react';
 
 interface User {
   can_provide?: boolean;
-  subscription_tier?: string;
   provider_profile?: {
     verified?: boolean;
   };
+  subscription_tier?: string;
 }
 
-export const getTypeBadge = (user: User) => {
-  if (user.can_provide) {
-    return (
-      <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
-        Prestataire
-      </Badge>
-    );
-  }
-  return (
-    <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">
-      Client
-    </Badge>
-  );
-};
-
 export const getStatusBadge = (user: User) => {
-  if (user.can_provide) {
-    if (user.provider_profile?.verified) {
-      return (
-        <Badge className="bg-green-600 text-white">
-          <CheckCircle className="h-3 w-3 mr-1" />
-          Vérifié
-        </Badge>
-      );
+  if (user.can_provide && user.provider_profile) {
+    if (user.provider_profile.verified) {
+      return <CreamBadge variant="success">Prestataire Vérifié</CreamBadge>;
     } else {
-      return (
-        <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
-          <Clock className="h-3 w-3 mr-1" />
-          En attente
-        </Badge>
-      );
+      return <CreamBadge variant="warning">Prestataire En Attente</CreamBadge>;
     }
   }
-  return (
-    <Badge className="bg-green-600 text-white">
-      <CheckCircle className="h-3 w-3 mr-1" />
-      Actif
-    </Badge>
-  );
+  return <CreamBadge variant="info">Client</CreamBadge>;
+};
+
+export const getTypeBadge = (user: User) => {
+  return user.can_provide 
+    ? <CreamBadge variant="default">Prestataire</CreamBadge>
+    : <CreamBadge variant="info">Client</CreamBadge>;
 };
 
 export const getSubscriptionBadge = (tier?: string) => {
   switch (tier) {
-    case 'premium':
-      return <Badge className="bg-gold-600 text-white text-xs">Premium</Badge>;
-    case 'pro':
-      return <Badge className="bg-blue-600 text-white text-xs">Pro</Badge>;
-    case 'starter':
-      return <Badge className="bg-green-600 text-white text-xs">Starter</Badge>;
-    case 'free':
+    case 'Premium':
+      return (
+        <div className="flex items-center gap-1">
+          <Crown className="h-3 w-3 text-yellow-600" />
+          <span className="text-yellow-700 font-semibold text-xs bg-gradient-to-r from-yellow-100 to-orange-100 px-2 py-1 rounded-full border border-yellow-200">
+            Premium
+          </span>
+        </div>
+      );
+    case 'Pro':
+      return (
+        <div className="flex items-center gap-1">
+          <Star className="h-3 w-3 text-purple-600" />
+          <span className="text-purple-700 font-semibold text-xs bg-gradient-to-r from-purple-100 to-blue-100 px-2 py-1 rounded-full border border-purple-200">
+            Pro
+          </span>
+        </div>
+      );
+    case 'Starter':
+      return (
+        <div className="flex items-center gap-1">
+          <Zap className="h-3 w-3 text-blue-600" />
+          <span className="text-blue-700 font-semibold text-xs bg-gradient-to-r from-blue-100 to-cyan-100 px-2 py-1 rounded-full border border-blue-200">
+            Starter
+          </span>
+        </div>
+      );
     default:
-      return <Badge variant="outline" className="text-xs">Free</Badge>;
+      return (
+        <span className="text-gray-600 font-semibold text-xs bg-gray-100 px-2 py-1 rounded-full border border-gray-200">
+          Free
+        </span>
+      );
   }
 };
