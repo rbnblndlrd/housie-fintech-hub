@@ -49,13 +49,13 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
   }
 
   return (
-    <div className={cn("flex items-center space-x-6", className)}>
+    <div className={cn("flex items-center justify-center space-x-8", className)}>
       {items.slice(1).map((item, index) => (
         <Link
           key={index}
           to={item.href}
           className={cn(
-            "px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
+            "px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 whitespace-nowrap",
             "hover:text-white hover:bg-gray-800",
             isActive(item.href)
               ? "text-white bg-gray-800"

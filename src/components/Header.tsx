@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -58,7 +57,6 @@ const Header = () => {
     navigate('/');
   };
 
-  // Get the appropriate diamond icon and tooltip based on subscription tier
   const getDiamondIcon = () => {
     if (subscriptionLoading) return '💎';
     
@@ -85,7 +83,6 @@ const Header = () => {
   const userDropdownItems = getUserDropdownItems(user);
   const navigationItems = getNavigationItems(user);
 
-  // Add notifications as first item in dropdown with proper NavigationItem interface
   const enhancedDropdownItems: NavigationItem[] = user ? [
     { 
       label: "Notifications", 
@@ -104,11 +101,10 @@ const Header = () => {
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-6">
-              {/* HOUSIE Text Logo */}
+            <div className="flex items-center min-w-0 flex-shrink-0">
               <button
                 onClick={handleLogoClick}
-                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
+                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200 mr-8"
               >
                 <img 
                   src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
@@ -116,20 +112,21 @@ const Header = () => {
                   className="h-8 w-auto"
                 />
               </button>
-              
+            </div>
+            
+            <div className="flex-1 flex justify-center max-w-2xl">
               <DynamicNavigation items={navigationItems} />
             </div>
             
             {user && (
-              <div className="flex items-center space-x-4">
-                {/* Dynamic Diamond Icon for Subscription Status - Left of User Menu */}
+              <div className="flex items-center space-x-4 flex-shrink-0 min-w-0">
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={handleDiamondClick}
-                      className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg"
+                      className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg w-10 h-10 p-0 flex-shrink-0"
                     >
                       {getDiamondIcon()}
                     </Button>
@@ -139,10 +136,9 @@ const Header = () => {
                   </TooltipContent>
                 </Tooltip>
 
-                {/* User Dropdown Menu - Far Right */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800 flex-shrink-0">
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={user.user_metadata?.profile_image || undefined} alt={user.user_metadata?.full_name || user.email} />
                         <AvatarFallback className="bg-gray-700 text-white">
