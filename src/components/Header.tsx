@@ -100,11 +100,12 @@ const Header = () => {
     <TooltipProvider>
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center min-w-0 flex-shrink-0">
+          <div className="grid grid-cols-3 items-center h-16">
+            {/* Left: Logo */}
+            <div className="flex justify-start">
               <button
                 onClick={handleLogoClick}
-                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200 mr-8"
+                className="flex items-center space-x-2 hover:opacity-80 transition-opacity duration-200"
               >
                 <img 
                   src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
@@ -114,79 +115,83 @@ const Header = () => {
               </button>
             </div>
             
-            <div className="flex-1 flex justify-center max-w-2xl">
+            {/* Center: Navigation */}
+            <div className="flex justify-center">
               <DynamicNavigation items={navigationItems} />
             </div>
             
-            {user && (
-              <div className="flex items-center space-x-4 flex-shrink-0 min-w-0">
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleDiamondClick}
-                      className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg w-10 h-10 p-0 flex-shrink-0"
-                    >
-                      {getDiamondIcon()}
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>{getDiamondTooltip()}</p>
-                  </TooltipContent>
-                </Tooltip>
+            {/* Right: User Menu */}
+            <div className="flex justify-end">
+              {user && (
+                <div className="flex items-center space-x-4">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleDiamondClick}
+                        className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg w-10 h-10 p-0"
+                      >
+                        {getDiamondIcon()}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>{getDiamondTooltip()}</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800 flex-shrink-0">
-                      <Avatar className="h-8 w-8">
-                        <AvatarImage src={user.user_metadata?.profile_image || undefined} alt={user.user_metadata?.full_name || user.email} />
-                        <AvatarFallback className="bg-gray-700 text-white">
-                          {user.user_metadata?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <div className="flex items-center justify-start gap-2 p-2">
-                      <div className="flex flex-col space-y-1 leading-none">
-                        {user.user_metadata?.full_name && (
-                          <p className="font-medium">{user.user_metadata.full_name}</p>
-                        )}
-                        {user.email && (
-                          <p className="w-[200px] truncate text-sm text-muted-foreground">
-                            {user.email}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                    <DropdownMenuSeparator />
-                    
-                    {enhancedDropdownItems.map((item, index) => {
-                      if (item.separator) {
-                        return <DropdownMenuSeparator key={index} />;
-                      }
-                      
-                      return (
-                        <DropdownMenuItem
-                          key={index}
-                          onClick={() => handleDropdownAction(item)}
-                          className="cursor-pointer"
-                        >
-                          <span className="mr-2">{item.icon}</span>
-                          <span className="flex-1">{item.label}</span>
-                          {item.badge && (
-                            <CreamPill variant="notification" size="default" className="ml-2">
-                              {item.badge > 99 ? '99+' : item.badge}
-                            </CreamPill>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={user.user_metadata?.profile_image || undefined} alt={user.user_metadata?.full_name || user.email} />
+                          <AvatarFallback className="bg-gray-700 text-white">
+                            {user.user_metadata?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
+                          </AvatarFallback>
+                        </Avatar>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56" align="end" forceMount>
+                      <div className="flex items-center justify-start gap-2 p-2">
+                        <div className="flex flex-col space-y-1 leading-none">
+                          {user.user_metadata?.full_name && (
+                            <p className="font-medium">{user.user_metadata.full_name}</p>
                           )}
-                        </DropdownMenuItem>
-                      );
-                    })}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            )}
+                          {user.email && (
+                            <p className="w-[200px] truncate text-sm text-muted-foreground">
+                              {user.email}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <DropdownMenuSeparator />
+                      
+                      {enhancedDropdownItems.map((item, index) => {
+                        if (item.separator) {
+                          return <DropdownMenuSeparator key={index} />;
+                        }
+                        
+                        return (
+                          <DropdownMenuItem
+                            key={index}
+                            onClick={() => handleDropdownAction(item)}
+                            className="cursor-pointer"
+                          >
+                            <span className="mr-2">{item.icon}</span>
+                            <span className="flex-1">{item.label}</span>
+                            {item.badge && (
+                              <CreamPill variant="notification" size="default" className="ml-2">
+                                {item.badge > 99 ? '99+' : item.badge}
+                              </CreamPill>
+                            )}
+                          </DropdownMenuItem>
+                        );
+                      })}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              )}
+            </div>
           </div>
         </nav>
       </header>
