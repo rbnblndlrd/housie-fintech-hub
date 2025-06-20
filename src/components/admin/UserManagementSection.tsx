@@ -122,9 +122,18 @@ const UserManagementSection = () => {
     try {
       setUpdatingSubscription(userId);
       
+      // OPTIMISTIC UPDATE: Update UI immediately
+      setUsers(prev => prev.map(user => 
+        user.id === userId ? { ...user, subscription_tier: newTier } : user
+      ));
+
       const result = await adminService.updateUserSubscription(userId, newTier);
 
       if (!result.success) {
+        // Revert optimistic update on error
+        setUsers(prev => prev.map(user => 
+          user.id === userId ? { ...user, subscription_tier: user.subscription_tier } : user
+        ));
         toast({
           title: "Erreur",
           description: result.error || "Impossible de mettre à jour l'abonnement",
@@ -133,10 +142,8 @@ const UserManagementSection = () => {
         return;
       }
 
-      // Update local state
-      setUsers(prev => prev.map(user => 
-        user.id === userId ? { ...user, subscription_tier: newTier } : user
-      ));
+      // IMMEDIATE REFRESH: Refresh users list after successful update
+      await fetchUsers();
 
       toast({
         title: "Succès",
@@ -144,6 +151,10 @@ const UserManagementSection = () => {
       });
     } catch (error) {
       console.error('Error updating subscription:', error);
+      // Revert optimistic update on error
+      setUsers(prev => prev.map(user => 
+        user.id === userId ? { ...user, subscription_tier: user.subscription_tier } : user
+      ));
       toast({
         title: "Erreur",
         description: "Une erreur est survenue lors de la mise à jour",
@@ -183,6 +194,7 @@ const UserManagementSection = () => {
         description: "Utilisateur supprimé avec succès",
       });
 
+      // IMMEDIATE REFRESH: Refresh users list after successful deletion
       await fetchUsers();
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -195,6 +207,54 @@ const UserManagementSection = () => {
       setDeleting(null);
     }
   };
+
+  // REAL-TIME: Set up Supabase realtime subscriptions
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    console.log('Setting up real-time subscriptions for users table');
+    
+    const channel = supabase
+      .channel('admin-users-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
+          schema: 'public',
+          table: 'users'
+        },
+        (payload) => {
+          console.log('Real-time user change detected:', payload);
+          
+          // Refresh users list when any change is detected
+          fetchUsers();
+          
+          // Show toast for real-time updates
+          if (payload.eventType === 'UPDATE') {
+            toast({
+              title: "Mise à jour en temps réel",
+              description: "Les données utilisateur ont été mises à jour",
+            });
+          } else if (payload.eventType === 'INSERT') {
+            toast({
+              title: "Nouveau utilisateur",
+              description: "Un nouvel utilisateur s'est inscrit",
+            });
+          } else if (payload.eventType === 'DELETE') {
+            toast({
+              title: "Utilisateur supprimé",
+              description: "Un utilisateur a été supprimé",
+            });
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      console.log('Cleaning up real-time subscriptions');
+      supabase.removeChannel(channel);
+    };
+  }, [isAdmin, toast]);
 
   useEffect(() => {
     checkAdminStatus();
