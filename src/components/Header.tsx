@@ -180,7 +180,7 @@ const Header = () => {
                       <DropdownMenuSeparator />
                       
                       {/* Role Toggle */}
-                      <div className="px-2 py-2">
+                      <div className="px-2 py-2" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                           <span className="text-sm">Mode:</span>
                           <div className="flex items-center gap-2">
@@ -193,6 +193,7 @@ const Header = () => {
                                 console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
                                 toggleRole();
                               }}
+                              onClick={(e) => e.stopPropagation()}
                             />
                             <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
                               Prestataire
