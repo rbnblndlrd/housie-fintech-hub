@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -11,10 +10,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
 import { Bell } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { getUserDropdownItems, getNavigationItems, NavigationItem } from '@/utils/navigationConfig';
 import { useNotifications } from '@/hooks/useNotifications';
 import { useSubscription } from '@/contexts/SubscriptionContext';
@@ -25,6 +26,7 @@ import SubscriptionStatusModal from './SubscriptionStatusModal';
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { currentRole, toggleRole } = useRole();
   const { subscriptionData, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
@@ -82,7 +84,7 @@ const Header = () => {
     return `Current plan: ${tier.charAt(0).toUpperCase() + tier.slice(1)}`;
   };
 
-  const userDropdownItems = getUserDropdownItems(user);
+  const userDropdownItems = getUserDropdownItems(user, currentRole);
   const navigationItems = getNavigationItems(user);
 
   const enhancedDropdownItems: NavigationItem[] = user ? [
@@ -168,6 +170,27 @@ const Header = () => {
                       </div>
                       <DropdownMenuSeparator />
                       
+                      {/* Role Toggle */}
+                      <div className="px-2 py-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm">Mode:</span>
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs ${currentRole === 'customer' ? 'font-medium' : 'text-gray-500'}`}>
+                              Client
+                            </span>
+                            <Switch
+                              checked={currentRole === 'provider'}
+                              onCheckedChange={toggleRole}
+                              size="sm"
+                            />
+                            <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
+                              Prestataire
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <DropdownMenuSeparator />
+                      
                       {enhancedDropdownItems.map((item, index) => {
                         if (item.separator) {
                           return <DropdownMenuSeparator key={index} />;
@@ -220,4 +243,3 @@ const Header = () => {
 };
 
 export default Header;
-

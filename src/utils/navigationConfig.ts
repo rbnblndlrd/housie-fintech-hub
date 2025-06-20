@@ -49,12 +49,16 @@ export const getNavigationItems = (user: any): NavigationItem[] => {
   return customerNav;
 };
 
-export const getUserDropdownItems = (user: any): NavigationItem[] => {
+export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
+
+  // Dynamic profile link based on current role
+  const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
+  const profileLabel = currentRole === 'provider' ? 'Provider Profile' : 'Customer Profile';
 
   return [
     { label: "Dashboard", href: "/customer-dashboard", icon: "⚙️" },
-    { label: "Provider Profile", href: "/provider-profile", icon: "🔧" },
+    { label: profileLabel, href: profileHref, icon: "👤" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
     { label: "Verification Status", href: "/provider-profile", icon: "✅" },
