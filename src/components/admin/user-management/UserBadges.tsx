@@ -12,15 +12,6 @@ interface User {
 }
 
 export const getTypeBadge = (user: User) => {
-  if (user.subscription_tier === 'admin') {
-    return (
-      <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">
-        <Shield className="h-3 w-3 mr-1" />
-        Admin
-      </Badge>
-    );
-  }
-  
   if (user.can_provide) {
     return (
       <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
@@ -36,15 +27,6 @@ export const getTypeBadge = (user: User) => {
 };
 
 export const getStatusBadge = (user: User) => {
-  if (user.subscription_tier === 'admin') {
-    return (
-      <Badge className="bg-purple-600 text-white">
-        <Shield className="h-3 w-3 mr-1" />
-        Administrateur
-      </Badge>
-    );
-  }
-  
   if (user.can_provide) {
     if (user.provider_profile?.verified) {
       return (
@@ -72,13 +54,6 @@ export const getStatusBadge = (user: User) => {
 
 export const getSubscriptionBadge = (tier?: string) => {
   switch (tier) {
-    case 'admin':
-      return (
-        <Badge className="bg-purple-600 text-white text-xs">
-          <Shield className="h-3 w-3 mr-1" />
-          Admin
-        </Badge>
-      );
     case 'premium':
       return <Badge className="bg-gold-600 text-white text-xs">Premium</Badge>;
     case 'pro':

@@ -50,6 +50,9 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     try {
+      // Check admin status from auth metadata
+      const isAdminFromAuth = user?.user_metadata?.is_admin === true;
+      
       // Get user data from our users table to check subscription_tier
       const { data: userData, error: userError } = await supabase
         .from('users')
@@ -63,18 +66,17 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
           subscribed: false, 
           subscription_tier: null, 
           subscription_end: null, 
-          is_admin: false 
+          is_admin: isAdminFromAuth 
         });
       } else {
         const tier = userData?.subscription_tier || 'free';
-        const isAdmin = tier === 'admin';
-        const hasSubscription = ['starter', 'pro', 'premium', 'admin'].includes(tier);
+        const hasSubscription = ['starter', 'pro', 'premium'].includes(tier);
         
         setSubscriptionData({
           subscribed: hasSubscription,
           subscription_tier: tier,
           subscription_end: null, // Can be enhanced later with actual subscription end dates
-          is_admin: isAdmin,
+          is_admin: isAdminFromAuth,
         });
       }
     } catch (error) {
