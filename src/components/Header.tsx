@@ -1,128 +1,23 @@
 
-import React, { useState, useMemo } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Switch } from '@/components/ui/switch';
-import { Bell } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { supabase } from '@/integrations/supabase/client';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
-import { getUserDropdownItems, getNavigationItems, NavigationItem } from '@/utils/navigationConfig';
-import { useNotifications } from '@/hooks/useNotifications';
-import { useSubscription } from '@/contexts/SubscriptionContext';
-import { CreamPill } from '@/components/ui/cream-pill';
+import { getNavigationItems } from '@/utils/navigationConfig';
 import DynamicNavigation from './DynamicNavigation';
-import NotificationDropdown from './NotificationDropdown';
-import SubscriptionStatusModal from './SubscriptionStatusModal';
-import LanguageToggle from './LanguageToggle';
+import UserMenu from './header/UserMenu';
+import RoleToggle from './header/RoleToggle';
+import HeaderActions from './header/HeaderActions';
 
 const Header = () => {
-  const { user, logout } = useAuth();
-  const { currentRole, toggleRole } = useRole();
-  const { subscriptionData, loading: subscriptionLoading } = useSubscription();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
-  const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
-  const { notifications, loading, unreadCount, markAsRead } = useNotifications();
-
-  console.log('🔧 Header render - currentRole:', currentRole);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      await supabase.auth.signOut();
-      navigate('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  const handleDropdownAction = (item: NavigationItem) => {
-    console.log('🔧 Dropdown action clicked:', item.label, 'href:', item.href);
-    
-    if (item.action === 'logout') {
-      handleLogout();
-    } else if (item.action === 'notifications') {
-      setNotificationDropdownOpen(true);
-    } else if (item.href) {
-      navigate(item.href);
-    }
-  };
-
-  const handleDiamondClick = () => {
-    setSubscriptionModalOpen(true);
-  };
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
-  const getDiamondIcon = () => {
-    if (subscriptionLoading) return '💎';
-    
-    const tier = subscriptionData.subscription_tier?.toLowerCase() || 'free';
-    switch (tier) {
-      case 'pro':
-        return '🏆';
-      case 'premium':
-        return '💎';
-      case 'starter':
-        return '🚀';
-      default:
-        return '🆓';
-    }
-  };
-
-  const getDiamondTooltip = () => {
-    if (subscriptionLoading) return 'Loading subscription...';
-    
-    const tier = subscriptionData.subscription_tier || 'free';
-    return `Current plan: ${tier.charAt(0).toUpperCase() + tier.slice(1)}`;
-  };
-
   const navigationItems = getNavigationItems(user);
-  
-  // Memoize dropdown items with currentRole as dependency to force re-calculation
-  const userDropdownItems = useMemo(() => {
-    console.log('🔧 Recalculating dropdown items for role:', currentRole);
-    const items = getUserDropdownItems(user, currentRole);
-    console.log('🔧 Dashboard item href:', items.find(item => item.label === 'Dashboard')?.href);
-    return items;
-  }, [user, currentRole]);
-
-  const enhancedDropdownItems: NavigationItem[] = user ? [
-    { 
-      label: "Notifications", 
-      href: "", 
-      icon: <Bell className="h-4 w-4" />, 
-      action: "notifications",
-      badge: unreadCount > 0 ? unreadCount : undefined,
-      separator: false
-    },
-    { separator: true, label: "", href: "", icon: "" },
-    ...userDropdownItems
-  ] : userDropdownItems;
-
-  const handleRoleToggle = (checked: boolean) => {
-    console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
-    toggleRole();
-  };
-
-  // Comprehensive event handling for the switch container
-  const handleSwitchEvent = (e: React.MouseEvent) => {
-    console.log('🔧 Switch event triggered:', e.type);
-    e.stopPropagation();
-    e.preventDefault();
-  };
 
   return (
     <TooltipProvider>
@@ -152,119 +47,15 @@ const Header = () => {
             <div className="flex justify-end">
               {user && (
                 <div className="flex items-center space-x-4">
-                  <LanguageToggle />
-                  
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleDiamondClick}
-                        className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg w-10 h-10 p-0"
-                      >
-                        {getDiamondIcon()}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{getDiamondTooltip()}</p>
-                    </TooltipContent>
-                  </Tooltip>
-
-                  {/* Role Toggle - Outside of dropdown */}
-                  <div className="flex items-center gap-2 px-3 py-1 bg-gray-800 rounded-lg">
-                    <span className={`text-xs ${currentRole === 'customer' ? 'font-medium text-white' : 'text-gray-400'}`}>
-                      Client
-                    </span>
-                    <div
-                      onPointerDown={handleSwitchEvent}
-                      onMouseDown={handleSwitchEvent}
-                      onClick={handleSwitchEvent}
-                      onContextMenu={handleSwitchEvent}
-                    >
-                      <Switch
-                        checked={currentRole === 'provider'}
-                        onCheckedChange={handleRoleToggle}
-                        className="data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-600"
-                      />
-                    </div>
-                    <span className={`text-xs ${currentRole === 'provider' ? 'font-medium text-white' : 'text-gray-400'}`}>
-                      Prestataire
-                    </span>
-                  </div>
-
-                  <DropdownMenu key={`dropdown-${currentRole}-${Date.now()}`}>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={user.user_metadata?.profile_image || undefined} alt={user.user_metadata?.full_name || user.email} />
-                          <AvatarFallback className="bg-gray-700 text-white">
-                            {user.user_metadata?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
-                          </AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" align="end" forceMount>
-                      <div className="flex items-center justify-start gap-2 p-2">
-                        <div className="flex flex-col space-y-1 leading-none">
-                          {user.user_metadata?.full_name && (
-                            <p className="font-medium">{user.user_metadata.full_name}</p>
-                          )}
-                          {user.email && (
-                            <p className="w-[200px] truncate text-sm text-muted-foreground">
-                              {user.email}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <DropdownMenuSeparator />
-                      
-                      {enhancedDropdownItems.map((item, index) => {
-                        if (item.separator) {
-                          return <DropdownMenuSeparator key={index} />;
-                        }
-                        
-                        return (
-                          <DropdownMenuItem
-                            key={`${index}-${item.label}-${item.href}`}
-                            onClick={() => handleDropdownAction(item)}
-                            className="cursor-pointer"
-                          >
-                            <span className="mr-2">{item.icon}</span>
-                            <span className="flex-1">{item.label}</span>
-                            {item.badge && (
-                              <CreamPill variant="notification" size="default" className="ml-2">
-                                {item.badge > 99 ? '99+' : item.badge}
-                              </CreamPill>
-                            )}
-                          </DropdownMenuItem>
-                        );
-                      })}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                  <HeaderActions />
+                  <RoleToggle />
+                  <UserMenu />
                 </div>
               )}
             </div>
           </div>
         </nav>
       </header>
-
-      <SubscriptionStatusModal 
-        open={subscriptionModalOpen} 
-        onOpenChange={setSubscriptionModalOpen} 
-      />
-
-      {/* Notification Dropdown Modal */}
-      {notificationDropdownOpen && (
-        <div className="fixed inset-0 z-50 bg-black/50" onClick={() => setNotificationDropdownOpen(false)}>
-          <div className="fixed top-16 right-4 w-96 bg-white rounded-lg shadow-lg" onClick={(e) => e.stopPropagation()}>
-            <NotificationDropdown
-              notifications={notifications}
-              loading={loading}
-              onMarkAsRead={markAsRead}
-            />
-          </div>
-        </div>
-      )}
     </TooltipProvider>
   );
 };
