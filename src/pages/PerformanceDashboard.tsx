@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from "@/components/Header";
@@ -67,11 +66,11 @@ const PerformanceDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={() => navigate('/analytics-dashboard')}
+                onClick={() => navigate('/provider-dashboard')}
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                ← Retour aux Analytiques
+                ← Retour au Dashboard
               </Button>
             </div>
             <div className="flex items-center gap-3 mb-4">

@@ -23,6 +23,7 @@ import { CreamPill } from '@/components/ui/cream-pill';
 import DynamicNavigation from './DynamicNavigation';
 import NotificationDropdown from './NotificationDropdown';
 import SubscriptionStatusModal from './SubscriptionStatusModal';
+import LanguageToggle from './LanguageToggle';
 
 const Header = () => {
   const { user, logout } = useAuth();
@@ -151,6 +152,8 @@ const Header = () => {
             <div className="flex justify-end">
               {user && (
                 <div className="flex items-center space-x-4">
+                  <LanguageToggle />
+                  
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button

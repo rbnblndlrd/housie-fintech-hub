@@ -71,11 +71,11 @@ const AnalyticsDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={() => navigate('/analytics')}
+                onClick={() => navigate('/provider-dashboard')}
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                ← Retour aux Analytiques
+                ← Retour au Dashboard
               </Button>
             </div>
             <h1 className="text-4xl font-bold text-gray-900 mb-2">
