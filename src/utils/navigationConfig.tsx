@@ -59,6 +59,7 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
 
   console.log('🔧 Dashboard href for', currentRole, ':', dashboardHref);
+  console.log('🔧 Profile href for', currentRole, ':', profileHref);
 
   return [
     { label: "Dashboard", href: dashboardHref, icon: "⚙️" },
