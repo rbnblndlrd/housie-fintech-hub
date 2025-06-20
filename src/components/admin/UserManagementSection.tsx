@@ -30,7 +30,41 @@ const UserManagementSection = () => {
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
   const [updatingSubscription, setUpdatingSubscription] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [adminCheckLoading, setAdminCheckLoading] = useState(true);
   const { toast } = useToast();
+
+  const checkAdminStatus = async () => {
+    try {
+      setAdminCheckLoading(true);
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        setIsAdmin(false);
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('check-admin-status', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Admin status check error:', error);
+        setIsAdmin(false);
+        return;
+      }
+
+      setIsAdmin(data.isAdmin || false);
+      console.log('Admin status:', data.isAdmin);
+    } catch (error) {
+      console.error('Error checking admin status:', error);
+      setIsAdmin(false);
+    } finally {
+      setAdminCheckLoading(false);
+    }
+  };
 
   const fetchUsers = async () => {
     try {
@@ -85,19 +119,40 @@ const UserManagementSection = () => {
   };
 
   const updateUserSubscription = async (userId: string, newTier: string) => {
+    if (!isAdmin) {
+      toast({
+        title: "Accès refusé",
+        description: "Privilèges administrateur requis",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setUpdatingSubscription(userId);
+      const { data: { session } } = await supabase.auth.getSession();
       
-      const { error } = await supabase
-        .from('users')
-        .update({ subscription_tier: newTier })
-        .eq('id', userId);
-
-      if (error) {
-        console.error('Error updating subscription:', error);
+      if (!session) {
         toast({
           title: "Erreur",
-          description: "Impossible de mettre à jour l'abonnement",
+          description: "Session expirée",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('admin-update-subscription', {
+        body: { userId, newTier },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('Subscription update error:', error);
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible de mettre à jour l'abonnement",
           variant: "destructive",
         });
         return;
@@ -125,19 +180,40 @@ const UserManagementSection = () => {
   };
 
   const deleteUser = async (userId: string) => {
+    if (!isAdmin) {
+      toast({
+        title: "Accès refusé",
+        description: "Privilèges administrateur requis",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setDeleting(userId);
+      const { data: { session } } = await supabase.auth.getSession();
       
-      const { error } = await supabase
-        .from('users')
-        .delete()
-        .eq('id', userId);
-
-      if (error) {
-        console.error('Error deleting user:', error);
+      if (!session) {
         toast({
           title: "Erreur",
-          description: "Impossible de supprimer l'utilisateur",
+          description: "Session expirée",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke('admin-delete-user', {
+        body: { userId },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) {
+        console.error('User deletion error:', error);
+        toast({
+          title: "Erreur",
+          description: error.message || "Impossible de supprimer l'utilisateur",
           variant: "destructive",
         });
         return;
@@ -162,8 +238,33 @@ const UserManagementSection = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
+    checkAdminStatus();
   }, []);
+
+  useEffect(() => {
+    if (!adminCheckLoading) {
+      fetchUsers();
+    }
+  }, [adminCheckLoading]);
+
+  if (adminCheckLoading) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-lg">Vérification des privilèges administrateur...</div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="flex items-center justify-center py-8">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Accès refusé</h2>
+          <p className="text-gray-600">Vous n'avez pas les privilèges administrateur requis pour accéder à cette section.</p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate stats from real data
   const totalUsers = users.length;

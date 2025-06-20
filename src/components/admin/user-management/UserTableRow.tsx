@@ -67,10 +67,13 @@ const UserTableRow = ({
           onValueChange={(value) => onUpdateSubscription(user.id, value)}
           disabled={updatingSubscription === user.id}
         >
-          <SelectTrigger className="w-28 h-8 text-xs">
+          <SelectTrigger className="w-32 h-8 text-xs">
             <SelectValue>
               {updatingSubscription === user.id ? (
-                <RefreshCw className="h-3 w-3 animate-spin" />
+                <div className="flex items-center gap-1">
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                  <span>Mise à jour...</span>
+                </div>
               ) : (
                 getSubscriptionBadge(user.subscription_tier)
               )}
@@ -120,7 +123,11 @@ const UserTableRow = ({
                 className="rounded-lg text-red-600 border-red-200 hover:bg-red-50"
                 disabled={deleting === user.id}
               >
-                <Trash2 className="h-3 w-3" />
+                {deleting === user.id ? (
+                  <RefreshCw className="h-3 w-3 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3 w-3" />
+                )}
               </Button>
             </AlertDialogTrigger>
             <AlertDialogContent>

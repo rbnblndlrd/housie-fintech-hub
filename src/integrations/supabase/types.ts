@@ -50,6 +50,30 @@ export type Database = {
           },
         ]
       }
+      admin_users: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          email: string
+          id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          email: string
+          id?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          email?: string
+          id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       ai_chat_sessions: {
         Row: {
           context_data: Json | null
