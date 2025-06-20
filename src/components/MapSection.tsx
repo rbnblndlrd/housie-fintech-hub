@@ -20,30 +20,42 @@ const MapSection: React.FC<MapSectionProps> = ({
   showCategories = true,
   title = "Service Area Map"
 }) => {
-  return (
-    <div className="space-y-6">
-      {showCategories && (
+  // If showing categories, render with full card structure
+  if (showCategories) {
+    return (
+      <div className="space-y-6">
         <ServiceCategories onCategorySelect={onCategorySelect} />
-      )}
 
-      {/* Interactive Google Map */}
-      <Card className="fintech-card">
-        <CardHeader>
-          <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-            {title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <GoogleMap
-            center={{ lat: 45.5017, lng: -73.5673 }}
-            zoom={12}
-            className="h-64 rounded-xl"
-            providers={providers}
-            hoveredProviderId={hoveredProviderId}
-          />
-        </CardContent>
-      </Card>
-    </div>
+        {/* Interactive Google Map */}
+        <Card className="fintech-card">
+          <CardHeader>
+            <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              {title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <GoogleMap
+              center={{ lat: 45.5017, lng: -73.5673 }}
+              zoom={12}
+              className="h-64 rounded-xl"
+              providers={providers}
+              hoveredProviderId={hoveredProviderId}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // For provider profile, render just the map without extra card wrapper
+  return (
+    <GoogleMap
+      center={{ lat: 45.5017, lng: -73.5673 }}
+      zoom={12}
+      className="h-full rounded-xl"
+      providers={providers}
+      hoveredProviderId={hoveredProviderId}
+    />
   );
 };
 
