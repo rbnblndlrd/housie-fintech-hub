@@ -11,10 +11,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Bell } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { getUserDropdownItems, getNavigationItems, NavigationItem } from '@/utils/navigationConfig';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useSubscription } from '@/contexts/SubscriptionContext';
 import { CreamPill } from '@/components/ui/cream-pill';
 import DynamicNavigation from './DynamicNavigation';
 import NotificationDropdown from './NotificationDropdown';
@@ -22,6 +24,7 @@ import SubscriptionStatusModal from './SubscriptionStatusModal';
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { subscriptionData, loading: subscriptionLoading } = useSubscription();
   const navigate = useNavigate();
   const [subscriptionModalOpen, setSubscriptionModalOpen] = useState(false);
   const [notificationDropdownOpen, setNotificationDropdownOpen] = useState(false);
@@ -55,6 +58,30 @@ const Header = () => {
     navigate('/');
   };
 
+  // Get the appropriate diamond icon and tooltip based on subscription tier
+  const getDiamondIcon = () => {
+    if (subscriptionLoading) return '💎';
+    
+    const tier = subscriptionData.subscription_tier?.toLowerCase() || 'free';
+    switch (tier) {
+      case 'pro':
+        return '🏆';
+      case 'premium':
+        return '💎';
+      case 'starter':
+        return '🚀';
+      default:
+        return '🆓';
+    }
+  };
+
+  const getDiamondTooltip = () => {
+    if (subscriptionLoading) return 'Loading subscription...';
+    
+    const tier = subscriptionData.subscription_tier || 'free';
+    return `Current plan: ${tier.charAt(0).toUpperCase() + tier.slice(1)}`;
+  };
+
   const userDropdownItems = getUserDropdownItems(user);
   const navigationItems = getNavigationItems(user);
 
@@ -73,7 +100,7 @@ const Header = () => {
   ] : userDropdownItems;
 
   return (
-    <>
+    <TooltipProvider>
       <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
         <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
@@ -95,16 +122,22 @@ const Header = () => {
             
             {user && (
               <div className="flex items-center space-x-4">
-                {/* Diamond Icon for Subscription Status - Left of User Menu */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDiamondClick}
-                  className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg"
-                  title="View current subscription plan and features"
-                >
-                  💎
-                </Button>
+                {/* Dynamic Diamond Icon for Subscription Status - Left of User Menu */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleDiamondClick}
+                      className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg"
+                    >
+                      {getDiamondIcon()}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{getDiamondTooltip()}</p>
+                  </TooltipContent>
+                </Tooltip>
 
                 {/* User Dropdown Menu - Far Right */}
                 <DropdownMenu>
@@ -179,7 +212,7 @@ const Header = () => {
           </div>
         </div>
       )}
-    </>
+    </TooltipProvider>
   );
 };
 

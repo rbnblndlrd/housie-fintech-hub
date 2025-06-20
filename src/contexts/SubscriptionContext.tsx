@@ -43,20 +43,22 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     try {
-      const { data, error } = await supabase.functions.invoke('check-subscription', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
+      // Read subscription data directly from the users table
+      const { data, error } = await supabase
+        .from('users')
+        .select('subscription_tier, subscription_status')
+        .eq('id', user.id)
+        .single();
 
       if (error) {
         console.error('Error checking subscription:', error);
         setSubscriptionData({ subscribed: false, subscription_tier: null, subscription_end: null });
       } else {
+        const isSubscribed = data?.subscription_tier && data.subscription_tier !== 'free';
         setSubscriptionData({
-          subscribed: data.subscribed || false,
-          subscription_tier: data.subscription_tier || null,
-          subscription_end: data.subscription_end || null,
+          subscribed: isSubscribed || false,
+          subscription_tier: data?.subscription_tier || 'free',
+          subscription_end: null, // We don't have this field in our users table yet
         });
       }
     } catch (error) {
@@ -71,7 +73,7 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
     if (!subscriptionData.subscribed) return false;
     
     const tier = subscriptionData.subscription_tier;
-    if (tier === 'Premium' || tier === 'Pro' || tier === 'Starter') {
+    if (tier === 'premium' || tier === 'pro' || tier === 'starter') {
       return true;
     }
     
