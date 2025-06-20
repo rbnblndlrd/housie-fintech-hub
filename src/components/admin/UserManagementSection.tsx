@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -86,32 +85,47 @@ const UserManagementSection = () => {
 
   const updateUserSubscription = async (userId: string, newTier: string) => {
     try {
+      console.log('Updating subscription for user:', userId, 'to tier:', newTier);
       setUpdatingSubscription(userId);
       
-      const { error } = await supabase
+      // Update the subscription_tier in the users table
+      const { data, error } = await supabase
         .from('users')
         .update({ subscription_tier: newTier })
-        .eq('id', userId);
+        .eq('id', userId)
+        .select('id, subscription_tier');
 
       if (error) {
         console.error('Error updating subscription:', error);
         toast({
           title: "Erreur",
-          description: "Impossible de mettre à jour l'abonnement",
+          description: `Impossible de mettre à jour l'abonnement: ${error.message}`,
           variant: "destructive",
         });
         return;
       }
 
-      // Update local state
-      setUsers(prev => prev.map(user => 
-        user.id === userId ? { ...user, subscription_tier: newTier } : user
-      ));
+      console.log('Subscription update result:', data);
 
-      toast({
-        title: "Succès",
-        description: `Abonnement mis à jour vers ${newTier}`,
-      });
+      // Verify the update was successful
+      if (data && data.length > 0) {
+        // Update local state immediately
+        setUsers(prev => prev.map(user => 
+          user.id === userId ? { ...user, subscription_tier: newTier } : user
+        ));
+
+        toast({
+          title: "Succès",
+          description: `Abonnement mis à jour vers ${newTier}`,
+        });
+      } else {
+        console.error('No data returned from update');
+        toast({
+          title: "Erreur",
+          description: "La mise à jour n'a pas été confirmée",
+          variant: "destructive",
+        });
+      }
     } catch (error) {
       console.error('Error updating subscription:', error);
       toast({
