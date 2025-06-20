@@ -1119,7 +1119,10 @@ export type Database = {
       }
       users: {
         Row: {
+          accessibility_needs: string | null
           address: string | null
+          budget_range_max: number | null
+          budget_range_min: number | null
           can_provide: boolean | null
           can_seek: boolean | null
           city: string | null
@@ -1128,11 +1131,16 @@ export type Database = {
           email: string
           full_name: string
           id: string
+          notification_preferences: boolean | null
           password_hash: string | null
           phone: string | null
           postal_code: string | null
+          preferred_contact_method: string | null
+          preferred_timing: string | null
           profile_image: string | null
           province: string | null
+          service_categories: string[] | null
+          special_instructions: string | null
           stripe_customer_id: string | null
           subscription_status: string | null
           subscription_tier: string | null
@@ -1140,7 +1148,10 @@ export type Database = {
           user_role: string | null
         }
         Insert: {
+          accessibility_needs?: string | null
           address?: string | null
+          budget_range_max?: number | null
+          budget_range_min?: number | null
           can_provide?: boolean | null
           can_seek?: boolean | null
           city?: string | null
@@ -1149,11 +1160,16 @@ export type Database = {
           email: string
           full_name: string
           id?: string
+          notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
           postal_code?: string | null
+          preferred_contact_method?: string | null
+          preferred_timing?: string | null
           profile_image?: string | null
           province?: string | null
+          service_categories?: string[] | null
+          special_instructions?: string | null
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
@@ -1161,7 +1177,10 @@ export type Database = {
           user_role?: string | null
         }
         Update: {
+          accessibility_needs?: string | null
           address?: string | null
+          budget_range_max?: number | null
+          budget_range_min?: number | null
           can_provide?: boolean | null
           can_seek?: boolean | null
           city?: string | null
@@ -1170,11 +1189,16 @@ export type Database = {
           email?: string
           full_name?: string
           id?: string
+          notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
           postal_code?: string | null
+          preferred_contact_method?: string | null
+          preferred_timing?: string | null
           profile_image?: string | null
           province?: string | null
+          service_categories?: string[] | null
+          special_instructions?: string | null
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null

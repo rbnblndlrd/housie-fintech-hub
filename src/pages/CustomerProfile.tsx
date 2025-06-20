@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,6 +33,26 @@ interface CustomerProfile {
   preferred_timing: string;
 }
 
+interface DatabaseUser {
+  id: string;
+  full_name: string | null;
+  phone: string | null;
+  email: string;
+  profile_image: string | null;
+  address: string | null;
+  city: string | null;
+  province: string | null;
+  postal_code: string | null;
+  preferred_contact_method: string | null;
+  notification_preferences: boolean | null;
+  service_categories: string[] | null;
+  budget_range_min: number | null;
+  budget_range_max: number | null;
+  accessibility_needs: string | null;
+  special_instructions: string | null;
+  preferred_timing: string | null;
+}
+
 const CustomerProfile = () => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -56,24 +77,25 @@ const CustomerProfile = () => {
       if (error) throw error;
       
       // Transform database data to CustomerProfile format
+      const databaseUser = data as DatabaseUser;
       const customerProfile: CustomerProfile = {
-        id: data.id,
-        full_name: data.full_name || '',
-        phone: data.phone || '',
-        email: data.email || '',
-        profile_image: data.profile_image || '',
-        address: data.address || '',
-        city: data.city || '',
-        province: data.province || '',
-        postal_code: data.postal_code || '',
-        preferred_contact_method: data.preferred_contact_method || 'email',
-        notification_preferences: data.notification_preferences || false,
-        service_categories: data.service_categories || [],
-        budget_range_min: data.budget_range_min || 0,
-        budget_range_max: data.budget_range_max || 0,
-        accessibility_needs: data.accessibility_needs || '',
-        special_instructions: data.special_instructions || '',
-        preferred_timing: data.preferred_timing || 'flexible',
+        id: databaseUser.id,
+        full_name: databaseUser.full_name || '',
+        phone: databaseUser.phone || '',
+        email: databaseUser.email || '',
+        profile_image: databaseUser.profile_image || '',
+        address: databaseUser.address || '',
+        city: databaseUser.city || '',
+        province: databaseUser.province || '',
+        postal_code: databaseUser.postal_code || '',
+        preferred_contact_method: databaseUser.preferred_contact_method || 'email',
+        notification_preferences: databaseUser.notification_preferences || false,
+        service_categories: databaseUser.service_categories || [],
+        budget_range_min: databaseUser.budget_range_min || 0,
+        budget_range_max: databaseUser.budget_range_max || 0,
+        accessibility_needs: databaseUser.accessibility_needs || '',
+        special_instructions: databaseUser.special_instructions || '',
+        preferred_timing: databaseUser.preferred_timing || 'flexible',
       };
       
       setProfile(customerProfile);
