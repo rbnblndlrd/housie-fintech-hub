@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -55,7 +54,29 @@ const CustomerProfile = () => {
         .single();
 
       if (error) throw error;
-      setProfile(data);
+      
+      // Transform database data to CustomerProfile format
+      const customerProfile: CustomerProfile = {
+        id: data.id,
+        full_name: data.full_name || '',
+        phone: data.phone || '',
+        email: data.email || '',
+        profile_image: data.profile_image || '',
+        address: data.address || '',
+        city: data.city || '',
+        province: data.province || '',
+        postal_code: data.postal_code || '',
+        preferred_contact_method: data.preferred_contact_method || 'email',
+        notification_preferences: data.notification_preferences || false,
+        service_categories: data.service_categories || [],
+        budget_range_min: data.budget_range_min || 0,
+        budget_range_max: data.budget_range_max || 0,
+        accessibility_needs: data.accessibility_needs || '',
+        special_instructions: data.special_instructions || '',
+        preferred_timing: data.preferred_timing || 'flexible',
+      };
+      
+      setProfile(customerProfile);
     } catch (error) {
       console.error('Error fetching customer profile:', error);
       toast({

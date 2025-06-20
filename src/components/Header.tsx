@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -181,7 +180,6 @@ const Header = () => {
                             <Switch
                               checked={currentRole === 'provider'}
                               onCheckedChange={toggleRole}
-                              size="sm"
                             />
                             <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
                               Prestataire
