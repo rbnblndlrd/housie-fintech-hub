@@ -76,15 +76,15 @@ const Analytics = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
         <div className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
             <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-slate-700 rounded w-1/3"></div>
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-32 bg-slate-700 rounded"></div>
+                  <div key={i} className="h-32 bg-gray-200 rounded"></div>
                 ))}
               </div>
             </div>
@@ -95,7 +95,7 @@ const Analytics = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 text-white">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
@@ -106,7 +106,7 @@ const Analytics = () => {
               <Button
                 onClick={() => navigate('/analytics-dashboard')}
                 variant="outline"
-                className="bg-purple-600/20 text-purple-300 hover:bg-purple-600/30 border-purple-500/50"
+                className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Analytics Hub
@@ -114,83 +114,83 @@ const Analytics = () => {
             </div>
             
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+              <h1 className="text-4xl font-bold text-gray-900">
                 Live Financial Monitor
               </h1>
             </div>
-            <p className="text-slate-300">Real-time revenue tracking and quick insights</p>
+            <p className="text-gray-600">Real-time revenue tracking and quick insights</p>
           </div>
 
           {/* Live Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-gradient-to-br from-blue-600/20 to-blue-800/20 border-blue-500/30 backdrop-blur-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-blue-300 text-sm mb-1">Today's Revenue</p>
-                    <p className="text-3xl font-bold text-white">${liveStats.todayRevenue}</p>
+                    <p className="text-gray-600 text-sm mb-1">Today's Revenue</p>
+                    <p className="text-3xl font-bold text-gray-900">${liveStats.todayRevenue}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <ArrowUpRight className="h-4 w-4 text-green-400" />
-                      <span className="text-green-400 text-sm">+12%</span>
+                      <ArrowUpRight className="h-4 w-4 text-green-600" />
+                      <span className="text-green-600 text-sm">+12%</span>
                     </div>
                   </div>
-                  <div className="p-3 bg-blue-500/20 rounded-xl">
-                    <DollarSign className="h-6 w-6 text-blue-400" />
+                  <div className="p-3 bg-blue-50 rounded-xl">
+                    <DollarSign className="h-6 w-6 text-blue-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-purple-600/20 to-purple-800/20 border-purple-500/30 backdrop-blur-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-purple-300 text-sm mb-1">Weekly Total</p>
-                    <p className="text-3xl font-bold text-white">${liveStats.weeklyRevenue}</p>
+                    <p className="text-gray-600 text-sm mb-1">Weekly Total</p>
+                    <p className="text-3xl font-bold text-gray-900">${liveStats.weeklyRevenue}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <ArrowUpRight className="h-4 w-4 text-green-400" />
-                      <span className="text-green-400 text-sm">+8%</span>
+                      <ArrowUpRight className="h-4 w-4 text-green-600" />
+                      <span className="text-green-600 text-sm">+8%</span>
                     </div>
                   </div>
-                  <div className="p-3 bg-purple-500/20 rounded-xl">
-                    <TrendingUp className="h-6 w-6 text-purple-400" />
+                  <div className="p-3 bg-purple-50 rounded-xl">
+                    <TrendingUp className="h-6 w-6 text-purple-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-green-600/20 to-emerald-800/20 border-green-500/30 backdrop-blur-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-green-300 text-sm mb-1">Active Jobs</p>
-                    <p className="text-3xl font-bold text-white">{liveStats.activeBookings}</p>
+                    <p className="text-gray-600 text-sm mb-1">Active Jobs</p>
+                    <p className="text-3xl font-bold text-gray-900">{liveStats.activeBookings}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <Calendar className="h-4 w-4 text-green-400" />
-                      <span className="text-green-400 text-sm">Live</span>
+                      <Calendar className="h-4 w-4 text-green-600" />
+                      <span className="text-green-600 text-sm">Live</span>
                     </div>
                   </div>
-                  <div className="p-3 bg-green-500/20 rounded-xl">
-                    <Activity className="h-6 w-6 text-green-400" />
+                  <div className="p-3 bg-green-50 rounded-xl">
+                    <Activity className="h-6 w-6 text-green-600" />
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-br from-orange-600/20 to-red-800/20 border-orange-500/30 backdrop-blur-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-orange-300 text-sm mb-1">Response Time</p>
-                    <p className="text-3xl font-bold text-white">{liveStats.responseTime}</p>
+                    <p className="text-gray-600 text-sm mb-1">Response Time</p>
+                    <p className="text-3xl font-bold text-gray-900">{liveStats.responseTime}</p>
                     <div className="flex items-center gap-1 mt-1">
-                      <Clock className="h-4 w-4 text-orange-400" />
-                      <span className="text-orange-400 text-sm">Avg</span>
+                      <Clock className="h-4 w-4 text-orange-600" />
+                      <span className="text-orange-600 text-sm">Avg</span>
                     </div>
                   </div>
-                  <div className="p-3 bg-orange-500/20 rounded-xl">
-                    <Zap className="h-6 w-6 text-orange-400" />
+                  <div className="p-3 bg-orange-50 rounded-xl">
+                    <Zap className="h-6 w-6 text-orange-600" />
                   </div>
                 </div>
               </CardContent>
@@ -200,10 +200,10 @@ const Analytics = () => {
           {/* Main Content Grid */}
           <div className="grid lg:grid-cols-3 gap-6">
             {/* Quick Actions */}
-            <Card className="lg:col-span-1 bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+            <Card className="lg:col-span-1 fintech-card">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Target className="h-5 w-5 text-blue-400" />
+                <CardTitle className="text-gray-900 flex items-center gap-2">
+                  <Target className="h-5 w-5 text-blue-600" />
                   Quick Access
                 </CardTitle>
               </CardHeader>
@@ -213,46 +213,46 @@ const Analytics = () => {
                     key={index}
                     onClick={() => navigate(action.path)}
                     variant="ghost"
-                    className="w-full justify-start h-auto p-4 hover:bg-slate-700/50 group"
+                    className="w-full justify-start h-auto p-4 hover:bg-gray-50 group text-gray-900"
                   >
                     <div className={`p-2 ${action.color} rounded-lg mr-3 group-hover:scale-110 transition-transform`}>
                       {action.icon}
                     </div>
-                    <span className="text-white font-medium">{action.label}</span>
-                    <ArrowUpRight className="h-4 w-4 ml-auto text-slate-400 group-hover:text-white" />
+                    <span className="text-gray-900 font-medium">{action.label}</span>
+                    <ArrowUpRight className="h-4 w-4 ml-auto text-gray-400 group-hover:text-gray-600" />
                   </Button>
                 ))}
               </CardContent>
             </Card>
 
             {/* Recent Activity */}
-            <Card className="lg:col-span-1 bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+            <Card className="lg:col-span-1 fintech-card">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <Activity className="h-5 w-5 text-green-400" />
+                <CardTitle className="text-gray-900 flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-green-600" />
                   Live Activity
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {recentActivity.map((activity, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
+                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div className="flex items-center gap-3">
                       <div className={`w-2 h-2 rounded-full ${
-                        activity.status === 'completed' ? 'bg-green-400' : 
-                        activity.status === 'pending' ? 'bg-yellow-400' : 'bg-blue-400'
+                        activity.status === 'completed' ? 'bg-green-500' : 
+                        activity.status === 'pending' ? 'bg-yellow-500' : 'bg-blue-500'
                       }`}></div>
                       <div>
-                        <p className="text-white text-sm font-medium">
+                        <p className="text-gray-900 text-sm font-medium">
                           {activity.amount || activity.service || activity.rating}
                         </p>
-                        <p className="text-slate-400 text-xs">{activity.time}</p>
+                        <p className="text-gray-500 text-xs">{activity.time}</p>
                       </div>
                     </div>
                     <Badge 
                       variant="outline" 
                       className={`text-xs ${
-                        activity.status === 'completed' ? 'border-green-400 text-green-400' : 
-                        activity.status === 'pending' ? 'border-yellow-400 text-yellow-400' : 'border-blue-400 text-blue-400'
+                        activity.status === 'completed' ? 'border-green-500 text-green-700' : 
+                        activity.status === 'pending' ? 'border-yellow-500 text-yellow-700' : 'border-blue-500 text-blue-700'
                       }`}
                     >
                       {activity.status}
@@ -263,26 +263,26 @@ const Analytics = () => {
             </Card>
 
             {/* Alerts & Notifications */}
-            <Card className="lg:col-span-1 bg-slate-800/50 border-slate-700/50 backdrop-blur-sm">
+            <Card className="lg:col-span-1 fintech-card">
               <CardHeader>
-                <CardTitle className="text-white flex items-center gap-2">
-                  <AlertCircle className="h-5 w-5 text-yellow-400" />
+                <CardTitle className="text-gray-900 flex items-center gap-2">
+                  <AlertCircle className="h-5 w-5 text-yellow-600" />
                   Alerts
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {alerts.map((alert, index) => (
                   <div key={index} className={`p-4 rounded-lg border ${
-                    alert.type === 'success' ? 'bg-green-900/20 border-green-500/30' : 'bg-yellow-900/20 border-yellow-500/30'
+                    alert.type === 'success' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200'
                   }`}>
                     <div className="flex items-start gap-3">
                       {alert.type === 'success' ? 
-                        <CheckCircle className="h-5 w-5 text-green-400 mt-0.5" /> : 
-                        <AlertCircle className="h-5 w-5 text-yellow-400 mt-0.5" />
+                        <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" /> : 
+                        <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
                       }
                       <div>
-                        <p className="text-white text-sm font-medium">{alert.message}</p>
-                        <p className="text-slate-400 text-xs mt-1">{alert.time}</p>
+                        <p className="text-gray-900 text-sm font-medium">{alert.message}</p>
+                        <p className="text-gray-500 text-xs mt-1">{alert.time}</p>
                       </div>
                     </div>
                   </div>
@@ -290,7 +290,7 @@ const Analytics = () => {
                 
                 <Button 
                   variant="ghost" 
-                  className="w-full text-slate-400 hover:text-white hover:bg-slate-700/50"
+                  className="w-full text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                   onClick={() => navigate('/notifications')}
                 >
                   View All Notifications
