@@ -43,7 +43,8 @@ export const getUserDropdownItems = (user: any): NavigationItem[] => {
   if (!user) return [];
 
   return [
-    { label: "Account Settings", href: "/provider-settings", icon: "⚙️" },
+    { label: "Account Settings", href: "/customer-dashboard", icon: "⚙️" },
+    { label: "Provider Settings", href: "/provider-settings", icon: "🔧" },
     { label: "Payment Methods", href: "/provider-settings", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
     { label: "Verification Status", href: "/provider-profile", icon: "✅" },

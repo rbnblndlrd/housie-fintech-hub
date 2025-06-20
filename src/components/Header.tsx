@@ -95,7 +95,18 @@ const Header = () => {
             
             {user && (
               <div className="flex items-center space-x-4">
-                {/* User Dropdown Menu */}
+                {/* Diamond Icon for Subscription Status - Left of User Menu */}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleDiamondClick}
+                  className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg"
+                  title="View current subscription plan and features"
+                >
+                  💎
+                </Button>
+
+                {/* User Dropdown Menu - Far Right */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
@@ -145,17 +156,6 @@ const Header = () => {
                     })}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                
-                {/* Diamond Icon for Subscription Status - Far Right */}
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDiamondClick}
-                  className="text-white hover:text-gray-300 hover:bg-gray-800 text-lg"
-                  title="View current subscription plan and features"
-                >
-                  💎
-                </Button>
               </div>
             )}
           </div>
