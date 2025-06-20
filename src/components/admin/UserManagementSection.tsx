@@ -1,9 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { adminService } from '@/services/adminService';
+import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import UserStatsCards from './user-management/UserStatsCards';
 import UserManagementTable from './user-management/UserManagementTable';
 
@@ -208,53 +208,37 @@ const UserManagementSection = () => {
     }
   };
 
-  // REAL-TIME: Set up Supabase realtime subscriptions
-  useEffect(() => {
-    if (!isAdmin) return;
-
-    console.log('Setting up real-time subscriptions for users table');
-    
-    const channel = supabase
-      .channel('admin-users-changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*', // Listen to all events (INSERT, UPDATE, DELETE)
-          schema: 'public',
-          table: 'users'
-        },
-        (payload) => {
-          console.log('Real-time user change detected:', payload);
-          
-          // Refresh users list when any change is detected
-          fetchUsers();
-          
-          // Show toast for real-time updates
-          if (payload.eventType === 'UPDATE') {
-            toast({
-              title: "Mise à jour en temps réel",
-              description: "Les données utilisateur ont été mises à jour",
-            });
-          } else if (payload.eventType === 'INSERT') {
-            toast({
-              title: "Nouveau utilisateur",
-              description: "Un nouvel utilisateur s'est inscrit",
-            });
-          } else if (payload.eventType === 'DELETE') {
-            toast({
-              title: "Utilisateur supprimé",
-              description: "Un utilisateur a été supprimé",
-            });
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      console.log('Cleaning up real-time subscriptions');
-      supabase.removeChannel(channel);
-    };
-  }, [isAdmin, toast]);
+  // REAL-TIME: Set up Supabase realtime subscriptions using the hook
+  useRealtimeSubscription({
+    table: 'users',
+    event: '*',
+    schema: 'public',
+    enabled: isAdmin,
+    onUpdate: (payload) => {
+      console.log('Real-time user change detected:', payload);
+      
+      // Refresh users list when any change is detected
+      fetchUsers();
+      
+      // Show toast for real-time updates
+      if (payload.eventType === 'UPDATE') {
+        toast({
+          title: "Mise à jour en temps réel",
+          description: "Les données utilisateur ont été mises à jour",
+        });
+      } else if (payload.eventType === 'INSERT') {
+        toast({
+          title: "Nouveau utilisateur",
+          description: "Un nouvel utilisateur s'est inscrit",
+        });
+      } else if (payload.eventType === 'DELETE') {
+        toast({
+          title: "Utilisateur supprimé",
+          description: "Un utilisateur a été supprimé",
+        });
+      }
+    }
+  });
 
   useEffect(() => {
     checkAdminStatus();
