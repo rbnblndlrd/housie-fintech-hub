@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -92,7 +93,9 @@ const Header = () => {
   // Memoize dropdown items with currentRole as dependency to force re-calculation
   const userDropdownItems = useMemo(() => {
     console.log('🔧 Recalculating dropdown items for role:', currentRole);
-    return getUserDropdownItems(user, currentRole);
+    const items = getUserDropdownItems(user, currentRole);
+    console.log('🔧 Dashboard item href:', items.find(item => item.label === 'Dashboard')?.href);
+    return items;
   }, [user, currentRole]);
 
   const enhancedDropdownItems: NavigationItem[] = user ? [
@@ -113,8 +116,11 @@ const Header = () => {
     toggleRole();
   };
 
-  const handleSwitchContainerClick = (e: React.MouseEvent) => {
+  // Comprehensive event handling for the switch container
+  const handleSwitchEvent = (e: React.MouseEvent) => {
+    console.log('🔧 Switch event triggered:', e.type);
     e.stopPropagation();
+    e.preventDefault();
   };
 
   return (
@@ -161,7 +167,29 @@ const Header = () => {
                     </TooltipContent>
                   </Tooltip>
 
-                  <DropdownMenu key={`dropdown-${currentRole}`}>
+                  {/* Role Toggle - Outside of dropdown */}
+                  <div className="flex items-center gap-2 px-3 py-1 bg-gray-800 rounded-lg">
+                    <span className={`text-xs ${currentRole === 'customer' ? 'font-medium text-white' : 'text-gray-400'}`}>
+                      Client
+                    </span>
+                    <div
+                      onPointerDown={handleSwitchEvent}
+                      onMouseDown={handleSwitchEvent}
+                      onClick={handleSwitchEvent}
+                      onContextMenu={handleSwitchEvent}
+                    >
+                      <Switch
+                        checked={currentRole === 'provider'}
+                        onCheckedChange={handleRoleToggle}
+                        className="data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-600"
+                      />
+                    </div>
+                    <span className={`text-xs ${currentRole === 'provider' ? 'font-medium text-white' : 'text-gray-400'}`}>
+                      Prestataire
+                    </span>
+                  </div>
+
+                  <DropdownMenu key={`dropdown-${currentRole}-${Date.now()}`}>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
                         <Avatar className="h-8 w-8">
@@ -183,29 +211,6 @@ const Header = () => {
                               {user.email}
                             </p>
                           )}
-                        </div>
-                      </div>
-                      <DropdownMenuSeparator />
-                      
-                      {/* Role Toggle */}
-                      <div className="px-2 py-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm">Mode:</span>
-                          <div 
-                            className="flex items-center gap-2"
-                            onClick={handleSwitchContainerClick}
-                          >
-                            <span className={`text-xs ${currentRole === 'customer' ? 'font-medium' : 'text-gray-500'}`}>
-                              Client
-                            </span>
-                            <Switch
-                              checked={currentRole === 'provider'}
-                              onCheckedChange={handleRoleToggle}
-                            />
-                            <span className={`text-xs ${currentRole === 'provider' ? 'font-medium' : 'text-gray-500'}`}>
-                              Prestataire
-                            </span>
-                          </div>
                         </div>
                       </div>
                       <DropdownMenuSeparator />
