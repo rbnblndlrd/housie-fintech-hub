@@ -1,3 +1,4 @@
+
 export interface NavigationItem {
   label: string;
   href: string;
@@ -24,7 +25,7 @@ export const customerNav: NavigationItem[] = [
 
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
-  { label: "Dashboard", href: "/analytics", icon: "📊" },
+  { label: "Dashboard", href: "/provider-dashboard", icon: "📊" },
   { label: "My Jobs", href: "/booking-management", icon: "📅" },
   { label: "AI Assistant", href: "/notifications", icon: "🤖" },
   { label: "Profile", href: "/provider-profile", icon: "👤" }
@@ -53,9 +54,10 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
 
   // Dynamic profile link based on current role
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
+  const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
 
   return [
-    { label: "Dashboard", href: "/customer-dashboard", icon: "⚙️" },
+    { label: "Dashboard", href: dashboardHref, icon: "⚙️" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
