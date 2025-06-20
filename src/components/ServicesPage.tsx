@@ -1,17 +1,20 @@
 
 import React, { useState, useMemo } from 'react';
-import { toast } from 'sonner';
 import ServicesLayout from './ServicesLayout';
+import ServiceBookingWrapper from './ServiceBookingWrapper';
 import { useServices } from '@/hooks/useServices';
 import { Service } from '@/types/service';
+import { useNavigate } from 'react-router-dom';
 
 const ServicesPage = () => {
   const { services, isLoading } = useServices();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('montreal');
   const [priceRange, setPriceRange] = useState<[number, number]>([10, 200]);
+  const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const filteredServicesList = useMemo(() => {
     return services.filter((service: Service) => {
@@ -30,7 +33,15 @@ const ServicesPage = () => {
   }, [services, searchTerm, selectedCategory, selectedSubcategory, selectedLocation, priceRange]);
 
   const handleBookNow = (service: Service) => {
-    toast.success(`Booking request sent for ${service.title}`);
+    setSelectedService(service);
+  };
+
+  const handleBookingComplete = (bookingId: string) => {
+    navigate('/booking-success');
+  };
+
+  const handleCancelBooking = () => {
+    setSelectedService(null);
   };
 
   const handleCategoryChange = (category: string) => {
@@ -38,6 +49,16 @@ const ServicesPage = () => {
     // Reset subcategory when category changes
     setSelectedSubcategory('all');
   };
+
+  if (selectedService) {
+    return (
+      <ServiceBookingWrapper
+        service={selectedService}
+        onBookingComplete={handleBookingComplete}
+        onCancel={handleCancelBooking}
+      />
+    );
+  }
 
   return (
     <ServicesLayout
