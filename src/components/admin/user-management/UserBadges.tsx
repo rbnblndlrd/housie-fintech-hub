@@ -1,67 +1,92 @@
 
 import React from 'react';
-import { CreamBadge } from '@/components/ui/cream-badge';
-import { Crown, Star, Zap } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { CheckCircle, XCircle, Clock, Shield } from 'lucide-react';
 
 interface User {
   can_provide?: boolean;
+  subscription_tier?: string;
   provider_profile?: {
     verified?: boolean;
   };
-  subscription_tier?: string;
 }
 
-export const getStatusBadge = (user: User) => {
-  if (user.can_provide && user.provider_profile) {
-    if (user.provider_profile.verified) {
-      return <CreamBadge variant="success">Prestataire Vérifié</CreamBadge>;
-    } else {
-      return <CreamBadge variant="warning">Prestataire En Attente</CreamBadge>;
-    }
+export const getTypeBadge = (user: User) => {
+  if (user.subscription_tier === 'admin') {
+    return (
+      <Badge variant="outline" className="bg-purple-100 text-purple-800 border-purple-200">
+        <Shield className="h-3 w-3 mr-1" />
+        Admin
+      </Badge>
+    );
   }
-  return <CreamBadge variant="info">Client</CreamBadge>;
+  
+  if (user.can_provide) {
+    return (
+      <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
+        Prestataire
+      </Badge>
+    );
+  }
+  return (
+    <Badge variant="outline" className="bg-gray-100 text-gray-800 border-gray-200">
+      Client
+    </Badge>
+  );
 };
 
-export const getTypeBadge = (user: User) => {
-  return user.can_provide 
-    ? <CreamBadge variant="default">Prestataire</CreamBadge>
-    : <CreamBadge variant="info">Client</CreamBadge>;
+export const getStatusBadge = (user: User) => {
+  if (user.subscription_tier === 'admin') {
+    return (
+      <Badge className="bg-purple-600 text-white">
+        <Shield className="h-3 w-3 mr-1" />
+        Administrateur
+      </Badge>
+    );
+  }
+  
+  if (user.can_provide) {
+    if (user.provider_profile?.verified) {
+      return (
+        <Badge className="bg-green-600 text-white">
+          <CheckCircle className="h-3 w-3 mr-1" />
+          Vérifié
+        </Badge>
+      );
+    } else {
+      return (
+        <Badge variant="outline" className="bg-yellow-100 text-yellow-800 border-yellow-200">
+          <Clock className="h-3 w-3 mr-1" />
+          En attente
+        </Badge>
+      );
+    }
+  }
+  return (
+    <Badge className="bg-green-600 text-white">
+      <CheckCircle className="h-3 w-3 mr-1" />
+      Actif
+    </Badge>
+  );
 };
 
 export const getSubscriptionBadge = (tier?: string) => {
   switch (tier) {
-    case 'Premium':
+    case 'admin':
       return (
-        <div className="flex items-center gap-1">
-          <Crown className="h-3 w-3 text-yellow-600" />
-          <span className="text-yellow-700 font-semibold text-xs bg-gradient-to-r from-yellow-100 to-orange-100 px-2 py-1 rounded-full border border-yellow-200">
-            Premium
-          </span>
-        </div>
+        <Badge className="bg-purple-600 text-white text-xs">
+          <Shield className="h-3 w-3 mr-1" />
+          Admin
+        </Badge>
       );
-    case 'Pro':
-      return (
-        <div className="flex items-center gap-1">
-          <Star className="h-3 w-3 text-purple-600" />
-          <span className="text-purple-700 font-semibold text-xs bg-gradient-to-r from-purple-100 to-blue-100 px-2 py-1 rounded-full border border-purple-200">
-            Pro
-          </span>
-        </div>
-      );
-    case 'Starter':
-      return (
-        <div className="flex items-center gap-1">
-          <Zap className="h-3 w-3 text-blue-600" />
-          <span className="text-blue-700 font-semibold text-xs bg-gradient-to-r from-blue-100 to-cyan-100 px-2 py-1 rounded-full border border-blue-200">
-            Starter
-          </span>
-        </div>
-      );
+    case 'premium':
+      return <Badge className="bg-gold-600 text-white text-xs">Premium</Badge>;
+    case 'pro':
+      return <Badge className="bg-blue-600 text-white text-xs">Pro</Badge>;
+    case 'starter':
+      return <Badge className="bg-green-600 text-white text-xs">Starter</Badge>;
+    case 'free':
     default:
-      return (
-        <span className="text-gray-600 font-semibold text-xs bg-gray-100 px-2 py-1 rounded-full border border-gray-200">
-          Free
-        </span>
-      );
+      return <Badge variant="outline" className="text-xs">Free</Badge>;
   }
 };
