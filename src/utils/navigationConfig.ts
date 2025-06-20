@@ -18,6 +18,7 @@ export const visitorNav: NavigationItem[] = [
 
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
+  { label: "Dashboard", href: "/customer-dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "My Bookings", href: "/booking-history", icon: "📅" },
   { label: "Account", href: "/customer-dashboard", icon: "👤" }
@@ -34,9 +35,19 @@ export const providerNav: NavigationItem[] = [
 export const getNavigationItems = (user: any): NavigationItem[] => {
   if (!user) return visitorNav;
   
-  // For now, we'll determine user type based on available context
-  // In the future, this should be based on user.role or user.user_role
-  return providerNav; // Default to provider for authenticated users
+  // Check if user has provider capabilities or role
+  // For now, we'll default to customer navigation for most users
+  // This can be expanded later with proper role detection from user metadata or database
+  const userRole = user.user_metadata?.user_role || 'customer';
+  const canProvide = user.user_metadata?.can_provide || false;
+  
+  // If user is explicitly a provider or can provide services, show provider nav
+  if (userRole === 'provider' || canProvide) {
+    return providerNav;
+  }
+  
+  // Default to customer navigation for authenticated users
+  return customerNav;
 };
 
 export const getUserDropdownItems = (user: any): NavigationItem[] => {
