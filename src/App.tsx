@@ -24,7 +24,6 @@ import BookingHistory from "@/pages/BookingHistory";
 import BookingSuccess from "@/pages/BookingSuccess";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import ProviderProfile from "@/pages/ProviderProfile";
-import ProviderSettings from "@/pages/ProviderSettings";
 import BookingManagement from "@/pages/BookingManagement";
 import Onboarding from "@/pages/Onboarding";
 import ProfileSetup from "@/pages/ProfileSetup";
@@ -62,7 +61,6 @@ const App = () => (
                 <Route path="/booking-success" element={<BookingSuccess />} />
                 <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                 <Route path="/provider-profile" element={<ProviderProfile />} />
-                <Route path="/provider-settings" element={<ProviderSettings />} />
                 <Route path="/booking-management" element={<BookingManagement />} />
                 <Route path="/onboarding" element={<Onboarding />} />
                 <Route path="/profile-setup" element={<ProfileSetup />} />
