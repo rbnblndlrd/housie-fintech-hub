@@ -3,8 +3,9 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { CreamBadge } from "@/components/ui/cream-badge";
-import { Star, DollarSign, MapPin } from 'lucide-react';
+import { Star, DollarSign, MapPin, User } from 'lucide-react';
 import { Service } from "@/types/service";
+import { useNavigate } from 'react-router-dom';
 
 interface ServiceCardProps {
   service: Service;
@@ -17,6 +18,8 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   onBookNow, 
   onHoverProvider 
 }) => {
+  const navigate = useNavigate();
+
   const handleMouseEnter = () => {
     if (onHoverProvider && service.provider?.id) {
       onHoverProvider(service.provider.id);
@@ -26,6 +29,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   const handleMouseLeave = () => {
     if (onHoverProvider) {
       onHoverProvider(null);
+    }
+  };
+
+  const handleViewProfile = () => {
+    if (service.provider?.id) {
+      navigate(`/provider/${service.provider.id}`);
     }
   };
 
@@ -55,7 +64,12 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
             <div className="flex items-start justify-between mb-3">
               <div>
                 <h3 className="text-xl font-bold text-gray-900 mb-1">{service.title}</h3>
-                <p className="text-gray-600 font-medium">{businessName}</p>
+                <button 
+                  onClick={handleViewProfile}
+                  className="text-gray-600 font-medium hover:text-blue-600 transition-colors"
+                >
+                  {businessName}
+                </button>
               </div>
               <div className="flex items-center gap-2">
                 <CreamBadge 
@@ -108,12 +122,23 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
               <div className="text-sm text-gray-500">
                 <span className="font-medium">Tarification réelle + 6% frais HOUSIE</span>
               </div>
-              <Button 
-                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-                onClick={() => onBookNow(service)}
-              >
-                Book Now
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={handleViewProfile}
+                  className="flex items-center gap-2 hover:bg-gray-50"
+                >
+                  <User className="h-4 w-4" />
+                  View Profile
+                </Button>
+                <Button 
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+                  onClick={() => onBookNow(service)}
+                >
+                  Book Now
+                </Button>
+              </div>
             </div>
           </div>
         </div>

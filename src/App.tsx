@@ -32,6 +32,7 @@ import AdminDashboard from "@/pages/AdminDashboard";
 import About from "@/pages/About";
 import FAQ from "@/pages/FAQ";
 import FAQArchive from "@/pages/FAQArchive";
+import PublicProviderProfile from "@/pages/PublicProviderProfile";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const App = () => (
                 <Route path="/welcome" element={<Welcome />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/services" element={<Services />} />
+                <Route path="/provider/:id" element={<PublicProviderProfile />} />
                 <Route path="/calendar" element={<Calendar />} />
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
