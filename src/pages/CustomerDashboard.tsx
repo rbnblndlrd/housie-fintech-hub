@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
+import ProfileNavigation from '@/components/ProfileNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -179,6 +180,8 @@ const CustomerDashboard = () => {
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
+          <ProfileNavigation profileType="customer" />
+          
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">
