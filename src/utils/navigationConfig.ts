@@ -52,11 +52,14 @@ export const getNavigationItems = (user: any): NavigationItem[] => {
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
 
+  // Dynamic dashboard link based on current role
+  const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+
   // Dynamic profile link based on current role
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
 
   return [
-    { label: "Dashboard", href: "/customer-dashboard", icon: "⚙️" },
+    { label: "Dashboard", href: dashboardHref, icon: "⚙️" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
