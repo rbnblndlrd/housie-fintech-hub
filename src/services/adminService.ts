@@ -3,7 +3,22 @@ import { createClient } from '@supabase/supabase-js';
 
 // Create a service role client for admin operations
 const supabaseUrl = "https://dsfaxqfexebqogdxigdu.supabase.co";
-const supabaseServiceKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRzZmF4cWZleGVicW9nZHhpZ2R1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MDEyOTMwNywiZXhwIjoyMDY1NzA1MzA3fQ.Wl3hf0_h8Ov4ZqQT8xKUn2aJJ9xK5vY3mF2sT9wLxE8"; // This should be stored securely
+
+// SECURITY: Get service role key from environment variables
+const supabaseServiceKey = import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY;
+
+// Critical security check
+if (!supabaseServiceKey) {
+  console.error('🚨 CRITICAL SECURITY ERROR: VITE_SUPABASE_SERVICE_ROLE_KEY environment variable is missing!');
+  console.error('Please add your Supabase service role key to your environment variables.');
+  throw new Error('Missing Supabase service role key - admin functions will not work');
+}
+
+// Warn if running in development with service role key
+if (import.meta.env.DEV) {
+  console.warn('⚠️  SERVICE ROLE KEY DETECTED IN DEVELOPMENT MODE');
+  console.warn('Ensure this key is properly secured in production!');
+}
 
 const adminSupabase = createClient(supabaseUrl, supabaseServiceKey);
 
