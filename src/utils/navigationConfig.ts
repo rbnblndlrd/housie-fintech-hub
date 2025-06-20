@@ -20,8 +20,7 @@ export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
   { label: "Dashboard", href: "/customer-dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "My Bookings", href: "/booking-history", icon: "📅" },
-  { label: "Account", href: "/customer-dashboard", icon: "👤" }
+  { label: "My Bookings", href: "/booking-history", icon: "📅" }
 ];
 
 export const providerNav: NavigationItem[] = [
@@ -54,7 +53,7 @@ export const getUserDropdownItems = (user: any): NavigationItem[] => {
   if (!user) return [];
 
   return [
-    { label: "Account Settings", href: "/customer-dashboard", icon: "⚙️" },
+    { label: "Dashboard", href: "/customer-dashboard", icon: "⚙️" },
     { label: "Provider Profile", href: "/provider-profile", icon: "🔧" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
