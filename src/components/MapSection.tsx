@@ -9,21 +9,29 @@ interface MapSectionProps {
   onCategorySelect: (category: string) => void;
   providers: Provider[];
   hoveredProviderId?: string | null;
+  showCategories?: boolean;
+  title?: string;
 }
 
 const MapSection: React.FC<MapSectionProps> = ({ 
   onCategorySelect, 
   providers,
-  hoveredProviderId 
+  hoveredProviderId,
+  showCategories = true,
+  title = "Service Area Map"
 }) => {
   return (
-    <div className="lg:col-span-1">
-      <ServiceCategories onCategorySelect={onCategorySelect} />
+    <div className="space-y-6">
+      {showCategories && (
+        <ServiceCategories onCategorySelect={onCategorySelect} />
+      )}
 
       {/* Interactive Google Map */}
       <Card className="fintech-card">
         <CardHeader>
-          <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Service Area Map</CardTitle>
+          <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            {title}
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <GoogleMap
