@@ -10,48 +10,50 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.5rem;
+    /* FORCE FINTECH VARIABLES - Override default variables to enforce fintech styling */
+    --background: 248 250 252; /* Light gray fintech background */
+    --foreground: 15 23 42; /* Dark fintech text */
+    --card: 255 255 255; /* White fintech cards */
+    --card-foreground: 15 23 42; /* Dark fintech card text */
+    --popover: 255 255 255; /* White fintech popovers */
+    --popover-foreground: 15 23 42; /* Dark fintech popover text */
+    --primary: 59 130 246; /* Blue fintech primary */
+    --primary-foreground: 255 255 255; /* White fintech primary text */
+    --secondary: 241 245 249; /* Light gray fintech secondary */
+    --secondary-foreground: 15 23 42; /* Dark fintech secondary text */
+    --muted: 241 245 249; /* Light gray fintech muted */
+    --muted-foreground: 100 116 139; /* Medium gray fintech muted text */
+    --accent: 241 245 249; /* Light gray fintech accent */
+    --accent-foreground: 15 23 42; /* Dark fintech accent text */
+    --destructive: 239 68 68; /* Red fintech destructive */
+    --destructive-foreground: 255 255 255; /* White fintech destructive text */
+    --border: 0 0 0; /* BLACK fintech borders */
+    --input: 0 0 0; /* BLACK fintech input borders */
+    --ring: 59 130 246; /* Blue fintech focus rings */
+    --radius: 1rem; /* Fintech border radius */
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 84% 4.9%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 94.1%;
+    /* FORCE DARK FINTECH VARIABLES */
+    --background: 15 23 42; /* Dark fintech background */
+    --foreground: 248 250 252; /* Light fintech text */
+    --card: 30 41 59; /* Dark fintech cards */
+    --card-foreground: 248 250 252; /* Light fintech card text */
+    --popover: 30 41 59; /* Dark fintech popovers */
+    --popover-foreground: 248 250 252; /* Light fintech popover text */
+    --primary: 147 197 253; /* Light blue fintech primary */
+    --primary-foreground: 15 23 42; /* Dark fintech primary text */
+    --secondary: 51 65 85; /* Dark gray fintech secondary */
+    --secondary-foreground: 248 250 252; /* Light fintech secondary text */
+    --muted: 51 65 85; /* Dark gray fintech muted */
+    --muted-foreground: 148 163 184; /* Light gray fintech muted text */
+    --accent: 51 65 85; /* Dark gray fintech accent */
+    --accent-foreground: 248 250 252; /* Light fintech accent text */
+    --destructive: 220 38 38; /* Dark red fintech destructive */
+    --destructive-foreground: 248 250 252; /* Light fintech destructive text */
+    --border: 255 255 255; /* WHITE fintech borders for dark mode */
+    --input: 255 255 255; /* WHITE fintech input borders for dark mode */
+    --ring: 147 197 253; /* Light blue fintech focus rings */
   }
 }
 
@@ -65,48 +67,76 @@
   }
 }
 
-/* Enhanced Fintech Card Styling */
+/* NUCLEAR FINTECH ENFORCEMENT - Force fintech on ALL elements */
+*, *::before, *::after {
+  /* Force fintech variables to be used */
+  --tw-border-opacity: 1 !important;
+}
+
+/* ULTIMATE FINTECH CARD - Stronger definition with prominent black borders */
 .fintech-card {
   @apply rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* STRONGER BLACK BORDER */
+  border-radius: 1rem !important;
 }
 
 .dark .fintech-card {
-  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* STRONGER WHITE BORDER FOR DARK */
+}
+
+/* NUCLEAR OVERRIDE: Force fintech on ALL div elements */
+div {
+  /* Force all divs to inherit fintech properties unless specifically overridden */
+  border-radius: 1rem;
+}
+
+/* Force fintech on any element that could be a card */
+div[class*="bg-"], 
+div[class*="shadow"], 
+div[class*="border"], 
+div[class*="rounded"],
+section,
+article,
+main > div,
+[role="dialog"],
+[role="alertdialog"],
+[role="tooltip"],
+[role="popover"] {
+  @apply fintech-card !important;
 }
 
 .fintech-gradient-card {
   @apply rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 shadow-xl backdrop-blur-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
-  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15), 0 4px 16px rgba(99, 102, 241, 0.1);
-  border: 2px solid rgba(59, 130, 246, 0.2);
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15), 0 4px 16px rgba(99, 102, 241, 0.1) !important;
+  border: 3px solid rgba(59, 130, 246, 0.8) !important; /* STRONGER BLUE BORDER */
 }
 
 .dark .fintech-gradient-card {
-  border: 2px solid rgba(147, 197, 253, 0.2);
+  border: 3px solid rgba(147, 197, 253, 0.8) !important; /* STRONGER BLUE BORDER FOR DARK */
 }
 
 /* Enhanced Fintech Button Styling */
 .fintech-button-primary {
   @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3), 0 2px 8px rgba(99, 102, 241, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3), 0 2px 8px rgba(99, 102, 241, 0.2) !important;
+  border: 2px solid rgba(59, 130, 246, 0.8) !important; /* BLACK-ISH BORDER FOR BUTTONS */
 }
 
 .fintech-button-primary:hover {
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(99, 102, 241, 0.3) !important;
 }
 
 .fintech-button-secondary {
   @apply bg-white/95 dark:bg-gray-800/95 hover:bg-gray-50/95 dark:hover:bg-gray-700/95 text-gray-900 dark:text-white font-semibold py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 backdrop-blur-sm;
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* STRONGER BLACK BORDER */
 }
 
 .dark .fintech-button-secondary {
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* STRONGER WHITE BORDER FOR DARK */
 }
 
 /* HOUSIE Brand Text Gradient */
@@ -124,60 +154,60 @@
 /* Enhanced Glass Morphism Effects */
 .glass-card {
   @apply bg-white/20 dark:bg-gray-900/20 backdrop-blur-lg rounded-2xl shadow-2xl;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  border: 3px solid rgba(0, 0, 0, 0.6) !important; /* STRONGER BLACK BORDER */
 }
 
 .dark .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
+  border: 3px solid rgba(255, 255, 255, 0.6) !important; /* STRONGER WHITE BORDER FOR DARK */
 }
 
 /* Enhanced Shadows and Borders */
 .fintech-shadow {
-  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
 }
 
 .dark .fintech-shadow {
-  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) !important;
 }
 
 /* Fintech Metric Cards */
 .fintech-metric-card {
   @apply fintech-card p-6 hover:-translate-y-1 transition-all duration-300;
-  border: 2px solid rgba(59, 130, 246, 0.2);
+  border: 3px solid rgba(59, 130, 246, 0.8) !important; /* STRONGER BLUE BORDER */
 }
 
 .dark .fintech-metric-card {
-  border: 2px solid rgba(147, 197, 253, 0.2);
+  border: 3px solid rgba(147, 197, 253, 0.8) !important; /* STRONGER BLUE BORDER FOR DARK */
 }
 
 /* Fintech Chart Container */
 .fintech-chart-container {
   @apply fintech-card;
-  background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%);
-  border: 2px solid rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, rgb(249, 250, 251) 0%, rgb(243, 244, 246) 100%) !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* STRONGER BLACK BORDER */
 }
 
 .dark .fintech-chart-container {
-  background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(17, 24, 39) 100%);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(17, 24, 39) 100%) !important;
+  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* STRONGER WHITE BORDER FOR DARK */
 }
 
 /* Fintech Input Styling */
 .fintech-input {
   @apply bg-white/90 dark:bg-gray-800/90 rounded-xl px-4 py-3 shadow-sm focus:shadow-md transition-all duration-200 backdrop-blur-sm;
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* STRONGER BLACK BORDER */
 }
 
 .dark .fintech-input {
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* STRONGER WHITE BORDER FOR DARK */
 }
 
 .fintech-input:focus {
   @apply ring-2 ring-blue-500/20;
-  border-color: rgba(59, 130, 246, 0.6);
+  border-color: rgba(59, 130, 246, 0.8) !important;
 }
 
 /* Fintech Hero Section */
@@ -201,27 +231,27 @@
 /* Enhanced Navigation Styling - Black nav bar for both themes */
 .fintech-nav {
   @apply bg-gray-900/95 backdrop-blur-md shadow-lg;
-  border-bottom: 2px solid rgba(75, 85, 99, 0.3);
+  border-bottom: 3px solid rgba(75, 85, 99, 0.8) !important; /* STRONGER BORDER */
 }
 
 .dark .fintech-nav {
-  border-bottom: 2px solid rgba(75, 85, 99, 0.3);
+  border-bottom: 3px solid rgba(75, 85, 99, 0.8) !important; /* STRONGER BORDER */
 }
 
 /* Status Badge Enhancements */
 .fintech-badge-success {
   @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 px-3 py-1 rounded-full text-xs font-semibold;
-  border: 1px solid rgba(34, 197, 94, 0.3);
+  border: 2px solid rgba(34, 197, 94, 0.8) !important; /* STRONGER GREEN BORDER */
 }
 
 .fintech-badge-warning {
   @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 px-3 py-1 rounded-full text-xs font-semibold;
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 2px solid rgba(245, 158, 11, 0.8) !important; /* STRONGER YELLOW BORDER */
 }
 
 .fintech-badge-error {
   @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 px-3 py-1 rounded-full text-xs font-semibold;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 2px solid rgba(239, 68, 68, 0.8) !important; /* STRONGER RED BORDER */
 }
 
 /* Hover Lift Effect */

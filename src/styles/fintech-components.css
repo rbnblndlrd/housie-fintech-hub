@@ -1,52 +1,180 @@
 
-/* FINTECH COMPONENT OVERRIDES - Specific component styling enforcement */
+/* FINTECH COMPONENT OVERRIDES - ULTIMATE COMPONENT ENFORCEMENT */
 
-/* Service Components */
-.service-card, [data-testid*="service"], [class*="service"] {
+/* Service Components with stronger borders */
+.service-card, 
+[data-testid*="service"], 
+[class*="service"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .service-card, 
+.dark [data-testid*="service"], 
+.dark [class*="service"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Dashboard Components */
-.dashboard, [class*="dashboard"], .overview, [class*="overview"] {
+.dashboard, 
+[class*="dashboard"], 
+.overview, 
+[class*="overview"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .dashboard, 
+.dark [class*="dashboard"], 
+.dark .overview, 
+.dark [class*="overview"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Chat Components */
-.chat, [class*="chat"], .message, [class*="message"] {
+.chat, 
+[class*="chat"], 
+.message, 
+[class*="message"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .chat, 
+.dark [class*="chat"], 
+.dark .message, 
+.dark [class*="message"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Form Components */
-.form, [class*="form"], fieldset, .input-group {
+.form, 
+[class*="form"], 
+fieldset, 
+.input-group {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .form, 
+.dark [class*="form"], 
+.dark fieldset, 
+.dark .input-group {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Navigation Components */
-.nav, [class*="nav"], .menu, [class*="menu"] {
+.nav, 
+[class*="nav"], 
+.menu, 
+[class*="menu"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .nav, 
+.dark [class*="nav"], 
+.dark .menu, 
+.dark [class*="menu"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Notification Components */
-.notification, [class*="notification"], .alert, [class*="alert"] {
+.notification, 
+[class*="notification"], 
+.alert, 
+[class*="alert"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .notification, 
+.dark [class*="notification"], 
+.dark .alert, 
+.dark [class*="alert"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Modal and Popup Components */
-.modal, [class*="modal"], .popup, [class*="popup"], .dropdown, [class*="dropdown"] {
+.modal, 
+[class*="modal"], 
+.popup, 
+[class*="popup"], 
+.dropdown, 
+[class*="dropdown"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .modal, 
+.dark [class*="modal"], 
+.dark .popup, 
+.dark [class*="popup"], 
+.dark .dropdown, 
+.dark [class*="dropdown"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Loading and Error States */
-.loading, [class*="loading"], .error, [class*="error"], .empty, [class*="empty"] {
+.loading, 
+[class*="loading"], 
+.error, 
+[class*="error"], 
+.empty, 
+[class*="empty"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .loading, 
+.dark [class*="loading"], 
+.dark .error, 
+.dark [class*="error"], 
+.dark .empty, 
+.dark [class*="empty"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Profile and Settings Components */
-.profile, [class*="profile"], .settings, [class*="settings"] {
+.profile, 
+[class*="profile"], 
+.settings, 
+[class*="settings"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .profile, 
+.dark [class*="profile"], 
+.dark .settings, 
+.dark [class*="settings"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Calendar and Date Components */
-.calendar, [class*="calendar"], .date-picker, [class*="date"] {
+.calendar, 
+[class*="calendar"], 
+.date-picker, 
+[class*="date"] {
   @apply fintech-card !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+}
+
+.dark .calendar, 
+.dark [class*="calendar"], 
+.dark .date-picker, 
+.dark [class*="date"] {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Additional fintech component classes */
+.fintech-card-secondary {
+  @apply fintech-card;
+  border: 2px solid rgba(0, 0, 0, 0.6) !important;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%) !important;
+}
+
+.dark .fintech-card-secondary {
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+  background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%) !important;
 }
