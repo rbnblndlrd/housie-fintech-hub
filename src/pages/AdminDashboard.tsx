@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
@@ -139,18 +138,18 @@ const AdminDashboard = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6 pt-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
-            <p className="text-lg text-gray-600">Platform management and analytics</p>
-            <div className="text-xs text-gray-500 mt-2">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Admin Dashboard</h1>
+            <p className="text-lg text-gray-600 dark:text-gray-300">Platform management and analytics</p>
+            <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               Logged in as: {user.email}
             </div>
           </div>
 
           <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-8">
+            <TabsList className="grid w-full grid-cols-8 bg-white dark:bg-gray-800 border dark:border-gray-700">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="bookings">Bookings</TabsTrigger>

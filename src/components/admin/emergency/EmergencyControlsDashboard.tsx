@@ -82,24 +82,24 @@ const EmergencyControlsDashboard = () => {
     <div className="space-y-6">
       {/* Emergency Status Banner */}
       {isAnyEmergencyActive && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600" />
-                <span className="font-semibold text-red-800">
+                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
+                <span className="font-semibold text-red-800 dark:text-red-200">
                   EMERGENCY CONTROLS ACTIVE
                 </span>
                 <Badge variant="destructive">CRITICAL</Badge>
                 {isClaudeDisabled && (
-                  <Badge variant="destructive" className="bg-purple-600">
+                  <Badge variant="destructive" className="bg-purple-600 dark:bg-purple-700">
                     AI DISABLED
                   </Badge>
                 )}
               </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="border-green-500 text-green-700 hover:bg-green-50">
+                  <Button variant="outline" className="border-green-500 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20">
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Restore Normal Operations
                   </Button>
@@ -138,23 +138,23 @@ const EmergencyControlsDashboard = () => {
 
       {/* Normal Operations Status */}
       {!isAnyEmergencyActive && (
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600" />
-              <span className="font-semibold text-green-800">
+              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+              <span className="font-semibold text-green-800 dark:text-green-200">
                 NORMAL OPERATIONS
               </span>
-              <Badge className="bg-green-600 text-white">ALL SYSTEMS OPERATIONAL</Badge>
+              <Badge className="bg-green-600 dark:bg-green-700 text-white">ALL SYSTEMS OPERATIONAL</Badge>
             </div>
           </CardContent>
         </Card>
       )}
 
       {/* AI Controls */}
-      <Card>
+      <Card className="bg-white dark:bg-gray-800 border dark:border-gray-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
             <Bot className="h-5 w-5" />
             AI Controls
           </CardTitle>

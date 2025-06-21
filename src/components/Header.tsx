@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -8,6 +7,7 @@ import DynamicNavigation from './DynamicNavigation';
 import UserMenu from './header/UserMenu';
 import RoleToggle from './header/RoleToggle';
 import HeaderActions from './header/HeaderActions';
+import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const { user } = useAuth();
@@ -21,9 +21,9 @@ const Header = () => {
 
   return (
     <TooltipProvider>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
-        <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 items-center h-16">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
             {/* Left: Logo - Fixed width container */}
             <div className="flex justify-start">
               <button
@@ -39,12 +39,14 @@ const Header = () => {
             </div>
             
             {/* Center: Navigation - Fixed positioning */}
-            <div className="flex justify-center">
+            <nav className="hidden md:flex space-x-8">
               <DynamicNavigation items={navigationItems} />
-            </div>
+            </nav>
             
             {/* Right: User Menu - Fixed width container */}
-            <div className="flex justify-end">
+            <div className="flex items-center space-x-4">
+              <ThemeToggle />
+              
               {user && (
                 <div className="flex items-center space-x-4">
                   <HeaderActions />
@@ -54,7 +56,7 @@ const Header = () => {
               )}
             </div>
           </div>
-        </nav>
+        </div>
       </header>
     </TooltipProvider>
   );
