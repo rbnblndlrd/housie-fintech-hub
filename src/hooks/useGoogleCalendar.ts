@@ -83,7 +83,7 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       return;
     }
 
-    const clientId = 'GOOGLE_CLIENT_ID'; // This will be replaced with actual client ID
+    const clientId = Deno.env.get('GOOGLE_CLIENT_ID') || 'YOUR_GOOGLE_CLIENT_ID';
     const redirectUri = `https://dsfaxqfexebqogdxigdu.supabase.co/functions/v1/google-calendar-auth`;
     const scope = 'https://www.googleapis.com/auth/calendar';
     
@@ -124,16 +124,16 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
           if (error) throw error;
 
           toast({
-            title: "Success!",
-            description: "Google Calendar connected successfully.",
+            title: "Succès!",
+            description: "Google Calendar connecté avec succès.",
           });
           
           await checkConnection();
         } catch (error) {
           console.error('Error exchanging code:', error);
           toast({
-            title: "Connection Failed",
-            description: "Failed to connect Google Calendar. Please try again.",
+            title: "Connexion échouée",
+            description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
             variant: "destructive",
           });
         }
@@ -162,14 +162,14 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       setTokenData(null);
       
       toast({
-        title: "Disconnected",
-        description: "Google Calendar has been disconnected.",
+        title: "Déconnecté",
+        description: "Google Calendar a été déconnecté.",
       });
     } catch (error) {
       console.error('Error disconnecting calendar:', error);
       toast({
-        title: "Error",
-        description: "Failed to disconnect Google Calendar.",
+        title: "Erreur",
+        description: "Impossible de déconnecter Google Calendar.",
         variant: "destructive",
       });
     } finally {

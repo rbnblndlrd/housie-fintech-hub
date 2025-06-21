@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,16 +15,23 @@ import { Clock, MapPin, User, Calendar as CalendarIcon, Wifi, WifiOff, Briefcase
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useToast } from '@/hooks/use-toast';
 import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
+import { useCalendarEvents } from '@/hooks/useCalendarEvents';
+import { useGoogleCalendar } from '@/hooks/useGoogleCalendar';
 import { CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
   const [editingAppointment, setEditingAppointment] = useState<CalendarEvent | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [googleEvents, setGoogleEvents] = useState<any[]>([]);
   
   const { isFeatureAvailable } = useSubscription();
   const { toast } = useToast();
+  const { user } = useAuth();
+  const { isConnected: googleConnected } = useGoogleCalendar();
+  const { events, fetchEvents, loading: calendarLoading } = useCalendarEvents();
   const { 
     allEvents, 
     loading, 
@@ -32,6 +39,30 @@ const Calendar = () => {
     updateEvent, 
     deleteEvent 
   } = useUnifiedCalendarIntegration();
+
+  // Fetch Google Calendar events when connected and in sync mode
+  useEffect(() => {
+    if (googleConnected && isGoogleSyncMode && user && date) {
+      const fetchGoogleEvents = async () => {
+        const startDate = new Date(date);
+        startDate.setDate(startDate.getDate() - 7); // Get events from a week before
+        const endDate = new Date(date);
+        endDate.setDate(endDate.getDate() + 7); // Get events until a week after
+        
+        const googleEventsData = await fetchEvents(
+          user.id, 
+          startDate.toISOString(), 
+          endDate.toISOString()
+        );
+        
+        if (googleEventsData) {
+          setGoogleEvents(googleEventsData);
+        }
+      };
+      
+      fetchGoogleEvents();
+    }
+  }, [googleConnected, isGoogleSyncMode, user, date, fetchEvents]);
 
   // Helper functions for status styling
   const getStatusColor = (status: string) => {
@@ -61,59 +92,39 @@ const Calendar = () => {
       return [];
     }
     
-    // Create a local date for comparison without timezone conversion
     const selectedYear = date.getFullYear();
     const selectedMonth = date.getMonth();
     const selectedDay = date.getDate();
     
-    console.log('Filtering events for date:', {
-      selectedDate: date,
-      selectedYear,
-      selectedMonth,
-      selectedDay,
-      selectedDateString: date.toDateString(),
-      allEventsCount: allEvents.length,
-      allEvents: allEvents.map(event => ({
-        id: event.id,
-        title: event.title,
-        date: event.date,
-        eventYear: event.date.getFullYear(),
-        eventMonth: event.date.getMonth(),
-        eventDay: event.date.getDate(),
-        dateString: event.date.toDateString(),
-        source: event.source
-      }))
-    });
+    let combinedEvents = [...allEvents];
     
-    const eventsForDate = allEvents.filter(event => {
+    // Add Google Calendar events if in sync mode
+    if (isGoogleSyncMode && googleEvents.length > 0) {
+      const googleCalendarEvents = googleEvents.map(event => ({
+        id: `google-${event.id}`,
+        title: event.summary || 'Busy',
+        date: new Date(event.start),
+        time: new Date(event.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+        client: 'Google Calendar',
+        location: event.location || 'Non spécifié',
+        status: 'confirmed' as const,
+        amount: 0,
+        source: 'google' as const,
+        booking_id: undefined,
+        is_provider: false
+      }));
+      
+      combinedEvents = [...combinedEvents, ...googleCalendarEvents];
+    }
+    
+    const eventsForDate = combinedEvents.filter(event => {
       const eventYear = event.date.getFullYear();
       const eventMonth = event.date.getMonth();
       const eventDay = event.date.getDate();
       
-      const matches = eventYear === selectedYear && 
-                     eventMonth === selectedMonth && 
-                     eventDay === selectedDay;
-      
-      console.log('Event date comparison:', {
-        eventId: event.id,
-        eventTitle: event.title,
-        eventDate: event.date,
-        eventYear,
-        eventMonth,
-        eventDay,
-        selectedYear,
-        selectedMonth,
-        selectedDay,
-        matches
-      });
-      
-      return matches;
-    });
-    
-    console.log('Events found for selected date:', {
-      selectedDateString: date.toDateString(),
-      eventsCount: eventsForDate.length,
-      events: eventsForDate
+      return eventYear === selectedYear && 
+             eventMonth === selectedMonth && 
+             eventDay === selectedDay;
     });
     
     if (isGoogleSyncMode) {
@@ -121,7 +132,7 @@ const Calendar = () => {
     } else {
       return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
     }
-  }, [date, allEvents, isGoogleSyncMode]);
+  }, [date, allEvents, isGoogleSyncMode, googleEvents]);
 
   const handleDateSelect = (newDate: Date | undefined) => {
     console.log('Date selected:', {
@@ -145,6 +156,16 @@ const Calendar = () => {
       });
       return;
     }
+    
+    if (checked && !googleConnected) {
+      toast({
+        title: "Google Calendar non connecté",
+        description: "Veuillez d'abord connecter votre Google Calendar.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsGoogleSyncMode(checked);
   };
 
@@ -297,7 +318,7 @@ const Calendar = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 pt-0">
-                {loading ? (
+                {loading || calendarLoading ? (
                   <div className="text-center py-8">
                     <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
                     <p className="text-gray-600 mt-2">Chargement...</p>
@@ -385,23 +406,25 @@ const Calendar = () => {
                           </div>
                         </div>
                         
-                        <div className="mt-4 flex gap-2">
-                          <Button 
-                            size="sm" 
-                            onClick={() => handleEditAppointment(event)}
-                            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
-                          >
-                            Modifier
-                          </Button>
-                          <Button 
-                            size="sm" 
-                            variant="outline" 
-                            onClick={() => handleDeleteAppointment(event.id)}
-                            className="border-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-xl transition-all duration-200"
-                          >
-                            {event.booking_id ? 'Annuler' : 'Supprimer'}
-                          </Button>
-                        </div>
+                        {event.source !== 'google' && (
+                          <div className="mt-4 flex gap-2">
+                            <Button 
+                              size="sm" 
+                              onClick={() => handleEditAppointment(event)}
+                              className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white rounded-xl shadow-sm hover:shadow-md transition-all duration-200"
+                            >
+                              Modifier
+                            </Button>
+                            <Button 
+                              size="sm" 
+                              variant="outline" 
+                              onClick={() => handleDeleteAppointment(event.id)}
+                              className="border-gray-200 text-gray-700 hover:bg-gradient-to-r hover:from-gray-50 hover:to-gray-100 rounded-xl transition-all duration-200"
+                            >
+                              {event.booking_id ? 'Annuler' : 'Supprimer'}
+                            </Button>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
