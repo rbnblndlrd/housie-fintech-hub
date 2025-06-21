@@ -1,66 +1,65 @@
 
-/* FINTECH CORE STYLES - ULTIMATE ENFORCEMENT SYSTEM */
+/* FINTECH CORE STYLES - TARGETED ENFORCEMENT */
 
-/* CRITICAL: Force fintech styling on ALL components with STRONGER borders */
-.card, [class*="card"], div[class*="Card"], .Card {
+/* Target specific card elements only */
+.card, [class*="card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+div[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+.Card:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
   @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* ULTIMATE BLACK BORDER */
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .card, .dark [class*="card"], .dark div[class*="Card"], .dark .Card {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* ULTIMATE WHITE BORDER FOR DARK */
+.dark .card, 
+.dark [class*="card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+.dark div[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+.dark .Card:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
+  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* ELIMINATE ALL PLAIN WHITE BACKGROUNDS WITH STRONGER BORDERS */
-.bg-white, [class*="bg-white"] {
+/* Target specific background elements only */
+.bg-white:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+[class*="bg-white"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
   @apply fintech-card !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* STRONGER BLACK BORDER */
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
   border-radius: 1rem !important;
 }
 
-.dark .bg-white, .dark [class*="bg-white"] {
+.dark .bg-white:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+.dark [class*="bg-white"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
   background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* STRONGER WHITE BORDER FOR DARK */
-}
-
-/* FORCE fintech styling on specific problem components */
-.bg-dark-secondary, [class*="bg-dark-secondary"],
-.bg-gray-50, [class*="bg-gray-50"],
-.bg-slate-50, [class*="bg-slate-50"] {
-  @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark .bg-dark-secondary, .dark [class*="bg-dark-secondary"],
-.dark .bg-gray-50, .dark [class*="bg-gray-50"],
-.dark .bg-slate-50, .dark [class*="bg-slate-50"] {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Override any attempts to use plain styling */
-div[class*="rounded-lg"], 
-div[class*="shadow-"], 
-div[class*="border"],
-div[class*="p-4"],
-div[class*="p-6"],
-div[class*="p-8"] {
-  @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+/* EXCLUDE form elements from fintech styling */
+input, 
+textarea, 
+select,
+[role="searchbox"],
+[class*="search"],
+[class*="filter"],
+[class*="input"] {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-.dark div[class*="rounded-lg"], 
-.dark div[class*="shadow-"], 
-.dark div[class*="border"],
-.dark div[class*="p-4"],
-.dark div[class*="p-6"],
-.dark div[class*="p-8"] {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
+.dark input, 
+.dark textarea, 
+.dark select,
+.dark [role="searchbox"],
+.dark [class*="search"],
+.dark [class*="filter"],
+.dark [class*="input"] {
+  background: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  color: white !important;
 }
 
-/* Ensure ALL modals and dialogs use fintech styling */
+/* Ensure dialogs and modals use fintech styling */
 [role="dialog"], 
 .dialog, 
 [class*="dialog"],
@@ -80,60 +79,21 @@ div[class*="p-8"] {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Force fintech on any component that might fallback to plain styling */
-.fallback, 
-.default, 
-.plain, 
-.simple,
-.basic,
-.standard {
-  @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark .fallback, 
-.dark .default, 
-.dark .plain, 
-.dark .simple,
-.dark .basic,
-.dark .standard {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
-/* PREVENT any component from overriding fintech styling */
-* {
-  --force-fintech: true;
-}
-
-/* Make sure buttons always use fintech styling with borders */
-button:not([class*="fintech-button"]) {
+/* Make sure buttons use appropriate styling */
+button:not([class*="fintech-button"]):not([class*="search"]):not([class*="filter"]) {
   @apply fintech-button-secondary !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+  border: 2px solid rgba(0, 0, 0, 0.6) !important;
 }
 
-.dark button:not([class*="fintech-button"]) {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
+.dark button:not([class*="fintech-button"]):not([class*="search"]):not([class*="filter"]) {
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
 }
 
 button[class*="bg-"]:not([class*="fintech-button"]) {
   @apply fintech-button-primary !important;
-  border: 3px solid rgba(59, 130, 246, 0.8) !important;
+  border: 2px solid rgba(59, 130, 246, 0.8) !important;
 }
 
 .dark button[class*="bg-"]:not([class*="fintech-button"]) {
-  border: 3px solid rgba(147, 197, 253, 0.8) !important;
-}
-
-/* Force all form elements to have fintech styling */
-input, 
-textarea, 
-select {
-  @apply fintech-input !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark input, 
-.dark textarea, 
-.dark select {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
+  border: 2px solid rgba(147, 197, 253, 0.8) !important;
 }

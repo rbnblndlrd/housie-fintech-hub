@@ -1,134 +1,62 @@
 
-/* DEFENSIVE FINTECH STYLING - ULTIMATE BLACK BORDER ENFORCEMENT */
+/* DEFENSIVE FINTECH STYLING - TARGETED APPROACH */
 
-/* NUCLEAR OPTION: Override ANY element that might use plain styling */
-*[class*="bg-white"], 
-*[class*="card"], 
-*[class*="Card"],
-*[class*="bg-gray-50"],
-*[class*="bg-slate-50"],
-div[class*="shadow"],
-div[class*="border"],
-div[class*="rounded"],
-section,
-article,
-main > div,
-aside,
-header,
-footer,
-nav {
+/* Target specific card-like elements only */
+*[class*="card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+*[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+div[class*="shadow"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+div[class*="rounded"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+section:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+article:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
   @apply fintech-card !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* ULTIMATE BLACK BORDER */
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
   border-radius: 1rem !important;
 }
 
-.dark *[class*="bg-white"], 
-.dark *[class*="card"], 
-.dark *[class*="Card"],
-.dark *[class*="bg-gray-50"],
-.dark *[class*="bg-slate-50"],
-.dark div[class*="shadow"],
-.dark div[class*="border"],
-.dark div[class*="rounded"],
-.dark section,
-.dark article,
-.dark main > div,
-.dark aside,
-.dark header,
-.dark footer,
-.dark nav {
+.dark *[class*="card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
+.dark *[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+.dark div[class*="shadow"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+.dark div[class*="rounded"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+.dark section:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
+.dark article:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
   background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* ULTIMATE WHITE BORDER FOR DARK */
-}
-
-/* CATCH ALL: Any container-like element gets ultimate fintech styling */
-div:has(> h1, > h2, > h3, > h4, > h5, > h6),
-div:has(> .title, > .heading),
-div:has(> p + button),
-div:has(> form),
-div:has(> .content),
-.container,
-.wrapper,
-.panel,
-.widget,
-.component,
-.card-content,
-.card-header,
-.card-footer {
-  @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important; /* FORCE BLACK BORDERS */
-}
-
-.dark div:has(> h1, > h2, > h3, > h4, > h5, > h6),
-.dark div:has(> .title, > .heading),
-.dark div:has(> p + button),
-.dark div:has(> form),
-.dark div:has(> .content),
-.dark .container,
-.dark .wrapper,
-.dark .panel,
-.dark .widget,
-.dark .component,
-.dark .card-content,
-.dark .card-header,
-.dark .card-footer {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important; /* FORCE WHITE BORDERS FOR DARK */
-}
-
-/* FINAL SAFETY NET: Force fintech on common UI patterns */
-[role="dialog"], 
-[role="alertdialog"], 
-[role="tooltip"], 
-[role="popover"],
-[role="tabpanel"],
-[role="menu"],
-[role="menuitem"],
-.modal,
-.dropdown,
-.popup,
-.overlay {
-  @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark [role="dialog"], 
-.dark [role="alertdialog"], 
-.dark [role="tooltip"], 
-.dark [role="popover"],
-.dark [role="tabpanel"],
-.dark [role="menu"],
-.dark [role="menuitem"],
-.dark .modal,
-.dark .dropdown,
-.dark .popup,
-.dark .overlay {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* PREVENT any plain card styling from appearing ANYWHERE */
-[class]:not([class*="fintech-"]):not([class*="text-"]):not([class*="font-"]):not([class*="space-"]):not([class*="gap-"]):not([class*="flex"]):not([class*="grid"]):not([class*="block"]):not([class*="inline"]):not([class*="absolute"]):not([class*="relative"]):not([class*="fixed"]):not([class*="sticky"]) {
-  @apply fintech-card !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+/* PREVENT fintech styling on form elements */
+input, 
+textarea, 
+select,
+button[type="submit"],
+button[type="button"],
+[role="searchbox"],
+[class*="search"],
+[class*="filter"],
+[class*="input"],
+[class*="form"] {
+  background: inherit !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: none !important;
 }
 
-.dark [class]:not([class*="fintech-"]):not([class*="text-"]):not([class*="font-"]):not([class*="space-"]):not([class*="gap-"]):not([class*="flex"]):not([class*="grid"]):not([class*="block"]):not([class*="inline"]):not([class*="absolute"]):not([class*="relative"]):not([class*="fixed"]):not([class*="sticky"]) {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
+.dark input, 
+.dark textarea, 
+.dark select,
+.dark button[type="submit"],
+.dark button[type="button"],
+.dark [role="searchbox"],
+.dark [class*="search"],
+.dark [class*="filter"],
+.dark [class*="input"],
+.dark [class*="form"] {
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
-/* ULTIMATE OVERRIDE: Force borders on EVERY div */
-div {
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
-  border-radius: 1rem !important;
-}
-
-.dark div {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
-/* Exception for very specific utility divs that shouldn't have borders */
+/* Exception for utility divs - NO borders */
 .flex > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
 .grid > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
 .space-x-4 > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
@@ -138,26 +66,24 @@ div[class="grid"],
 div[class="space-x-4"],
 div[class="space-y-4"],
 div[class="gap-4"],
-div[class="gap-6"] {
+div[class="gap-6"],
+div[class*="container"],
+div[class*="max-w-"] {
   border: none !important;
+  background: inherit !important;
+  box-shadow: none !important;
 }
 
-/* But force fintech styling on ANY div that has styling classes */
-div[class*="p-"],
-div[class*="m-"],
-div[class*="bg-"],
-div[class*="shadow"],
-div[class*="border"],
-div[class*="rounded"] {
+/* Target only content containers for fintech styling */
+div[class*="p-4"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
+div[class*="p-6"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
+div[class*="p-8"]:has(> h1, > h2, > h3, > h4, > h5, > h6) {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark div[class*="p-"],
-.dark div[class*="m-"],
-.dark div[class*="bg-"],
-.dark div[class*="shadow"],
-.dark div[class*="border"],
-.dark div[class*="rounded"] {
+.dark div[class*="p-4"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
+.dark div[class*="p-6"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
+.dark div[class*="p-8"]:has(> h1, > h2, > h3, > h4, > h5, > h6) {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
