@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,6 +9,7 @@ import FeeCalculator from './FeeCalculator';
 
 interface BookingDetails {
   id: string;
+  customer_id: string; // Added missing customer_id property
   scheduled_date: string;
   scheduled_time: string;
   duration_hours: number;
