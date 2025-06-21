@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 interface FraudLog {
   id: string;
   session_id: string;
-  user_id: string;
+  user_id: string | null;
   action_type: string;
   risk_score: number;
   action_taken: string;
@@ -21,7 +21,7 @@ interface FraudLog {
   users?: {
     full_name: string;
     email: string;
-  };
+  } | null;
 }
 
 interface ReviewQueueItem {
@@ -36,7 +36,7 @@ interface ReviewQueueItem {
   users?: {
     full_name: string;
     email: string;
-  };
+  } | null;
 }
 
 const FraudDetectionSection = () => {
@@ -67,7 +67,14 @@ const FraudDetectionSection = () => {
         .limit(50);
 
       if (logsError) throw logsError;
-      setFraudLogs(logsData || []);
+      
+      // Type assertion to handle the joined data properly
+      const typedLogsData = (logsData || []).map(log => ({
+        ...log,
+        users: Array.isArray(log.users) ? log.users[0] : log.users
+      })) as FraudLog[];
+      
+      setFraudLogs(typedLogsData);
 
       // Load review queue
       const { data: queueData, error: queueError } = await supabase
@@ -83,11 +90,18 @@ const FraudDetectionSection = () => {
         .order('created_at', { ascending: false });
 
       if (queueError) throw queueError;
-      setReviewQueue(queueData || []);
+      
+      // Type assertion to handle the joined data properly
+      const typedQueueData = (queueData || []).map(item => ({
+        ...item,
+        users: Array.isArray(item.users) ? item.users[0] : item.users
+      })) as ReviewQueueItem[];
+      
+      setReviewQueue(typedQueueData);
 
       // Calculate stats
-      const totalChecks = logsData?.length || 0;
-      const highRiskDetected = logsData?.filter(log => log.risk_score >= 70).length || 0;
+      const totalChecks = typedLogsData?.length || 0;
+      const highRiskDetected = typedLogsData?.filter(log => log.risk_score >= 70).length || 0;
       
       const { data: blockedData } = await supabase
         .from('user_blocks')
@@ -98,7 +112,7 @@ const FraudDetectionSection = () => {
         totalChecks,
         highRiskDetected,
         blockedUsers: blockedData?.length || 0,
-        pendingReviews: queueData?.length || 0
+        pendingReviews: typedQueueData?.length || 0
       });
 
     } catch (error) {

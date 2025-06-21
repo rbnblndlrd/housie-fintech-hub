@@ -11,12 +11,55 @@ import LiveUsersSection from '@/components/admin/LiveUsersSection';
 import EmergencyControlsSection from '@/components/admin/EmergencyControlsSection';
 import DevelopmentToolsSection from '@/components/admin/DevelopmentToolsSection';
 import FraudDetectionSection from '@/components/admin/FraudDetectionSection';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const checkAdminStatus = async () => {
+      if (!user) {
+        setIsAdmin(false);
+        return;
+      }
+
+      try {
+        // Check user's subscription tier from the users table
+        const { data: userData, error } = await supabase
+          .from('users')
+          .select('subscription_tier')
+          .eq('id', user.id)
+          .single();
+
+        if (error) {
+          console.error('Error checking admin status:', error);
+          setIsAdmin(false);
+          return;
+        }
+
+        setIsAdmin(userData?.subscription_tier === 'admin');
+      } catch (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminStatus();
+  }, [user]);
+
+  // Show loading while checking admin status
+  if (isAdmin === null) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
+        <div className="text-lg">Checking permissions...</div>
+      </div>
+    );
+  }
 
   // Check if user is admin
-  if (!user || user.subscription_tier !== 'admin') {
+  if (!user || !isAdmin) {
     return <Navigate to="/" replace />;
   }
 
