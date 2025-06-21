@@ -39,7 +39,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('🔄 Auth state changed:', event, {
           userEmail: session?.user?.email,
           hasSession: !!session,
-          userId: session?.user?.id
+          userId: session?.user?.id,
+          userMetadata: session?.user?.user_metadata,
+          appMetadata: session?.user?.app_metadata
         });
         setSession(session);
         setUser(session?.user ?? null);
@@ -58,7 +60,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('✅ Initial session retrieved:', {
             hasSession: !!session,
             userEmail: session?.user?.email,
-            userId: session?.user?.id
+            userId: session?.user?.id,
+            userMetadata: session?.user?.user_metadata,
+            appMetadata: session?.user?.app_metadata
           });
           setSession(session);
           setUser(session?.user ?? null);
@@ -223,7 +227,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     hasUser: !!user,
     hasSession: !!session,
     loading,
-    userEmail: user?.email
+    userEmail: user?.email,
+    userId: user?.id
   });
 
   return (

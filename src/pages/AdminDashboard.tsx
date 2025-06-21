@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,53 +15,122 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
 const AdminDashboard = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [checkAttempts, setCheckAttempts] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const checkAdminStatus = async () => {
+      console.log('🔍 AdminDashboard: Starting admin status check', {
+        user: !!user,
+        userId: user?.id,
+        userEmail: user?.email,
+        loading,
+        attempt: checkAttempts + 1
+      });
+
+      // Don't check if auth is still loading or no user
+      if (loading) {
+        console.log('⏳ AdminDashboard: Auth still loading, skipping check');
+        return;
+      }
+
       if (!user) {
+        console.log('❌ AdminDashboard: No user found, setting isAdmin to false');
         setIsAdmin(false);
         return;
       }
 
       try {
+        console.log('📡 AdminDashboard: Making database query for user role');
+        
         // Check user's role from the users table
         const { data: userData, error } = await supabase
           .from('users')
-          .select('user_role')
+          .select('user_role, email, id')
           .eq('id', user.id)
           .single();
 
+        console.log('📊 AdminDashboard: Database query result', {
+          userData,
+          error,
+          hasData: !!userData,
+          userRole: userData?.user_role
+        });
+
         if (error) {
-          console.error('Error checking admin status:', error);
+          console.error('❌ AdminDashboard: Database error checking admin status:', error);
+          setError(`Database error: ${error.message}`);
+          
+          // Retry up to 3 times for database errors
+          if (checkAttempts < 3) {
+            console.log('🔄 AdminDashboard: Retrying admin check in 1 second...');
+            setTimeout(() => {
+              setCheckAttempts(prev => prev + 1);
+            }, 1000);
+            return;
+          }
+          
           setIsAdmin(false);
           return;
         }
 
-        setIsAdmin(userData?.user_role === 'admin');
+        const adminStatus = userData?.user_role === 'admin';
+        console.log('✅ AdminDashboard: Admin status determined', {
+          isAdmin: adminStatus,
+          userRole: userData?.user_role,
+          userId: userData?.id,
+          userEmail: userData?.email
+        });
+
+        setIsAdmin(adminStatus);
+        setError(null);
+        
       } catch (error) {
-        console.error('Error checking admin status:', error);
+        console.error('💥 AdminDashboard: Unexpected error checking admin status:', error);
+        setError(`Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`);
         setIsAdmin(false);
       }
     };
 
     checkAdminStatus();
-  }, [user]);
+  }, [user, loading, checkAttempts]);
 
   // Show loading while checking admin status
-  if (isAdmin === null) {
+  if (loading || isAdmin === null) {
+    console.log('🔄 AdminDashboard: Showing loading state', { loading, isAdmin });
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
-        <div className="text-lg">Checking permissions...</div>
+        <div className="text-center">
+          <div className="text-lg mb-4">Checking admin permissions...</div>
+          {error && (
+            <div className="text-red-600 text-sm">
+              Error: {error}
+              {checkAttempts > 0 && <div>Attempt {checkAttempts + 1}/4</div>}
+            </div>
+          )}
+          {user && (
+            <div className="text-xs text-gray-500 mt-2">
+              User: {user.email} (ID: {user.id})
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 
   // Check if user is admin
   if (!user || !isAdmin) {
+    console.log('🚫 AdminDashboard: Access denied, redirecting to home', {
+      hasUser: !!user,
+      isAdmin,
+      userEmail: user?.email
+    });
     return <Navigate to="/" replace />;
   }
+
+  console.log('🎯 AdminDashboard: Rendering admin dashboard for user:', user.email);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6">
@@ -68,6 +138,9 @@ const AdminDashboard = () => {
         <div className="text-center">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
           <p className="text-lg text-gray-600">Platform management and analytics</p>
+          <div className="text-xs text-gray-500 mt-2">
+            Logged in as: {user.email}
+          </div>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
