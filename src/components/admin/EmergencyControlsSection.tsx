@@ -2,6 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield } from 'lucide-react';
+import EmergencyControlsDashboard from './emergency/EmergencyControlsDashboard';
 
 const EmergencyControlsSection = () => {
   return (
@@ -13,9 +14,7 @@ const EmergencyControlsSection = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="text-center p-8">
-          <p className="text-gray-600 mb-4">No emergency controls found. Please contact system administrator.</p>
-        </div>
+        <EmergencyControlsDashboard />
       </CardContent>
     </Card>
   );

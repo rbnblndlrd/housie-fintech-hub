@@ -578,44 +578,213 @@ export type Database = {
           },
         ]
       }
+      emergency_actions_log: {
+        Row: {
+          action_details: Json | null
+          action_type: string
+          admin_id: string
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          new_state: Json | null
+          previous_state: Json | null
+          user_agent: string | null
+        }
+        Insert: {
+          action_details?: Json | null
+          action_type: string
+          admin_id: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          new_state?: Json | null
+          previous_state?: Json | null
+          user_agent?: string | null
+        }
+        Update: {
+          action_details?: Json | null
+          action_type?: string
+          admin_id?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          new_state?: Json | null
+          previous_state?: Json | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_actions_log_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emergency_controls: {
         Row: {
+          activated_at: string | null
+          activated_by: string | null
+          allowed_payment_methods: string[] | null
+          blocked_countries: string[] | null
+          bookings_paused: boolean | null
           claude_api_enabled: boolean | null
           created_at: string | null
           current_daily_spend: number | null
           daily_spend_limit: number | null
+          deactivated_at: string | null
+          deactivated_by: string | null
           disabled_at: string | null
           disabled_by_user_id: string | null
           disabled_reason: string | null
+          emergency_notification_active: boolean | null
+          force_logout_users: boolean | null
+          fraud_lockdown_active: boolean | null
+          geographic_blocking_enabled: boolean | null
           id: string
+          last_backup_triggered: string | null
           last_updated_at: string | null
+          maintenance_mode: boolean | null
+          manual_review_all_bookings: boolean | null
+          messaging_disabled: boolean | null
+          new_registrations_disabled: boolean | null
+          normal_operations: boolean | null
+          payment_restrictions_active: boolean | null
+          provider_broadcast_active: boolean | null
+          reason: string | null
           spend_reset_date: string | null
         }
         Insert: {
+          activated_at?: string | null
+          activated_by?: string | null
+          allowed_payment_methods?: string[] | null
+          blocked_countries?: string[] | null
+          bookings_paused?: boolean | null
           claude_api_enabled?: boolean | null
           created_at?: string | null
           current_daily_spend?: number | null
           daily_spend_limit?: number | null
+          deactivated_at?: string | null
+          deactivated_by?: string | null
           disabled_at?: string | null
           disabled_by_user_id?: string | null
           disabled_reason?: string | null
+          emergency_notification_active?: boolean | null
+          force_logout_users?: boolean | null
+          fraud_lockdown_active?: boolean | null
+          geographic_blocking_enabled?: boolean | null
           id?: string
+          last_backup_triggered?: string | null
           last_updated_at?: string | null
+          maintenance_mode?: boolean | null
+          manual_review_all_bookings?: boolean | null
+          messaging_disabled?: boolean | null
+          new_registrations_disabled?: boolean | null
+          normal_operations?: boolean | null
+          payment_restrictions_active?: boolean | null
+          provider_broadcast_active?: boolean | null
+          reason?: string | null
           spend_reset_date?: string | null
         }
         Update: {
+          activated_at?: string | null
+          activated_by?: string | null
+          allowed_payment_methods?: string[] | null
+          blocked_countries?: string[] | null
+          bookings_paused?: boolean | null
           claude_api_enabled?: boolean | null
           created_at?: string | null
           current_daily_spend?: number | null
           daily_spend_limit?: number | null
+          deactivated_at?: string | null
+          deactivated_by?: string | null
           disabled_at?: string | null
           disabled_by_user_id?: string | null
           disabled_reason?: string | null
+          emergency_notification_active?: boolean | null
+          force_logout_users?: boolean | null
+          fraud_lockdown_active?: boolean | null
+          geographic_blocking_enabled?: boolean | null
           id?: string
+          last_backup_triggered?: string | null
           last_updated_at?: string | null
+          maintenance_mode?: boolean | null
+          manual_review_all_bookings?: boolean | null
+          messaging_disabled?: boolean | null
+          new_registrations_disabled?: boolean | null
+          normal_operations?: boolean | null
+          payment_restrictions_active?: boolean | null
+          provider_broadcast_active?: boolean | null
+          reason?: string | null
           spend_reset_date?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "emergency_controls_activated_by_fkey"
+            columns: ["activated_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emergency_controls_deactivated_by_fkey"
+            columns: ["deactivated_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emergency_notifications: {
+        Row: {
+          admin_id: string
+          created_at: string | null
+          id: string
+          message: string
+          notification_type: string
+          priority: string | null
+          recipients_count: number | null
+          sent_at: string | null
+          status: string | null
+          target_audience: string
+          title: string
+        }
+        Insert: {
+          admin_id: string
+          created_at?: string | null
+          id?: string
+          message: string
+          notification_type: string
+          priority?: string | null
+          recipients_count?: number | null
+          sent_at?: string | null
+          status?: string | null
+          target_audience: string
+          title: string
+        }
+        Update: {
+          admin_id?: string
+          created_at?: string | null
+          id?: string
+          message?: string
+          notification_type?: string
+          priority?: string | null
+          recipients_count?: number | null
+          sent_at?: string | null
+          status?: string | null
+          target_audience?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emergency_notifications_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       fraud_device_tracking: {
         Row: {
@@ -1750,6 +1919,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      get_emergency_status: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_or_create_conversation: {
         Args: {
           p_participant_one_id: string
@@ -1781,6 +1954,18 @@ export type Database = {
       is_user_blocked: {
         Args: { user_uuid: string }
         Returns: boolean
+      }
+      log_emergency_action: {
+        Args: {
+          p_admin_id: string
+          p_action_type: string
+          p_action_details?: Json
+          p_previous_state?: Json
+          p_new_state?: Json
+          p_ip_address?: unknown
+          p_user_agent?: string
+        }
+        Returns: string
       }
       mark_messages_as_read: {
         Args: { p_conversation_id: string; p_user_id: string }
