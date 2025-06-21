@@ -617,6 +617,179 @@ export type Database = {
         }
         Relationships: []
       }
+      fraud_device_tracking: {
+        Row: {
+          device_fingerprint: string
+          first_seen: string
+          id: string
+          last_seen: string
+          risk_level: string | null
+          total_sessions: number | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          device_fingerprint: string
+          first_seen?: string
+          id?: string
+          last_seen?: string
+          risk_level?: string | null
+          total_sessions?: number | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          device_fingerprint?: string
+          first_seen?: string
+          id?: string
+          last_seen?: string
+          risk_level?: string | null
+          total_sessions?: number | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fraud_device_tracking_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fraud_ip_tracking: {
+        Row: {
+          first_seen: string
+          id: string
+          ip_address: unknown
+          last_seen: string
+          risk_level: string | null
+          total_sessions: number | null
+          user_id: string
+        }
+        Insert: {
+          first_seen?: string
+          id?: string
+          ip_address: unknown
+          last_seen?: string
+          risk_level?: string | null
+          total_sessions?: number | null
+          user_id: string
+        }
+        Update: {
+          first_seen?: string
+          id?: string
+          ip_address?: unknown
+          last_seen?: string
+          risk_level?: string | null
+          total_sessions?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fraud_ip_tracking_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fraud_logs: {
+        Row: {
+          action_taken: string
+          action_type: string
+          created_at: string
+          device_fingerprint: string | null
+          id: string
+          ip_address: unknown | null
+          metadata: Json | null
+          reasons: string[]
+          risk_factors: Json
+          risk_score: number
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_taken: string
+          action_type: string
+          created_at?: string
+          device_fingerprint?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          reasons?: string[]
+          risk_factors?: Json
+          risk_score: number
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_taken?: string
+          action_type?: string
+          created_at?: string
+          device_fingerprint?: string | null
+          id?: string
+          ip_address?: unknown | null
+          metadata?: Json | null
+          reasons?: string[]
+          risk_factors?: Json
+          risk_score?: number
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fraud_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      fraud_session_logs: {
+        Row: {
+          action_type: string | null
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string | null
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fraud_session_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       google_calendar_tokens: {
         Row: {
           access_token: string
@@ -736,6 +909,72 @@ export type Database = {
           },
           {
             foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_attempts: {
+        Row: {
+          amount: number
+          booking_id: string | null
+          created_at: string
+          currency: string
+          device_fingerprint: string | null
+          failure_reason: string | null
+          fraud_score: number | null
+          id: string
+          ip_address: unknown | null
+          payment_method: string | null
+          status: string
+          stripe_payment_intent_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          device_fingerprint?: string | null
+          failure_reason?: string | null
+          fraud_score?: number | null
+          id?: string
+          ip_address?: unknown | null
+          payment_method?: string | null
+          status: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          booking_id?: string | null
+          created_at?: string
+          currency?: string
+          device_fingerprint?: string | null
+          failure_reason?: string | null
+          fraud_score?: number | null
+          id?: string
+          ip_address?: unknown | null
+          payment_method?: string | null
+          status?: string
+          stripe_payment_intent_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_attempts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_attempts_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -885,6 +1124,82 @@ export type Database = {
           working_hours?: Json
         }
         Relationships: []
+      }
+      review_queue: {
+        Row: {
+          action_type: string
+          assigned_at: string | null
+          assigned_to: string | null
+          created_at: string
+          evidence: Json | null
+          fraud_session_id: string
+          id: string
+          priority: string
+          resolved_at: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          risk_score: number
+          status: string
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          assigned_at?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          evidence?: Json | null
+          fraud_session_id: string
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score: number
+          status?: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          assigned_at?: string | null
+          assigned_to?: string | null
+          created_at?: string
+          evidence?: Json | null
+          fraud_session_id?: string
+          id?: string
+          priority?: string
+          resolved_at?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          risk_score?: number
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_queue_assigned_to_fkey"
+            columns: ["assigned_to"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_queue_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_queue_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -1041,6 +1356,73 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_blocks: {
+        Row: {
+          block_type: string
+          blocked_at: string
+          blocked_by: string | null
+          expires_at: string | null
+          fraud_session_id: string | null
+          id: string
+          is_active: boolean
+          metadata: Json | null
+          reason: string
+          unblocked_at: string | null
+          unblocked_by: string | null
+          user_id: string
+        }
+        Insert: {
+          block_type: string
+          blocked_at?: string
+          blocked_by?: string | null
+          expires_at?: string | null
+          fraud_session_id?: string | null
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          reason: string
+          unblocked_at?: string | null
+          unblocked_by?: string | null
+          user_id: string
+        }
+        Update: {
+          block_type?: string
+          blocked_at?: string
+          blocked_by?: string | null
+          expires_at?: string | null
+          fraud_session_id?: string | null
+          id?: string
+          is_active?: boolean
+          metadata?: Json | null
+          reason?: string
+          unblocked_at?: string | null
+          unblocked_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_blocks_blocked_by_fkey"
+            columns: ["blocked_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_blocks_unblocked_by_fkey"
+            columns: ["unblocked_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_blocks_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -1285,6 +1667,59 @@ export type Database = {
         }
         Relationships: []
       }
+      verification_required: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          required_documents: string[] | null
+          status: string
+          submitted_documents: Json | null
+          triggered_by_session: string | null
+          updated_at: string
+          user_id: string
+          verification_data: Json | null
+          verification_type: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          required_documents?: string[] | null
+          status?: string
+          submitted_documents?: Json | null
+          triggered_by_session?: string | null
+          updated_at?: string
+          user_id: string
+          verification_data?: Json | null
+          verification_type: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          required_documents?: string[] | null
+          status?: string
+          submitted_documents?: Json | null
+          triggered_by_session?: string | null
+          updated_at?: string
+          user_id?: string
+          verification_data?: Json | null
+          verification_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "verification_required_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -1331,12 +1766,20 @@ export type Database = {
           remaining_credits: number
         }[]
       }
+      get_user_risk_level: {
+        Args: { user_uuid: string }
+        Returns: string
+      }
       is_claude_api_enabled: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
       is_user_admin: {
         Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_user_blocked: {
+        Args: { user_uuid: string }
         Returns: boolean
       }
       mark_messages_as_read: {
