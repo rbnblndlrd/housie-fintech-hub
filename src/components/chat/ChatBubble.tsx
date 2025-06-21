@@ -5,14 +5,19 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
-import ChatPanel from './ChatPanel';
+import MessagesTab from './MessagesTab';
+import ClaudeConversation from './ClaudeConversation';
+import CreditsWidget from '@/components/credits/CreditsWidget';
 import { usePopArt } from '@/contexts/PopArtContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'messages' | 'ai'>('messages');
   const { totalUnreadCount } = useChat();
   const { triggerPopArt } = usePopArt();
+  const { user } = useAuth();
+  const [claudeSessionId] = useState(() => crypto.randomUUID());
 
   return (
     <>
@@ -38,26 +43,33 @@ export const ChatBubble = () => {
             )}
           </Button>
         ) : (
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-96 h-[600px] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
-            {/* Header */}
-            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-4 flex items-center justify-between">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-96 max-w-[90vw] h-[600px] max-h-[80vh] flex flex-col overflow-hidden animate-in slide-in-from-bottom-4 duration-300">
+            {/* Header with Credits Widget */}
+            <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
                   <MessageCircle className="h-4 w-4" />
                 </div>
-                <div>
+                <div className="flex-1">
                   <h3 className="font-semibold text-lg">HOUSIE Chat</h3>
                   <p className="text-white/80 text-sm">Connect • Communicate • Complete</p>
                 </div>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="text-white hover:bg-white/20 rounded-full"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                {user && (
+                  <div className="scale-75 origin-right">
+                    <CreditsWidget compact />
+                  </div>
+                )}
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsOpen(false)}
+                  className="text-white hover:bg-white/20 rounded-full"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Tab Navigation */}
@@ -65,7 +77,7 @@ export const ChatBubble = () => {
               <button
                 onClick={() => setActiveTab('messages')}
                 className={cn(
-                  "flex-1 py-3 px-4 flex items-center justify-center gap-2 font-medium transition-colors",
+                  "flex-1 py-3 px-4 flex items-center justify-center gap-2 font-medium transition-colors text-sm",
                   activeTab === 'messages'
                     ? "bg-white dark:bg-gray-900 text-blue-600 border-b-2 border-blue-600"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
@@ -82,7 +94,7 @@ export const ChatBubble = () => {
               <button
                 onClick={() => setActiveTab('ai')}
                 className={cn(
-                  "flex-1 py-3 px-4 flex items-center justify-center gap-2 font-medium transition-colors",
+                  "flex-1 py-3 px-4 flex items-center justify-center gap-2 font-medium transition-colors text-sm",
                   activeTab === 'ai'
                     ? "bg-white dark:bg-gray-900 text-purple-600 border-b-2 border-purple-600"
                     : "text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
@@ -97,8 +109,15 @@ export const ChatBubble = () => {
             </div>
 
             {/* Chat Content */}
-            <div className="flex-1 overflow-hidden">
-              <ChatPanel activeTab={activeTab} onPopArtTrigger={triggerPopArt} />
+            <div className="flex-1 overflow-hidden bg-white dark:bg-gray-900">
+              {activeTab === 'messages' ? (
+                <MessagesTab />
+              ) : (
+                <ClaudeConversation 
+                  sessionId={claudeSessionId}
+                  onPopArtTrigger={triggerPopArt}
+                />
+              )}
             </div>
           </div>
         )}

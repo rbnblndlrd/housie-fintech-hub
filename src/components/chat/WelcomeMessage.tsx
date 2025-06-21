@@ -12,42 +12,36 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
   onSuggestedPrompt
 }) => {
   const suggestedPrompts = [
-    "hi tax?",
+    "tax?",
     "pets?", 
-    "How much does cleaning cost?",
-    "Find lawn care services",
-    "Home repair estimates",
+    "cleaning costs",
     "show me colors"
   ];
 
   return (
-    <>
+    <div className="space-y-4">
       <div className="flex items-start gap-3">
-        <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+        <div className="w-8 h-8 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
           <Bot className="h-4 w-4 text-white" />
         </div>
-        <div className="bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/50 dark:to-blue-900/50 rounded-2xl rounded-bl-md p-4 max-w-[80%] border border-purple-200 dark:border-purple-700">
+        <div className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/30 dark:to-blue-900/30 rounded-2xl rounded-tl-md p-4 border border-purple-200 dark:border-purple-700">
           <p className="text-sm text-gray-800 dark:text-gray-200 mb-3">
-            🏠 Hi! I'm HOUSIE AI - your intelligent assistant {webLLMReady ? 'powered by WebLLM running locally' : 'with smart contextual responses'}. I understand what you're asking and provide relevant help with:
+            🏠 Hi! I'm HOUSIE AI - your intelligent assistant for home services. I can help with:
           </p>
           <ul className="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-disc list-inside">
             <li>🏛️ Tax questions (home office deductions, property tax)</li>
-            <li>🐕 Pet services (sitting, walking, grooming, pet-friendly providers)</li>
-            <li>🏠 Home services (cleaning, landscaping, repairs, maintenance)</li>
+            <li>🐕 Pet services (sitting, walking, grooming)</li>
+            <li>🏠 Home services (cleaning, landscaping, repairs)</li>
             <li>💰 Price estimates and cost comparisons</li>
-            <li>📅 Booking assistance and scheduling</li>
           </ul>
-          <p className="text-sm text-gray-800 dark:text-gray-200 mt-3">
-            I understand context! Try "hi tax?" or "pets?" - I'll know what you mean! ✨
-          </p>
           {webLLMReady && (
             <div className="mt-2 flex items-center gap-2 text-xs text-green-600 dark:text-green-400">
               <Cpu className="h-3 w-3" />
-              <span>Local AI model loaded - truly intelligent responses!</span>
+              <span>Local AI model loaded - intelligent responses!</span>
             </div>
           )}
           <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 italic">
-            💡 Secret command: try "show me colors" for a groovy surprise! 🎨
+            💡 Try "show me colors" for a groovy surprise! 🎨
           </p>
         </div>
       </div>
@@ -63,7 +57,7 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
           </button>
         ))}
       </div>
-    </>
+    </div>
   );
 };
 

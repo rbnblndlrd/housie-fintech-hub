@@ -15,30 +15,49 @@ export interface ClaudeMessage {
   feature_used?: string;
 }
 
-interface RateLimitResult {
-  allowed: boolean;
-  reason?: string;
-  retry_after?: string;
-  cooldown_until?: string;
-  daily_used?: number;
-  daily_limit?: number;
-}
-
-interface CreditConsumptionResult {
-  success: boolean;
-  reason?: string;
-  required?: number;
-  available?: number;
-  credits_spent?: number;
-  remaining?: number;
-  is_free?: boolean;
-}
-
 export const useClaudeChat = () => {
   const { user } = useAuth();
   const { checkRateLimit, consumeCredits, features } = useCredits();
   const [messages, setMessages] = useState<ClaudeMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+
+  const ensureSessionExists = useCallback(async (sessionId: string) => {
+    if (!user) return false;
+
+    try {
+      // Check if session exists
+      const { data: existingSession } = await supabase
+        .from('ai_chat_sessions')
+        .select('id')
+        .eq('id', sessionId)
+        .single();
+
+      if (existingSession) {
+        return true;
+      }
+
+      // Create session if it doesn't exist
+      const { error } = await supabase
+        .from('ai_chat_sessions')
+        .insert({
+          id: sessionId,
+          user_id: user.id,
+          session_title: 'Claude Chat',
+          context_data: {},
+          is_active: true
+        });
+
+      if (error) {
+        console.error('Error creating session:', error);
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error('Error ensuring session exists:', error);
+      return false;
+    }
+  }, [user]);
 
   const classifyMessage = (content: string): string => {
     const lowerContent = content.toLowerCase();
@@ -74,7 +93,6 @@ export const useClaudeChat = () => {
 
   const checkEmergencyControls = async (): Promise<boolean> => {
     try {
-      // Check both API enabled and access enabled
       const { data: apiEnabled, error: apiError } = await supabase.rpc('is_claude_api_enabled');
       
       if (apiError) {
@@ -82,7 +100,6 @@ export const useClaudeChat = () => {
         return false;
       }
       
-      // Also check emergency controls table for claude_access_enabled
       const { data: controls, error: controlsError } = await supabase
         .from('emergency_controls')
         .select('claude_access_enabled, claude_api_enabled')
@@ -112,7 +129,14 @@ export const useClaudeChat = () => {
     try {
       setIsTyping(true);
 
-      // Check emergency controls first
+      // Ensure session exists first
+      const sessionReady = await ensureSessionExists(sessionId);
+      if (!sessionReady) {
+        toast.error('Failed to initialize chat session');
+        return;
+      }
+
+      // Check emergency controls
       const isEnabled = await checkEmergencyControls();
       
       if (!isEnabled) {
@@ -274,7 +298,7 @@ export const useClaudeChat = () => {
     } finally {
       setIsTyping(false);
     }
-  }, [user, messages, checkRateLimit, consumeCredits, features]);
+  }, [user, messages, checkRateLimit, consumeCredits, features, ensureSessionExists]);
 
   return {
     messages,
