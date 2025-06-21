@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import type { EmergencyControlsState, EmergencyControlAction } from '@/types/emergencyControls';
 
@@ -28,6 +27,8 @@ export class EmergencyControlsService {
   }
 
   private static async createDefaultControls(): Promise<EmergencyControlsState> {
+    console.log('🆕 Creating default emergency controls...');
+    
     const defaultControls = {
       normal_operations: true,
       bookings_paused: false,
@@ -53,7 +54,10 @@ export class EmergencyControlsService {
       .select()
       .single();
 
-    if (insertError) throw insertError;
+    if (insertError) {
+      console.error('❌ Error creating default controls:', insertError);
+      throw insertError;
+    }
     
     console.log('✅ Created default emergency controls:', newData);
     return newData;
@@ -90,7 +94,10 @@ export class EmergencyControlsService {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Error updating emergency control:', error);
+      throw error;
+    }
 
     await this.logEmergencyAction(
       userId,
@@ -108,7 +115,10 @@ export class EmergencyControlsService {
     try {
       const { data, error } = await supabase.rpc('emergency_disable_claude');
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ RPC error:', error);
+        throw error;
+      }
       
       await this.logEmergencyAction(
         userId,
@@ -129,7 +139,10 @@ export class EmergencyControlsService {
     try {
       const { data, error } = await supabase.rpc('enable_claude_access');
       
-      if (error) throw error;
+      if (error) {
+        console.error('❌ RPC error:', error);
+        throw error;
+      }
       
       await this.logEmergencyAction(
         userId,

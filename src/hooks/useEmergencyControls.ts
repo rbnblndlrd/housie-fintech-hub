@@ -35,12 +35,15 @@ export const useEmergencyControls = () => {
     reason?: string
   ) => {
     if (!controls?.id || !user?.id) {
+      console.error('❌ Missing required data for update:', { controlsId: controls?.id, userId: user?.id });
       toast.error('Missing required data for update');
       return;
     }
 
     try {
       setActionLoading(true);
+      console.log('🔄 Updating control:', { controlName, value, reason });
+      
       const updatedControls = await EmergencyControlsService.updateControl(
         controls.id,
         controlName,
@@ -62,15 +65,19 @@ export const useEmergencyControls = () => {
 
   const emergencyDisableClaude = async (reason?: string) => {
     if (!user?.id) {
+      console.error('❌ Missing user ID for Claude disable');
       toast.error('Missing required data for Claude disable');
       return;
     }
 
     try {
       setActionLoading(true);
+      console.log('🚨 Starting Claude emergency disable...');
+      
       await EmergencyControlsService.emergencyDisableClaude(user.id, reason);
       
       // Reload controls to get updated state
+      console.log('🔄 Reloading controls after Claude disable...');
       await loadControls();
       
       toast.success('Claude AI emergency disabled');
@@ -85,15 +92,19 @@ export const useEmergencyControls = () => {
 
   const enableClaudeAccess = async () => {
     if (!user?.id) {
+      console.error('❌ Missing user ID for Claude enable');
       toast.error('Missing required data for Claude enable');
       return;
     }
 
     try {
       setActionLoading(true);
+      console.log('🔄 Starting Claude access enable...');
+      
       await EmergencyControlsService.enableClaudeAccess(user.id);
       
       // Reload controls to get updated state
+      console.log('🔄 Reloading controls after Claude enable...');
       await loadControls();
       
       toast.success('Claude AI access restored');
