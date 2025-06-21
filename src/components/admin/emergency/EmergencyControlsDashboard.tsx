@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -230,7 +229,7 @@ const EmergencyControlsDashboard = () => {
               description="Block user access to Claude AI features"
               icon={<Bot className="h-4 w-4" />}
               isActive={!controls.claude_access_enabled}
-              onToggle={(reason) => updateControl('claude_access_enabled', controls.claude_access_enabled, reason)}
+              onToggle={(reason) => updateControl('claude_access_enabled', !controls.claude_access_enabled, reason)}
               disabled={actionLoading}
               variant="security"
               lastActivated={controls.activated_at}
