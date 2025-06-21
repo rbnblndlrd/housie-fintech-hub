@@ -1,28 +1,10 @@
 
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-
-interface GoogleCalendarToken {
-  id: string;
-  user_id: string;
-  access_token: string;
-  refresh_token: string | null;
-  expires_at: string;
-  scope: string;
-  created_at: string;
-  updated_at: string;
-}
-
-interface UseGoogleCalendarReturn {
-  isConnected: boolean;
-  isLoading: boolean;
-  connectCalendar: () => void;
-  disconnectCalendar: () => Promise<void>;
-  refreshToken: () => Promise<string | null>;
-  tokenData: GoogleCalendarToken | null;
-}
+import { GoogleCalendarService } from '@/services/googleCalendarService';
+import { GoogleCalendarAuth } from '@/utils/googleCalendarAuth';
+import { GoogleCalendarToken, UseGoogleCalendarReturn } from '@/types/googleCalendar';
 
 export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
   const [isConnected, setIsConnected] = useState(false);
@@ -38,21 +20,12 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
     }
 
     try {
-      const { data, error } = await supabase
-        .from('google_calendar_tokens')
-        .select('*')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (error) {
-        console.error('Error checking calendar connection:', error);
-        setIsConnected(false);
-        setTokenData(null);
-      } else if (data) {
-        setIsConnected(true);
-        setTokenData(data);
-        
-        // Check if token is expired
+      const { tokenData: data, isConnected: connected } = await GoogleCalendarService.checkConnection(user.id);
+      
+      setIsConnected(connected);
+      setTokenData(data);
+      
+      if (data) {
         const expiresAt = new Date(data.expires_at);
         const now = new Date();
         
@@ -60,9 +33,6 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
           console.log('Token expired, attempting refresh...');
           await refreshToken();
         }
-      } else {
-        setIsConnected(false);
-        setTokenData(null);
       }
     } catch (error) {
       console.error('Error checking calendar connection:', error);
@@ -83,56 +53,16 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       return;
     }
 
-    // Create OAuth URL using our Edge Function
-    const authUrl = `https://dsfaxqfexebqogdxigdu.supabase.co/functions/v1/google-calendar-auth?action=authorize&user_id=${user.id}`;
-
-    // Open popup window for OAuth
-    const popup = window.open(
-      authUrl,
-      'google-calendar-auth',
-      'width=500,height=600,scrollbars=yes,resizable=yes'
-    );
-
-    // Listen for popup messages
-    const messageListener = async (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-      
-      if (event.data.type === 'GOOGLE_CALENDAR_AUTH_SUCCESS') {
-        popup?.close();
-        window.removeEventListener('message', messageListener);
+    const handleSuccess = async () => {
+      try {
+        toast({
+          title: "Succès!",
+          description: "Google Calendar connecté avec succès.",
+        });
         
-        try {
-          // Exchange code for tokens via Edge Function
-          const { error } = await supabase.functions.invoke('google-calendar-auth', {
-            body: {
-              action: 'exchange_code',
-              code: event.data.code,
-              user_id: user.id,
-            },
-          });
-
-          if (error) throw error;
-
-          toast({
-            title: "Succès!",
-            description: "Google Calendar connecté avec succès.",
-          });
-          
-          await checkConnection();
-        } catch (error) {
-          console.error('Error exchanging code:', error);
-          toast({
-            title: "Connexion échouée",
-            description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
-            variant: "destructive",
-          });
-        }
-      }
-
-      if (event.data.type === 'GOOGLE_CALENDAR_AUTH_ERROR') {
-        popup?.close();
-        window.removeEventListener('message', messageListener);
-        
+        await checkConnection();
+      } catch (error) {
+        console.error('Error after OAuth success:', error);
         toast({
           title: "Connexion échouée",
           description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
@@ -141,7 +71,15 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       }
     };
 
-    window.addEventListener('message', messageListener);
+    const handleError = (error: string) => {
+      toast({
+        title: "Connexion échouée",
+        description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
+        variant: "destructive",
+      });
+    };
+
+    GoogleCalendarAuth.startOAuthFlow(user.id, handleSuccess, handleError);
   }, [user, toast, checkConnection]);
 
   const disconnectCalendar = useCallback(async () => {
@@ -150,14 +88,7 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
     try {
       setIsLoading(true);
       
-      const { error } = await supabase.functions.invoke('google-calendar-auth', {
-        body: {
-          action: 'disconnect',
-          user_id: user.id,
-        },
-      });
-
-      if (error) throw error;
+      await GoogleCalendarService.disconnectCalendar(user.id);
 
       setIsConnected(false);
       setTokenData(null);
@@ -182,19 +113,18 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
     if (!user || !tokenData) return null;
 
     try {
-      const { data, error } = await supabase.functions.invoke('google-calendar-auth', {
-        body: {
-          action: 'refresh_token',
-          user_id: user.id,
-        },
-      });
-
-      if (error) throw error;
-
-      // Update local state
-      await checkConnection();
+      const newAccessToken = await GoogleCalendarService.refreshAccessToken(user.id);
       
-      return data.access_token;
+      if (newAccessToken) {
+        // Update local state
+        await checkConnection();
+        return newAccessToken;
+      } else {
+        // If refresh fails, disconnect the calendar
+        setIsConnected(false);
+        setTokenData(null);
+        return null;
+      }
     } catch (error) {
       console.error('Error refreshing token:', error);
       // If refresh fails, disconnect the calendar
