@@ -53,7 +53,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   const verified = service.provider?.verified || false;
 
   return (
-    {/* FORCE fintech-card class to ensure consistent styling */}
     <Card 
       className="fintech-card hover-lift"
       onMouseEnter={handleMouseEnter}
