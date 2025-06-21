@@ -9,6 +9,7 @@ import FraudBlockedUsers from './FraudBlockedUsers';
 import FraudLogsSection from './FraudLogsSection';
 import FraudAnalyticsSection from './FraudAnalyticsSection';
 import FraudTestingSection from './FraudTestingSection';
+import FraudDebugSection from './FraudDebugSection';
 
 interface FraudDetectionContentProps {
   fraudLogs: any[];
@@ -40,13 +41,14 @@ const FraudDetectionContent: React.FC<FraudDetectionContentProps> = ({
       <FraudAlertsSection realtimeAlerts={realtimeAlerts} />
 
       <Tabs defaultValue="queue" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="queue">Review Queue</TabsTrigger>
           <TabsTrigger value="risks">High Risk Users</TabsTrigger>
           <TabsTrigger value="blocks">Blocked Users</TabsTrigger>
           <TabsTrigger value="logs">Fraud Logs</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="testing">Testing</TabsTrigger>
+          <TabsTrigger value="debug">Debug</TabsTrigger>
         </TabsList>
 
         <TabsContent value="queue">
@@ -80,7 +82,11 @@ const FraudDetectionContent: React.FC<FraudDetectionContentProps> = ({
         </TabsContent>
 
         <TabsContent value="testing">
-          <FraudTestingSection />
+          <FraudTestingSection onDataUpdated={onUpdate} />
+        </TabsContent>
+
+        <TabsContent value="debug">
+          <FraudDebugSection />
         </TabsContent>
       </Tabs>
     </div>

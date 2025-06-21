@@ -8,16 +8,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { AlertTriangle, Play, Users, CreditCard, MessageSquare, Shield, Zap } from 'lucide-react';
+import { AlertTriangle, Play, Users, CreditCard, MessageSquare, Shield, Zap, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useFraudDetection } from '@/hooks/useFraudDetection';
 
-const FraudTestingSection = () => {
+interface FraudTestingSectionProps {
+  onDataUpdated?: () => void;
+}
+
+const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState('new-account-high-value');
   const [customAmount, setCustomAmount] = useState('500');
   const [customMessage, setCustomMessage] = useState('');
+  const [lastTestResult, setLastTestResult] = useState<any>(null);
   const { toast } = useToast();
   const { performFraudCheck } = useFraudDetection();
 
@@ -72,6 +77,8 @@ const FraudTestingSection = () => {
     const testUserId = crypto.randomUUID();
     const testEmail = `testuser_${Date.now()}@test.fraud.local`;
     
+    console.log('🔧 Creating test user:', { testUserId, testEmail });
+    
     // Insert test user
     const { error } = await supabase
       .from('users')
@@ -84,15 +91,18 @@ const FraudTestingSection = () => {
       });
 
     if (error) {
-      console.error('Error creating test user:', error);
+      console.error('❌ Error creating test user:', error);
       return null;
     }
 
+    console.log('✅ Test user created successfully');
     return { id: testUserId, email: testEmail };
   };
 
   const simulateScenario = async (scenarioId: string) => {
     setIsGenerating(true);
+    console.log(`🎭 Starting scenario simulation: ${scenarioId}`);
+    
     try {
       let fraudResult = null;
       const testUser = await generateTestUser();
@@ -101,8 +111,11 @@ const FraudTestingSection = () => {
         throw new Error('Failed to create test user');
       }
 
+      console.log('🎯 Test user created, proceeding with scenario...');
+
       switch (scenarioId) {
         case 'new-account-high-value':
+          console.log('💰 Simulating new account high-value scenario...');
           fraudResult = await performFraudCheck({
             action_type: 'booking',
             user_id: testUser.id,
@@ -118,15 +131,17 @@ const FraudTestingSection = () => {
           break;
 
         case 'multiple-failed-payments':
+          console.log('💳 Simulating failed payment pattern...');
           // Create multiple failed payment attempts
           for (let i = 0; i < 4; i++) {
-            await supabase.from('payment_attempts').insert({
+            const { error } = await supabase.from('payment_attempts').insert({
               user_id: testUser.id,
               amount: 150 + (i * 50),
               status: 'failed',
               failure_reason: 'insufficient_funds',
               ip_address: '192.168.1.100'
             });
+            if (error) console.error('❌ Failed to insert payment attempt:', error);
           }
           
           fraudResult = await performFraudCheck({
@@ -141,6 +156,7 @@ const FraudTestingSection = () => {
           break;
 
         case 'suspicious-messaging':
+          console.log('📨 Simulating suspicious messaging...');
           fraudResult = await performFraudCheck({
             action_type: 'messaging',
             user_id: testUser.id,
@@ -153,6 +169,7 @@ const FraudTestingSection = () => {
           break;
 
         case 'vpn-proxy-usage':
+          console.log('🔒 Simulating VPN/proxy usage...');
           fraudResult = await performFraudCheck({
             action_type: 'login',
             user_id: testUser.id,
@@ -166,10 +183,11 @@ const FraudTestingSection = () => {
           break;
 
         case 'rapid-booking-attempts':
+          console.log('⚡ Simulating rapid booking attempts...');
           // Create multiple rapid attempts
           for (let i = 0; i < 6; i++) {
             await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
-            await performFraudCheck({
+            const result = await performFraudCheck({
               action_type: 'booking',
               user_id: testUser.id,
               ip_address: '198.51.100.1',
@@ -178,32 +196,35 @@ const FraudTestingSection = () => {
                 rapid_fire: true
               }
             });
+            if (i === 5) fraudResult = result; // Use last result
           }
-          
-          fraudResult = await performFraudCheck({
-            action_type: 'booking',
-            user_id: testUser.id,
-            ip_address: '198.51.100.1',
-            metadata: {
-              velocity_check: true,
-              recent_attempts: 6
-            }
-          });
           break;
       }
+
+      console.log('📊 Fraud detection result:', fraudResult);
+      setLastTestResult({
+        scenario: scenarioId,
+        result: fraudResult,
+        timestamp: new Date().toISOString(),
+        testUser
+      });
 
       toast({
         title: "Test Scenario Generated",
         description: `Created fraud test case: ${fraudScenarios.find(s => s.id === scenarioId)?.name}`,
       });
 
-      console.log('Generated fraud test result:', fraudResult);
+      // Trigger data refresh in parent component
+      if (onDataUpdated) {
+        console.log('🔄 Triggering data refresh...');
+        setTimeout(() => onDataUpdated(), 1000); // Small delay to allow for propagation
+      }
 
     } catch (error) {
-      console.error('Error generating test scenario:', error);
+      console.error('❌ Error generating test scenario:', error);
       toast({
         title: "Test Generation Failed",
-        description: "Failed to generate test fraud scenario",
+        description: `Failed to generate test fraud scenario: ${error instanceof Error ? error.message : 'Unknown error'}`,
         variant: "destructive",
       });
     } finally {
@@ -213,11 +234,14 @@ const FraudTestingSection = () => {
 
   const generateBulkTestData = async () => {
     setIsGenerating(true);
+    console.log('🏭 Starting bulk test data generation...');
+    
     try {
       // Generate multiple test scenarios at once
       for (const scenario of fraudScenarios) {
+        console.log(`🎭 Running scenario: ${scenario.name}`);
         await simulateScenario(scenario.id);
-        await new Promise(resolve => setTimeout(resolve, 500)); // Delay between scenarios
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Delay between scenarios
       }
       
       toast({
@@ -225,7 +249,7 @@ const FraudTestingSection = () => {
         description: "Generated test data for all fraud scenarios",
       });
     } catch (error) {
-      console.error('Error generating bulk test data:', error);
+      console.error('❌ Error generating bulk test data:', error);
       toast({
         title: "Bulk Generation Failed",
         description: "Failed to generate bulk test data",
@@ -238,6 +262,8 @@ const FraudTestingSection = () => {
 
   const generateMockReviewItems = async () => {
     setIsGenerating(true);
+    console.log('📋 Generating mock review items...');
+    
     try {
       const testUser = await generateTestUser();
       if (!testUser) throw new Error('Failed to create test user');
@@ -270,12 +296,17 @@ const FraudTestingSection = () => {
 
       if (error) throw error;
 
+      console.log('✅ Mock review items created');
       toast({
         title: "Mock Review Items Created",
         description: "Generated test items for manual review queue",
       });
+
+      if (onDataUpdated) {
+        setTimeout(() => onDataUpdated(), 500);
+      }
     } catch (error) {
-      console.error('Error generating mock review items:', error);
+      console.error('❌ Error generating mock review items:', error);
       toast({
         title: "Generation Failed",
         description: "Failed to generate mock review items",
@@ -288,6 +319,8 @@ const FraudTestingSection = () => {
 
   const simulateBlockedUser = async () => {
     setIsGenerating(true);
+    console.log('🚫 Simulating blocked user...');
+    
     try {
       const testUser = await generateTestUser();
       if (!testUser) throw new Error('Failed to create test user');
@@ -303,12 +336,17 @@ const FraudTestingSection = () => {
 
       if (error) throw error;
 
+      console.log('✅ Test user blocked');
       toast({
         title: "Test User Blocked",
         description: "Created a test blocked user scenario",
       });
+
+      if (onDataUpdated) {
+        setTimeout(() => onDataUpdated(), 500);
+      }
     } catch (error) {
-      console.error('Error simulating blocked user:', error);
+      console.error('❌ Error simulating blocked user:', error);
       toast({
         title: "Simulation Failed",
         description: "Failed to simulate blocked user",
@@ -333,6 +371,22 @@ const FraudTestingSection = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Last Test Result */}
+      {lastTestResult && (
+        <Card className="border-green-200 bg-green-50">
+          <CardContent className="p-4">
+            <h4 className="font-semibold text-green-800 mb-2">Last Test Result</h4>
+            <div className="text-sm space-y-1">
+              <p><strong>Scenario:</strong> {lastTestResult.scenario}</p>
+              <p><strong>Risk Score:</strong> {lastTestResult.result?.risk_score}</p>
+              <p><strong>Action:</strong> {lastTestResult.result?.action}</p>
+              <p><strong>Time:</strong> {new Date(lastTestResult.timestamp).toLocaleString()}</p>
+              <p><strong>Test User:</strong> {lastTestResult.testUser?.email}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Tabs defaultValue="scenarios" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
@@ -421,6 +475,7 @@ const FraudTestingSection = () => {
                 size="lg"
                 className="w-full"
               >
+                {isGenerating ? <RefreshCw className="h-4 w-4 mr-2 animate-spin" /> : null}
                 {isGenerating ? 'Generating...' : 'Generate All Test Scenarios'}
               </Button>
               
