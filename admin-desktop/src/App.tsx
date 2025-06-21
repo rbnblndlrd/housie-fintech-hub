@@ -6,14 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
 import { Shield, Settings } from 'lucide-react';
 import { toast } from 'sonner';
+import { initializeSupabase } from './services/supabaseClient';
 
 function App() {
   const [isConfigured, setIsConfigured] = useState(false);
   const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
+  const [isInitializing, setIsInitializing] = useState(true);
 
   useEffect(() => {
-    checkConfiguration();
+    initializeApp();
     setupElectronListeners();
     
     return () => {
@@ -24,11 +26,42 @@ function App() {
     };
   }, []);
 
-  const checkConfiguration = async () => {
-    if (window.electronAPI) {
+  const initializeApp = async () => {
+    try {
+      setIsInitializing(true);
+      const configured = await checkAndInitializeConfiguration();
+      setIsConfigured(configured);
+    } catch (error) {
+      console.error('Failed to initialize app:', error);
+      toast.error('Failed to initialize application');
+    } finally {
+      setIsInitializing(false);
+    }
+  };
+
+  const checkAndInitializeConfiguration = async () => {
+    if (!window.electronAPI) {
+      console.error('Electron API not available');
+      return false;
+    }
+
+    try {
       const supabaseUrl = await window.electronAPI.getConfig('supabaseUrl');
       const serviceRoleKey = await window.electronAPI.getConfig('serviceRoleKey');
-      setIsConfigured(!!supabaseUrl && !!serviceRoleKey);
+      
+      if (supabaseUrl && serviceRoleKey) {
+        console.log('✅ Configuration found, initializing Supabase...');
+        await initializeSupabase();
+        console.log('✅ Supabase client initialized successfully');
+        return true;
+      } else {
+        console.log('⚠️ Configuration not found');
+        return false;
+      }
+    } catch (error) {
+      console.error('❌ Failed to initialize configuration:', error);
+      toast.error('Failed to initialize Supabase connection');
+      return false;
     }
   };
 
@@ -64,6 +97,37 @@ function App() {
     }
   };
 
+  const handleConfigurationSaved = async () => {
+    try {
+      console.log('🔄 Configuration saved, reinitializing...');
+      const configured = await checkAndInitializeConfiguration();
+      setIsConfigured(configured);
+      setIsConfigDialogOpen(false);
+      
+      if (configured) {
+        toast.success('Configuration saved and Supabase initialized');
+      } else {
+        toast.error('Failed to initialize Supabase with new configuration');
+      }
+    } catch (error) {
+      console.error('Failed to reinitialize after configuration:', error);
+      toast.error('Failed to apply new configuration');
+    }
+  };
+
+  if (isInitializing) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
+        <Card className="w-full max-w-md">
+          <CardContent className="p-8 text-center">
+            <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p className="text-gray-600">Initializing HOUSIE Admin...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   if (!isConfigured) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center">
@@ -91,11 +155,7 @@ function App() {
         <ConfigurationDialog
           open={isConfigDialogOpen}
           onOpenChange={setIsConfigDialogOpen}
-          onConfigured={() => {
-            setIsConfigured(true);
-            setIsConfigDialogOpen(false);
-            toast.success('Configuration saved successfully');
-          }}
+          onConfigured={handleConfigurationSaved}
         />
       </div>
     );
@@ -139,10 +199,7 @@ function App() {
       <ConfigurationDialog
         open={isConfigDialogOpen}
         onOpenChange={setIsConfigDialogOpen}
-        onConfigured={() => {
-          setIsConfigDialogOpen(false);
-          toast.success('Configuration updated successfully');
-        }}
+        onConfigured={handleConfigurationSaved}
       />
     </div>
   );

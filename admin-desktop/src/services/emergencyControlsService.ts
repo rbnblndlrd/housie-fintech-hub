@@ -1,12 +1,22 @@
-
-import { getSupabaseClient, initializeSupabase } from './supabaseClient';
+import { getSupabaseClient, initializeSupabase, isSupabaseInitialized } from './supabaseClient';
 import type { EmergencyControlsState, EmergencyControlAction } from '../types/emergencyControls';
 
 export class EmergencyControlsService {
   static async loadEmergencyControls(): Promise<EmergencyControlsState> {
     console.log('🚨 Loading emergency controls...');
     
-    const supabase = getSupabaseClient() || await initializeSupabase();
+    let supabase;
+    try {
+      if (!isSupabaseInitialized()) {
+        console.log('⚠️ Supabase not initialized, attempting initialization...');
+        supabase = await initializeSupabase();
+      } else {
+        supabase = getSupabaseClient();
+      }
+    } catch (error) {
+      console.error('❌ Failed to get Supabase client:', error);
+      throw new Error(`Database connection failed: ${error.message}`);
+    }
     
     const { data, error } = await supabase
       .from('emergency_controls')
@@ -17,7 +27,7 @@ export class EmergencyControlsService {
 
     if (error && error.code !== 'PGRST116') {
       console.error('❌ Error loading emergency controls:', error);
-      throw error;
+      throw new Error(`Failed to load emergency controls: ${error.message}`);
     }
 
     if (data) {
@@ -61,7 +71,7 @@ export class EmergencyControlsService {
 
     if (insertError) {
       console.error('❌ Error creating default controls:', insertError);
-      throw insertError;
+      throw new Error(`Failed to create default controls: ${insertError.message}`);
     }
     
     console.log('✅ Created default emergency controls:', newData);
@@ -105,7 +115,7 @@ export class EmergencyControlsService {
 
     if (error) {
       console.error('❌ Error updating emergency control:', error);
-      throw error;
+      throw new Error(`Failed to update control: ${error.message}`);
     }
 
     await this.logEmergencyAction(
