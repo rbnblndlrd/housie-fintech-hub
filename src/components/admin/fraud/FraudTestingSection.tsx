@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { AlertTriangle, Play, Users, CreditCard, MessageSquare, Shield, Zap, RefreshCw } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { useFraudDetection } from '@/hooks/useFraudDetection';
 
 interface FraudTestingSectionProps {
   onDataUpdated?: () => void;
@@ -23,14 +23,14 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
   const [customMessage, setCustomMessage] = useState('');
   const [lastTestResult, setLastTestResult] = useState<any>(null);
   const { toast } = useToast();
-  const { performFraudCheck } = useFraudDetection();
 
   const fraudScenarios = [
     {
       id: 'new-account-high-value',
       name: 'New Account + High Value',
       description: 'Simulate a brand new account making a high-value booking',
-      riskLevel: 'high',
+      riskLevel: 'critical',
+      targetScore: 85,
       icon: Users
     },
     {
@@ -38,27 +38,31 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
       name: 'Failed Payment Pattern',
       description: 'Multiple consecutive payment failures',
       riskLevel: 'critical',
+      targetScore: 92,
       icon: CreditCard
     },
     {
       id: 'suspicious-messaging',
       name: 'Suspicious Messages',
       description: 'Messages with spam/inappropriate content',
-      riskLevel: 'medium',
+      riskLevel: 'high',
+      targetScore: 78,
       icon: MessageSquare
     },
     {
       id: 'vpn-proxy-usage',
       name: 'VPN/Proxy Usage',
       description: 'Simulate requests from suspicious IP ranges',
-      riskLevel: 'medium',
+      riskLevel: 'high',
+      targetScore: 72,
       icon: Shield
     },
     {
       id: 'rapid-booking-attempts',
       name: 'Rapid Booking Velocity',
       description: 'Multiple booking attempts in short time',
-      riskLevel: 'high',
+      riskLevel: 'critical',
+      targetScore: 88,
       icon: Zap
     }
   ];
@@ -78,53 +82,67 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
     
     console.log('🔧 Creating test user:', { testUserId, testEmail });
     
-    const { error } = await supabase
-      .from('users')
-      .insert({
-        id: testUserId,
-        email: testEmail,
-        full_name: `Test User ${Date.now()}`,
-        user_role: 'seeker',
-        created_at: new Date().toISOString()
-      });
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .insert({
+          id: testUserId,
+          email: testEmail,
+          full_name: `Test User ${Date.now()}`,
+          user_role: 'seeker',
+          created_at: new Date().toISOString()
+        })
+        .select()
+        .single();
 
-    if (error) {
-      console.error('❌ Error creating test user:', error);
+      if (error) {
+        console.error('❌ Error creating test user:', error);
+        return null;
+      }
+
+      console.log('✅ Test user created successfully:', data);
+      return { id: testUserId, email: testEmail };
+    } catch (error) {
+      console.error('❌ Exception creating test user:', error);
       return null;
     }
-
-    console.log('✅ Test user created successfully');
-    return { id: testUserId, email: testEmail };
   };
 
-  const createDirectFraudLog = async (testUser: any, riskScore: number, actionType: string, reasons: string[]) => {
-    console.log('📊 Creating direct fraud log entry...');
+  const createHighRiskFraudLog = async (testUser: any, scenario: any) => {
+    console.log('📊 Creating high-risk fraud log entry...');
     
     try {
+      const riskScore = scenario.targetScore;
+      const reasons = getScenarioReasons(scenario.id, riskScore);
+      
       const fraudLogData = {
         session_id: crypto.randomUUID(),
         user_id: testUser.id,
-        action_type: actionType,
+        action_type: getActionType(scenario.id),
         risk_score: riskScore,
         action_taken: riskScore >= 80 ? 'block' : riskScore >= 60 ? 'review' : 'allow',
         risk_factors: {
-          user_behavior: Math.floor(riskScore * 0.3),
+          user_behavior: Math.floor(riskScore * 0.4),
           device_risk: Math.floor(riskScore * 0.2),
-          ip_risk: Math.floor(riskScore * 0.2),
-          payment_risk: Math.floor(riskScore * 0.2),
+          ip_risk: Math.floor(riskScore * 0.15),
+          payment_risk: Math.floor(riskScore * 0.15),
           content_risk: Math.floor(riskScore * 0.1),
           velocity_risk: 0
         },
         reasons: reasons,
         metadata: { 
           test_scenario: true, 
+          scenario_id: scenario.id,
           generated_at: new Date().toISOString(),
-          user_email: testUser.email
+          user_email: testUser.email,
+          target_score: riskScore
         },
         ip_address: '192.168.1.100',
         user_agent: 'Mozilla/5.0 (Test Browser)',
         created_at: new Date().toISOString()
       };
+
+      console.log('📊 Inserting fraud log with data:', fraudLogData);
 
       const { data, error } = await supabase
         .from('fraud_logs')
@@ -137,21 +155,84 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
         throw error;
       }
 
-      console.log('✅ Fraud log created:', data);
+      console.log('✅ High-risk fraud log created:', data);
       
       // Create review queue item if high risk
       if (riskScore >= 60) {
-        await createHighRiskReviewItem(testUser, riskScore, actionType);
+        await createReviewQueueItem(testUser, riskScore, getActionType(scenario.id));
       }
 
       return data;
     } catch (error) {
-      console.error('❌ Error in createDirectFraudLog:', error);
+      console.error('❌ Error in createHighRiskFraudLog:', error);
       throw error;
     }
   };
 
-  const createHighRiskReviewItem = async (testUser: any, riskScore: number, actionType: string) => {
+  const getScenarioReasons = (scenarioId: string, riskScore: number): string[] => {
+    switch (scenarioId) {
+      case 'new-account-high-value':
+        return [
+          'New account (< 1 hour old)',
+          `High transaction amount: $${customAmount}`,
+          'No transaction history',
+          'Account verification pending',
+          'Suspicious registration pattern'
+        ];
+      case 'multiple-failed-payments':
+        return [
+          'Multiple payment failures detected',
+          'Suspicious payment pattern',
+          'Card testing behavior',
+          'High fraud risk indicators',
+          'Payment velocity exceeded'
+        ];
+      case 'suspicious-messaging':
+        return [
+          'Spam content detected',
+          'Suspicious message patterns',
+          'Content policy violation',
+          'Inappropriate language',
+          'Potential scam indicators'
+        ];
+      case 'vpn-proxy-usage':
+        return [
+          'VPN/Proxy detected',
+          'IP geolocation mismatch',
+          'Anonymous network usage',
+          'Suspicious IP reputation',
+          'Tor network detected'
+        ];
+      case 'rapid-booking-attempts':
+        return [
+          'Rapid booking velocity detected',
+          'Multiple attempts in short timeframe',
+          'Bot-like behavior',
+          'Automated activity patterns',
+          'Rate limit exceeded'
+        ];
+      default:
+        return [`High-risk behavior detected (Score: ${riskScore})`];
+    }
+  };
+
+  const getActionType = (scenarioId: string): string => {
+    switch (scenarioId) {
+      case 'new-account-high-value':
+      case 'rapid-booking-attempts':
+        return 'booking';
+      case 'multiple-failed-payments':
+        return 'payment';
+      case 'suspicious-messaging':
+        return 'messaging';
+      case 'vpn-proxy-usage':
+        return 'login';
+      default:
+        return 'registration';
+    }
+  };
+
+  const createReviewQueueItem = async (testUser: any, riskScore: number, actionType: string) => {
     console.log('📋 Creating high-risk review item...');
     
     try {
@@ -172,113 +253,54 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
         console.log('✅ Review item created successfully');
       }
     } catch (error) {
-      console.error('❌ Error in createHighRiskReviewItem:', error);
-    }
-  };
-
-  const triggerDataRefresh = () => {
-    console.log('🔄 Triggering comprehensive data refresh...');
-    if (onDataUpdated) {
-      // Immediate refresh
-      onDataUpdated();
-      // Additional refreshes to ensure data appears
-      setTimeout(() => onDataUpdated(), 1000);
-      setTimeout(() => onDataUpdated(), 3000);
+      console.error('❌ Error in createReviewQueueItem:', error);
     }
   };
 
   const simulateScenario = async (scenarioId: string) => {
     setIsGenerating(true);
-    console.log(`🎭 Starting enhanced scenario simulation: ${scenarioId}`);
+    console.log(`🎭 Starting HIGH-RISK scenario simulation: ${scenarioId}`);
     
     try {
+      const scenario = fraudScenarios.find(s => s.id === scenarioId);
+      if (!scenario) {
+        throw new Error('Scenario not found');
+      }
+
       const testUser = await generateTestUser();
       if (!testUser) {
         throw new Error('Failed to create test user');
       }
 
-      let fraudResult = null;
-      let riskScore = 75; // Default high-risk score
-      let reasons: string[] = [];
+      console.log(`🎯 Generating ${scenario.name} with target score: ${scenario.targetScore}`);
+      
+      const fraudResult = await createHighRiskFraudLog(testUser, scenario);
 
-      switch (scenarioId) {
-        case 'new-account-high-value':
-          console.log('💰 Simulating new account high-value scenario...');
-          riskScore = 85;
-          reasons = ['New account (< 1 hour old)', `High transaction amount: $${customAmount}`, 'No transaction history'];
-          fraudResult = await createDirectFraudLog(testUser, riskScore, 'booking', reasons);
-          break;
-
-        case 'multiple-failed-payments':
-          console.log('💳 Simulating failed payment pattern...');
-          riskScore = 92;
-          reasons = ['Multiple payment failures detected', 'Suspicious payment pattern', 'High fraud risk indicators'];
-          
-          // Create payment attempts first
-          for (let i = 0; i < 4; i++) {
-            await supabase.from('payment_attempts').insert({
-              user_id: testUser.id,
-              amount: 150 + (i * 50),
-              status: 'failed',
-              failure_reason: 'insufficient_funds',
-              ip_address: '192.168.1.100'
-            });
-          }
-          
-          fraudResult = await createDirectFraudLog(testUser, riskScore, 'payment', reasons);
-          break;
-
-        case 'suspicious-messaging':
-          console.log('📨 Simulating suspicious messaging...');
-          riskScore = 78;
-          reasons = ['Spam content detected', 'Suspicious message patterns', 'Content policy violation'];
-          fraudResult = await createDirectFraudLog(testUser, riskScore, 'messaging', reasons);
-          break;
-
-        case 'vpn-proxy-usage':
-          console.log('🔒 Simulating VPN/proxy usage...');
-          riskScore = 68;
-          reasons = ['VPN/Proxy detected', 'IP geolocation mismatch', 'Anonymous network usage'];
-          fraudResult = await createDirectFraudLog(testUser, riskScore, 'login', reasons);
-          break;
-
-        case 'rapid-booking-attempts':
-          console.log('⚡ Simulating rapid booking attempts...');
-          riskScore = 88;
-          reasons = ['Rapid booking velocity detected', 'Multiple attempts in short timeframe', 'Bot-like behavior'];
-          
-          // Create multiple fraud logs for velocity
-          for (let i = 0; i < 3; i++) {
-            await createDirectFraudLog(testUser, riskScore - (i * 5), 'booking', reasons);
-            await new Promise(resolve => setTimeout(resolve, 200));
-          }
-          
-          fraudResult = { risk_score: riskScore, action: 'review' };
-          break;
-      }
-
-      console.log('📊 Enhanced fraud detection result:', fraudResult);
       setLastTestResult({
         scenario: scenarioId,
+        scenarioName: scenario.name,
         result: fraudResult,
         timestamp: new Date().toISOString(),
         testUser,
-        riskScore
+        riskScore: scenario.targetScore
       });
 
       toast({
-        title: "High-Risk Test Scenario Generated",
-        description: `Created fraud test case with risk score: ${riskScore}`,
+        title: "High-Risk Test Generated",
+        description: `Generated ${scenario.name} with risk score: ${scenario.targetScore}`,
       });
 
       // Trigger data refresh
-      triggerDataRefresh();
+      if (onDataUpdated) {
+        setTimeout(() => onDataUpdated(), 500);
+        setTimeout(() => onDataUpdated(), 2000);
+      }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error generating test scenario:', error);
       toast({
         title: "Test Generation Failed",
-        description: `Failed to generate test fraud scenario: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        description: `Failed to generate test: ${error.message}`,
         variant: "destructive",
       });
     } finally {
@@ -292,17 +314,16 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
     
     try {
       for (const scenario of fraudScenarios) {
-        console.log(`🎭 Running scenario: ${scenario.name}`);
+        console.log(`🎭 Running scenario: ${scenario.name} (Target: ${scenario.targetScore})`);
         await simulateScenario(scenario.id);
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
       
       toast({
-        title: "Bulk High-Risk Test Data Generated",
-        description: "Generated test data for all fraud scenarios with high risk scores",
+        title: "Bulk High-Risk Tests Complete",
+        description: "Generated all fraud scenarios with high risk scores",
       });
 
-      triggerDataRefresh();
     } catch (error) {
       console.error('❌ Error generating bulk test data:', error);
       toast({
@@ -323,12 +344,10 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
       const testUser = await generateTestUser();
       if (!testUser) throw new Error('Failed to create test user');
 
-      const sessionId = crypto.randomUUID();
-      
       const reviewItems = [
         {
           user_id: testUser.id,
-          fraud_session_id: sessionId,
+          fraud_session_id: crypto.randomUUID(),
           action_type: 'payment',
           risk_score: 85,
           priority: 'critical',
@@ -350,14 +369,15 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
 
       if (error) throw error;
 
-      console.log('✅ Mock review items created');
       toast({
         title: "Mock Review Items Created",
         description: "Generated test items for manual review queue",
       });
 
-      triggerDataRefresh();
-    } catch (error) {
+      if (onDataUpdated) {
+        setTimeout(() => onDataUpdated(), 1000);
+      }
+    } catch (error: any) {
       console.error('❌ Error generating mock review items:', error);
       toast({
         title: "Generation Failed",
@@ -388,14 +408,15 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
 
       if (error) throw error;
 
-      console.log('✅ Test user blocked');
       toast({
         title: "Test User Blocked",
         description: "Created a test blocked user scenario",
       });
 
-      triggerDataRefresh();
-    } catch (error) {
+      if (onDataUpdated) {
+        setTimeout(() => onDataUpdated(), 1000);
+      }
+    } catch (error: any) {
       console.error('❌ Error simulating blocked user:', error);
       toast({
         title: "Simulation Failed",
@@ -416,7 +437,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
             <AlertTriangle className="h-5 w-5 text-orange-600" />
             <span className="font-semibold text-orange-800">HIGH-RISK TEST MODE ACTIVE</span>
             <Badge variant="outline" className="bg-orange-100 text-orange-800">
-              Generating realistic high-risk fraud scenarios
+              Generating 70+ risk scores for testing
             </Badge>
           </div>
         </CardContent>
@@ -428,9 +449,8 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
           <CardContent className="p-4">
             <h4 className="font-semibold text-green-800 mb-2">Last Test Result</h4>
             <div className="text-sm space-y-1">
-              <p><strong>Scenario:</strong> {lastTestResult.scenario}</p>
+              <p><strong>Scenario:</strong> {lastTestResult.scenarioName}</p>
               <p><strong>Risk Score:</strong> {lastTestResult.riskScore}</p>
-              <p><strong>Action:</strong> {lastTestResult.result?.action}</p>
               <p><strong>Time:</strong> {new Date(lastTestResult.timestamp).toLocaleString()}</p>
               <p><strong>Test User:</strong> {lastTestResult.testUser?.email}</p>
             </div>
@@ -463,7 +483,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
                         <div className="flex items-start justify-between mb-2">
                           <Icon className="h-5 w-5 text-blue-600" />
                           <Badge variant={getRiskColor(scenario.riskLevel)}>
-                            {scenario.riskLevel}
+                            Score: {scenario.targetScore}
                           </Badge>
                         </div>
                         <h3 className="font-semibold mb-1">{scenario.name}</h3>
@@ -530,13 +550,13 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
               </Button>
               
               <div className="text-sm text-gray-600">
-                This will create high-risk test data (70+ risk scores) for all fraud scenarios including:
+                This will create high-risk test data with realistic fraud scores:
                 <ul className="list-disc list-inside mt-2 space-y-1">
-                  <li>High-risk new accounts (Risk Score: 85)</li>
-                  <li>Failed payment patterns (Risk Score: 92)</li>
-                  <li>Suspicious messaging activity (Risk Score: 78)</li>
-                  <li>VPN/proxy usage patterns (Risk Score: 68)</li>
-                  <li>Rapid booking velocity tests (Risk Score: 88)</li>
+                  <li>New Account + High Value (Risk Score: 85)</li>
+                  <li>Failed Payment Pattern (Risk Score: 92)</li>
+                  <li>Suspicious Messaging (Risk Score: 78)</li>
+                  <li>VPN/Proxy Usage (Risk Score: 72)</li>
+                  <li>Rapid Booking Velocity (Risk Score: 88)</li>
                 </ul>
               </div>
             </CardContent>

@@ -82,130 +82,106 @@ export const useFraudData = () => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const calculateStats = (
+    logs: FraudLog[], 
+    queue: ReviewQueueItem[], 
+    blocks: UserBlock[]
+  ): FraudStats => {
+    console.log('📊 Calculating stats from fresh data:', {
+      logsCount: logs.length,
+      queueCount: queue.length,
+      blocksCount: blocks.length
+    });
+
+    const totalChecks = logs.length;
+    const highRiskDetected = logs.filter(log => log.risk_score >= 50).length;
+    const blockedUsers = blocks.filter(block => block.is_active).length;
+    const pendingReviews = queue.filter(item => item.status === 'pending').length;
+
+    // Calculate today's alerts (last 24 hours)
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const todayAlerts = logs.filter(log => log.created_at > oneDayAgo).length;
+
+    // Calculate weekly trend
+    const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
+    
+    const thisWeekAlerts = logs.filter(log => log.created_at > oneWeekAgo).length;
+    const lastWeekAlerts = logs.filter(log => 
+      log.created_at > twoWeeksAgo && log.created_at <= oneWeekAgo
+    ).length;
+    
+    const weeklyTrend = lastWeekAlerts > 0 ? 
+      Math.round(((thisWeekAlerts - lastWeekAlerts) / lastWeekAlerts) * 100) : 0;
+
+    const calculatedStats = {
+      totalChecks,
+      highRiskDetected,
+      blockedUsers,
+      pendingReviews,
+      todayAlerts,
+      weeklyTrend
+    };
+
+    console.log('📊 Calculated final stats:', calculatedStats);
+    return calculatedStats;
+  };
+
   const loadFraudData = async () => {
-    console.log('🔄 Starting enhanced fraud data reload...');
+    console.log('🔄 Starting comprehensive fraud data reload...');
     setLoading(true);
     setError(null);
     
     try {
-      // Step 1: Load raw fraud logs with enhanced error handling
-      console.log('📊 Loading fraud logs with enhanced query...');
-      const { data: rawLogsData, error: logsError, count: logsCount } = await supabase
+      // Load fraud logs with user data
+      console.log('📊 Loading fraud logs...');
+      const { data: rawLogsData, error: logsError } = await supabase
         .from('fraud_logs')
-        .select('*', { count: 'exact' })
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(1000);
-
-      console.log('📊 Raw fraud logs query result:', {
-        data: rawLogsData,
-        count: logsCount,
-        error: logsError,
-        dataLength: rawLogsData?.length
-      });
 
       if (logsError) {
         console.error('❌ Fraud logs query error:', logsError);
         throw new Error(`Failed to load fraud logs: ${logsError.message}`);
       }
 
-      if (!rawLogsData) {
-        console.warn('⚠️ No fraud logs data returned');
-        setFraudLogs([]);
-      } else {
-        console.log('✅ Successfully loaded', rawLogsData.length, 'fraud logs');
-        
-        // Step 2: Get unique user IDs for user data lookup
-        const userIds = rawLogsData.filter(log => log.user_id).map(log => log.user_id);
+      console.log('✅ Raw fraud logs loaded:', rawLogsData?.length || 0);
+
+      // Get user data for fraud logs
+      let processedLogsData: FraudLog[] = [];
+      if (rawLogsData && rawLogsData.length > 0) {
+        const userIds = rawLogsData
+          .filter(log => log.user_id)
+          .map(log => log.user_id);
         const uniqueUserIds = [...new Set(userIds)];
         
         let usersData: any[] = [];
         if (uniqueUserIds.length > 0) {
-          console.log('👥 Loading user data for', uniqueUserIds.length, 'unique users...');
           const { data: userData, error: usersError } = await supabase
             .from('users')
             .select('id, full_name, email')
             .in('id', uniqueUserIds);
 
           if (usersError) {
-            console.warn('⚠️ Users query error (continuing without user data):', usersError);
+            console.warn('⚠️ Users query error:', usersError);
           } else {
             usersData = userData || [];
-            console.log('👥 Successfully loaded user data for', usersData.length, 'users');
           }
         }
 
-        // Step 3: Create user lookup map and combine data
         const userMap = usersData.reduce((acc, user) => {
           acc[user.id] = { full_name: user.full_name, email: user.email };
           return acc;
         }, {} as Record<string, { full_name: string; email: string }>);
 
-        const processedLogsData = rawLogsData.map(log => ({
+        processedLogsData = rawLogsData.map(log => ({
           ...log,
           users: log.user_id ? userMap[log.user_id] || null : null
         })) as FraudLog[];
-
-        setFraudLogs(processedLogsData);
-        console.log('✅ Final processed fraud logs:', processedLogsData.length);
-
-        // Step 4: Calculate recent alerts (last 24 hours)
-        const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-        const recentAlerts = processedLogsData.filter(log => log.created_at > oneDayAgo);
-        setRealtimeAlerts(recentAlerts);
-        console.log('📢 Recent alerts (24h):', recentAlerts.length);
-
-        // Step 5: Calculate high-risk users (risk score >= 50 instead of 70)
-        const riskUsers = processedLogsData
-          .filter(log => log.risk_score >= 50 && log.user_id && log.users)
-          .reduce((acc, log) => {
-            const userId = log.user_id!;
-            if (!acc[userId] || log.risk_score > acc[userId].risk_score) {
-              acc[userId] = {
-                user_id: userId,
-                full_name: log.users!.full_name || 'Unknown User',
-                email: log.users!.email || 'No email',
-                risk_score: log.risk_score,
-                last_activity: log.created_at
-              };
-            }
-            return acc;
-          }, {} as Record<string, HighRiskUser>);
-
-        const highRiskUsersList = Object.values(riskUsers)
-          .sort((a, b) => b.risk_score - a.risk_score)
-          .slice(0, 20);
-
-        setHighRiskUsers(highRiskUsersList);
-        console.log('⚠️ High-risk users (score >= 50):', highRiskUsersList.length);
-
-        // Step 6: Calculate comprehensive stats
-        const totalChecks = processedLogsData.length;
-        const highRiskDetected = processedLogsData.filter(log => log.risk_score >= 50).length;
-        const todayAlerts = recentAlerts.length;
-
-        // Calculate weekly trend
-        const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-        const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
-        
-        const thisWeekAlerts = processedLogsData.filter(log => log.created_at > oneWeekAgo).length;
-        const lastWeekAlerts = processedLogsData.filter(log => 
-          log.created_at > twoWeeksAgo && log.created_at <= oneWeekAgo
-        ).length;
-        
-        const weeklyTrend = lastWeekAlerts > 0 ? 
-          Math.round(((thisWeekAlerts - lastWeekAlerts) / lastWeekAlerts) * 100) : 0;
-
-        console.log('📊 Calculated stats:', {
-          totalChecks,
-          highRiskDetected,
-          todayAlerts,
-          thisWeekAlerts,
-          lastWeekAlerts,
-          weeklyTrend
-        });
       }
 
-      // Step 7: Load review queue
+      // Load review queue
       console.log('📋 Loading review queue...');
       const { data: queueData, error: queueError } = await supabase
         .from('review_queue')
@@ -219,18 +195,15 @@ export const useFraudData = () => {
         .order('created_at', { ascending: false });
 
       if (queueError) {
-        console.error('❌ Review queue query error:', queueError);
-      } else {
-        const processedQueueData = (queueData || []).map(item => ({
-          ...item,
-          users: Array.isArray(item.users) ? item.users[0] : item.users
-        })) as ReviewQueueItem[];
-
-        setReviewQueue(processedQueueData);
-        console.log('✅ Review queue items:', processedQueueData.length);
+        console.error('❌ Review queue error:', queueError);
       }
 
-      // Step 8: Load user blocks
+      const processedQueueData = (queueData || []).map(item => ({
+        ...item,
+        users: Array.isArray(item.users) ? item.users[0] : item.users
+      })) as ReviewQueueItem[];
+
+      // Load user blocks
       console.log('🚫 Loading user blocks...');
       const { data: blocksData, error: blocksError } = await supabase
         .from('user_blocks')
@@ -241,41 +214,61 @@ export const useFraudData = () => {
             email
           )
         `)
-        .eq('is_active', true)
         .order('blocked_at', { ascending: false });
 
       if (blocksError) {
-        console.error('❌ User blocks query error:', blocksError);
-      } else {
-        const processedBlocksData = (blocksData || []).map(block => ({
-          ...block,
-          users: Array.isArray(block.users) ? block.users[0] : block.users
-        })) as UserBlock[];
-
-        setUserBlocks(processedBlocksData);
-        console.log('✅ User blocks:', processedBlocksData.length);
+        console.error('❌ User blocks error:', blocksError);
       }
 
-      // Step 9: Update final stats
-      const finalStats = {
-        totalChecks: fraudLogs.length,
-        highRiskDetected: fraudLogs.filter(log => log.risk_score >= 50).length,
-        blockedUsers: userBlocks.length,
-        pendingReviews: reviewQueue.filter(item => item.status === 'pending').length,
-        todayAlerts: realtimeAlerts.length,
-        weeklyTrend: 0 // Will be calculated properly with data
-      };
+      const processedBlocksData = (blocksData || []).map(block => ({
+        ...block,
+        users: Array.isArray(block.users) ? block.users[0] : block.users
+      })) as UserBlock[];
 
-      setStats(finalStats);
-      console.log('📊 Final dashboard stats:', finalStats);
+      // Calculate high-risk users
+      const riskUsers = processedLogsData
+        .filter(log => log.risk_score >= 50 && log.user_id && log.users)
+        .reduce((acc, log) => {
+          const userId = log.user_id!;
+          if (!acc[userId] || log.risk_score > acc[userId].risk_score) {
+            acc[userId] = {
+              user_id: userId,
+              full_name: log.users!.full_name || 'Unknown User',
+              email: log.users!.email || 'No email',
+              risk_score: log.risk_score,
+              last_activity: log.created_at
+            };
+          }
+          return acc;
+        }, {} as Record<string, HighRiskUser>);
 
+      const highRiskUsersList = Object.values(riskUsers)
+        .sort((a, b) => b.risk_score - a.risk_score)
+        .slice(0, 20);
+
+      // Calculate realtime alerts (last 24 hours)
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+      const recentAlerts = processedLogsData.filter(log => log.created_at > oneDayAgo);
+
+      // Update all state
+      setFraudLogs(processedLogsData);
+      setReviewQueue(processedQueueData);
+      setUserBlocks(processedBlocksData);
+      setHighRiskUsers(highRiskUsersList);
+      setRealtimeAlerts(recentAlerts);
+
+      // Calculate and set stats from fresh data
+      const freshStats = calculateStats(processedLogsData, processedQueueData, processedBlocksData);
+      setStats(freshStats);
+
+      console.log('✅ All fraud data loaded successfully');
       toast({
         title: "Fraud Data Loaded",
-        description: `Found ${finalStats.totalChecks} fraud checks, ${finalStats.highRiskDetected} high-risk`,
+        description: `Found ${processedLogsData.length} fraud checks, ${freshStats.highRiskDetected} high-risk`,
       });
 
     } catch (error: any) {
-      console.error('💥 Complete fraud data loading failed:', error);
+      console.error('💥 Fraud data loading failed:', error);
       setError(error.message || 'Failed to load fraud data');
       toast({
         title: "Data Loading Error",
@@ -284,7 +277,6 @@ export const useFraudData = () => {
       });
     } finally {
       setLoading(false);
-      console.log('✅ Fraud data loading complete');
     }
   };
 
