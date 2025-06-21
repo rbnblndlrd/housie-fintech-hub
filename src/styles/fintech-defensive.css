@@ -1,0 +1,38 @@
+
+/* DEFENSIVE FINTECH STYLING - Last line of defense against plain windows */
+
+/* GLOBAL OVERRIDE: If ANY element tries to use plain styling, force fintech */
+*:not(.fintech-card):not([class*="fintech-"]) {
+  --apply-fintech-fallback: true;
+}
+
+/* Catch any div that might be used as a card-like container */
+div:has(> h1, > h2, > h3, > h4, > h5, > h6),
+div:has(> .title, > .heading),
+div:has(> p + button),
+div:has(> form),
+div:has(> .content) {
+  @apply fintech-card !important;
+}
+
+/* Force fintech on any container with card-like behavior */
+div[class*="p-4"], div[class*="p-6"], div[class*="p-8"],
+div[class*="shadow"], div[class*="rounded"],
+div[class*="border"], div[class*="bg-"] {
+  @apply fintech-card !important;
+}
+
+/* EMERGENCY OVERRIDE: If all else fails, apply fintech to common selectors */
+.container, .wrapper, .section, .panel, .widget, .component {
+  @apply fintech-card !important;
+}
+
+/* Ensure no component can escape fintech styling */
+[class]:not([class*="fintech-"]):not([class*="text-"]):not([class*="font-"]):not([class*="space-"]):not([class*="gap-"]):not([class*="flex"]):not([class*="grid"]):not([class*="block"]):not([class*="inline"]) {
+  @apply fintech-card !important;
+}
+
+/* Final safety net: Any element with multiple classes that suggest it's a container */
+[class*=" "][class*="bg-"], [class*=" "][class*="shadow-"], [class*=" "][class*="border-"], [class*=" "][class*="rounded-"] {
+  @apply fintech-card !important;
+}

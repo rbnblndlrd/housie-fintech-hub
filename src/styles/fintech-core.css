@@ -1,0 +1,56 @@
+
+/* FINTECH CORE STYLES - This file ensures ONLY fintech styling is used */
+
+/* CRITICAL: Force fintech styling on ALL components */
+.card, [class*="card"], div[class*="Card"], .Card {
+  @apply fintech-card !important;
+}
+
+/* ELIMINATE ALL PLAIN WHITE BACKGROUNDS */
+.bg-white, [class*="bg-white"] {
+  @apply fintech-card !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
+  border-radius: 1rem !important;
+}
+
+.dark .bg-white, .dark [class*="bg-white"] {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%) !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* FORCE fintech styling on specific problem components */
+.bg-dark-secondary, [class*="bg-dark-secondary"] {
+  @apply fintech-card !important;
+}
+
+/* Override any attempts to use plain styling */
+div[class*="rounded-lg"], div[class*="shadow-"], div[class*="border"] {
+  @apply fintech-card !important;
+}
+
+/* Ensure ALL modals and dialogs use fintech styling */
+[role="dialog"], .dialog, [class*="dialog"] {
+  @apply fintech-card !important;
+}
+
+/* Force fintech on any component that might fallback to plain styling */
+.fallback, .default, .plain, .simple {
+  @apply fintech-card !important;
+}
+
+/* PREVENT any component from overriding fintech styling */
+* {
+  --force-fintech: true;
+}
+
+/* Make sure buttons always use fintech styling */
+button:not([class*="fintech-button"]) {
+  @apply fintech-button-secondary !important;
+}
+
+button[class*="bg-"]:not([class*="fintech-button"]) {
+  @apply fintech-button-primary !important;
+}

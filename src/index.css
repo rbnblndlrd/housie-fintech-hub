@@ -3,6 +3,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Import fintech defensive styles FIRST */
+@import './styles/fintech-core.css';
+@import './styles/fintech-components.css';
+@import './styles/fintech-defensive.css';
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -58,16 +63,6 @@
     @apply bg-background text-foreground;
     transition: background-color 300ms ease, color 300ms ease;
   }
-}
-
-/* DEFENSIVE FINTECH STYLING - Force fintech styles on all cards */
-[class*="card"], .card, div[class*="Card"] {
-  @apply fintech-card !important;
-}
-
-/* Force fintech styling on any potential fallback components */
-.service-card, [data-testid*="service"], [class*="service-card"] {
-  @apply fintech-card !important;
 }
 
 /* Enhanced Fintech Card Styling */

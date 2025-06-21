@@ -1,7 +1,7 @@
 
-import { Service, Provider } from "@/types/service";
+import { Provider } from "@/types/service";
 
-export const sampleProviders = [
+export const sampleProviders: Provider[] = [
   {
     id: 1,
     name: "Sophie Entretien",
@@ -53,7 +53,3 @@ export const sampleProviders = [
     serviceRadius: 18
   }
 ];
-
-// REMOVED: fallbackServices array that was causing plain styling
-// All services now come from database or show proper fintech-styled empty states
-export const fallbackServices: Service[] = [];

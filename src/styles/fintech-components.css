@@ -1,0 +1,52 @@
+
+/* FINTECH COMPONENT OVERRIDES - Specific component styling enforcement */
+
+/* Service Components */
+.service-card, [data-testid*="service"], [class*="service"] {
+  @apply fintech-card !important;
+}
+
+/* Dashboard Components */
+.dashboard, [class*="dashboard"], .overview, [class*="overview"] {
+  @apply fintech-card !important;
+}
+
+/* Chat Components */
+.chat, [class*="chat"], .message, [class*="message"] {
+  @apply fintech-card !important;
+}
+
+/* Form Components */
+.form, [class*="form"], fieldset, .input-group {
+  @apply fintech-card !important;
+}
+
+/* Navigation Components */
+.nav, [class*="nav"], .menu, [class*="menu"] {
+  @apply fintech-card !important;
+}
+
+/* Notification Components */
+.notification, [class*="notification"], .alert, [class*="alert"] {
+  @apply fintech-card !important;
+}
+
+/* Modal and Popup Components */
+.modal, [class*="modal"], .popup, [class*="popup"], .dropdown, [class*="dropdown"] {
+  @apply fintech-card !important;
+}
+
+/* Loading and Error States */
+.loading, [class*="loading"], .error, [class*="error"], .empty, [class*="empty"] {
+  @apply fintech-card !important;
+}
+
+/* Profile and Settings Components */
+.profile, [class*="profile"], .settings, [class*="settings"] {
+  @apply fintech-card !important;
+}
+
+/* Calendar and Date Components */
+.calendar, [class*="calendar"], .date-picker, [class*="date"] {
+  @apply fintech-card !important;
+}

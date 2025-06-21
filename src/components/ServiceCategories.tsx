@@ -68,9 +68,9 @@ const ServiceCategories: React.FC<ServiceCategoriesProps> = ({ onCategorySelect 
   }, []);
 
   return (
-    <Card className="bg-white dark:bg-dark-secondary shadow-lg border dark:border-gray-700 mb-6">
+    <Card className="fintech-card mb-6">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-black dark:text-white text-lg">
+        <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white text-lg">
           Service Categories
         </CardTitle>
       </CardHeader>
@@ -78,7 +78,7 @@ const ServiceCategories: React.FC<ServiceCategoriesProps> = ({ onCategorySelect 
         {serviceCategories.map(category => (
           <div
             key={category.id}
-            className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+            className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors fintech-card"
             onClick={() => onCategorySelect(category.id)}
           >
             <div className="flex items-center gap-3">
