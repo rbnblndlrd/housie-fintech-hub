@@ -13,6 +13,7 @@ import CustomerProfile from './pages/CustomerProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
 import BookingSuccess from './pages/BookingSuccess';
+import Services from './pages/Services';
 import NotFound from './pages/NotFound';
 import './index.css';
 import { ThemeProvider } from '@/contexts/ThemeContext';
@@ -36,6 +37,7 @@ function App() {
                       <Route path="/profile" element={<CustomerProfile />} />
                       <Route path="/admin" element={<AdminDashboard />} />
                       <Route path="/provider" element={<ProviderDashboard />} />
+                      <Route path="/services" element={<Services />} />
                       <Route path="/booking/:id" element={<BookingSuccess />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
