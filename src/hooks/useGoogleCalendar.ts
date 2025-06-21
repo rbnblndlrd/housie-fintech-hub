@@ -83,22 +83,12 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       return;
     }
 
-    const clientId = Deno.env.get('GOOGLE_CLIENT_ID') || 'YOUR_GOOGLE_CLIENT_ID';
-    const redirectUri = `https://dsfaxqfexebqogdxigdu.supabase.co/functions/v1/google-calendar-auth`;
-    const scope = 'https://www.googleapis.com/auth/calendar';
-    
-    const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
-    authUrl.searchParams.append('client_id', clientId);
-    authUrl.searchParams.append('redirect_uri', redirectUri);
-    authUrl.searchParams.append('response_type', 'code');
-    authUrl.searchParams.append('scope', scope);
-    authUrl.searchParams.append('access_type', 'offline');
-    authUrl.searchParams.append('prompt', 'consent');
-    authUrl.searchParams.append('state', JSON.stringify({ user_id: user.id }));
+    // Create OAuth URL using our Edge Function
+    const authUrl = `https://dsfaxqfexebqogdxigdu.supabase.co/functions/v1/google-calendar-auth?action=authorize&user_id=${user.id}`;
 
     // Open popup window for OAuth
     const popup = window.open(
-      authUrl.toString(),
+      authUrl,
       'google-calendar-auth',
       'width=500,height=600,scrollbars=yes,resizable=yes'
     );
@@ -112,7 +102,7 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
         window.removeEventListener('message', messageListener);
         
         try {
-          // Exchange code for tokens
+          // Exchange code for tokens via Edge Function
           const { error } = await supabase.functions.invoke('google-calendar-auth', {
             body: {
               action: 'exchange_code',
@@ -137,6 +127,17 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
             variant: "destructive",
           });
         }
+      }
+
+      if (event.data.type === 'GOOGLE_CALENDAR_AUTH_ERROR') {
+        popup?.close();
+        window.removeEventListener('message', messageListener);
+        
+        toast({
+          title: "Connexion échouée",
+          description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
+          variant: "destructive",
+        });
       }
     };
 
