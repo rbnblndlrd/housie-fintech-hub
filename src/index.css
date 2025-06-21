@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -59,18 +60,28 @@
   }
 }
 
+/* DEFENSIVE FINTECH STYLING - Force fintech styles on all cards */
+[class*="card"], .card, div[class*="Card"] {
+  @apply fintech-card !important;
+}
+
+/* Force fintech styling on any potential fallback components */
+.service-card, [data-testid*="service"], [class*="service-card"] {
+  @apply fintech-card !important;
+}
+
 /* Enhanced Fintech Card Styling */
 .fintech-card {
   @apply rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  border: 2px solid rgba(0, 0, 0, 0.1);
+  border: 2px solid rgba(0, 0, 0, 0.1) !important;
 }
 
 .dark .fintech-card {
   background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .fintech-gradient-card {
