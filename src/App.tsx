@@ -6,7 +6,7 @@ import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/AuthContext';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
-import Profile from './pages/Profile';
+import CustomerProfile from './pages/CustomerProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
 import BookingSuccess from './pages/BookingSuccess';
@@ -27,7 +27,7 @@ function App() {
                 <Route path="/" element={<Index />} />
                 <Route path="/login" element={<Auth />} />
                 <Route path="/signup" element={<Auth />} />
-                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile" element={<CustomerProfile />} />
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/provider" element={<ProviderDashboard />} />
                 <Route path="/booking/:id" element={<BookingSuccess />} />
