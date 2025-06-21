@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Clock, CheckCircle, CreditCard, Calendar, MapPin } from 'lucide-react';
+import { Clock, CheckCircle, CreditCard, Calendar, MapPin, Shield, AlertTriangle } from 'lucide-react';
+import { useFraudDetection } from '@/hooks/useFraudDetection';
 import PaymentButton from './PaymentButton';
 import FeeCalculator from './FeeCalculator';
 
@@ -36,6 +37,8 @@ const BookingPaymentFlow: React.FC<BookingPaymentFlowProps> = ({
 }) => {
   const [paymentStep, setPaymentStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [fraudCheckResult, setFraudCheckResult] = useState<any>(null);
+  const { performFraudCheck } = useFraudDetection();
 
   const steps = [
     { id: 1, title: "Confirmation", icon: CheckCircle },
@@ -45,6 +48,33 @@ const BookingPaymentFlow: React.FC<BookingPaymentFlowProps> = ({
 
   const currentStepIndex = steps.findIndex(step => step.id === paymentStep);
   const progressPercentage = ((currentStepIndex + 1) / steps.length) * 100;
+
+  useEffect(() => {
+    // Perform initial fraud check when component mounts
+    const performInitialFraudCheck = async () => {
+      try {
+        const ipResponse = await fetch('https://api.ipify.org?format=json');
+        const ipData = await ipResponse.json();
+
+        const result = await performFraudCheck({
+          action_type: 'payment',
+          user_id: booking.customer_id,
+          ip_address: ipData.ip,
+          user_agent: navigator.userAgent,
+          metadata: {
+            booking_id: booking.id,
+            amount: booking.total_amount
+          }
+        });
+
+        setFraudCheckResult(result);
+      } catch (error) {
+        console.error('Initial fraud check error:', error);
+      }
+    };
+
+    performInitialFraudCheck();
+  }, [booking, performFraudCheck]);
 
   const handlePaymentStart = () => {
     setIsProcessing(true);
@@ -68,9 +98,33 @@ const BookingPaymentFlow: React.FC<BookingPaymentFlowProps> = ({
       case 'confirmed': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'paid': return 'bg-blue-100 text-blue-800';
+      case 'pending_review': return 'bg-orange-100 text-orange-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  // Show review message if booking is under review
+  if (booking.status === 'pending_review') {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6">
+        <Card className="bg-orange-50 border-orange-200">
+          <CardContent className="text-center py-12">
+            <AlertTriangle className="h-16 w-16 text-orange-600 mx-auto mb-4" />
+            <h3 className="text-xl font-semibold text-orange-800 mb-2">
+              Réservation en cours d'examen
+            </h3>
+            <p className="text-orange-700 mb-4">
+              Votre réservation nécessite un examen de sécurité de routine.
+            </p>
+            <p className="text-sm text-orange-600">
+              Nous vous contacterons dans les 24 heures pour finaliser votre réservation.
+              Le paiement sera requis après approbation.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -109,6 +163,20 @@ const BookingPaymentFlow: React.FC<BookingPaymentFlowProps> = ({
         </CardHeader>
       </Card>
 
+      {/* Security Check Results */}
+      {fraudCheckResult && fraudCheckResult.risk_score > 30 && (
+        <Card className="bg-blue-50 border-blue-200">
+          <CardContent className="py-4">
+            <div className="flex items-center gap-2">
+              <Shield className="h-5 w-5 text-blue-600" />
+              <p className="text-sm text-blue-800">
+                Vérification de sécurité effectuée. Votre transaction est protégée.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       <div className="grid md:grid-cols-2 gap-6">
         {/* Booking Details */}
         <Card className="bg-white/90 backdrop-blur-sm border border-gray-200">
@@ -117,7 +185,8 @@ const BookingPaymentFlow: React.FC<BookingPaymentFlowProps> = ({
               Détails de la réservation
               <Badge className={getStatusColor(booking.status)}>
                 {booking.status === 'confirmed' ? 'Confirmé' : 
-                 booking.status === 'pending' ? 'En attente' : booking.status}
+                 booking.status === 'pending' ? 'En attente' : 
+                 booking.status === 'pending_review' ? 'En examen' : booking.status}
               </Badge>
             </CardTitle>
           </CardHeader>

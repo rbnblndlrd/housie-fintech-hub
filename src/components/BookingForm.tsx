@@ -6,11 +6,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, Clock, MapPin, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, ArrowLeft, Shield, AlertTriangle } from 'lucide-react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
+import { useFraudDetection } from "@/hooks/useFraudDetection";
 import FeeCalculator from './FeeCalculator';
 import PaymentButton from './PaymentButton';
 
@@ -59,12 +60,26 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
   const [isLoading, setIsLoading] = useState(false);
   const [bookingId, setBookingId] = useState<string | null>(null);
   const [showPayment, setShowPayment] = useState(false);
+  const [fraudCheckResult, setFraudCheckResult] = useState<any>(null);
+  const [isUnderReview, setIsUnderReview] = useState(false);
 
   const basePrice = service.pricing_type === 'hourly' ? provider.hourly_rate * bookingData.duration : service.base_price;
 
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { performFraudCheck, isLoading: fraudLoading } = useFraudDetection();
+
+  const getClientIP = async () => {
+    try {
+      const response = await fetch('https://api.ipify.org?format=json');
+      const data = await response.json();
+      return data.ip;
+    } catch (error) {
+      console.error('Failed to get IP:', error);
+      return null;
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -81,6 +96,58 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
     setIsLoading(true);
 
     try {
+      // Get user's IP for fraud detection
+      const ipAddress = await getClientIP();
+
+      // Perform fraud check before creating booking
+      console.log('Performing fraud check for booking...');
+      const fraudResult = await performFraudCheck({
+        action_type: 'booking',
+        user_id: user.id,
+        ip_address: ipAddress,
+        user_agent: navigator.userAgent,
+        metadata: {
+          service_id: service.id,
+          provider_id: provider.id,
+          amount: basePrice,
+          booking_details: bookingData
+        }
+      });
+
+      if (!fraudResult) {
+        throw new Error('Fraud check failed');
+      }
+
+      setFraudCheckResult(fraudResult);
+
+      // Handle different fraud detection actions
+      if (fraudResult.action === 'block') {
+        toast({
+          title: "Réservation non autorisée",
+          description: "Votre demande ne peut pas être traitée pour des raisons de sécurité. Contactez le support si vous pensez qu'il s'agit d'une erreur.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (fraudResult.action === 'require_verification') {
+        toast({
+          title: "Vérification de sécurité requise",
+          description: "Une vérification supplémentaire est nécessaire avant de procéder. Vérifiez votre email pour les prochaines étapes.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (fraudResult.action === 'review') {
+        setIsUnderReview(true);
+        toast({
+          title: "Transaction en cours d'examen",
+          description: "Votre réservation est en cours d'examen pour des raisons de sécurité. Nous vous contacterons sous 24h.",
+        });
+      }
+
+      // Create booking regardless of review status
       const { data: booking, error } = await supabase
         .from('bookings')
         .insert({
@@ -93,7 +160,7 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
           service_address: bookingData.address,
           instructions: bookingData.instructions,
           total_amount: basePrice,
-          status: 'pending',
+          status: fraudResult.action === 'review' ? 'pending_review' : 'pending',
           payment_status: 'pending',
         })
         .select()
@@ -110,12 +177,20 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
       }
 
       setBookingId(booking.id);
-      setShowPayment(true);
 
-      toast({
-        title: "Réservation créée!",
-        description: "Procédez maintenant au paiement pour confirmer votre réservation.",
-      });
+      if (fraudResult.action === 'review') {
+        // Don't proceed to payment if under review
+        toast({
+          title: "Réservation créée",
+          description: "Votre réservation est en cours d'examen. Le paiement sera requis après approbation.",
+        });
+      } else {
+        setShowPayment(true);
+        toast({
+          title: "Réservation créée!",
+          description: "Procédez maintenant au paiement pour confirmer votre réservation.",
+        });
+      }
 
     } catch (error) {
       console.error('Booking error:', error);
@@ -136,6 +211,47 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
     }
   };
 
+  // Show review status if booking is under review
+  if (isUnderReview && bookingId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50 py-8">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <div className="flex items-center gap-4 mb-8">
+            <Button
+              variant="ghost"
+              onClick={onCancel}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Retour aux services
+            </Button>
+          </div>
+
+          <Card className="bg-orange-50 border-orange-200">
+            <CardContent className="text-center py-12">
+              <AlertTriangle className="h-16 w-16 text-orange-600 mx-auto mb-4" />
+              <h3 className="text-xl font-semibold text-orange-800 mb-2">
+                Transaction en cours d'examen
+              </h3>
+              <p className="text-orange-700 mb-4">
+                Votre réservation a été créée mais nécessite un examen de sécurité de routine.
+              </p>
+              <p className="text-sm text-orange-600">
+                Nous vous contacterons dans les 24 heures pour finaliser votre réservation.
+                Aucun paiement ne sera prélevé pendant cette période.
+              </p>
+              <div className="mt-6">
+                <Button onClick={() => navigate('/dashboard')} variant="outline">
+                  Voir mes réservations
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (showPayment && bookingId) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50 py-8">
@@ -150,6 +266,19 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
               Modifier la réservation
             </Button>
           </div>
+
+          {fraudCheckResult && fraudCheckResult.risk_score > 40 && (
+            <Card className="mb-6 bg-blue-50 border-blue-200">
+              <CardContent className="py-4">
+                <div className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-blue-600" />
+                  <p className="text-sm text-blue-800">
+                    Vérification de sécurité effectuée. Votre transaction est sécurisée.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="grid md:grid-cols-2 gap-8">
             {/* Service Summary */}
@@ -337,10 +466,10 @@ const BookingForm = ({ service, provider, onBookingComplete, onCancel }: Booking
                   <div className="pt-6">
                     <Button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isLoading || fraudLoading}
                       className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-medium py-3 text-lg rounded-xl"
                     >
-                      {isLoading ? "Création en cours..." : "Continuer vers le paiement"}
+                      {isLoading || fraudLoading ? "Vérification en cours..." : "Continuer vers le paiement"}
                     </Button>
                   </div>
                 </form>
