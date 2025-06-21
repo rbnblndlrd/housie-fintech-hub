@@ -7,6 +7,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { SubscriptionProvider } from './contexts/SubscriptionContext';
 import { RoleProvider } from './contexts/RoleContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { PopArtProvider } from './contexts/PopArtContext';
 import Index from './pages/Index';
 import Auth from './pages/Auth';
 import CustomerProfile from './pages/CustomerProfile';
@@ -29,20 +30,22 @@ function App() {
             <SubscriptionProvider>
               <RoleProvider>
                 <LanguageProvider>
-                  <div className="min-h-screen bg-background text-foreground">
-                    <Routes>
-                      <Route path="/" element={<Index />} />
-                      <Route path="/login" element={<Auth />} />
-                      <Route path="/signup" element={<Auth />} />
-                      <Route path="/profile" element={<CustomerProfile />} />
-                      <Route path="/admin" element={<AdminDashboard />} />
-                      <Route path="/provider" element={<ProviderDashboard />} />
-                      <Route path="/services" element={<Services />} />
-                      <Route path="/booking/:id" element={<BookingSuccess />} />
-                      <Route path="*" element={<NotFound />} />
-                    </Routes>
-                  </div>
-                  <Toaster />
+                  <PopArtProvider>
+                    <div className="min-h-screen bg-background text-foreground">
+                      <Routes>
+                        <Route path="/" element={<Index />} />
+                        <Route path="/login" element={<Auth />} />
+                        <Route path="/signup" element={<Auth />} />
+                        <Route path="/profile" element={<CustomerProfile />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
+                        <Route path="/provider" element={<ProviderDashboard />} />
+                        <Route path="/services" element={<Services />} />
+                        <Route path="/booking/:id" element={<BookingSuccess />} />
+                        <Route path="*" element={<NotFound />} />
+                      </Routes>
+                    </div>
+                    <Toaster />
+                  </PopArtProvider>
                 </LanguageProvider>
               </RoleProvider>
             </SubscriptionProvider>
