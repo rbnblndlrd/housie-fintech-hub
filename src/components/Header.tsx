@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -21,7 +22,7 @@ const Header = () => {
 
   return (
     <TooltipProvider>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Left: Logo - Fixed width container */}
@@ -31,7 +32,7 @@ const Header = () => {
                 className="flex items-center space-x-2"
               >
                 <img 
-                  src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
+                  src="/lovable-uploads/new-housie-logo.png" 
                   alt="HOUSIE" 
                   className="h-8 w-auto"
                 />

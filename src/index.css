@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -193,14 +192,14 @@
   transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
 }
 
-/* Enhanced Navigation Styling */
+/* Enhanced Navigation Styling - Black nav bar for both themes */
 .fintech-nav {
-  @apply bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+  @apply bg-gray-900/95 backdrop-blur-md shadow-lg;
+  border-bottom: 2px solid rgba(75, 85, 99, 0.3);
 }
 
 .dark .fintech-nav {
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 2px solid rgba(75, 85, 99, 0.3);
 }
 
 /* Status Badge Enhancements */
