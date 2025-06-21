@@ -32,7 +32,7 @@ const Header = () => {
                 className="flex items-center space-x-2"
               >
                 <img 
-                  src="/lovable-uploads/new-housie-logo.png" 
+                  src="https://github.com/rbnblndlrd/housie-fintech-hub/raw/main/White%20PNG%20OP_CROP.png" 
                   alt="HOUSIE" 
                   className="h-8 w-auto"
                 />
