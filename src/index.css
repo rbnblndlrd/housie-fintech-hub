@@ -60,41 +60,67 @@
   }
 }
 
-/* Fintech Card Styling */
+/* Enhanced Fintech Card Styling */
 .fintech-card {
-  @apply rounded-xl bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-xl transition-all duration-300;
+  @apply rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border border-gray-200/60 dark:border-gray-700/60 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.dark .fintech-card {
+  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
 .fintech-gradient-card {
-  @apply rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200/50 dark:border-blue-700/50 shadow-lg backdrop-blur-sm;
+  @apply rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 border border-blue-200/60 dark:border-blue-700/60 shadow-xl backdrop-blur-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
+  box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15), 0 4px 16px rgba(99, 102, 241, 0.1);
 }
 
-/* Fintech Button Styling */
+/* Enhanced Fintech Button Styling */
 .fintech-button-primary {
-  @apply bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-200 transform hover:scale-105;
+  @apply bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5;
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3), 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+.fintech-button-primary:hover {
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .fintech-button-secondary {
-  @apply bg-white/90 dark:bg-gray-800/90 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-semibold py-2 px-6 rounded-lg border border-gray-200 dark:border-gray-600 shadow-sm hover:shadow-md transition-all duration-200;
+  @apply bg-white/95 dark:bg-gray-800/95 hover:bg-gray-50/95 dark:hover:bg-gray-700/95 text-gray-900 dark:text-white font-semibold py-3 px-8 rounded-xl border border-gray-200/60 dark:border-gray-600/60 shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 backdrop-blur-sm;
 }
 
 /* HOUSIE Brand Text Gradient */
 .housie-text-gradient {
   @apply bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent font-bold;
+  background-size: 200% 100%;
+  animation: gradient-shift 3s ease-in-out infinite;
 }
 
-/* Glass Morphism Effects */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* Enhanced Glass Morphism Effects */
 .glass-card {
-  @apply bg-white/20 dark:bg-gray-900/20 backdrop-blur-md border border-white/30 dark:border-gray-700/30 rounded-xl shadow-xl;
+  @apply bg-white/20 dark:bg-gray-900/20 backdrop-blur-lg border border-white/30 dark:border-gray-700/30 rounded-2xl shadow-2xl;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
 
 /* Enhanced Shadows and Borders */
 .fintech-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 0 0 1px rgba(255, 255, 255, 0.05);
 }
 
 .dark .fintech-shadow {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1);
 }
 
 /* Custom dark theme enhancements */
@@ -112,7 +138,47 @@
   transition: all 300ms ease;
 }
 
+/* Fintech Input Styling */
+.fintech-input {
+  @apply bg-white/90 dark:bg-gray-800/90 border border-gray-200/60 dark:border-gray-700/60 rounded-xl px-4 py-3 shadow-sm focus:shadow-md transition-all duration-200 backdrop-blur-sm;
+}
+
+.fintech-input:focus {
+  @apply border-blue-500/60 ring-2 ring-blue-500/20;
+}
+
+/* Fintech Hero Section */
+.fintech-hero-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-size: 400% 400%;
+  animation: gradient-animation 15s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* Smooth transitions for theme switching */
 * {
-  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease;
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
+}
+
+/* Enhanced Navigation Styling */
+.fintech-nav {
+  @apply bg-white/95 dark:bg-gray-900/95 backdrop-blur-md border-b border-gray-200/60 dark:border-gray-800/60 shadow-lg;
+}
+
+/* Status Badge Enhancements */
+.fintech-badge-success {
+  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.fintech-badge-warning {
+  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 px-3 py-1 rounded-full text-xs font-semibold;
+}
+
+.fintech-badge-error {
+  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 px-3 py-1 rounded-full text-xs font-semibold;
 }
