@@ -1,10 +1,10 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CreamBadge } from '@/components/ui/cream-badge';
-import { Calendar as CalendarIcon, RefreshCw, Download, Upload, CheckCircle, AlertCircle } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Calendar as CalendarIcon, RefreshCw, Download, Upload, CheckCircle, AlertCircle, Unlink } from 'lucide-react';
+import { useGoogleCalendar } from '@/hooks/useGoogleCalendar';
 
 interface GoogleCalendarIntegrationProps {
   onSync?: () => void;
@@ -17,55 +17,31 @@ const GoogleCalendarIntegration: React.FC<GoogleCalendarIntegrationProps> = ({
   onImport,
   onExport
 }) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const { toast } = useToast();
-
-  const handleConnect = async () => {
-    // Mock Google Calendar connection
-    toast({
-      title: "Connexion Google Calendar",
-      description: "Fonctionnalité en développement - Sera disponible bientôt!",
-      variant: "default",
-    });
-    setIsConnected(true);
-  };
+  const { isConnected, isLoading, connectCalendar, disconnectCalendar } = useGoogleCalendar();
 
   const handleSync = async () => {
-    setIsSyncing(true);
-    try {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Mock delay
-      toast({
-        title: "Synchronisation réussie",
-        description: "Vos calendriers sont maintenant synchronisés.",
-      });
-      onSync?.();
-    } catch (error) {
-      toast({
-        title: "Erreur de synchronisation",
-        description: "Impossible de synchroniser avec Google Calendar.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSyncing(false);
-    }
+    // Mock sync functionality for now
+    onSync?.();
   };
 
   const handleImport = () => {
-    toast({
-      title: "Importation",
-      description: "Fonctionnalité d'importation en développement.",
-    });
     onImport?.();
   };
 
   const handleExport = () => {
-    toast({
-      title: "Exportation",
-      description: "Fonctionnalité d'exportation en développement.",
-    });
     onExport?.();
   };
+
+  if (isLoading) {
+    return (
+      <Card className="fintech-card">
+        <CardContent className="flex items-center justify-center py-8">
+          <RefreshCw className="h-6 w-6 animate-spin text-blue-600" />
+          <span className="ml-2 text-gray-600">Loading calendar status...</span>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card className="fintech-card">
@@ -104,7 +80,7 @@ const GoogleCalendarIntegration: React.FC<GoogleCalendarIntegrationProps> = ({
               Synchronisez vos rendez-vous HOUSIE avec Google Calendar
             </p>
             <Button 
-              onClick={handleConnect}
+              onClick={connectCalendar}
               className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
             >
               Connecter maintenant
@@ -115,11 +91,10 @@ const GoogleCalendarIntegration: React.FC<GoogleCalendarIntegrationProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <Button
                 onClick={handleSync}
-                disabled={isSyncing}
                 className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white"
               >
-                <RefreshCw className={`h-4 w-4 ${isSyncing ? 'animate-spin' : ''}`} />
-                {isSyncing ? 'Sync...' : 'Synchroniser'}
+                <RefreshCw className="h-4 w-4" />
+                Synchroniser
               </Button>
               
               <Button
@@ -151,6 +126,17 @@ const GoogleCalendarIntegration: React.FC<GoogleCalendarIntegrationProps> = ({
               <p className="text-xs text-green-700 mt-1">
                 Vos événements se synchronisent automatiquement entre HOUSIE et Google Calendar
               </p>
+            </div>
+
+            <div className="pt-2 border-t border-gray-200">
+              <Button
+                onClick={disconnectCalendar}
+                variant="outline"
+                className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50 w-full"
+              >
+                <Unlink className="h-4 w-4" />
+                Déconnecter Google Calendar
+              </Button>
             </div>
           </div>
         )}
