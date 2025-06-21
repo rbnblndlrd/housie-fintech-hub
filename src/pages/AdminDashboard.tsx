@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,10 +25,10 @@ const AdminDashboard = () => {
       }
 
       try {
-        // Check user's subscription tier from the users table
+        // Check user's role from the users table
         const { data: userData, error } = await supabase
           .from('users')
-          .select('subscription_tier')
+          .select('user_role')
           .eq('id', user.id)
           .single();
 
@@ -39,7 +38,7 @@ const AdminDashboard = () => {
           return;
         }
 
-        setIsAdmin(userData?.subscription_tier === 'admin');
+        setIsAdmin(userData?.user_role === 'admin');
       } catch (error) {
         console.error('Error checking admin status:', error);
         setIsAdmin(false);
