@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +10,7 @@ import FraudHighRiskUsers from './fraud/FraudHighRiskUsers';
 import FraudBlockedUsers from './fraud/FraudBlockedUsers';
 import FraudLogsSection from './fraud/FraudLogsSection';
 import FraudAnalyticsSection from './fraud/FraudAnalyticsSection';
+import FraudTestingSection from './fraud/FraudTestingSection';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface FraudLog {
@@ -294,12 +296,13 @@ const FraudDetectionSection = () => {
       <FraudAlertsSection realtimeAlerts={realtimeAlerts} />
 
       <Tabs defaultValue="queue" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="queue">Review Queue</TabsTrigger>
           <TabsTrigger value="risks">High Risk Users</TabsTrigger>
           <TabsTrigger value="blocks">Blocked Users</TabsTrigger>
           <TabsTrigger value="logs">Fraud Logs</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="testing">Testing</TabsTrigger>
         </TabsList>
 
         <TabsContent value="queue">
@@ -330,6 +333,10 @@ const FraudDetectionSection = () => {
 
         <TabsContent value="analytics">
           <FraudAnalyticsSection fraudLogs={fraudLogs} />
+        </TabsContent>
+
+        <TabsContent value="testing">
+          <FraudTestingSection />
         </TabsContent>
       </Tabs>
     </div>
