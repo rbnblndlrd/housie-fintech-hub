@@ -26,14 +26,14 @@ interface PopArtProviderProps {
 
 export const PopArtProvider: React.FC<PopArtProviderProps> = ({ children }) => {
   const [isPopArtMode, setIsPopArtMode] = useState(false);
-  const { isDark } = useTheme();
+  const { theme } = useTheme();
 
   // Disable pop art mode when theme changes
   useEffect(() => {
     if (isPopArtMode) {
       setIsPopArtMode(false);
     }
-  }, [isDark]);
+  }, [theme]);
 
   const activatePopArt = () => {
     setIsPopArtMode(true);
