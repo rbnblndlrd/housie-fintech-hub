@@ -9,7 +9,7 @@
 
 @layer base {
   :root {
-    /* NORMAL CSS VARIABLES - No forced black borders */
+    /* NORMAL CSS VARIABLES - Fixed background values */
     --background: 248 250 252;
     --foreground: 15 23 42;
     --card: 255 255 255;
@@ -26,10 +26,10 @@
     --accent-foreground: 15 23 42;
     --destructive: 239 68 68;
     --destructive-foreground: 255 255 255;
-    --border: 229 231 235; /* Normal gray border */
-    --input: 229 231 235; /* Normal gray input border */
+    --border: 229 231 235;
+    --input: 229 231 235;
     --ring: 59 130 246;
-    --radius: 0.5rem; /* Normal border radius */
+    --radius: 0.5rem;
   }
 
   .dark {
@@ -49,8 +49,8 @@
     --accent-foreground: 248 250 252;
     --destructive: 220 38 38;
     --destructive-foreground: 248 250 252;
-    --border: 75 85 99; /* Normal dark border */
-    --input: 75 85 99; /* Normal dark input border */
+    --border: 75 85 99;
+    --input: 75 85 99;
     --ring: 147 197 253;
   }
 }
@@ -60,7 +60,7 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-gray-50 text-foreground;
     transition: background-color 300ms ease, color 300ms ease;
   }
 }
