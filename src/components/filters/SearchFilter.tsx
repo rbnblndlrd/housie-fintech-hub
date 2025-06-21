@@ -23,10 +23,11 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
         placeholder={placeholder}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="pl-12 h-12 rounded-2xl border-gray-200 focus:border-blue-500 focus:ring-blue-500"
+        className="pl-12 h-12 rounded-2xl border-gray-200 focus:border-blue-500 focus:ring-blue-500 clean-input"
       />
     </div>
   );
 };
 
 export default SearchFilter;
+

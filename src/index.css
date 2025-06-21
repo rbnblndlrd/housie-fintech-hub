@@ -65,6 +65,54 @@
   }
 }
 
+/* CLEAN INPUT AND BUTTON CLASSES - Fix yellow backgrounds without thick borders */
+.clean-input {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  color: #1f2937 !important;
+}
+
+.dark .clean-input {
+  background-color: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  color: white !important;
+}
+
+.clean-button {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  color: #374151 !important;
+}
+
+.clean-button:hover {
+  background-color: #f9fafb !important;
+  border-color: #d1d5db !important;
+}
+
+.clean-button-purple {
+  background-color: #8b5cf6 !important;
+  border: 1px solid #7c3aed !important;
+  color: white !important;
+}
+
+.clean-button-purple:hover {
+  background-color: #7c3aed !important;
+  border-color: #6d28d9 !important;
+}
+
+.clean-select-content {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  z-index: 50 !important;
+}
+
+.dark .clean-select-content {
+  background-color: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  color: white !important;
+}
+
 /* TARGETED FINTECH CARD - Only for explicit fintech components */
 .fintech-card {
   @apply rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
@@ -233,3 +281,4 @@
 * {
   transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
 }
+

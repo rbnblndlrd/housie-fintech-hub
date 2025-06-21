@@ -45,7 +45,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
           <Button
             variant="outline"
             className={cn(
-              "w-full justify-start text-left font-normal h-12 rounded-2xl border-gray-200",
+              "w-full justify-start text-left font-normal h-12 rounded-2xl border-gray-200 clean-input",
               (!value.from && !value.to) && "text-muted-foreground"
             )}
           >
@@ -53,7 +53,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
             {getDisplayText()}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="w-auto p-0 clean-select-content" align="start">
           <div className="flex">
             {presets && (
               <div className="border-r p-3 space-y-2">
@@ -64,7 +64,7 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
                     variant="ghost"
                     size="sm"
                     onClick={() => handlePresetClick(key)}
-                    className="w-full justify-start text-left"
+                    className="w-full justify-start text-left clean-button"
                   >
                     {key === 'all' ? 'Toutes les dates' :
                      key === 'today' ? 'Aujourd\'hui' :
@@ -96,3 +96,4 @@ const DateRangeFilter: React.FC<DateRangeFilterProps> = ({
 };
 
 export default DateRangeFilter;
+
