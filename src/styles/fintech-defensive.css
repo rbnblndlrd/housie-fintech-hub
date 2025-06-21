@@ -1,13 +1,12 @@
 
-/* DEFENSIVE FINTECH STYLING - TARGETED APPROACH */
+/* DEFENSIVE FINTECH STYLING - HIGHLY TARGETED APPROACH */
 
-/* Target specific card-like elements only */
-*[class*="card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
-*[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-div[class*="shadow"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-div[class*="rounded"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-section:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-article:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
+/* Target ONLY specific card-like elements with content */
+.card,
+[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]):not([class*="badge"]):not([class*="button"]),
+[data-card="true"],
+.service-card,
+.fintech-card {
   @apply fintech-card !important;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
@@ -15,75 +14,123 @@ article:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
   border-radius: 1rem !important;
 }
 
-.dark *[class*="card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]), 
-.dark *[class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-.dark div[class*="shadow"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-.dark div[class*="rounded"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-.dark section:not([class*="input"]):not([class*="search"]):not([class*="filter"]),
-.dark article:not([class*="input"]):not([class*="search"]):not([class*="filter"]) {
+.dark .card,
+.dark [class*="Card"]:not([class*="input"]):not([class*="search"]):not([class*="filter"]):not([class*="badge"]):not([class*="button"]),
+.dark [data-card="true"],
+.dark .service-card,
+.dark .fintech-card {
   background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* PREVENT fintech styling on form elements */
+/* EXCLUDE decorative and functional elements from fintech styling */
+.absolute,
+[class*="absolute"],
+[class*="fixed"],
+[class*="sticky"],
+[class*="bg-gradient"],
+[class*="gradient"],
+.animate-pulse,
+.animate-bounce,
+[class*="animate"],
 input, 
 textarea, 
 select,
-button[type="submit"],
-button[type="button"],
+button:not([class*="fintech-button"]),
 [role="searchbox"],
 [class*="search"],
 [class*="filter"],
 [class*="input"],
-[class*="form"] {
-  background: inherit !important;
-  border: 1px solid rgba(0, 0, 0, 0.2) !important;
-  border-radius: 0.5rem !important;
-  box-shadow: none !important;
-}
-
-.dark input, 
-.dark textarea, 
-.dark select,
-.dark button[type="submit"],
-.dark button[type="button"],
-.dark [role="searchbox"],
-.dark [class*="search"],
-.dark [class*="filter"],
-.dark [class*="input"],
-.dark [class*="form"] {
-  border: 1px solid rgba(255, 255, 255, 0.2) !important;
-}
-
-/* Exception for utility divs - NO borders */
-.flex > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
-.grid > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
-.space-x-4 > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
-.space-y-4 > div:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
+[class*="form"],
+[class*="badge"],
+[class*="nav"],
+[class*="header"],
+[class*="hero"],
+header,
+nav,
+.flex:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
+.grid:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
+.space-x-4 > *:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
+.space-y-4 > *:not([class*="card"]):not([class*="bg-"]):not([class*="shadow"]):not([class*="border"]):not([class*="rounded"]),
 div[class="flex"],
 div[class="grid"],
-div[class="space-x-4"],
-div[class="space-y-4"],
-div[class="gap-4"],
-div[class="gap-6"],
 div[class*="container"],
-div[class*="max-w-"] {
+div[class*="max-w-"],
+div[class*="mx-auto"],
+[class*="w-32"],
+[class*="h-32"],
+[class*="w-24"],
+[class*="h-24"],
+[class*="w-16"],
+[class*="h-16"],
+[class*="w-20"],
+[class*="h-20"] {
   border: none !important;
   background: inherit !important;
   box-shadow: none !important;
 }
 
-/* Target only content containers for fintech styling */
-div[class*="p-4"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
-div[class*="p-6"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
-div[class*="p-8"]:has(> h1, > h2, > h3, > h4, > h5, > h6) {
+/* Specifically exclude hero section decorative elements */
+section[class*="hero"] *,
+section[class*="bg-gradient"] *,
+.absolute.top-20,
+.absolute.bottom-10,
+.absolute.top-40,
+[class*="absolute"][class*="top-"],
+[class*="absolute"][class*="bottom-"],
+[class*="absolute"][class*="left-"],
+[class*="absolute"][class*="right-"] {
+  border: none !important;
+  background: inherit !important;
+  box-shadow: none !important;
+}
+
+/* Fix form elements to prevent yellow backgrounds */
+input, 
+textarea, 
+select {
+  background: white !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: none !important;
+  color: inherit !important;
+}
+
+.dark input, 
+.dark textarea, 
+.dark select {
+  background: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+}
+
+/* Prevent fintech styling on badges and pills */
+.badge,
+[class*="badge"],
+.pill,
+[class*="pill"],
+[class*="bg-orange"],
+[class*="bg-purple"],
+[class*="bg-green"],
+[class*="bg-yellow"],
+[class*="bg-red"],
+[class*="bg-blue"] {
+  border: none !important;
+  background: inherit !important;
+  box-shadow: none !important;
+}
+
+/* Only apply to content containers that have headers */
+div[class*="p-4"]:has(h1, h2, h3, h4, h5, h6),
+div[class*="p-6"]:has(h1, h2, h3, h4, h5, h6),
+div[class*="p-8"]:has(h1, h2, h3, h4, h5, h6) {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark div[class*="p-4"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
-.dark div[class*="p-6"]:has(> h1, > h2, > h3, > h4, > h5, > h6),
-.dark div[class*="p-8"]:has(> h1, > h2, > h3, > h4, > h5, > h6) {
+.dark div[class*="p-4"]:has(h1, h2, h3, h4, h5, h6),
+.dark div[class*="p-6"]:has(h1, h2, h3, h4, h5, h6),
+.dark div[class*="p-8"]:has(h1, h2, h3, h4, h5, h6) {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
