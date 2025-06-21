@@ -1,10 +1,16 @@
 
 import React, { useEffect, useState } from 'react';
 import EmergencyControlsDashboard from './components/EmergencyControlsDashboard';
+import FraudDetectionDashboard from './components/FraudDetectionDashboard';
+import UserManagementDashboard from './components/UserManagementDashboard';
+import SystemHealthDashboard from './components/SystemHealthDashboard';
+import AnalyticsDashboard from './components/AnalyticsDashboard';
+import DevToolsDashboard from './components/DevToolsDashboard';
 import ConfigurationDialog from './components/ConfigurationDialog';
 import { Card, CardContent, CardHeader, CardTitle } from './components/ui/card';
 import { Button } from './components/ui/button';
-import { Shield, Settings } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './components/ui/tabs';
+import { Shield, Settings, Activity, Users, AlertTriangle, BarChart3, Wrench } from 'lucide-react';
 import { toast } from 'sonner';
 import { initializeSupabase } from './services/supabaseClient';
 
@@ -13,6 +19,7 @@ function App() {
   const [isConfigDialogOpen, setIsConfigDialogOpen] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [isInitializing, setIsInitializing] = useState(true);
+  const [activeTab, setActiveTab] = useState('emergency');
 
   useEffect(() => {
     initializeApp();
@@ -81,6 +88,9 @@ function App() {
   };
 
   const handleEmergencyAction = (action: string) => {
+    // Switch to emergency tab when emergency actions are triggered
+    setActiveTab('emergency');
+    
     switch (action) {
       case 'disable-claude':
         toast.warning('Emergency Claude disable triggered from menu');
@@ -140,7 +150,7 @@ function App() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-gray-600 text-center">
-              Configure your Supabase connection to access emergency controls.
+              Configure your Supabase connection to access the complete admin dashboard.
             </p>
             <Button 
               onClick={() => setIsConfigDialogOpen(true)}
@@ -172,7 +182,7 @@ function App() {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">HOUSIE Admin Desktop</h1>
-                <p className="text-sm text-gray-600">Emergency Controls Dashboard</p>
+                <p className="text-sm text-gray-600">Complete Platform Management Dashboard</p>
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -193,7 +203,58 @@ function App() {
       </div>
 
       <div className="p-6">
-        <EmergencyControlsDashboard key={lastRefresh.getTime()} />
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="emergency" className="flex items-center gap-2">
+              <Shield className="h-4 w-4" />
+              Emergency
+            </TabsTrigger>
+            <TabsTrigger value="fraud" className="flex items-center gap-2">
+              <AlertTriangle className="h-4 w-4" />
+              Fraud
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center gap-2">
+              <Users className="h-4 w-4" />
+              Users
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="health" className="flex items-center gap-2">
+              <Activity className="h-4 w-4" />
+              Health
+            </TabsTrigger>
+            <TabsTrigger value="devtools" className="flex items-center gap-2">
+              <Wrench className="h-4 w-4" />
+              Dev Tools
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="emergency">
+            <EmergencyControlsDashboard key={lastRefresh.getTime()} />
+          </TabsContent>
+
+          <TabsContent value="fraud">
+            <FraudDetectionDashboard />
+          </TabsContent>
+
+          <TabsContent value="users">
+            <UserManagementDashboard />
+          </TabsContent>
+
+          <TabsContent value="analytics">
+            <AnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="health">
+            <SystemHealthDashboard />
+          </TabsContent>
+
+          <TabsContent value="devtools">
+            <DevToolsDashboard />
+          </TabsContent>
+        </Tabs>
       </div>
 
       <ConfigurationDialog

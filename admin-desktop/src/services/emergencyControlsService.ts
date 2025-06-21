@@ -1,7 +1,13 @@
+
 import { getSupabaseClient, initializeSupabase, isSupabaseInitialized } from './supabaseClient';
 import type { EmergencyControlsState, EmergencyControlAction } from '../types/emergencyControls';
 
 export class EmergencyControlsService {
+  // Generate a consistent UUID for the desktop app system user
+  private static getSystemUserId(): string {
+    return '00000000-0000-4000-8000-000000000001'; // Fixed UUID for desktop app
+  }
+
   static async loadEmergencyControls(): Promise<EmergencyControlsState> {
     console.log('🚨 Loading emergency controls...');
     
@@ -88,8 +94,8 @@ export class EmergencyControlsService {
     
     const supabase = getSupabaseClient();
     
-    // Use system user ID for desktop app
-    const systemUserId = 'system-admin-desktop';
+    // Use proper UUID for desktop app
+    const systemUserId = this.getSystemUserId();
     
     const updateData: any = {
       [controlName]: value,
@@ -142,7 +148,7 @@ export class EmergencyControlsService {
       }
       
       await this.logEmergencyAction(
-        'system-admin-desktop',
+        this.getSystemUserId(),
         'emergency_claude_disable',
         { reason: reason || 'Emergency disable triggered from desktop app' }
       );
@@ -168,7 +174,7 @@ export class EmergencyControlsService {
       }
       
       await this.logEmergencyAction(
-        'system-admin-desktop',
+        this.getSystemUserId(),
         'claude_access_restored',
         { action: 'Claude access restored from desktop app' }
       );
@@ -187,7 +193,7 @@ export class EmergencyControlsService {
     console.log('🔄 Restoring normal operations...');
     
     const supabase = getSupabaseClient();
-    const systemUserId = 'system-admin-desktop';
+    const systemUserId = this.getSystemUserId();
     
     const normalState = {
       normal_operations: true,
@@ -247,7 +253,7 @@ export class EmergencyControlsService {
     if (error) throw error;
 
     await this.logEmergencyAction(
-      'system-admin-desktop',
+      this.getSystemUserId(),
       'trigger_emergency_backup',
       { timestamp: new Date().toISOString() }
     );
