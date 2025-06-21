@@ -25,7 +25,8 @@ import {
   Calendar,
   LogOut,
   Bot,
-  Cpu
+  Cpu,
+  Loader
 } from 'lucide-react';
 
 const EmergencyControlsDashboard = () => {
@@ -70,6 +71,14 @@ const EmergencyControlsDashboard = () => {
 
   const isClaudeDisabled = !controls.claude_api_enabled || !controls.claude_access_enabled;
 
+  const handleClaudeApiToggle = async () => {
+    if (controls.claude_api_enabled) {
+      await emergencyDisableClaude("Emergency API disable via admin dashboard");
+    } else {
+      await enableClaudeAccess();
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Emergency Status Banner */}
@@ -109,8 +118,16 @@ const EmergencyControlsDashboard = () => {
                     <AlertDialogAction
                       onClick={() => restoreNormalOperations()}
                       className="bg-green-600 hover:bg-green-700"
+                      disabled={actionLoading}
                     >
-                      Restore Normal Operations
+                      {actionLoading ? (
+                        <>
+                          <Loader className="h-4 w-4 mr-2 animate-spin" />
+                          Restoring...
+                        </>
+                      ) : (
+                        'Restore Normal Operations'
+                      )}
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -164,7 +181,14 @@ const EmergencyControlsDashboard = () => {
                       size="sm"
                       disabled={actionLoading}
                     >
-                      {controls.claude_api_enabled ? "Emergency Disable" : "Enable API"}
+                      {actionLoading ? (
+                        <>
+                          <Loader className="h-4 w-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        controls.claude_api_enabled ? "Emergency Disable" : "Enable API"
+                      )}
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -182,10 +206,18 @@ const EmergencyControlsDashboard = () => {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => controls.claude_api_enabled ? emergencyDisableClaude("Emergency API disable") : enableClaudeAccess()}
+                        onClick={handleClaudeApiToggle}
                         className={controls.claude_api_enabled ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
+                        disabled={actionLoading}
                       >
-                        {controls.claude_api_enabled ? "Emergency Disable" : "Enable API"}
+                        {actionLoading ? (
+                          <>
+                            <Loader className="h-4 w-4 mr-2 animate-spin" />
+                            Processing...
+                          </>
+                        ) : (
+                          controls.claude_api_enabled ? "Emergency Disable" : "Enable API"
+                        )}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -395,8 +427,17 @@ const EmergencyControlsDashboard = () => {
                 variant="outline"
                 className="w-full"
               >
-                <Database className="h-4 w-4 mr-2" />
-                Trigger Backup
+                {actionLoading ? (
+                  <>
+                    <Loader className="h-4 w-4 mr-2 animate-spin" />
+                    Triggering...
+                  </>
+                ) : (
+                  <>
+                    <Database className="h-4 w-4 mr-2" />
+                    Trigger Backup
+                  </>
+                )}
               </Button>
             </div>
             
@@ -417,6 +458,12 @@ const EmergencyControlsDashboard = () => {
                 <div className="flex justify-between text-xs">
                   <span>Payment Processing:</span>
                   <Badge className="bg-green-600 text-white">Active</Badge>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>Claude AI:</span>
+                  <Badge className={controls.claude_api_enabled && controls.claude_access_enabled ? "bg-green-600 text-white" : "bg-red-600 text-white"}>
+                    {controls.claude_api_enabled && controls.claude_access_enabled ? "Active" : "Disabled"}
+                  </Badge>
                 </div>
               </div>
             </div>
