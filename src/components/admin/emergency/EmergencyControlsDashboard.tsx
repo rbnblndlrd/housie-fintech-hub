@@ -23,7 +23,9 @@ import {
   Megaphone,
   Construction,
   Calendar,
-  LogOut
+  LogOut,
+  Bot,
+  Cpu
 } from 'lucide-react';
 
 const EmergencyControlsDashboard = () => {
@@ -33,7 +35,9 @@ const EmergencyControlsDashboard = () => {
     actionLoading,
     updateControl,
     restoreNormalOperations,
-    triggerEmergencyBackup
+    triggerEmergencyBackup,
+    emergencyDisableClaude,
+    enableClaudeAccess
   } = useEmergencyControls();
 
   if (loading) {
@@ -60,7 +64,11 @@ const EmergencyControlsDashboard = () => {
     controls.bookings_paused || 
     controls.maintenance_mode || 
     controls.fraud_lockdown_active ||
-    controls.messaging_disabled;
+    controls.messaging_disabled ||
+    !controls.claude_api_enabled ||
+    !controls.claude_access_enabled;
+
+  const isClaudeDisabled = !controls.claude_api_enabled || !controls.claude_access_enabled;
 
   return (
     <div className="space-y-6">
@@ -75,6 +83,11 @@ const EmergencyControlsDashboard = () => {
                   EMERGENCY CONTROLS ACTIVE
                 </span>
                 <Badge variant="destructive">CRITICAL</Badge>
+                {isClaudeDisabled && (
+                  <Badge variant="destructive" className="bg-purple-600">
+                    AI DISABLED
+                  </Badge>
+                )}
               </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -121,6 +134,79 @@ const EmergencyControlsDashboard = () => {
           </CardContent>
         </Card>
       )}
+
+      {/* AI Controls */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bot className="h-5 w-5" />
+            AI Controls
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <h4 className="font-medium flex items-center gap-2">
+                <Cpu className="h-4 w-4" />
+                Claude API Status
+              </h4>
+              <p className="text-sm text-gray-600">
+                Emergency disable of all Claude API access platform-wide
+              </p>
+              <div className="flex items-center gap-2">
+                <Badge className={controls.claude_api_enabled ? "bg-green-600 text-white" : "bg-red-600 text-white"}>
+                  {controls.claude_api_enabled ? "ENABLED" : "DISABLED"}
+                </Badge>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button 
+                      variant={controls.claude_api_enabled ? "destructive" : "default"}
+                      size="sm"
+                      disabled={actionLoading}
+                    >
+                      {controls.claude_api_enabled ? "Emergency Disable" : "Enable API"}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        {controls.claude_api_enabled ? "Emergency Disable Claude API" : "Enable Claude API"}
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        {controls.claude_api_enabled 
+                          ? "This will immediately disable all Claude AI functionality platform-wide. This action will be logged."
+                          : "This will restore Claude AI API access for all users."
+                        }
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => controls.claude_api_enabled ? emergencyDisableClaude("Emergency API disable") : enableClaudeAccess()}
+                        className={controls.claude_api_enabled ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
+                      >
+                        {controls.claude_api_enabled ? "Emergency Disable" : "Enable API"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            </div>
+
+            <EmergencyControlCard
+              title="Block Claude Access"
+              description="Block user access to Claude AI features"
+              icon={<Bot className="h-4 w-4" />}
+              isActive={!controls.claude_access_enabled}
+              onToggle={(reason) => updateControl('claude_access_enabled', controls.claude_access_enabled, reason)}
+              disabled={actionLoading}
+              variant="security"
+              lastActivated={controls.activated_at}
+              activatedBy={controls.activated_by}
+            />
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Platform Controls */}
       <Card>

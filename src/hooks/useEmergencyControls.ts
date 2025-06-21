@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -61,6 +60,52 @@ export const useEmergencyControls = () => {
     }
   };
 
+  const emergencyDisableClaude = async (reason?: string) => {
+    if (!user?.id) {
+      toast.error('Missing required data for Claude disable');
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+      await EmergencyControlsService.emergencyDisableClaude(user.id, reason);
+      
+      // Reload controls to get updated state
+      await loadControls();
+      
+      toast.success('Claude AI emergency disabled');
+      queryClient.invalidateQueries({ queryKey: ['emergency-controls'] });
+    } catch (error) {
+      console.error('Failed to emergency disable Claude:', error);
+      toast.error('Failed to emergency disable Claude AI');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const enableClaudeAccess = async () => {
+    if (!user?.id) {
+      toast.error('Missing required data for Claude enable');
+      return;
+    }
+
+    try {
+      setActionLoading(true);
+      await EmergencyControlsService.enableClaudeAccess(user.id);
+      
+      // Reload controls to get updated state
+      await loadControls();
+      
+      toast.success('Claude AI access restored');
+      queryClient.invalidateQueries({ queryKey: ['emergency-controls'] });
+    } catch (error) {
+      console.error('Failed to enable Claude access:', error);
+      toast.error('Failed to enable Claude AI access');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const restoreNormalOperations = async (reason?: string) => {
     if (!controls?.id || !user?.id) {
       toast.error('Missing required data for restore');
@@ -117,6 +162,8 @@ export const useEmergencyControls = () => {
     updateControl,
     restoreNormalOperations,
     triggerEmergencyBackup,
+    emergencyDisableClaude,
+    enableClaudeAccess,
     reload: loadControls
   };
 };

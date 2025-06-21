@@ -74,14 +74,28 @@ export const useClaudeChat = () => {
 
   const checkEmergencyControls = async (): Promise<boolean> => {
     try {
-      const { data, error } = await supabase.rpc('is_claude_api_enabled');
+      // Check both API enabled and access enabled
+      const { data: apiEnabled, error: apiError } = await supabase.rpc('is_claude_api_enabled');
       
-      if (error) {
-        console.error('Error checking emergency controls:', error);
+      if (apiError) {
+        console.error('Error checking Claude API status:', apiError);
         return false;
       }
       
-      return data === true;
+      // Also check emergency controls table for claude_access_enabled
+      const { data: controls, error: controlsError } = await supabase
+        .from('emergency_controls')
+        .select('claude_access_enabled, claude_api_enabled')
+        .order('updated_at', { ascending: false })
+        .limit(1)
+        .single();
+      
+      if (controlsError) {
+        console.error('Error checking emergency controls:', controlsError);
+        return false;
+      }
+      
+      return apiEnabled === true && controls?.claude_access_enabled === true && controls?.claude_api_enabled === true;
     } catch (error) {
       console.error('Error checking emergency controls:', error);
       return false;
@@ -106,7 +120,7 @@ export const useClaudeChat = () => {
           id: `system-${Date.now()}`,
           session_id: sessionId,
           message_type: 'assistant',
-          content: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
+          content: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to emergency controls. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
           created_at: new Date().toISOString()
         };
 

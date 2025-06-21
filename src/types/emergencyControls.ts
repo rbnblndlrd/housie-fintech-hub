@@ -20,6 +20,10 @@ export interface EmergencyControlsState {
   emergency_notification_active: boolean;
   provider_broadcast_active: boolean;
   
+  // AI Controls
+  claude_api_enabled: boolean;
+  claude_access_enabled: boolean;
+  
   // System Status
   normal_operations: boolean;
   last_backup_triggered: string | null;
@@ -45,4 +49,6 @@ export type EmergencyControlAction =
   | 'payment_restrictions_active'
   | 'messaging_disabled'
   | 'emergency_notification_active'
-  | 'provider_broadcast_active';
+  | 'provider_broadcast_active'
+  | 'claude_api_enabled'
+  | 'claude_access_enabled';

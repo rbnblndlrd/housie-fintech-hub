@@ -42,7 +42,9 @@ export class EmergencyControlsService {
       allowed_payment_methods: ['card', 'bank_transfer'],
       messaging_disabled: false,
       emergency_notification_active: false,
-      provider_broadcast_active: false
+      provider_broadcast_active: false,
+      claude_api_enabled: true,
+      claude_access_enabled: true
     };
     
     const { data: newData, error: insertError } = await supabase
@@ -100,6 +102,48 @@ export class EmergencyControlsService {
     return data;
   }
 
+  static async emergencyDisableClaude(userId: string, reason?: string): Promise<void> {
+    console.log('🚨 Emergency Claude disable triggered...');
+    
+    try {
+      const { data, error } = await supabase.rpc('emergency_disable_claude');
+      
+      if (error) throw error;
+      
+      await this.logEmergencyAction(
+        userId,
+        'emergency_claude_disable',
+        { reason: reason || 'Emergency disable triggered' }
+      );
+      
+      console.log('✅ Claude emergency disable completed:', data);
+    } catch (error) {
+      console.error('❌ Failed to emergency disable Claude:', error);
+      throw error;
+    }
+  }
+
+  static async enableClaudeAccess(userId: string): Promise<void> {
+    console.log('🔄 Enabling Claude access...');
+    
+    try {
+      const { data, error } = await supabase.rpc('enable_claude_access');
+      
+      if (error) throw error;
+      
+      await this.logEmergencyAction(
+        userId,
+        'claude_access_restored',
+        { action: 'Claude access restored' }
+      );
+      
+      console.log('✅ Claude access enabled:', data);
+    } catch (error) {
+      console.error('❌ Failed to enable Claude access:', error);
+      throw error;
+    }
+  }
+
   static async restoreNormalOperations(
     controlsId: string,
     userId: string,
@@ -120,6 +164,8 @@ export class EmergencyControlsService {
       messaging_disabled: false,
       emergency_notification_active: false,
       provider_broadcast_active: false,
+      claude_api_enabled: true,
+      claude_access_enabled: true,
       deactivated_by: userId,
       deactivated_at: new Date().toISOString(),
       reason: reason || 'Normal operations restored'

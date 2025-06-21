@@ -50,6 +50,39 @@ export type Database = {
           },
         ]
       }
+      admin_actions: {
+        Row: {
+          action_type: string
+          admin_user_id: string | null
+          affected_users: number | null
+          created_at: string | null
+          description: string | null
+          details: Json | null
+          id: string
+          target_ip: unknown | null
+        }
+        Insert: {
+          action_type: string
+          admin_user_id?: string | null
+          affected_users?: number | null
+          created_at?: string | null
+          description?: string | null
+          details?: Json | null
+          id?: string
+          target_ip?: unknown | null
+        }
+        Update: {
+          action_type?: string
+          admin_user_id?: string | null
+          affected_users?: number | null
+          created_at?: string | null
+          description?: string | null
+          details?: Json | null
+          id?: string
+          target_ip?: unknown | null
+        }
+        Relationships: []
+      }
       admin_users: {
         Row: {
           created_at: string | null
@@ -440,6 +473,39 @@ export type Database = {
           },
         ]
       }
+      claude_usage_logs: {
+        Row: {
+          cost_usd: number | null
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          query_type: string | null
+          session_id: string | null
+          tokens_used: number | null
+          user_id: string
+        }
+        Insert: {
+          cost_usd?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          query_type?: string | null
+          session_id?: string | null
+          tokens_used?: number | null
+          user_id: string
+        }
+        Update: {
+          cost_usd?: number | null
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          query_type?: string | null
+          session_id?: string | null
+          tokens_used?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           booking_id: string | null
@@ -629,6 +695,7 @@ export type Database = {
           allowed_payment_methods: string[] | null
           blocked_countries: string[] | null
           bookings_paused: boolean | null
+          claude_access_enabled: boolean | null
           claude_api_enabled: boolean | null
           created_at: string | null
           current_daily_spend: number | null
@@ -662,6 +729,7 @@ export type Database = {
           allowed_payment_methods?: string[] | null
           blocked_countries?: string[] | null
           bookings_paused?: boolean | null
+          claude_access_enabled?: boolean | null
           claude_api_enabled?: boolean | null
           created_at?: string | null
           current_daily_spend?: number | null
@@ -695,6 +763,7 @@ export type Database = {
           allowed_payment_methods?: string[] | null
           blocked_countries?: string[] | null
           bookings_paused?: boolean | null
+          claude_access_enabled?: boolean | null
           claude_api_enabled?: boolean | null
           created_at?: string | null
           current_daily_spend?: number | null
@@ -995,6 +1064,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ip_rate_limits: {
+        Row: {
+          accounts_created_today: number | null
+          blocked_until: string | null
+          claude_requests_today: number | null
+          ip_address: unknown
+          last_request: string | null
+          last_reset: string | null
+          violation_count: number | null
+        }
+        Insert: {
+          accounts_created_today?: number | null
+          blocked_until?: string | null
+          claude_requests_today?: number | null
+          ip_address: unknown
+          last_request?: string | null
+          last_reset?: string | null
+          violation_count?: number | null
+        }
+        Update: {
+          accounts_created_today?: number | null
+          blocked_until?: string | null
+          claude_requests_today?: number | null
+          ip_address?: unknown
+          last_request?: string | null
+          last_reset?: string | null
+          violation_count?: number | null
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           booking_id: string
@@ -1153,6 +1252,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      phone_verifications: {
+        Row: {
+          attempts: number | null
+          country_code: string
+          created_at: string | null
+          expires_at: string
+          id: string
+          phone_number: string
+          user_id: string
+          verification_code: string
+          verified_at: string | null
+        }
+        Insert: {
+          attempts?: number | null
+          country_code?: string
+          created_at?: string | null
+          expires_at: string
+          id?: string
+          phone_number: string
+          user_id: string
+          verification_code: string
+          verified_at?: string | null
+        }
+        Update: {
+          attempts?: number | null
+          country_code?: string
+          created_at?: string | null
+          expires_at?: string
+          id?: string
+          phone_number?: string
+          user_id?: string
+          verification_code?: string
+          verified_at?: string | null
+        }
+        Relationships: []
       }
       provider_profiles: {
         Row: {
@@ -1684,6 +1819,66 @@ export type Database = {
           },
         ]
       }
+      user_roles: {
+        Row: {
+          assigned_at: string | null
+          assigned_by: string | null
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: string
+          user_id: string
+        }
+        Update: {
+          assigned_at?: string | null
+          assigned_by?: string | null
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_security_status: {
+        Row: {
+          claude_access_level: string | null
+          created_at: string | null
+          daily_claude_count: number | null
+          email_verified: boolean | null
+          last_claude_reset: string | null
+          phone_verified: boolean | null
+          trust_score: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          claude_access_level?: string | null
+          created_at?: string | null
+          daily_claude_count?: number | null
+          email_verified?: boolean | null
+          last_claude_reset?: string | null
+          phone_verified?: boolean | null
+          trust_score?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          claude_access_level?: string | null
+          created_at?: string | null
+          daily_claude_count?: number | null
+          email_verified?: boolean | null
+          last_claude_reset?: string | null
+          phone_verified?: boolean | null
+          trust_score?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_sessions: {
         Row: {
           city: string | null
@@ -1918,9 +2113,21 @@ export type Database = {
         }
         Returns: Json
       }
+      emergency_disable_claude: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
+      enable_claude_access: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       get_current_daily_spend: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      get_daily_claude_stats: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       get_emergency_status: {
         Args: Record<PropertyKey, never>
@@ -1934,6 +2141,7 @@ export type Database = {
           allowed_payment_methods: string[] | null
           blocked_countries: string[] | null
           bookings_paused: boolean | null
+          claude_access_enabled: boolean | null
           claude_api_enabled: boolean | null
           created_at: string | null
           current_daily_spend: number | null
