@@ -1,135 +1,72 @@
 
-/* FINTECH CORE STYLES - ULTRA TARGETED APPROACH */
+/* FINTECH CORE STYLES - TARGETED APPROACH ONLY */
 
-/* Only target actual Card components and explicitly marked elements */
-.card:not([class*="input"]):not([class*="search"]):not([class*="filter"]):not([class*="badge"]),
-.Card:not([class*="input"]):not([class*="search"]):not([class*="filter"]):not([class*="badge"]),
-[data-card="true"],
-.service-card,
+/* Only target explicit fintech card components */
+.card.fintech-card,
+.Card.fintech-card,
+[data-card="fintech"],
+.service-card.fintech-card,
 .fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .card:not([class*="input"]):not([class*="search"]):not([class*="filter"]):not([class*="badge"]),
-.dark .Card:not([class*="input"]):not([class*="search"]):not([class*="filter"]):not([class*="badge"]),
-.dark [data-card="true"],
-.dark .service-card,
+.dark .card.fintech-card,
+.dark .Card.fintech-card,
+.dark [data-card="fintech"],
+.dark .service-card.fintech-card,
 .dark .fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* STRICT EXCLUSIONS - No fintech styling on these elements */
-input, 
-textarea, 
-select,
-button:not([class*="fintech-button"]),
-[role="searchbox"],
-[class*="search"],
-[class*="filter"],
-[class*="input"],
-[class*="form"],
-[class*="badge"],
-[class*="absolute"],
-[class*="fixed"],
-[class*="sticky"],
-section:not([data-card="true"]),
-article:not([data-card="true"]),
-header,
-nav,
-[class*="nav"],
-[class*="header"],
-[class*="hero"],
-[class*="bg-gradient"],
-[class*="gradient"],
-[class*="animate"],
-div[class*="w-32"],
-div[class*="h-32"],
-div[class*="w-24"],
-div[class*="h-24"],
-div[class*="w-16"],
-div[class*="h-16"],
-div[class*="w-20"],
-div[class*="h-20"],
-div[class="flex"],
-div[class="grid"],
-div[class*="container"],
-div[class*="max-w-"],
-div[class*="mx-auto"] {
-  background: inherit !important;
-  border: none !important;
-  border-radius: inherit !important;
-  box-shadow: none !important;
-}
-
-/* Fix input backgrounds specifically */
-input {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-  color: #1f2937 !important;
-}
-
-textarea {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-  color: #1f2937 !important;
-}
-
-select {
-  background: white !important;
-  border: 1px solid #e5e7eb !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
-  color: #1f2937 !important;
-}
-
-.dark input {
-  background: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
-}
-
-.dark textarea {
-  background: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
-}
-
-.dark select {
-  background: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
-}
-
-/* Only dialogs and modals get fintech styling */
-[role="dialog"]:not([class*="input"]):not([class*="search"]),
-.dialog:not([class*="input"]):not([class*="search"]),
-[class*="dialog"]:not([class*="input"]):not([class*="search"]),
-[role="alertdialog"],
-[role="tooltip"],
-[role="popover"] {
+/* Only dialogs and modals with explicit fintech classes */
+[role="dialog"].fintech-card,
+.dialog.fintech-card,
+[class*="dialog"].fintech-card,
+[role="alertdialog"].fintech-card,
+[role="tooltip"].fintech-card,
+[role="popover"].fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark [role="dialog"]:not([class*="input"]):not([class*="search"]),
-.dark .dialog:not([class*="input"]):not([class*="search"]),
-.dark [class*="dialog"]:not([class*="input"]):not([class*="search"]),
-.dark [role="alertdialog"],
-.dark [role="tooltip"],
-.dark [role="popover"] {
+.dark [role="dialog"].fintech-card,
+.dark .dialog.fintech-card,
+.dark [class*="dialog"].fintech-card,
+.dark [role="alertdialog"].fintech-card,
+.dark [role="tooltip"].fintech-card,
+.dark [role="popover"].fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Button styling - only for actual fintech buttons */
-button[class*="fintech-button"] {
+/* Explicit fintech buttons only */
+button.fintech-button,
+.fintech-button-primary,
+.fintech-button-secondary {
   border: 2px solid rgba(59, 130, 246, 0.8) !important;
 }
 
-.dark button[class*="fintech-button"] {
+.dark button.fintech-button,
+.dark .fintech-button-primary,
+.dark .fintech-button-secondary {
   border: 2px solid rgba(147, 197, 253, 0.8) !important;
+}
+
+/* Ensure normal elements stay normal */
+input:not(.fintech-input), 
+textarea:not(.fintech-input), 
+select:not(.fintech-input) {
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+  color: #1f2937 !important;
+}
+
+.dark input:not(.fintech-input), 
+.dark textarea:not(.fintech-input), 
+.dark select:not(.fintech-input) {
+  background: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  color: white !important;
 }

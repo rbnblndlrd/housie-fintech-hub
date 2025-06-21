@@ -1,120 +1,87 @@
 
-/* FINTECH COMPONENT OVERRIDES - SPECIFIC COMPONENTS ONLY */
+/* FINTECH COMPONENT OVERRIDES - EXPLICIT CLASSES ONLY */
 
-/* Service Components - Only actual service cards */
-.service-card, 
-[data-testid*="service"]:not([class*="input"]):not([class*="search"]),
-[class*="service"]:not([class*="input"]):not([class*="search"]):not([class*="badge"]) {
+/* Service Components - Only with explicit fintech classes */
+.service-card.fintech-card, 
+[data-testid*="service"].fintech-card,
+[class*="service"].fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .service-card, 
-.dark [data-testid*="service"]:not([class*="input"]):not([class*="search"]),
-.dark [class*="service"]:not([class*="input"]):not([class*="search"]):not([class*="badge"]) {
+.dark .service-card.fintech-card, 
+.dark [data-testid*="service"].fintech-card,
+.dark [class*="service"].fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Dashboard Components - Only actual dashboard containers */
-.dashboard:not([class*="input"]):not([class*="search"]), 
-[class*="dashboard"]:not([class*="input"]):not([class*="search"]):not([class*="nav"]),
-.overview:not([class*="input"]):not([class*="search"]), 
-[class*="overview"]:not([class*="input"]):not([class*="search"]) {
+/* Dashboard Components - Only with explicit fintech classes */
+.dashboard.fintech-card, 
+[class*="dashboard"].fintech-card,
+.overview.fintech-card, 
+[class*="overview"].fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .dashboard:not([class*="input"]):not([class*="search"]), 
-.dark [class*="dashboard"]:not([class*="input"]):not([class*="search"]):not([class*="nav"]),
-.dark .overview:not([class*="input"]):not([class*="search"]), 
-.dark [class*="overview"]:not([class*="input"]):not([class*="search"]) {
+.dark .dashboard.fintech-card, 
+.dark [class*="dashboard"].fintech-card,
+.dark .overview.fintech-card, 
+.dark [class*="overview"].fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Form Components - Only form containers, not form inputs */
-.form:not(input):not(textarea):not(select), 
-[class*="form"]:not(input):not(textarea):not(select):not([class*="input"]),
-fieldset {
+/* Form Components - Only containers with explicit fintech classes */
+.form.fintech-card, 
+[class*="form"].fintech-card,
+fieldset.fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .form:not(input):not(textarea):not(select), 
-.dark [class*="form"]:not(input):not(textarea):not(select):not([class*="input"]),
-.dark fieldset {
+.dark .form.fintech-card, 
+.dark [class*="form"].fintech-card,
+.dark fieldset.fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Modal and Popup Components */
-.modal:not([class*="input"]):not([class*="search"]), 
-[class*="modal"]:not([class*="input"]):not([class*="search"]),
-.popup:not([class*="input"]):not([class*="search"]), 
-[class*="popup"]:not([class*="input"]):not([class*="search"]),
-.dropdown:not([class*="input"]):not([class*="search"]), 
-[class*="dropdown"]:not([class*="input"]):not([class*="search"]) {
+/* Modal and Popup Components - Only with explicit fintech classes */
+.modal.fintech-card, 
+[class*="modal"].fintech-card,
+.popup.fintech-card, 
+[class*="popup"].fintech-card,
+.dropdown.fintech-card, 
+[class*="dropdown"].fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .modal:not([class*="input"]):not([class*="search"]), 
-.dark [class*="modal"]:not([class*="input"]):not([class*="search"]),
-.dark .popup:not([class*="input"]):not([class*="search"]), 
-.dark [class*="popup"]:not([class*="input"]):not([class*="search"]),
-.dark .dropdown:not([class*="input"]):not([class*="search"]), 
-.dark [class*="dropdown"]:not([class*="input"]):not([class*="search"]) {
+.dark .modal.fintech-card, 
+.dark [class*="modal"].fintech-card,
+.dark .popup.fintech-card, 
+.dark [class*="popup"].fintech-card,
+.dark .dropdown.fintech-card, 
+.dark [class*="dropdown"].fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* Profile and Settings Components */
-.profile:not([class*="input"]):not([class*="search"]), 
-[class*="profile"]:not([class*="input"]):not([class*="search"]):not([class*="nav"]),
-.settings:not([class*="input"]):not([class*="search"]), 
-[class*="settings"]:not([class*="input"]):not([class*="search"]) {
+/* Profile and Settings Components - Only with explicit fintech classes */
+.profile.fintech-card, 
+[class*="profile"].fintech-card,
+.settings.fintech-card, 
+[class*="settings"].fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .profile:not([class*="input"]):not([class*="search"]), 
-.dark [class*="profile"]:not([class*="input"]):not([class*="search"]):not([class*="nav"]),
-.dark .settings:not([class*="input"]):not([class*="search"]), 
-.dark [class*="settings"]:not([class*="input"]):not([class*="search"]) {
+.dark .profile.fintech-card, 
+.dark [class*="profile"].fintech-card,
+.dark .settings.fintech-card, 
+.dark [class*="settings"].fintech-card {
   border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
-/* STRICT EXCLUSIONS for all decorative and functional elements */
-[class*="absolute"],
-[class*="fixed"],
-[class*="sticky"],
-[class*="bg-gradient"],
-[class*="gradient"],
-[class*="animate"],
-[class*="badge"],
-[class*="pill"],
-[class*="nav"],
-[class*="header"],
-[class*="hero"],
-input,
-textarea,
-select,
-button:not([class*="fintech-button"]),
-[role="searchbox"],
-[class*="search"],
-[class*="filter"],
-[class*="input"],
-div[class*="w-32"],
-div[class*="h-32"],
-div[class*="w-24"],
-div[class*="h-24"],
-div[class*="w-16"],
-div[class*="h-16"],
-div[class*="w-20"],
-div[class*="h-20"] {
-  background: inherit !important;
-  border: none !important;
-  box-shadow: none !important;
-}
-
-/* Secondary card variant for less prominent cards */
+/* Secondary card variant */
 .fintech-card-secondary {
   @apply fintech-card;
   border: 2px solid rgba(0, 0, 0, 0.6) !important;
