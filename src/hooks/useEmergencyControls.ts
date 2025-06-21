@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 
 interface EmergencyControlsState {
+  id?: string;
   // Platform Controls
   bookings_paused: boolean;
   maintenance_mode: boolean;
@@ -31,7 +32,11 @@ interface EmergencyControlsState {
   // Metadata
   activated_by: string | null;
   activated_at: string | null;
+  deactivated_by: string | null;
+  deactivated_at: string | null;
   reason: string | null;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export const useEmergencyControls = () => {
@@ -104,7 +109,7 @@ export const useEmergencyControls = () => {
     value: any,
     reason?: string
   ) => {
-    if (!user || !controls) return;
+    if (!user || !controls || !controls.id) return;
 
     setActionLoading(true);
     try {
@@ -166,7 +171,7 @@ export const useEmergencyControls = () => {
   };
 
   const restoreNormalOperations = async (reason?: string) => {
-    if (!user || !controls) return;
+    if (!user || !controls || !controls.id) return;
 
     setActionLoading(true);
     try {
@@ -205,7 +210,7 @@ export const useEmergencyControls = () => {
         admin_id: user.id,
         action_type: 'restore_normal_operations',
         action_details: { reason },
-        previous_state: controls,
+        previous_state: JSON.parse(JSON.stringify(controls)),
         new_state: normalState
       });
 
@@ -232,7 +237,7 @@ export const useEmergencyControls = () => {
   };
 
   const triggerEmergencyBackup = async () => {
-    if (!user) return;
+    if (!user || !controls?.id) return;
 
     setActionLoading(true);
     try {
@@ -245,7 +250,7 @@ export const useEmergencyControls = () => {
           last_backup_triggered: new Date().toISOString(),
           updated_at: new Date().toISOString()
         })
-        .eq('id', controls?.id);
+        .eq('id', controls.id);
 
       if (error) throw error;
 
