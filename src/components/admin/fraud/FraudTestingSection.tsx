@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -99,6 +98,31 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
     return { id: testUserId, email: testEmail };
   };
 
+  const createHighRiskReviewItem = async (testUser: any, riskScore: number, actionType: string) => {
+    console.log('📋 Creating high-risk review item...');
+    
+    try {
+      const { error } = await supabase
+        .from('review_queue')
+        .insert({
+          user_id: testUser.id,
+          fraud_session_id: crypto.randomUUID(),
+          action_type: actionType,
+          risk_score: riskScore,
+          priority: riskScore >= 80 ? 'critical' : 'high',
+          status: 'pending'
+        });
+
+      if (error) {
+        console.error('❌ Error creating review item:', error);
+      } else {
+        console.log('✅ Review item created successfully');
+      }
+    } catch (error) {
+      console.error('❌ Error in createHighRiskReviewItem:', error);
+    }
+  };
+
   const simulateScenario = async (scenarioId: string) => {
     setIsGenerating(true);
     console.log(`🎭 Starting scenario simulation: ${scenarioId}`);
@@ -128,6 +152,11 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
               booking_count: 0
             }
           });
+          
+          // Create review item if high risk
+          if (fraudResult && fraudResult.risk_score >= 70) {
+            await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'booking');
+          }
           break;
 
         case 'multiple-failed-payments':
@@ -153,6 +182,10 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
               previous_failures: 4
             }
           });
+          
+          if (fraudResult && fraudResult.risk_score >= 70) {
+            await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'payment');
+          }
           break;
 
         case 'suspicious-messaging':
@@ -166,6 +199,10 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
               length: (customMessage || 'URGENT!!! Free money guaranteed! Click here now! WhatsApp me at 555-1234').length
             }
           });
+          
+          if (fraudResult && fraudResult.risk_score >= 70) {
+            await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'messaging');
+          }
           break;
 
         case 'vpn-proxy-usage':
@@ -180,6 +217,10 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
               country_mismatch: true
             }
           });
+          
+          if (fraudResult && fraudResult.risk_score >= 70) {
+            await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'login');
+          }
           break;
 
         case 'rapid-booking-attempts':
@@ -196,7 +237,12 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
                 rapid_fire: true
               }
             });
-            if (i === 5) fraudResult = result; // Use last result
+            if (i === 5) {
+              fraudResult = result; // Use last result
+              if (fraudResult && fraudResult.risk_score >= 70) {
+                await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'booking');
+              }
+            }
           }
           break;
       }
@@ -214,10 +260,13 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
         description: `Created fraud test case: ${fraudScenarios.find(s => s.id === scenarioId)?.name}`,
       });
 
-      // Trigger data refresh in parent component
+      // Force immediate data refresh with multiple attempts
+      console.log('🔄 Triggering data refresh...');
       if (onDataUpdated) {
-        console.log('🔄 Triggering data refresh...');
-        setTimeout(() => onDataUpdated(), 1000); // Small delay to allow for propagation
+        // Try multiple times to ensure data refresh
+        setTimeout(() => onDataUpdated(), 500);
+        setTimeout(() => onDataUpdated(), 1500);
+        setTimeout(() => onDataUpdated(), 3000);
       }
 
     } catch (error) {

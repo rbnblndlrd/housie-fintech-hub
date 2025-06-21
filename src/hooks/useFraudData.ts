@@ -85,7 +85,7 @@ export const useFraudData = () => {
     console.log('🔄 Loading fraud data...');
     
     try {
-      // Load recent fraud logs
+      // Load recent fraud logs with better error handling
       console.log('📊 Loading fraud logs...');
       const { data: logsData, error: logsError } = await supabase
         .from('fraud_logs')
@@ -97,7 +97,7 @@ export const useFraudData = () => {
           )
         `)
         .order('created_at', { ascending: false })
-        .limit(100);
+        .limit(200); // Increased limit to catch more test data
 
       if (logsError) {
         console.error('❌ Error loading fraud logs:', logsError);
@@ -105,6 +105,7 @@ export const useFraudData = () => {
       }
       
       console.log(`✅ Loaded ${logsData?.length || 0} fraud logs`);
+      console.log('📊 Fraud logs sample:', logsData?.slice(0, 3));
       
       const typedLogsData = (logsData || []).map(log => ({
         ...log,
@@ -119,7 +120,7 @@ export const useFraudData = () => {
       setRealtimeAlerts(recentAlerts);
       console.log(`📢 Found ${recentAlerts.length} recent alerts`);
 
-      // Load review queue
+      // Load review queue with better error handling
       console.log('📋 Loading review queue...');
       const { data: queueData, error: queueError } = await supabase
         .from('review_queue')
@@ -138,6 +139,7 @@ export const useFraudData = () => {
       }
       
       console.log(`✅ Loaded ${queueData?.length || 0} review queue items`);
+      console.log('📋 Review queue sample:', queueData?.slice(0, 3));
       
       const typedQueueData = (queueData || []).map(item => ({
         ...item,
@@ -196,7 +198,7 @@ export const useFraudData = () => {
       setHighRiskUsers(highRiskUsersList);
       console.log(`⚠️ Found ${highRiskUsersList.length} high-risk users`);
 
-      // Calculate stats
+      // Calculate stats with more detailed logging
       console.log('📈 Calculating stats...');
       const totalChecks = typedLogsData?.length || 0;
       const highRiskDetected = typedLogsData?.filter(log => log.risk_score >= 70).length || 0;
@@ -257,7 +259,8 @@ export const useFraudData = () => {
         description: "User has been successfully unblocked.",
       });
 
-      loadFraudData();
+      // Reload data immediately
+      await loadFraudData();
     } catch (error) {
       console.error('❌ Error unblocking user:', error);
       toast({
@@ -271,7 +274,7 @@ export const useFraudData = () => {
   useEffect(() => {
     loadFraudData();
 
-    // Set up real-time subscription for fraud logs
+    // Set up real-time subscription for fraud logs with better logging
     console.log('📡 Setting up real-time subscriptions...');
     const channel = supabase
       .channel('fraud-detection-changes')
@@ -284,7 +287,8 @@ export const useFraudData = () => {
         },
         (payload) => {
           console.log('📡 Fraud logs changed:', payload);
-          loadFraudData();
+          // Immediately reload data when fraud logs change
+          setTimeout(() => loadFraudData(), 500);
         }
       )
       .on(
@@ -296,7 +300,7 @@ export const useFraudData = () => {
         },
         (payload) => {
           console.log('📡 Review queue changed:', payload);
-          loadFraudData();
+          setTimeout(() => loadFraudData(), 500);
         }
       )
       .on(
@@ -308,7 +312,7 @@ export const useFraudData = () => {
         },
         (payload) => {
           console.log('📡 User blocks changed:', payload);
-          loadFraudData();
+          setTimeout(() => loadFraudData(), 500);
         }
       )
       .subscribe();
