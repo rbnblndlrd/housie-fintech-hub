@@ -841,6 +841,51 @@ export type Database = {
           },
         ]
       }
+      provider_settings: {
+        Row: {
+          advance_booking_days: number
+          auto_accept_bookings: boolean
+          break_duration: number
+          buffer_time: number
+          created_at: string
+          id: string
+          min_booking_notice: number
+          service_duration: number
+          time_zone: string
+          updated_at: string
+          user_id: string
+          working_hours: Json
+        }
+        Insert: {
+          advance_booking_days?: number
+          auto_accept_bookings?: boolean
+          break_duration?: number
+          buffer_time?: number
+          created_at?: string
+          id?: string
+          min_booking_notice?: number
+          service_duration?: number
+          time_zone?: string
+          updated_at?: string
+          user_id: string
+          working_hours?: Json
+        }
+        Update: {
+          advance_booking_days?: number
+          auto_accept_bookings?: boolean
+          break_duration?: number
+          buffer_time?: number
+          created_at?: string
+          id?: string
+          min_booking_notice?: number
+          service_duration?: number
+          time_zone?: string
+          updated_at?: string
+          user_id?: string
+          working_hours?: Json
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           booking_id: string

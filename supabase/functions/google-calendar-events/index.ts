@@ -206,7 +206,7 @@ async function calculateAvailability(
 
   // Get provider's working hours and preferences
   const { data: providerSettings } = await supabase
-    .from('provider_profiles')
+    .from('provider_settings')
     .select('*')
     .eq('user_id', providerId)
     .single()
@@ -224,6 +224,22 @@ async function calculateAvailability(
     defaultServiceDuration: 120, // 2 hours
     bufferTime: 15, // 15 minutes
     breakDuration: 30 // 30 minutes
+  }
+
+  // Override with provider settings if available
+  if (providerSettings) {
+    if (providerSettings.working_hours) {
+      settings.workingHours = providerSettings.working_hours
+    }
+    if (providerSettings.service_duration) {
+      settings.defaultServiceDuration = providerSettings.service_duration
+    }
+    if (providerSettings.buffer_time) {
+      settings.bufferTime = providerSettings.buffer_time
+    }
+    if (providerSettings.break_duration) {
+      settings.breakDuration = providerSettings.break_duration
+    }
   }
 
   // Get busy events from Google Calendar
