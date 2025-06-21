@@ -1,6 +1,9 @@
 
 import React, { useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { RefreshCw, AlertCircle } from 'lucide-react';
 import FraudStatsCards from './FraudStatsCards';
 import FraudAlertsSection from './FraudAlertsSection';
 import FraudReviewQueue from './FraudReviewQueue';
@@ -18,8 +21,10 @@ interface FraudDetectionContentProps {
   highRiskUsers: any[];
   realtimeAlerts: any[];
   stats: any;
+  error?: string | null;
   onUpdate: () => void;
   onUnblockUser: (blockId: string) => void;
+  onForceRefresh?: () => void;
 }
 
 const FraudDetectionContent: React.FC<FraudDetectionContentProps> = ({
@@ -29,14 +34,63 @@ const FraudDetectionContent: React.FC<FraudDetectionContentProps> = ({
   highRiskUsers,
   realtimeAlerts,
   stats,
+  error,
   onUpdate,
-  onUnblockUser
+  onUnblockUser,
+  onForceRefresh
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleForceRefresh = async () => {
+    setRefreshing(true);
+    try {
+      if (onForceRefresh) {
+        await onForceRefresh();
+      } else {
+        await onUpdate();
+      }
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
+      {/* Error Display */}
+      {error && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            {error}
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleForceRefresh}
+              className="ml-2"
+              disabled={refreshing}
+            >
+              {refreshing ? <RefreshCw className="h-3 w-3 animate-spin" /> : "Retry"}
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Manual Refresh Button */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-2xl font-bold">Fraud Detection Dashboard</h2>
+        <Button 
+          variant="outline" 
+          onClick={handleForceRefresh}
+          disabled={refreshing}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          {refreshing ? 'Refreshing...' : 'Refresh Data'}
+        </Button>
+      </div>
+
       <FraudStatsCards stats={stats} />
       <FraudAlertsSection realtimeAlerts={realtimeAlerts} />
 

@@ -79,48 +79,73 @@ export const useFraudData = () => {
     weeklyTrend: 0
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
   const loadFraudData = async () => {
-    console.log('🔄 Loading fraud data...');
+    console.log('🔄 Starting comprehensive fraud data reload...');
+    setLoading(true);
+    setError(null);
     
     try {
-      // Load recent fraud logs with better error handling
+      // Load fraud logs with simplified query and better error handling
       console.log('📊 Loading fraud logs...');
-      const { data: logsData, error: logsError } = await supabase
+      const { data: rawLogsData, error: logsError } = await supabase
         .from('fraud_logs')
-        .select(`
-          *,
-          users:user_id (
-            full_name,
-            email
-          )
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
-        .limit(200); // Increased limit to catch more test data
+        .limit(500);
 
       if (logsError) {
-        console.error('❌ Error loading fraud logs:', logsError);
-        throw logsError;
+        console.error('❌ Fraud logs query error:', logsError);
+        throw new Error(`Failed to load fraud logs: ${logsError.message}`);
       }
+
+      console.log('📊 Raw fraud logs count:', rawLogsData?.length || 0);
+      console.log('📊 Sample fraud log:', rawLogsData?.[0]);
+
+      // Fetch user data separately for better performance
+      const userIds = rawLogsData?.filter(log => log.user_id).map(log => log.user_id) || [];
+      const uniqueUserIds = [...new Set(userIds)];
       
-      console.log(`✅ Loaded ${logsData?.length || 0} fraud logs`);
-      console.log('📊 Fraud logs sample:', logsData?.slice(0, 3));
-      
-      const typedLogsData = (logsData || []).map(log => ({
+      let usersData: any[] = [];
+      if (uniqueUserIds.length > 0) {
+        console.log('👥 Loading user data for', uniqueUserIds.length, 'users...');
+        const { data: userData, error: usersError } = await supabase
+          .from('users')
+          .select('id, full_name, email')
+          .in('id', uniqueUserIds);
+
+        if (usersError) {
+          console.warn('⚠️ Users query error (continuing without user data):', usersError);
+        } else {
+          usersData = userData || [];
+          console.log('👥 Loaded user data for', usersData.length, 'users');
+        }
+      }
+
+      // Create user lookup map
+      const userMap = usersData.reduce((acc, user) => {
+        acc[user.id] = { full_name: user.full_name, email: user.email };
+        return acc;
+      }, {} as Record<string, { full_name: string; email: string }>);
+
+      // Combine fraud logs with user data
+      const processedLogsData = (rawLogsData || []).map(log => ({
         ...log,
-        users: Array.isArray(log.users) ? log.users[0] : log.users
+        users: log.user_id ? userMap[log.user_id] || null : null
       })) as FraudLog[];
-      
-      setFraudLogs(typedLogsData);
 
-      // Set recent alerts (last 24 hours)
+      console.log('✅ Processed', processedLogsData.length, 'fraud logs with user data');
+      setFraudLogs(processedLogsData);
+
+      // Calculate recent alerts (last 24 hours)
       const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
-      const recentAlerts = typedLogsData.filter(log => log.created_at > oneDayAgo);
+      const recentAlerts = processedLogsData.filter(log => log.created_at > oneDayAgo);
       setRealtimeAlerts(recentAlerts);
-      console.log(`📢 Found ${recentAlerts.length} recent alerts`);
+      console.log('📢 Found', recentAlerts.length, 'recent alerts (24h)');
 
-      // Load review queue with better error handling
+      // Load review queue
       console.log('📋 Loading review queue...');
       const { data: queueData, error: queueError } = await supabase
         .from('review_queue')
@@ -134,19 +159,17 @@ export const useFraudData = () => {
         .order('created_at', { ascending: false });
 
       if (queueError) {
-        console.error('❌ Error loading review queue:', queueError);
-        throw queueError;
+        console.error('❌ Review queue query error:', queueError);
+        throw new Error(`Failed to load review queue: ${queueError.message}`);
       }
-      
-      console.log(`✅ Loaded ${queueData?.length || 0} review queue items`);
-      console.log('📋 Review queue sample:', queueData?.slice(0, 3));
-      
-      const typedQueueData = (queueData || []).map(item => ({
+
+      const processedQueueData = (queueData || []).map(item => ({
         ...item,
         users: Array.isArray(item.users) ? item.users[0] : item.users
       })) as ReviewQueueItem[];
-      
-      setReviewQueue(typedQueueData);
+
+      console.log('✅ Loaded', processedQueueData.length, 'review queue items');
+      setReviewQueue(processedQueueData);
 
       // Load user blocks
       console.log('🚫 Loading user blocks...');
@@ -163,30 +186,29 @@ export const useFraudData = () => {
         .order('blocked_at', { ascending: false });
 
       if (blocksError) {
-        console.error('❌ Error loading user blocks:', blocksError);
-        throw blocksError;
+        console.error('❌ User blocks query error:', blocksError);
+        throw new Error(`Failed to load user blocks: ${blocksError.message}`);
       }
-      
-      console.log(`✅ Loaded ${blocksData?.length || 0} user blocks`);
-      
-      const typedBlocksData = (blocksData || []).map(block => ({
+
+      const processedBlocksData = (blocksData || []).map(block => ({
         ...block,
         users: Array.isArray(block.users) ? block.users[0] : block.users
       })) as UserBlock[];
-      
-      setUserBlocks(typedBlocksData);
 
-      // Calculate high-risk users (simplified)
+      console.log('✅ Loaded', processedBlocksData.length, 'user blocks');
+      setUserBlocks(processedBlocksData);
+
+      // Calculate high-risk users from fraud logs
       console.log('⚠️ Calculating high-risk users...');
-      const riskUsers = typedLogsData
-        .filter(log => log.risk_score >= 70 && log.users)
+      const riskUsers = processedLogsData
+        .filter(log => log.risk_score >= 70 && log.user_id && log.users)
         .reduce((acc, log) => {
           const userId = log.user_id!;
           if (!acc[userId] || log.risk_score > acc[userId].risk_score) {
             acc[userId] = {
               user_id: userId,
-              full_name: log.users!.full_name,
-              email: log.users!.email,
+              full_name: log.users!.full_name || 'Unknown User',
+              email: log.users!.email || 'No email',
               risk_score: log.risk_score,
               last_activity: log.created_at
             };
@@ -194,43 +216,59 @@ export const useFraudData = () => {
           return acc;
         }, {} as Record<string, HighRiskUser>);
 
-      const highRiskUsersList = Object.values(riskUsers).slice(0, 20);
-      setHighRiskUsers(highRiskUsersList);
-      console.log(`⚠️ Found ${highRiskUsersList.length} high-risk users`);
+      const highRiskUsersList = Object.values(riskUsers)
+        .sort((a, b) => b.risk_score - a.risk_score)
+        .slice(0, 20);
 
-      // Calculate stats with more detailed logging
-      console.log('📈 Calculating stats...');
-      const totalChecks = typedLogsData?.length || 0;
-      const highRiskDetected = typedLogsData?.filter(log => log.risk_score >= 70).length || 0;
+      setHighRiskUsers(highRiskUsersList);
+      console.log('⚠️ Found', highRiskUsersList.length, 'high-risk users');
+
+      // Calculate comprehensive stats
+      console.log('📈 Calculating dashboard stats...');
+      const totalChecks = processedLogsData.length;
+      const highRiskDetected = processedLogsData.filter(log => log.risk_score >= 70).length;
       const todayAlerts = recentAlerts.length;
-      
+      const pendingReviews = processedQueueData.filter(item => item.status === 'pending').length;
+      const blockedUsers = processedBlocksData.length;
+
       // Calculate weekly trend
       const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-      const weeklyAlerts = typedLogsData.filter(log => log.created_at > oneWeekAgo).length;
-      const previousWeekAlerts = typedLogsData.filter(log => 
-        log.created_at > new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString() &&
-        log.created_at <= oneWeekAgo
-      ).length;
-      const weeklyTrend = previousWeekAlerts > 0 ? 
-        Math.round(((weeklyAlerts - previousWeekAlerts) / previousWeekAlerts) * 100) : 0;
+      const twoWeeksAgo = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString();
       
+      const thisWeekAlerts = processedLogsData.filter(log => log.created_at > oneWeekAgo).length;
+      const lastWeekAlerts = processedLogsData.filter(log => 
+        log.created_at > twoWeeksAgo && log.created_at <= oneWeekAgo
+      ).length;
+      
+      const weeklyTrend = lastWeekAlerts > 0 ? 
+        Math.round(((thisWeekAlerts - lastWeekAlerts) / lastWeekAlerts) * 100) : 0;
+
       const calculatedStats = {
         totalChecks,
         highRiskDetected,
-        blockedUsers: typedBlocksData?.length || 0,
-        pendingReviews: typedQueueData?.filter(item => item.status === 'pending').length || 0,
+        blockedUsers,
+        pendingReviews,
         todayAlerts,
         weeklyTrend
       };
-      
-      setStats(calculatedStats);
-      console.log('📊 Stats calculated:', calculatedStats);
 
-    } catch (error) {
-      console.error('💥 Error loading fraud data:', error);
+      setStats(calculatedStats);
+      console.log('📊 Final calculated stats:', calculatedStats);
+
+      // Success toast for significant updates
+      if (totalChecks > 0) {
+        toast({
+          title: "Fraud Data Loaded",
+          description: `Found ${totalChecks} fraud checks, ${highRiskDetected} high-risk, ${todayAlerts} today`,
+        });
+      }
+
+    } catch (error: any) {
+      console.error('💥 Complete fraud data loading failed:', error);
+      setError(error.message || 'Failed to load fraud data');
       toast({
-        title: "Error",
-        description: "Failed to load fraud detection data",
+        title: "Data Loading Error",
+        description: error.message || "Failed to load fraud detection data",
         variant: "destructive",
       });
     } finally {
@@ -251,7 +289,10 @@ export const useFraudData = () => {
         })
         .eq('id', blockId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error unblocking user:', error);
+        throw error;
+      }
 
       console.log('✅ User unblocked successfully');
       toast({
@@ -259,9 +300,9 @@ export const useFraudData = () => {
         description: "User has been successfully unblocked.",
       });
 
-      // Reload data immediately
+      // Immediate data refresh
       await loadFraudData();
-    } catch (error) {
+    } catch (error: any) {
       console.error('❌ Error unblocking user:', error);
       toast({
         title: "Error",
@@ -271,13 +312,19 @@ export const useFraudData = () => {
     }
   };
 
+  const forceRefresh = async () => {
+    console.log('🔄 Force refresh triggered by user');
+    await loadFraudData();
+  };
+
   useEffect(() => {
+    console.log('🚀 Initializing fraud data hook...');
     loadFraudData();
 
-    // Set up real-time subscription for fraud logs with better logging
+    // Set up real-time subscriptions with better error handling
     console.log('📡 Setting up real-time subscriptions...');
     const channel = supabase
-      .channel('fraud-detection-changes')
+      .channel('fraud-detection-realtime')
       .on(
         'postgres_changes',
         {
@@ -286,9 +333,12 @@ export const useFraudData = () => {
           table: 'fraud_logs'
         },
         (payload) => {
-          console.log('📡 Fraud logs changed:', payload);
-          // Immediately reload data when fraud logs change
-          setTimeout(() => loadFraudData(), 500);
+          console.log('📡 Fraud logs real-time update:', payload);
+          // Debounced refresh after real-time update
+          setTimeout(() => {
+            console.log('📡 Triggering refresh from fraud_logs change');
+            loadFraudData();
+          }, 1000);
         }
       )
       .on(
@@ -299,8 +349,11 @@ export const useFraudData = () => {
           table: 'review_queue'
         },
         (payload) => {
-          console.log('📡 Review queue changed:', payload);
-          setTimeout(() => loadFraudData(), 500);
+          console.log('📡 Review queue real-time update:', payload);
+          setTimeout(() => {
+            console.log('📡 Triggering refresh from review_queue change');
+            loadFraudData();
+          }, 1000);
         }
       )
       .on(
@@ -311,11 +364,16 @@ export const useFraudData = () => {
           table: 'user_blocks'
         },
         (payload) => {
-          console.log('📡 User blocks changed:', payload);
-          setTimeout(() => loadFraudData(), 500);
+          console.log('📡 User blocks real-time update:', payload);
+          setTimeout(() => {
+            console.log('📡 Triggering refresh from user_blocks change');
+            loadFraudData();
+          }, 1000);
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('📡 Real-time subscription status:', status);
+      });
 
     return () => {
       console.log('📡 Cleaning up real-time subscriptions...');
@@ -331,7 +389,9 @@ export const useFraudData = () => {
     realtimeAlerts,
     stats,
     loading,
+    error,
     loadFraudData,
-    handleUnblockUser
+    handleUnblockUser,
+    forceRefresh
   };
 };

@@ -13,8 +13,10 @@ const FraudDetectionSection = () => {
     realtimeAlerts,
     stats,
     loading,
+    error,
     loadFraudData,
-    handleUnblockUser
+    handleUnblockUser,
+    forceRefresh
   } = useFraudData();
 
   if (loading) {
@@ -29,8 +31,10 @@ const FraudDetectionSection = () => {
       highRiskUsers={highRiskUsers}
       realtimeAlerts={realtimeAlerts}
       stats={stats}
+      error={error}
       onUpdate={loadFraudData}
       onUnblockUser={handleUnblockUser}
+      onForceRefresh={forceRefresh}
     />
   );
 };

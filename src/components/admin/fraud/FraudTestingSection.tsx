@@ -123,6 +123,17 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
     }
   };
 
+  const triggerDataRefresh = () => {
+    console.log('🔄 Triggering comprehensive data refresh...');
+    if (onDataUpdated) {
+      // Multiple refresh attempts with different timings to ensure data appears
+      setTimeout(() => onDataUpdated(), 500);   // Immediate
+      setTimeout(() => onDataUpdated(), 1500);  // Short delay
+      setTimeout(() => onDataUpdated(), 3000);  // Medium delay
+      setTimeout(() => onDataUpdated(), 5000);  // Longer delay for database propagation
+    }
+  };
+
   const simulateScenario = async (scenarioId: string) => {
     setIsGenerating(true);
     console.log(`🎭 Starting scenario simulation: ${scenarioId}`);
@@ -143,17 +154,16 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
           fraudResult = await performFraudCheck({
             action_type: 'booking',
             user_id: testUser.id,
-            ip_address: '10.0.0.1', // Private IP to trigger suspicion
+            ip_address: '10.0.0.1',
             user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
             metadata: {
               email: testUser.email,
               amount: parseFloat(customAmount) || 500,
-              account_age_hours: 0.1, // Very new account
+              account_age_hours: 0.1,
               booking_count: 0
             }
           });
           
-          // Create review item if high risk
           if (fraudResult && fraudResult.risk_score >= 70) {
             await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'booking');
           }
@@ -210,7 +220,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
           fraudResult = await performFraudCheck({
             action_type: 'login',
             user_id: testUser.id,
-            ip_address: '10.0.0.1', // VPN-like IP
+            ip_address: '10.0.0.1',
             user_agent: 'Mozilla/5.0 (Unknown OS)',
             metadata: {
               proxy_detected: true,
@@ -225,9 +235,8 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
 
         case 'rapid-booking-attempts':
           console.log('⚡ Simulating rapid booking attempts...');
-          // Create multiple rapid attempts
           for (let i = 0; i < 6; i++) {
-            await new Promise(resolve => setTimeout(resolve, 100)); // Small delay
+            await new Promise(resolve => setTimeout(resolve, 100));
             const result = await performFraudCheck({
               action_type: 'booking',
               user_id: testUser.id,
@@ -238,7 +247,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
               }
             });
             if (i === 5) {
-              fraudResult = result; // Use last result
+              fraudResult = result;
               if (fraudResult && fraudResult.risk_score >= 70) {
                 await createHighRiskReviewItem(testUser, fraudResult.risk_score, 'booking');
               }
@@ -260,14 +269,8 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
         description: `Created fraud test case: ${fraudScenarios.find(s => s.id === scenarioId)?.name}`,
       });
 
-      // Force immediate data refresh with multiple attempts
-      console.log('🔄 Triggering data refresh...');
-      if (onDataUpdated) {
-        // Try multiple times to ensure data refresh
-        setTimeout(() => onDataUpdated(), 500);
-        setTimeout(() => onDataUpdated(), 1500);
-        setTimeout(() => onDataUpdated(), 3000);
-      }
+      // Trigger comprehensive data refresh
+      triggerDataRefresh();
 
     } catch (error) {
       console.error('❌ Error generating test scenario:', error);
@@ -286,17 +289,19 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
     console.log('🏭 Starting bulk test data generation...');
     
     try {
-      // Generate multiple test scenarios at once
       for (const scenario of fraudScenarios) {
         console.log(`🎭 Running scenario: ${scenario.name}`);
         await simulateScenario(scenario.id);
-        await new Promise(resolve => setTimeout(resolve, 1000)); // Delay between scenarios
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
       
       toast({
         title: "Bulk Test Data Generated",
         description: "Generated test data for all fraud scenarios",
       });
+
+      // Final comprehensive refresh after all scenarios
+      triggerDataRefresh();
     } catch (error) {
       console.error('❌ Error generating bulk test data:', error);
       toast({
@@ -319,7 +324,6 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
 
       const sessionId = crypto.randomUUID();
       
-      // Create mock review queue items
       const reviewItems = [
         {
           user_id: testUser.id,
@@ -351,9 +355,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
         description: "Generated test items for manual review queue",
       });
 
-      if (onDataUpdated) {
-        setTimeout(() => onDataUpdated(), 500);
-      }
+      triggerDataRefresh();
     } catch (error) {
       console.error('❌ Error generating mock review items:', error);
       toast({
@@ -380,7 +382,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
           user_id: testUser.id,
           reason: 'TEST: High fraud risk detected - multiple suspicious activities',
           block_type: 'temporary',
-          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString() // 24 hours
+          expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
         });
 
       if (error) throw error;
@@ -391,9 +393,7 @@ const FraudTestingSection: React.FC<FraudTestingSectionProps> = ({ onDataUpdated
         description: "Created a test blocked user scenario",
       });
 
-      if (onDataUpdated) {
-        setTimeout(() => onDataUpdated(), 500);
-      }
+      triggerDataRefresh();
     } catch (error) {
       console.error('❌ Error simulating blocked user:', error);
       toast({
