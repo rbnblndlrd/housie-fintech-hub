@@ -654,6 +654,7 @@ export type Database = {
           provider_broadcast_active: boolean | null
           reason: string | null
           spend_reset_date: string | null
+          updated_at: string
         }
         Insert: {
           activated_at?: string | null
@@ -686,6 +687,7 @@ export type Database = {
           provider_broadcast_active?: boolean | null
           reason?: string | null
           spend_reset_date?: string | null
+          updated_at?: string
         }
         Update: {
           activated_at?: string | null
@@ -718,6 +720,7 @@ export type Database = {
           provider_broadcast_active?: boolean | null
           reason?: string | null
           spend_reset_date?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -1922,6 +1925,42 @@ export type Database = {
       get_emergency_status: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_latest_emergency_controls: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          activated_at: string | null
+          activated_by: string | null
+          allowed_payment_methods: string[] | null
+          blocked_countries: string[] | null
+          bookings_paused: boolean | null
+          claude_api_enabled: boolean | null
+          created_at: string | null
+          current_daily_spend: number | null
+          daily_spend_limit: number | null
+          deactivated_at: string | null
+          deactivated_by: string | null
+          disabled_at: string | null
+          disabled_by_user_id: string | null
+          disabled_reason: string | null
+          emergency_notification_active: boolean | null
+          force_logout_users: boolean | null
+          fraud_lockdown_active: boolean | null
+          geographic_blocking_enabled: boolean | null
+          id: string
+          last_backup_triggered: string | null
+          last_updated_at: string | null
+          maintenance_mode: boolean | null
+          manual_review_all_bookings: boolean | null
+          messaging_disabled: boolean | null
+          new_registrations_disabled: boolean | null
+          normal_operations: boolean | null
+          payment_restrictions_active: boolean | null
+          provider_broadcast_active: boolean | null
+          reason: string | null
+          spend_reset_date: string | null
+          updated_at: string
+        }
       }
       get_or_create_conversation: {
         Args: {

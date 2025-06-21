@@ -52,7 +52,7 @@ export const useEmergencyControls = () => {
       const { data, error } = await supabase
         .from('emergency_controls')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('updated_at', { ascending: false })
         .limit(1)
         .single();
 
@@ -91,6 +91,7 @@ export const useEmergencyControls = () => {
 
         if (insertError) throw insertError;
         setControls(newData);
+        console.log('✅ Created default emergency controls:', newData);
       }
     } catch (error: any) {
       console.error('💥 Failed to load emergency controls:', error);
@@ -118,16 +119,22 @@ export const useEmergencyControls = () => {
       const previousState = { [controlName]: controls[controlName] };
       const newState = { [controlName]: value };
       
-      // Update the control
+      // Update the control with proper metadata
       const updateData: any = {
         [controlName]: value,
         activated_by: user.id,
-        activated_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
+        activated_at: new Date().toISOString()
       };
       
+      // Add reason if provided
       if (reason) {
         updateData.reason = reason;
+      }
+
+      // If deactivating, set deactivated metadata
+      if (!value && typeof value === 'boolean') {
+        updateData.deactivated_by = user.id;
+        updateData.deactivated_at = new Date().toISOString();
       }
 
       const { data, error } = await supabase
@@ -139,13 +146,13 @@ export const useEmergencyControls = () => {
 
       if (error) throw error;
 
-      // Log the action
-      await supabase.from('emergency_actions_log').insert({
-        admin_id: user.id,
-        action_type: `toggle_${controlName}`,
-        action_details: { control: controlName, value, reason },
-        previous_state: previousState,
-        new_state: newState
+      // Log the action using the database function
+      await supabase.rpc('log_emergency_action', {
+        p_admin_id: user.id,
+        p_action_type: `toggle_${controlName}`,
+        p_action_details: { control: controlName, value, reason },
+        p_previous_state: previousState,
+        p_new_state: newState
       });
 
       setControls(data);
@@ -192,8 +199,7 @@ export const useEmergencyControls = () => {
         provider_broadcast_active: false,
         deactivated_by: user.id,
         deactivated_at: new Date().toISOString(),
-        reason: reason || 'Normal operations restored',
-        updated_at: new Date().toISOString()
+        reason: reason || 'Normal operations restored'
       };
 
       const { data, error } = await supabase
@@ -206,12 +212,12 @@ export const useEmergencyControls = () => {
       if (error) throw error;
 
       // Log the restoration
-      await supabase.from('emergency_actions_log').insert({
-        admin_id: user.id,
-        action_type: 'restore_normal_operations',
-        action_details: { reason },
-        previous_state: JSON.parse(JSON.stringify(controls)),
-        new_state: normalState
+      await supabase.rpc('log_emergency_action', {
+        p_admin_id: user.id,
+        p_action_type: 'restore_normal_operations',
+        p_action_details: { reason },
+        p_previous_state: JSON.parse(JSON.stringify(controls)),
+        p_new_state: normalState
       });
 
       setControls(data);
@@ -244,29 +250,32 @@ export const useEmergencyControls = () => {
       console.log('💾 Triggering emergency backup...');
       
       // Update the last backup triggered timestamp
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('emergency_controls')
         .update({ 
-          last_backup_triggered: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          last_backup_triggered: new Date().toISOString()
         })
-        .eq('id', controls.id);
+        .eq('id', controls.id)
+        .select()
+        .single();
 
       if (error) throw error;
 
       // Log the action
-      await supabase.from('emergency_actions_log').insert({
-        admin_id: user.id,
-        action_type: 'trigger_emergency_backup',
-        action_details: { timestamp: new Date().toISOString() }
+      await supabase.rpc('log_emergency_action', {
+        p_admin_id: user.id,
+        p_action_type: 'trigger_emergency_backup',
+        p_action_details: { timestamp: new Date().toISOString() }
       });
+
+      setControls(data);
 
       toast({
         title: "Backup Triggered",
         description: "Emergency database backup has been initiated",
       });
 
-      await loadEmergencyControls();
+      console.log('✅ Emergency backup triggered successfully');
       
     } catch (error: any) {
       console.error('❌ Error triggering backup:', error);
@@ -283,7 +292,7 @@ export const useEmergencyControls = () => {
   useEffect(() => {
     loadEmergencyControls();
 
-    // Set up real-time subscription
+    // Set up real-time subscription for emergency controls
     const channel = supabase
       .channel('emergency-controls-realtime')
       .on(
