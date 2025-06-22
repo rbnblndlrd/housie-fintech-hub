@@ -194,18 +194,17 @@ const CustomerDashboard = () => {
             {/* Main Content - Comprehensive Booking Management */}
             <div className="lg:col-span-3 space-y-6">
               {/* Booking Management Section */}
-              <Card className="fintech-card">
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-purple-600" />
+                      <Calendar className="h-5 w-5 text-blue-600" />
                       Gestion des Réservations
                     </CardTitle>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => setShowFilters(!showFilters)}
-                      className="fintech-button-secondary"
                     >
                       <Filter className="h-4 w-4 mr-2" />
                       Filtres
@@ -220,7 +219,7 @@ const CustomerDashboard = () => {
                           placeholder="Rechercher par service ou prestataire..."
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full fintech-input"
+                          className="w-full"
                         />
                       </div>
                       <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -240,11 +239,11 @@ const CustomerDashboard = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {filteredBookings.map((booking) => (
-                    <div key={booking.id} className="fintech-card-secondary p-4 rounded-lg">
+                    <div key={booking.id} className="p-4 bg-gray-50 rounded-lg border">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white">
-                            <User className="h-6 w-6" />
+                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                            <User className="h-6 w-6 text-blue-600" />
                           </div>
                           <div>
                             <h4 className="font-medium text-gray-900">{booking.service_title}</h4>
@@ -275,7 +274,6 @@ const CustomerDashboard = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleQuickContact(booking.provider_phone)}
-                          className="fintech-button-secondary"
                         >
                           <Phone className="h-4 w-4 mr-1" />
                           Appeler
@@ -284,7 +282,6 @@ const CustomerDashboard = () => {
                           variant="outline"
                           size="sm"
                           onClick={() => handleRebook(booking.provider_id, booking.service_title)}
-                          className="fintech-button-primary"
                         >
                           <RotateCcw className="h-4 w-4 mr-1" />
                           Réserver à nouveau
@@ -294,7 +291,6 @@ const CustomerDashboard = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleReschedule(booking.id)}
-                            className="fintech-button-primary"
                           >
                             <Calendar className="h-4 w-4 mr-1" />
                             Reprogrammer
@@ -305,7 +301,7 @@ const CustomerDashboard = () => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleCancel(booking.id)}
-                            className="text-red-600 hover:text-red-700 fintech-button-secondary"
+                            className="text-red-600 hover:text-red-700"
                           >
                             <X className="h-4 w-4 mr-1" />
                             Annuler
@@ -324,7 +320,7 @@ const CustomerDashboard = () => {
               </Card>
 
               {/* Recently Viewed Services */}
-              <Card className="fintech-card">
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Search className="h-5 w-5 text-purple-600" />
@@ -334,12 +330,12 @@ const CustomerDashboard = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {mockRecentlyViewed.map((service) => (
-                      <div key={service.id} className="fintech-card-secondary p-4 rounded-lg">
+                      <div key={service.id} className="p-4 bg-gray-50 rounded-lg">
                         <h4 className="font-medium text-gray-900 mb-1">{service.title}</h4>
                         <p className="text-sm text-gray-600 mb-2">{service.category}</p>
                         <div className="flex items-center justify-between">
                           <span className="font-semibold text-green-600">À partir de ${service.price}</span>
-                          <Button size="sm" className="fintech-button-primary">
+                          <Button size="sm" variant="outline">
                             Voir
                           </Button>
                         </div>
@@ -353,22 +349,22 @@ const CustomerDashboard = () => {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Quick Actions */}
-              <Card className="fintech-card">
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Search className="h-5 w-5 text-purple-600" />
+                    <Search className="h-5 w-5 text-green-600" />
                     Actions Rapides
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
                   <Link to="/services" className="block">
-                    <Button className="w-full fintech-button-primary">
+                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
                       <Search className="h-4 w-4 mr-2" />
                       Trouver des Services
                     </Button>
                   </Link>
                   <Link to="/customer-profile" className="block">
-                    <Button variant="outline" className="w-full fintech-button-secondary">
+                    <Button variant="outline" className="w-full">
                       <User className="h-4 w-4 mr-2" />
                       Mon Profil
                     </Button>
@@ -377,7 +373,7 @@ const CustomerDashboard = () => {
               </Card>
 
               {/* Enhanced Favorite Providers */}
-              <Card className="fintech-card">
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Star className="h-5 w-5 text-yellow-500" />
@@ -386,7 +382,7 @@ const CustomerDashboard = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {mockFavoriteProviders.map((provider) => (
-                    <div key={provider.id} className="fintech-card-secondary p-3 rounded-lg">
+                    <div key={provider.id} className="p-3 bg-gray-50 rounded-lg">
                       <div className="flex items-start justify-between mb-2">
                         <div>
                           <h4 className="font-medium text-gray-900 text-sm">{provider.business_name}</h4>
@@ -413,10 +409,10 @@ const CustomerDashboard = () => {
                         {provider.total_bookings} réservations • Dernière: {new Date(provider.last_booking).toLocaleDateString('fr-FR')}
                       </p>
                       <div className="flex gap-2">
-                        <Button size="sm" className="flex-1 text-xs fintech-button-primary" disabled={!provider.available}>
+                        <Button size="sm" className="flex-1 text-xs" disabled={!provider.available}>
                           Réserver
                         </Button>
-                        <Button size="sm" variant="outline" className="text-xs fintech-button-secondary">
+                        <Button size="sm" variant="outline" className="text-xs">
                           Voir Profil
                         </Button>
                       </div>
@@ -426,14 +422,14 @@ const CustomerDashboard = () => {
               </Card>
 
               {/* Quick Categories */}
-              <Card className="fintech-card">
+              <Card className="bg-white shadow-sm">
                 <CardHeader>
                   <CardTitle className="text-sm">Catégories Populaires</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-2 gap-2">
                     {['Nettoyage', 'Jardinage', 'Plomberie', 'Électricité'].map((category) => (
-                      <Button key={category} variant="outline" size="sm" className="text-xs fintech-button-secondary">
+                      <Button key={category} variant="outline" size="sm" className="text-xs">
                         {category}
                       </Button>
                     ))}

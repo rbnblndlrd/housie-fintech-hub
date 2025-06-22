@@ -39,6 +39,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   };
 
   const handleBookNow = () => {
+    // Ensure we pass the complete service with all provider data
     onBookNow(service);
   };
 
@@ -54,7 +55,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
 
   return (
     <Card 
-      className="fintech-card hover-lift"
+      className="fintech-card"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -67,10 +68,10 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between mb-3">
               <div>
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">{service.title}</h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-1">{service.title}</h3>
                 <button 
                   onClick={handleViewProfile}
-                  className="text-gray-600 dark:text-gray-400 font-medium hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="text-gray-600 font-medium hover:text-blue-600 transition-colors"
                 >
                   {businessName}
                 </button>
@@ -89,15 +90,15 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 <div className="p-1 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-lg">
                   <Star className="h-4 w-4 text-white" />
                 </div>
-                <span className="font-medium text-gray-900 dark:text-gray-100">{averageRating.toFixed(1)}</span>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">({totalBookings} avis)</span>
+                <span className="font-medium text-gray-900">{averageRating.toFixed(1)}</span>
+                <span className="text-gray-500 text-sm">({totalBookings} avis)</span>
               </div>
               
               <div className="flex items-center gap-1">
                 <div className="p-1 bg-gradient-to-r from-green-500 to-emerald-500 rounded-lg">
                   <DollarSign className="h-4 w-4 text-white" />
                 </div>
-                <span className="font-medium text-gray-900 dark:text-gray-100">
+                <span className="font-medium text-gray-900">
                   {service.pricing_type === 'hourly' 
                     ? `${hourlyRate}$/heure`
                     : `${service.base_price}$`
@@ -109,21 +110,21 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                 <div className="p-1 bg-gradient-to-r from-red-500 to-red-600 rounded-lg">
                   <MapPin className="h-4 w-4 text-white" />
                 </div>
-                <span className="text-gray-500 dark:text-gray-400 text-sm">
+                <span className="text-gray-500 text-sm">
                   {userCity}, {userProvince}
                 </span>
-                <span className="text-gray-400 dark:text-gray-500 text-xs ml-1">
+                <span className="text-gray-400 text-xs ml-1">
                   ({serviceRadius}km radius)
                 </span>
               </div>
             </div>
 
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2">
+            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
               {service.description || 'No description available'}
             </p>
 
             <div className="flex items-center justify-between">
-              <div className="text-sm text-gray-500 dark:text-gray-400">
+              <div className="text-sm text-gray-500">
                 <span className="font-medium">Tarification réelle + 6% frais HOUSIE</span>
               </div>
               <div className="flex items-center gap-3">
@@ -131,13 +132,13 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={handleViewProfile}
-                  className="flex items-center gap-2 fintech-button-secondary"
+                  className="flex items-center gap-2 hover:bg-gray-50"
                 >
                   <User className="h-4 w-4" />
                   View Profile
                 </Button>
                 <Button 
-                  className="fintech-button-primary"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
                   onClick={handleBookNow}
                 >
                   Book Now

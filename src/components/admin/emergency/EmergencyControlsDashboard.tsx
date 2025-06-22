@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,10 +23,7 @@ import {
   Megaphone,
   Construction,
   Calendar,
-  LogOut,
-  Bot,
-  Cpu,
-  Loader
+  LogOut
 } from 'lucide-react';
 
 const EmergencyControlsDashboard = () => {
@@ -35,9 +33,7 @@ const EmergencyControlsDashboard = () => {
     actionLoading,
     updateControl,
     restoreNormalOperations,
-    triggerEmergencyBackup,
-    emergencyDisableClaude,
-    enableClaudeAccess
+    triggerEmergencyBackup
   } = useEmergencyControls();
 
   if (loading) {
@@ -64,42 +60,25 @@ const EmergencyControlsDashboard = () => {
     controls.bookings_paused || 
     controls.maintenance_mode || 
     controls.fraud_lockdown_active ||
-    controls.messaging_disabled ||
-    !controls.claude_api_enabled ||
-    !controls.claude_access_enabled;
-
-  const isClaudeDisabled = !controls.claude_api_enabled || !controls.claude_access_enabled;
-
-  const handleClaudeApiToggle = async () => {
-    if (controls.claude_api_enabled) {
-      await emergencyDisableClaude("Emergency API disable via admin dashboard");
-    } else {
-      await enableClaudeAccess();
-    }
-  };
+    controls.messaging_disabled;
 
   return (
     <div className="space-y-6">
       {/* Emergency Status Banner */}
       {isAnyEmergencyActive && (
-        <Card className="border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20">
+        <Card className="border-red-200 bg-red-50">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="h-5 w-5 text-red-600 dark:text-red-400" />
-                <span className="font-semibold text-red-800 dark:text-red-200">
+                <AlertTriangle className="h-5 w-5 text-red-600" />
+                <span className="font-semibold text-red-800">
                   EMERGENCY CONTROLS ACTIVE
                 </span>
                 <Badge variant="destructive">CRITICAL</Badge>
-                {isClaudeDisabled && (
-                  <Badge variant="destructive" className="bg-purple-600 dark:bg-purple-700">
-                    AI DISABLED
-                  </Badge>
-                )}
               </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="outline" className="border-green-500 text-green-700 dark:text-green-400 hover:bg-green-50 dark:hover:bg-green-900/20">
+                  <Button variant="outline" className="border-green-500 text-green-700 hover:bg-green-50">
                     <RotateCcw className="h-4 w-4 mr-2" />
                     Restore Normal Operations
                   </Button>
@@ -117,16 +96,8 @@ const EmergencyControlsDashboard = () => {
                     <AlertDialogAction
                       onClick={() => restoreNormalOperations()}
                       className="bg-green-600 hover:bg-green-700"
-                      disabled={actionLoading}
                     >
-                      {actionLoading ? (
-                        <>
-                          <Loader className="h-4 w-4 mr-2 animate-spin" />
-                          Restoring...
-                        </>
-                      ) : (
-                        'Restore Normal Operations'
-                      )}
+                      Restore Normal Operations
                     </AlertDialogAction>
                   </AlertDialogFooter>
                 </AlertDialogContent>
@@ -138,106 +109,18 @@ const EmergencyControlsDashboard = () => {
 
       {/* Normal Operations Status */}
       {!isAnyEmergencyActive && (
-        <Card className="border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+        <Card className="border-green-200 bg-green-50">
           <CardContent className="p-4">
             <div className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-              <span className="font-semibold text-green-800 dark:text-green-200">
+              <CheckCircle className="h-5 w-5 text-green-600" />
+              <span className="font-semibold text-green-800">
                 NORMAL OPERATIONS
               </span>
-              <Badge className="bg-green-600 dark:bg-green-700 text-white">ALL SYSTEMS OPERATIONAL</Badge>
+              <Badge className="bg-green-600 text-white">ALL SYSTEMS OPERATIONAL</Badge>
             </div>
           </CardContent>
         </Card>
       )}
-
-      {/* AI Controls */}
-      <Card className="bg-white dark:bg-gray-800 border dark:border-gray-700">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-gray-900 dark:text-white">
-            <Bot className="h-5 w-5" />
-            AI Controls
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <h4 className="font-medium flex items-center gap-2">
-                <Cpu className="h-4 w-4" />
-                Claude API Status
-              </h4>
-              <p className="text-sm text-gray-600">
-                Emergency disable of all Claude API access platform-wide
-              </p>
-              <div className="flex items-center gap-2">
-                <Badge className={controls.claude_api_enabled ? "bg-green-600 text-white" : "bg-red-600 text-white"}>
-                  {controls.claude_api_enabled ? "ENABLED" : "DISABLED"}
-                </Badge>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button 
-                      variant={controls.claude_api_enabled ? "destructive" : "default"}
-                      size="sm"
-                      disabled={actionLoading}
-                    >
-                      {actionLoading ? (
-                        <>
-                          <Loader className="h-4 w-4 mr-2 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        controls.claude_api_enabled ? "Emergency Disable" : "Enable API"
-                      )}
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        {controls.claude_api_enabled ? "Emergency Disable Claude API" : "Enable Claude API"}
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {controls.claude_api_enabled 
-                          ? "This will immediately disable all Claude AI functionality platform-wide. This action will be logged."
-                          : "This will restore Claude AI API access for all users."
-                        }
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={handleClaudeApiToggle}
-                        className={controls.claude_api_enabled ? "bg-red-600 hover:bg-red-700" : "bg-green-600 hover:bg-green-700"}
-                        disabled={actionLoading}
-                      >
-                        {actionLoading ? (
-                          <>
-                            <Loader className="h-4 w-4 mr-2 animate-spin" />
-                            Processing...
-                          </>
-                        ) : (
-                          controls.claude_api_enabled ? "Emergency Disable" : "Enable API"
-                        )}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              </div>
-            </div>
-
-            <EmergencyControlCard
-              title="Block Claude Access"
-              description="Block user access to Claude AI features"
-              icon={<Bot className="h-4 w-4" />}
-              isActive={!controls.claude_access_enabled}
-              onToggle={(reason) => updateControl('claude_access_enabled', !controls.claude_access_enabled, reason)}
-              disabled={actionLoading}
-              variant="security"
-              lastActivated={controls.activated_at}
-              activatedBy={controls.activated_by}
-            />
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Platform Controls */}
       <Card>
@@ -426,17 +309,8 @@ const EmergencyControlsDashboard = () => {
                 variant="outline"
                 className="w-full"
               >
-                {actionLoading ? (
-                  <>
-                    <Loader className="h-4 w-4 mr-2 animate-spin" />
-                    Triggering...
-                  </>
-                ) : (
-                  <>
-                    <Database className="h-4 w-4 mr-2" />
-                    Trigger Backup
-                  </>
-                )}
+                <Database className="h-4 w-4 mr-2" />
+                Trigger Backup
               </Button>
             </div>
             
@@ -457,12 +331,6 @@ const EmergencyControlsDashboard = () => {
                 <div className="flex justify-between text-xs">
                   <span>Payment Processing:</span>
                   <Badge className="bg-green-600 text-white">Active</Badge>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span>Claude AI:</span>
-                  <Badge className={controls.claude_api_enabled && controls.claude_access_enabled ? "bg-green-600 text-white" : "bg-red-600 text-white"}>
-                    {controls.claude_api_enabled && controls.claude_access_enabled ? "Active" : "Disabled"}
-                  </Badge>
                 </div>
               </div>
             </div>

@@ -58,9 +58,9 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
             className={cn(
               "px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200",
               "whitespace-nowrap min-w-[80px] text-center",
-              "hover:text-blue-300 hover:bg-gray-800",
+              "hover:text-white hover:bg-gray-800",
               isActive(item.href)
-                ? "text-white bg-blue-600"
+                ? "text-white bg-gray-800"
                 : "text-gray-300"
             )}
           >

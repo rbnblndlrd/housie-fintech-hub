@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +8,7 @@ import Header from "@/components/Header";
 import { ChatAssistant } from "@/components/ChatAssistant";
 import { PricingSection } from "@/components/PricingSection";
 import { Link } from "react-router-dom";
+import PopArtMascot from "@/components/PopArtMascot";
 
 const Index = () => {
   const [searchLocation, setSearchLocation] = useState("");
@@ -37,11 +37,11 @@ const Index = () => {
   ];
 
   const serviceCategories = [
-    { name: "Ménage Résidentiel", icon: "🏠", color: "bg-orange-100 text-orange-800" },
-    { name: "Entretien Paysager", icon: "🌿", color: "bg-green-100 text-green-800" },
-    { name: "Construction & Réno", icon: "🔨", color: "bg-blue-100 text-blue-800" },
-    { name: "Soins Personnels", icon: "💆‍♀️", color: "bg-purple-100 text-purple-800" },
-    { name: "Soins d'Animaux", icon: "🐕", color: "bg-pink-100 text-pink-800" }
+    { name: "Ménage Résidentiel", icon: "🏠", color: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
+    { name: "Entretien Paysager", icon: "🌿", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
+    { name: "Construction & Réno", icon: "🔨", color: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200" },
+    { name: "Soins Personnels", icon: "💆‍♀️", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
+    { name: "Soins d'Animaux", icon: "🐕", color: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200" }
   ];
 
   const trustIndicators = [
@@ -52,15 +52,15 @@ const Index = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <Header />
       
-      {/* Hero Section */}
-      <section className="pt-20 pb-16 px-4 relative overflow-hidden bg-gradient-to-br from-blue-50 via-purple-50 to-gray-50">
+      {/* Hero Section with Pop Art Style and Mascot */}
+      <section className="pt-20 pb-16 px-4 relative overflow-hidden bg-gradient-to-br from-yellow-100 via-orange-50 to-purple-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-purple-900/20">
         {/* Background decorative elements */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-blue-200/30 rounded-full opacity-50 animate-pulse"></div>
-        <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-200/30 rounded-full opacity-50 animate-bounce"></div>
-        <div className="absolute top-40 left-10 w-16 h-16 bg-indigo-200/30 rounded-full opacity-40"></div>
+        <div className="absolute top-20 right-10 w-32 h-32 bg-orange-400/20 rounded-full opacity-50 animate-pulse"></div>
+        <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-500/20 rounded-full opacity-50 animate-bounce"></div>
+        <div className="absolute top-40 left-10 w-16 h-16 bg-cyan-400/20 rounded-full opacity-40"></div>
         
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -72,7 +72,7 @@ const Index = () => {
                   </Badge>
                 </div>
                 
-                <h1 className="text-5xl lg:text-6xl font-black text-gray-900 leading-tight">
+                <h1 className="text-5xl lg:text-6xl font-black text-gray-900 dark:text-white leading-tight">
                   Canada's Trusted<br />
                   <span className="text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
                     Marketplace for
@@ -80,7 +80,7 @@ const Index = () => {
                   <span className="text-purple-600">Home Services</span>
                 </h1>
                 
-                <p className="text-xl text-gray-700 leading-relaxed max-w-lg">
+                <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-lg">
                   We connect you with verified, CRA-compliant professionals for 
                   cleaning, lawn care, and more across all Canadian provinces.
                 </p>
@@ -94,7 +94,7 @@ const Index = () => {
                     placeholder="Enter your city or postal code"
                     value={searchLocation}
                     onChange={(e) => setSearchLocation(e.target.value)}
-                    className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium"
+                    className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium dark:text-white"
                   />
                   <Link to="/services">
                     <Button className="fintech-button-primary rounded-xl px-8 py-3 font-bold text-white">
@@ -107,36 +107,34 @@ const Index = () => {
 
               {/* Trust Indicators */}
               <div className="grid grid-cols-2 gap-4 pt-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <CheckCircle className="h-4 w-4 text-green-500" />
                   <span>CRA compliance guaranteed</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <CheckCircle className="h-4 w-4 text-green-500" />
                   <span>Verified professionals</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <CheckCircle className="h-4 w-4 text-green-500" />
                   <span>Secure payment</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                   <CheckCircle className="h-4 w-4 text-green-500" />
                   <span>Liability insurance included</span>
                 </div>
               </div>
             </div>
 
-            {/* HOUSIE Assistant Preview */}
+            {/* Mascot and Assistant Preview */}
             <div className="relative space-y-6">
-              {/* HOUSIE Assistant Card */}
+              {/* HOUSIE Mascot with Pop Art Easter Egg */}
               <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-8 relative overflow-hidden">
                 <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
                 <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
                 
                 <div className="flex items-center justify-center mb-6">
-                  <div className="w-32 h-32 bg-white/20 rounded-full flex items-center justify-center">
-                    <MessageCircle className="h-16 w-16 text-white" />
-                  </div>
+                  <PopArtMascot />
                 </div>
 
                 <div className="text-center text-white">
@@ -155,10 +153,10 @@ const Index = () => {
 
               {/* Pourquoi choisir HOUSIE section */}
               <div className="fintech-card p-6">
-                <h3 className="font-bold text-xl text-gray-800 mb-4 text-center">
+                <h3 className="font-bold text-xl text-gray-800 dark:text-white mb-4 text-center">
                   Pourquoi choisir HOUSIE ?
                 </h3>
-                <p className="text-gray-600 text-center text-sm">
+                <p className="text-gray-600 dark:text-gray-400 text-center text-sm">
                   Nous sommes plus qu'une plateforme - nous sommes votre partenaire pour 
                   faire croître votre entreprise en toute simplicité.
                 </p>
@@ -172,8 +170,8 @@ const Index = () => {
       <section className="py-20 px-4 bg-gray-50/50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 mb-6">Services Populaires</h2>
-            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-6">Services Populaires</h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
               Plus de 50 catégories de services avec des professionnels vérifiés dans toutes les provinces canadiennes
             </p>
           </div>
@@ -183,7 +181,7 @@ const Index = () => {
               <Card key={index} className="fintech-card text-center group">
                 <CardHeader className="pb-4 pt-8">
                   <div className="text-5xl mb-4 transition-transform duration-300 group-hover:scale-110">{category.icon}</div>
-                  <CardTitle className="text-lg font-bold text-gray-800">
+                  <CardTitle className="text-lg font-bold text-gray-800 dark:text-white">
                     {category.name}
                   </CardTitle>
                 </CardHeader>
@@ -202,11 +200,11 @@ const Index = () => {
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-5xl font-black text-gray-900 mb-6">
+            <h2 className="text-5xl font-black text-gray-900 dark:text-white mb-6">
               Pourquoi <span className="housie-text-gradient">HOUSIE</span> Révolutionne 
               <br />le Travail Autonome au Canada ?
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
               La seule plateforme qui combine marketplace de services ET 
               outils fintech avancés pour maximiser vos revenus et simplifier vos finances.
             </p>
@@ -215,17 +213,17 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {valueProps.map((prop, index) => (
               <Card key={index} className="fintech-card relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100/50 to-purple-100/50 rounded-full -translate-y-6 translate-x-6"></div>
+                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100/50 to-purple-100/50 dark:from-orange-900/20 dark:to-purple-900/20 rounded-full -translate-y-6 translate-x-6"></div>
                 <CardHeader className="text-center pb-6 relative z-10 pt-8">
-                  <div className="mx-auto mb-6 p-4 bg-gray-50/80 rounded-2xl w-fit backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
+                  <div className="mx-auto mb-6 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl w-fit backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
                     {prop.icon}
                   </div>
-                  <CardTitle className="text-xl font-black text-gray-900 leading-tight">
+                  <CardTitle className="text-xl font-black text-gray-900 dark:text-white leading-tight">
                     {prop.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="relative z-10 pb-8">
-                  <p className="text-gray-600 leading-relaxed text-center">
+                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-center">
                     {prop.description}
                   </p>
                 </CardContent>
@@ -236,7 +234,7 @@ const Index = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-4 bg-gray-900/95 text-white backdrop-blur-sm">
+      <section className="py-20 px-4 bg-gray-900/95 dark:bg-black/95 text-white backdrop-blur-sm">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
             <div className="space-y-3">

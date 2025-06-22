@@ -15,49 +15,30 @@ export interface ClaudeMessage {
   feature_used?: string;
 }
 
+interface RateLimitResult {
+  allowed: boolean;
+  reason?: string;
+  retry_after?: string;
+  cooldown_until?: string;
+  daily_used?: number;
+  daily_limit?: number;
+}
+
+interface CreditConsumptionResult {
+  success: boolean;
+  reason?: string;
+  required?: number;
+  available?: number;
+  credits_spent?: number;
+  remaining?: number;
+  is_free?: boolean;
+}
+
 export const useClaudeChat = () => {
   const { user } = useAuth();
   const { checkRateLimit, consumeCredits, features } = useCredits();
   const [messages, setMessages] = useState<ClaudeMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-
-  const ensureSessionExists = useCallback(async (sessionId: string) => {
-    if (!user) return false;
-
-    try {
-      // Check if session exists
-      const { data: existingSession } = await supabase
-        .from('ai_chat_sessions')
-        .select('id')
-        .eq('id', sessionId)
-        .single();
-
-      if (existingSession) {
-        return true;
-      }
-
-      // Create session if it doesn't exist
-      const { error } = await supabase
-        .from('ai_chat_sessions')
-        .insert({
-          id: sessionId,
-          user_id: user.id,
-          session_title: 'Claude Chat',
-          context_data: {},
-          is_active: true
-        });
-
-      if (error) {
-        console.error('Error creating session:', error);
-        return false;
-      }
-
-      return true;
-    } catch (error) {
-      console.error('Error ensuring session exists:', error);
-      return false;
-    }
-  }, [user]);
 
   const classifyMessage = (content: string): string => {
     const lowerContent = content.toLowerCase();
@@ -93,26 +74,14 @@ export const useClaudeChat = () => {
 
   const checkEmergencyControls = async (): Promise<boolean> => {
     try {
-      const { data: apiEnabled, error: apiError } = await supabase.rpc('is_claude_api_enabled');
+      const { data, error } = await supabase.rpc('is_claude_api_enabled');
       
-      if (apiError) {
-        console.error('Error checking Claude API status:', apiError);
+      if (error) {
+        console.error('Error checking emergency controls:', error);
         return false;
       }
       
-      const { data: controls, error: controlsError } = await supabase
-        .from('emergency_controls')
-        .select('claude_access_enabled, claude_api_enabled')
-        .order('updated_at', { ascending: false })
-        .limit(1)
-        .single();
-      
-      if (controlsError) {
-        console.error('Error checking emergency controls:', controlsError);
-        return false;
-      }
-      
-      return apiEnabled === true && controls?.claude_access_enabled === true && controls?.claude_api_enabled === true;
+      return data === true;
     } catch (error) {
       console.error('Error checking emergency controls:', error);
       return false;
@@ -129,14 +98,7 @@ export const useClaudeChat = () => {
     try {
       setIsTyping(true);
 
-      // Ensure session exists first
-      const sessionReady = await ensureSessionExists(sessionId);
-      if (!sessionReady) {
-        toast.error('Failed to initialize chat session');
-        return;
-      }
-
-      // Check emergency controls
+      // Check emergency controls first
       const isEnabled = await checkEmergencyControls();
       
       if (!isEnabled) {
@@ -144,7 +106,7 @@ export const useClaudeChat = () => {
           id: `system-${Date.now()}`,
           session_id: sessionId,
           message_type: 'assistant',
-          content: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to emergency controls. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
+          content: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
           created_at: new Date().toISOString()
         };
 
@@ -298,7 +260,7 @@ export const useClaudeChat = () => {
     } finally {
       setIsTyping(false);
     }
-  }, [user, messages, checkRateLimit, consumeCredits, features, ensureSessionExists]);
+  }, [user, messages, checkRateLimit, consumeCredits, features]);
 
   return {
     messages,

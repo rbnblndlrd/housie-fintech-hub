@@ -24,10 +24,10 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
 }) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className={`h-12 rounded-2xl border-gray-200 clean-input ${className}`}>
+      <SelectTrigger className={`h-12 rounded-2xl border-gray-200 ${className}`}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
-      <SelectContent className="clean-select-content">
+      <SelectContent className="fintech-dropdown">
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
@@ -39,4 +39,3 @@ const StatusFilter: React.FC<StatusFilterProps> = ({
 };
 
 export default StatusFilter;
-

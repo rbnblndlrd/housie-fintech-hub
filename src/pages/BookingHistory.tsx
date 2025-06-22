@@ -186,7 +186,7 @@ const BookingHistory = () => {
                   <Button
                     variant="outline"
                     onClick={resetFilters}
-                    className="flex-1 rounded-2xl border-gray-200 clean-button-purple"
+                    className="flex-1 rounded-2xl border-gray-200"
                   >
                     Réinitialiser
                   </Button>
@@ -284,7 +284,7 @@ const BookingHistory = () => {
                               size="sm"
                               variant="outline"
                               onClick={() => handleBookAgain(booking)}
-                              className="flex items-center gap-2 rounded-2xl border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:border-blue-200 transition-all duration-200 clean-button"
+                              className="flex items-center gap-2 rounded-2xl border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:border-blue-200 transition-all duration-200"
                             >
                               <Repeat className="h-4 w-4" />
                               Réserver
@@ -305,4 +305,3 @@ const BookingHistory = () => {
 };
 
 export default BookingHistory;
-

@@ -38,7 +38,7 @@ const Auth = () => {
         title: "Connexion réussie",
         description: "Bienvenue sur HOUSIE!",
       });
-      navigate('/customer-dashboard');
+      navigate('/dashboard');
     } catch (error: any) {
       let errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
       
@@ -61,16 +61,16 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen fintech-hero-gradient">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-purple-50 dark:from-dark-primary dark:via-dark-secondary dark:to-darker">
       <Header />
 
       <div className="pt-20 flex items-center justify-center min-h-screen px-4">
         <Card className="max-w-md w-full fintech-card shadow-xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-3xl font-bold text-gray-800 dark:text-white">
+            <CardTitle className="text-3xl font-bold text-gray-800 dark:text-dark-text">
               Connexion
             </CardTitle>
-            <CardDescription className="text-gray-600 dark:text-gray-400">
+            <CardDescription className="text-gray-600 dark:text-dark-text-muted">
               Connectez-vous à votre compte HOUSIE
             </CardDescription>
           </CardHeader>
@@ -78,7 +78,7 @@ const Auth = () => {
             <form onSubmit={handleSignIn} className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="email" className="text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="email" className="text-gray-700 dark:text-dark-text">
                     Adresse Email
                   </Label>
                   <Input
@@ -87,13 +87,13 @@ const Auth = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="mt-1 fintech-input"
+                    className="mt-1 border-gray-300 dark:border-gray-600 dark:bg-dark-accent dark:text-dark-text"
                     disabled={isLoading}
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor="password" className="text-gray-700 dark:text-gray-300">
+                  <Label htmlFor="password" className="text-gray-700 dark:text-dark-text">
                     Mot de passe
                   </Label>
                   <div className="relative mt-1">
@@ -103,7 +103,7 @@ const Auth = () => {
                       type={showPassword ? "text" : "password"}
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="fintech-input pr-10"
+                      className="border-gray-300 dark:border-gray-600 dark:bg-dark-accent dark:text-dark-text pr-10"
                       disabled={isLoading}
                       required
                     />
@@ -124,7 +124,7 @@ const Auth = () => {
 
               <Button 
                 type="submit"
-                className="w-full fintech-button-primary" 
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3" 
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -140,19 +140,19 @@ const Auth = () => {
               <div className="text-center space-y-4">
                 <Link 
                   to="/forgot-password"
-                  className="text-sm text-blue-600 hover:text-blue-700 hover:underline dark:text-blue-400"
+                  className="text-sm text-purple-600 hover:text-purple-700 hover:underline"
                 >
                   Mot de passe oublié?
                 </Link>
                 
                 <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-                  <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                  <p className="text-sm text-gray-600 dark:text-dark-text-muted mb-3">
                     Pas encore de compte?
                   </p>
                   <Link to="/onboarding">
                     <Button 
                       variant="outline" 
-                      className="w-full fintech-button-secondary"
+                      className="w-full text-gray-700 dark:text-dark-text-secondary border-gray-300 hover:bg-gray-50"
                       type="button"
                     >
                       Créer un compte

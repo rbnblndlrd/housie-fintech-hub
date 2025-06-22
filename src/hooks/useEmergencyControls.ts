@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -35,15 +36,12 @@ export const useEmergencyControls = () => {
     reason?: string
   ) => {
     if (!controls?.id || !user?.id) {
-      console.error('❌ Missing required data for update:', { controlsId: controls?.id, userId: user?.id });
       toast.error('Missing required data for update');
       return;
     }
 
     try {
       setActionLoading(true);
-      console.log('🔄 Updating control:', { controlName, value, reason });
-      
       const updatedControls = await EmergencyControlsService.updateControl(
         controls.id,
         controlName,
@@ -58,60 +56,6 @@ export const useEmergencyControls = () => {
     } catch (error) {
       console.error('Failed to update control:', error);
       toast.error('Failed to update emergency control');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const emergencyDisableClaude = async (reason?: string) => {
-    if (!user?.id) {
-      console.error('❌ Missing user ID for Claude disable');
-      toast.error('Missing required data for Claude disable');
-      return;
-    }
-
-    try {
-      setActionLoading(true);
-      console.log('🚨 Starting Claude emergency disable...');
-      
-      await EmergencyControlsService.emergencyDisableClaude(user.id, reason);
-      
-      // Reload controls to get updated state
-      console.log('🔄 Reloading controls after Claude disable...');
-      await loadControls();
-      
-      toast.success('Claude AI emergency disabled');
-      queryClient.invalidateQueries({ queryKey: ['emergency-controls'] });
-    } catch (error) {
-      console.error('Failed to emergency disable Claude:', error);
-      toast.error('Failed to emergency disable Claude AI');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const enableClaudeAccess = async () => {
-    if (!user?.id) {
-      console.error('❌ Missing user ID for Claude enable');
-      toast.error('Missing required data for Claude enable');
-      return;
-    }
-
-    try {
-      setActionLoading(true);
-      console.log('🔄 Starting Claude access enable...');
-      
-      await EmergencyControlsService.enableClaudeAccess(user.id);
-      
-      // Reload controls to get updated state
-      console.log('🔄 Reloading controls after Claude enable...');
-      await loadControls();
-      
-      toast.success('Claude AI access restored');
-      queryClient.invalidateQueries({ queryKey: ['emergency-controls'] });
-    } catch (error) {
-      console.error('Failed to enable Claude access:', error);
-      toast.error('Failed to enable Claude AI access');
     } finally {
       setActionLoading(false);
     }
@@ -173,8 +117,6 @@ export const useEmergencyControls = () => {
     updateControl,
     restoreNormalOperations,
     triggerEmergencyBackup,
-    emergencyDisableClaude,
-    enableClaudeAccess,
     reload: loadControls
   };
 };

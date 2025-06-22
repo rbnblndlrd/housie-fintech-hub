@@ -6,7 +6,7 @@ import ServiceFilters from "@/components/ServiceFilters";
 import MapSection from "@/components/MapSection";
 import ServicesGrid from "@/components/ServicesGrid";
 import { Service } from "@/types/service";
-import { sampleProviders } from "@/data/providers";
+import { sampleProviders } from "@/data/sampleServices";
 
 interface ServicesLayoutProps {
   services: Service[];
@@ -52,7 +52,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-gray-50">
+      <div className="min-h-screen pt-20 bg-background">
         <div className="container mx-auto px-4 py-8 space-y-8">
           <ServicesHeader />
 
@@ -84,7 +84,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
               services={services}
               filteredServices={filteredServices}
               isLoading={isLoading}
-              fallbackServices={[]}
+              fallbackServices={services}
               onBookNow={onBookNow}
               onHoverProvider={setHoveredProviderId}
             />

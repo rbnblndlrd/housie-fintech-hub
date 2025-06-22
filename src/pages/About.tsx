@@ -22,7 +22,7 @@ const About = () => {
           </div>
 
           {/* How It Works Section */}
-          <Card className="fintech-card mb-8">
+          <Card className="bg-white shadow-sm mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
                 <Search className="h-6 w-6 text-blue-600" />
@@ -64,7 +64,7 @@ const About = () => {
 
           <div className="grid md:grid-cols-2 gap-8 mb-8">
             {/* For Customers Section */}
-            <Card className="fintech-card">
+            <Card className="bg-white shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Users className="h-5 w-5 text-blue-600" />
@@ -105,7 +105,7 @@ const About = () => {
             </Card>
 
             {/* For Service Providers Section */}
-            <Card className="fintech-card">
+            <Card className="bg-white shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-xl">
                   <Shield className="h-5 w-5 text-green-600" />
@@ -147,7 +147,7 @@ const About = () => {
           </div>
 
           {/* Contact Us Section */}
-          <Card className="fintech-card">
+          <Card className="bg-white shadow-sm">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-2xl">
                 <Phone className="h-6 w-6 text-purple-600" />

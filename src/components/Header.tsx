@@ -21,9 +21,9 @@ const Header = () => {
 
   return (
     <TooltipProvider>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-gray-900/95 backdrop-blur-sm border-b border-gray-700 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
+        <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-3 items-center h-16">
             {/* Left: Logo - Fixed width container */}
             <div className="flex justify-start">
               <button
@@ -31,7 +31,7 @@ const Header = () => {
                 className="flex items-center space-x-2"
               >
                 <img 
-                  src="https://github.com/rbnblndlrd/housie-fintech-hub/raw/main/White%20PNG%20OP_CROP.png" 
+                  src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
                   alt="HOUSIE" 
                   className="h-8 w-auto"
                 />
@@ -39,12 +39,12 @@ const Header = () => {
             </div>
             
             {/* Center: Navigation - Fixed positioning */}
-            <nav className="hidden md:flex space-x-8">
+            <div className="flex justify-center">
               <DynamicNavigation items={navigationItems} />
-            </nav>
+            </div>
             
             {/* Right: User Menu - Fixed width container */}
-            <div className="flex items-center space-x-4">
+            <div className="flex justify-end">
               {user && (
                 <div className="flex items-center space-x-4">
                   <HeaderActions />
@@ -54,7 +54,7 @@ const Header = () => {
               )}
             </div>
           </div>
-        </div>
+        </nav>
       </header>
     </TooltipProvider>
   );
