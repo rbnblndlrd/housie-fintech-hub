@@ -7,6 +7,15 @@ import { Badge } from "../components/ui/badge";
 import { Skeleton } from "../components/ui/skeleton";
 import Header from "../components/Header";
 import OverviewSection from "../components/admin/OverviewSection";
+import LiveUsersSection from "../components/admin/LiveUsersSection";
+import UserManagementSection from "../components/admin/UserManagementSection";
+import BookingAnalyticsSection from "../components/admin/BookingAnalyticsSection";
+import FraudDetectionSection from "../components/admin/FraudDetectionSection";
+import EmergencyControlsSection from "../components/admin/EmergencyControlsSection";
+import PlatformHealthSection from "../components/admin/PlatformHealthSection";
+import FinancialInsightsSection from "../components/admin/FinancialInsightsSection";
+import CreditAnalyticsSection from "../components/admin/CreditAnalyticsSection";
+import DevelopmentToolsSection from "../components/admin/DevelopmentToolsSection";
 
 declare global {
   interface Window {
@@ -112,6 +121,15 @@ const AdminDashboard = () => {
 
         <div className="space-y-8">
           <OverviewSection />
+          <LiveUsersSection />
+          <UserManagementSection />
+          <BookingAnalyticsSection />
+          <FraudDetectionSection />
+          <EmergencyControlsSection />
+          <PlatformHealthSection />
+          <FinancialInsightsSection />
+          <CreditAnalyticsSection />
+          <DevelopmentToolsSection />
         </div>
       </div>
     </div>
