@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -267,7 +268,7 @@ const BookingManagement = () => {
             <CardContent>
               <div className="space-y-4">
                 {filteredBookings.map((booking) => (
-                  <div key={booking.id} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                  <div key={booking.id} className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
@@ -297,7 +298,7 @@ const BookingManagement = () => {
                     </div>
 
                     {/* Customer Info */}
-                    <div className="bg-white p-3 rounded-lg border">
+                    <div className="bg-white p-3 rounded-lg border border-gray-200">
                       <h5 className="font-medium text-gray-900 mb-2">Informations Client</h5>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
                         <div className="flex items-center gap-2">

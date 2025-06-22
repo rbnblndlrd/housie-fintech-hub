@@ -27,57 +27,56 @@ import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import PerformanceDashboard from './pages/PerformanceDashboard';
 import Onboarding from './pages/Onboarding';
 import About from './pages/About';
+import Calendar from './pages/Calendar';
 import './index.css';
-import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const queryClient = new QueryClient();
 
 function App() {
   return (
-    <ThemeProvider>
-      <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <AuthProvider>
-            <SubscriptionProvider>
-              <RoleProvider>
-                <LanguageProvider>
-                  <PopArtProvider>
-                    <div className="min-h-screen bg-background text-foreground">
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/login" element={<Auth />} />
-                        <Route path="/signup" element={<Auth />} />
-                        <Route path="/dashboard" element={<Dashboard />} />
-                        <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-                        <Route path="/customer-profile" element={<CustomerProfile />} />
-                        <Route path="/profile" element={<CustomerProfile />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/provider" element={<ProviderDashboard />} />
-                        <Route path="/provider-dashboard" element={<ProviderDashboard />} />
-                        <Route path="/provider-profile" element={<ProviderProfile />} />
-                        <Route path="/services" element={<Services />} />
-                        <Route path="/booking-history" element={<BookingHistory />} />
-                        <Route path="/booking-management" element={<BookingManagement />} />
-                        <Route path="/notifications" element={<Notifications />} />
-                        <Route path="/analytics" element={<Analytics />} />
-                        <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
-                        <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
-                        <Route path="/onboarding" element={<Onboarding />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/booking/:id" element={<BookingSuccess />} />
-                        <Route path="/booking-success" element={<BookingSuccess />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                    </div>
-                    <Toaster />
-                  </PopArtProvider>
-                </LanguageProvider>
-              </RoleProvider>
-            </SubscriptionProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </QueryClientProvider>
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
+          <SubscriptionProvider>
+            <RoleProvider>
+              <LanguageProvider>
+                <PopArtProvider>
+                  <div className="min-h-screen bg-gray-50 text-gray-900">
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/login" element={<Auth />} />
+                      <Route path="/signup" element={<Auth />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+                      <Route path="/customer-profile" element={<CustomerProfile />} />
+                      <Route path="/profile" element={<CustomerProfile />} />
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/provider" element={<ProviderProfile />} />
+                      <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+                      <Route path="/provider-profile" element={<ProviderProfile />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/booking-history" element={<BookingHistory />} />
+                      <Route path="/booking-management" element={<BookingManagement />} />
+                      <Route path="/notifications" element={<Notifications />} />
+                      <Route path="/calendar" element={<Calendar />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                      <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+                      <Route path="/onboarding" element={<Onboarding />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/booking/:id" element={<BookingSuccess />} />
+                      <Route path="/booking-success" element={<BookingSuccess />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </div>
+                  <Toaster />
+                </PopArtProvider>
+              </LanguageProvider>
+            </RoleProvider>
+          </SubscriptionProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
   );
 }
 

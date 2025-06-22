@@ -31,28 +31,6 @@
     --ring: 59 130 246;
     --radius: 0.5rem;
   }
-
-  .dark {
-    --background: 15 23 42;
-    --foreground: 248 250 252;
-    --card: 30 41 59;
-    --card-foreground: 248 250 252;
-    --popover: 30 41 59;
-    --popover-foreground: 248 250 252;
-    --primary: 147 197 253;
-    --primary-foreground: 15 23 42;
-    --secondary: 51 65 85;
-    --secondary-foreground: 248 250 252;
-    --muted: 51 65 85;
-    --muted-foreground: 148 163 184;
-    --accent: 51 65 85;
-    --accent-foreground: 248 250 252;
-    --destructive: 220 38 38;
-    --destructive-foreground: 248 250 252;
-    --border: 75 85 99;
-    --input: 75 85 99;
-    --ring: 147 197 253;
-  }
 }
 
 @layer base {
@@ -60,31 +38,29 @@
     @apply border-border;
   }
   body {
-    @apply bg-gray-50 text-foreground;
+    @apply bg-gray-50 text-gray-900;
     transition: background-color 300ms ease, color 300ms ease;
   }
 }
 
-/* GLOBAL INPUT AND FORM BACKGROUND FIX - Prevent yellow backgrounds anywhere */
-input:not(.fintech-input):not(.clean-input), 
-textarea:not(.fintech-input):not(.clean-input), 
-select:not(.fintech-input):not(.clean-input),
-[role="combobox"]:not(.fintech-input):not(.clean-input) {
+/* GLOBAL BACKGROUND FIXES - Remove ALL yellow backgrounds */
+* {
+  background-color: inherit !important;
+}
+
+body, html, #root {
+  background-color: rgb(249, 250, 251) !important; /* bg-gray-50 */
+  color: rgb(17, 24, 39) !important; /* text-gray-900 */
+}
+
+/* GLOBAL INPUT AND FORM BACKGROUND FIX - Force white backgrounds */
+input, textarea, select, [role="combobox"], button {
   background-color: white !important;
   border: 1px solid #d1d5db !important;
   color: #1f2937 !important;
 }
 
-.dark input:not(.fintech-input):not(.clean-input), 
-.dark textarea:not(.fintech-input):not(.clean-input), 
-.dark select:not(.fintech-input):not(.clean-input),
-.dark [role="combobox"]:not(.fintech-input):not(.clean-input) {
-  background-color: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
-}
-
-/* DROPDOWN MENU FIX - Force white backgrounds */
+/* DROPDOWN MENU FIX - Force white backgrounds with high z-index */
 [role="menu"],
 [role="listbox"],
 .dropdown-content,
@@ -96,20 +72,7 @@ select:not(.fintech-input):not(.clean-input),
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  z-index: 50 !important;
-}
-
-.dark [role="menu"],
-.dark [role="listbox"],
-.dark .dropdown-content,
-.dark [data-radix-popper-content-wrapper],
-.dark [data-side="bottom"],
-.dark [data-side="top"],
-.dark [data-side="left"],
-.dark [data-side="right"] {
-  background-color: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
+  z-index: 9999 !important;
 }
 
 /* ENHANCED CLEAN INPUT AND BUTTON CLASSES */
@@ -117,12 +80,6 @@ select:not(.fintech-input):not(.clean-input),
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
   color: #1f2937 !important;
-}
-
-.dark .clean-input {
-  background-color: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
 }
 
 .clean-button {
@@ -151,20 +108,33 @@ select:not(.fintech-input):not(.clean-input),
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  z-index: 50 !important;
+  z-index: 9999 !important;
 }
 
-.dark .clean-select-content {
-  background-color: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-  color: white !important;
+/* FINTECH CARD STYLING - Only for explicit fintech components */
+.fintech-card {
+  background: white !important;
+  border: 3px solid rgba(0, 0, 0, 0.8) !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+  transition: all 0.3s ease !important;
 }
 
-/* PREVENT NESTED FINTECH BORDERS - Use subtle styling inside fintech cards */
-.fintech-card input:not(.fintech-input),
-.fintech-card textarea:not(.fintech-input),
-.fintech-card select:not(.fintech-input),
-.fintech-card [role="combobox"]:not(.fintech-input),
+.fintech-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15), 0 6px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* PREVENT NESTED FINTECH BORDERS - Subtle styling inside fintech cards */
+.fintech-card .fintech-card {
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+.fintech-card input,
+.fintech-card textarea,
+.fintech-card select,
+.fintech-card [role="combobox"],
 .fintech-card button:not(.fintech-button):not(.fintech-button-primary):not(.fintech-button-secondary) {
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
@@ -172,39 +142,11 @@ select:not(.fintech-input):not(.clean-input),
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
 
-.dark .fintech-card input:not(.fintech-input),
-.dark .fintech-card textarea:not(.fintech-input),
-.dark .fintech-card select:not(.fintech-input),
-.dark .fintech-card [role="combobox"]:not(.fintech-input),
-.dark .fintech-card button:not(.fintech-button):not(.fintech-button-primary):not(.fintech-button-secondary) {
-  background-color: rgba(31, 41, 55, 0.95) !important;
-  border: 1px solid rgba(75, 85, 99, 0.6) !important;
-}
-
-/* TARGETED FINTECH CARD - Only for explicit fintech components */
-.fintech-card {
-  @apply rounded-2xl bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.9) 100%) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
-  border: 3px solid rgba(0, 0, 0, 0.8) !important;
-  border-radius: 1rem !important;
-}
-
-.dark .fintech-card {
-  background: linear-gradient(135deg, rgba(31, 41, 55, 0.95) 0%, rgba(17, 24, 39, 0.9) 100%) !important;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
 /* Additional fintech components - only explicit classes */
 .fintech-gradient-card {
-  @apply rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/90 to-purple-50/90 dark:from-blue-900/30 dark:to-purple-900/30 shadow-xl backdrop-blur-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
+  @apply rounded-2xl bg-gradient-to-br from-blue-50/90 via-indigo-50/90 to-purple-50/90 shadow-xl backdrop-blur-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1;
   box-shadow: 0 8px 32px rgba(59, 130, 246, 0.15), 0 4px 16px rgba(99, 102, 241, 0.1) !important;
   border: 3px solid rgba(59, 130, 246, 0.8) !important;
-}
-
-.dark .fintech-gradient-card {
-  border: 3px solid rgba(147, 197, 253, 0.8) !important;
 }
 
 .fintech-button-primary {
@@ -218,12 +160,8 @@ select:not(.fintech-input):not(.clean-input),
 }
 
 .fintech-button-secondary {
-  @apply bg-white/95 dark:bg-gray-800/95 hover:bg-gray-50/95 dark:hover:bg-gray-700/95 text-gray-900 dark:text-white font-semibold py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 backdrop-blur-sm;
+  @apply bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 px-8 rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 backdrop-blur-sm;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark .fintech-button-secondary {
-  border: 3px solid rgba(255, 255, 255,- 0.8) !important;
 }
 
 /* HOUSIE Brand Text Gradient */
@@ -240,25 +178,16 @@ select:not(.fintech-input):not(.clean-input),
 
 /* Glass Morphism Effects */
 .glass-card {
-  @apply bg-white/20 dark:bg-gray-900/20 backdrop-blur-lg rounded-2xl shadow-2xl;
+  @apply bg-white/20 backdrop-blur-lg rounded-2xl shadow-2xl;
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%) !important;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   border: 3px solid rgba(0, 0, 0, 0.6) !important;
-}
-
-.dark .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%) !important;
-  border: 3px solid rgba(255, 255, 255, 0.6) !important;
 }
 
 /* Metric Cards */
 .fintech-metric-card {
   @apply fintech-card p-6 hover:-translate-y-1 transition-all duration-300;
   border: 3px solid rgba(59, 130, 246, 0.8) !important;
-}
-
-.dark .fintech-metric-card {
-  border: 3px solid rgba(147, 197, 253, 0.8) !important;
 }
 
 /* Chart Container */
@@ -268,37 +197,15 @@ select:not(.fintech-input):not(.clean-input),
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .fintech-chart-container {
-  background: linear-gradient(135deg, rgb(31, 41, 55) 0%, rgb(17, 24, 39) 100%) !important;
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
 /* Input Styling - Opt-in only */
 .fintech-input {
-  @apply bg-white/90 dark:bg-gray-800/90 rounded-xl px-4 py-3 shadow-sm focus:shadow-md transition-all duration-200 backdrop-blur-sm;
+  @apply bg-white rounded-xl px-4 py-3 shadow-sm focus:shadow-md transition-all duration-200 backdrop-blur-sm;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark .fintech-input {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 .fintech-input:focus {
   @apply ring-2 ring-blue-500/20;
   border-color: rgba(59, 130, 246, 0.8) !important;
-}
-
-/* Hero Section */
-.fintech-hero-gradient {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  background-size: 400% 400%;
-  animation: gradient-animation 15s ease infinite;
-}
-
-@keyframes gradient-animation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
 
 /* Navigation Styling */
@@ -307,23 +214,19 @@ select:not(.fintech-input):not(.clean-input),
   border-bottom: 3px solid rgba(75, 85, 99, 0.8) !important;
 }
 
-.dark .fintech-nav {
-  border-bottom: 3px solid rgba(75, 85, 99, 0.8) !important;
-}
-
 /* Status Badges */
 .fintech-badge-success {
-  @apply bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 px-3 py-1 rounded-full text-xs font-semibold;
+  @apply bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold;
   border: 2px solid rgba(34, 197, 94, 0.8) !important;
 }
 
 .fintech-badge-warning {
-  @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300 px-3 py-1 rounded-full text-xs font-semibold;
+  @apply bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-semibold;
   border: 2px solid rgba(245, 158, 11, 0.8) !important;
 }
 
 .fintech-badge-error {
-  @apply bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 px-3 py-1 rounded-full text-xs font-semibold;
+  @apply bg-red-100 text-red-800 px-3 py-1 rounded-full text-xs font-semibold;
   border: 2px solid rgba(239, 68, 68, 0.8) !important;
 }
 
@@ -339,10 +242,41 @@ select:not(.fintech-input):not(.clean-input),
   background-size: 20px 20px;
 }
 
-.dark .fintech-grid-pattern {
-  background-image: 
-    linear-gradient(rgba(147, 197, 253, 0.1) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(147, 197, 253, 0.1) 1px, transparent 1px);
+/* FORCE YELLOW BACKGROUND REMOVAL */
+.bg-yellow-50,
+.bg-yellow-100,
+.bg-yellow-200,
+.bg-yellow-300,
+.bg-yellow-400,
+.bg-yellow-500 {
+  background-color: white !important;
+}
+
+/* FORCE YELLOW GRADIENT REMOVAL */
+.bg-gradient-to-br,
+.bg-gradient-to-r,
+.bg-gradient-to-l {
+  background: rgb(249, 250, 251) !important; /* bg-gray-50 */
+}
+
+/* Override any remaining yellow backgrounds */
+* {
+  background-color: inherit !important;
+}
+
+*:not(.fintech-card):not(.fintech-gradient-card):not(.glass-card) {
+  background-color: transparent !important;
+}
+
+/* SPECIFIC FIXES FOR SERVICE BADGES */
+.bg-blue-100 {
+  background-color: rgb(239, 246, 255) !important; /* blue-50 instead */
+  color: rgb(29, 78, 216) !important; /* blue-700 */
+}
+
+.bg-green-100 {
+  background-color: rgb(240, 253, 244) !important; /* green-50 instead */
+  color: rgb(21, 128, 61) !important; /* green-700 */
 }
 
 /* Smooth transitions for theme switching */

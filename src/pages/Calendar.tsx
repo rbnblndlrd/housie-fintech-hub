@@ -1,237 +1,160 @@
-import React, { useState, useMemo, useEffect } from 'react';
-import Header from "@/components/Header";
-import CalendarTierBanner from "@/components/CalendarTierBanner";
-import PremiumFeatureGate from "@/components/PremiumFeatureGate";
-import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
-import EditAppointmentDialog from "@/components/EditAppointmentDialog";
-import CalendarHeader from "@/components/calendar/CalendarHeader";
-import UnifiedCalendar from "@/components/calendar/UnifiedCalendar";
-import EventsList from "@/components/calendar/EventsList";
-import { useSubscription } from '@/contexts/SubscriptionContext';
-import { useToast } from '@/hooks/use-toast';
-import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
-import { useCalendarEvents } from '@/hooks/useCalendarEvents';
-import { useGoogleCalendar } from '@/hooks/useGoogleCalendar';
-import { CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
+
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Calendar as CalendarIcon, Clock, MapPin, User } from 'lucide-react';
+import Header from '@/components/Header';
+
+interface CalendarEvent {
+  id: string;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  type: 'booking' | 'appointment' | 'reminder';
+}
 
 const Calendar = () => {
-  const [date, setDate] = useState<Date | undefined>(new Date());
-  const [isGoogleSyncMode, setIsGoogleSyncMode] = useState(false);
-  const [editingAppointment, setEditingAppointment] = useState<CalendarEvent | null>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [googleEvents, setGoogleEvents] = useState<any[]>([]);
-  
-  const { isFeatureAvailable } = useSubscription();
-  const { toast } = useToast();
   const { user } = useAuth();
-  const { isConnected: googleConnected } = useGoogleCalendar();
-  const { events, fetchEvents, loading: calendarLoading } = useCalendarEvents();
-  const { 
-    allEvents, 
-    loading, 
-    createAppointment, 
-    updateEvent, 
-    deleteEvent 
-  } = useUnifiedCalendarIntegration();
+  const [events, setEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetch Google Calendar events when connected and in sync mode
   useEffect(() => {
-    if (googleConnected && isGoogleSyncMode && user && date) {
-      const fetchGoogleEvents = async () => {
-        const startDate = new Date(date);
-        startDate.setDate(startDate.getDate() - 7); // Get events from a week before
-        const endDate = new Date(date);
-        endDate.setDate(endDate.getDate() + 7); // Get events until a week after
-        
-        const googleEventsData = await fetchEvents(
-          user.id, 
-          startDate.toISOString(), 
-          endDate.toISOString()
-        );
-        
-        if (googleEventsData) {
-          setGoogleEvents(googleEventsData);
-        }
-      };
-      
-      fetchGoogleEvents();
-    }
-  }, [googleConnected, isGoogleSyncMode, user, date, fetchEvents]);
-
-  // Calculate selected events based on current date and sync mode
-  const selectedEvents = useMemo(() => {
-    if (!date) {
-      console.log('No date selected');
-      return [];
-    }
+    // Mock calendar events
+    const mockEvents: CalendarEvent[] = [
+      {
+        id: '1',
+        title: 'House Cleaning - Marie Dubois',
+        date: '2024-01-25',
+        time: '10:00',
+        location: 'Montréal, QC',
+        type: 'booking'
+      },
+      {
+        id: '2',
+        title: 'Plumbing Repair - Jean Tremblay',
+        date: '2024-01-24',
+        time: '14:00',
+        location: 'Laval, QC',
+        type: 'booking'
+      }
+    ];
     
-    const selectedYear = date.getFullYear();
-    const selectedMonth = date.getMonth();
-    const selectedDay = date.getDate();
-    
-    let combinedEvents = [...allEvents];
-    
-    // Add Google Calendar events if in sync mode
-    if (isGoogleSyncMode && googleEvents.length > 0) {
-      const googleCalendarEvents = googleEvents.map(event => ({
-        id: `google-${event.id}`,
-        title: event.summary || 'Busy',
-        date: new Date(event.start),
-        time: new Date(event.start).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
-        client: 'Google Calendar',
-        location: event.location || 'Non spécifié',
-        status: 'confirmed' as const,
-        amount: 0,
-        source: 'google' as const,
-        booking_id: undefined,
-        is_provider: false
-      }));
-      
-      combinedEvents = [...combinedEvents, ...googleCalendarEvents];
-    }
-    
-    const eventsForDate = combinedEvents.filter(event => {
-      const eventYear = event.date.getFullYear();
-      const eventMonth = event.date.getMonth();
-      const eventDay = event.date.getDate();
-      
-      return eventYear === selectedYear && 
-             eventMonth === selectedMonth && 
-             eventDay === selectedDay;
-    });
-    
-    if (isGoogleSyncMode) {
-      return eventsForDate; // Show all events when Google sync is on
-    } else {
-      return eventsForDate.filter(event => event.source === 'housie'); // Only HOUSIE events
-    }
-  }, [date, allEvents, isGoogleSyncMode, googleEvents]);
+    setEvents(mockEvents);
+    setLoading(false);
+  }, [user]);
 
-  const handleDateSelect = (newDate: Date | undefined) => {
-    console.log('Date selected:', {
-      newDate,
-      totalEvents: allEvents.length,
-      eventsForNewDate: newDate ? allEvents.filter(event => {
-        return event.date.getFullYear() === newDate.getFullYear() &&
-               event.date.getMonth() === newDate.getMonth() &&
-               event.date.getDate() === newDate.getDate();
-      }).length : 0
-    });
-    setDate(newDate);
-  };
-
-  const handleAddAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
-    console.log('Calendar: Creating appointment:', newAppointment);
-    const result = await createAppointment(newAppointment);
-    if (result) {
-      console.log('Calendar: Appointment created successfully:', result);
-    }
-  };
-
-  const handleUpdateAppointment = async (updatedAppointment: CalendarEvent) => {
-    await updateEvent(updatedAppointment.id, updatedAppointment);
-  };
-
-  const handleDeleteAppointment = async (appointmentId: string) => {
-    await deleteEvent(appointmentId);
-  };
-
-  const handleEditAppointment = (appointment: CalendarEvent) => {
-    setEditingAppointment(appointment);
-    setEditDialogOpen(true);
-  };
-
-  const handleGoogleSync = () => {
-    toast({
-      title: "Synchronisation démarrée",
-      description: "Synchronisation avec Google Calendar en cours...",
-    });
-    console.log('Google Calendar sync triggered');
-  };
-
-  const handleImportEvents = () => {
-    toast({
-      title: "Importation démarrée",
-      description: "Importation des événements Google Calendar...",
-    });
-    console.log('Import events triggered');
-  };
-
-  const handleExportEvents = () => {
-    toast({
-      title: "Exportation démarrée",
-      description: "Exportation vers Google Calendar...",
-    });
-    console.log('Export events triggered');
-  };
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50">
+        <Header />
+        <div className="pt-16 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading calendar...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          <CalendarHeader />
-          <CalendarTierBanner />
-
-          <div className="grid lg:grid-cols-2 gap-8">
-            <UnifiedCalendar
-              date={date}
-              onDateSelect={handleDateSelect}
-              isGoogleSyncMode={isGoogleSyncMode}
-              onModeToggle={setIsGoogleSyncMode}
-              onAddAppointment={handleAddAppointment}
-            />
-
-            <EventsList
-              date={date}
-              events={selectedEvents}
-              loading={loading}
-              calendarLoading={calendarLoading}
-              isGoogleSyncMode={isGoogleSyncMode}
-              onAddAppointment={handleAddAppointment}
-              onEditAppointment={handleEditAppointment}
-              onDeleteAppointment={handleDeleteAppointment}
-            />
+          {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              Calendrier
+            </h1>
+            <p className="text-gray-600">Gérez vos rendez-vous et réservations</p>
           </div>
 
-          {/* Google Calendar Integration Panel (Only shown when Premium) */}
-          {isFeatureAvailable('google_calendar') && (
-            <div className="mt-8">
-              <GoogleCalendarIntegration
-                onSync={handleGoogleSync}
-                onImport={handleImportEvents}
-                onExport={handleExportEvents}
-              />
+          {/* Calendar Content */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Calendar View */}
+            <div className="lg:col-span-2">
+              <Card className="fintech-card">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CalendarIcon className="h-5 w-5" />
+                    Janvier 2024
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-7 gap-2 mb-4">
+                    {['Dim', 'Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam'].map((day) => (
+                      <div key={day} className="text-center font-medium text-gray-500 py-2">
+                        {day}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-7 gap-2">
+                    {Array.from({ length: 35 }, (_, i) => {
+                      const day = i - 6; // Start from previous month
+                      const isCurrentMonth = day > 0 && day <= 31;
+                      const hasEvent = day === 24 || day === 25;
+                      
+                      return (
+                        <div
+                          key={i}
+                          className={`h-12 flex items-center justify-center rounded-lg border cursor-pointer hover:bg-blue-50 ${
+                            isCurrentMonth 
+                              ? hasEvent 
+                                ? 'bg-blue-100 border-blue-300 text-blue-700 font-semibold' 
+                                : 'bg-white border-gray-200 text-gray-900'
+                              : 'bg-gray-50 border-gray-100 text-gray-400'
+                          }`}
+                        >
+                          {isCurrentMonth ? day : day > 0 ? day - 31 : 31 + day}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          )}
 
-          {/* Premium Upsell for Non-Subscribers */}
-          {!isFeatureAvailable('google_calendar') && (
-            <div className="mt-8">
-              <PremiumFeatureGate
-                feature="google_calendar"
-                title="Synchronisation Google Calendar"
-                description="Activez la synchronisation bidirectionnelle avec Google Calendar pour accéder à tous vos événements en un seul endroit."
-                previewMode={false}
-              >
-                <div />
-              </PremiumFeatureGate>
+            {/* Events List */}
+            <div>
+              <Card className="fintech-card">
+                <CardHeader>
+                  <CardTitle>Événements à venir</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {events.map((event) => (
+                      <div key={event.id} className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+                        <h4 className="font-medium text-gray-900">{event.title}</h4>
+                        <div className="flex items-center gap-4 text-xs text-gray-500 mt-2">
+                          <span className="flex items-center gap-1">
+                            <CalendarIcon className="h-3 w-3" />
+                            {new Date(event.date).toLocaleDateString('fr-FR')}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {event.time}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+                          <MapPin className="h-3 w-3" />
+                          {event.location}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700">
+                    <CalendarIcon className="h-4 w-4 mr-2" />
+                    Ajouter un événement
+                  </Button>
+                </CardContent>
+              </Card>
             </div>
-          )}
-
-          {/* Edit Appointment Dialog */}
-          <EditAppointmentDialog
-            appointment={editingAppointment}
-            open={editDialogOpen}
-            onClose={() => {
-              setEditDialogOpen(false);
-              setEditingAppointment(null);
-            }}
-            onUpdateAppointment={handleUpdateAppointment}
-            onDeleteAppointment={handleDeleteAppointment}
-          />
+          </div>
         </div>
       </div>
     </div>
