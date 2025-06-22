@@ -2,13 +2,13 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { UserCheck, UserX, Shield, AlertTriangle } from "lucide-react";
+import { UserCheck, UserX, Shield, AlertTriangle, AlertCircle } from "lucide-react";
 import { useSupabaseData } from "../../hooks/useSupabaseData";
 import { getSupabase } from "../../lib/supabase";
 import { useState } from "react";
 
 const UserManagementSection = () => {
-  const { users, loading } = useSupabaseData();
+  const { users, loading, error } = useSupabaseData();
   const [actionLoading, setActionLoading] = useState(false);
 
   const handleViewUser = (userId: string, userName: string) => {
@@ -55,6 +55,26 @@ const UserManagementSection = () => {
     );
   }
 
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            User Management
+            <Badge variant="destructive">Error</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4 text-destructive flex items-center gap-2 justify-center">
+            <AlertCircle className="h-4 w-4" />
+            {error}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
@@ -65,7 +85,7 @@ const UserManagementSection = () => {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {users.length === 0 ? (
+          {!users || users.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground">
               No users found
             </div>

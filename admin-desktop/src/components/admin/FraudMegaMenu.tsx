@@ -90,10 +90,6 @@ const FraudMegaMenu = () => {
     console.log(`🔍 Viewing fraud alert: ${alertType} (ID: ${alertId})`);
   };
 
-  const handleBlockUser = (alertId: number, userEmail: string) => {
-    console.log(`🚫 Blocking user: ${userEmail} (Alert ID: ${alertId})`);
-  };
-
   return (
     <Card>
       <CardHeader>

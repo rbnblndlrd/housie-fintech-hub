@@ -2,11 +2,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import { Users, MapPin, Activity, Eye, MessageCircle } from "lucide-react";
+import { Users, MapPin, Eye, MessageCircle, AlertCircle } from "lucide-react";
 import { useSupabaseData } from "../../hooks/useSupabaseData";
 
 const LiveUsersSection = () => {
-  const { liveUsers, loading } = useSupabaseData();
+  const { liveUsers, loading, error } = useSupabaseData();
 
   const handleViewUser = (userId: string, userName: string) => {
     console.log(`Viewing live user: ${userName} (ID: ${userId})`);
@@ -33,18 +33,38 @@ const LiveUsersSection = () => {
     );
   }
 
+  if (error) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5" />
+            Live Users
+            <Badge variant="destructive">Error</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-4 text-destructive flex items-center gap-2 justify-center">
+            <AlertCircle className="h-4 w-4" />
+            {error}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Users className="h-5 w-5" />
           Live Users
-          <Badge variant="secondary">{liveUsers.length} active</Badge>
+          <Badge variant="secondary">{liveUsers?.length || 0} active</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {liveUsers.length === 0 ? (
+          {!liveUsers || liveUsers.length === 0 ? (
             <div className="text-center py-4 text-muted-foreground">
               No active users found
             </div>
