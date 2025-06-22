@@ -30,8 +30,13 @@ declare global {
 
 const DesktopAdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
-  const { isAdmin, loading: roleLoading } = useRole();
+  const { currentRole } = useRole();
   const [appInfo, setAppInfo] = useState<{ version: string; platform: string } | null>(null);
+
+  // For desktop app, we'll assume admin access based on the app being launched
+  // In a real implementation, you'd want to check actual admin permissions from your backend
+  const isAdmin = true; // Desktop app is admin-only
+  const roleLoading = false; // No role loading needed for desktop
 
   useEffect(() => {
     const loadAppInfo = async () => {

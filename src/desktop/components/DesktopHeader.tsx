@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
 
 const DesktopHeader = () => {
   const { user, signOut } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { isDark, toggleTheme } = useTheme();
   const [isMaximized, setIsMaximized] = useState(false);
 
   const handleSignOut = async () => {
@@ -57,7 +57,7 @@ const DesktopHeader = () => {
               onClick={toggleTheme}
               className="h-9 w-9"
             >
-              {theme === 'dark' ? (
+              {isDark ? (
                 <Sun className="h-4 w-4" />
               ) : (
                 <Moon className="h-4 w-4" />
