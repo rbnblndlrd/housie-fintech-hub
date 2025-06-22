@@ -1,5 +1,5 @@
 
-/* FINTECH COMPONENT OVERRIDES - EXPLICIT CLASSES ONLY */
+/* FINTECH COMPONENT OVERRIDES - LIGHT THEME ONLY */
 
 /* Service Components - Only with explicit fintech classes */
 .service-card.fintech-card, 
@@ -7,12 +7,6 @@
 [class*="service"].fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark .service-card.fintech-card, 
-.dark [data-testid*="service"].fintech-card,
-.dark [class*="service"].fintech-card {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Dashboard Components - Only with explicit fintech classes */
@@ -24,25 +18,12 @@
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .dashboard.fintech-card, 
-.dark [class*="dashboard"].fintech-card,
-.dark .overview.fintech-card, 
-.dark [class*="overview"].fintech-card {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
 /* Form Components - Only containers with explicit fintech classes */
 .form.fintech-card, 
 [class*="form"].fintech-card,
 fieldset.fintech-card {
   @apply fintech-card !important;
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
-}
-
-.dark .form.fintech-card, 
-.dark [class*="form"].fintech-card,
-.dark fieldset.fintech-card {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
 }
 
 /* Modal and Popup Components - Only with explicit fintech classes */
@@ -56,15 +37,6 @@ fieldset.fintech-card {
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .modal.fintech-card, 
-.dark [class*="modal"].fintech-card,
-.dark .popup.fintech-card, 
-.dark [class*="popup"].fintech-card,
-.dark .dropdown.fintech-card, 
-.dark [class*="dropdown"].fintech-card {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
 /* Profile and Settings Components - Only with explicit fintech classes */
 .profile.fintech-card, 
 [class*="profile"].fintech-card,
@@ -74,21 +46,9 @@ fieldset.fintech-card {
   border: 3px solid rgba(0, 0, 0, 0.8) !important;
 }
 
-.dark .profile.fintech-card, 
-.dark [class*="profile"].fintech-card,
-.dark .settings.fintech-card, 
-.dark [class*="settings"].fintech-card {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
-}
-
 /* Secondary card variant */
 .fintech-card-secondary {
   @apply fintech-card;
   border: 2px solid rgba(0, 0, 0, 0.6) !important;
   background: linear-gradient(135deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%) !important;
-}
-
-.dark .fintech-card-secondary {
-  border: 2px solid rgba(255, 255, 255, 0.6) !important;
-  background: linear-gradient(135deg, rgba(51, 65, 85, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%) !important;
 }

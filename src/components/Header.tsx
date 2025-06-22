@@ -8,7 +8,6 @@ import DynamicNavigation from './DynamicNavigation';
 import UserMenu from './header/UserMenu';
 import RoleToggle from './header/RoleToggle';
 import HeaderActions from './header/HeaderActions';
-import ThemeToggle from './ThemeToggle';
 
 const Header = () => {
   const { user } = useAuth();
@@ -46,8 +45,6 @@ const Header = () => {
             
             {/* Right: User Menu - Fixed width container */}
             <div className="flex items-center space-x-4">
-              <ThemeToggle />
-              
               {user && (
                 <div className="flex items-center space-x-4">
                   <HeaderActions />

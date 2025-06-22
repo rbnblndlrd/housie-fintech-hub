@@ -9,7 +9,7 @@
 
 @layer base {
   :root {
-    /* NORMAL CSS VARIABLES - Fixed background values */
+    /* LIGHT THEME ONLY - Fixed background values */
     --background: 248 250 252;
     --foreground: 15 23 42;
     --card: 255 255 255;
@@ -39,11 +39,12 @@
   }
   body {
     @apply bg-gray-50 text-gray-900;
-    transition: background-color 300ms ease, color 300ms ease;
+    background-color: rgb(249, 250, 251) !important;
+    color: rgb(17, 24, 39) !important;
   }
 }
 
-/* GLOBAL BACKGROUND FIXES - Remove ALL yellow backgrounds */
+/* GLOBAL BACKGROUND FIXES - Ensure clean light backgrounds */
 * {
   background-color: inherit !important;
 }
@@ -75,7 +76,7 @@ input, textarea, select, [role="combobox"], button {
   z-index: 9999 !important;
 }
 
-/* ENHANCED CLEAN INPUT AND BUTTON CLASSES */
+/* CLEAN INPUT AND BUTTON CLASSES */
 .clean-input {
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
@@ -242,7 +243,7 @@ input, textarea, select, [role="combobox"], button {
   background-size: 20px 20px;
 }
 
-/* FORCE YELLOW BACKGROUND REMOVAL */
+/* REMOVE ALL YELLOW BACKGROUNDS */
 .bg-yellow-50,
 .bg-yellow-100,
 .bg-yellow-200,
@@ -250,22 +251,6 @@ input, textarea, select, [role="combobox"], button {
 .bg-yellow-400,
 .bg-yellow-500 {
   background-color: white !important;
-}
-
-/* FORCE YELLOW GRADIENT REMOVAL */
-.bg-gradient-to-br,
-.bg-gradient-to-r,
-.bg-gradient-to-l {
-  background: rgb(249, 250, 251) !important; /* bg-gray-50 */
-}
-
-/* Override any remaining yellow backgrounds */
-* {
-  background-color: inherit !important;
-}
-
-*:not(.fintech-card):not(.fintech-gradient-card):not(.glass-card) {
-  background-color: transparent !important;
 }
 
 /* SPECIFIC FIXES FOR SERVICE BADGES */
@@ -279,7 +264,17 @@ input, textarea, select, [role="combobox"], button {
   color: rgb(21, 128, 61) !important; /* green-700 */
 }
 
-/* Smooth transitions for theme switching */
+/* Smooth transitions */
 * {
   transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
+}
+
+/* Ensure all nested cards inside fintech cards have subtle styling */
+.fintech-card .card,
+.fintech-card .Card,
+.fintech-card [class*="card"] {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
 }
