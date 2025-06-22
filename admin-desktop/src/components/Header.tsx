@@ -3,11 +3,12 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useAuth } from "../contexts/AuthContext";
 import { useTheme } from "../contexts/ThemeContext";
-import { LogOut, Moon, Sun, Minimize2, Maximize2, X } from "lucide-react";
+import { LogOut, Moon, Sun, Minimize2, Maximize2, X, Settings } from "lucide-react";
 import { useState } from "react";
+import SettingsDialog from "./SettingsDialog";
 
 const Header = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, supabaseReady } = useAuth();
   const { isDark, toggleTheme } = useTheme();
   const [isMaximized, setIsMaximized] = useState(false);
 
@@ -32,6 +33,10 @@ const Header = () => {
     console.log('Close window');
   };
 
+  if (!supabaseReady) {
+    return null; // Don't render header during setup
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4">
@@ -49,6 +54,16 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-2">
+            <SettingsDialog>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9"
+              >
+                <Settings className="h-4 w-4" />
+              </Button>
+            </SettingsDialog>
+
             <Button
               variant="ghost"
               size="icon"
