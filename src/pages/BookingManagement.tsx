@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -35,7 +34,7 @@ const BookingManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [dateRange, setDateRange] = useState({ start: '', end: '' });
+  const [dateRange, setDateRange] = useState({ from: null, to: null });
 
   // Mock stats data
   const stats = {
@@ -236,10 +235,8 @@ const BookingManagement = () => {
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Période</label>
                   <DateRangeFilter
-                    startDate={dateRange.start}
-                    endDate={dateRange.end}
-                    onStartDateChange={(date) => setDateRange({ ...dateRange, start: date })}
-                    onEndDateChange={(date) => setDateRange({ ...dateRange, end: date })}
+                    value={dateRange}
+                    onChange={(from, to) => setDateRange({ from, to })}
                   />
                 </div>
               </div>
@@ -249,7 +246,7 @@ const BookingManagement = () => {
                   onClick={() => {
                     setSearchTerm('');
                     setStatusFilter('all');
-                    setDateRange({ start: '', end: '' });
+                    setDateRange({ from: null, to: null });
                   }}
                   className="clean-button"
                 >

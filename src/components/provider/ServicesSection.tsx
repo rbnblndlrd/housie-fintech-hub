@@ -18,7 +18,7 @@ interface Service {
   subcategory: string;
   base_price: number;
   pricing_type: string;
-  is_active: boolean;
+  active: boolean;
 }
 
 interface ServicesSectionProps {
@@ -49,7 +49,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
   const fetchServices = async () => {
     try {
       const { data, error } = await supabase
-        .from('provider_services')
+        .from('services')
         .select('*')
         .eq('provider_id', providerId);
 
@@ -79,12 +79,12 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
         subcategory: formData.subcategory,
         base_price: parseFloat(formData.base_price),
         pricing_type: formData.pricing_type,
-        is_active: true
+        active: true
       };
 
       if (editingService) {
         const { error } = await supabase
-          .from('provider_services')
+          .from('services')
           .update(serviceData)
           .eq('id', editingService.id);
 
@@ -96,7 +96,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
         });
       } else {
         const { error } = await supabase
-          .from('provider_services')
+          .from('services')
           .insert(serviceData);
 
         if (error) throw error;
@@ -150,7 +150,7 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
 
     try {
       const { error } = await supabase
-        .from('provider_services')
+        .from('services')
         .delete()
         .eq('id', serviceId);
 
