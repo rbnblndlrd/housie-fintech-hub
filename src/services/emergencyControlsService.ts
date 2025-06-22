@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 import type { EmergencyControlsState, EmergencyControlAction } from '@/types/emergencyControls';
 
@@ -20,7 +19,15 @@ export class EmergencyControlsService {
 
     if (data) {
       console.log('✅ Emergency controls loaded:', data);
-      return data;
+      // Map existing fields to Claude API controls
+      const mappedData = {
+        ...data,
+        claude_api_killswitch: !data.claude_api_enabled,
+        claude_api_rate_limiting: data.current_daily_spend >= (data.daily_spend_limit * 0.8), // 80% threshold
+        claude_response_filtering: false, // Default frontend state
+        claude_api_cost_monitor: data.daily_spend_limit > 0
+      };
+      return mappedData;
     }
 
     // Create default controls if none exist
@@ -42,7 +49,10 @@ export class EmergencyControlsService {
       allowed_payment_methods: ['card', 'bank_transfer'],
       messaging_disabled: false,
       emergency_notification_active: false,
-      provider_broadcast_active: false
+      provider_broadcast_active: false,
+      claude_api_enabled: true,
+      daily_spend_limit: 100.00,
+      current_daily_spend: 0.00
     };
     
     const { data: newData, error: insertError } = await supabase
@@ -53,8 +63,16 @@ export class EmergencyControlsService {
 
     if (insertError) throw insertError;
     
-    console.log('✅ Created default emergency controls:', newData);
-    return newData;
+    const mappedData = {
+      ...newData,
+      claude_api_killswitch: !newData.claude_api_enabled,
+      claude_api_rate_limiting: false,
+      claude_response_filtering: false,
+      claude_api_cost_monitor: true
+    };
+    
+    console.log('✅ Created default emergency controls:', mappedData);
+    return mappedData;
   }
 
   static async updateControl(
@@ -66,11 +84,27 @@ export class EmergencyControlsService {
   ): Promise<EmergencyControlsState> {
     console.log(`🚨 Updating emergency control: ${controlName} = ${value}`);
     
-    const updateData: any = {
-      [controlName]: value,
+    let updateData: any = {
       activated_by: userId,
       activated_at: new Date().toISOString()
     };
+    
+    // Map Claude API controls to existing database fields
+    switch (controlName) {
+      case 'claude_api_killswitch':
+        updateData.claude_api_enabled = !value;
+        break;
+      case 'claude_api_cost_monitor':
+        updateData.daily_spend_limit = value ? 100.00 : 0;
+        break;
+      case 'claude_api_rate_limiting':
+      case 'claude_response_filtering':
+        // These are handled in frontend logic, just log the action
+        updateData.reason = `${controlName}: ${value ? 'enabled' : 'disabled'}`;
+        break;
+      default:
+        updateData[controlName] = value;
+    }
     
     if (reason) {
       updateData.reason = reason;
@@ -96,8 +130,17 @@ export class EmergencyControlsService {
       { control: controlName, value, reason }
     );
 
+    // Map response back to include Claude controls
+    const mappedData = {
+      ...data,
+      claude_api_killswitch: !data.claude_api_enabled,
+      claude_api_rate_limiting: data.current_daily_spend >= (data.daily_spend_limit * 0.8),
+      claude_response_filtering: controlName === 'claude_response_filtering' ? value : false,
+      claude_api_cost_monitor: data.daily_spend_limit > 0
+    };
+
     console.log('✅ Emergency control updated successfully');
-    return data;
+    return mappedData;
   }
 
   static async restoreNormalOperations(
@@ -120,6 +163,7 @@ export class EmergencyControlsService {
       messaging_disabled: false,
       emergency_notification_active: false,
       provider_broadcast_active: false,
+      claude_api_enabled: true, // Restore Claude API
       deactivated_by: userId,
       deactivated_at: new Date().toISOString(),
       reason: reason || 'Normal operations restored'
@@ -140,8 +184,16 @@ export class EmergencyControlsService {
       { reason }
     );
 
+    const mappedData = {
+      ...data,
+      claude_api_killswitch: false,
+      claude_api_rate_limiting: false,
+      claude_response_filtering: false,
+      claude_api_cost_monitor: data.daily_spend_limit > 0
+    };
+
     console.log('✅ Normal operations restored successfully');
-    return data;
+    return mappedData;
   }
 
   static async triggerEmergencyBackup(
@@ -167,8 +219,16 @@ export class EmergencyControlsService {
       { timestamp: new Date().toISOString() }
     );
 
+    const mappedData = {
+      ...data,
+      claude_api_killswitch: !data.claude_api_enabled,
+      claude_api_rate_limiting: data.current_daily_spend >= (data.daily_spend_limit * 0.8),
+      claude_response_filtering: false,
+      claude_api_cost_monitor: data.daily_spend_limit > 0
+    };
+
     console.log('✅ Emergency backup triggered successfully');
-    return data;
+    return mappedData;
   }
 
   private static async logEmergencyAction(

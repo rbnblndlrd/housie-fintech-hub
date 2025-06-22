@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
@@ -51,7 +50,14 @@ export const useEmergencyControls = () => {
       );
       setControls(updatedControls);
       
-      toast.success(`Emergency control ${value ? 'activated' : 'deactivated'}`);
+      // Special messaging for Claude API controls
+      const claudeControls = ['claude_api_killswitch', 'claude_api_rate_limiting', 'claude_response_filtering', 'claude_api_cost_monitor'];
+      if (claudeControls.includes(controlName)) {
+        toast.success(`Claude API ${controlName.replace('claude_api_', '').replace('_', ' ')} ${value ? 'activated' : 'deactivated'}`);
+      } else {
+        toast.success(`Emergency control ${value ? 'activated' : 'deactivated'}`);
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['emergency-controls'] });
     } catch (error) {
       console.error('Failed to update control:', error);

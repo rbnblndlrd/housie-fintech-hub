@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -23,7 +22,10 @@ import {
   Megaphone,
   Construction,
   Calendar,
-  LogOut
+  LogOut,
+  Bot,
+  Zap,
+  DollarSign
 } from 'lucide-react';
 
 const EmergencyControlsDashboard = () => {
@@ -60,7 +62,8 @@ const EmergencyControlsDashboard = () => {
     controls.bookings_paused || 
     controls.maintenance_mode || 
     controls.fraud_lockdown_active ||
-    controls.messaging_disabled;
+    controls.messaging_disabled ||
+    controls.claude_api_killswitch;
 
   return (
     <div className="space-y-6">
@@ -75,6 +78,9 @@ const EmergencyControlsDashboard = () => {
                   EMERGENCY CONTROLS ACTIVE
                 </span>
                 <Badge variant="destructive">CRITICAL</Badge>
+                {controls.claude_api_killswitch && (
+                  <Badge variant="destructive" className="bg-red-700">CLAUDE API DOWN</Badge>
+                )}
               </div>
               <AlertDialog>
                 <AlertDialogTrigger asChild>
@@ -240,6 +246,65 @@ const EmergencyControlsDashboard = () => {
         </CardContent>
       </Card>
 
+      {/* Claude 4 API Controls */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bot className="h-5 w-5" />
+            Claude 4 API Controls
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <EmergencyControlCard
+            title="Claude API Killswitch"
+            description="Immediately disable all Claude API access platform-wide"
+            icon={<Bot className="h-4 w-4" />}
+            isActive={controls.claude_api_killswitch}
+            onToggle={(reason) => updateControl('claude_api_killswitch', !controls.claude_api_killswitch, reason)}
+            disabled={actionLoading}
+            variant="security"
+            lastActivated={controls.activated_at}
+            activatedBy={controls.activated_by}
+          />
+          
+          <EmergencyControlCard
+            title="API Rate Limiting"
+            description="Enable aggressive rate limiting for Claude API"
+            icon={<Zap className="h-4 w-4" />}
+            isActive={controls.claude_api_rate_limiting}
+            onToggle={(reason) => updateControl('claude_api_rate_limiting', !controls.claude_api_rate_limiting, reason)}
+            disabled={actionLoading}
+            variant="platform"
+            lastActivated={controls.activated_at}
+            activatedBy={controls.activated_by}
+          />
+          
+          <EmergencyControlCard
+            title="Response Filtering"
+            description="Enable strict content filtering for Claude responses"
+            icon={<Shield className="h-4 w-4" />}
+            isActive={controls.claude_response_filtering}
+            onToggle={(reason) => updateControl('claude_response_filtering', !controls.claude_response_filtering, reason)}
+            disabled={actionLoading}
+            variant="security"
+            lastActivated={controls.activated_at}
+            activatedBy={controls.activated_by}
+          />
+          
+          <EmergencyControlCard
+            title="API Cost Monitor"
+            description="Monitor and control Claude API spending limits"
+            icon={<DollarSign className="h-4 w-4" />}
+            isActive={controls.claude_api_cost_monitor}
+            onToggle={(reason) => updateControl('claude_api_cost_monitor', !controls.claude_api_cost_monitor, reason)}
+            disabled={actionLoading}
+            variant="platform"
+            lastActivated={controls.activated_at}
+            activatedBy={controls.activated_by}
+          />
+        </CardContent>
+      </Card>
+
       {/* Communication Controls */}
       <Card>
         <CardHeader>
@@ -327,6 +392,12 @@ const EmergencyControlsDashboard = () => {
                 <div className="flex justify-between text-xs">
                   <span>API Services:</span>
                   <Badge className="bg-green-600 text-white">Operational</Badge>
+                </div>
+                <div className="flex justify-between text-xs">
+                  <span>Claude API:</span>
+                  <Badge className={controls.claude_api_killswitch ? "bg-red-600 text-white" : "bg-green-600 text-white"}>
+                    {controls.claude_api_killswitch ? 'Disabled' : 'Active'}
+                  </Badge>
                 </div>
                 <div className="flex justify-between text-xs">
                   <span>Payment Processing:</span>
