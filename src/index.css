@@ -65,7 +65,26 @@
   }
 }
 
-/* CLEAN INPUT AND BUTTON CLASSES - Fix yellow backgrounds without thick borders */
+/* GLOBAL INPUT AND FORM BACKGROUND FIX - Prevent yellow backgrounds anywhere */
+input:not(.fintech-input):not(.clean-input), 
+textarea:not(.fintech-input):not(.clean-input), 
+select:not(.fintech-input):not(.clean-input),
+[role="combobox"]:not(.fintech-input):not(.clean-input) {
+  background-color: white !important;
+  border: 1px solid #d1d5db !important;
+  color: #1f2937 !important;
+}
+
+.dark input:not(.fintech-input):not(.clean-input), 
+.dark textarea:not(.fintech-input):not(.clean-input), 
+.dark select:not(.fintech-input):not(.clean-input),
+.dark [role="combobox"]:not(.fintech-input):not(.clean-input) {
+  background-color: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  color: white !important;
+}
+
+/* ENHANCED CLEAN INPUT AND BUTTON CLASSES */
 .clean-input {
   background-color: white !important;
   border: 1px solid #e5e7eb !important;
@@ -111,6 +130,27 @@
   background-color: rgba(31, 41, 55, 0.95) !important;
   border: 1px solid rgba(75, 85, 99, 0.6) !important;
   color: white !important;
+}
+
+/* PREVENT NESTED FINTECH BORDERS - Use subtle styling inside fintech cards */
+.fintech-card input:not(.fintech-input),
+.fintech-card textarea:not(.fintech-input),
+.fintech-card select:not(.fintech-input),
+.fintech-card [role="combobox"]:not(.fintech-input),
+.fintech-card button:not(.fintech-button):not(.fintech-button-primary):not(.fintech-button-secondary) {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 0.5rem !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+
+.dark .fintech-card input:not(.fintech-input),
+.dark .fintech-card textarea:not(.fintech-input),
+.dark .fintech-card select:not(.fintech-input),
+.dark .fintech-card [role="combobox"]:not(.fintech-input),
+.dark .fintech-card button:not(.fintech-button):not(.fintech-button-primary):not(.fintech-button-secondary) {
+  background-color: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
 }
 
 /* TARGETED FINTECH CARD - Only for explicit fintech components */
@@ -281,4 +321,3 @@
 * {
   transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease, box-shadow 300ms ease;
 }
-

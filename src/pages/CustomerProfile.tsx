@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -226,7 +227,7 @@ const CustomerProfile = () => {
           {/* Profile Sections */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Personal Information */}
-            <Card className="fintech-card">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <User className="h-5 w-5 text-blue-600" />
@@ -247,7 +248,7 @@ const CustomerProfile = () => {
                   <Input
                     value={profile.email || ''}
                     disabled
-                    className="bg-gray-50"
+                    className="bg-gray-50 border-gray-300"
                   />
                 </div>
                 <div>
@@ -262,7 +263,7 @@ const CustomerProfile = () => {
             </Card>
 
             {/* Address Information */}
-            <Card className="fintech-card">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MapPin className="h-5 w-5 text-green-600" />
@@ -308,7 +309,7 @@ const CustomerProfile = () => {
             </Card>
 
             {/* Service Preferences */}
-            <Card className="fintech-card">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Heart className="h-5 w-5 text-red-600" />
@@ -355,7 +356,7 @@ const CustomerProfile = () => {
             </Card>
 
             {/* Communication & Settings */}
-            <Card className="fintech-card">
+            <Card className="bg-white border border-gray-200 rounded-xl shadow-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Settings className="h-5 w-5 text-purple-600" />

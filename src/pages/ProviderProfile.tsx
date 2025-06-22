@@ -174,7 +174,7 @@ const ProviderProfile = () => {
                 <Button 
                   onClick={createProviderProfile}
                   disabled={saving}
-                  className="fintech-button-primary"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-xl"
                 >
                   {saving ? 'Creating Profile...' : 'Create Provider Profile'}
                 </Button>
