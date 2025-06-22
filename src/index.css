@@ -84,6 +84,34 @@ select:not(.fintech-input):not(.clean-input),
   color: white !important;
 }
 
+/* DROPDOWN MENU FIX - Force white backgrounds */
+[role="menu"],
+[role="listbox"],
+.dropdown-content,
+[data-radix-popper-content-wrapper],
+[data-side="bottom"],
+[data-side="top"],
+[data-side="left"],
+[data-side="right"] {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  z-index: 50 !important;
+}
+
+.dark [role="menu"],
+.dark [role="listbox"],
+.dark .dropdown-content,
+.dark [data-radix-popper-content-wrapper],
+.dark [data-side="bottom"],
+.dark [data-side="top"],
+.dark [data-side="left"],
+.dark [data-side="right"] {
+  background-color: rgba(31, 41, 55, 0.95) !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+  color: white !important;
+}
+
 /* ENHANCED CLEAN INPUT AND BUTTON CLASSES */
 .clean-input {
   background-color: white !important;
@@ -195,7 +223,7 @@ select:not(.fintech-input):not(.clean-input),
 }
 
 .dark .fintech-button-secondary {
-  border: 3px solid rgba(255, 255, 255, 0.8) !important;
+  border: 3px solid rgba(255, 255, 255,- 0.8) !important;
 }
 
 /* HOUSIE Brand Text Gradient */

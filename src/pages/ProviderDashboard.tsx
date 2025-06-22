@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -159,9 +158,9 @@ const ProviderDashboard = () => {
             <p className="text-gray-600">Gérez vos services et suivez vos performances</p>
           </div>
 
-          {/* Stats Overview */}
+          {/* Stats Overview - Updated with fintech styling */}
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
-            <Card className="bg-white shadow-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -173,7 +172,7 @@ const ProviderDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -185,7 +184,7 @@ const ProviderDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -197,7 +196,7 @@ const ProviderDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="bg-white shadow-sm">
+            <Card className="fintech-card">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -217,7 +216,7 @@ const ProviderDashboard = () => {
             {/* Main Content - Active Jobs Management */}
             <div className="lg:col-span-2 space-y-6">
               {/* Active Jobs Section */}
-              <Card className="bg-white shadow-sm">
+              <Card className="fintech-card">
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
@@ -249,7 +248,7 @@ const ProviderDashboard = () => {
                         <SelectTrigger className="w-48">
                           <SelectValue placeholder="Statut" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-white">
                           <SelectItem value="all">Tous les statuts</SelectItem>
                           <SelectItem value="pending">En Attente</SelectItem>
                           <SelectItem value="confirmed">Confirmé</SelectItem>
@@ -354,7 +353,7 @@ const ProviderDashboard = () => {
             {/* Sidebar */}
             <div className="space-y-6">
               {/* Quick Actions */}
-              <Card className="bg-white shadow-sm">
+              <Card className="fintech-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Search className="h-5 w-5 text-green-600" />
@@ -384,7 +383,7 @@ const ProviderDashboard = () => {
               </Card>
 
               {/* Performance Stats */}
-              <Card className="bg-white shadow-sm">
+              <Card className="fintech-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-purple-600" />
@@ -408,7 +407,7 @@ const ProviderDashboard = () => {
               </Card>
 
               {/* Recent Completed Jobs */}
-              <Card className="bg-white shadow-sm">
+              <Card className="fintech-card">
                 <CardHeader>
                   <CardTitle className="text-sm">Jobs Récents Terminés</CardTitle>
                 </CardHeader>

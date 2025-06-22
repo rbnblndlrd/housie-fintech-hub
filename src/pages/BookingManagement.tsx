@@ -1,159 +1,94 @@
 
 import React, { useState, useEffect } from 'react';
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/Header";
-import BookingCard from "@/components/BookingCard";
-import BookingFilters from "@/components/BookingFilters";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Calendar, DollarSign, TrendingUp, Clock } from 'lucide-react';
-import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
-
-interface BookingCustomer {
-  full_name: string;
-  phone: string;
-  email: string;
-}
-
-interface BookingService {
-  title: string;
-  category: string;
-}
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
+import { Calendar, Clock, MapPin, User, Phone, Mail, DollarSign } from 'lucide-react';
+import Header from '@/components/Header';
+import SearchFilter from '@/components/filters/SearchFilter';
+import StatusFilter from '@/components/filters/StatusFilter';
+import DateRangeFilter from '@/components/filters/DateRangeFilter';
 
 interface Booking {
   id: string;
+  service_title: string;
+  customer_name: string;
+  customer_phone: string;
+  customer_email: string;
   scheduled_date: string;
   scheduled_time: string;
-  duration_hours: number;
+  status: string;
   total_amount: number;
-  service_address: string;
-  status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-  payment_status: 'pending' | 'paid' | 'refunded';
-  created_at: string;
-  customer: BookingCustomer;
-  service: BookingService;
-  booking_type?: 'service' | 'appointment'; // New field to distinguish types
+  location: string;
+  notes?: string;
 }
 
 const BookingManagement = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
-  const [filteredBookings, setFilteredBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [dateFilter, setDateFilter] = useState('all');
+  const [dateRange, setDateRange] = useState({ start: '', end: '' });
 
-  // Get unified calendar data
-  const { allEvents, updateEvent } = useUnifiedCalendarIntegration();
-
-  // Stats calculation including both bookings and appointments
+  // Mock stats data
   const stats = {
-    total: bookings.length,
-    pending: bookings.filter(b => b.status === 'pending').length,
-    confirmed: bookings.filter(b => b.status === 'confirmed').length,
-    completed: bookings.filter(b => b.status === 'completed').length,
-    totalRevenue: bookings
-      .filter(b => b.status === 'completed')
-      .reduce((sum, b) => sum + Number(b.total_amount), 0)
+    totalBookings: 15,
+    pendingBookings: 3,
+    completedBookings: 8,
+    totalRevenue: 2450
   };
+
+  useEffect(() => {
+    fetchBookings();
+  }, [user]);
 
   const fetchBookings = async () => {
     if (!user) return;
 
     try {
-      // First get the provider profile
-      const { data: providerProfile } = await supabase
-        .from('provider_profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .single();
-
-      let serviceBookings: Booking[] = [];
-
-      if (providerProfile) {
-        // Fetch service bookings with customer and service details
-        const { data, error } = await supabase
-          .from('bookings')
-          .select(`
-            *,
-            customer:customer_id (
-              full_name,
-              phone,
-              email
-            ),
-            service:service_id (
-              title,
-              category
-            )
-          `)
-          .eq('provider_id', providerProfile.id)
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          console.error('Error fetching service bookings:', error);
-        } else {
-          serviceBookings = (data || []).map(booking => ({
-            id: booking.id,
-            scheduled_date: booking.scheduled_date,
-            scheduled_time: booking.scheduled_time,
-            duration_hours: booking.duration_hours || 0,
-            total_amount: booking.total_amount || 0,
-            service_address: booking.service_address || '',
-            status: booking.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
-            payment_status: booking.payment_status as 'pending' | 'paid' | 'refunded',
-            created_at: booking.created_at,
-            customer: {
-              full_name: booking.customer?.full_name || '',
-              phone: booking.customer?.phone || '',
-              email: booking.customer?.email || ''
-            },
-            service: {
-              title: booking.service?.title || '',
-              category: booking.service?.category || ''
-            },
-            booking_type: 'service' as const
-          }));
+      // Mock data - replace with actual Supabase query
+      const mockBookings: Booking[] = [
+        {
+          id: '1',
+          service_title: 'Nettoyage résidentiel',
+          customer_name: 'Marie Dubois',
+          customer_phone: '514-555-0123',
+          customer_email: 'marie@example.com',
+          scheduled_date: '2024-01-25',
+          scheduled_time: '10:00',
+          status: 'confirmed',
+          total_amount: 120,
+          location: 'Montréal, QC',
+          notes: 'Appartement 3 chambres'
+        },
+        {
+          id: '2',  
+          service_title: 'Réparation plomberie',
+          customer_name: 'Jean Tremblay',
+          customer_phone: '514-555-0456',
+          customer_email: 'jean@example.com',
+          scheduled_date: '2024-01-24',
+          scheduled_time: '14:00',
+          status: 'in_progress',
+          total_amount: 250,
+          location: 'Laval, QC',
+          notes: 'Fuite sous évier'
         }
-      }
+      ];
 
-      // Convert calendar appointments to booking format
-      const appointmentBookings: Booking[] = allEvents
-        .filter(event => !event.booking_id) // Only personal appointments, not service bookings
-        .map(event => ({
-          id: event.id,
-          scheduled_date: event.date.toISOString().split('T')[0],
-          scheduled_time: event.time,
-          duration_hours: 1, // Default duration for appointments
-          total_amount: event.amount,
-          service_address: event.location,
-          status: event.status as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled',
-          payment_status: 'paid' as const, // Appointments don't have payment status
-          created_at: new Date().toISOString(), // Use current date as fallback
-          customer: {
-            full_name: event.client,
-            phone: '',
-            email: ''
-          },
-          service: {
-            title: event.title,
-            category: 'appointment'
-          },
-          booking_type: 'appointment' as const
-        }));
-
-      // Combine both types
-      const allBookings = [...serviceBookings, ...appointmentBookings];
-      setBookings(allBookings);
-      setFilteredBookings(allBookings);
-
+      setBookings(mockBookings);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error fetching bookings:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de charger les réservations.",
+        title: "Error",
+        description: "Failed to load bookings",
         variant: "destructive",
       });
     } finally {
@@ -161,101 +96,41 @@ const BookingManagement = () => {
     }
   };
 
-  const updateBookingStatus = async (bookingId: string, newStatus: string) => {
-    try {
-      const booking = bookings.find(b => b.id === bookingId);
-      
-      if (booking?.booking_type === 'appointment') {
-        // Update appointment via unified calendar integration
-        await updateEvent(bookingId, { status: newStatus as any });
-      } else {
-        // Update service booking via Supabase
-        const { error } = await supabase
-          .from('bookings')
-          .update({ status: newStatus, updated_at: new Date().toISOString() })
-          .eq('id', bookingId);
-
-        if (error) {
-          toast({
-            title: "Erreur",
-            description: "Impossible de mettre à jour le statut.",
-            variant: "destructive",
-          });
-          return;
-        }
-      }
-
-      // Update local state
-      setBookings(prev => 
-        prev.map(booking => 
-          booking.id === bookingId 
-            ? { ...booking, status: newStatus as 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled' }
-            : booking
-        )
-      );
-
-      toast({
-        title: "Succès",
-        description: "Statut de réservation mis à jour.",
-      });
-
-      // Refresh the list
-      fetchBookings();
-    } catch (error) {
-      console.error('Error updating booking:', error);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'bg-blue-500';
+      case 'in_progress': return 'bg-orange-500';
+      case 'completed': return 'bg-green-500';
+      case 'cancelled': return 'bg-red-500';
+      default: return 'bg-gray-500';
     }
   };
 
-  const applyFilters = () => {
-    let filtered = [...bookings];
-
-    // Status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter(booking => booking.status === statusFilter);
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'Confirmé';
+      case 'in_progress': return 'En Cours';
+      case 'completed': return 'Terminé';
+      case 'cancelled': return 'Annulé';
+      default: return status;
     }
-
-    // Date filter
-    const now = new Date();
-    if (dateFilter === 'today') {
-      const today = now.toISOString().split('T')[0];
-      filtered = filtered.filter(booking => booking.scheduled_date === today);
-    } else if (dateFilter === 'week') {
-      const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-      filtered = filtered.filter(booking => 
-        new Date(booking.scheduled_date) >= weekAgo
-      );
-    } else if (dateFilter === 'month') {
-      const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-      filtered = filtered.filter(booking => 
-        new Date(booking.scheduled_date) >= monthAgo
-      );
-    }
-
-    setFilteredBookings(filtered);
   };
 
-  useEffect(() => {
-    fetchBookings();
-  }, [user, allEvents]); // Re-fetch when calendar events change
-
-  useEffect(() => {
-    applyFilters();
-  }, [statusFilter, dateFilter, bookings]);
+  const filteredBookings = bookings.filter(booking => {
+    const matchesSearch = booking.service_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         booking.customer_name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="pt-20 px-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-card rounded-2xl w-1/3 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
-              <div className="grid md:grid-cols-4 gap-6">
-                {[...Array(4)].map((_, i) => (
-                  <div key={i} className="h-32 bg-card rounded-2xl shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)]"></div>
-                ))}
-              </div>
-            </div>
+        <div className="pt-16 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading bookings...</p>
           </div>
         </div>
       </div>
@@ -263,123 +138,231 @@ const BookingManagement = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
+          {/* Header */}
           <div className="mb-8">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">
               Gestion des Réservations
             </h1>
-            <p className="text-muted-foreground">Gérez vos réservations de services et rendez-vous personnels</p>
+            <p className="text-gray-600">Gérez et suivez toutes vos réservations</p>
           </div>
 
-          {/* Stats Cards - Updated to Fintech Style */}
-          <div className="grid md:grid-cols-4 gap-6 mb-8">
-            <Card className="fintech-metric-card">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <Card className="fintech-card">
               <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-blue-100 rounded-xl">
-                    <Calendar className="h-6 w-6 text-blue-600" />
-                  </div>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground font-medium">Total Réservations</p>
-                    <p className="text-2xl font-bold text-foreground">{stats.total}</p>
+                    <p className="text-sm text-gray-600">Total Réservations</p>
+                    <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
                   </div>
+                  <Calendar className="h-8 w-8 text-blue-600" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="fintech-metric-card">
+            <Card className="fintech-card">
               <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-orange-100 rounded-xl">
-                    <Clock className="h-6 w-6 text-orange-600" />
-                  </div>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground font-medium">En Attente</p>
-                    <p className="text-2xl font-bold text-foreground">{stats.pending}</p>
+                    <p className="text-sm text-gray-600">En Attente</p>
+                    <p className="text-2xl font-bold text-orange-600">{stats.pendingBookings}</p>
                   </div>
+                  <Clock className="h-8 w-8 text-orange-600" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="fintech-metric-card">
+            <Card className="fintech-card">
               <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-green-100 rounded-xl">
-                    <TrendingUp className="h-6 w-6 text-green-600" />
-                  </div>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground font-medium">Confirmées</p>
-                    <p className="text-2xl font-bold text-foreground">{stats.confirmed}</p>
+                    <p className="text-sm text-gray-600">Terminées</p>
+                    <p className="text-2xl font-bold text-green-600">{stats.completedBookings}</p>
                   </div>
+                  <User className="h-8 w-8 text-green-600" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="fintech-metric-card">
+            <Card className="fintech-card">
               <CardContent className="p-6">
-                <div className="flex items-center gap-4">
-                  <div className="p-3 bg-purple-100 rounded-xl">
-                    <DollarSign className="h-6 w-6 text-purple-600" />
-                  </div>
+                <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm text-muted-foreground font-medium">Revenus</p>
-                    <p className="text-2xl font-bold text-foreground">${stats.totalRevenue.toFixed(0)}</p>
+                    <p className="text-sm text-gray-600">Revenus Total</p>
+                    <p className="text-2xl font-bold text-purple-600">${stats.totalRevenue}</p>
                   </div>
+                  <DollarSign className="h-8 w-8 text-purple-600" />
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Filters */}
-          <BookingFilters
-            statusFilter={statusFilter}
-            dateFilter={dateFilter}
-            onStatusChange={setStatusFilter}
-            onDateChange={setDateFilter}
-          />
+          <Card className="fintech-card mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                🔍 Filtres
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Recherche</label>
+                  <SearchFilter
+                    value={searchTerm}
+                    onChange={setSearchTerm}
+                    placeholder="Rechercher par service ou client..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                  <StatusFilter
+                    value={statusFilter}
+                    onChange={setStatusFilter}
+                    options={[
+                      { value: 'all', label: 'Tous les statuts' },
+                      { value: 'confirmed', label: 'Confirmé' },
+                      { value: 'in_progress', label: 'En Cours' },
+                      { value: 'completed', label: 'Terminé' },
+                      { value: 'cancelled', label: 'Annulé' }
+                    ]}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Période</label>
+                  <DateRangeFilter
+                    startDate={dateRange.start}
+                    endDate={dateRange.end}
+                    onStartDateChange={(date) => setDateRange({ ...dateRange, start: date })}
+                    onEndDateChange={(date) => setDateRange({ ...dateRange, end: date })}
+                  />
+                </div>
+              </div>
+              <div className="flex gap-3 mt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setStatusFilter('all');
+                    setDateRange({ start: '', end: '' });
+                  }}
+                  className="clean-button"
+                >
+                  Réinitialiser
+                </Button>
+                <Button className="clean-button-purple">
+                  Réserver
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Bookings List */}
-          <div className="space-y-6">
-            {filteredBookings.length === 0 ? (
-              <Card className="fintech-card">
-                <CardContent className="p-12 text-center">
-                  <div className="bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl p-6 inline-block mb-6">
-                    <Calendar className="h-16 w-16 text-white mx-auto" />
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle>Réservations ({filteredBookings.length})</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {filteredBookings.map((booking) => (
+                  <div key={booking.id} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                          <User className="h-6 w-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900">{booking.service_title}</h4>
+                          <p className="text-sm text-gray-600">{booking.customer_name}</p>
+                          <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {new Date(booking.scheduled_date).toLocaleDateString('fr-FR')} à {booking.scheduled_time}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {booking.location}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-gray-900">${booking.total_amount}</p>
+                        <Badge className={`${getStatusColor(booking.status)} text-white text-xs`}>
+                          {getStatusText(booking.status)}
+                        </Badge>
+                      </div>
+                    </div>
+
+                    {/* Customer Info */}
+                    <div className="bg-white p-3 rounded-lg border">
+                      <h5 className="font-medium text-gray-900 mb-2">Informations Client</h5>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          {booking.customer_name}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Phone className="h-4 w-4" />
+                          {booking.customer_phone}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Mail className="h-4 w-4" />
+                          {booking.customer_email}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4" />
+                          {booking.location}
+                        </div>
+                      </div>
+                      {booking.notes && (
+                        <div className="mt-2 text-sm text-gray-600">
+                          <strong>Notes:</strong> {booking.notes}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex items-center gap-2 justify-end mt-4">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(`tel:${booking.customer_phone}`, '_self')}
+                      >
+                        <Phone className="h-4 w-4 mr-1" />
+                        Appeler
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => window.open(`mailto:${booking.customer_email}`, '_blank')}
+                      >
+                        <Mail className="h-4 w-4 mr-1" />
+                        Email
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="bg-blue-600 hover:bg-blue-700"
+                      >
+                        Gérer
+                      </Button>
+                    </div>
                   </div>
-                  <h3 className="text-xl font-semibold text-card-foreground mb-2">
+                ))}
+
+                {filteredBookings.length === 0 && (
+                  <div className="text-center py-8 text-gray-500">
                     Aucune réservation trouvée
-                  </h3>
-                  <p className="text-muted-foreground">
-                    {statusFilter !== 'all' || dateFilter !== 'all' 
-                      ? 'Essayez de modifier vos filtres.' 
-                      : 'Vos nouvelles réservations et rendez-vous apparaîtront ici.'}
-                  </p>
-                </CardContent>
-              </Card>
-            ) : (
-              filteredBookings.map((booking) => (
-                <div key={booking.id} className="relative">
-                  <BookingCard
-                    booking={booking}
-                    onUpdateStatus={updateBookingStatus}
-                  />
-                  {booking.booking_type === 'appointment' && (
-                    <Badge 
-                      variant="outline" 
-                      className="absolute top-4 right-4 bg-purple-100 text-purple-700 border-purple-300"
-                    >
-                      Rendez-vous Personnel
-                    </Badge>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

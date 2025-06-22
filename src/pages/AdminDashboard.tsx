@@ -1,200 +1,178 @@
-import React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
+import { Card } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
+import { Shield, AlertTriangle } from 'lucide-react';
 import Header from '@/components/Header';
+
+// Import admin sections
 import OverviewSection from '@/components/admin/OverviewSection';
 import UserManagementSection from '@/components/admin/UserManagementSection';
-import BookingAnalyticsSection from '@/components/admin/BookingAnalyticsSection';
+import FraudDetectionSection from '@/components/admin/FraudDetectionSection';
 import PlatformHealthSection from '@/components/admin/PlatformHealthSection';
-import LiveUsersSection from '@/components/admin/LiveUsersSection';
 import EmergencyControlsSection from '@/components/admin/EmergencyControlsSection';
 import DevelopmentToolsSection from '@/components/admin/DevelopmentToolsSection';
-import FraudDetectionSection from '@/components/admin/FraudDetectionSection';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 const AdminDashboard = () => {
-  const { user, loading } = useAuth();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
-  const [checkAttempts, setCheckAttempts] = useState(0);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
-      console.log('🔍 AdminDashboard: Starting admin status check', {
-        user: !!user,
-        userId: user?.id,
-        userEmail: user?.email,
-        loading,
-        attempt: checkAttempts + 1
-      });
-
-      // Don't check if auth is still loading or no user
-      if (loading) {
-        console.log('⏳ AdminDashboard: Auth still loading, skipping check');
-        return;
-      }
-
-      if (!user) {
-        console.log('❌ AdminDashboard: No user found, setting isAdmin to false');
-        setIsAdmin(false);
-        return;
-      }
-
-      try {
-        console.log('📡 AdminDashboard: Making database query for user role');
-        
-        // Check user's role from the users table
-        const { data: userData, error } = await supabase
-          .from('users')
-          .select('user_role, email, id')
-          .eq('id', user.id)
-          .single();
-
-        console.log('📊 AdminDashboard: Database query result', {
-          userData,
-          error,
-          hasData: !!userData,
-          userRole: userData?.user_role
-        });
-
-        if (error) {
-          console.error('❌ AdminDashboard: Database error checking admin status:', error);
-          setError(`Database error: ${error.message}`);
-          
-          // Retry up to 3 times for database errors
-          if (checkAttempts < 3) {
-            console.log('🔄 AdminDashboard: Retrying admin check in 1 second...');
-            setTimeout(() => {
-              setCheckAttempts(prev => prev + 1);
-            }, 1000);
-            return;
-          }
-          
-          setIsAdmin(false);
-          return;
-        }
-
-        const adminStatus = userData?.user_role === 'admin';
-        console.log('✅ AdminDashboard: Admin status determined', {
-          isAdmin: adminStatus,
-          userRole: userData?.user_role,
-          userId: userData?.id,
-          userEmail: userData?.email
-        });
-
-        setIsAdmin(adminStatus);
-        setError(null);
-        
-      } catch (error) {
-        console.error('💥 AdminDashboard: Unexpected error checking admin status:', error);
-        setError(`Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`);
-        setIsAdmin(false);
-      }
-    };
-
     checkAdminStatus();
-  }, [user, loading, checkAttempts]);
+  }, [user]);
 
-  // Show loading while checking admin status
-  if (loading || isAdmin === null) {
-    console.log('🔄 AdminDashboard: Showing loading state', { loading, isAdmin });
+  const checkAdminStatus = async () => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.functions.invoke('check-admin-status');
+      
+      if (error) {
+        console.error('Error checking admin status:', error);
+        toast({
+          title: "Access Denied",
+          description: "You don't have admin privileges.",
+          variant: "destructive",
+        });
+        navigate('/');
+        return;
+      }
+
+      if (data?.isAdmin) {
+        setIsAdmin(true);
+      } else {
+        toast({
+          title: "Access Denied",
+          description: "You don't have admin privileges.",
+          variant: "destructive",
+        });
+        navigate('/');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      navigate('/');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
     return (
-      <>
+      <div className="min-h-screen bg-gray-50">
         <Header />
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center pt-20">
+        <div className="pt-16 flex items-center justify-center min-h-screen">
           <div className="text-center">
-            <div className="text-lg mb-4">Checking admin permissions...</div>
-            {error && (
-              <div className="text-red-600 text-sm">
-                Error: {error}
-                {checkAttempts > 0 && <div>Attempt {checkAttempts + 1}/4</div>}
-              </div>
-            )}
-            {user && (
-              <div className="text-xs text-gray-500 mt-2">
-                User: {user.email} (ID: {user.id})
-              </div>
-            )}
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Verifying admin access...</p>
           </div>
         </div>
-      </>
+      </div>
     );
   }
 
-  // Check if user is admin
-  if (!user || !isAdmin) {
-    console.log('🚫 AdminDashboard: Access denied, redirecting to home', {
-      hasUser: !!user,
-      isAdmin,
-      userEmail: user?.email
-    });
-    return <Navigate to="/" replace />;
+  if (!isAdmin) {
+    return null;
   }
 
-  console.log('🎯 AdminDashboard: Rendering admin dashboard for user:', user.email);
-
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 p-6 pt-20">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">Admin Dashboard</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">Platform management and analytics</p>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              Logged in as: {user.email}
+      
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="mb-8 text-center">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Shield className="h-8 w-8 text-red-600" />
+              <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             </div>
+            <p className="text-gray-600">Platform management and analytics</p>
+            <p className="text-sm text-gray-500 mt-2">
+              Logged in as: {user?.email}
+            </p>
           </div>
 
-          <Tabs defaultValue="overview" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-8 bg-white dark:bg-gray-800 border dark:border-gray-700">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="users">Users</TabsTrigger>
-              <TabsTrigger value="bookings">Bookings</TabsTrigger>
-              <TabsTrigger value="fraud">Fraud</TabsTrigger>
-              <TabsTrigger value="health">Health</TabsTrigger>
-              <TabsTrigger value="live">Live Users</TabsTrigger>
-              <TabsTrigger value="emergency">Emergency</TabsTrigger>
-              <TabsTrigger value="dev">Dev Tools</TabsTrigger>
-            </TabsList>
+          {/* Main Content */}
+          <Card className="fintech-card">
+            <Tabs defaultValue="overview" className="w-full">
+              <TabsList className="grid w-full grid-cols-6 mb-6 bg-white border border-gray-200">
+                <TabsTrigger 
+                  value="overview" 
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700"
+                >
+                  Overview
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="users"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700"
+                >
+                  Users
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="fraud"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700"
+                >
+                  Fraud
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="health"
+                  className="data-[state=active]:bg-blue-600 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700"
+                >
+                  Health
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="emergency"
+                  className="data-[state=active]:bg-red-600 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700"
+                >
+                  <AlertTriangle className="h-4 w-4 mr-1" />
+                  Emergency
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="dev"
+                  className="data-[state=active]:bg-purple-600 data-[state=active]:text-white data-[state=inactive]:bg-white data-[state=inactive]:text-gray-700"
+                >
+                  Dev Tools
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="overview">
-              <OverviewSection />
-            </TabsContent>
+              <TabsContent value="overview" className="space-y-6">
+                <OverviewSection />
+              </TabsContent>
 
-            <TabsContent value="users">
-              <UserManagementSection />
-            </TabsContent>
+              <TabsContent value="users" className="space-y-6">
+                <UserManagementSection />
+              </TabsContent>
 
-            <TabsContent value="bookings">
-              <BookingAnalyticsSection />
-            </TabsContent>
+              <TabsContent value="fraud" className="space-y-6">
+                <FraudDetectionSection />
+              </TabsContent>
 
-            <TabsContent value="fraud">
-              <FraudDetectionSection />
-            </TabsContent>
+              <TabsContent value="health" className="space-y-6">
+                <PlatformHealthSection />
+              </TabsContent>
 
-            <TabsContent value="health">
-              <PlatformHealthSection />
-            </TabsContent>
+              <TabsContent value="emergency" className="space-y-6">
+                <EmergencyControlsSection />
+              </TabsContent>
 
-            <TabsContent value="live">
-              <LiveUsersSection />
-            </TabsContent>
-
-            <TabsContent value="emergency">
-              <EmergencyControlsSection />
-            </TabsContent>
-
-            <TabsContent value="dev">
-              <DevelopmentToolsSection />
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="dev" className="space-y-6">
+                <DevelopmentToolsSection />
+              </TabsContent>
+            </Tabs>
+          </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

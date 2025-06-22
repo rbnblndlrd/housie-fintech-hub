@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { supabase } from '@/integrations/supabase/client';
+import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, Trash2, AlertTriangle, Shield, Award } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Plus, Trash2, Edit } from 'lucide-react';
 
 interface Service {
   id: string;
@@ -18,98 +18,38 @@ interface Service {
   subcategory: string;
   base_price: number;
   pricing_type: string;
-  active: boolean;
-  background_check_required: boolean;
-  ccq_rbq_required: boolean;
-  risk_category: string;
-}
-
-interface ProviderProfile {
-  background_check_verified: boolean;
-  ccq_verified: boolean;
-  rbq_verified: boolean;
-  verification_level: string;
-}
-
-interface ServiceCategory {
-  id: string;
-  name: string;
-}
-
-interface ServiceSubcategory {
-  id: string;
-  category: string;
-  subcategory: string;
-  subcategory_id: string;
-  icon: string;
-  background_check_required: boolean;
-  professional_license_required: boolean;
-  professional_license_type: string | null;
-  ccq_rbq_required: boolean;
-  risk_category: string;
-  description: string;
+  is_active: boolean;
 }
 
 interface ServicesSectionProps {
   providerId: string;
 }
 
-const serviceCategories: ServiceCategory[] = [
-  { id: 'cleaning', name: 'Cleaning' },
-  { id: 'wellness', name: 'Wellness' },
-  { id: 'care_pets', name: 'Care/Pets' },
-  { id: 'lawn_snow', name: 'Lawn & Snow' },
-  { id: 'construction', name: 'Construction' }
-];
-
 const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
   const { toast } = useToast();
   const [services, setServices] = useState<Service[]>([]);
-  const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
-  const [subcategories, setSubcategories] = useState<ServiceSubcategory[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [newService, setNewService] = useState({
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [editingService, setEditingService] = useState<Service | null>(null);
+
+  // Form state
+  const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
     subcategory: '',
-    base_price: 0,
-    pricing_type: 'hourly',
+    base_price: '',
+    pricing_type: 'hourly'
   });
 
   useEffect(() => {
     fetchServices();
-    fetchProviderProfile();
   }, [providerId]);
-
-  useEffect(() => {
-    if (newService.category) {
-      fetchSubcategories(newService.category);
-    } else {
-      setSubcategories([]);
-    }
-  }, [newService.category]);
-
-  const fetchProviderProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('provider_profiles')
-        .select('background_check_verified, ccq_verified, rbq_verified, verification_level')
-        .eq('id', providerId)
-        .single();
-
-      if (error) throw error;
-      setProviderProfile(data);
-    } catch (error) {
-      console.error('Error fetching provider profile:', error);
-    }
-  };
 
   const fetchServices = async () => {
     try {
       const { data, error } = await supabase
-        .from('services')
+        .from('provider_services')
         .select('*')
         .eq('provider_id', providerId);
 
@@ -127,165 +67,101 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     }
   };
 
-  const fetchSubcategories = async (category: string) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     try {
-      const { data, error } = await supabase
-        .from('service_subcategories')
-        .select('*')
-        .eq('category', category)
-        .order('subcategory', { ascending: true });
+      const serviceData = {
+        provider_id: providerId,
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
+        subcategory: formData.subcategory,
+        base_price: parseFloat(formData.base_price),
+        pricing_type: formData.pricing_type,
+        is_active: true
+      };
 
-      if (error) throw error;
-      setSubcategories(data || []);
+      if (editingService) {
+        const { error } = await supabase
+          .from('provider_services')
+          .update(serviceData)
+          .eq('id', editingService.id);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Service updated successfully",
+        });
+      } else {
+        const { error } = await supabase
+          .from('provider_services')
+          .insert(serviceData);
+
+        if (error) throw error;
+
+        toast({
+          title: "Success",
+          description: "Service added successfully",
+        });
+      }
+
+      resetForm();
+      fetchServices();
     } catch (error) {
-      console.error('Error fetching subcategories:', error);
-      setSubcategories([]);
-    }
-  };
-
-  const getSelectedSubcategory = () => {
-    return subcategories.find(sub => sub.subcategory_id === newService.subcategory);
-  };
-
-  const canOfferSubcategory = (subcategory: ServiceSubcategory) => {
-    if (!providerProfile) return false;
-    
-    const needsBackgroundCheck = subcategory.background_check_required;
-    const needsCcqRbq = subcategory.ccq_rbq_required;
-    
-    if (needsBackgroundCheck && !providerProfile.background_check_verified) {
-      return false;
-    }
-    
-    if (needsCcqRbq && !providerProfile.ccq_verified && !providerProfile.rbq_verified) {
-      return false;
-    }
-    
-    return true;
-  };
-
-  const getVerificationBadges = (subcategory: ServiceSubcategory) => {
-    const badges = [];
-    
-    if (subcategory.background_check_required) {
-      badges.push(
-        <Badge 
-          key="bg-check" 
-          variant="outline" 
-          className={`${providerProfile?.background_check_verified ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}
-        >
-          <Shield className="h-3 w-3 mr-1" />
-          Background Check
-        </Badge>
-      );
-    }
-    
-    if (subcategory.ccq_rbq_required) {
-      badges.push(
-        <Badge 
-          key="ccq-rbq" 
-          variant="outline" 
-          className={`${(providerProfile?.ccq_verified || providerProfile?.rbq_verified) ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}
-        >
-          <Award className="h-3 w-3 mr-1" />
-          CCQ/RBQ
-        </Badge>
-      );
-    }
-
-    return badges;
-  };
-
-  const addService = async () => {
-    if (!newService.title || !newService.category || !newService.subcategory) {
+      console.error('Error saving service:', error);
       toast({
         title: "Error",
-        description: "Please fill in all required fields",
+        description: "Failed to save service",
         variant: "destructive",
       });
-      return;
-    }
-
-    const subcategoryData = getSelectedSubcategory();
-    if (!subcategoryData) {
-      toast({
-        title: "Error",
-        description: "Invalid subcategory selected",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!canOfferSubcategory(subcategoryData)) {
-      toast({
-        title: "Verification Required",
-        description: "You need the required verifications to offer this service",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setSaving(true);
-      const { data, error } = await supabase
-        .from('services')
-        .insert({
-          provider_id: providerId,
-          title: newService.title,
-          description: newService.description,
-          category: newService.category,
-          subcategory: newService.subcategory,
-          base_price: newService.base_price,
-          pricing_type: newService.pricing_type,
-          background_check_required: subcategoryData.background_check_required,
-          ccq_rbq_required: subcategoryData.ccq_rbq_required,
-          risk_category: subcategoryData.risk_category,
-        })
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      setServices([...services, data]);
-      setNewService({
-        title: '',
-        description: '',
-        category: '',
-        subcategory: '',
-        base_price: 0,
-        pricing_type: 'hourly',
-      });
-
-      toast({
-        title: "Success",
-        description: "Service added successfully",
-      });
-    } catch (error) {
-      console.error('Error adding service:', error);
-      toast({
-        title: "Error",
-        description: "Failed to add service",
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
     }
   };
 
-  const deleteService = async (serviceId: string) => {
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      description: '',
+      category: '',
+      subcategory: '',
+      base_price: '',
+      pricing_type: 'hourly'
+    });
+    setShowAddForm(false);
+    setEditingService(null);
+  };
+
+  const handleEdit = (service: Service) => {
+    setEditingService(service);
+    setFormData({
+      title: service.title,
+      description: service.description,
+      category: service.category,
+      subcategory: service.subcategory,
+      base_price: service.base_price.toString(),
+      pricing_type: service.pricing_type
+    });
+    setShowAddForm(true);
+  };
+
+  const handleDelete = async (serviceId: string) => {
+    if (!confirm('Are you sure you want to delete this service?')) return;
+
     try {
       const { error } = await supabase
-        .from('services')
+        .from('provider_services')
         .delete()
         .eq('id', serviceId);
 
       if (error) throw error;
 
-      setServices(services.filter(s => s.id !== serviceId));
       toast({
         title: "Success",
         description: "Service deleted successfully",
       });
+
+      fetchServices();
     } catch (error) {
       console.error('Error deleting service:', error);
       toast({
@@ -296,20 +172,17 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
     }
   };
 
-  const getRiskBadgeColor = (risk: string) => {
-    switch (risk) {
-      case 'high': return 'bg-red-100 text-red-700';
-      case 'medium': return 'bg-yellow-100 text-yellow-700';
-      case 'low': return 'bg-green-100 text-green-700';
-      default: return 'bg-gray-100 text-gray-700';
-    }
-  };
-
   if (loading) {
     return (
       <Card className="fintech-card">
-        <CardContent className="p-6">
-          <div className="text-center">Loading services...</div>
+        <CardHeader>
+          <CardTitle>Services Offered</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading services...</p>
+          </div>
         </CardContent>
       </Card>
     );
@@ -318,192 +191,216 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
   return (
     <Card className="fintech-card">
       <CardHeader>
-        <CardTitle className="text-gray-900">Services Offered</CardTitle>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle>Services Offered</CardTitle>
+            <p className="text-sm text-gray-600 mt-1">Your Verification Status</p>
+            <div className="flex gap-2 mt-2">
+              <Badge className="bg-yellow-100 text-yellow-800 border border-yellow-300">
+                ⚠ Background Check: Not Verified
+              </Badge>
+              <Badge className="bg-yellow-100 text-yellow-800 border border-yellow-300">
+                ⚠ CRQ/RBQ: Not Verified
+              </Badge>
+            </div>
+          </div>
+          <Button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="bg-blue-600 hover:bg-blue-700"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Add Service
+          </Button>
+        </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Verification Status */}
-        {providerProfile && (
-          <div className="p-4 bg-gray-50 rounded-lg">
-            <h4 className="font-medium text-gray-900 mb-2">Your Verification Status</h4>
-            <div className="flex gap-2 flex-wrap">
-              <Badge variant={providerProfile.background_check_verified ? "default" : "secondary"}>
-                <Shield className="h-3 w-3 mr-1" />
-                Background Check: {providerProfile.background_check_verified ? 'Verified' : 'Not Verified'}
-              </Badge>
-              <Badge variant={(providerProfile.ccq_verified || providerProfile.rbq_verified) ? "default" : "secondary"}>
-                <Award className="h-3 w-3 mr-1" />
-                CCQ/RBQ: {(providerProfile.ccq_verified || providerProfile.rbq_verified) ? 'Verified' : 'Not Verified'}
-              </Badge>
-            </div>
-          </div>
-        )}
-
-        {/* Existing Services */}
-        <div className="space-y-3">
+        {/* Services List */}
+        <div className="space-y-4">
           {services.map((service) => (
-            <div key={service.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-1">
-                  <h4 className="font-medium text-gray-900">{service.title}</h4>
-                  <Badge variant="secondary">{service.category.replace('_', ' ')}</Badge>
-                  <Badge variant="outline" className={getRiskBadgeColor(service.risk_category)}>
-                    {service.risk_category} risk
-                  </Badge>
+            <div key={service.id} className="p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <h4 className="font-semibold text-gray-900">{service.title}</h4>
+                  <p className="text-sm text-gray-600 mt-1">{service.description}</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <Badge className="bg-blue-100 text-blue-800 border border-blue-300">
+                      {service.category}
+                    </Badge>
+                    <Badge className="bg-green-100 text-green-800 border border-green-300">
+                      low risk
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">
+                    ${service.base_price} / {service.pricing_type}
+                  </p>
                 </div>
-                <p className="text-sm text-gray-600 mb-1">{service.description}</p>
-                <p className="text-sm font-medium text-gray-900">
-                  ${service.base_price} / {service.pricing_type}
-                </p>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleEdit(service)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDelete(service.id)}
+                    className="text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => deleteService(service.id)}
-                className="text-red-600 hover:text-red-700"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
             </div>
           ))}
+
+          {services.length === 0 && (
+            <div className="text-center py-8 text-gray-500">
+              No services added yet. Click "Add Service" to get started.
+            </div>
+          )}
         </div>
 
-        {/* Add New Service */}
-        <div className="border-t pt-6">
-          <h4 className="font-medium text-gray-900 mb-4">Add New Service</h4>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category *
-                </label>
-                <Select 
-                  value={newService.category} 
-                  onValueChange={(value) => setNewService({...newService, category: value, subcategory: ''})}
-                >
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {serviceCategories.map(category => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subcategory *
-                </label>
-                <Select 
-                  value={newService.subcategory} 
-                  onValueChange={(value) => setNewService({...newService, subcategory: value})}
-                  disabled={!newService.category}
-                >
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue placeholder="Select subcategory" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subcategories.map(subcategory => {
-                      const canOffer = canOfferSubcategory(subcategory);
-                      return (
-                        <SelectItem 
-                          key={subcategory.id} 
-                          value={subcategory.subcategory_id}
-                          disabled={!canOffer}
-                          className={!canOffer ? 'opacity-50' : ''}
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg">{subcategory.icon}</span>
-                              <span>{subcategory.subcategory}</span>
-                            </div>
-                            {!canOffer && <AlertTriangle className="h-4 w-4 text-red-500" />}
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                {newService.subcategory && getSelectedSubcategory() && (
-                  <div className="mt-2 flex gap-1 flex-wrap">
-                    {getVerificationBadges(getSelectedSubcategory()!)}
+        {/* Add/Edit Service Form */}
+        {showAddForm && (
+          <Card className="border border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-lg">
+                {editingService ? 'Edit Service' : 'Add New Service'}
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Category *
+                    </label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => setFormData({ ...formData, category: value })}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="cleaning">Cleaning</SelectItem>
+                        <SelectItem value="repair">Repair & Maintenance</SelectItem>
+                        <SelectItem value="installation">Installation</SelectItem>
+                        <SelectItem value="gardening">Gardening & Landscaping</SelectItem>
+                        <SelectItem value="moving">Moving & Transport</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
-                )}
-              </div>
-            </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Service Title *
-              </label>
-              <Input
-                value={newService.title}
-                onChange={(e) => setNewService({...newService, title: e.target.value})}
-                placeholder="e.g., Professional House Cleaning"
-                className="border-gray-300"
-              />
-            </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Subcategory *
+                    </label>
+                    <Select
+                      value={formData.subcategory}
+                      onValueChange={(value) => setFormData({ ...formData, subcategory: value })}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select subcategory" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="residential">Residential</SelectItem>
+                        <SelectItem value="commercial">Commercial</SelectItem>
+                        <SelectItem value="industrial">Industrial</SelectItem>
+                        <SelectItem value="emergency">Emergency</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <Textarea
-                value={newService.description}
-                onChange={(e) => setNewService({...newService, description: e.target.value})}
-                placeholder="Describe your service..."
-                rows={3}
-                className="border-gray-300"
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Service Title *
+                  </label>
+                  <Input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    placeholder="e.g., Professional House Cleaning"
+                    required
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Base Price ($) *
-                </label>
-                <Input
-                  type="number"
-                  value={newService.base_price}
-                  onChange={(e) => setNewService({...newService, base_price: parseFloat(e.target.value) || 0})}
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  className="border-gray-300"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pricing Type *
-                </label>
-                <Select 
-                  value={newService.pricing_type} 
-                  onValueChange={(value) => setNewService({...newService, pricing_type: value})}
-                >
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="flat">Fixed Price</SelectItem>
-                    <SelectItem value="per_service">Per Service</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Description
+                  </label>
+                  <Textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    placeholder="Describe your service..."
+                    rows={3}
+                  />
+                </div>
 
-            <Button
-              onClick={addService}
-              disabled={saving || !newService.title || !newService.category || !newService.subcategory}
-              className="w-full fintech-button-primary"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              {saving ? 'Adding Service...' : 'Add Service'}
-            </Button>
-          </div>
-        </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Base Price ($) *
+                    </label>
+                    <Input
+                      type="number"
+                      value={formData.base_price}
+                      onChange={(e) => setFormData({ ...formData, base_price: e.target.value })}
+                      placeholder="0"
+                      min="0"
+                      step="0.01"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Pricing Type *
+                    </label>
+                    <Select
+                      value={formData.pricing_type}
+                      onValueChange={(value) => setFormData({ ...formData, pricing_type: value })}
+                      required
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Hourly" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white">
+                        <SelectItem value="hourly">Hourly</SelectItem>
+                        <SelectItem value="fixed">Fixed Price</SelectItem>
+                        <SelectItem value="daily">Daily</SelectItem>
+                        <SelectItem value="weekly">Weekly</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 pt-4">
+                  <Button
+                    type="submit"
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    {editingService ? 'Update Service' : 'Add Service'}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={resetForm}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            </CardContent>
+          </Card>
+        )}
       </CardContent>
     </Card>
   );
