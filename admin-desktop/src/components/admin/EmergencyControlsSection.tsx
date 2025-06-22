@@ -73,13 +73,45 @@ const EmergencyControlsSection = () => {
     setLoading(true);
     
     try {
-      const supabase = getSupabase();
       const newValue = !controls[controlKey];
       
       // Update state immediately for UI responsiveness
       setControls(prev => ({ ...prev, [controlKey]: newValue }));
 
-      // Update in database
+      // Handle special cases that don't require database updates
+      if (controlKey === 'claude_response_filtering') {
+        // This is a frontend-only control - no database update needed
+        console.log(`✅ ${actionTitle} ${newValue ? 'activated' : 'deactivated'} (frontend-only)`);
+        return;
+      }
+
+      if (controlKey === 'claude_api_rate_limiting') {
+        // Handle rate limiting by adjusting spend limits instead of saving to non-existent column
+        const supabase = getSupabase();
+        const updateData = {
+          // Enable aggressive rate limiting by lowering the daily spend limit
+          daily_spend_limit: newValue ? 10.00 : 100.00, // Lower limit = more restrictive
+          updated_at: new Date().toISOString()
+        };
+
+        const { error } = await supabase
+          .from('emergency_controls')
+          .update(updateData)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (error) {
+          console.error('Failed to update rate limiting:', error);
+          // Revert state if database update failed
+          setControls(prev => ({ ...prev, [controlKey]: !newValue }));
+        } else {
+          console.log(`✅ Claude API rate limiting ${newValue ? 'enabled' : 'disabled'} via spend limits`);
+        }
+        return;
+      }
+
+      // Handle regular database controls
+      const supabase = getSupabase();
       const updateData = {};
       
       // Map frontend control keys to database fields
