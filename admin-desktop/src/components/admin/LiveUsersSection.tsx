@@ -1,7 +1,8 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Users, MapPin, Activity } from "lucide-react";
+import { Button } from "../ui/button";
+import { Users, MapPin, Activity, Eye, MessageCircle } from "lucide-react";
 
 const LiveUsersSection = () => {
   // Mock data for demo purposes
@@ -10,6 +11,16 @@ const LiveUsersSection = () => {
     { id: 2, name: "Jane Smith", location: "Vancouver, BC", status: "booking", lastSeen: "5 min ago" },
     { id: 3, name: "Mike Johnson", location: "Montreal, QC", status: "browsing", lastSeen: "1 min ago" }
   ];
+
+  const handleViewUser = (userId: number, userName: string) => {
+    console.log(`Viewing live user: ${userName} (ID: ${userId})`);
+    // In a real app, this would show detailed user session information
+  };
+
+  const handleContactUser = (userId: number, userName: string) => {
+    console.log(`Contacting live user: ${userName} (ID: ${userId})`);
+    // In a real app, this would open a chat or messaging interface
+  };
 
   return (
     <Card>
@@ -34,11 +45,29 @@ const LiveUsersSection = () => {
                   </div>
                 </div>
               </div>
-              <div className="text-right">
-                <Badge variant={user.status === 'active' ? 'default' : user.status === 'booking' ? 'secondary' : 'outline'}>
-                  {user.status}
-                </Badge>
-                <p className="text-xs text-muted-foreground mt-1">{user.lastSeen}</p>
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <Badge variant={user.status === 'active' ? 'default' : user.status === 'booking' ? 'secondary' : 'outline'}>
+                    {user.status}
+                  </Badge>
+                  <p className="text-xs text-muted-foreground mt-1">{user.lastSeen}</p>
+                </div>
+                <div className="flex gap-1">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleViewUser(user.id, user.name)}
+                  >
+                    <Eye className="h-3 w-3" />
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleContactUser(user.id, user.name)}
+                  >
+                    <MessageCircle className="h-3 w-3" />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}

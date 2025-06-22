@@ -40,6 +40,16 @@ const FraudDetectionSection = () => {
     blockedUsers: 12
   };
 
+  const handleViewAlert = (alertId: number, alertType: string) => {
+    console.log(`Viewing fraud alert: ${alertType} (ID: ${alertId})`);
+    // In a real app, this would open detailed alert information
+  };
+
+  const handleBlockUser = (alertId: number, userEmail: string) => {
+    console.log(`Blocking user: ${userEmail} (Alert ID: ${alertId})`);
+    // In a real app, this would make an API call to block the user
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -98,10 +108,18 @@ const FraudDetectionSection = () => {
                   </Badge>
                   <span className="text-xs text-muted-foreground">{alert.timestamp}</span>
                   <div className="flex gap-1">
-                    <Button variant="outline" size="sm">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => handleViewAlert(alert.id, alert.type)}
+                    >
                       <Eye className="h-3 w-3" />
                     </Button>
-                    <Button variant="destructive" size="sm">
+                    <Button 
+                      variant="destructive" 
+                      size="sm"
+                      onClick={() => handleBlockUser(alert.id, alert.user)}
+                    >
                       <Ban className="h-3 w-3" />
                     </Button>
                   </div>

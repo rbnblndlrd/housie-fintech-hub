@@ -12,6 +12,20 @@ const UserManagementSection = () => {
     { id: 3, name: "Carol Davis", email: "carol@example.com", role: "provider", status: "suspended", verified: true }
   ];
 
+  const handleViewUser = (userId: number, userName: string) => {
+    console.log(`Viewing user: ${userName} (ID: ${userId})`);
+    // In a real app, this would navigate to user details or open a modal
+  };
+
+  const handleSuspendUser = (userId: number, userName: string, currentStatus: string) => {
+    if (currentStatus === 'suspended') {
+      console.log(`Unsuspending user: ${userName} (ID: ${userId})`);
+    } else {
+      console.log(`Suspending user: ${userName} (ID: ${userId})`);
+    }
+    // In a real app, this would make an API call to update user status
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -44,15 +58,27 @@ const UserManagementSection = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="sm">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => handleViewUser(user.id, user.name)}
+                >
                   View
                 </Button>
                 {user.status === 'suspended' ? (
-                  <Button variant="default" size="sm">
+                  <Button 
+                    variant="default" 
+                    size="sm"
+                    onClick={() => handleSuspendUser(user.id, user.name, user.status)}
+                  >
                     Unsuspend
                   </Button>
                 ) : (
-                  <Button variant="destructive" size="sm">
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => handleSuspendUser(user.id, user.name, user.status)}
+                  >
                     <AlertTriangle className="h-3 w-3 mr-1" />
                     Suspend
                   </Button>

@@ -1,7 +1,6 @@
-
 const { app, BrowserWindow, Menu, ipcMain, shell, safeStorage } = require('electron');
 const path = require('path');
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = require('electron-is-dev');
 
 let mainWindow;
 
@@ -24,9 +23,11 @@ function createWindow() {
 
   // Load the app
   if (isDev) {
+    console.log('Running in development mode, loading from localhost:5173');
     mainWindow.loadURL('http://localhost:5173');
     mainWindow.webContents.openDevTools();
   } else {
+    console.log('Running in production mode, loading from dist');
     mainWindow.loadFile(path.join(__dirname, '../dist/index.html'));
   }
 

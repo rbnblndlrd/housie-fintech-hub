@@ -2,14 +2,14 @@
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { useAuth } from "../contexts/AuthContext";
-import { useTheme } from "../contexts/ThemeContext";
+import { useAppTheme } from "../contexts/ThemeContext";
 import { LogOut, Moon, Sun, Minimize2, Maximize2, X, Settings } from "lucide-react";
 import { useState } from "react";
 import SettingsDialog from "./SettingsDialog";
 
 const Header = () => {
   const { user, signOut, supabaseReady } = useAuth();
-  const { isDark, toggleTheme } = useTheme();
+  const { isDark, toggleTheme } = useAppTheme();
   const [isMaximized, setIsMaximized] = useState(false);
 
   const handleSignOut = async () => {

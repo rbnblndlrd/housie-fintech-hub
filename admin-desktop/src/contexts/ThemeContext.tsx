@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext } from 'react';
-import { ThemeProvider as NextThemesProvider, useTheme } from 'next-themes';
+import { ThemeProvider as NextThemesProvider, useTheme as useNextTheme } from 'next-themes';
 
 interface ThemeContextType {
   isDark: boolean;
@@ -18,7 +18,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 };
 
 const ThemeContextWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme } = useNextTheme();
   
   const isDark = theme === 'dark';
   
@@ -34,10 +34,10 @@ const ThemeContextWrapper: React.FC<{ children: React.ReactNode }> = ({ children
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
 
-export const useTheme = () => {
+export const useAppTheme = () => {
   const context = useContext(ThemeContext);
   if (context === undefined) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    throw new Error('useAppTheme must be used within a ThemeProvider');
   }
   return context;
 };

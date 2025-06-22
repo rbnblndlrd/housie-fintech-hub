@@ -44,6 +44,16 @@ const EmergencyControlsSection = () => {
     }
   ];
 
+  const handleEmergencyAction = (actionId: number, actionTitle: string) => {
+    console.log(`Emergency action triggered: ${actionTitle} (ID: ${actionId})`);
+    // In a real app, this would make an API call to toggle the emergency control
+  };
+
+  const handleCriticalAction = (actionType: string) => {
+    console.log(`Critical emergency action: ${actionType}`);
+    // In a real app, this would require additional confirmation and make API calls
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -92,6 +102,7 @@ const EmergencyControlsSection = () => {
                   <Button 
                     variant={action.status === 'active' ? 'default' : action.critical ? 'destructive' : 'secondary'}
                     size="sm"
+                    onClick={() => handleEmergencyAction(action.id, action.title)}
                   >
                     <Power className="h-3 w-3 mr-1" />
                     {action.status === 'active' ? 'Disable' : 'Enable'}
@@ -111,11 +122,19 @@ const EmergencyControlsSection = () => {
             These actions will immediately affect all users. Use only in genuine emergencies.
           </p>
           <div className="flex gap-2">
-            <Button variant="destructive" size="sm">
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={() => handleCriticalAction('Emergency Database Backup')}
+            >
               <Database className="h-3 w-3 mr-1" />
               Emergency Database Backup
             </Button>
-            <Button variant="destructive" size="sm">
+            <Button 
+              variant="destructive" 
+              size="sm"
+              onClick={() => handleCriticalAction('Platform Shutdown')}
+            >
               <AlertTriangle className="h-3 w-3 mr-1" />
               Platform Shutdown
             </Button>
