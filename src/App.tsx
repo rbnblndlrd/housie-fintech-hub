@@ -41,55 +41,65 @@ import GoogleCalendarCallback from "@/components/GoogleCalendarCallback";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider>
-      <PopArtProvider>
-        <LanguageProvider>
-          <BrowserRouter>
-            <AuthProvider>
-              <RoleProvider>
-                <SubscriptionProvider>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/welcome" element={<Welcome />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/services" element={<Services />} />
-                    <Route path="/provider/:id" element={<PublicProviderProfile />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
-                    <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
-                    <Route path="/business-insights" element={<BusinessInsights />} />
-                    <Route path="/tax-reports" element={<TaxReports />} />
-                    <Route path="/notifications" element={<Notifications />} />
-                    <Route path="/booking-history" element={<BookingHistory />} />
-                    <Route path="/booking-success" element={<BookingSuccess />} />
-                    <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-                    <Route path="/provider-dashboard" element={<ProviderDashboard />} />
-                    <Route path="/customer-profile" element={<CustomerProfile />} />
-                    <Route path="/provider-profile" element={<ProviderProfile />} />
-                    <Route path="/booking-management" element={<BookingManagement />} />
-                    <Route path="/onboarding" element={<Onboarding />} />
-                    <Route path="/profile-setup" element={<ProfileSetup />} />
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/about" element={<About />} />
-                    <Route path="/faq" element={<FAQ />} />
-                    <Route path="/faq-archive" element={<FAQArchive />} />
-                    <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                  <Toaster />
-                  <Sonner />
-                </SubscriptionProvider>
-              </RoleProvider>
-            </AuthProvider>
-          </BrowserRouter>
-        </LanguageProvider>
-      </PopArtProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+// Check if running in desktop mode
+const isDesktopMode = typeof window !== 'undefined' && (window as any).DESKTOP_MODE;
+
+const App = () => {
+  // If in desktop mode, redirect to desktop app
+  if (isDesktopMode) {
+    return null; // Desktop app handles its own routing
+  }
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider>
+        <PopArtProvider>
+          <LanguageProvider>
+            <BrowserRouter>
+              <AuthProvider>
+                <RoleProvider>
+                  <SubscriptionProvider>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/auth" element={<Auth />} />
+                      <Route path="/welcome" element={<Welcome />} />
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/services" element={<Services />} />
+                      <Route path="/provider/:id" element={<PublicProviderProfile />} />
+                      <Route path="/calendar" element={<Calendar />} />
+                      <Route path="/analytics" element={<Analytics />} />
+                      <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                      <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+                      <Route path="/business-insights" element={<BusinessInsights />} />
+                      <Route path="/tax-reports" element={<TaxReports />} />
+                      <Route path="/notifications" element={<Notifications />} />
+                      <Route path="/booking-history" element={<BookingHistory />} />
+                      <Route path="/booking-success" element={<BookingSuccess />} />
+                      <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+                      <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+                      <Route path="/customer-profile" element={<CustomerProfile />} />
+                      <Route path="/provider-profile" element={<ProviderProfile />} />
+                      <Route path="/booking-management" element={<BookingManagement />} />
+                      <Route path="/onboarding" element={<Onboarding />} />
+                      <Route path="/profile-setup" element={<ProfileSetup />} />
+                      <Route path="/admin" element={<AdminDashboard />} />
+                      <Route path="/about" element={<About />} />
+                      <Route path="/faq" element={<FAQ />} />
+                      <Route path="/faq-archive" element={<FAQArchive />} />
+                      <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                    <Toaster />
+                    <Sonner />
+                  </SubscriptionProvider>
+                </RoleProvider>
+              </AuthProvider>
+            </BrowserRouter>
+          </LanguageProvider>
+        </PopArtProvider>
+      </ThemeProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
