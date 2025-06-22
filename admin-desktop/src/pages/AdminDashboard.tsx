@@ -5,6 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Skeleton } from "../components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
 import Header from "../components/Header";
 import OverviewSection from "../components/admin/OverviewSection";
 import LiveUsersSection from "../components/admin/LiveUsersSection";
@@ -16,6 +17,7 @@ import PlatformHealthSection from "../components/admin/PlatformHealthSection";
 import FinancialInsightsSection from "../components/admin/FinancialInsightsSection";
 import CreditAnalyticsSection from "../components/admin/CreditAnalyticsSection";
 import DevelopmentToolsSection from "../components/admin/DevelopmentToolsSection";
+import FraudMegaMenu from "../components/admin/FraudMegaMenu";
 
 declare global {
   interface Window {
@@ -98,12 +100,12 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+      <div className="container mx-auto px-4 py-6">
+        <div className="mb-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-              <p className="text-muted-foreground mt-2">
+              <p className="text-muted-foreground mt-1">
                 Desktop application for comprehensive platform management
               </p>
             </div>
@@ -119,18 +121,43 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <div className="space-y-8">
-          <OverviewSection />
-          <LiveUsersSection />
-          <UserManagementSection />
-          <BookingAnalyticsSection />
-          <FraudDetectionSection />
-          <EmergencyControlsSection />
-          <PlatformHealthSection />
-          <FinancialInsightsSection />
-          <CreditAnalyticsSection />
-          <DevelopmentToolsSection />
-        </div>
+        <Tabs defaultValue="dashboard" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="emergency">Emergency Controls</TabsTrigger>
+            <TabsTrigger value="dev-tools">Development Tools</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="dashboard" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <OverviewSection />
+              <FraudMegaMenu />
+            </div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <LiveUsersSection />
+              <UserManagementSection />
+            </div>
+            <PlatformHealthSection />
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <BookingAnalyticsSection />
+              <FinancialInsightsSection />
+            </div>
+            <CreditAnalyticsSection />
+            <FraudDetectionSection />
+          </TabsContent>
+
+          <TabsContent value="emergency" className="space-y-6">
+            <EmergencyControlsSection />
+          </TabsContent>
+
+          <TabsContent value="dev-tools" className="space-y-6">
+            <DevelopmentToolsSection />
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
