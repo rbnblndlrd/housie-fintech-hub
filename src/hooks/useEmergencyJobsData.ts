@@ -63,42 +63,12 @@ export const useEmergencyJobsData = () => {
 
       if (jobsError) {
         console.error('Error fetching emergency jobs:', jobsError);
-        // Create fallback emergency jobs for demo
-        setEmergencyJobs([
-          {
-            id: '1',
-            title: 'Urgent Plumbing Repair',
-            location: 'Downtown Montreal',
-            price: 150,
-            timePosted: '5 mins ago',
-            priority: 'emergency',
-            description: 'Water leak in apartment building basement',
-            service_id: 'fallback-1',
-            customer_id: 'fallback-customer-1',
-            service_address: 'Downtown Montreal, QC',
-            scheduled_date: new Date().toISOString().split('T')[0],
-            scheduled_time: new Date().toTimeString().split(' ')[0],
-            total_amount: 150,
-            created_at: new Date(Date.now() - 5 * 60 * 1000).toISOString()
-          },
-          {
-            id: '2',
-            title: 'Emergency Electrical Issue',
-            location: 'Plateau Mont-Royal',
-            price: 200,
-            timePosted: '12 mins ago',
-            priority: 'emergency',
-            description: 'Power outage in commercial building',
-            service_id: 'fallback-2',
-            customer_id: 'fallback-customer-2',
-            service_address: 'Plateau Mont-Royal, QC',
-            scheduled_date: new Date().toISOString().split('T')[0],
-            scheduled_time: new Date().toTimeString().split(' ')[0],
-            total_amount: 200,
-            created_at: new Date(Date.now() - 12 * 60 * 1000).toISOString()
-          }
-        ]);
-      } else if (emergencyBookings && emergencyBookings.length > 0) {
+        setError('Failed to load emergency jobs');
+        setEmergencyJobs([]);
+        return;
+      }
+
+      if (emergencyBookings && emergencyBookings.length > 0) {
         console.log(`Found ${emergencyBookings.length} emergency jobs`);
         
         const formattedJobs: EmergencyJob[] = emergencyBookings.map(booking => {
@@ -125,12 +95,14 @@ export const useEmergencyJobsData = () => {
         
         setEmergencyJobs(formattedJobs);
       } else {
-        console.log('No emergency jobs found, using fallback data');
+        console.log('No emergency jobs found');
         setEmergencyJobs([]);
       }
+      setError(null);
     } catch (error) {
       console.error('Failed to fetch emergency jobs:', error);
       setError('Failed to load emergency jobs');
+      setEmergencyJobs([]);
     }
   };
 
@@ -150,7 +122,7 @@ export const useEmergencyJobsData = () => {
         .from('users')
         .select('*', { count: 'exact', head: true })
         .eq('can_provide', true)
-        .eq('status', 'active');
+        .eq('status', 'available');
 
       // Calculate average response time from accepted bookings
       const { data: responseData } = await supabase
@@ -200,16 +172,22 @@ export const useEmergencyJobsData = () => {
     try {
       console.log('Accepting emergency job:', jobId);
       
-      // Here you would typically update the booking status and assign the current user as provider
-      // For now, we'll just log the action and remove it from the list
+      // Update the booking status to accepted
+      const { error } = await supabase
+        .from('bookings')
+        .update({ 
+          status: 'confirmed', 
+          accepted_at: new Date().toISOString() 
+        })
+        .eq('id', jobId);
+
+      if (error) {
+        console.error('Failed to accept emergency job:', error);
+        return false;
+      }
+      
+      // Remove from the list immediately for better UX
       setEmergencyJobs(prev => prev.filter(job => job.id !== jobId));
-      
-      // In a real implementation:
-      // const { error } = await supabase
-      //   .from('bookings')
-      //   .update({ status: 'accepted', provider_id: currentUserId, accepted_at: new Date().toISOString() })
-      //   .eq('id', jobId);
-      
       console.log('Emergency job accepted successfully');
       return true;
     } catch (error) {

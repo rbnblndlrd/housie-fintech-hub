@@ -42,11 +42,10 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
     if (selectedProvider) {
       console.log('Booking provider:', selectedProvider.name);
       onProviderSelect(selectedProvider);
-      setSelectedProvider(null); // Close the preview card
+      setSelectedProvider(null);
     }
   };
 
-  // Error boundary for map component
   const handleMapError = (error: string) => {
     console.error('Map error in InteractiveServicesMap:', error);
     setMapError(error);
@@ -69,14 +68,13 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
   return (
     <div className="relative h-96 w-full">
       <GoogleMap
-        center={{ lat: 45.5017, lng: -73.5673 }} // Montreal coordinates
+        center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={12}
         className="w-full h-full"
         providers={providers}
         hoveredProviderId={hoveredProviderId}
       />
       
-      {/* Provider Preview Card */}
       {selectedProvider && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
           <Card className="fintech-card">
