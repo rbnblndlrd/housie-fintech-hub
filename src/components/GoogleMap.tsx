@@ -69,42 +69,54 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [debugInfo, setDebugInfo] = useState<string>('');
 
   const handleLoad = () => {
-    console.log('Google Maps loaded successfully for Montreal interactive map');
+    console.log('✅ Google Maps loaded successfully!');
+    console.log('📍 Current domain:', window.location.hostname);
+    console.log('🌐 Full URL:', window.location.href);
     setIsLoaded(true);
     setLoadError(null);
     setIsLoading(false);
+    setDebugInfo('Maps loaded successfully');
   };
 
   const handleError = (error: Error) => {
-    console.error('Google Maps failed to load:', error);
-    console.error('Error details:', {
+    console.error('❌ Google Maps failed to load:', error);
+    console.error('🔍 Error details:', {
       message: error.message,
       stack: error.stack,
-      apiKey: GOOGLE_MAPS_API_KEY ? 'Present' : 'Missing'
+      name: error.name,
+      apiKey: GOOGLE_MAPS_API_KEY ? 'Present' : 'Missing',
+      currentDomain: window.location.hostname,
+      currentURL: window.location.href
     });
     
     let errorMessage = 'Failed to load Google Maps';
+    let debugMessage = `Error: ${error.message}`;
     
     if (error.message.includes('InvalidKeyMapError')) {
-      errorMessage = 'Invalid Google Maps API key - Please check your API key configuration';
-      console.error('API Key issue: The provided API key may be invalid or restricted');
+      errorMessage = 'Invalid Google Maps API key';
+      debugMessage = 'API Key is invalid or malformed';
     } else if (error.message.includes('RefererNotAllowedMapError')) {
-      errorMessage = 'Domain not authorized - Please add *.lovable.app to your API key restrictions';
-      console.error('Domain restriction: Current domain not allowed for this API key');
+      errorMessage = 'Domain not authorized for this API key';
+      debugMessage = `Current domain (${window.location.hostname}) is not allowed. Add *.lovable.app to your API key restrictions in Google Cloud Console.`;
     } else if (error.message.includes('QuotaExceededError')) {
-      errorMessage = 'Google Maps API quota exceeded - Check your billing and usage limits';
-      console.error('Quota exceeded: API usage limits reached');
+      errorMessage = 'Google Maps API quota exceeded';
+      debugMessage = 'Daily quota limit reached. Check your Google Cloud Console billing and quotas.';
     } else if (error.message.includes('RequestDeniedMapError')) {
-      errorMessage = 'Maps JavaScript API not enabled - Enable it in Google Cloud Console';
-      console.error('API not enabled: Maps JavaScript API needs to be enabled');
+      errorMessage = 'Maps JavaScript API not enabled';
+      debugMessage = 'Enable Maps JavaScript API in Google Cloud Console under APIs & Services.';
     } else if (error.message.includes('BillingNotEnabledMapError')) {
-      errorMessage = 'Billing not enabled - Enable billing in Google Cloud Console';
-      console.error('Billing issue: Billing account required for Maps API');
+      errorMessage = 'Billing not enabled';
+      debugMessage = 'Enable billing in Google Cloud Console - required even for free usage.';
+    } else if (error.message.includes('ApiNotActivatedMapError')) {
+      errorMessage = 'Maps API not activated';
+      debugMessage = 'Activate the Maps JavaScript API in Google Cloud Console.';
     }
     
     setLoadError(errorMessage);
+    setDebugInfo(debugMessage);
     setIsLoading(false);
   };
 
@@ -148,20 +160,35 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   if (loadError) {
     return (
       <div className={`w-full h-full rounded-lg bg-gray-100 flex items-center justify-center ${className}`}>
-        <div className="text-center p-6 max-w-md">
-          <div className="text-red-600 mb-2 text-lg">🗺️ Map Error</div>
-          <p className="text-gray-700 mb-3 font-medium">{loadError}</p>
-          <div className="text-sm text-gray-600 space-y-2">
-            <p className="font-medium">Common solutions:</p>
-            <ul className="list-disc list-inside text-left space-y-1">
-              <li>Enable Maps JavaScript API in Google Cloud Console</li>
-              <li>Set up billing (required even for free usage)</li>
-              <li>Add *.lovable.app to API key restrictions</li>
-              <li>Check daily usage quotas</li>
-            </ul>
-            <p className="mt-3 text-xs text-gray-500">
-              Check browser console for detailed error information
-            </p>
+        <div className="text-center p-6 max-w-lg">
+          <div className="text-red-600 mb-3 text-xl">🗺️ Map Loading Error</div>
+          <p className="text-gray-800 mb-4 font-medium text-lg">{loadError}</p>
+          
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+            <p className="text-sm text-gray-700 font-medium mb-2">Debug Information:</p>
+            <p className="text-xs text-gray-600 break-words">{debugInfo}</p>
+            <p className="text-xs text-gray-500 mt-2">Domain: {window.location.hostname}</p>
+          </div>
+
+          <div className="text-sm text-gray-600 space-y-3 text-left">
+            <p className="font-medium text-center">Quick Solutions:</p>
+            <div className="bg-blue-50 border border-blue-200 rounded p-3">
+              <p className="font-medium text-blue-800 mb-2">Most Likely Fix:</p>
+              <ol className="list-decimal list-inside space-y-1 text-xs">
+                <li>Go to Google Cloud Console</li>
+                <li>Find your API key settings</li>
+                <li>Set "Application restrictions" to <strong>"None"</strong> temporarily</li>
+                <li>Or add <strong>*.lovable.app</strong> to domain restrictions</li>
+              </ol>
+            </div>
+            <div className="bg-green-50 border border-green-200 rounded p-3">
+              <p className="font-medium text-green-800 mb-2">Also Check:</p>
+              <ul className="list-disc list-inside space-y-1 text-xs">
+                <li>Maps JavaScript API is enabled</li>
+                <li>Billing account is set up</li>
+                <li>Daily quotas not exceeded</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
@@ -173,8 +200,12 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
       <div className={`w-full h-full rounded-lg bg-gray-50 flex items-center justify-center ${className}`}>
         <div className="text-center p-6">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading Montreal interactive map...</p>
-          <p className="text-xs text-gray-500 mt-2">Connecting to Google Maps API...</p>
+          <p className="text-gray-700 font-medium mb-2">Loading Montreal interactive map...</p>
+          <p className="text-sm text-gray-500 mb-2">Connecting to Google Maps API...</p>
+          <div className="text-xs text-gray-400 mt-3 space-y-1">
+            <p>API Key: {GOOGLE_MAPS_API_KEY ? '✓ Present' : '✗ Missing'}</p>
+            <p>Domain: {window.location.hostname}</p>
+          </div>
         </div>
       </div>
     );
@@ -192,6 +223,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
               <p className="text-gray-600">Initializing Montreal map...</p>
+              <p className="text-xs text-gray-400 mt-2">Loading Google Maps SDK...</p>
             </div>
           </div>
         }
@@ -201,7 +233,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
           center={center}
           zoom={zoom}
           options={mapOptions}
-          onLoad={() => console.log('Montreal map instance ready with', providers.length, 'providers')}
+          onLoad={() => console.log('🗺️ Montreal map instance ready with', providers.length, 'providers')}
         >
           {isLoaded && providers.map(provider => (
             <Marker
