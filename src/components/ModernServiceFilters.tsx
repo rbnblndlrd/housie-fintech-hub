@@ -68,7 +68,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
     <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
       {/* Category Filter */}
       <Select value={selectedCategory} onValueChange={onCategoryChange}>
-        <SelectTrigger className="w-[200px] h-12 border-4 border-black rounded-lg bg-white hover:bg-gray-50 transition-colors">
+        <SelectTrigger className="w-[200px] h-12 fintech-card-secondary">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
               <span className="text-xs">🏷️</span>
@@ -90,12 +90,12 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
         category={selectedCategory}
         value={selectedSubcategory}
         onChange={onSubcategoryChange}
-        className="w-[220px] h-12 border-4 border-black rounded-lg bg-white hover:bg-gray-50 transition-colors"
+        className="w-[220px] h-12 fintech-card-secondary"
       />
 
       {/* Location Filter */}
       <Select value={selectedLocation} onValueChange={onLocationChange}>
-        <SelectTrigger className="w-[180px] h-12 border-4 border-black rounded-lg bg-white hover:bg-gray-50 transition-colors">
+        <SelectTrigger className="w-[180px] h-12 fintech-card-secondary">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-gray-500" />
             <SelectValue placeholder="Montreal" />
@@ -112,7 +112,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
 
       {/* Time Filter */}
       <Select value={selectedTime} onValueChange={onTimeChange}>
-        <SelectTrigger className="w-[150px] h-12 border-4 border-black rounded-lg bg-white hover:bg-gray-50 transition-colors">
+        <SelectTrigger className="w-[150px] h-12 fintech-card-secondary">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-gray-500" />
             <SelectValue placeholder="10:30 AM" />
@@ -134,7 +134,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
         else if (value === '60-100') onPriceRangeChange([60, 100]);
         else onPriceRangeChange([10, 200]);
       }}>
-        <SelectTrigger className="w-[160px] h-12 border-4 border-black rounded-lg bg-white hover:bg-gray-50 transition-colors">
+        <SelectTrigger className="w-[160px] h-12 fintech-card-secondary">
           <div className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-gray-500" />
             <SelectValue placeholder="Price Range" />
