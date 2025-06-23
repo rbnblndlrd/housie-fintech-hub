@@ -7,11 +7,15 @@ import UserMenu from '@/components/header/UserMenu';
 import HeaderActions from '@/components/header/HeaderActions';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { getNavigationItems } from '@/utils/navigationConfig';
 
 const Header = () => {
   const { user } = useAuth();
   const { currentRole } = useRole();
   const navigate = useNavigate();
+
+  // Get navigation items based on user and current role
+  const navigationItems = getNavigationItems(user, currentRole);
 
   return (
     <header className="bg-gray-900 text-white shadow-lg">
@@ -26,7 +30,7 @@ const Header = () => {
                 className="h-8 w-auto" 
               />
             </div>
-            <DynamicNavigation />
+            <DynamicNavigation items={navigationItems} />
           </div>
 
           {/* Right side - Actions and User Menu */}
