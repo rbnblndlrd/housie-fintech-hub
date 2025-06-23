@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
+import { useRole } from "@/contexts/RoleContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -16,6 +16,7 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
+  const { currentRole } = useRole();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -38,7 +39,10 @@ const Auth = () => {
         title: "Connexion réussie",
         description: "Bienvenue sur HOUSIE!",
       });
-      navigate('/dashboard');
+      
+      // Redirect based on current role
+      const redirectPath = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+      navigate(redirectPath);
     } catch (error: any) {
       let errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
       
