@@ -16,8 +16,6 @@ import {
   CheckCircle,
   AlertCircle,
   TrendingUp,
-  Users,
-  BarChart3,
   MapPin,
   Settings
 } from 'lucide-react';
@@ -340,7 +338,7 @@ const ProviderDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/services')}
+              onClick={() => navigate('/heat-zone-map')}
             >
               <MapPin className="h-6 w-6 mr-2" />
               Map

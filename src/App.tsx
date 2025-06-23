@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { useToast } from "@/hooks/use-toast";
@@ -43,6 +42,7 @@ import PublicProviderProfile from "@/pages/PublicProviderProfile";
 import NotFound from "@/pages/NotFound";
 import GoogleCalendarCallback from "@/components/GoogleCalendarCallback";
 import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
+import HeatZoneMapPage from "@/pages/HeatZoneMapPage";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +96,7 @@ const App = () => {
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/faq-archive" element={<FAQArchive />} />
                       <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
+                      <Route path="/heat-zone-map" element={<HeatZoneMapPage />} />
                       <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>

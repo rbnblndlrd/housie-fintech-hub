@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import HeatZoneMap from "@/components/HeatZoneMap";
 import { 
   Calendar, 
   MapPin, 
@@ -18,7 +18,6 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
-  TrendingUp,
   Settings,
   History
 } from 'lucide-react';
@@ -254,56 +253,6 @@ const CustomerDashboard = () => {
             </Card>
           </div>
 
-          {/* Recent Activity */}
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5" />
-                Recent Activity
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {loading ? (
-                <div className="space-y-3">
-                  {[...Array(5)].map((_, i) => (
-                    <Skeleton key={i} className="h-16 w-full" />
-                  ))}
-                </div>
-              ) : stats.recentBookings.length === 0 ? (
-                <p className="text-gray-500 text-center py-4">No recent activity</p>
-              ) : (
-                <div className="space-y-3">
-                  {stats.recentBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
-                          <Calendar className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="font-medium">{booking.service?.title || 'Service'}</p>
-                          <p className="text-sm text-gray-600">
-                            with {booking.provider?.business_name || booking.provider?.users?.full_name || 'Provider'}
-                          </p>
-                          <p className="text-sm text-gray-500">
-                            {new Date(booking.scheduled_date).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <Badge variant={getStatusBadgeVariant(booking.status)}>
-                          {booking.status}
-                        </Badge>
-                        <p className="text-sm font-medium mt-1">
-                          {formatCurrency(Number(booking.total_amount) || 0)}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
           {/* Quick Actions - Updated navigation */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
             <Button 
@@ -324,7 +273,7 @@ const CustomerDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/services')}
+              onClick={() => navigate('/heat-zone-map')}
             >
               <MapPin className="h-6 w-6 mr-2" />
               Map
@@ -337,26 +286,6 @@ const CustomerDashboard = () => {
               <Settings className="h-6 w-6 mr-2" />
               Settings
             </Button>
-          </div>
-
-          {/* Heat Zone Map Section */}
-          <div className="mt-8">
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  Service Demand Heat Map
-                </CardTitle>
-                <p className="text-sm text-gray-600">
-                  Discover high-demand areas and service availability in your region
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="h-96 rounded-lg overflow-hidden">
-                  <HeatZoneMap userRole="customer" />
-                </div>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
