@@ -91,7 +91,7 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
           } />
         </div>
       </SelectTrigger>
-      <SelectContent className="rounded-xl border-gray-200 shadow-lg">
+      <SelectContent className="fintech-card border-4 border-black shadow-xl">
         <SelectItem value="all">All Subcategories</SelectItem>
         {subcategories.map((subcategory) => (
           <SelectItem key={subcategory.id} value={subcategory.subcategory_id}>

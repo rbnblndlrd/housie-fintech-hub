@@ -49,7 +49,7 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
       {/* Provider Preview Card */}
       {selectedProvider && (
         <div className="absolute bottom-4 left-4 right-4 z-10">
-          <Card className="bg-white/95 backdrop-blur-md shadow-lg border-0">
+          <Card className="fintech-card">
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
@@ -84,7 +84,7 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
                   </p>
                   <Button 
                     onClick={() => onProviderSelect(selectedProvider)}
-                    className="mt-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-4 py-2"
+                    className="mt-2 fintech-button-primary"
                   >
                     Book Now
                   </Button>
