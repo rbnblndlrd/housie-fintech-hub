@@ -17,7 +17,7 @@ import { useCalendarEvents } from '@/hooks/useCalendarEvents';
 import { useGoogleCalendar } from '@/hooks/useGoogleCalendar';
 import { CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRoleContext } from '@/contexts/RoleContext';
+import { useRole } from '@/contexts/RoleContext';
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -29,7 +29,7 @@ const Calendar = () => {
   const { isFeatureAvailable } = useSubscription();
   const { toast } = useToast();
   const { user } = useAuth();
-  const { currentRole } = useRoleContext();
+  const { currentRole } = useRole();
   const navigate = useNavigate();
   const { isConnected: googleConnected } = useGoogleCalendar();
   const { events, fetchEvents, loading: calendarLoading } = useCalendarEvents();

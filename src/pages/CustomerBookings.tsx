@@ -29,8 +29,8 @@ interface Booking {
   duration_hours: number;
   total_amount: number;
   service_address: string;
-  status: 'pending' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
-  payment_status: 'pending' | 'paid' | 'refunded';
+  status: string; // Changed from union type to string to match database
+  payment_status: string; // Changed from union type to string to match database
   provider: {
     business_name: string;
     user: {
