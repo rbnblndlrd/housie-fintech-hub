@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home } from 'lucide-react';
+import { ArrowLeft, Home } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -11,7 +11,6 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import BackButton from './BackButton';
 
 interface ProviderProfileNavigationProps {
   providerName: string;
@@ -20,10 +19,26 @@ interface ProviderProfileNavigationProps {
 const ProviderProfileNavigation: React.FC<ProviderProfileNavigationProps> = ({ providerName }) => {
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    // Try to go back in browser history, fallback to services page
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate('/services');
+    }
+  };
+
   return (
     <div className="mb-6">
       <div className="flex items-center justify-between mb-4">
-        <BackButton customPath="/services" customLabel="Back to Services" />
+        <Button
+          onClick={handleBack}
+          variant="outline"
+          className="flex items-center gap-2 hover:bg-gray-50"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Button>
         
         <Button
           onClick={() => navigate('/services')}

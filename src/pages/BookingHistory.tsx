@@ -4,7 +4,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRole } from '@/contexts/RoleContext';
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
-import BackButton from "@/components/BackButton";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +17,8 @@ import {
   XCircle,
   MessageCircle,
   FileText,
-  Star
+  Star,
+  ArrowLeft
 } from 'lucide-react';
 import {
   Table,
@@ -256,7 +256,14 @@ const BookingHistory = () => {
         <div className="max-w-7xl mx-auto">
           {/* Back Navigation */}
           <div className="mb-6">
-            <BackButton />
+            <Button
+              onClick={() => navigate(getBackNavigation().href)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {getBackNavigation().label}
+            </Button>
           </div>
 
           {/* Page Header */}

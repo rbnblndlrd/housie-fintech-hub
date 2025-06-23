@@ -1,7 +1,8 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Home } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft, Home } from 'lucide-react';
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -10,7 +11,6 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
-import BackButton from './BackButton';
 
 interface ProfileNavigationProps {
   profileType: 'customer' | 'provider';
@@ -19,13 +19,29 @@ interface ProfileNavigationProps {
 const ProfileNavigation: React.FC<ProfileNavigationProps> = ({ profileType }) => {
   const navigate = useNavigate();
 
+  const handleBack = () => {
+    // Try to go back in browser history, fallback to dashboard
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      const dashboardPath = profileType === 'provider' ? '/analytics' : '/customer-dashboard';
+      navigate(dashboardPath);
+    }
+  };
+
   const dashboardLabel = profileType === 'provider' ? 'Provider Dashboard' : 'Customer Dashboard';
   const dashboardHref = profileType === 'provider' ? '/analytics' : '/customer-dashboard';
 
   return (
     <div className="mb-6">
       <div className="flex items-center gap-3 mb-4">
-        <BackButton />
+        <Button
+          onClick={handleBack}
+          variant="outline"
+          className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+        >
+          ← Back
+        </Button>
       </div>
       
       <Breadcrumb>
