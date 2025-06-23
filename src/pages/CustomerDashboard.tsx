@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import HeatZoneMap from "@/components/HeatZoneMap";
 import { 
   Calendar, 
   MapPin, 
@@ -18,7 +19,8 @@ import {
   AlertCircle,
   Users,
   TrendingUp,
-  Settings
+  Settings,
+  History
 } from 'lucide-react';
 
 const CustomerDashboard = () => {
@@ -302,21 +304,21 @@ const CustomerDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Actions - Changed Messages to Map and added Settings */}
+          {/* Quick Actions - Updated navigation */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
             <Button 
               className="h-20 text-lg"
-              onClick={() => navigate('/services')}
+              onClick={() => navigate('/calendar')}
             >
               <Calendar className="h-6 w-6 mr-2" />
-              Book a Service
+              Calendar
             </Button>
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/customer-bookings')}
+              onClick={() => navigate('/booking-history')}
             >
-              <Clock className="h-6 w-6 mr-2" />
+              <History className="h-6 w-6 mr-2" />
               View History
             </Button>
             <Button 
@@ -335,6 +337,26 @@ const CustomerDashboard = () => {
               <Settings className="h-6 w-6 mr-2" />
               Settings
             </Button>
+          </div>
+
+          {/* Heat Zone Map Section */}
+          <div className="mt-8">
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MapPin className="h-5 w-5" />
+                  Service Demand Heat Map
+                </CardTitle>
+                <p className="text-sm text-gray-600">
+                  Discover high-demand areas and service availability in your region
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="h-96 rounded-lg overflow-hidden">
+                  <HeatZoneMap userRole="customer" />
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
