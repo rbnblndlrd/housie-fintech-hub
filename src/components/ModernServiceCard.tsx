@@ -49,7 +49,8 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
   
   // Static availability and distance (no random changes on hover)
   const isAvailable = true; // Always show as available
-  const distance = Math.floor(Math.random() * 10) + 1;
+  // Generate a consistent distance based on service ID to avoid changes on hover
+  const distance = service.id ? (parseInt(service.id) % 10) + 1 : Math.floor(Math.random() * 10) + 1;
 
   return (
     <Card 
