@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { useToast } from "@/hooks/use-toast";
@@ -26,6 +25,8 @@ import BookingHistory from "@/pages/BookingHistory";
 import BookingSuccess from "@/pages/BookingSuccess";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import ProviderDashboard from "@/pages/ProviderDashboard";
+import ProviderBookings from "@/pages/ProviderBookings";
+import ProviderSettings from "@/pages/ProviderSettings";
 import CustomerProfile from "@/pages/CustomerProfile";
 import ProviderProfile from "@/pages/ProviderProfile";
 import BookingManagement from "@/pages/BookingManagement";
@@ -77,6 +78,8 @@ const App = () => {
                       <Route path="/booking-success" element={<BookingSuccess />} />
                       <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                       <Route path="/provider-dashboard" element={<ProviderDashboard />} />
+                      <Route path="/provider-bookings" element={<ProviderBookings />} />
+                      <Route path="/provider-settings" element={<ProviderSettings />} />
                       <Route path="/customer-profile" element={<CustomerProfile />} />
                       <Route path="/provider-profile" element={<ProviderProfile />} />
                       <Route path="/booking-management" element={<BookingManagement />} />

@@ -311,10 +311,10 @@ const ProviderDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/analytics-dashboard')}
+              onClick={() => navigate('/provider-bookings')}
             >
-              <BarChart3 className="h-6 w-6 mr-2" />
-              Analytics
+              <Calendar className="h-6 w-6 mr-2" />
+              Calendar
             </Button>
             <Button 
               variant="outline" 
