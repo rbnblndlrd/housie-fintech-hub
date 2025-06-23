@@ -8,6 +8,23 @@ import { useAuth } from '@/contexts/AuthContext';
 const ProviderProfile = () => {
   const { user } = useAuth();
 
+  // Mock provider data for now - this would typically come from API/database
+  const mockProvider = {
+    business_name: 'Professional Services',
+    user: {
+      full_name: user?.user_metadata?.full_name || 'Professional Provider',
+      city: 'Montreal',
+      province: 'QC'
+    },
+    verified: true,
+    verification_level: 'background_check',
+    average_rating: 4.8,
+    total_bookings: 150,
+    hourly_rate: 45,
+    service_radius_km: 25,
+    description: 'Experienced professional providing quality services in the Montreal area.'
+  };
+
   return (
     <>
       <Header />
@@ -23,8 +40,8 @@ const ProviderProfile = () => {
             </p>
           </div>
 
-          <ProviderProfileHeader />
-          <ProviderProfileNavigation />
+          <ProviderProfileNavigation providerName={mockProvider.business_name} />
+          <ProviderProfileHeader provider={mockProvider} />
         </div>
       </div>
     </>
