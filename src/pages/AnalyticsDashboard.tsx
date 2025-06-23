@@ -25,7 +25,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 const AnalyticsDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const userRole = user?.user_role || 'seeker';
+  const userRole = 'provider'; // Default to provider role for analytics
   const { data, loading, error, refreshData } = useAnalyticsData(user?.id, userRole);
 
   const formatCurrency = (amount: number) => {

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -45,7 +44,7 @@ const ProviderDashboard = () => {
     }
   };
 
-  const StatCard = ({ title, value, subtitle, icon: Icon, loading: cardLoading, trend }) => (
+  const StatCard = ({ title, value, subtitle, icon: Icon, loading: cardLoading }) => (
     <Card className="fintech-card">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">

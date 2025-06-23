@@ -179,7 +179,10 @@ export const useProviderData = (userId: string | undefined) => {
           { event: '*', schema: 'public', table: 'bookings' },
           (payload) => {
             // Only refresh if this booking involves our provider
-            if (payload.new?.provider_id || payload.old?.provider_id) {
+            const newRecord = payload.new as any;
+            const oldRecord = payload.old as any;
+            
+            if (newRecord?.provider_id || oldRecord?.provider_id) {
               console.log('📡 Provider booking data changed, refreshing...');
               loadProviderData();
             }

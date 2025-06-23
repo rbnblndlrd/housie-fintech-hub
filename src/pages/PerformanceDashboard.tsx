@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,7 +22,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 const PerformanceDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const userRole = user?.user_role || 'seeker';
+  const userRole = 'provider'; // Default to provider role for performance analytics
   const { data, loading, error, refreshData } = useAnalyticsData(user?.id, userRole);
 
   const formatCurrency = (amount: number) => {
