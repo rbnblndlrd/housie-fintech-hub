@@ -1,442 +1,332 @@
 
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import Header from '@/components/Header';
-import ProfileNavigation from '@/components/ProfileNavigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, MapPin, Star, User, Search, Clock, Phone, MessageCircle, RotateCcw, X, Filter } from 'lucide-react';
-
-// Mock data for comprehensive booking management
-const mockAllBookings = [
-  {
-    id: '1',
-    service_title: 'Nettoyage résidentiel',
-    provider_name: 'Marie Dubois',
-    provider_phone: '514-555-0101',
-    scheduled_date: '2024-01-25',
-    scheduled_time: '10:00',
-    status: 'confirmed',
-    total_amount: 120,
-    provider_id: '1',
-    can_reschedule: true,
-    can_cancel: true
-  },
-  {
-    id: '2',
-    service_title: 'Jardinage',
-    provider_name: 'Pierre Martin',
-    provider_phone: '514-555-0102',
-    scheduled_date: '2024-01-22',
-    scheduled_time: '14:00',
-    status: 'completed',
-    total_amount: 180,
-    provider_id: '2',
-    can_reschedule: false,
-    can_cancel: false
-  },
-  {
-    id: '3',
-    service_title: 'Réparations plomberie',
-    provider_name: 'Sophie Bernard',
-    provider_phone: '514-555-0103',
-    scheduled_date: '2024-01-20',
-    scheduled_time: '09:30',
-    status: 'completed',
-    total_amount: 250,
-    provider_id: '3',
-    can_reschedule: false,
-    can_cancel: false
-  },
-  {
-    id: '4',
-    service_title: 'Ménage hebdomadaire',
-    provider_name: 'Marie Dubois',
-    provider_phone: '514-555-0101',
-    scheduled_date: '2024-01-30',
-    scheduled_time: '10:00',
-    status: 'pending',
-    total_amount: 120,
-    provider_id: '1',
-    can_reschedule: true,
-    can_cancel: true
-  },
-  {
-    id: '5',
-    service_title: 'Installation électrique',
-    provider_name: 'Jean Électrique',
-    provider_phone: '514-555-0104',
-    scheduled_date: '2024-02-05',
-    scheduled_time: '13:00',
-    status: 'confirmed',
-    total_amount: 320,
-    provider_id: '4',
-    can_reschedule: true,
-    can_cancel: true
-  }
-];
-
-// Enhanced favorite providers with quick booking
-const mockFavoriteProviders = [
-  {
-    id: '1',
-    business_name: 'Marie Nettoyage',
-    provider_name: 'Marie Dubois',
-    category: 'Nettoyage',
-    rating: 4.8,
-    total_bookings: 15,
-    city: 'Montréal',
-    available: true,
-    last_booking: '2024-01-25'
-  },
-  {
-    id: '2',
-    business_name: 'Jean Paysagiste',
-    provider_name: 'Jean-Pierre Lavoie',
-    category: 'Jardinage',
-    rating: 4.9,
-    total_bookings: 8,
-    city: 'Montréal',
-    available: true,
-    last_booking: '2024-01-22'
-  },
-  {
-    id: '3',
-    business_name: 'Sophie Entretien',
-    provider_name: 'Sophie Martin',
-    category: 'Entretien',
-    rating: 4.7,
-    total_bookings: 12,
-    city: 'Montréal',
-    available: false,
-    last_booking: '2024-01-20'
-  }
-];
-
-// Recently viewed services
-const mockRecentlyViewed = [
-  { id: '1', title: 'Plomberie d\'urgence', category: 'Plomberie', price: 150 },
-  { id: '2', title: 'Électricien résidentiel', category: 'Électricité', price: 200 },
-  { id: '3', title: 'Peinture intérieure', category: 'Peinture', price: 300 }
-];
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useCustomerData } from '@/hooks/useCustomerData';
+import Header from "@/components/Header";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { 
+  Calendar, 
+  MapPin, 
+  Clock, 
+  DollarSign, 
+  Star,
+  User,
+  CheckCircle,
+  AlertCircle,
+  Users,
+  TrendingUp
+} from 'lucide-react';
 
 const CustomerDashboard = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [showFilters, setShowFilters] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { stats, loading, error, refreshData } = useCustomerData(user?.id);
 
-  const getStatusColor = (status: string) => {
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency',
+      currency: 'CAD'
+    }).format(amount);
+  };
+
+  const getStatusBadgeVariant = (status: string) => {
     switch (status) {
-      case 'confirmed': return 'bg-blue-500';
-      case 'completed': return 'bg-green-500';
-      case 'pending': return 'bg-yellow-500';
-      case 'cancelled': return 'bg-red-500';
-      default: return 'bg-gray-500';
+      case 'completed': return 'default';
+      case 'confirmed': return 'secondary';
+      case 'pending': return 'outline';
+      case 'cancelled': return 'destructive';
+      default: return 'outline';
     }
   };
 
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case 'confirmed': return 'Confirmée';
-      case 'completed': return 'Terminée';
-      case 'pending': return 'En Attente';
-      case 'cancelled': return 'Annulée';
-      default: return status;
-    }
-  };
+  const StatCard = ({ title, value, subtitle, icon: Icon, loading: cardLoading }) => (
+    <Card className="fintech-card">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
+            {cardLoading ? (
+              <Skeleton className="h-8 w-24 mb-2" />
+            ) : (
+              <p className="text-3xl font-black text-gray-900">{value}</p>
+            )}
+            {subtitle && (
+              <p className="text-sm text-gray-500 mt-1">{subtitle}</p>
+            )}
+          </div>
+          <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <Icon className="h-6 w-6 text-white" />
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
-  const filteredBookings = mockAllBookings.filter(booking => {
-    const matchesSearch = booking.service_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         booking.provider_name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || booking.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  const handleQuickContact = (phone: string) => {
-    window.open(`tel:${phone}`, '_self');
-  };
-
-  const handleReschedule = (bookingId: string) => {
-    console.log('Reschedule booking:', bookingId);
-    // TODO: Implement reschedule functionality
-  };
-
-  const handleCancel = (bookingId: string) => {
-    console.log('Cancel booking:', bookingId);
-    // TODO: Implement cancel functionality
-  };
-
-  const handleRebook = (providerId: string, serviceTitle: string) => {
-    console.log('Rebook service:', serviceTitle, 'with provider:', providerId);
-    // TODO: Implement rebook functionality
-  };
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <Card className="border-red-200">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 text-red-600">
+                  <AlertCircle className="h-5 w-5" />
+                  <div>
+                    <p className="font-medium">Error loading dashboard data</p>
+                    <p className="text-sm text-red-500">{error}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshData}
+                    className="ml-auto"
+                  >
+                    Retry
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          <ProfileNavigation profileType="customer" />
-          
-          {/* Page Header */}
+          {/* Header */}
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">
-              Tableau de Bord Client
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Welcome back!
             </h1>
-            <p className="text-gray-600">Gérez vos réservations et découvrez de nouveaux services</p>
+            <p className="text-gray-600">Here's what's happening with your bookings</p>
           </div>
 
-          <div className="grid lg:grid-cols-4 gap-6">
-            {/* Main Content - Comprehensive Booking Management */}
-            <div className="lg:col-span-3 space-y-6">
-              {/* Booking Management Section */}
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="flex items-center gap-2">
-                      <Calendar className="h-5 w-5 text-blue-600" />
-                      Gestion des Réservations
-                    </CardTitle>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setShowFilters(!showFilters)}
-                    >
-                      <Filter className="h-4 w-4 mr-2" />
-                      Filtres
-                    </Button>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <StatCard
+              title="Total Bookings"
+              value={loading ? "..." : stats.totalBookings.toString()}
+              subtitle={`${stats.completedBookings} completed`}
+              icon={Calendar}
+              loading={loading}
+            />
+            <StatCard
+              title="Active Bookings"
+              value={loading ? "..." : stats.activeBookings.toString()}
+              subtitle="Currently in progress"
+              icon={Clock}
+              loading={loading}
+            />
+            <StatCard
+              title="Total Spent"
+              value={loading ? "..." : formatCurrency(stats.totalSpent)}
+              subtitle="All time spending"
+              icon={DollarSign}
+              loading={loading}
+            />
+            <StatCard
+              title="Average Rating"
+              value={loading ? "..." : stats.averageRating.toFixed(1)}
+              subtitle="Your rating given"
+              icon={Star}
+              loading={loading}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            {/* Upcoming Bookings */}
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  Upcoming Bookings
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-3">
+                    {[...Array(3)].map((_, i) => (
+                      <Skeleton key={i} className="h-16 w-full" />
+                    ))}
                   </div>
-                  
-                  {/* Search and Filters */}
-                  <div className={`space-y-4 ${showFilters ? 'block' : 'hidden'}`}>
-                    <div className="flex gap-4">
-                      <div className="flex-1">
-                        <Input
-                          placeholder="Rechercher par service ou prestataire..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="w-full"
-                        />
-                      </div>
-                      <Select value={statusFilter} onValueChange={setStatusFilter}>
-                        <SelectTrigger className="w-48">
-                          <SelectValue placeholder="Statut" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">Tous les statuts</SelectItem>
-                          <SelectItem value="pending">En Attente</SelectItem>
-                          <SelectItem value="confirmed">Confirmée</SelectItem>
-                          <SelectItem value="completed">Terminée</SelectItem>
-                          <SelectItem value="cancelled">Annulée</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {filteredBookings.map((booking) => (
-                    <div key={booking.id} className="p-4 bg-gray-50 rounded-lg border">
-                      <div className="flex items-start justify-between mb-3">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                            <User className="h-6 w-6 text-blue-600" />
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-gray-900">{booking.service_title}</h4>
-                            <p className="text-sm text-gray-600">{booking.provider_name}</p>
-                            <div className="flex items-center gap-4 text-xs text-gray-500 mt-1">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {new Date(booking.scheduled_date).toLocaleDateString('fr-FR')}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {booking.scheduled_time}
-                              </span>
-                            </div>
-                          </div>
+                ) : stats.upcomingBookings.length === 0 ? (
+                  <p className="text-gray-500 text-center py-4">No upcoming bookings</p>
+                ) : (
+                  <div className="space-y-3">
+                    {stats.upcomingBookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex-1">
+                          <h4 className="font-medium">{booking.service?.title || 'Service'}</h4>
+                          <p className="text-sm text-gray-600">
+                            {booking.provider?.business_name || booking.provider?.users?.full_name || 'Provider'}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(booking.scheduled_date).toLocaleDateString()} at {booking.scheduled_time}
+                          </p>
                         </div>
                         <div className="text-right">
-                          <p className="font-semibold text-gray-900">${booking.total_amount}</p>
-                          <Badge className={`${getStatusColor(booking.status)} text-white text-xs`}>
-                            {getStatusText(booking.status)}
+                          <Badge variant={getStatusBadgeVariant(booking.status)}>
+                            {booking.status}
                           </Badge>
-                        </div>
-                      </div>
-                      
-                      {/* Action Buttons */}
-                      <div className="flex items-center gap-2 justify-end">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleQuickContact(booking.provider_phone)}
-                        >
-                          <Phone className="h-4 w-4 mr-1" />
-                          Appeler
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleRebook(booking.provider_id, booking.service_title)}
-                        >
-                          <RotateCcw className="h-4 w-4 mr-1" />
-                          Réserver à nouveau
-                        </Button>
-                        {booking.can_reschedule && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleReschedule(booking.id)}
-                          >
-                            <Calendar className="h-4 w-4 mr-1" />
-                            Reprogrammer
-                          </Button>
-                        )}
-                        {booking.can_cancel && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleCancel(booking.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <X className="h-4 w-4 mr-1" />
-                            Annuler
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {filteredBookings.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                      Aucune réservation trouvée
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-
-              {/* Recently Viewed Services */}
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Search className="h-5 w-5 text-purple-600" />
-                    Services Récemment Consultés
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {mockRecentlyViewed.map((service) => (
-                      <div key={service.id} className="p-4 bg-gray-50 rounded-lg">
-                        <h4 className="font-medium text-gray-900 mb-1">{service.title}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{service.category}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-green-600">À partir de ${service.price}</span>
-                          <Button size="sm" variant="outline">
-                            Voir
-                          </Button>
+                          <p className="text-sm font-medium mt-1">
+                            {formatCurrency(Number(booking.total_amount) || 0)}
+                          </p>
                         </div>
                       </div>
                     ))}
                   </div>
-                </CardContent>
-              </Card>
-            </div>
+                )}
+                <Button 
+                  className="w-full mt-4" 
+                  variant="outline"
+                  onClick={() => navigate('/booking-history')}
+                >
+                  View All Bookings
+                </Button>
+              </CardContent>
+            </Card>
 
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Quick Actions */}
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Search className="h-5 w-5 text-green-600" />
-                    Actions Rapides
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Link to="/services" className="block">
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                      <Search className="h-4 w-4 mr-2" />
-                      Trouver des Services
-                    </Button>
-                  </Link>
-                  <Link to="/customer-profile" className="block">
-                    <Button variant="outline" className="w-full">
-                      <User className="h-4 w-4 mr-2" />
-                      Mon Profil
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              {/* Enhanced Favorite Providers */}
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="h-5 w-5 text-yellow-500" />
-                    Prestataires Favoris
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {mockFavoriteProviders.map((provider) => (
-                    <div key={provider.id} className="p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-start justify-between mb-2">
-                        <div>
-                          <h4 className="font-medium text-gray-900 text-sm">{provider.business_name}</h4>
-                          <p className="text-xs text-gray-600">{provider.provider_name}</p>
+            {/* Favorite Providers */}
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Favorite Providers
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-3">
+                    {[...Array(3)].map((_, i) => (
+                      <Skeleton key={i} className="h-16 w-full" />
+                    ))}
+                  </div>
+                ) : stats.favoriteProviders.length === 0 ? (
+                  <p className="text-gray-500 text-center py-4">No favorite providers yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {stats.favoriteProviders.map((provider) => (
+                      <div key={provider.id} className="flex items-center justify-between p-3 border rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                            <User className="h-5 w-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="font-medium">{provider.business_name || provider.users?.full_name}</p>
+                            <p className="text-sm text-gray-600">
+                              {provider.bookingCount} booking{provider.bookingCount !== 1 ? 's' : ''}
+                            </p>
+                          </div>
                         </div>
                         <div className="flex items-center gap-1">
-                          <Star className="h-3 w-3 text-yellow-400 fill-current" />
-                          <span className="text-xs text-gray-600">{provider.rating}</span>
+                          <Star className="h-4 w-4 text-yellow-400 fill-current" />
+                          <span className="text-sm font-medium">
+                            {Number(provider.average_rating || 0).toFixed(1)}
+                          </span>
+                          {provider.verified && (
+                            <CheckCircle className="h-4 w-4 text-green-500 ml-2" />
+                          )}
                         </div>
                       </div>
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
-                          <MapPin className="h-3 w-3" />
-                          {provider.city}
+                    ))}
+                  </div>
+                )}
+                <Button 
+                  className="w-full mt-4" 
+                  variant="outline"
+                  onClick={() => navigate('/browse-services')}
+                >
+                  Find More Providers
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Activity */}
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5" />
+                Recent Activity
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {loading ? (
+                <div className="space-y-3">
+                  {[...Array(5)].map((_, i) => (
+                    <Skeleton key={i} className="h-16 w-full" />
+                  ))}
+                </div>
+              ) : stats.recentBookings.length === 0 ? (
+                <p className="text-gray-500 text-center py-4">No recent activity</p>
+              ) : (
+                <div className="space-y-3">
+                  {stats.recentBookings.map((booking) => (
+                    <div key={booking.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+                          <Calendar className="h-5 w-5 text-white" />
                         </div>
-                        <Badge 
-                          variant="secondary" 
-                          className={`text-xs ${provider.available ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}
-                        >
-                          {provider.available ? 'Disponible' : 'Occupé'}
+                        <div>
+                          <p className="font-medium">{booking.service?.title || 'Service'}</p>
+                          <p className="text-sm text-gray-600">
+                            with {booking.provider?.business_name || booking.provider?.users?.full_name || 'Provider'}
+                          </p>
+                          <p className="text-sm text-gray-500">
+                            {new Date(booking.scheduled_date).toLocaleDateString()}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <Badge variant={getStatusBadgeVariant(booking.status)}>
+                          {booking.status}
                         </Badge>
-                      </div>
-                      <p className="text-xs text-gray-500 mb-3">
-                        {provider.total_bookings} réservations • Dernière: {new Date(provider.last_booking).toLocaleDateString('fr-FR')}
-                      </p>
-                      <div className="flex gap-2">
-                        <Button size="sm" className="flex-1 text-xs" disabled={!provider.available}>
-                          Réserver
-                        </Button>
-                        <Button size="sm" variant="outline" className="text-xs">
-                          Voir Profil
-                        </Button>
+                        <p className="text-sm font-medium mt-1">
+                          {formatCurrency(Number(booking.total_amount) || 0)}
+                        </p>
                       </div>
                     </div>
                   ))}
-                </CardContent>
-              </Card>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-              {/* Quick Categories */}
-              <Card className="bg-white shadow-sm">
-                <CardHeader>
-                  <CardTitle className="text-sm">Catégories Populaires</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-2">
-                    {['Nettoyage', 'Jardinage', 'Plomberie', 'Électricité'].map((category) => (
-                      <Button key={category} variant="outline" size="sm" className="text-xs">
-                        {category}
-                      </Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+            <Button 
+              className="h-20 text-lg"
+              onClick={() => navigate('/browse-services')}
+            >
+              <Calendar className="h-6 w-6 mr-2" />
+              Book a Service
+            </Button>
+            <Button 
+              variant="outline" 
+              className="h-20 text-lg"
+              onClick={() => navigate('/booking-history')}
+            >
+              <Clock className="h-6 w-6 mr-2" />
+              View History
+            </Button>
+            <Button 
+              variant="outline" 
+              className="h-20 text-lg"
+              onClick={() => navigate('/messages')}
+            >
+              <User className="h-6 w-6 mr-2" />
+              Messages
+            </Button>
           </div>
         </div>
       </div>

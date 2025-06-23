@@ -1,60 +1,104 @@
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useAnalyticsData } from '@/hooks/useAnalyticsData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   BarChart3, 
   TrendingUp, 
   Clock, 
   Users,
   Target,
-  CheckCircle
+  CheckCircle,
+  AlertCircle
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const PerformanceDashboard = () => {
   const navigate = useNavigate();
-  const [dateRange, setDateRange] = useState('month');
+  const { user } = useAuth();
+  const userRole = user?.user_role || 'seeker';
+  const { data, loading, error, refreshData } = useAnalyticsData(user?.id, userRole);
 
-  const performanceData = [
-    { month: 'Jul', performance: 95 },
-    { month: 'Aug', performance: 88 },
-    { month: 'Sep', performance: 92 },
-    { month: 'Oct', performance: 96 },
-    { month: 'Nov', performance: 89 },
-    { month: 'Dec', performance: 94 }
-  ];
-
-  const bookingTrends = [
-    { month: 'Jul', bookings: 95 },
-    { month: 'Aug', bookings: 110 },
-    { month: 'Sep', bookings: 125 },
-    { month: 'Oct', bookings: 142 },
-    { month: 'Nov', bookings: 118 },
-    { month: 'Dec', bookings: 138 }
-  ];
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency',
+      currency: 'CAD'
+    }).format(amount);
+  };
 
   const kpiMetrics = [
-    { label: "Efficiency", value: "92%", target: "90%", status: "above", icon: <Target className="h-5 w-5" /> },
-    { label: "Response Time", value: "12m", target: "15m", status: "below", icon: <Clock className="h-5 w-5" /> },
-    { label: "Retention", value: "87%", target: "85%", status: "above", icon: <Users className="h-5 w-5" /> },
-    { label: "Growth Rate", value: "+15%", target: "+12%", status: "above", icon: <TrendingUp className="h-5 w-5" /> }
-  ];
-
-  const serviceQuality = [
-    { metric: "Overall Rating", score: "4.8", stars: 5 },
-    { metric: "Punctuality", score: "4.9", stars: 5 },
-    { metric: "Quality", score: "4.7", stars: 5 },
-    { metric: "Communication", score: "4.8", stars: 5 }
+    { 
+      label: "Completion Rate", 
+      value: `${data.completionRate.toFixed(1)}%`, 
+      target: "90%", 
+      status: data.completionRate >= 90 ? "above" : "below", 
+      icon: <Target className="h-5 w-5" /> 
+    },
+    { 
+      label: "Monthly Revenue", 
+      value: formatCurrency(data.monthlyRevenue), 
+      target: "Growth", 
+      status: data.monthlyGrowth > 0 ? "above" : "below", 
+      icon: <Clock className="h-5 w-5" /> 
+    },
+    { 
+      label: "Avg Booking Value", 
+      value: formatCurrency(data.averageBookingValue), 
+      target: "Optimize", 
+      status: data.averageBookingValue > 100 ? "above" : "below", 
+      icon: <Users className="h-5 w-5" /> 
+    },
+    { 
+      label: "Growth Rate", 
+      value: `${data.monthlyGrowth > 0 ? '+' : ''}${data.monthlyGrowth.toFixed(1)}%`, 
+      target: "+10%", 
+      status: data.monthlyGrowth >= 10 ? "above" : "below", 
+      icon: <TrendingUp className="h-5 w-5" /> 
+    }
   ];
 
   const chartConfig = {
-    performance: { label: "Performance", color: "#3B82F6" },
-    bookings: { label: "Bookings", color: "#10B981" }
+    bookings: { label: "Bookings", color: "#3B82F6" },
+    revenue: { label: "Revenue", color: "#10B981" }
   };
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <Card className="border-red-200">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 text-red-600">
+                  <AlertCircle className="h-5 w-5" />
+                  <div>
+                    <p className="font-medium">Error loading performance data</p>
+                    <p className="text-sm text-red-500">{error}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshData}
+                    className="ml-auto"
+                  >
+                    Retry
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -70,20 +114,21 @@ const PerformanceDashboard = () => {
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                ← Retour au Dashboard
+                ← Back to Dashboard
               </Button>
             </div>
             <div className="flex items-center gap-3 mb-4">
               <BarChart3 className="h-8 w-8 text-blue-600" />
               <h1 className="text-4xl font-bold text-gray-900">Performance Dashboard</h1>
             </div>
-            <p className="text-gray-600">Track your business KPIs and performance metrics</p>
+            <p className="text-gray-600">Track your business KPIs and performance metrics with real-time data</p>
             
             {/* Controls */}
             <div className="flex gap-3 mt-6">
-              <Button variant="outline">Date Range</Button>
-              <Button variant="outline">Starter+</Button>
-              <Button variant="outline">🎯 Set Goals</Button>
+              <Button variant="outline" onClick={refreshData} disabled={loading}>
+                {loading ? 'Refreshing...' : 'Refresh Data'}
+              </Button>
+              <Button variant="outline">🎯 Performance Goals</Button>
             </div>
           </div>
 
@@ -104,7 +149,11 @@ const PerformanceDashboard = () => {
                     </Badge>
                   </div>
                   <h3 className="text-sm text-gray-600 mb-1">{kpi.label}</h3>
-                  <p className="text-3xl font-bold text-gray-900 mb-2">{kpi.value}</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-20 mb-2" />
+                  ) : (
+                    <p className="text-3xl font-bold text-gray-900 mb-2">{kpi.value}</p>
+                  )}
                   <p className="text-sm text-gray-500">Target: {kpi.target}</p>
                 </CardContent>
               </Card>
@@ -118,45 +167,53 @@ const PerformanceDashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="h-5 w-5 text-blue-600" />
-                  Monthly Performance
+                  Monthly Bookings Performance
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ChartContainer config={chartConfig} className="h-80">
-                  <LineChart data={performanceData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="month" stroke="#666" />
-                    <YAxis stroke="#666" />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Line 
-                      type="monotone" 
-                      dataKey="performance" 
-                      stroke="#06B6D4" 
-                      strokeWidth={3}
-                      dot={{ fill: '#06B6D4', strokeWidth: 2, r: 4 }}
-                    />
-                  </LineChart>
-                </ChartContainer>
+                {loading ? (
+                  <Skeleton className="h-80 w-full" />
+                ) : (
+                  <ChartContainer config={chartConfig} className="h-80">
+                    <LineChart data={data.bookingsByMonth}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="month" stroke="#666" />
+                      <YAxis stroke="#666" />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Line 
+                        type="monotone" 
+                        dataKey="bookings" 
+                        stroke="#06B6D4" 
+                        strokeWidth={3}
+                        dot={{ fill: '#06B6D4', strokeWidth: 2, r: 4 }}
+                      />
+                    </LineChart>
+                  </ChartContainer>
+                )}
               </CardContent>
             </Card>
 
-            {/* Booking Trends */}
+            {/* Revenue Trends */}
             <Card className="fintech-chart-container">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  🟢 Booking Trends
+                  🟢 Revenue Trends
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <ChartContainer config={chartConfig} className="h-80">
-                  <BarChart data={bookingTrends}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="month" stroke="#666" />
-                    <YAxis stroke="#666" />
-                    <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="bookings" fill="#10B981" radius={4} />
-                  </BarChart>
-                </ChartContainer>
+                {loading ? (
+                  <Skeleton className="h-80 w-full" />
+                ) : (
+                  <ChartContainer config={chartConfig} className="h-80">
+                    <BarChart data={data.bookingsByMonth}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                      <XAxis dataKey="month" stroke="#666" />
+                      <YAxis stroke="#666" />
+                      <ChartTooltip content={<ChartTooltipContent />} />
+                      <Bar dataKey="revenue" fill="#10B981" radius={4} />
+                    </BarChart>
+                  </ChartContainer>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -167,79 +224,102 @@ const PerformanceDashboard = () => {
             <Card className="fintech-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  ⭐ Service Quality
+                  ⭐ Service Performance
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {serviceQuality.map((item, index) => (
-                    <div key={index} className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">{item.metric}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold">{item.score}</span>
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <span key={i} className="text-yellow-400">⭐</span>
-                          ))}
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-8 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Completion Rate</span>
+                      <span className="font-semibold">{data.completionRate.toFixed(1)}%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Total Bookings</span>
+                      <span className="font-semibold">{data.totalBookings}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Monthly Bookings</span>
+                      <span className="font-semibold">{data.monthlyBookings}</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-gray-600">Average Value</span>
+                      <span className="font-semibold">{formatCurrency(data.averageBookingValue)}</span>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Revenue Metrics */}
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle>Revenue Metrics</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-8 w-full" />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Total Revenue</span>
+                      <span className="font-semibold">{formatCurrency(data.totalRevenue)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Monthly Revenue</span>
+                      <span className="font-semibold">{formatCurrency(data.monthlyRevenue)}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Growth Rate</span>
+                      <span className={`font-semibold ${data.monthlyGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                        {data.monthlyGrowth > 0 ? '+' : ''}{data.monthlyGrowth.toFixed(1)}%
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-gray-600">Avg per Booking</span>
+                      <span className="font-semibold">{formatCurrency(data.averageBookingValue)}</span>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Top Categories */}
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle>Top Categories</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-8 w-full" />
+                    ))}
+                  </div>
+                ) : data.revenueByCategory.length > 0 ? (
+                  <div className="space-y-4">
+                    {data.revenueByCategory.map((category, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <span className="font-medium">{category.category}</span>
+                        <div className="text-right">
+                          <p className="font-medium">{formatCurrency(category.revenue)}</p>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Booking Metrics */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle>Booking Metrics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Acceptance Rate</span>
-                    <span className="font-semibold">94%</span>
+                    ))}
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Cancellation Rate</span>
-                    <span className="font-semibold">2%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Repeat Customers</span>
-                    <span className="font-semibold">68%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">No-Shows</span>
-                    <span className="font-semibold">1%</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Efficiency Metrics */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle>Efficiency Metrics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Avg. Service Time</span>
-                    <span className="font-semibold">2.3h</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Travel Efficiency</span>
-                    <span className="font-semibold">87%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Schedule Utilization</span>
-                    <span className="font-semibold">92%</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Peak Hour Usage</span>
-                    <span className="font-semibold">78%</span>
-                  </div>
-                </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-4">No category data available</p>
+                )}
               </CardContent>
             </Card>
           </div>
