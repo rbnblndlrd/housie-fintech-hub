@@ -26,6 +26,7 @@ import BookingHistory from "@/pages/BookingHistory";
 import BookingSuccess from "@/pages/BookingSuccess";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import CustomerBookings from "@/pages/CustomerBookings";
+import CustomerSettings from "@/pages/CustomerSettings";
 import ProviderDashboard from "@/pages/ProviderDashboard";
 import ProviderBookings from "@/pages/ProviderBookings";
 import ProviderSettings from "@/pages/ProviderSettings";
@@ -81,6 +82,7 @@ const App = () => {
                       <Route path="/booking-success" element={<BookingSuccess />} />
                       <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                       <Route path="/customer-bookings" element={<CustomerBookings />} />
+                      <Route path="/customer-settings" element={<CustomerSettings />} />
                       <Route path="/provider-dashboard" element={<ProviderDashboard />} />
                       <Route path="/provider-bookings" element={<ProviderBookings />} />
                       <Route path="/provider-settings" element={<ProviderSettings />} />

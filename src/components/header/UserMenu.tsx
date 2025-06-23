@@ -53,7 +53,10 @@ const UserMenu = () => {
     console.log('🔧 Recalculating dropdown items for role:', currentRole);
     const items = getUserDropdownItems(user, currentRole);
     console.log('🔧 Dashboard item href:', items.find(item => item.label === 'Dashboard')?.href);
-    return items;
+    
+    // Filter out Bookings item to centralize booking management in dashboard
+    const filteredItems = items.filter(item => item.label !== 'Bookings');
+    return filteredItems;
   }, [user, currentRole]);
 
   const enhancedDropdownItems: NavigationItem[] = user ? [

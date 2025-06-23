@@ -1,5 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
+import { useRole } from '@/contexts/RoleContext';
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +17,8 @@ import {
   XCircle,
   MessageCircle,
   FileText,
-  Star
+  Star,
+  ArrowLeft
 } from 'lucide-react';
 import {
   Table,
@@ -54,7 +57,24 @@ interface BookingHistory {
 
 const BookingHistory = () => {
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // Determine back navigation based on user role
+  const getBackNavigation = () => {
+    if (currentRole === 'provider') {
+      return {
+        href: '/provider-dashboard',
+        label: 'Back to Provider Dashboard'
+      };
+    } else {
+      return {
+        href: '/customer-dashboard',
+        label: 'Back to Customer Dashboard'
+      };
+    }
+  };
 
   const initialFilters: BookingFilters = {
     searchTerm: '',
@@ -212,7 +232,7 @@ const BookingHistory = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-orange-50">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
         <div className="pt-20 px-4">
           <div className="max-w-7xl mx-auto">
@@ -229,11 +249,23 @@ const BookingHistory = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-orange-50">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <Button
+              onClick={() => navigate(getBackNavigation().href)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {getBackNavigation().label}
+            </Button>
+          </div>
+
           {/* Page Header */}
           <div className="mb-8">
             <h1 className="text-5xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">

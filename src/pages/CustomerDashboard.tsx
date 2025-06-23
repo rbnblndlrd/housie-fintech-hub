@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -18,7 +17,8 @@ import {
   CheckCircle,
   AlertCircle,
   Users,
-  TrendingUp
+  TrendingUp,
+  Settings
 } from 'lucide-react';
 
 const CustomerDashboard = () => {
@@ -189,7 +189,7 @@ const CustomerDashboard = () => {
                 <Button 
                   className="w-full mt-4" 
                   variant="outline"
-                  onClick={() => navigate('/booking-history')}
+                  onClick={() => navigate('/customer-bookings')}
                 >
                   View All Bookings
                 </Button>
@@ -244,7 +244,7 @@ const CustomerDashboard = () => {
                 <Button 
                   className="w-full mt-4" 
                   variant="outline"
-                  onClick={() => navigate('/browse-services')}
+                  onClick={() => navigate('/services')}
                 >
                   Find More Providers
                 </Button>
@@ -302,11 +302,11 @@ const CustomerDashboard = () => {
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {/* Quick Actions - Changed Messages to Map and added Settings */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
             <Button 
               className="h-20 text-lg"
-              onClick={() => navigate('/browse-services')}
+              onClick={() => navigate('/services')}
             >
               <Calendar className="h-6 w-6 mr-2" />
               Book a Service
@@ -314,7 +314,7 @@ const CustomerDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/booking-history')}
+              onClick={() => navigate('/customer-bookings')}
             >
               <Clock className="h-6 w-6 mr-2" />
               View History
@@ -322,10 +322,18 @@ const CustomerDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/messages')}
+              onClick={() => navigate('/services')}
             >
-              <User className="h-6 w-6 mr-2" />
-              Messages
+              <MapPin className="h-6 w-6 mr-2" />
+              Map
+            </Button>
+            <Button 
+              variant="outline" 
+              className="h-20 text-lg"
+              onClick={() => navigate('/customer-settings')}
+            >
+              <Settings className="h-6 w-6 mr-2" />
+              Settings
             </Button>
           </div>
         </div>

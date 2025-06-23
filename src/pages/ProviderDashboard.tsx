@@ -17,7 +17,7 @@ import {
   TrendingUp,
   Users,
   BarChart3,
-  MessageSquare,
+  MapPin,
   Settings
 } from 'lucide-react';
 
@@ -319,10 +319,10 @@ const ProviderDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/messages')}
+              onClick={() => navigate('/services')}
             >
-              <MessageSquare className="h-6 w-6 mr-2" />
-              Messages
+              <MapPin className="h-6 w-6 mr-2" />
+              Map
             </Button>
             <Button 
               variant="outline" 

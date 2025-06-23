@@ -59,15 +59,11 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   // Dynamic profile link based on current role
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
 
-  // Dynamic bookings link based on current role
-  const bookingsHref = currentRole === 'provider' ? '/provider-bookings' : '/customer-bookings';
-
-  // Provider-specific settings link
-  const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-profile';
+  // Dynamic settings link based on current role
+  const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-settings';
 
   return [
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
-    { label: "Bookings", href: bookingsHref, icon: "📅" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
