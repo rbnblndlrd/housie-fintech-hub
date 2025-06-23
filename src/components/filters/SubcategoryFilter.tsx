@@ -76,16 +76,22 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
     }
   };
 
-  if (category === 'all' || subcategories.length === 0) {
-    return null;
-  }
-
+  // Always show the filter, but disable it when category is 'all'
   return (
-    <Select value={value} onValueChange={onChange} disabled={isLoading}>
-      <SelectTrigger className={`h-12 rounded-2xl border-gray-200 ${className}`}>
-        <SelectValue placeholder={isLoading ? "Loading..." : "All Subcategories"} />
+    <Select value={value} onValueChange={onChange} disabled={isLoading || category === 'all'}>
+      <SelectTrigger className={`${className} ${category === 'all' ? 'opacity-50' : ''}`}>
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
+            <span className="text-xs">🏷️</span>
+          </div>
+          <SelectValue placeholder={
+            category === 'all' ? "Select category first" : 
+            isLoading ? "Loading..." : 
+            "All Subcategories"
+          } />
+        </div>
       </SelectTrigger>
-      <SelectContent className="fintech-dropdown">
+      <SelectContent className="rounded-xl border-gray-200 shadow-lg">
         <SelectItem value="all">All Subcategories</SelectItem>
         {subcategories.map((subcategory) => (
           <SelectItem key={subcategory.id} value={subcategory.subcategory_id}>
