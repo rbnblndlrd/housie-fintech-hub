@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
@@ -11,7 +10,12 @@ import {
   DollarSign, 
   Clock,
   User,
-  Repeat
+  Repeat,
+  MoreVertical,
+  XCircle,
+  MessageCircle,
+  FileText,
+  Star
 } from 'lucide-react';
 import {
   Table,
@@ -21,6 +25,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { useUnifiedFilters } from '@/hooks/useUnifiedFilters';
 import { fetchFilteredBookings } from '@/services/filterService';
 import { BookingFilters } from '@/types/filters';
@@ -103,6 +114,88 @@ const BookingHistory = () => {
       description: `Redirection vers la réservation de "${booking.service?.title || booking.service_name}"`,
     });
     console.log('Book again:', booking);
+  };
+
+  const handleCancelBooking = (booking: any) => {
+    toast({
+      title: "Annulation en cours",
+      description: `Traitement de l'annulation pour "${booking.service?.title || booking.service_name}"`,
+      variant: "destructive"
+    });
+    console.log('Cancel booking:', booking);
+  };
+
+  const handleContactProvider = (booking: any) => {
+    toast({
+      title: "Ouverture du chat",
+      description: `Redirection vers la conversation avec ${booking.provider?.business_name || booking.provider_name}`,
+    });
+    console.log('Contact provider:', booking);
+  };
+
+  const handleViewDetails = (booking: any) => {
+    toast({
+      title: "Affichage des détails",
+      description: `Ouverture des détails de la réservation`,
+    });
+    console.log('View details:', booking);
+  };
+
+  const handleLeaveReview = (booking: any) => {
+    toast({
+      title: "Laisser un avis",
+      description: `Ouverture du formulaire d'évaluation`,
+    });
+    console.log('Leave review:', booking);
+  };
+
+  const getAvailableActions = (booking: any) => {
+    const actions = [];
+    
+    // Always available actions
+    actions.push({
+      icon: FileText,
+      label: "Voir détails",
+      action: () => handleViewDetails(booking),
+      variant: "default"
+    });
+
+    actions.push({
+      icon: MessageCircle,
+      label: "Contacter prestataire",
+      action: () => handleContactProvider(booking),
+      variant: "default"
+    });
+
+    // Status-specific actions
+    if (booking.status === 'confirmed' || booking.status === 'pending') {
+      actions.push({
+        icon: XCircle,
+        label: "Annuler réservation",
+        action: () => handleCancelBooking(booking),
+        variant: "destructive"
+      });
+    }
+
+    if (booking.status === 'completed') {
+      actions.push({
+        icon: Star,
+        label: "Laisser un avis",
+        action: () => handleLeaveReview(booking),
+        variant: "default"
+      });
+    }
+
+    if (booking.status === 'completed' || booking.status === 'cancelled') {
+      actions.push({
+        icon: Repeat,
+        label: "Réserver à nouveau",
+        action: () => handleBookAgain(booking),
+        variant: "default"
+      });
+    }
+
+    return actions;
   };
 
   const formatDate = (date: string) => {
@@ -280,15 +373,37 @@ const BookingHistory = () => {
                             {getStatusBadge(booking.status)}
                           </TableCell>
                           <TableCell className="py-6 px-8">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleBookAgain(booking)}
-                              className="flex items-center gap-2 rounded-2xl border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:border-blue-200 transition-all duration-200"
-                            >
-                              <Repeat className="h-4 w-4" />
-                              Réserver
-                            </Button>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="rounded-2xl border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:border-blue-200 transition-all duration-200"
+                                >
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end" className="w-56 bg-white shadow-lg border border-gray-200 rounded-xl">
+                                {getAvailableActions(booking).map((action, index) => (
+                                  <React.Fragment key={index}>
+                                    <DropdownMenuItem
+                                      onClick={action.action}
+                                      className={`flex items-center gap-2 px-4 py-3 cursor-pointer transition-colors rounded-lg mx-1 ${
+                                        action.variant === 'destructive' 
+                                          ? 'text-red-600 hover:bg-red-50 hover:text-red-700' 
+                                          : 'text-gray-700 hover:bg-blue-50 hover:text-blue-700'
+                                      }`}
+                                    >
+                                      <action.icon className="h-4 w-4" />
+                                      {action.label}
+                                    </DropdownMenuItem>
+                                    {index < getAvailableActions(booking).length - 1 && action.variant === 'destructive' && (
+                                      <DropdownMenuSeparator className="my-1" />
+                                    )}
+                                  </React.Fragment>
+                                ))}
+                              </DropdownMenuContent>
+                            </DropdownMenu>
                           </TableCell>
                         </TableRow>
                       ))}
