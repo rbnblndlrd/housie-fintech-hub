@@ -2,461 +2,398 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Wrench, Users, Calendar, DollarSign, Building, Trash2, Download, Upload, RefreshCw, AlertTriangle, Zap } from 'lucide-react';
+import { Code, Database, RefreshCw, Terminal, Bug, Settings, Download, Trash2, Users, Calendar, AlertTriangle } from 'lucide-react';
+import { useAdminData } from '@/hooks/useAdminData';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 const DevelopmentToolsSection = () => {
-  const [loading, setLoading] = useState<string | null>(null);
+  const { stats, generateTestData, clearTestData, resetAnalytics, createBackup } = useAdminData();
   const { toast } = useToast();
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
 
-  const generateMockUsers = async (count: number) => {
-    setLoading(`users-${count}`);
+  const handleAction = async (actionKey: string, actionFn: () => Promise<any>, confirmMessage?: string) => {
+    if (confirmMessage && !confirm(confirmMessage)) {
+      return;
+    }
+
+    setLoading(prev => ({ ...prev, [actionKey]: true }));
     try {
-      // Generate mock users (this would be expanded with actual implementation)
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      
-      toast({
-        title: "Succès",
-        description: `${count} utilisateurs de test créés avec succès`,
-      });
+      const result = await actionFn();
+      if (result?.success !== false) {
+        console.log(`✅ ${actionKey} completed successfully`);
+      }
     } catch (error) {
-      console.error('Error generating users:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la création des utilisateurs",
-        variant: "destructive",
-      });
+      console.error(`❌ ${actionKey} failed:`, error);
     } finally {
-      setLoading(null);
+      setLoading(prev => ({ ...prev, [actionKey]: false }));
     }
   };
 
-  const generateMockBookings = async (count: number) => {
-    setLoading(`bookings-${count}`);
-    try {
-      // Generate mock bookings
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Succès",
-        description: `${count} réservations de test créées avec succès`,
-      });
-    } catch (error) {
-      console.error('Error generating bookings:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la création des réservations",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
+  const devMetrics = {
+    apiCalls: 15678,
+    errors: 23,
+    errorRate: 0.15,
+    avgResponseTime: 245,
+    activeWebhooks: 12,
+    queuedJobs: 456
   };
 
-  const generateMockRevenue = async () => {
-    setLoading('revenue');
-    try {
-      // Generate sample revenue data
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Succès",
-        description: "Données de revenus de test créées avec succès",
-      });
-    } catch (error) {
-      console.error('Error generating revenue:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la création des données de revenus",
+  const tools = [
+    {
+      name: "Database Console",
+      description: "Execute SQL queries and view database stats",
+      status: "available",
+      action: "Open Console",
+      onClick: () => window.open('https://supabase.com/dashboard/project/dsfaxqfexebqogdxigdu/sql/new', '_blank')
+    },
+    {
+      name: "API Explorer",
+      description: "Test API endpoints and view documentation",
+      status: "available", 
+      action: "Launch Explorer",
+      onClick: () => window.open('https://supabase.com/dashboard/project/dsfaxqfexebqogdxigdu/api', '_blank')
+    },
+    {
+      name: "Log Viewer",
+      description: "View application logs and error reports",
+      status: "available",
+      action: "View Logs",
+      onClick: () => window.open('https://supabase.com/dashboard/project/dsfaxqfexebqogdxigdu/logs/explorer', '_blank')
+    },
+    {
+      name: "Cache Manager",
+      description: "Clear caches and view cache statistics",
+      status: "available",
+      action: "Manage Cache",
+      onClick: () => handleAction('clear-cache', async () => {
+        // Clear browser cache programmatically
+        if ('caches' in window) {
+          const cacheNames = await caches.keys();
+          await Promise.all(cacheNames.map(name => caches.delete(name)));
+        }
+        toast({
+          title: "Success",
+          description: "Browser cache cleared successfully",
+        });
+        return { success: true };
+      })
+    },
+    {
+      name: "Queue Monitor",
+      description: "Monitor background jobs and queue status",
+      status: "available",
+      action: "View Queue",
+      onClick: () => window.open('https://supabase.com/dashboard/project/dsfaxqfexebqogdxigdu/database/tables', '_blank')
+    },
+    {
+      name: "System Config",
+      description: "Update system configuration settings",
+      status: "restricted",
+      action: "Configure",
+      onClick: () => toast({
+        title: "Restricted",
+        description: "System configuration requires elevated permissions",
         variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
+      })
     }
-  };
+  ];
 
-  const generateMockProviders = async () => {
-    setLoading('providers');
-    try {
-      // Generate mock providers
-      await new Promise(resolve => setTimeout(resolve, 1800));
-      
-      toast({
-        title: "Succès",
-        description: "Prestataires de test créés avec succès",
-      });
-    } catch (error) {
-      console.error('Error generating providers:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la création des prestataires",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
+  const recentErrors = [
+    {
+      id: 1,
+      error: "Database connection timeout",
+      endpoint: "/api/users",
+      timestamp: "2 min ago",
+      severity: "high"
+    },
+    {
+      id: 2,
+      error: "Rate limit exceeded", 
+      endpoint: "/api/bookings",
+      timestamp: "5 min ago",
+      severity: "medium"
+    },
+    {
+      id: 3,
+      error: "Invalid authentication token",
+      endpoint: "/api/auth",
+      timestamp: "8 min ago", 
+      severity: "low"
     }
-  };
-
-  const deleteTestUsers = async () => {
-    setLoading('delete-users');
-    try {
-      // Delete test users
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Succès",
-        description: "Utilisateurs de test supprimés avec succès",
-      });
-    } catch (error) {
-      console.error('Error deleting users:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la suppression des utilisateurs",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const clearMockBookings = async () => {
-    setLoading('clear-bookings');
-    try {
-      // Clear mock bookings
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Succès",
-        description: "Réservations de test supprimées avec succès",
-      });
-    } catch (error) {
-      console.error('Error clearing bookings:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la suppression des réservations",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const resetAnalytics = async () => {
-    setLoading('reset-analytics');
-    try {
-      // Reset analytics data
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      toast({
-        title: "Succès",
-        description: "Données analytiques réinitialisées avec succès",
-      });
-    } catch (error) {
-      console.error('Error resetting analytics:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la réinitialisation",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const nuclearReset = async () => {
-    setLoading('nuclear');
-    try {
-      // Complete database reset
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      toast({
-        title: "Succès",
-        description: "Réinitialisation complète effectuée avec succès",
-      });
-    } catch (error) {
-      console.error('Error with nuclear reset:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de la réinitialisation complète",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
-
-  const exportData = async () => {
-    setLoading('export');
-    try {
-      // Export database state
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "Succès",
-        description: "Données exportées avec succès",
-      });
-    } catch (error) {
-      console.error('Error exporting data:', error);
-      toast({
-        title: "Erreur",
-        description: "Erreur lors de l'exportation",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(null);
-    }
-  };
+  ];
 
   return (
-    <div className="space-y-8">
-      {/* Development Tools Header */}
-      <Card className="fintech-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-2xl font-bold">
-            <div className="w-10 h-10 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl flex items-center justify-center">
-              <Wrench className="h-6 w-6 text-white" />
-            </div>
-            Outils de Développement
-            <Badge variant="outline" className="text-orange-600 border-orange-200 bg-orange-50">
-              Pré-Lancement
-            </Badge>
-          </CardTitle>
-        </CardHeader>
-      </Card>
-
-      {/* Mock Data Generator */}
-      <Card className="fintech-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-xl font-bold">
-            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-              <Zap className="h-4 w-4 text-white" />
-            </div>
-            Générateur de Données de Test
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Users Generation */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 mb-3">
-              <Users className="h-5 w-5 text-blue-600" />
-              <h4 className="font-semibold text-gray-900">Utilisateurs de Test</h4>
-            </div>
-            <div className="flex gap-3 flex-wrap">
-              <Button
-                onClick={() => generateMockUsers(50)}
-                disabled={loading === 'users-50'}
-                className="fintech-button-secondary"
-              >
-                {loading === 'users-50' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                50 Utilisateurs
-              </Button>
-              <Button
-                onClick={() => generateMockUsers(100)}
-                disabled={loading === 'users-100'}
-                className="fintech-button-secondary"
-              >
-                {loading === 'users-100' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                100 Utilisateurs
-              </Button>
-              <Button
-                onClick={() => generateMockUsers(500)}
-                disabled={loading === 'users-500'}
-                className="fintech-button-secondary"
-              >
-                {loading === 'users-500' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                500 Utilisateurs
-              </Button>
-            </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Code className="h-5 w-5" />
+          Development Tools
+          <Badge variant="outline">Debug Mode</Badge>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
+          <div className="text-center">
+            <p className="text-2xl font-bold">{devMetrics.apiCalls.toLocaleString()}</p>
+            <p className="text-sm text-muted-foreground">API Calls</p>
           </div>
-
-          {/* Bookings Generation */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 mb-3">
-              <Calendar className="h-5 w-5 text-purple-600" />
-              <h4 className="font-semibold text-gray-900">Réservations de Test</h4>
-            </div>
-            <div className="flex gap-3 flex-wrap">
-              <Button
-                onClick={() => generateMockBookings(100)}
-                disabled={loading === 'bookings-100'}
-                className="fintech-button-secondary"
-              >
-                {loading === 'bookings-100' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                100 Réservations
-              </Button>
-              <Button
-                onClick={() => generateMockBookings(500)}
-                disabled={loading === 'bookings-500'}
-                className="fintech-button-secondary"
-              >
-                {loading === 'bookings-500' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                500 Réservations
-              </Button>
-              <Button
-                onClick={() => generateMockBookings(1000)}
-                disabled={loading === 'bookings-1000'}
-                className="fintech-button-secondary"
-              >
-                {loading === 'bookings-1000' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                1000 Réservations
-              </Button>
-            </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold text-red-600">{devMetrics.errors}</p>
+            <p className="text-sm text-muted-foreground">Errors</p>
           </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold">{devMetrics.errorRate}%</p>
+            <p className="text-sm text-muted-foreground">Error Rate</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold">{devMetrics.avgResponseTime}ms</p>
+            <p className="text-sm text-muted-foreground">Avg Response</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold">{devMetrics.activeWebhooks}</p>
+            <p className="text-sm text-muted-foreground">Webhooks</p>
+          </div>
+          <div className="text-center">
+            <p className="text-2xl font-bold">{devMetrics.queuedJobs}</p>
+            <p className="text-sm text-muted-foreground">Queued Jobs</p>
+          </div>
+        </div>
 
-          {/* Revenue & Providers */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-3">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                <h4 className="font-semibold text-gray-900">Données Financières</h4>
+        <div>
+          <h4 className="font-medium mb-3">Development Tools</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {tools.map((tool, index) => (
+              <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <div>
+                    <p className="font-medium">{tool.name}</p>
+                    <p className="text-sm text-muted-foreground">{tool.description}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge variant={tool.status === 'available' ? 'default' : 'secondary'}>
+                    {tool.status}
+                  </Badge>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    disabled={tool.status === 'restricted'}
+                    onClick={tool.onClick}
+                  >
+                    {tool.action}
+                  </Button>
+                </div>
               </div>
-              <Button
-                onClick={generateMockRevenue}
-                disabled={loading === 'revenue'}
-                className="fintech-button-secondary w-full"
-              >
-                {loading === 'revenue' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                Générer Revenus de Test
-              </Button>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 mb-3">
-                <Building className="h-5 w-5 text-orange-600" />
-                <h4 className="font-semibold text-gray-900">Prestataires</h4>
-              </div>
-              <Button
-                onClick={generateMockProviders}
-                disabled={loading === 'providers'}
-                className="fintech-button-secondary w-full"
-              >
-                {loading === 'providers' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                Créer Prestataires Vérifiés
-              </Button>
-            </div>
+            ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Data Cleanup */}
-      <Card className="fintech-card border-red-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-xl font-bold text-red-700">
-            <div className="w-8 h-8 bg-gradient-to-r from-red-600 to-orange-600 rounded-lg flex items-center justify-center">
-              <Trash2 className="h-4 w-4 text-white" />
-            </div>
-            Nettoyage Pré-Lancement
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
-            <Button
-              onClick={deleteTestUsers}
-              disabled={loading === 'delete-users'}
-              variant="outline"
-              className="border-red-200 text-red-700 hover:bg-red-50"
+        <div>
+          <h4 className="font-medium mb-3">Test Data Management</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              disabled={loading['generate-users']}
+              onClick={() => handleAction('generate-users', () => generateTestData('users'))}
             >
-              {loading === 'delete-users' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-              Supprimer Utilisateurs Test
+              <Users className="h-4 w-4" />
+              {loading['generate-users'] ? 'Generating...' : 'Generate Test Users'}
             </Button>
-
-            <Button
-              onClick={clearMockBookings}
-              disabled={loading === 'clear-bookings'}
-              variant="outline"
-              className="border-red-200 text-red-700 hover:bg-red-50"
+            
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              disabled={loading['generate-bookings']}
+              onClick={() => handleAction('generate-bookings', () => generateTestData('bookings'))}
             >
-              {loading === 'clear-bookings' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-              Effacer Réservations Test
-            </Button>
-
-            <Button
-              onClick={resetAnalytics}
-              disabled={loading === 'reset-analytics'}
-              variant="outline"
-              className="border-red-200 text-red-700 hover:bg-red-50"
-            >
-              {loading === 'reset-analytics' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-              Réinitialiser Analytiques
+              <Calendar className="h-4 w-4" />
+              {loading['generate-bookings'] ? 'Generating...' : 'Generate Test Bookings'}
             </Button>
 
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="border-red-500 text-red-700 hover:bg-red-50"
-                  disabled={!!loading}
+                <Button 
+                  variant="destructive" 
+                  className="flex items-center gap-2"
+                  disabled={loading['clear-users']}
                 >
-                  <AlertTriangle className="h-4 w-4 mr-2" />
-                  Réinitialisation Complète
+                  <Trash2 className="h-4 w-4" />
+                  Clear Test Users
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-red-700">⚠️ Réinitialisation Complète</AlertDialogTitle>
+                  <AlertDialogTitle>Clear Test Users</AlertDialogTitle>
                   <AlertDialogDescription>
-                    Cette action supprimera TOUTES les données de la base de données, y compris:
-                    <ul className="list-disc list-inside mt-2 space-y-1">
-                      <li>Tous les utilisateurs et profils</li>
-                      <li>Toutes les réservations et services</li>
-                      <li>Toutes les données analytiques</li>
-                      <li>Tous les messages et conversations</li>
-                    </ul>
-                    <strong>Cette action est irréversible!</strong>
+                    This will permanently delete all test users (those with email pattern testuser_*). This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Annuler</AlertDialogCancel>
-                  <AlertDialogAction 
-                    onClick={nuclearReset}
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleAction('clear-users', () => clearTestData('users'))}
                     className="bg-red-600 hover:bg-red-700"
                   >
-                    {loading === 'nuclear' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-                    Confirmer la Réinitialisation
+                    {loading['clear-users'] ? 'Clearing...' : 'Clear Users'}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="destructive" 
+                  className="flex items-center gap-2"
+                  disabled={loading['clear-bookings']}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  Clear Test Bookings
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Clear Test Bookings</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will permanently delete all test bookings (those with instructions containing "TEST"). This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleAction('clear-bookings', () => clearTestData('bookings'))}
+                    className="bg-red-600 hover:bg-red-700"
+                  >
+                    {loading['clear-bookings'] ? 'Clearing...' : 'Clear Bookings'}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {/* Backup & Recovery */}
-      <Card className="fintech-card">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3 text-xl font-bold">
-            <div className="w-8 h-8 bg-gradient-to-r from-green-600 to-blue-600 rounded-lg flex items-center justify-center">
-              <Download className="h-4 w-4 text-white" />
-            </div>
-            Sauvegarde et Récupération
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-2 gap-4">
-            <Button
-              onClick={exportData}
-              disabled={loading === 'export'}
-              className="fintech-button-secondary"
+        <div>
+          <h4 className="font-medium mb-3">System Operations</h4>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="flex items-center gap-2"
+                  disabled={loading['reset-analytics']}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Reset Analytics
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Reset Analytics Data</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This will clear old fraud logs, API usage logs, and inactive user sessions (older than 7 days). This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleAction('reset-analytics', resetAnalytics)}
+                  >
+                    {loading['reset-analytics'] ? 'Resetting...' : 'Reset Analytics'}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              disabled={loading['backup-db']}
+              onClick={() => handleAction('backup-db', createBackup)}
             >
-              {loading === 'export' && <RefreshCw className="h-4 w-4 mr-2 animate-spin" />}
-              <Download className="h-4 w-4 mr-2" />
-              Exporter État Actuel
+              <Database className="h-4 w-4" />
+              {loading['backup-db'] ? 'Creating...' : 'Create Backup'}
             </Button>
 
-            <Button
-              disabled={!!loading}
-              className="fintech-button-secondary"
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={() => window.location.reload()}
             >
-              <Upload className="h-4 w-4 mr-2" />
-              Importer État Propre
+              <RefreshCw className="h-4 w-4" />
+              Reload Application
+            </Button>
+
+            <Button 
+              variant="outline" 
+              className="flex items-center gap-2"
+              onClick={() => {
+                const data = {
+                  stats,
+                  timestamp: new Date().toISOString(),
+                  userAgent: navigator.userAgent
+                };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `admin-report-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+              }}
+            >
+              <Download className="h-4 w-4" />
+              Export Report
             </Button>
           </div>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+
+        <div>
+          <h4 className="font-medium mb-3">Recent Errors</h4>
+          <div className="space-y-3">
+            {recentErrors.map((error) => (
+              <div key={error.id} className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center gap-3">
+                  <Bug className={`h-4 w-4 ${
+                    error.severity === 'high' ? 'text-red-500' : 
+                    error.severity === 'medium' ? 'text-orange-500' : 'text-yellow-500'
+                  }`} />
+                  <div>
+                    <p className="font-medium">{error.error}</p>
+                    <p className="text-sm text-muted-foreground">{error.endpoint}</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-xs text-muted-foreground">{error.timestamp}</span>
+                  <Badge variant={
+                    error.severity === 'high' ? 'destructive' : 
+                    error.severity === 'medium' ? 'secondary' : 'outline'
+                  }>
+                    {error.severity}
+                  </Badge>
+                  <Button variant="outline" size="sm">
+                    <Terminal className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

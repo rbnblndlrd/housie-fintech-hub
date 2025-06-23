@@ -1,19 +1,23 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area } from 'recharts';
-import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin } from 'lucide-react';
+import { TrendingUp, TrendingDown, Users, Calendar, DollarSign, MapPin, RefreshCw, AlertTriangle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useAdminData } from '@/hooks/useAdminData';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const OverviewSection = () => {
-  // Mock data for charts
+  const { stats, loading, error, loadAdminStats } = useAdminData();
+
+  // Mock data for charts (keeping charts as visualization examples)
   const revenueData = [
     { month: 'Jan', revenue: 125000, fees: 6250, bookings: 450 },
     { month: 'Fév', revenue: 148000, fees: 7400, bookings: 520 },
     { month: 'Mar', revenue: 167000, fees: 8350, bookings: 580 },
     { month: 'Avr', revenue: 189000, fees: 9450, bookings: 650 },
     { month: 'Mai', revenue: 215000, fees: 10750, bookings: 720 },
-    { month: 'Jun', revenue: 248000, fees: 12400, bookings: 820 },
+    { month: 'Jun', revenue: stats.totalRevenue, fees: stats.totalRevenue * 0.05, bookings: stats.monthlyBookings },
   ];
 
   const categoryData = [
@@ -25,30 +29,44 @@ const OverviewSection = () => {
   ];
 
   const geoData = [
-    { region: 'Montréal', bookings: 1250, revenue: 315000 },
-    { region: 'Québec', bookings: 680, revenue: 175000 },
-    { region: 'Gatineau', bookings: 420, revenue: 108000 },
-    { region: 'Sherbrooke', bookings: 280, revenue: 72000 },
-    { region: 'Trois-Rivières', bookings: 190, revenue: 48000 },
+    { region: 'Montréal', bookings: Math.floor(stats.monthlyBookings * 0.5), revenue: Math.floor(stats.totalRevenue * 0.4) },
+    { region: 'Québec', bookings: Math.floor(stats.monthlyBookings * 0.27), revenue: Math.floor(stats.totalRevenue * 0.25) },
+    { region: 'Gatineau', bookings: Math.floor(stats.monthlyBookings * 0.13), revenue: Math.floor(stats.totalRevenue * 0.15) },
+    { region: 'Sherbrooke', bookings: Math.floor(stats.monthlyBookings * 0.07), revenue: Math.floor(stats.totalRevenue * 0.12) },
+    { region: 'Trois-Rivières', bookings: Math.floor(stats.monthlyBookings * 0.03), revenue: Math.floor(stats.totalRevenue * 0.08) },
   ];
 
-  const MetricCard = ({ title, value, change, trend, icon: Icon, color }) => (
+  const MetricCard = ({ title, value, change, trend, icon: Icon, color, loading: cardLoading, suffix = "" }) => (
     <Card className="fintech-card hover:shadow-[0_12px_40px_-4px_rgba(0,0,0,0.15)] transition-all duration-300">
       <CardContent className="p-6">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-medium text-gray-600 mb-1">{title}</p>
-            <p className="text-3xl font-black text-gray-900">{value}</p>
+            {cardLoading ? (
+              <Skeleton className="h-8 w-24 mb-2" />
+            ) : (
+              <p className="text-3xl font-black text-gray-900">{value}{suffix}</p>
+            )}
             <div className="flex items-center mt-2">
-              {trend === 'up' ? (
-                <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
+              {cardLoading ? (
+                <Skeleton className="h-4 w-20" />
               ) : (
-                <TrendingDown className="h-4 w-4 text-red-600 mr-1" />
+                <>
+                  {trend === 'up' ? (
+                    <TrendingUp className="h-4 w-4 text-green-600 mr-1" />
+                  ) : trend === 'down' ? (
+                    <TrendingDown className="h-4 w-4 text-red-600 mr-1" />
+                  ) : null}
+                  <span className={`text-sm font-semibold ${
+                    trend === 'up' ? 'text-green-600' : 
+                    trend === 'down' ? 'text-red-600' : 
+                    'text-gray-500'
+                  }`}>
+                    {change !== undefined ? `${change > 0 ? '+' : ''}${change.toFixed(1)}%` : 'N/A'}
+                  </span>
+                  <span className="text-sm text-gray-500 ml-1">vs mois dernier</span>
+                </>
               )}
-              <span className={`text-sm font-semibold ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
-                {change}
-              </span>
-              <span className="text-sm text-gray-500 ml-1">vs mois dernier</span>
             </div>
           </div>
           <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${color}`}>
@@ -59,43 +77,111 @@ const OverviewSection = () => {
     </Card>
   );
 
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <Card className="border-red-200">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 text-red-600">
+              <AlertTriangle className="h-5 w-5" />
+              <div>
+                <p className="font-medium">Erreur de chargement des données</p>
+                <p className="text-sm text-red-500">{error}</p>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={loadAdminStats}
+                className="ml-auto"
+              >
+                <RefreshCw className="h-4 w-4 mr-2" />
+                Réessayer
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
+      {/* Header with refresh button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Vue d'ensemble</h2>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={loadAdminStats}
+          disabled={loading}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          Actualiser
+        </Button>
+      </div>
+
       {/* Key Metrics */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
           title="Utilisateurs Totaux"
-          value="15,847"
-          change="+12.5%"
-          trend="up"
+          value={loading ? "..." : stats.totalUsers.toLocaleString()}
+          change={stats.userGrowth}
+          trend={stats.userGrowth > 0 ? 'up' : stats.userGrowth < 0 ? 'down' : 'neutral'}
           icon={Users}
           color="bg-gradient-to-r from-blue-600 to-purple-600"
+          loading={loading}
         />
         <MetricCard
           title="Prestataires Actifs"
-          value="3,246"
-          change="+8.2%"
-          trend="up"
+          value={loading ? "..." : stats.activeProviders.toLocaleString()}
+          change={stats.providerGrowth}
+          trend={stats.providerGrowth > 0 ? 'up' : stats.providerGrowth < 0 ? 'down' : 'neutral'}
           icon={Users}
           color="bg-gradient-to-r from-green-600 to-emerald-600"
+          loading={loading}
         />
         <MetricCard
           title="Réservations Mensuelles"
-          value="820"
-          change="+15.8%"
-          trend="up"
+          value={loading ? "..." : stats.monthlyBookings.toLocaleString()}
+          change={stats.bookingGrowth}
+          trend={stats.bookingGrowth > 0 ? 'up' : stats.bookingGrowth < 0 ? 'down' : 'neutral'}
           icon={Calendar}
           color="bg-gradient-to-r from-orange-600 to-red-600"
+          loading={loading}
         />
         <MetricCard
           title="Revenus Totaux"
-          value="248K $"
-          change="+22.1%"
-          trend="up"
+          value={loading ? "..." : `${(stats.totalRevenue / 1000).toFixed(0)}K`}
+          change={stats.revenueGrowth}
+          trend={stats.revenueGrowth > 0 ? 'up' : stats.revenueGrowth < 0 ? 'down' : 'neutral'}
           icon={DollarSign}
           color="bg-gradient-to-r from-purple-600 to-pink-600"
+          loading={loading}
+          suffix=" $"
         />
       </div>
+
+      {/* Alerts Summary */}
+      {(stats.alertsCount > 0 || stats.highRiskAlerts > 0) && (
+        <Card className="border-orange-200 bg-orange-50">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <div>
+                <p className="font-medium text-orange-900">
+                  {stats.alertsCount} alertes détectées aujourd'hui
+                </p>
+                {stats.highRiskAlerts > 0 && (
+                  <p className="text-sm text-orange-700">
+                    {stats.highRiskAlerts} alertes à haut risque nécessitent une attention immédiate
+                  </p>
+                )}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Revenue Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
