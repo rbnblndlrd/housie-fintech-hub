@@ -13,7 +13,7 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Check } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -23,7 +23,7 @@ import NotificationBell from '@/components/NotificationBell';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole, setCurrentRole } = useRole();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -37,10 +37,24 @@ const UserMenu = () => {
   };
 
   const handleDropdownAction = (item: NavigationItem) => {
-    console.log('🔧 Dropdown action clicked:', item.label, 'href:', item.href);
+    console.log('🔧 Dropdown action clicked:', item.label, 'href:', item.href, 'action:', item.action);
     
     if (item.action === 'logout') {
       handleLogout();
+    } else if (item.action === 'toggle-customer') {
+      console.log('🔧 Switching to customer role');
+      setCurrentRole('customer');
+      // Navigate to customer dashboard if currently on provider dashboard
+      if (window.location.pathname === '/provider-dashboard') {
+        navigate('/customer-dashboard');
+      }
+    } else if (item.action === 'toggle-provider') {
+      console.log('🔧 Switching to provider role');
+      setCurrentRole('provider');
+      // Navigate to provider dashboard if currently on customer dashboard
+      if (window.location.pathname === '/customer-dashboard') {
+        navigate('/provider-dashboard');
+      }
     } else if (item.href) {
       navigate(item.href);
     }
@@ -112,16 +126,39 @@ const UserMenu = () => {
             <span>Profile</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            {profileMenuItems.map((subItem, subIndex) => (
-              <DropdownMenuItem
-                key={`${subIndex}-${subItem.label}`}
-                onClick={() => handleDropdownAction(subItem)}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">{subItem.icon}</span>
-                <span>{subItem.label}</span>
-              </DropdownMenuItem>
-            ))}
+            {profileMenuItems.map((subItem, subIndex) => {
+              // Handle separators
+              if (subItem.separator) {
+                return <DropdownMenuSeparator key={`separator-${subIndex}`} />;
+              }
+              
+              // Handle role toggle items with active state
+              if (subItem.action && (subItem.action === 'toggle-customer' || subItem.action === 'toggle-provider')) {
+                return (
+                  <DropdownMenuItem
+                    key={`${subIndex}-${subItem.label}`}
+                    onClick={() => handleDropdownAction(subItem)}
+                    className={`cursor-pointer ${subItem.active ? 'bg-blue-50 text-blue-700' : ''}`}
+                  >
+                    <span className="mr-2">{subItem.icon}</span>
+                    <span className="flex-1">{subItem.label}</span>
+                    {subItem.active && <Check className="h-4 w-4 ml-2" />}
+                  </DropdownMenuItem>
+                );
+              }
+              
+              // Handle regular menu items
+              return (
+                <DropdownMenuItem
+                  key={`${subIndex}-${subItem.label}`}
+                  onClick={() => handleDropdownAction(subItem)}
+                  className="cursor-pointer"
+                >
+                  <span className="mr-2">{subItem.icon}</span>
+                  <span>{subItem.label}</span>
+                </DropdownMenuItem>
+              );
+            })}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 

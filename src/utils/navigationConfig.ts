@@ -6,6 +6,7 @@ export interface NavigationItem {
   separator?: boolean;
   action?: string;
   badge?: number;
+  active?: boolean;
 }
 
 export const visitorNav: NavigationItem[] = [
@@ -74,7 +75,10 @@ export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'cust
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
     { label: "Payment Methods", href: "/payment-methods", icon: "💳" },
-    { label: "Verification Status", href: "/provider-profile", icon: "✅" }
+    { label: "Verification Status", href: "/provider-profile", icon: "✅" },
+    { separator: true, label: "", href: "", icon: "" },
+    { label: "Switch to Customer", href: "", icon: "👥", action: "toggle-customer", active: currentRole === 'customer' },
+    { label: "Switch to Provider", href: "", icon: "💼", action: "toggle-provider", active: currentRole === 'provider' }
   ];
 };
 

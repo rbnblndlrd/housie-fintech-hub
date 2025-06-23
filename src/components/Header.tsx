@@ -1,64 +1,51 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
-import { getNavigationItems } from '@/utils/navigationConfig';
-import DynamicNavigation from './DynamicNavigation';
-import UserMenu from './header/UserMenu';
-import RoleToggle from './header/RoleToggle';
-import HeaderActions from './header/HeaderActions';
+import DynamicNavigation from '@/components/DynamicNavigation';
+import UserMenu from '@/components/header/UserMenu';
+import HeaderActions from '@/components/header/HeaderActions';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const { user } = useAuth();
   const { currentRole } = useRole();
   const navigate = useNavigate();
 
-  const handleLogoClick = () => {
-    navigate('/');
-  };
-
-  const navigationItems = getNavigationItems(user, currentRole);
-
   return (
-    <TooltipProvider>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
-        <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-3 items-center h-16">
-            {/* Left: Logo - Fixed width container */}
-            <div className="flex justify-start">
-              <button
-                onClick={handleLogoClick}
-                className="flex items-center space-x-2"
-              >
-                <img 
-                  src="/lovable-uploads/8e4dab5f-fc1a-4bae-9e52-c88e60c0a67d.png" 
-                  alt="HOUSIE" 
-                  className="h-8 w-auto"
-                />
-              </button>
+    <header className="bg-gray-900 text-white shadow-lg">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Left side - Logo and Navigation */}
+          <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
+              <img 
+                src="/lovable-uploads/new-housie-logo.png" 
+                alt="HOUSIE" 
+                className="h-8 w-auto" 
+              />
             </div>
-            
-            {/* Center: Navigation - Fixed positioning */}
-            <div className="flex justify-center">
-              <DynamicNavigation items={navigationItems} />
-            </div>
-            
-            {/* Right: User Menu - Fixed width container */}
-            <div className="flex justify-end">
-              {user && (
-                <div className="flex items-center space-x-4">
-                  <HeaderActions />
-                  <RoleToggle />
-                  <UserMenu />
-                </div>
-              )}
-            </div>
+            <DynamicNavigation />
           </div>
-        </nav>
-      </header>
-    </TooltipProvider>
+
+          {/* Right side - Actions and User Menu */}
+          <div className="flex items-center space-x-4">
+            <HeaderActions />
+            {user ? (
+              <UserMenu />
+            ) : (
+              <Button 
+                onClick={() => navigate('/auth')}
+                className="bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                Sign In
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </header>
   );
 };
 
