@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -96,19 +95,19 @@ export const useAdminData = () => {
       ) || [];
       
       const totalRevenue = completedBookings.reduce((sum, b) => 
-        sum + (parseFloat(b.total_amount) || 0), 0
+        sum + (Number(b.total_amount) || 0), 0
       );
       
       const currentMonthRevenue = completedBookings
         .filter(b => new Date(b.created_at) >= currentMonth)
-        .reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
+        .reduce((sum, b) => sum + (Number(b.total_amount) || 0), 0);
       
       const lastMonthRevenue = completedBookings
         .filter(b => 
           new Date(b.created_at) >= lastMonth && 
           new Date(b.created_at) < currentMonth
         )
-        .reduce((sum, b) => sum + (parseFloat(b.total_amount) || 0), 0);
+        .reduce((sum, b) => sum + (Number(b.total_amount) || 0), 0);
       
       // Fraud alerts
       const { data: fraudData, error: fraudError } = await supabase
