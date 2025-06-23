@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 
@@ -6,7 +5,7 @@ interface EmergencyJob {
   id: string;
   title: string;
   location: string;
-  price: number;
+  price: string; // Changed from number to string to match overlay component
   timePosted: string;
   priority: string;
   description: string;
@@ -79,7 +78,7 @@ export const useEmergencyJobsData = () => {
             id: booking.id,
             title: booking.services?.title || 'Emergency Service',
             location: booking.service_address || 'Montreal',
-            price: Number(booking.total_amount) || 100,
+            price: String(Number(booking.total_amount) || 100), // Convert to string
             timePosted,
             priority: booking.priority || 'emergency',
             description: booking.services?.description || 'Emergency service required',
