@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import HeatZoneMap from "@/components/HeatZoneMap";
 import { 
   Calendar, 
   DollarSign, 
@@ -298,27 +298,7 @@ const ProviderDashboard = () => {
             </Card>
           </div>
 
-          {/* Heat Zone Map Section */}
-          <div className="mb-8">
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="h-5 w-5" />
-                  Demand Intelligence Heat Map
-                </CardTitle>
-                <p className="text-sm text-gray-600">
-                  Find high-demand areas and optimize your service locations based on real-time market data
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="h-96 rounded-lg overflow-hidden">
-                  <HeatZoneMap userRole="provider" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Quick Actions - Updated with Heat Zone Map integration */}
+          {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
             <Button 
               className="h-20 text-lg"
@@ -330,7 +310,7 @@ const ProviderDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/provider-bookings')}
+              onClick={() => navigate('/calendar')}
             >
               <Calendar className="h-6 w-6 mr-2" />
               Calendar
@@ -338,10 +318,10 @@ const ProviderDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/heat-zone-map')}
+              onClick={() => navigate('/interactive-map')}
             >
               <MapPin className="h-6 w-6 mr-2" />
-              Map
+              Interactive Map
             </Button>
             <Button 
               variant="outline" 

@@ -253,7 +253,7 @@ const CustomerDashboard = () => {
             </Card>
           </div>
 
-          {/* Quick Actions - Updated navigation */}
+          {/* Quick Actions */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
             <Button 
               className="h-20 text-lg"
@@ -273,10 +273,10 @@ const CustomerDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/heat-zone-map')}
+              onClick={() => navigate('/interactive-map')}
             >
               <MapPin className="h-6 w-6 mr-2" />
-              Map
+              Interactive Map
             </Button>
             <Button 
               variant="outline" 
