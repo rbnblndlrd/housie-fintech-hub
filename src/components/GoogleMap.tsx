@@ -36,7 +36,6 @@ const mapOptions = {
       elementType: "geometry",
       stylers: [{ color: "#e2e8f0" }]
     },
-    // Highlight Montreal area
     {
       featureType: "administrative.locality",
       elementType: "labels.text.fill",
@@ -44,7 +43,6 @@ const mapOptions = {
     }
   ],
   restriction: {
-    // Restrict to Quebec region for better performance
     latLngBounds: {
       north: 46.0,
       south: 45.0,
@@ -57,12 +55,8 @@ const mapOptions = {
 
 const libraries: ("places" | "geometry")[] = ["places", "geometry"];
 
-// Fallback API key - users should set this in environment variables
-const getGoogleMapsApiKey = () => {
-  // In production, this should come from environment variables
-  // For now, using the existing key but with better error handling
-  return import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o";
-};
+// Use your Web API key directly
+const GOOGLE_MAPS_API_KEY = "AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o";
 
 export const GoogleMap: React.FC<GoogleMapProps> = ({ 
   center, 
@@ -76,10 +70,8 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   const [loadError, setLoadError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const apiKey = getGoogleMapsApiKey();
-
   const handleLoad = () => {
-    console.log('Google Maps loaded successfully');
+    console.log('Google Maps loaded successfully for Montreal interactive map');
     setIsLoaded(true);
     setLoadError(null);
     setIsLoading(false);
@@ -87,14 +79,29 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
 
   const handleError = (error: Error) => {
     console.error('Google Maps failed to load:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      apiKey: GOOGLE_MAPS_API_KEY ? 'Present' : 'Missing'
+    });
+    
     let errorMessage = 'Failed to load Google Maps';
     
     if (error.message.includes('InvalidKeyMapError')) {
-      errorMessage = 'Invalid Google Maps API key';
+      errorMessage = 'Invalid Google Maps API key - Please check your API key configuration';
+      console.error('API Key issue: The provided API key may be invalid or restricted');
     } else if (error.message.includes('RefererNotAllowedMapError')) {
-      errorMessage = 'Domain not authorized for this API key';
+      errorMessage = 'Domain not authorized - Please add *.lovable.app to your API key restrictions';
+      console.error('Domain restriction: Current domain not allowed for this API key');
     } else if (error.message.includes('QuotaExceededError')) {
-      errorMessage = 'Google Maps API quota exceeded';
+      errorMessage = 'Google Maps API quota exceeded - Check your billing and usage limits';
+      console.error('Quota exceeded: API usage limits reached');
+    } else if (error.message.includes('RequestDeniedMapError')) {
+      errorMessage = 'Maps JavaScript API not enabled - Enable it in Google Cloud Console';
+      console.error('API not enabled: Maps JavaScript API needs to be enabled');
+    } else if (error.message.includes('BillingNotEnabledMapError')) {
+      errorMessage = 'Billing not enabled - Enable billing in Google Cloud Console';
+      console.error('Billing issue: Billing account required for Maps API');
     }
     
     setLoadError(errorMessage);
@@ -124,15 +131,14 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   // Find hovered provider with proper type checking
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);
 
-  // Check if API key is available
-  if (!apiKey) {
+  if (!GOOGLE_MAPS_API_KEY) {
     return (
       <div className={`w-full h-full rounded-lg bg-gray-100 flex items-center justify-center ${className}`}>
         <div className="text-center p-6">
           <div className="text-red-600 mb-2 text-lg">⚠️ Configuration Required</div>
           <p className="text-gray-700 mb-2">Google Maps API key not configured</p>
           <p className="text-sm text-gray-500">
-            Please set VITE_GOOGLE_MAPS_API_KEY in your environment variables
+            Please set your Google Maps API key in the component
           </p>
         </div>
       </div>
@@ -142,17 +148,20 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   if (loadError) {
     return (
       <div className={`w-full h-full rounded-lg bg-gray-100 flex items-center justify-center ${className}`}>
-        <div className="text-center p-6">
+        <div className="text-center p-6 max-w-md">
           <div className="text-red-600 mb-2 text-lg">🗺️ Map Error</div>
-          <p className="text-gray-700 mb-2">{loadError}</p>
-          <div className="text-sm text-gray-500 space-y-1">
-            <p>Please check:</p>
-            <ul className="list-disc list-inside text-left">
-              <li>Google Maps API key is valid</li>
-              <li>Domain is authorized in Google Cloud Console</li>
-              <li>Maps JavaScript API is enabled</li>
-              <li>Billing is set up (if required)</li>
+          <p className="text-gray-700 mb-3 font-medium">{loadError}</p>
+          <div className="text-sm text-gray-600 space-y-2">
+            <p className="font-medium">Common solutions:</p>
+            <ul className="list-disc list-inside text-left space-y-1">
+              <li>Enable Maps JavaScript API in Google Cloud Console</li>
+              <li>Set up billing (required even for free usage)</li>
+              <li>Add *.lovable.app to API key restrictions</li>
+              <li>Check daily usage quotas</li>
             </ul>
+            <p className="mt-3 text-xs text-gray-500">
+              Check browser console for detailed error information
+            </p>
           </div>
         </div>
       </div>
@@ -165,6 +174,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
         <div className="text-center p-6">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading Montreal interactive map...</p>
+          <p className="text-xs text-gray-500 mt-2">Connecting to Google Maps API...</p>
         </div>
       </div>
     );
@@ -173,7 +183,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
   return (
     <div className={`w-full h-full rounded-lg ${className}`}>
       <LoadScript 
-        googleMapsApiKey={apiKey}
+        googleMapsApiKey={GOOGLE_MAPS_API_KEY}
         libraries={libraries}
         onLoad={handleLoad}
         onError={handleError}
@@ -191,14 +201,14 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
           center={center}
           zoom={zoom}
           options={mapOptions}
-          onLoad={() => console.log('Montreal map instance loaded')}
+          onLoad={() => console.log('Montreal map instance ready with', providers.length, 'providers')}
         >
           {isLoaded && providers.map(provider => (
             <Marker
               key={provider.id}
               position={{ lat: provider.lat, lng: provider.lng }}
               onClick={() => {
-                console.log('Marker clicked:', provider.name);
+                console.log('Provider marker clicked:', provider.name);
                 setSelectedProvider(provider);
               }}
               icon={getMarkerIcon(provider.availability)}
