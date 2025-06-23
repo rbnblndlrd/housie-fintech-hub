@@ -1,6 +1,7 @@
 
 import React from 'react';
-import ModernServiceCard from "@/components/ModernServiceCard";
+import { Skeleton } from "@/components/ui/skeleton";
+import ModernServiceCard from "./ModernServiceCard";
 import { Service } from "@/types/service";
 
 interface ModernServicesGridProps {
@@ -13,60 +14,76 @@ interface ModernServicesGridProps {
 }
 
 const ModernServicesGrid: React.FC<ModernServicesGridProps> = ({
+  services,
   filteredServices,
   isLoading,
   onBookNow,
   onHoverProvider,
   verifiedOnly
 }) => {
-  if (isLoading) {
-    return (
-      <div className="text-center py-16">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-6"></div>
-        <p className="text-xl text-gray-600 font-medium">Finding available professionals...</p>
-      </div>
-    );
-  }
-
+  // Apply verified filter if needed
   const displayServices = verifiedOnly 
     ? filteredServices.filter(service => service.provider?.verified)
     : filteredServices;
 
-  if (displayServices.length === 0) {
+  if (isLoading) {
     return (
-      <div className="text-center py-16">
-        <div className="bg-gray-50 rounded-2xl p-12 inline-block mb-8">
-          <svg className="h-16 w-16 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
+      <div className="space-y-4">
+        <h2 className="text-2xl font-bold text-gray-900 mb-6">Available Services</h2>
+        <div className="grid gap-6">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="fintech-card p-6">
+              <div className="flex items-start gap-6">
+                <Skeleton className="w-20 h-20 rounded-2xl" />
+                <div className="flex-1 space-y-3">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-1/2" />
+                  <div className="flex gap-4">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-4 w-24" />
+                  </div>
+                  <Skeleton className="h-4 w-full" />
+                  <div className="flex justify-between">
+                    <Skeleton className="h-4 w-32" />
+                    <Skeleton className="h-10 w-24" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <h3 className="text-2xl font-bold text-gray-900 mb-2">No professionals found</h3>
-        <p className="text-gray-600 text-lg">Try adjusting your filters or location</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Available Professionals
-        </h2>
-        <p className="text-gray-600">
-          {displayServices.length} {displayServices.length === 1 ? 'professional' : 'professionals'} found
-        </p>
+        <h2 className="text-2xl font-bold text-gray-900">Available Services</h2>
+        <div className="text-sm text-gray-500">
+          {displayServices.length} service{displayServices.length !== 1 ? 's' : ''} found
+          {verifiedOnly && ' (verified only)'}
+        </div>
       </div>
-      
-      <div className="grid gap-4">
-        {displayServices.map((service) => (
-          <ModernServiceCard
-            key={service.id}
-            service={service}
-            onBookNow={onBookNow}
-            onHoverProvider={onHoverProvider}
-          />
-        ))}
-      </div>
+
+      {displayServices.length === 0 ? (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">No services found matching your criteria.</p>
+          <p className="text-gray-400 text-sm mt-2">Try adjusting your filters or search terms.</p>
+        </div>
+      ) : (
+        <div className="grid gap-6">
+          {displayServices.map((service) => (
+            <ModernServiceCard
+              key={service.id}
+              service={service}
+              onBookNow={onBookNow}
+              onHoverProvider={onHoverProvider}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
