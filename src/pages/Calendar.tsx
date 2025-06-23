@@ -7,6 +7,9 @@ import EditAppointmentDialog from "@/components/EditAppointmentDialog";
 import CalendarHeader from "@/components/calendar/CalendarHeader";
 import UnifiedCalendar from "@/components/calendar/UnifiedCalendar";
 import EventsList from "@/components/calendar/EventsList";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import { useToast } from '@/hooks/use-toast';
 import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
@@ -14,6 +17,7 @@ import { useCalendarEvents } from '@/hooks/useCalendarEvents';
 import { useGoogleCalendar } from '@/hooks/useGoogleCalendar';
 import { CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRoleContext } from '@/contexts/RoleContext';
 
 const Calendar = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -25,6 +29,8 @@ const Calendar = () => {
   const { isFeatureAvailable } = useSubscription();
   const { toast } = useToast();
   const { user } = useAuth();
+  const { currentRole } = useRoleContext();
+  const navigate = useNavigate();
   const { isConnected: googleConnected } = useGoogleCalendar();
   const { events, fetchEvents, loading: calendarLoading } = useCalendarEvents();
   const { 
@@ -34,6 +40,21 @@ const Calendar = () => {
     updateEvent, 
     deleteEvent 
   } = useUnifiedCalendarIntegration();
+
+  // Determine back navigation based on user role
+  const getBackNavigation = () => {
+    if (currentRole === 'provider') {
+      return {
+        href: '/provider-bookings',
+        label: 'Back to Booking Management'
+      };
+    } else {
+      return {
+        href: '/customer-bookings',
+        label: 'Back to My Bookings'
+      };
+    }
+  };
 
   // Fetch Google Calendar events when connected and in sync mode
   useEffect(() => {
@@ -172,6 +193,18 @@ const Calendar = () => {
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <Button
+              onClick={() => navigate(getBackNavigation().href)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              {getBackNavigation().label}
+            </Button>
+          </div>
+
           <CalendarHeader />
           <CalendarTierBanner />
 

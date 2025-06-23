@@ -1,3 +1,4 @@
+
 export interface NavigationItem {
   label: string;
   href: string;
@@ -19,6 +20,7 @@ export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
   { label: "Dashboard", href: "/customer-dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
+  { label: "My Bookings", href: "/customer-bookings", icon: "📅" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" }
 ];
 
@@ -57,11 +59,15 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   // Dynamic profile link based on current role
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
 
+  // Dynamic bookings link based on current role
+  const bookingsHref = currentRole === 'provider' ? '/provider-bookings' : '/customer-bookings';
+
   // Provider-specific settings link
   const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-profile';
 
   return [
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
+    { label: "Bookings", href: bookingsHref, icon: "📅" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
