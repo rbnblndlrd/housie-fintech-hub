@@ -22,6 +22,7 @@ export const customerNav: NavigationItem[] = [
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Interactive Map", href: "/interactive-map", icon: "🗺️" },
   { label: "My Bookings", href: "/customer-bookings", icon: "📅" },
+  { label: "Gamification", href: "/gamification", icon: "🎮" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" }
 ];
 
@@ -30,6 +31,7 @@ export const providerNav: NavigationItem[] = [
   { label: "Dashboard", href: "/provider-dashboard", icon: "📊" },
   { label: "Find Work", href: "/interactive-map", icon: "🗺️" },
   { label: "Find Services", href: "/services", icon: "🔍" },
+  { label: "Gamification", href: "/gamification", icon: "🎮" },
   { label: "AI Assistant", href: "/notifications", icon: "🤖" },
   { label: "Profile", href: "/provider-profile", icon: "👤" }
 ];
@@ -65,6 +67,7 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
+    { label: "Gamification", href: "/gamification", icon: "🎮" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
     { label: "Verification Status", href: "/provider-profile", icon: "✅" },

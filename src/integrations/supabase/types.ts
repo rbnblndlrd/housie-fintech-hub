@@ -1115,6 +1115,120 @@ export type Database = {
         }
         Relationships: []
       }
+      leaderboards: {
+        Row: {
+          created_at: string | null
+          id: string
+          leaderboard_type: Database["public"]["Enums"]["leaderboard_type"]
+          metadata: Json | null
+          period_end: string
+          period_start: string
+          provider_id: string | null
+          rank_position: number | null
+          score: number
+          updated_at: string | null
+          user_id: string
+          zone_code: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          leaderboard_type: Database["public"]["Enums"]["leaderboard_type"]
+          metadata?: Json | null
+          period_end: string
+          period_start: string
+          provider_id?: string | null
+          rank_position?: number | null
+          score?: number
+          updated_at?: string | null
+          user_id: string
+          zone_code?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          leaderboard_type?: Database["public"]["Enums"]["leaderboard_type"]
+          metadata?: Json | null
+          period_end?: string
+          period_start?: string
+          provider_id?: string | null
+          rank_position?: number | null
+          score?: number
+          updated_at?: string | null
+          user_id?: string
+          zone_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "leaderboards_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leaderboards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "leaderboards_zone_code_fkey"
+            columns: ["zone_code"]
+            isOneToOne: false
+            referencedRelation: "montreal_zones"
+            referencedColumns: ["zone_code"]
+          },
+        ]
+      }
+      loyalty_points: {
+        Row: {
+          available_points: number | null
+          created_at: string | null
+          id: string
+          last_activity_at: string | null
+          lifetime_earned: number | null
+          tier_benefits: Json | null
+          tier_level: string | null
+          total_points: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          available_points?: number | null
+          created_at?: string | null
+          id?: string
+          last_activity_at?: string | null
+          lifetime_earned?: number | null
+          tier_benefits?: Json | null
+          tier_level?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          available_points?: number | null
+          created_at?: string | null
+          id?: string
+          last_activity_at?: string | null
+          lifetime_earned?: number | null
+          tier_benefits?: Json | null
+          tier_level?: string | null
+          total_points?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_points_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       messages: {
         Row: {
           booking_id: string
@@ -1346,8 +1460,67 @@ export type Database = {
         }
         Relationships: []
       }
+      point_transactions: {
+        Row: {
+          achievement_id: string | null
+          booking_id: string | null
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          points_amount: number
+          reason: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          achievement_id?: string | null
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points_amount: number
+          reason: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string | null
+          booking_id?: string | null
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          points_amount?: number
+          reason?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "point_transactions_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "user_achievements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "point_transactions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "point_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       provider_profiles: {
         Row: {
+          achievement_badges: Json | null
           average_rating: number | null
           background_check_verified: boolean | null
           business_name: string | null
@@ -1359,6 +1532,7 @@ export type Database = {
           hourly_rate: number | null
           id: string
           insurance_verified: boolean | null
+          monthly_earnings: number | null
           professional_license_type:
             | Database["public"]["Enums"]["professional_license_type"]
             | null
@@ -1366,7 +1540,9 @@ export type Database = {
           rbq_license_number: string | null
           rbq_verified: boolean | null
           response_time_hours: number | null
+          response_time_score: number | null
           service_radius_km: number | null
+          territory_score: number | null
           total_bookings: number | null
           updated_at: string | null
           user_id: string
@@ -1374,9 +1550,11 @@ export type Database = {
             | Database["public"]["Enums"]["verification_level"]
             | null
           verified: boolean | null
+          weekly_earnings: number | null
           years_experience: number | null
         }
         Insert: {
+          achievement_badges?: Json | null
           average_rating?: number | null
           background_check_verified?: boolean | null
           business_name?: string | null
@@ -1388,6 +1566,7 @@ export type Database = {
           hourly_rate?: number | null
           id?: string
           insurance_verified?: boolean | null
+          monthly_earnings?: number | null
           professional_license_type?:
             | Database["public"]["Enums"]["professional_license_type"]
             | null
@@ -1395,7 +1574,9 @@ export type Database = {
           rbq_license_number?: string | null
           rbq_verified?: boolean | null
           response_time_hours?: number | null
+          response_time_score?: number | null
           service_radius_km?: number | null
+          territory_score?: number | null
           total_bookings?: number | null
           updated_at?: string | null
           user_id: string
@@ -1403,9 +1584,11 @@ export type Database = {
             | Database["public"]["Enums"]["verification_level"]
             | null
           verified?: boolean | null
+          weekly_earnings?: number | null
           years_experience?: number | null
         }
         Update: {
+          achievement_badges?: Json | null
           average_rating?: number | null
           background_check_verified?: boolean | null
           business_name?: string | null
@@ -1417,6 +1600,7 @@ export type Database = {
           hourly_rate?: number | null
           id?: string
           insurance_verified?: boolean | null
+          monthly_earnings?: number | null
           professional_license_type?:
             | Database["public"]["Enums"]["professional_license_type"]
             | null
@@ -1424,7 +1608,9 @@ export type Database = {
           rbq_license_number?: string | null
           rbq_verified?: boolean | null
           response_time_hours?: number | null
+          response_time_score?: number | null
           service_radius_km?: number | null
+          territory_score?: number | null
           total_bookings?: number | null
           updated_at?: string | null
           user_id?: string
@@ -1432,6 +1618,7 @@ export type Database = {
             | Database["public"]["Enums"]["verification_level"]
             | null
           verified?: boolean | null
+          weekly_earnings?: number | null
           years_experience?: number | null
         }
         Relationships: [
@@ -1488,6 +1675,60 @@ export type Database = {
           working_hours?: Json
         }
         Relationships: []
+      }
+      review_quality_scores: {
+        Row: {
+          created_at: string | null
+          detail_score: number | null
+          helpfulness_rating: number | null
+          id: string
+          photo_bonus: number | null
+          points_awarded: number | null
+          quality_score: number
+          review_id: string
+          reviewer_id: string
+          verified_booking: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          detail_score?: number | null
+          helpfulness_rating?: number | null
+          id?: string
+          photo_bonus?: number | null
+          points_awarded?: number | null
+          quality_score: number
+          review_id: string
+          reviewer_id: string
+          verified_booking?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          detail_score?: number | null
+          helpfulness_rating?: number | null
+          id?: string
+          photo_bonus?: number | null
+          points_awarded?: number | null
+          quality_score?: number
+          review_id?: string
+          reviewer_id?: string
+          verified_booking?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_quality_scores_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "review_quality_scores_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       review_queue: {
         Row: {
@@ -1720,6 +1961,114 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      territory_claims: {
+        Row: {
+          challenge_expires_at: string | null
+          challenger_id: string | null
+          claimed_at: string | null
+          created_at: string | null
+          id: string
+          jobs_completed_in_zone: number | null
+          last_activity_at: string | null
+          provider_id: string
+          status: Database["public"]["Enums"]["territory_status"] | null
+          territory_score: number | null
+          updated_at: string | null
+          zone_code: string
+        }
+        Insert: {
+          challenge_expires_at?: string | null
+          challenger_id?: string | null
+          claimed_at?: string | null
+          created_at?: string | null
+          id?: string
+          jobs_completed_in_zone?: number | null
+          last_activity_at?: string | null
+          provider_id: string
+          status?: Database["public"]["Enums"]["territory_status"] | null
+          territory_score?: number | null
+          updated_at?: string | null
+          zone_code: string
+        }
+        Update: {
+          challenge_expires_at?: string | null
+          challenger_id?: string | null
+          claimed_at?: string | null
+          created_at?: string | null
+          id?: string
+          jobs_completed_in_zone?: number | null
+          last_activity_at?: string | null
+          provider_id?: string
+          status?: Database["public"]["Enums"]["territory_status"] | null
+          territory_score?: number | null
+          updated_at?: string | null
+          zone_code?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "territory_claims_challenger_id_fkey"
+            columns: ["challenger_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "territory_claims_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "provider_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "territory_claims_zone_code_fkey"
+            columns: ["zone_code"]
+            isOneToOne: false
+            referencedRelation: "montreal_zones"
+            referencedColumns: ["zone_code"]
+          },
+        ]
+      }
+      user_achievements: {
+        Row: {
+          achievement_name: string
+          achievement_tier: Database["public"]["Enums"]["achievement_tier"]
+          achievement_type: Database["public"]["Enums"]["achievement_category"]
+          created_at: string | null
+          id: string
+          points_awarded: number | null
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_name: string
+          achievement_tier?: Database["public"]["Enums"]["achievement_tier"]
+          achievement_type: Database["public"]["Enums"]["achievement_category"]
+          created_at?: string | null
+          id?: string
+          points_awarded?: number | null
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_name?: string
+          achievement_tier?: Database["public"]["Enums"]["achievement_tier"]
+          achievement_type?: Database["public"]["Enums"]["achievement_category"]
+          created_at?: string | null
+          id?: string
+          points_awarded?: number | null
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
             referencedColumns: ["id"]
           },
         ]
@@ -2005,6 +2354,7 @@ export type Database = {
         Row: {
           accessibility_needs: string | null
           address: string | null
+          booking_streak: number | null
           budget_range_max: number | null
           budget_range_min: number | null
           can_provide: boolean | null
@@ -2017,13 +2367,16 @@ export type Database = {
           email: string
           full_name: string
           fuzzy_location: unknown | null
+          gamification_level: number | null
           id: string
+          last_booking_date: string | null
           last_fuzzy_update: string | null
           notification_preferences: boolean | null
           password_hash: string | null
           phone: string | null
           postal_code: string | null
           preferred_contact_method: string | null
+          preferred_customer_status: boolean | null
           preferred_timing: string | null
           profile_image: string | null
           province: string | null
@@ -2033,12 +2386,14 @@ export type Database = {
           stripe_customer_id: string | null
           subscription_status: string | null
           subscription_tier: string | null
+          total_gamification_points: number | null
           updated_at: string | null
           user_role: string | null
         }
         Insert: {
           accessibility_needs?: string | null
           address?: string | null
+          booking_streak?: number | null
           budget_range_max?: number | null
           budget_range_min?: number | null
           can_provide?: boolean | null
@@ -2051,13 +2406,16 @@ export type Database = {
           email: string
           full_name: string
           fuzzy_location?: unknown | null
+          gamification_level?: number | null
           id?: string
+          last_booking_date?: string | null
           last_fuzzy_update?: string | null
           notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
           postal_code?: string | null
           preferred_contact_method?: string | null
+          preferred_customer_status?: boolean | null
           preferred_timing?: string | null
           profile_image?: string | null
           province?: string | null
@@ -2067,12 +2425,14 @@ export type Database = {
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
+          total_gamification_points?: number | null
           updated_at?: string | null
           user_role?: string | null
         }
         Update: {
           accessibility_needs?: string | null
           address?: string | null
+          booking_streak?: number | null
           budget_range_max?: number | null
           budget_range_min?: number | null
           can_provide?: boolean | null
@@ -2085,13 +2445,16 @@ export type Database = {
           email?: string
           full_name?: string
           fuzzy_location?: unknown | null
+          gamification_level?: number | null
           id?: string
+          last_booking_date?: string | null
           last_fuzzy_update?: string | null
           notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
           postal_code?: string | null
           preferred_contact_method?: string | null
+          preferred_customer_status?: boolean | null
           preferred_timing?: string | null
           profile_image?: string | null
           province?: string | null
@@ -2101,6 +2464,7 @@ export type Database = {
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
+          total_gamification_points?: number | null
           updated_at?: string | null
           user_role?: string | null
         }
@@ -2168,6 +2532,16 @@ export type Database = {
         Args: { service_coords: unknown }
         Returns: string
       }
+      award_points: {
+        Args: {
+          target_user_id: string
+          points: number
+          reason: string
+          transaction_type?: string
+          related_booking_id?: string
+        }
+        Returns: undefined
+      }
       check_rate_limit: {
         Args: {
           user_uuid: string
@@ -2175,6 +2549,10 @@ export type Database = {
           message_length?: number
         }
         Returns: Json
+      }
+      claim_territory: {
+        Args: { claiming_provider_id: string; target_zone_code: string }
+        Returns: boolean
       }
       cleanup_inactive_sessions: {
         Args: Record<PropertyKey, never>
@@ -2306,8 +2684,26 @@ export type Database = {
         Args: { spend_amount: number }
         Returns: boolean
       }
+      update_leaderboards: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
     }
     Enums: {
+      achievement_category:
+        | "speed"
+        | "quality"
+        | "consistency"
+        | "volume"
+        | "customer_service"
+        | "loyalty"
+      achievement_tier: "bronze" | "silver" | "gold" | "platinum" | "diamond"
+      leaderboard_type:
+        | "weekly_earnings"
+        | "monthly_bookings"
+        | "customer_rating"
+        | "response_time"
+        | "territory_control"
       professional_license_type:
         | "rmt"
         | "physio"
@@ -2317,6 +2713,7 @@ export type Database = {
         | "ccq"
         | "rbq"
         | "pest_control"
+      territory_status: "claimed" | "contested" | "abandoned"
       verification_level: "basic" | "background_check" | "professional_license"
     }
     CompositeTypes: {
@@ -2433,6 +2830,22 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      achievement_category: [
+        "speed",
+        "quality",
+        "consistency",
+        "volume",
+        "customer_service",
+        "loyalty",
+      ],
+      achievement_tier: ["bronze", "silver", "gold", "platinum", "diamond"],
+      leaderboard_type: [
+        "weekly_earnings",
+        "monthly_bookings",
+        "customer_rating",
+        "response_time",
+        "territory_control",
+      ],
       professional_license_type: [
         "rmt",
         "physio",
@@ -2443,6 +2856,7 @@ export const Constants = {
         "rbq",
         "pest_control",
       ],
+      territory_status: ["claimed", "contested", "abandoned"],
       verification_level: ["basic", "background_check", "professional_license"],
     },
   },
