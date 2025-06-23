@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 import { AlertTriangle, Power, Shield, Database, Zap, Bot, DollarSign, Settings, MessageSquareOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getSupabase } from "../../lib/supabase";
+import { toast } from "../ui/use-toast";
 
 const EmergencyControlsSection = () => {
   const [controls, setControls] = useState({
@@ -27,6 +28,7 @@ const EmergencyControlsSection = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [currentRecordId, setCurrentRecordId] = useState<string | null>(null);
 
   // Load emergency controls from Supabase
   useEffect(() => {
@@ -36,11 +38,22 @@ const EmergencyControlsSection = () => {
         const { data, error } = await supabase
           .from('emergency_controls')
           .select('*')
-          .order('created_at', { ascending: false })
+          .order('updated_at', { ascending: false })
           .limit(1)
           .single();
 
-        if (data && !error) {
+        if (error && error.code !== 'PGRST116') {
+          console.error('Error loading emergency controls:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load emergency controls",
+            variant: "destructive",
+          });
+          return;
+        }
+
+        if (data) {
+          setCurrentRecordId(data.id);
           setControls({
             bookings_paused: data.bookings_paused || false,
             maintenance_mode: data.maintenance_mode || false,
@@ -59,60 +72,154 @@ const EmergencyControlsSection = () => {
             claude_api_cost_monitor: data.daily_spend_limit > 0,
             normal_operations: data.normal_operations || true
           });
+          console.log('✅ Emergency controls loaded successfully');
+        } else {
+          // Create default controls if none exist
+          await createDefaultControls();
         }
       } catch (error) {
         console.error('Failed to load emergency controls:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load emergency controls",
+          variant: "destructive",
+        });
       }
     };
 
     loadControls();
+
+    // Set up real-time subscription
+    const supabase = getSupabase();
+    const subscription = supabase
+      .channel('emergency_controls_changes')
+      .on('postgres_changes', 
+        { event: '*', schema: 'public', table: 'emergency_controls' },
+        (payload) => {
+          console.log('🔄 Emergency controls updated by another admin:', payload);
+          loadControls(); // Reload when changes occur
+        }
+      )
+      .subscribe();
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
+  const createDefaultControls = async () => {
+    try {
+      const supabase = getSupabase();
+      const defaultControls = {
+        normal_operations: true,
+        bookings_paused: false,
+        maintenance_mode: false,
+        new_registrations_disabled: false,
+        force_logout_users: false,
+        fraud_lockdown_active: false,
+        manual_review_all_bookings: false,
+        geographic_blocking_enabled: false,
+        payment_restrictions_active: false,
+        messaging_disabled: false,
+        emergency_notification_active: false,
+        provider_broadcast_active: false,
+        claude_api_enabled: true,
+        daily_spend_limit: 100.00,
+        current_daily_spend: 0.00
+      };
+
+      const { data, error } = await supabase
+        .from('emergency_controls')
+        .insert(defaultControls)
+        .select()
+        .single();
+
+      if (error) throw error;
+      
+      setCurrentRecordId(data.id);
+      console.log('✅ Default emergency controls created');
+    } catch (error) {
+      console.error('Failed to create default controls:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create default emergency controls",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const logEmergencyAction = async (actionType: string, actionDetails: any, previousState?: any, newState?: any) => {
+    try {
+      const supabase = getSupabase();
+      
+      // Get current admin user ID from auth
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      await supabase.rpc('log_emergency_action', {
+        p_admin_id: user.id,
+        p_action_type: actionType,
+        p_action_details: actionDetails,
+        p_previous_state: previousState || {},
+        p_new_state: newState || {}
+      });
+    } catch (error) {
+      console.error('Failed to log emergency action:', error);
+      // Don't throw here to avoid breaking the main operation
+    }
+  };
+
   const handleEmergencyAction = async (actionId: number, actionTitle: string, controlKey: string) => {
-    console.log(`Emergency action triggered: ${actionTitle} (ID: ${actionId})`);
+    if (!currentRecordId) {
+      toast({
+        title: "Error",
+        description: "No emergency controls record found",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Show confirmation for critical actions
+    const criticalActions = ['maintenance_mode', 'payment_restrictions_active', 'claude_api_killswitch', 'force_logout_users'];
+    if (criticalActions.includes(controlKey)) {
+      const newValue = !controls[controlKey];
+      const confirmMessage = `Are you sure you want to ${newValue ? 'ENABLE' : 'DISABLE'} ${actionTitle}? This will affect all users immediately.`;
+      if (!confirm(confirmMessage)) {
+        return;
+      }
+    }
+
+    console.log(`🚨 Emergency action triggered: ${actionTitle} (ID: ${actionId})`);
     setLoading(true);
     
     try {
       const newValue = !controls[controlKey];
+      const previousState = { [controlKey]: controls[controlKey] };
       
       // Update state immediately for UI responsiveness
       setControls(prev => ({ ...prev, [controlKey]: newValue }));
 
-      // Handle special cases that don't require database updates
+      // Handle frontend-only controls
       if (controlKey === 'claude_response_filtering') {
-        // This is a frontend-only control - no database update needed
         console.log(`✅ ${actionTitle} ${newValue ? 'activated' : 'deactivated'} (frontend-only)`);
+        toast({
+          title: "Success",
+          description: `${actionTitle} ${newValue ? 'activated' : 'deactivated'} (frontend-only)`,
+        });
+        
+        await logEmergencyAction(`toggle_${controlKey}`, { 
+          control: controlKey, 
+          value: newValue, 
+          type: 'frontend-only' 
+        }, previousState, { [controlKey]: newValue });
         return;
       }
 
-      if (controlKey === 'claude_api_rate_limiting') {
-        // Handle rate limiting by adjusting spend limits instead of saving to non-existent column
-        const supabase = getSupabase();
-        const updateData = {
-          // Enable aggressive rate limiting by lowering the daily spend limit
-          daily_spend_limit: newValue ? 10.00 : 100.00, // Lower limit = more restrictive
-          updated_at: new Date().toISOString()
-        };
-
-        const { error } = await supabase
-          .from('emergency_controls')
-          .update(updateData)
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (error) {
-          console.error('Failed to update rate limiting:', error);
-          // Revert state if database update failed
-          setControls(prev => ({ ...prev, [controlKey]: !newValue }));
-        } else {
-          console.log(`✅ Claude API rate limiting ${newValue ? 'enabled' : 'disabled'} via spend limits`);
-        }
-        return;
-      }
-
-      // Handle regular database controls
+      // Handle database controls
       const supabase = getSupabase();
-      const updateData = {};
+      let updateData: any = {
+        updated_at: new Date().toISOString()
+      };
       
       // Map frontend control keys to database fields
       switch (controlKey) {
@@ -122,34 +229,76 @@ const EmergencyControlsSection = () => {
         case 'claude_api_cost_monitor':
           updateData.daily_spend_limit = newValue ? 100.00 : 0;
           break;
+        case 'claude_api_rate_limiting':
+          // Implement rate limiting by adjusting spend limits
+          updateData.daily_spend_limit = newValue ? 10.00 : 100.00;
+          break;
         default:
           updateData[controlKey] = newValue;
       }
 
+      // Update the specific record using its ID
       const { error } = await supabase
         .from('emergency_controls')
         .update(updateData)
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .eq('id', currentRecordId);
 
       if (error) {
         console.error('Failed to update emergency control:', error);
         // Revert state if database update failed
         setControls(prev => ({ ...prev, [controlKey]: !newValue }));
-      } else {
-        console.log(`✅ ${actionTitle} ${newValue ? 'activated' : 'deactivated'} successfully`);
+        toast({
+          title: "Error",
+          description: `Failed to update ${actionTitle}: ${error.message}`,
+          variant: "destructive",
+        });
+        return;
       }
+
+      console.log(`✅ ${actionTitle} ${newValue ? 'activated' : 'deactivated'} successfully`);
+      toast({
+        title: "Success",
+        description: `${actionTitle} ${newValue ? 'activated' : 'deactivated'} successfully`,
+      });
+
+      // Log the action for audit trail
+      await logEmergencyAction(`toggle_${controlKey}`, { 
+        control: controlKey, 
+        value: newValue,
+        actionTitle 
+      }, previousState, { [controlKey]: newValue });
+
     } catch (error) {
       console.error('Error updating emergency control:', error);
       // Revert state on error
       setControls(prev => ({ ...prev, [controlKey]: !controls[controlKey] }));
+      toast({
+        title: "Error",
+        description: `Unexpected error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   const handleCriticalAction = async (actionType: string) => {
-    console.log(`Critical emergency action: ${actionType}`);
+    if (!currentRecordId) {
+      toast({
+        title: "Error",
+        description: "No emergency controls record found",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Show confirmation dialog
+    const confirmMessage = `Are you sure you want to execute "${actionType}"? This is a critical system operation.`;
+    if (!confirm(confirmMessage)) {
+      return;
+    }
+
+    console.log(`🚨 Critical emergency action: ${actionType}`);
     setLoading(true);
     
     try {
@@ -158,27 +307,55 @@ const EmergencyControlsSection = () => {
       if (actionType === 'Emergency Database Backup') {
         const { error } = await supabase
           .from('emergency_controls')
-          .update({ last_backup_triggered: new Date().toISOString() })
-          .order('created_at', { ascending: false })
-          .limit(1);
+          .update({ 
+            last_backup_triggered: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', currentRecordId);
           
-        if (!error) {
-          console.log('✅ Emergency backup triggered successfully');
-        }
+        if (error) throw error;
+        
+        console.log('✅ Emergency backup triggered successfully');
+        toast({
+          title: "Success",
+          description: "Emergency backup triggered successfully",
+        });
+
+        await logEmergencyAction('emergency_backup', { 
+          timestamp: new Date().toISOString() 
+        });
+        
       } else if (actionType === 'Platform Shutdown') {
         const { error } = await supabase
           .from('emergency_controls')
-          .update({ maintenance_mode: true, normal_operations: false })
-          .order('created_at', { ascending: false })
-          .limit(1);
+          .update({ 
+            maintenance_mode: true, 
+            normal_operations: false,
+            updated_at: new Date().toISOString()
+          })
+          .eq('id', currentRecordId);
           
-        if (!error) {
-          setControls(prev => ({ ...prev, maintenance_mode: true, normal_operations: false }));
-          console.log('✅ Platform shutdown initiated');
-        }
+        if (error) throw error;
+        
+        setControls(prev => ({ ...prev, maintenance_mode: true, normal_operations: false }));
+        console.log('✅ Platform shutdown initiated');
+        toast({
+          title: "Critical Action",
+          description: "Platform shutdown initiated - maintenance mode enabled",
+          variant: "destructive",
+        });
+
+        await logEmergencyAction('platform_shutdown', { 
+          timestamp: new Date().toISOString() 
+        });
       }
     } catch (error) {
       console.error('Critical action failed:', error);
+      toast({
+        title: "Error",
+        description: `Critical action failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
@@ -279,6 +456,9 @@ const EmergencyControlsSection = () => {
           {isAnyEmergencyActive && (
             <Badge variant="destructive">EMERGENCY ACTIVE</Badge>
           )}
+          {currentRecordId && (
+            <Badge variant="secondary" className="text-xs">ID: {currentRecordId.slice(0, 8)}</Badge>
+          )}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -320,7 +500,7 @@ const EmergencyControlsSection = () => {
                   <Button 
                     variant={action.status === 'active' ? 'default' : action.critical ? 'destructive' : 'secondary'}
                     size="sm"
-                    disabled={loading}
+                    disabled={loading || !currentRecordId}
                     onClick={() => handleEmergencyAction(action.id, action.title, action.controlKey)}
                   >
                     <Power className="h-3 w-3 mr-1" />
@@ -360,7 +540,7 @@ const EmergencyControlsSection = () => {
                   <Button 
                     variant={control.status === 'active' ? 'default' : control.critical ? 'destructive' : 'secondary'}
                     size="sm"
-                    disabled={loading}
+                    disabled={loading || !currentRecordId}
                     onClick={() => handleEmergencyAction(control.id, control.title, control.controlKey)}
                   >
                     <Power className="h-3 w-3 mr-1" />
@@ -384,7 +564,7 @@ const EmergencyControlsSection = () => {
             <Button 
               variant="destructive" 
               size="sm"
-              disabled={loading}
+              disabled={loading || !currentRecordId}
               onClick={() => handleCriticalAction('Emergency Database Backup')}
             >
               <Database className="h-3 w-3 mr-1" />
@@ -393,7 +573,7 @@ const EmergencyControlsSection = () => {
             <Button 
               variant="destructive" 
               size="sm"
-              disabled={loading}
+              disabled={loading || !currentRecordId}
               onClick={() => handleCriticalAction('Platform Shutdown')}
             >
               <AlertTriangle className="h-3 w-3 mr-1" />
