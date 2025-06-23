@@ -4,6 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Clock, MapPin, DollarSign, Shield } from 'lucide-react';
+import SubcategoryFilter from './filters/SubcategoryFilter';
 
 const serviceCategories = [
   { id: 'all', name: 'Category' },
@@ -52,10 +53,12 @@ interface ModernServiceFiltersProps {
 
 const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
   selectedCategory,
+  selectedSubcategory,
   selectedLocation,
   selectedTime,
   verifiedOnly,
   onCategoryChange,
+  onSubcategoryChange,
   onLocationChange,
   onTimeChange,
   onPriceRangeChange,
@@ -81,6 +84,14 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           ))}
         </SelectContent>
       </Select>
+
+      {/* Subcategory Filter */}
+      <SubcategoryFilter
+        category={selectedCategory}
+        value={selectedSubcategory}
+        onChange={onSubcategoryChange}
+        className="w-[220px] h-12 rounded-xl border-gray-200 bg-white shadow-sm hover:shadow-md transition-shadow"
+      />
 
       {/* Location Filter */}
       <Select value={selectedLocation} onValueChange={onLocationChange}>
