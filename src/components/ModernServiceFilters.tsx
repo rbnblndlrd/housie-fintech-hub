@@ -68,7 +68,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
     <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
       {/* Category Filter */}
       <Select value={selectedCategory} onValueChange={onCategoryChange}>
-        <SelectTrigger className="w-[200px] h-12 fintech-card-secondary">
+        <SelectTrigger className="w-[200px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
               <span className="text-xs">🏷️</span>
@@ -90,12 +90,12 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
         category={selectedCategory}
         value={selectedSubcategory}
         onChange={onSubcategoryChange}
-        className="w-[220px] h-12 fintech-card-secondary"
+        className="w-[220px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
       />
 
       {/* Location Filter */}
       <Select value={selectedLocation} onValueChange={onLocationChange}>
-        <SelectTrigger className="w-[180px] h-12 fintech-card-secondary">
+        <SelectTrigger className="w-[180px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center gap-2">
             <MapPin className="w-4 h-4 text-gray-500" />
             <SelectValue placeholder="Montreal" />
@@ -112,7 +112,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
 
       {/* Time Filter */}
       <Select value={selectedTime} onValueChange={onTimeChange}>
-        <SelectTrigger className="w-[150px] h-12 fintech-card-secondary">
+        <SelectTrigger className="w-[150px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-gray-500" />
             <SelectValue placeholder="10:30 AM" />
@@ -134,7 +134,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
         else if (value === '60-100') onPriceRangeChange([60, 100]);
         else onPriceRangeChange([10, 200]);
       }}>
-        <SelectTrigger className="w-[160px] h-12 fintech-card-secondary">
+        <SelectTrigger className="w-[160px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center gap-2">
             <DollarSign className="w-4 h-4 text-gray-500" />
             <SelectValue placeholder="Price Range" />
@@ -150,7 +150,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
       </Select>
 
       {/* Verified Only Toggle */}
-      <div className="flex items-center gap-3 px-4 py-3 fintech-card-secondary">
+      <div className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
         <Shield className="w-4 h-4 text-blue-600" />
         <Label htmlFor="verified-toggle" className="text-sm font-medium text-gray-700 cursor-pointer">
           Verified Only
