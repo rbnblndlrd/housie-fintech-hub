@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import { useEmergencyJobsData } from '@/hooks/useEmergencyJobsData';
 import Header from "@/components/Header";
-import HeatZoneMap from "@/components/HeatZoneMap";
+import InteractiveJobsMap from "@/components/InteractiveJobsMap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +20,6 @@ import {
   Zap,
   TrendingUp,
   Filter,
-  Star,
   CheckCircle
 } from 'lucide-react';
 
@@ -47,10 +46,8 @@ const InteractiveMapPage = () => {
     const success = await acceptEmergencyJob(jobId);
     if (success) {
       console.log('Job accepted successfully');
-      // You could show a success toast here
     } else {
       console.error('Failed to accept job');
-      // You could show an error toast here
     }
   };
 
@@ -74,7 +71,7 @@ const InteractiveMapPage = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Interactive Map</h1>
-                <p className="text-gray-600">Discover service demand and opportunities in Montreal</p>
+                <p className="text-gray-600">Live Montreal service opportunities</p>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -99,7 +96,7 @@ const InteractiveMapPage = () => {
             <div className="lg:col-span-2">
               <Card className="fintech-card h-[600px]">
                 <CardContent className="p-0 h-full">
-                  <HeatZoneMap userRole={currentRole} />
+                  <InteractiveJobsMap />
                 </CardContent>
               </Card>
             </div>
@@ -120,7 +117,7 @@ const InteractiveMapPage = () => {
                       )}
                     </CardTitle>
                     <p className="text-sm text-gray-600">
-                      Live emergency listings requiring immediate attention
+                      Live emergency requests requiring immediate attention
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -185,15 +182,6 @@ const InteractiveMapPage = () => {
                             )}
                           </div>
                         ))}
-                        <Separator />
-                        <div className="text-center">
-                          <p className="text-sm text-gray-600 mb-2">
-                            Want your listings to appear here?
-                          </p>
-                          <Button variant="outline" size="sm">
-                            Upgrade to Premium
-                          </Button>
-                        </div>
                       </div>
                     )}
                   </CardContent>
@@ -207,7 +195,7 @@ const InteractiveMapPage = () => {
                     <TrendingUp className="h-5 w-5" />
                     Live Market Data
                   </CardTitle>
-                  <p className="text-sm text-gray-600">Real-time statistics from Montreal area</p>
+                  <p className="text-sm text-gray-600">Real-time Montreal statistics</p>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
@@ -242,27 +230,27 @@ const InteractiveMapPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Quick Filters */}
+              {/* Quick Actions */}
               <Card className="fintech-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Filter className="h-5 w-5" />
-                    Quick Filters
+                    Quick Actions
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Button variant="outline" size="sm">
-                      High Demand
+                  <div className="grid grid-cols-1 gap-2">
+                    <Button variant="outline" size="sm" className="justify-start">
+                      View All Jobs
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Low Competition
+                    <Button variant="outline" size="sm" className="justify-start">
+                      High Priority Only
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Residential
+                    <Button variant="outline" size="sm" className="justify-start">
+                      Near Me
                     </Button>
-                    <Button variant="outline" size="sm">
-                      Commercial
+                    <Button variant="outline" size="sm" className="justify-start">
+                      Refresh Data
                     </Button>
                   </div>
                 </CardContent>

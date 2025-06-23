@@ -267,13 +267,17 @@ export type Database = {
       }
       bookings: {
         Row: {
+          accepted_at: string | null
+          completed_at: string | null
           created_at: string | null
           customer_id: string
           duration_hours: number | null
           id: string
           instructions: string | null
           payment_status: string | null
+          priority: string | null
           provider_id: string
+          response_time_minutes: number | null
           scheduled_date: string
           scheduled_time: string
           service_address: string | null
@@ -285,13 +289,17 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          accepted_at?: string | null
+          completed_at?: string | null
           created_at?: string | null
           customer_id: string
           duration_hours?: number | null
           id?: string
           instructions?: string | null
           payment_status?: string | null
+          priority?: string | null
           provider_id: string
+          response_time_minutes?: number | null
           scheduled_date: string
           scheduled_time: string
           service_address?: string | null
@@ -303,13 +311,17 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          accepted_at?: string | null
+          completed_at?: string | null
           created_at?: string | null
           customer_id?: string
           duration_hours?: number | null
           id?: string
           instructions?: string | null
           payment_status?: string | null
+          priority?: string | null
           provider_id?: string
+          response_time_minutes?: number | null
           scheduled_date?: string
           scheduled_time?: string
           service_address?: string | null
@@ -1955,6 +1967,7 @@ export type Database = {
           city: string | null
           coordinates: unknown | null
           created_at: string | null
+          current_location: unknown | null
           email: string
           full_name: string
           id: string
@@ -1968,6 +1981,7 @@ export type Database = {
           province: string | null
           service_categories: string[] | null
           special_instructions: string | null
+          status: string | null
           stripe_customer_id: string | null
           subscription_status: string | null
           subscription_tier: string | null
@@ -1984,6 +1998,7 @@ export type Database = {
           city?: string | null
           coordinates?: unknown | null
           created_at?: string | null
+          current_location?: unknown | null
           email: string
           full_name: string
           id?: string
@@ -1997,6 +2012,7 @@ export type Database = {
           province?: string | null
           service_categories?: string[] | null
           special_instructions?: string | null
+          status?: string | null
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
@@ -2013,6 +2029,7 @@ export type Database = {
           city?: string | null
           coordinates?: unknown | null
           created_at?: string | null
+          current_location?: unknown | null
           email?: string
           full_name?: string
           id?: string
@@ -2026,6 +2043,7 @@ export type Database = {
           province?: string | null
           service_categories?: string[] | null
           special_instructions?: string | null
+          status?: string | null
           stripe_customer_id?: string | null
           subscription_status?: string | null
           subscription_tier?: string | null
