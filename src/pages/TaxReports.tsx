@@ -1,11 +1,14 @@
 
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTaxData } from '@/hooks/useTaxData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Skeleton } from "@/components/ui/skeleton";
 import { 
   FileText, 
   Download, 
@@ -17,49 +20,90 @@ import {
 
 const TaxReports = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { taxData, loading, error, refreshTaxData } = useTaxData(user?.id);
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-CA', {
+      style: 'currency',
+      currency: 'CAD'
+    }).format(amount);
+  };
 
   const taxSummary = [
-    { label: "Total Earnings", value: "$27,000.00", description: "Current tax year" },
-    { label: "Business Expenses", value: "$235.00", description: "Tax deductible" },
-    { label: "Net Income", value: "$26,765.00", description: "After expenses" },
-    { label: "Estimated Tax", value: "$4,014.75", description: "15% rate estimate" }
-  ];
-
-  const quarterlyData = [
-    { quarter: "Q1 2025", gross: "$12,000.00", net: "$10,200.00", transactions: 45 },
-    { quarter: "Q2 2025", gross: "$15,000.00", net: "$12,750.00", transactions: 52 }
-  ];
-
-  const taxDocuments = [
-    { name: "T4A Tax Slip", description: "Official CRA tax document", action: "Generate" },
-    { name: "Annual Tax Summary", description: "Complete income and expense report", action: "Generate" },
-    { name: "Quarterly Summary", description: "Q4 2024 earnings breakdown", action: "Generate" }
-  ];
-
-  const recentDocuments = [
-    { name: "T4A - 2025", date: "2025-06-16" }
+    { 
+      label: "Total Earnings", 
+      value: formatCurrency(taxData.totalEarnings), 
+      description: "Current tax year" 
+    },
+    { 
+      label: "Business Expenses", 
+      value: formatCurrency(taxData.businessExpenses), 
+      description: "Tax deductible" 
+    },
+    { 
+      label: "Net Income", 
+      value: formatCurrency(taxData.netIncome), 
+      description: "After expenses" 
+    },
+    { 
+      label: "Estimated Tax", 
+      value: formatCurrency(taxData.estimatedTax), 
+      description: "15% rate estimate" 
+    }
   ];
 
   const complianceMetrics = [
     { 
-      label: "$27,000.00", 
+      label: formatCurrency(taxData.totalEarnings), 
       description: "Annual Income", 
-      subtext: "Threshold: $2,600 ✅",
-      status: "compliant"
+      subtext: `Threshold: $2,600 ${taxData.totalEarnings >= 2600 ? '✅' : '❌'}`,
+      status: taxData.totalEarnings >= 2600 ? "compliant" : "below-threshold"
     },
     { 
-      label: "97", 
+      label: taxData.totalTransactions.toString(), 
       description: "Total Transactions", 
-      subtext: "Threshold: 30 service ✅",
-      status: "compliant"
+      subtext: `Threshold: 30 service ${taxData.totalTransactions >= 30 ? '✅' : '❌'}`,
+      status: taxData.totalTransactions >= 30 ? "compliant" : "below-threshold"
     },
     { 
-      label: "Required", 
+      label: taxData.complianceRequired ? "Required" : "Not Required", 
       description: "CRA Reporting", 
-      subtext: "Last updated: 2025-06-16",
-      status: "action-needed"
+      subtext: "Last updated: " + new Date().toISOString().split('T')[0],
+      status: taxData.complianceRequired ? "action-needed" : "compliant"
     }
   ];
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <Card className="border-red-200">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 text-red-600">
+                  <AlertTriangle className="h-5 w-5" />
+                  <div>
+                    <p className="font-medium">Error loading tax data</p>
+                    <p className="text-sm text-red-500">{error}</p>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={refreshTaxData}
+                    className="ml-auto"
+                  >
+                    Retry
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -86,18 +130,22 @@ const TaxReports = () => {
             
             {/* Controls */}
             <div className="flex gap-3 mt-6">
-              <Button variant="outline">Date Range</Button>
-              <Button variant="outline">All Reports</Button>
+              <Button variant="outline" onClick={refreshTaxData} disabled={loading}>
+                {loading ? 'Refreshing...' : 'Refresh Data'}
+              </Button>
+              <Button variant="outline">📊 Export Report</Button>
             </div>
           </div>
 
           {/* Compliance Alert */}
-          <Alert className="mb-6 border-orange-200 bg-orange-50">
-            <AlertTriangle className="h-4 w-4 text-orange-600" />
-            <AlertDescription className="text-orange-800">
-              <strong>Compliance Status:</strong> Reporting required ($27,000.00 income or 97 transactions). Tax documentation is mandatory.
-            </AlertDescription>
-          </Alert>
+          {taxData.complianceRequired && (
+            <Alert className="mb-6 border-orange-200 bg-orange-50">
+              <AlertTriangle className="h-4 w-4 text-orange-600" />
+              <AlertDescription className="text-orange-800">
+                <strong>Compliance Status:</strong> Reporting required ({formatCurrency(taxData.totalEarnings)} income or {taxData.totalTransactions} transactions). Tax documentation is mandatory.
+              </AlertDescription>
+            </Alert>
+          )}
 
           {/* Tax Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -110,7 +158,11 @@ const TaxReports = () => {
                     </div>
                   </div>
                   <h3 className="text-sm text-gray-600 mb-1">{item.label}</h3>
-                  <p className="text-2xl font-bold text-gray-900 mb-1">{item.value}</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-24 mb-2" />
+                  ) : (
+                    <p className="text-2xl font-bold text-gray-900 mb-1">{item.value}</p>
+                  )}
                   <p className="text-xs text-gray-500">{item.description}</p>
                 </CardContent>
               </Card>
@@ -127,22 +179,30 @@ const TaxReports = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-600 border-b pb-2">
-                    <span>Quarter</span>
-                    <span>Gross</span>
-                    <span>Net</span>
-                    <span>Transactions</span>
+                {loading ? (
+                  <div className="space-y-4">
+                    {[...Array(4)].map((_, i) => (
+                      <Skeleton key={i} className="h-8 w-full" />
+                    ))}
                   </div>
-                  {quarterlyData.map((quarter, index) => (
-                    <div key={index} className="grid grid-cols-4 gap-4 text-sm">
-                      <span className="font-medium">{quarter.quarter}</span>
-                      <span>{quarter.gross}</span>
-                      <span>{quarter.net}</span>
-                      <span>{quarter.transactions}</span>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-600 border-b pb-2">
+                      <span>Quarter</span>
+                      <span>Gross</span>
+                      <span>Net</span>
+                      <span>Transactions</span>
                     </div>
-                  ))}
-                </div>
+                    {taxData.quarterlyData.map((quarter, index) => (
+                      <div key={index} className="grid grid-cols-4 gap-4 text-sm">
+                        <span className="font-medium">{quarter.quarter}</span>
+                        <span>{formatCurrency(quarter.gross)}</span>
+                        <span>{formatCurrency(quarter.net)}</span>
+                        <span>{quarter.transactions}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -155,7 +215,7 @@ const TaxReports = () => {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {taxDocuments.map((doc, index) => (
+                  {taxData.documents.map((doc, index) => (
                     <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
                       <div>
                         <h4 className="font-semibold text-gray-900">{doc.name}</h4>
@@ -171,12 +231,16 @@ const TaxReports = () => {
                 
                 <div className="mt-6">
                   <h4 className="font-semibold text-gray-900 mb-3">Recent Documents</h4>
-                  {recentDocuments.map((doc, index) => (
-                    <div key={index} className="flex justify-between items-center text-sm">
-                      <span>{doc.name}</span>
-                      <span className="text-gray-500">{doc.date}</span>
-                    </div>
-                  ))}
+                  {loading ? (
+                    <Skeleton className="h-6 w-32" />
+                  ) : (
+                    taxData.recentDocuments.map((doc, index) => (
+                      <div key={index} className="flex justify-between items-center text-sm">
+                        <span>{doc.name}</span>
+                        <span className="text-gray-500">{doc.date}</span>
+                      </div>
+                    ))
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -191,16 +255,24 @@ const TaxReports = () => {
               <div className="grid md:grid-cols-3 gap-6">
                 {complianceMetrics.map((metric, index) => (
                   <div key={index} className="text-center p-6 bg-gray-50 rounded-xl">
-                    <div className="text-3xl font-bold text-gray-900 mb-2">{metric.label}</div>
+                    {loading ? (
+                      <Skeleton className="h-8 w-16 mx-auto mb-2" />
+                    ) : (
+                      <div className="text-3xl font-bold text-gray-900 mb-2">{metric.label}</div>
+                    )}
                     <div className="text-sm font-semibold text-gray-700 mb-1">{metric.description}</div>
-                    <div className={`text-xs ${metric.status === 'compliant' ? 'text-green-600' : 'text-orange-600'}`}>
+                    <div className={`text-xs ${
+                      metric.status === 'compliant' || metric.status === 'below-threshold' 
+                        ? 'text-green-600' 
+                        : 'text-orange-600'
+                    }`}>
                       {metric.subtext}
                     </div>
                   </div>
                 ))}
               </div>
             </CardContent>
-          </Card>
+          </div>
         </div>
       </div>
     </div>
