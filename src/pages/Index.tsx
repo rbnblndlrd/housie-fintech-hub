@@ -138,8 +138,7 @@ const Index = () => {
 
                 <div className="text-center text-white">
                   <p className="text-base opacity-90 mb-3">Hello! I'm your HOUSIE assistant.</p>
-                  <p className="font-bold text-xl mb-6">Ready to help with CRA 2025 compliance across Canada!</p>
-                  
+                                    
                   <div className="flex gap-2">
                     <Link to="/onboarding" className="flex-1">
                       <Button className="w-full fintech-button-secondary text-purple-600 font-bold px-8 py-4 rounded-xl text-lg">
