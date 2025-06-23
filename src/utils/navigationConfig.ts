@@ -1,3 +1,4 @@
+
 export interface NavigationItem {
   label: string;
   href: string;
@@ -54,6 +55,17 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   // Dynamic dashboard link based on current role
   const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
 
+  return [
+    { label: "Map", href: "/interactive-map", icon: "🗺️" },
+    { label: "Dashboard", href: dashboardHref, icon: "📊" },
+    { separator: true, label: "", href: "", icon: "" },
+    { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
+    { separator: true, label: "", href: "", icon: "" },
+    { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
+  ];
+};
+
+export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   // Dynamic profile link based on current role
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
 
@@ -61,16 +73,17 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-settings';
 
   return [
-    { label: "Dashboard", href: dashboardHref, icon: "📊" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
-    { separator: true, label: "", href: "", icon: "" },
-    { label: "Loyalty & Rewards", href: "/gamification", icon: "🎯" },
-    { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
+    { label: "Verification Status", href: "/provider-profile", icon: "✅" }
+  ];
+};
+
+export const getAnalyticsMenuItems = (): NavigationItem[] => {
+  return [
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
-    { label: "Verification Status", href: "/provider-profile", icon: "✅" },
-    { label: "Performance Reports", href: "/booking-history", icon: "📈" },
-    { separator: true, label: "", href: "", icon: "" },
-    { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
+    { label: "Performance", href: "/performance-dashboard", icon: "📈" },
+    { label: "Business Insights", href: "/business-insights", icon: "💼" },
+    { label: "Tax Reports", href: "/tax-reports", icon: "📋" }
   ];
 };
