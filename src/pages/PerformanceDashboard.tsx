@@ -33,10 +33,6 @@ const PerformanceDashboard = () => {
     }).format(amount);
   };
 
-  const getDashboardPath = () => {
-    return currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
-  };
-
   const kpiMetrics = [
     { 
       label: "Completion Rate", 
@@ -114,11 +110,11 @@ const PerformanceDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={() => navigate(getDashboardPath())}
+                onClick={() => navigate('/analytics-dashboard')}
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                ← Back to Dashboard
+                ← Back to Analytics
               </Button>
             </div>
             <div className="flex items-center gap-3 mb-4">

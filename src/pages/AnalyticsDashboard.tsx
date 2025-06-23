@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -113,15 +112,6 @@ const AnalyticsDashboard = () => {
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <Button
-                onClick={() => navigate(getDashboardPath())}
-                variant="outline"
-                className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
-              >
-                ← Back to Dashboard
-              </Button>
-            </div>
-            <div className="flex items-center gap-3 mb-4">
               <BarChart3 className="h-8 w-8 text-blue-600" />
               <h1 className="text-4xl font-bold text-gray-900">Analytics Dashboard</h1>
             </div>
@@ -149,6 +139,12 @@ const AnalyticsDashboard = () => {
                 onClick={() => navigate('/tax-reports')}
               >
                 📋 Tax Reports
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate(getDashboardPath())}
+              >
+                🏠 Main Dashboard
               </Button>
             </div>
           </div>
