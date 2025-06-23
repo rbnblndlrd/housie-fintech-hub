@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import SampleDataSeeder from "@/components/SampleDataSeeder";
-import ServiceCard from "@/components/ServiceCard";
+import ModernServiceCard from "@/components/ModernServiceCard";
 import { Service } from "@/types/service";
 
 interface ServicesGridProps {
@@ -53,7 +53,7 @@ const ServicesGrid: React.FC<ServicesGridProps> = ({
       ) : (
         <div className="space-y-6">
           {filteredServices.map((service) => (
-            <ServiceCard
+            <ModernServiceCard
               key={service.id}
               service={service}
               onBookNow={onBookNow}
