@@ -31,10 +31,40 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
   onProviderSelect
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   const handleProviderClick = (provider: Provider) => {
+    console.log('Provider clicked in InteractiveServicesMap:', provider.name);
     setSelectedProvider(provider);
   };
+
+  const handleBookNow = () => {
+    if (selectedProvider) {
+      console.log('Booking provider:', selectedProvider.name);
+      onProviderSelect(selectedProvider);
+      setSelectedProvider(null); // Close the preview card
+    }
+  };
+
+  // Error boundary for map component
+  const handleMapError = (error: string) => {
+    console.error('Map error in InteractiveServicesMap:', error);
+    setMapError(error);
+  };
+
+  if (mapError) {
+    return (
+      <div className="relative h-96 w-full bg-gray-100 rounded-lg flex items-center justify-center">
+        <div className="text-center p-6">
+          <div className="text-red-600 mb-2">🗺️ Map Unavailable</div>
+          <p className="text-gray-600 mb-2">{mapError}</p>
+          <p className="text-sm text-gray-500">
+            The interactive map is temporarily unavailable. You can still browse providers below.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative h-96 w-full">
@@ -83,7 +113,7 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
                     ${selectedProvider.hourlyRate || 35}/hour
                   </p>
                   <Button 
-                    onClick={() => onProviderSelect(selectedProvider)}
+                    onClick={handleBookNow}
                     className="mt-2 fintech-button-primary"
                   >
                     Book Now

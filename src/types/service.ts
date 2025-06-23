@@ -40,4 +40,7 @@ export interface Provider {
   rating: number;
   availability: string;
   serviceRadius?: number; // in kilometers
+  verified?: boolean;
+  hourlyRate?: number;
+  distance?: string;
 }
