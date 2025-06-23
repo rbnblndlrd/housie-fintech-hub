@@ -5,7 +5,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { useSubscription } from '@/contexts/SubscriptionContext';
 import SubscriptionStatusModal from '@/components/SubscriptionStatusModal';
 import LanguageToggle from '@/components/LanguageToggle';
-import NotificationBell from '@/components/NotificationBell';
 
 const HeaderActions = () => {
   const { subscriptionData, loading: subscriptionLoading } = useSubscription();
@@ -42,9 +41,6 @@ const HeaderActions = () => {
     <>
       <div className="flex items-center space-x-4">
         <LanguageToggle />
-        
-        {/* Notification Bell */}
-        <NotificationBell />
         
         <Tooltip>
           <TooltipTrigger asChild>

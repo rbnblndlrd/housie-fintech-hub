@@ -19,6 +19,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import { getUserDropdownItems, getProfileMenuItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
+import NotificationBell from '@/components/NotificationBell';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
@@ -80,7 +81,7 @@ const UserMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center justify-start gap-2 p-2">
+        <div className="flex items-center justify-between gap-2 p-2">
           <div className="flex flex-col space-y-1 leading-none">
             {user.user_metadata?.full_name && (
               <p className="font-medium">{user.user_metadata.full_name}</p>
@@ -91,6 +92,7 @@ const UserMenu = () => {
               </p>
             )}
           </div>
+          <NotificationBell />
         </div>
         <DropdownMenuSeparator />
         
