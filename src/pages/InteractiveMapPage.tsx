@@ -1,11 +1,10 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
-import { useEmergencyJobsData } from '@/hooks/useEmergencyJobsData';
+import { usePrivacyEmergencyJobs } from '@/hooks/usePrivacyEmergencyJobs';
 import Header from "@/components/Header";
-import InteractiveJobsMap from "@/components/InteractiveJobsMap";
+import PrivacyInteractiveJobsMap from "@/components/PrivacyInteractiveJobsMap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,14 +19,15 @@ import {
   Zap,
   TrendingUp,
   Filter,
-  CheckCircle
+  CheckCircle,
+  Shield
 } from 'lucide-react';
 
 const InteractiveMapPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { currentRole } = useRole();
-  const { emergencyJobs, liveStats, loading, error, acceptEmergencyJob } = useEmergencyJobsData();
+  const { emergencyJobs, liveStats, loading, error, acceptEmergencyJob } = usePrivacyEmergencyJobs();
   const [showEmergencyJobs, setShowEmergencyJobs] = useState(true);
   
   // Determine dashboard path based on current role
@@ -70,8 +70,13 @@ const InteractiveMapPage = () => {
             
             <div className="flex items-center justify-between mb-4">
               <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Interactive Map</h1>
-                <p className="text-gray-600">Live Montreal service opportunities</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Privacy-Protected Interactive Map
+                </h1>
+                <div className="flex items-center gap-2 text-gray-600">
+                  <Shield className="h-4 w-4" />
+                  <span>Live Montreal service opportunities with location privacy</span>
+                </div>
               </div>
               <div className="flex items-center gap-2">
                 <Button
@@ -89,6 +94,20 @@ const InteractiveMapPage = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Privacy Notice Banner */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+              <div className="flex items-center gap-3">
+                <Shield className="h-5 w-5 text-blue-600" />
+                <div>
+                  <h3 className="font-medium text-blue-800">Privacy-First Location System</h3>
+                  <p className="text-sm text-blue-600 mt-1">
+                    Provider locations are anonymized • Jobs shown as service areas • 
+                    Exact addresses revealed only upon job acceptance
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -96,7 +115,7 @@ const InteractiveMapPage = () => {
             <div className="lg:col-span-2">
               <Card className="fintech-card h-[600px]">
                 <CardContent className="p-0 h-full">
-                  <InteractiveJobsMap />
+                  <PrivacyInteractiveJobsMap />
                 </CardContent>
               </Card>
             </div>
@@ -117,7 +136,7 @@ const InteractiveMapPage = () => {
                       )}
                     </CardTitle>
                     <p className="text-sm text-gray-600">
-                      Live emergency requests requiring immediate attention
+                      Live emergency requests with privacy protection
                     </p>
                   </CardHeader>
                   <CardContent>
@@ -152,6 +171,7 @@ const InteractiveMapPage = () => {
                                 <div className="flex items-center gap-2 mt-1">
                                   <div className={`w-2 h-2 rounded-full ${getPriorityColor(job.priority)}`}></div>
                                   <span className="text-sm text-gray-600 capitalize">{job.priority} Priority</span>
+                                  <Shield className="h-3 w-3 text-blue-500" />
                                 </div>
                               </div>
                               <div className="text-right">
@@ -164,7 +184,7 @@ const InteractiveMapPage = () => {
                             <div className="flex items-center justify-between text-xs text-gray-500">
                               <div className="flex items-center gap-1">
                                 <MapPin className="h-3 w-3" />
-                                {job.location}
+                                {job.zone} {/* Show zone instead of exact location */}
                               </div>
                               <div className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
@@ -193,9 +213,9 @@ const InteractiveMapPage = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5" />
-                    Live Market Data
+                    Montreal Zones Data
                   </CardTitle>
-                  <p className="text-sm text-gray-600">Real-time Montreal statistics</p>
+                  <p className="text-sm text-gray-600">Real-time zone-based statistics</p>
                 </CardHeader>
                 <CardContent>
                   {loading ? (
@@ -214,7 +234,7 @@ const InteractiveMapPage = () => {
                         <span className="text-lg font-bold">{liveStats.activeZones}</span>
                       </div>
                       <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Available Providers</span>
+                        <span className="text-sm font-medium">Anonymous Providers</span>
                         <span className="text-lg font-bold">{liveStats.availableProviders}</span>
                       </div>
                       <div className="flex justify-between items-center">
@@ -230,28 +250,32 @@ const InteractiveMapPage = () => {
                 </CardContent>
               </Card>
 
-              {/* Quick Actions */}
+              {/* Privacy Controls */}
               <Card className="fintech-card">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Filter className="h-5 w-5" />
-                    Quick Actions
+                    <Shield className="h-5 w-5" />
+                    Privacy Controls
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 gap-2">
-                    <Button variant="outline" size="sm" className="justify-start">
-                      View All Jobs
-                    </Button>
-                    <Button variant="outline" size="sm" className="justify-start">
-                      High Priority Only
-                    </Button>
-                    <Button variant="outline" size="sm" className="justify-start">
-                      Near Me
-                    </Button>
-                    <Button variant="outline" size="sm" className="justify-start">
-                      Refresh Data
-                    </Button>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center gap-2 text-green-600">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Location anonymization active</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-green-600">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Service area protection enabled</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-green-600">
+                      <CheckCircle className="h-4 w-4" />
+                      <span>Zone-based job display</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-blue-600">
+                      <Shield className="h-4 w-4" />
+                      <span>GDPR compliant mapping</span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -277,12 +277,15 @@ export type Database = {
           payment_status: string | null
           priority: string | null
           provider_id: string
+          public_location: unknown | null
           response_time_minutes: number | null
           scheduled_date: string
           scheduled_time: string
           service_address: string | null
           service_coordinates: unknown | null
           service_id: string
+          service_radius: number | null
+          service_zone: string | null
           status: string | null
           stripe_payment_intent_id: string | null
           total_amount: number | null
@@ -299,12 +302,15 @@ export type Database = {
           payment_status?: string | null
           priority?: string | null
           provider_id: string
+          public_location?: unknown | null
           response_time_minutes?: number | null
           scheduled_date: string
           scheduled_time: string
           service_address?: string | null
           service_coordinates?: unknown | null
           service_id: string
+          service_radius?: number | null
+          service_zone?: string | null
           status?: string | null
           stripe_payment_intent_id?: string | null
           total_amount?: number | null
@@ -321,12 +327,15 @@ export type Database = {
           payment_status?: string | null
           priority?: string | null
           provider_id?: string
+          public_location?: unknown | null
           response_time_minutes?: number | null
           scheduled_date?: string
           scheduled_time?: string
           service_address?: string | null
           service_coordinates?: unknown | null
           service_id?: string
+          service_radius?: number | null
+          service_zone?: string | null
           status?: string | null
           stripe_payment_intent_id?: string | null
           total_amount?: number | null
@@ -1151,6 +1160,42 @@ export type Database = {
           },
         ]
       }
+      montreal_zones: {
+        Row: {
+          center_coordinates: unknown
+          created_at: string | null
+          demand_level: string | null
+          id: string
+          pricing_multiplier: number | null
+          zone_code: string
+          zone_name: string
+          zone_radius: number | null
+          zone_type: string | null
+        }
+        Insert: {
+          center_coordinates: unknown
+          created_at?: string | null
+          demand_level?: string | null
+          id?: string
+          pricing_multiplier?: number | null
+          zone_code: string
+          zone_name: string
+          zone_radius?: number | null
+          zone_type?: string | null
+        }
+        Update: {
+          center_coordinates?: unknown
+          created_at?: string | null
+          demand_level?: string | null
+          id?: string
+          pricing_multiplier?: number | null
+          zone_code?: string
+          zone_name?: string
+          zone_radius?: number | null
+          zone_type?: string | null
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           booking_id: string | null
@@ -1965,12 +2010,15 @@ export type Database = {
           can_provide: boolean | null
           can_seek: boolean | null
           city: string | null
+          confidentiality_radius: number | null
           coordinates: unknown | null
           created_at: string | null
           current_location: unknown | null
           email: string
           full_name: string
+          fuzzy_location: unknown | null
           id: string
+          last_fuzzy_update: string | null
           notification_preferences: boolean | null
           password_hash: string | null
           phone: string | null
@@ -1996,12 +2044,15 @@ export type Database = {
           can_provide?: boolean | null
           can_seek?: boolean | null
           city?: string | null
+          confidentiality_radius?: number | null
           coordinates?: unknown | null
           created_at?: string | null
           current_location?: unknown | null
           email: string
           full_name: string
+          fuzzy_location?: unknown | null
           id?: string
+          last_fuzzy_update?: string | null
           notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
@@ -2027,12 +2078,15 @@ export type Database = {
           can_provide?: boolean | null
           can_seek?: boolean | null
           city?: string | null
+          confidentiality_radius?: number | null
           coordinates?: unknown | null
           created_at?: string | null
           current_location?: unknown | null
           email?: string
           full_name?: string
+          fuzzy_location?: unknown | null
           id?: string
+          last_fuzzy_update?: string | null
           notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
@@ -2110,6 +2164,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_service_zone: {
+        Args: { service_coords: unknown }
+        Returns: string
+      }
       check_rate_limit: {
         Args: {
           user_uuid: string
@@ -2138,6 +2196,10 @@ export type Database = {
       enable_claude_access: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      generate_fuzzy_location: {
+        Args: { original_point: unknown; radius_meters?: number }
+        Returns: unknown
       }
       get_current_daily_spend: {
         Args: Record<PropertyKey, never>
@@ -2234,6 +2296,10 @@ export type Database = {
       }
       mark_messages_as_read: {
         Args: { p_conversation_id: string; p_user_id: string }
+        Returns: number
+      }
+      refresh_fuzzy_locations: {
+        Args: Record<PropertyKey, never>
         Returns: number
       }
       update_daily_spend: {
