@@ -18,19 +18,41 @@ const mapContainerStyle = {
   minHeight: '300px'
 };
 
+// Montreal-specific map styling
 const mapOptions = {
   styles: [
     {
       featureType: "all",
       elementType: "geometry.fill",
-      stylers: [{ color: "#fef7cd" }]
+      stylers: [{ color: "#f8fafc" }]
     },
     {
       featureType: "water",
       elementType: "geometry",
-      stylers: [{ color: "#17a2b8" }]
+      stylers: [{ color: "#3b82f6" }]
+    },
+    {
+      featureType: "road",
+      elementType: "geometry",
+      stylers: [{ color: "#e2e8f0" }]
+    },
+    // Highlight Montreal area
+    {
+      featureType: "administrative.locality",
+      elementType: "labels.text.fill",
+      stylers: [{ color: "#1f2937" }]
     }
-  ]
+  ],
+  restriction: {
+    // Restrict to Quebec region for better performance
+    latLngBounds: {
+      north: 46.0,
+      south: 45.0,
+      east: -73.0,
+      west: -74.5,
+    },
+    strictBounds: false,
+  }
 };
 
 const libraries: ("places" | "geometry")[] = ["places", "geometry"];
@@ -142,7 +164,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
       <div className={`w-full h-full rounded-lg bg-gray-50 flex items-center justify-center ${className}`}>
         <div className="text-center p-6">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading interactive map...</p>
+          <p className="text-gray-600">Loading Montreal interactive map...</p>
         </div>
       </div>
     );
@@ -159,7 +181,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
           <div className="w-full h-full flex items-center justify-center bg-gray-50 rounded-lg">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-              <p className="text-gray-600">Initializing map...</p>
+              <p className="text-gray-600">Initializing Montreal map...</p>
             </div>
           </div>
         }
@@ -169,7 +191,7 @@ export const GoogleMap: React.FC<GoogleMapProps> = ({
           center={center}
           zoom={zoom}
           options={mapOptions}
-          onLoad={() => console.log('Map instance loaded')}
+          onLoad={() => console.log('Montreal map instance loaded')}
         >
           {isLoaded && providers.map(provider => (
             <Marker

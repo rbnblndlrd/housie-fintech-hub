@@ -69,7 +69,7 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
   return (
     <div className="relative h-96 w-full">
       <GoogleMap
-        center={{ lat: 45.5017, lng: -73.5673 }}
+        center={{ lat: 45.5017, lng: -73.5673 }} // Montreal coordinates
         zoom={12}
         className="w-full h-full"
         providers={providers}
