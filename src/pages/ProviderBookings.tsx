@@ -178,6 +178,9 @@ const ProviderBookings = () => {
     );
   }
 
+  // Calculate pending bookings from existing data
+  const pendingBookingsCount = stats.totalBookings - stats.completedJobs - stats.activeJobs;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
@@ -215,7 +218,7 @@ const ProviderBookings = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid grid-cols-3 w-full mb-6">
                   <TabsTrigger value="pending">
-                    Pending Approval ({loading ? '...' : stats.pendingBookings || 0})
+                    Pending Approval ({loading ? '...' : Math.max(0, pendingBookingsCount)})
                   </TabsTrigger>
                   <TabsTrigger value="active">
                     Active Jobs ({loading ? '...' : stats.activeJobs || 0})
@@ -231,7 +234,7 @@ const ProviderBookings = () => {
                       Array.from({ length: 3 }).map((_, i) => (
                         <Skeleton key={i} className="h-48 w-full" />
                       ))
-                    ) : stats.pendingBookings > 0 ? (
+                    ) : pendingBookingsCount > 0 ? (
                       // Mock pending bookings since we don't have the exact data structure
                       Array.from({ length: 2 }).map((_, i) => (
                         <BookingCard 
