@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,6 +54,74 @@ const CustomerCalendar = () => {
   const getBookingsForDate = (date: Date) => {
     return upcomingBookings.filter(booking => 
       isSameDay(booking.date, date)
+    );
+  };
+
+  const renderWeekView = () => {
+    const startOfCurrentWeek = startOfWeek(selectedDate || new Date(), { weekStartsOn: 1 });
+    const days = eachDayOfInterval({ 
+      start: startOfCurrentWeek, 
+      end: endOfWeek(startOfCurrentWeek, { weekStartsOn: 1 }) 
+    });
+
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold">
+            Week of {format(startOfCurrentWeek, "MMM d, yyyy")}
+          </h3>
+        </div>
+        
+        <div className="grid grid-cols-7 gap-1">
+          {/* Header row with day names */}
+          {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+            <div key={day} className="p-3 text-center font-semibold text-gray-600 bg-gray-50 rounded">
+              {day}
+            </div>
+          ))}
+          
+          {/* Week days */}
+          {days.map((day) => {
+            const dayBookings = getBookingsForDate(day);
+            const isToday = isSameDay(day, new Date());
+            
+            return (
+              <div
+                key={day.toString()}
+                className={cn(
+                  "min-h-[120px] p-2 border rounded cursor-pointer transition-colors",
+                  isToday ? "bg-blue-50 border-blue-200" : "bg-white hover:bg-gray-50"
+                )}
+                onClick={() => setSelectedDate(day)}
+              >
+                <div className={cn(
+                  "text-sm font-medium mb-2",
+                  isToday && "text-blue-600 font-bold"
+                )}>
+                  {format(day, 'd')}
+                </div>
+                
+                {/* Booking tags */}
+                <div className="space-y-1">
+                  {dayBookings.slice(0, 2).map((booking) => (
+                    <div
+                      key={booking.id}
+                      className="text-xs p-1 rounded truncate bg-blue-100 text-blue-800"
+                    >
+                      {booking.time} - {booking.title}
+                    </div>
+                  ))}
+                  {dayBookings.length > 2 && (
+                    <div className="text-xs text-gray-500">
+                      +{dayBookings.length - 2} more
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     );
   };
 
