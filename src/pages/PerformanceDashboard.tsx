@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { useAnalyticsData } from '@/hooks/useAnalyticsData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,14 +23,18 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 const PerformanceDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const userRole = 'provider'; // Default to provider role for performance analytics
-  const { data, loading, error, refreshData } = useAnalyticsData(user?.id, userRole);
+  const { currentRole } = useRole();
+  const { data, loading, error, refreshData } = useAnalyticsData(user?.id, currentRole);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-CA', {
       style: 'currency',
       currency: 'CAD'
     }).format(amount);
+  };
+
+  const getDashboardPath = () => {
+    return currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
   };
 
   const kpiMetrics = [
@@ -109,7 +114,7 @@ const PerformanceDashboard = () => {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={() => navigate('/provider-dashboard')}
+                onClick={() => navigate(getDashboardPath())}
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >

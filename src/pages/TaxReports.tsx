@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { useTaxData } from '@/hooks/useTaxData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -20,6 +21,7 @@ import {
 const TaxReports = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const { taxData, loading, error, refreshTaxData } = useTaxData(user?.id);
 
   const formatCurrency = (amount: number) => {
@@ -27,6 +29,10 @@ const TaxReports = () => {
       style: 'currency',
       currency: 'CAD'
     }).format(amount);
+  };
+
+  const getDashboardPath = () => {
+    return currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
   };
 
   const taxSummary = [
@@ -114,11 +120,11 @@ const TaxReports = () => {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={() => navigate('/analytics-dashboard')}
+                onClick={() => navigate(getDashboardPath())}
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                ← Retour aux Analytiques
+                ← Back to Dashboard
               </Button>
             </div>
             <div className="flex items-center gap-3 mb-4">

@@ -1,30 +1,29 @@
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { useAnalyticsData } from '@/hooks/useAnalyticsData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { 
+  Target, 
   TrendingUp, 
-  Calendar, 
-  DollarSign, 
+  Users, 
   Star,
-  PieChart,
-  BarChart3,
-  Clock,
+  Lightbulb,
   AlertCircle
 } from 'lucide-react';
-import { LineChart, Line, PieChart as RechartsPieChart, Cell, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const BusinessInsights = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const userRole = 'provider'; // Default to provider role for business insights
-  const { data, loading, error, refreshData } = useAnalyticsData(user?.id, userRole);
+  const { currentRole } = useRole();
+  const { data, loading, error, refreshData } = useAnalyticsData(user?.id, currentRole);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-CA', {
@@ -33,57 +32,54 @@ const BusinessInsights = () => {
     }).format(amount);
   };
 
-  const kpiData = [
-    { 
-      label: "Revenue", 
-      value: loading ? "..." : formatCurrency(data.monthlyRevenue), 
-      change: loading ? "..." : `${data.monthlyGrowth > 0 ? '+' : ''}${data.monthlyGrowth.toFixed(1)}% vs last month`,
-      icon: <DollarSign className="h-6 w-6" />,
-      color: "text-green-600"
+  const getDashboardPath = () => {
+    return currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+  };
+
+  const insights = [
+    {
+      type: "growth",
+      title: "Revenue Growth Opportunity",
+      description: `Your monthly growth rate is ${data.monthlyGrowth.toFixed(1)}%. Consider targeting ${data.monthlyGrowth < 10 ? 'higher-value services' : 'new market segments'}.`,
+      priority: data.monthlyGrowth < 5 ? "high" : "medium",
+      icon: <TrendingUp className="h-5 w-5" />
     },
-    { 
-      label: "Bookings", 
-      value: loading ? "..." : data.monthlyBookings.toString(), 
-      change: loading ? "..." : `${data.totalBookings} total bookings`,
-      icon: <Calendar className="h-6 w-6" />,
-      color: "text-blue-600"
+    {
+      type: "efficiency",
+      title: "Booking Efficiency",
+      description: `Average booking value: ${formatCurrency(data.averageBookingValue)}. ${data.averageBookingValue < 100 ? 'Consider bundling services to increase value.' : 'Great job maintaining high booking values!'}`,
+      priority: data.averageBookingValue < 100 ? "medium" : "low",
+      icon: <Target className="h-5 w-5" />
     },
-    { 
-      label: "Avg. Value", 
-      value: loading ? "..." : formatCurrency(data.averageBookingValue), 
-      change: loading ? "..." : `${data.completionRate.toFixed(1)}% completion rate`,
-      icon: <TrendingUp className="h-6 w-6" />,
-      color: "text-purple-600"
-    },
-    { 
-      label: "Total Revenue", 
-      value: loading ? "..." : formatCurrency(data.totalRevenue), 
-      change: loading ? "..." : "All-time earnings",
-      icon: <Star className="h-6 w-6" />,
-      color: "text-yellow-600"
+    {
+      type: "capacity",
+      title: "Service Capacity",
+      description: `You've completed ${data.totalBookings} bookings. ${data.monthlyBookings < 10 ? 'Focus on marketing to increase monthly bookings.' : 'Consider scaling your service offerings.'}`,
+      priority: data.monthlyBookings < 10 ? "high" : "low",
+      icon: <Users className="h-5 w-5" />
     }
   ];
 
-  // Calculate peak hours from booking data
-  const calculatePeakHours = () => {
-    if (!data.bookingsByMonth.length) return [];
-    
-    // Mock peak hours calculation - in reality this would analyze booking timestamps
-    const totalBookings = data.totalBookings;
-    return [
-      { time: "10:00 - 12:00", usage: Math.min(85, (totalBookings / 10) * 15) },
-      { time: "14:00 - 16:00", usage: Math.min(70, (totalBookings / 10) * 12) },
-      { time: "09:00 - 10:00", usage: Math.min(60, (totalBookings / 10) * 10) }
-    ];
-  };
-
-  const peakHours = calculatePeakHours();
-
-  const chartConfig = {
-    revenue: { label: "Revenue", color: "#3B82F6" }
-  };
-
-  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+  const recommendations = [
+    {
+      title: "Optimize Peak Hours",
+      description: "Analyze your busiest times and adjust pricing dynamically",
+      impact: "15-25% revenue increase",
+      effort: "Medium"
+    },
+    {
+      title: "Service Bundling",
+      description: "Create package deals for commonly requested services",
+      impact: "20-30% higher booking value",
+      effort: "Low"
+    },
+    {
+      title: "Customer Retention",
+      description: "Implement loyalty programs for repeat customers",
+      impact: "35% increase in repeat bookings",
+      effort: "High"
+    }
+  ];
 
   if (error) {
     return (
@@ -126,178 +122,89 @@ const BusinessInsights = () => {
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
-                onClick={() => navigate('/analytics-dashboard')}
+                onClick={() => navigate(getDashboardPath())}
                 variant="outline"
                 className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
               >
-                ← Back to Analytics
+                ← Back to Dashboard
               </Button>
             </div>
             <div className="flex items-center gap-3 mb-4">
-              <BarChart3 className="h-8 w-8 text-blue-600" />
+              <Lightbulb className="h-8 w-8 text-blue-600" />
               <h1 className="text-4xl font-bold text-gray-900">Business Insights</h1>
             </div>
-            <p className="text-gray-600">Comprehensive analytics and business metrics</p>
+            <p className="text-gray-600">AI-powered insights and recommendations for your business growth</p>
             
             {/* Controls */}
             <div className="flex gap-3 mt-6">
               <Button variant="outline" onClick={refreshData} disabled={loading}>
                 {loading ? 'Refreshing...' : 'Refresh Data'}
               </Button>
-              <Button variant="outline">📊 Export Report</Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/analytics-dashboard')}
+              >
+                📊 Analytics Dashboard
+              </Button>
             </div>
           </div>
 
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {kpiData.map((kpi, index) => (
+          {/* Key Insights */}
+          <div className="grid lg:grid-cols-3 gap-6 mb-8">
+            {insights.map((insight, index) => (
               <Card key={index} className="fintech-card">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-2 bg-gray-50 rounded-lg ${kpi.color}`}>
-                      {kpi.icon}
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="p-2 bg-blue-50 rounded-lg">
+                      {insight.icon}
                     </div>
-                    <TrendingUp className={`h-4 w-4 ${data.monthlyGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`} />
+                    <Badge 
+                      variant={insight.priority === 'high' ? 'destructive' : insight.priority === 'medium' ? 'default' : 'secondary'}
+                    >
+                      {insight.priority} priority
+                    </Badge>
                   </div>
-                  <h3 className="text-sm text-gray-600 mb-1">{kpi.label}</h3>
+                  <h3 className="font-semibold text-gray-900 mb-2">{insight.title}</h3>
                   {loading ? (
-                    <Skeleton className="h-8 w-20 mb-2" />
+                    <Skeleton className="h-16 w-full" />
                   ) : (
-                    <p className="text-3xl font-bold text-gray-900 mb-2">{kpi.value}</p>
+                    <p className="text-sm text-gray-600">{insight.description}</p>
                   )}
-                  <p className={`text-sm ${data.monthlyGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                    {kpi.change}
-                  </p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          {/* Charts Section */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {/* Revenue Trend */}
-            <Card className="fintech-chart-container">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  📈 Revenue Trend
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <Skeleton className="h-80 w-full" />
-                ) : (
-                  <ChartContainer config={chartConfig} className="h-80">
-                    <LineChart data={data.bookingsByMonth}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="month" stroke="#666" />
-                      <YAxis stroke="#666" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line 
-                        type="monotone" 
-                        dataKey="revenue" 
-                        stroke="#3B82F6" 
-                        strokeWidth={3}
-                        dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                      />
-                    </LineChart>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Service Distribution */}
-            <Card className="fintech-chart-container">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  🎯 Revenue by Category
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <Skeleton className="h-80 w-full" />
-                ) : data.revenueByCategory.length > 0 ? (
-                  <div className="space-y-4">
-                    <ResponsiveContainer width="100%" height={200}>
-                      <RechartsPieChart>
-                        <Pie
-                          data={data.revenueByCategory}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={80}
-                          dataKey="revenue"
-                        >
-                          {data.revenueByCategory.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <ChartTooltip />
-                      </RechartsPieChart>
-                    </ResponsiveContainer>
-                    <div className="space-y-2">
-                      {data.revenueByCategory.map((category, index) => (
-                        <div key={index} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                          <div className="flex items-center gap-2">
-                            <div 
-                              className="w-3 h-3 rounded-full" 
-                              style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                            />
-                            <span className="text-sm font-medium">{category.category}</span>
-                          </div>
-                          <span className="text-sm font-bold">{formatCurrency(category.revenue)}</span>
-                        </div>
-                      ))}
+          {/* Recommendations */}
+          <Card className="fintech-card mb-8">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="h-5 w-5 text-yellow-500" />
+                Actionable Recommendations
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid lg:grid-cols-3 gap-6">
+                {recommendations.map((rec, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-xl">
+                    <h4 className="font-semibold text-gray-900 mb-2">{rec.title}</h4>
+                    <p className="text-sm text-gray-600 mb-3">{rec.description}</p>
+                    <div className="flex justify-between text-xs">
+                      <span className="text-green-600 font-medium">Impact: {rec.impact}</span>
+                      <span className="text-blue-600 font-medium">Effort: {rec.effort}</span>
                     </div>
                   </div>
-                ) : (
-                  <div className="h-80 flex items-center justify-center text-gray-500">
-                    No category data available
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
 
-          {/* Bottom Section */}
-          <div className="grid lg:grid-cols-3 gap-6">
-            {/* Peak Hours */}
+          {/* Performance Metrics */}
+          <div className="grid lg:grid-cols-2 gap-6">
+            {/* Business Health Score */}
             <Card className="fintech-card">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  📊 Business Activity
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {peakHours.map((hour, index) => (
-                      <div key={index} className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">{hour.time}</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-orange-500 transition-all duration-300"
-                              style={{ width: `${hour.usage}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-sm font-semibold">{hour.usage.toFixed(0)}%</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Business Performance */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle>Business Performance</CardTitle>
+                <CardTitle>Business Health Score</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
@@ -308,58 +215,85 @@ const BusinessInsights = () => {
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Revenue Growth</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-green-500 h-2 rounded-full" 
+                            style={{ width: `${Math.max(0, Math.min(100, data.monthlyGrowth * 5))}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{data.monthlyGrowth.toFixed(1)}%</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Booking Volume</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-500 h-2 rounded-full" 
+                            style={{ width: `${Math.min(100, (data.monthlyBookings / 20) * 100)}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{data.monthlyBookings}/20</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-gray-600">Average Value</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-purple-500 h-2 rounded-full" 
+                            style={{ width: `${Math.min(100, (data.averageBookingValue / 200) * 100)}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{formatCurrency(data.averageBookingValue)}</span>
+                      </div>
+                    </div>
+                    <div className="flex justify-between items-center">
                       <span className="text-gray-600">Completion Rate</span>
-                      <span className="font-semibold text-green-600">{data.completionRate.toFixed(1)}%</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Total Bookings</span>
-                      <span className="font-semibold">{data.totalBookings}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Monthly Growth</span>
-                      <span className={`font-semibold ${data.monthlyGrowth >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                        {data.monthlyGrowth > 0 ? '+' : ''}{data.monthlyGrowth.toFixed(1)}%
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-600">Avg. Booking Value</span>
-                      <span className="font-semibold">{formatCurrency(data.averageBookingValue)}</span>
+                      <div className="flex items-center gap-2">
+                        <div className="w-24 bg-gray-200 rounded-full h-2">
+                          <div 
+                            className="bg-yellow-500 h-2 rounded-full" 
+                            style={{ width: `${data.completionRate}%` }}
+                          ></div>
+                        </div>
+                        <span className="text-sm font-medium">{data.completionRate.toFixed(1)}%</span>
+                      </div>
                     </div>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {/* Top Services */}
+            {/* Market Insights */}
             <Card className="fintech-card">
               <CardHeader>
-                <CardTitle>Top Services</CardTitle>
+                <CardTitle>Market Position</CardTitle>
               </CardHeader>
               <CardContent>
-                {loading ? (
-                  <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
+                <div className="space-y-4">
+                  <Alert>
+                    <Lightbulb className="h-4 w-4" />
+                    <AlertDescription>
+                      Based on your performance data, you're positioned well in the local market. 
+                      Focus on customer retention and service quality to maintain growth.
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <div className="grid grid-cols-2 gap-4 text-center">
+                    <div className="p-4 bg-green-50 rounded-lg">
+                      <p className="text-2xl font-bold text-green-600">{formatCurrency(data.totalRevenue)}</p>
+                      <p className="text-sm text-green-700">Total Revenue</p>
+                    </div>
+                    <div className="p-4 bg-blue-50 rounded-lg">
+                      <p className="text-2xl font-bold text-blue-600">{data.totalBookings}</p>
+                      <p className="text-sm text-blue-700">Total Bookings</p>
+                    </div>
                   </div>
-                ) : data.topServices.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.topServices.slice(0, 3).map((service, index) => (
-                      <div key={index} className="flex justify-between items-center">
-                        <div>
-                          <p className="font-medium text-sm">{service.title}</p>
-                          <p className="text-xs text-gray-500">{service.count} booking{service.count !== 1 ? 's' : ''}</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium text-sm">{formatCurrency(service.revenue)}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-500 text-center py-4">No service data available</p>
-                )}
+                </div>
               </CardContent>
             </Card>
           </div>
