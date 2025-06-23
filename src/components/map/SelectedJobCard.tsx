@@ -3,21 +3,11 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Clock, DollarSign } from 'lucide-react';
-
-interface SelectedJob {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  timePosted: string;
-  location: string;
-  priority: string;
-}
+import { Zap, MapPin, Clock, DollarSign, Shield } from 'lucide-react';
 
 interface SelectedJobCardProps {
-  selectedJob: SelectedJob | null;
-  currentRole: string;
+  selectedJob: any;
+  currentRole: 'customer' | 'provider';
   onClose: () => void;
   onAcceptJob: (jobId: string) => void;
 }
@@ -40,6 +30,10 @@ const SelectedJobCard: React.FC<SelectedJobCardProps> = ({
               <Badge variant="destructive" className="text-xs">
                 EMERGENCY
               </Badge>
+              <Badge variant="secondary" className="text-xs">
+                <Shield className="w-3 h-3 mr-1" />
+                Privacy Protected
+              </Badge>
             </div>
             <Button
               variant="ghost"
@@ -58,7 +52,7 @@ const SelectedJobCard: React.FC<SelectedJobCardProps> = ({
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1">
                 <MapPin className="w-4 h-4 text-gray-400" />
-                <span className="text-sm text-gray-600">{selectedJob.location}</span>
+                <span className="text-sm text-gray-600">{selectedJob.zone}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Clock className="w-4 h-4 text-gray-400" />
@@ -71,11 +65,22 @@ const SelectedJobCard: React.FC<SelectedJobCardProps> = ({
             </div>
           </div>
 
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <div className="flex items-center gap-2 text-blue-800 text-sm">
+              <Shield className="h-4 w-4" />
+              <span className="font-medium">Privacy Notice:</span>
+            </div>
+            <p className="text-xs text-blue-600 mt-1">
+              Exact address will be revealed only after you accept this job.
+            </p>
+          </div>
+
           {currentRole === 'provider' && (
             <Button 
               onClick={() => onAcceptJob(selectedJob.id)}
               className="w-full fintech-button-primary"
             >
+              <Zap className="w-4 h-4 mr-2" />
               Accept Emergency Job
             </Button>
           )}
