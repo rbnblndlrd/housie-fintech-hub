@@ -20,6 +20,7 @@ export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
   { label: "Dashboard", href: "/customer-dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
+  { label: "Interactive Map", href: "/interactive-map", icon: "🗺️" },
   { label: "My Bookings", href: "/customer-bookings", icon: "📅" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" }
 ];
@@ -27,6 +28,7 @@ export const customerNav: NavigationItem[] = [
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
   { label: "Dashboard", href: "/provider-dashboard", icon: "📊" },
+  { label: "Find Work", href: "/interactive-map", icon: "🗺️" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "AI Assistant", href: "/notifications", icon: "🤖" },
   { label: "Profile", href: "/provider-profile", icon: "👤" }

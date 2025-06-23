@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -272,11 +271,14 @@ const CustomerDashboard = () => {
             </Button>
             <Button 
               variant="outline" 
-              className="h-20 text-lg"
+              className="h-20 text-lg bg-blue-50 hover:bg-blue-100 border-blue-200"
               onClick={() => navigate('/interactive-map')}
             >
-              <MapPin className="h-6 w-6 mr-2" />
-              Interactive Map
+              <MapPin className="h-6 w-6 mr-2 text-blue-600" />
+              <div className="text-left">
+                <div className="text-blue-600">Find Services</div>
+                <div className="text-xs text-blue-500">Interactive Map</div>
+              </div>
             </Button>
             <Button 
               variant="outline" 
