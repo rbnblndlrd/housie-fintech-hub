@@ -87,9 +87,9 @@
     font-family: 'Inter', sans-serif;
   }
 
-  /* Apply gradient background to all pages except home */
-  body:not(.home-page) {
-    background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 50%, #e17055 100%);
+  /* Apply soft gradient background to ALL pages */
+  body {
+    background: linear-gradient(135deg, #f9f7e8 0%, #f5ede4 50%, #ede0d3 100%);
     background-attachment: fixed;
     min-height: 100vh;
   }

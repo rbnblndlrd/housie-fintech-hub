@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -106,7 +105,7 @@ const TaxReports = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+    <div className="min-h-screen">
       <Header />
       
       <div className="pt-20 px-4 pb-8">
