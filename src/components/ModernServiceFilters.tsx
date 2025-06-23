@@ -58,6 +58,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
   onCategoryChange,
   onLocationChange,
   onTimeChange,
+  onPriceRangeChange,
   onVerifiedToggle
 }) => {
   return (
