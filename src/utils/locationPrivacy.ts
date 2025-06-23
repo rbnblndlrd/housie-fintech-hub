@@ -66,7 +66,7 @@ export const getMontrealZones = async (): Promise<MontrealZone[]> => {
 
     return (data || []).map(zone => ({
       ...zone,
-      center_coordinates: parsePoint(zone.center_coordinates) || { lat: 45.5017, lng: -73.5673 }
+      center_coordinates: parsePoint(String(zone.center_coordinates)) || { lat: 45.5017, lng: -73.5673 }
     }));
   } catch (error) {
     console.error('Failed to fetch zones:', error);
