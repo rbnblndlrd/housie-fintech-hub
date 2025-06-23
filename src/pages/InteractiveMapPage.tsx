@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import Header from "@/components/Header";
 import HeatZoneMap from "@/components/HeatZoneMap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,11 +23,11 @@ import {
 const InteractiveMapPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const [showEmergencyJobs, setShowEmergencyJobs] = useState(true);
   
-  // Determine user role for navigation
-  const userRole = user?.user_metadata?.user_role || 'customer';
-  const dashboardPath = userRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+  // Determine dashboard path based on current role
+  const dashboardPath = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
 
   // Mock emergency jobs data - this would come from your backend
   const emergencyJobs = [
@@ -109,7 +109,7 @@ const InteractiveMapPage = () => {
             <div className="lg:col-span-2">
               <Card className="fintech-card h-[600px]">
                 <CardContent className="p-0 h-full">
-                  <HeatZoneMap userRole={userRole} />
+                  <HeatZoneMap userRole={currentRole} />
                 </CardContent>
               </Card>
             </div>
@@ -160,7 +160,7 @@ const InteractiveMapPage = () => {
                               {job.timePosted}
                             </div>
                           </div>
-                          {userRole === 'provider' && (
+                          {currentRole === 'provider' && (
                             <Button size="sm" className="w-full mt-3">
                               Accept Job
                             </Button>
