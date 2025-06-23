@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Clock, Shield, CheckCircle, DollarSign } from 'lucide-react';
+import { Star, MapPin, Clock, Shield, CheckCircle, DollarSign, User } from 'lucide-react';
 import { Service } from "@/types/service";
 import { useNavigate } from 'react-router-dom';
 
@@ -134,12 +134,23 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
                 <span className="font-medium">Includes 6% HOUSIE fee</span>
               </div>
               
-              <Button 
-                onClick={() => onBookNow(service)}
-                className="fintech-button-primary"
-              >
-                Book Now
-              </Button>
+              <div className="flex items-center gap-3">
+                <Button 
+                  variant="outline"
+                  size="sm"
+                  onClick={handleViewProfile}
+                  className="flex items-center gap-2 hover:bg-gray-50"
+                >
+                  <User className="h-4 w-4" />
+                  View Profile
+                </Button>
+                <Button 
+                  onClick={() => onBookNow(service)}
+                  className="fintech-button-primary"
+                >
+                  Book Now
+                </Button>
+              </div>
             </div>
           </div>
         </div>
