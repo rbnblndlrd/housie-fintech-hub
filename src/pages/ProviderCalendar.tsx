@@ -7,17 +7,19 @@ import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Calendar as CalendarIcon, ArrowLeft, Clock, MapPin, User } from "lucide-react";
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { addDays, format, subMonths, addMonths } from "date-fns";
+import { addDays, format, subMonths, addMonths, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
 
 const ProviderCalendar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [viewMode, setViewMode] = useState<'today' | 'week'>('today');
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -40,7 +42,8 @@ const ProviderCalendar = () => {
       customer: "John Smith",
       location: "123 Main St, Toronto",
       status: "confirmed",
-      payment: "$120"
+      payment: "$120",
+      date: new Date()
     },
     {
       id: 2,
@@ -49,7 +52,8 @@ const ProviderCalendar = () => {
       customer: "Sarah Johnson",
       location: "456 Oak Ave, Toronto",
       status: "pending",
-      payment: "$85"
+      payment: "$85",
+      date: new Date()
     }
   ];
 
@@ -60,6 +64,122 @@ const ProviderCalendar = () => {
       case 'completed': return 'secondary';
       default: return 'outline';
     }
+  };
+
+  const getAppointmentsForDate = (date: Date) => {
+    return appointments.filter(appointment => 
+      isSameDay(appointment.date, date)
+    );
+  };
+
+  const renderWeekView = () => {
+    const startDate = startOfWeek(currentDate, { weekStartsOn: 1 }); // Start on Monday
+    const endDate = endOfWeek(currentDate, { weekStartsOn: 1 });
+    const days = eachDayOfInterval({ start: startDate, end: endDate });
+
+    return (
+      <div className="grid grid-cols-7 gap-1 mb-4">
+        {/* Header row with day names */}
+        {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+          <div key={day} className="p-3 text-center font-semibold text-gray-600 bg-gray-50 rounded">
+            {day}
+          </div>
+        ))}
+        
+        {/* Calendar days */}
+        {days.map((day) => {
+          const dayAppointments = getAppointmentsForDate(day);
+          const isToday = isSameDay(day, new Date());
+          const isCurrentMonth = isSameMonth(day, currentDate);
+          
+          return (
+            <div
+              key={day.toString()}
+              className={cn(
+                "min-h-[120px] p-2 border rounded cursor-pointer transition-colors",
+                isToday ? "bg-blue-50 border-blue-200" : "bg-white hover:bg-gray-50",
+                !isCurrentMonth && "text-gray-400 bg-gray-50"
+              )}
+              onClick={() => setSelectedDate(day)}
+            >
+              <div className={cn(
+                "text-sm font-medium mb-2",
+                isToday && "text-blue-600 font-bold"
+              )}>
+                {format(day, 'd')}
+              </div>
+              
+              {/* Appointment tags */}
+              <div className="space-y-1">
+                {dayAppointments.slice(0, 2).map((appointment) => (
+                  <div
+                    key={appointment.id}
+                    className={cn(
+                      "text-xs p-1 rounded truncate",
+                      appointment.status === 'confirmed' 
+                        ? "bg-green-100 text-green-800" 
+                        : "bg-yellow-100 text-yellow-800"
+                    )}
+                  >
+                    {appointment.time} - {appointment.title}
+                  </div>
+                ))}
+                {dayAppointments.length > 2 && (
+                  <div className="text-xs text-gray-500">
+                    +{dayAppointments.length - 2} more
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderTodayView = () => {
+    if (!selectedDate) return null;
+
+    return (
+      <div className="mt-4">
+        <h3 className="font-semibold mb-3">
+          Appointments for {format(selectedDate, "PPP")}
+        </h3>
+        <div className="space-y-3">
+          {appointments.map((appointment) => (
+            <div key={appointment.id} className="border rounded-lg p-3">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h4 className="font-medium">{appointment.title}</h4>
+                    <Badge variant={getStatusVariant(appointment.status)}>
+                      {appointment.status}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
+                    <User className="h-3 w-3" />
+                    {appointment.customer}
+                  </div>
+                  <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-3 w-3" />
+                      {appointment.time}
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <MapPin className="h-3 w-3" />
+                      {appointment.location}
+                    </div>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="font-medium text-green-600">{appointment.payment}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -98,68 +218,42 @@ const ProviderCalendar = () => {
                       <Button onClick={goToNextMonth} variant="ghost">Next</Button>
                     </div>
 
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-full justify-start text-left font-normal mb-4",
-                            !selectedDate && "text-muted-foreground"
-                          )}
-                        >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <ShadCalendar
-                          mode="single"
-                          selected={selectedDate}
-                          onSelect={handleDateSelect}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'today' | 'week')} className="mb-4">
+                      <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="today">Today View</TabsTrigger>
+                        <TabsTrigger value="week">Week View</TabsTrigger>
+                      </TabsList>
+                    </Tabs>
 
-                    {selectedDate && (
-                      <div className="mt-4">
-                        <h3 className="font-semibold mb-3">
-                          Appointments for {format(selectedDate, "PPP")}
-                        </h3>
-                        <div className="space-y-3">
-                          {appointments.map((appointment) => (
-                            <div key={appointment.id} className="border rounded-lg p-3">
-                              <div className="flex items-center justify-between mb-2">
-                                <div className="flex-1">
-                                  <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="font-medium">{appointment.title}</h4>
-                                    <Badge variant={getStatusVariant(appointment.status)}>
-                                      {appointment.status}
-                                    </Badge>
-                                  </div>
-                                  <div className="flex items-center gap-1 text-sm text-gray-600 mb-1">
-                                    <User className="h-3 w-3" />
-                                    {appointment.customer}
-                                  </div>
-                                  <div className="flex items-center gap-4 text-sm text-gray-500">
-                                    <div className="flex items-center gap-1">
-                                      <Clock className="h-3 w-3" />
-                                      {appointment.time}
-                                    </div>
-                                    <div className="flex items-center gap-1">
-                                      <MapPin className="h-3 w-3" />
-                                      {appointment.location}
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <p className="font-medium text-green-600">{appointment.payment}</p>
-                                </div>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                    {viewMode === 'week' ? (
+                      renderWeekView()
+                    ) : (
+                      <>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={cn(
+                                "w-full justify-start text-left font-normal mb-4",
+                                !selectedDate && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {selectedDate ? format(selectedDate, "PPP") : <span>Pick a date</span>}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <ShadCalendar
+                              mode="single"
+                              selected={selectedDate}
+                              onSelect={handleDateSelect}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        {selectedDate && renderTodayView()}
+                      </>
                     )}
                   </CardContent>
                 </Card>
