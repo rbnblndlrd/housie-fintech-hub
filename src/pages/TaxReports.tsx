@@ -272,7 +272,7 @@ const TaxReports = () => {
                 ))}
               </div>
             </CardContent>
-          </div>
+          </Card>
         </div>
       </div>
     </div>
