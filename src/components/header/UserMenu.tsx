@@ -64,6 +64,9 @@ const UserMenu = () => {
 
   if (!user) return null;
 
+  // Dynamic dashboard link based on current role
+  const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+
   return (
     <DropdownMenu key={`dropdown-${currentRole}-${Date.now()}`}>
       <DropdownMenuTrigger asChild>
@@ -91,22 +94,14 @@ const UserMenu = () => {
         </div>
         <DropdownMenuSeparator />
         
-        {userDropdownItems.map((item, index) => {
-          if (item.separator) {
-            return <DropdownMenuSeparator key={index} />;
-          }
-          
-          return (
-            <DropdownMenuItem
-              key={`${index}-${item.label}-${item.href}`}
-              onClick={() => handleDropdownAction(item)}
-              className="cursor-pointer"
-            >
-              <span className="mr-2">{item.icon}</span>
-              <span className="flex-1">{item.label}</span>
-            </DropdownMenuItem>
-          );
-        })}
+        {/* Map */}
+        <DropdownMenuItem
+          onClick={() => navigate("/interactive-map")}
+          className="cursor-pointer"
+        >
+          <span className="mr-2">🗺️</span>
+          <span className="flex-1">Map</span>
+        </DropdownMenuItem>
 
         {/* Profile Submenu */}
         <DropdownMenuSub>
@@ -127,6 +122,15 @@ const UserMenu = () => {
             ))}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+
+        {/* Dashboard */}
+        <DropdownMenuItem
+          onClick={() => navigate(dashboardHref)}
+          className="cursor-pointer"
+        >
+          <span className="mr-2">📊</span>
+          <span className="flex-1">Dashboard</span>
+        </DropdownMenuItem>
 
         {/* Analytics Submenu */}
         <DropdownMenuSub>
@@ -167,6 +171,17 @@ const UserMenu = () => {
             ))}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+
+        <DropdownMenuSeparator />
+
+        {/* Sign Out */}
+        <DropdownMenuItem
+          onClick={handleLogout}
+          className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
+        >
+          <span className="mr-2">🚪</span>
+          <span className="flex-1">Sign Out</span>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

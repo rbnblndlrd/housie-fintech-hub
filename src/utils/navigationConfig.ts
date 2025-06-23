@@ -59,8 +59,6 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
     { label: "Map", href: "/interactive-map", icon: "🗺️" },
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
     { separator: true, label: "", href: "", icon: "" },
-    { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
-    { separator: true, label: "", href: "", icon: "" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
   ];
 };
@@ -75,6 +73,7 @@ export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'cust
   return [
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
+    { label: "Payment Methods", href: "/payment-methods", icon: "💳" },
     { label: "Verification Status", href: "/provider-profile", icon: "✅" }
   ];
 };
