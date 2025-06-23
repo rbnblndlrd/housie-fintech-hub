@@ -1,7 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
@@ -46,10 +46,18 @@ interface Booking {
 const CustomerBookings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('upcoming');
+
+  // Redirect if role changes to provider
+  useEffect(() => {
+    if (currentRole === 'provider') {
+      navigate('/provider-bookings');
+    }
+  }, [currentRole, navigate]);
 
   const fetchBookings = async () => {
     if (!user) return;

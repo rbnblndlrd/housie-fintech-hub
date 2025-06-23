@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -42,12 +43,20 @@ interface UserProfile {
 
 const ProviderProfile = () => {
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  // Redirect if role changes to customer
+  useEffect(() => {
+    if (currentRole === 'customer') {
+      navigate('/customer-profile');
+    }
+  }, [currentRole, navigate]);
 
   useEffect(() => {
     if (user) {

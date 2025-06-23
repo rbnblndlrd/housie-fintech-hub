@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -55,13 +54,16 @@ const ProviderBookings = () => {
     }
   };
 
-  // Mock function to get bookings for selected date
+  // Enhanced function to get bookings for selected date with more variety
   const getBookingsForDate = (date: Date) => {
     const dateStr = date.toISOString().split('T')[0];
-    // This would normally fetch from your backend based on the date
-    // For now, returning mock data based on specific dates
-    const mockBookings = {
-      '2024-01-15': [
+    const today = new Date().toISOString().split('T')[0];
+    const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+    const dayAfterTomorrow = new Date(Date.now() + 172800000).toISOString().split('T')[0];
+    
+    // Enhanced mock bookings with more dates
+    const mockBookings: { [key: string]: any[] } = {
+      [today]: [
         {
           id: 'today-1',
           service: { title: 'House Cleaning Service' },
@@ -72,21 +74,45 @@ const ProviderBookings = () => {
           total_amount: 150,
           status: 'confirmed',
           instructions: 'Please focus on the kitchen and bathrooms'
+        },
+        {
+          id: 'today-2',
+          service: { title: 'Window Cleaning' },
+          customer: { full_name: 'Marie Dupuis' },
+          scheduled_date: dateStr,
+          scheduled_time: '14:00',
+          service_address: '789 Pine Ave, Montreal, QC',
+          total_amount: 75,
+          status: 'pending'
         }
       ],
-      '2024-01-18': [
+      [tomorrow]: [
         {
-          id: 'selected-1',
+          id: 'tomorrow-1',
           service: { title: 'Lawn Maintenance' },
           customer: { full_name: 'Sarah Wilson' },
           scheduled_date: dateStr,
-          scheduled_time: '14:00',
+          scheduled_time: '09:00',
           service_address: '456 Oak Ave, Montreal, QC',
           total_amount: 80,
-          status: 'pending'
+          status: 'confirmed'
+        }
+      ],
+      [dayAfterTomorrow]: [
+        {
+          id: 'dayafter-1',
+          service: { title: 'Deep House Cleaning' },
+          customer: { full_name: 'Robert Smith' },
+          scheduled_date: dateStr,
+          scheduled_time: '11:00',
+          service_address: '321 Elm St, Montreal, QC',
+          total_amount: 200,
+          status: 'pending',
+          instructions: 'Full house deep clean, includes all rooms'
         }
       ]
     };
+    
     return mockBookings[dateStr] || [];
   };
 
@@ -160,6 +186,12 @@ const ProviderBookings = () => {
       setSelectedDate(clickedDate);
     };
 
+    // Check which days have bookings for visual indicators
+    const getDayBookingCount = (day: number) => {
+      const date = new Date(currentYear, currentMonth, day);
+      return getBookingsForDate(date).length;
+    };
+
     return (
       <Card className="fintech-card">
         <CardHeader>
@@ -189,7 +221,8 @@ const ProviderBookings = () => {
               {Array.from({ length: daysInMonth }, (_, i) => {
                 const day = i + 1;
                 const currentDate = new Date(currentYear, currentMonth, day);
-                const hasBooking = [5, 12, 15, 18, 25].includes(day);
+                const bookingCount = getDayBookingCount(day);
+                const hasBooking = bookingCount > 0;
                 const isToday = currentDate.toDateString() === today.toDateString();
                 const isSelected = currentDate.toDateString() === selectedDate.toDateString();
                 
@@ -198,7 +231,7 @@ const ProviderBookings = () => {
                     key={day} 
                     onClick={() => handleDateClick(day)}
                     className={`
-                      p-2 text-center text-sm rounded cursor-pointer transition-colors
+                      p-2 text-center text-sm rounded cursor-pointer transition-colors relative
                       ${isSelected ? 'bg-purple-600 text-white' : ''}
                       ${isToday && !isSelected ? 'bg-blue-600 text-white' : ''}
                       ${hasBooking && !isSelected && !isToday ? 'bg-green-100 text-green-800' : ''}
@@ -206,6 +239,11 @@ const ProviderBookings = () => {
                     `}
                   >
                     {day}
+                    {hasBooking && bookingCount > 1 && (
+                      <div className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        {bookingCount}
+                      </div>
+                    )}
                   </div>
                 );
               })}

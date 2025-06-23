@@ -1,7 +1,7 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,6 +23,15 @@ import {
 const ProviderSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
+
+  // Redirect if role changes to customer
+  useEffect(() => {
+    if (currentRole === 'customer') {
+      navigate('/customer-settings');
+    }
+  }, [currentRole, navigate]);
+
   const [settings, setSettings] = useState({
     businessName: '',
     description: '',

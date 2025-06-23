@@ -1,7 +1,7 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { useToast } from '@/hooks/use-toast';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,7 +26,15 @@ import {
 const CustomerSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const { toast } = useToast();
+
+  // Redirect if role changes to provider
+  useEffect(() => {
+    if (currentRole === 'provider') {
+      navigate('/provider-settings');
+    }
+  }, [currentRole, navigate]);
 
   const [settings, setSettings] = useState({
     fullName: user?.user_metadata?.full_name || '',

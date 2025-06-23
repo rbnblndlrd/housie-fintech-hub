@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import Header from "@/components/Header";
 import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
 import { Button } from "@/components/ui/button";
@@ -15,9 +16,17 @@ import { addDays, format, subMonths, addMonths, startOfMonth, endOfMonth, startO
 const CustomerCalendar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [viewMode, setViewMode] = useState<'today' | 'week' | 'month'>('today');
+
+  // Redirect if role changes to provider
+  useEffect(() => {
+    if (currentRole === 'provider') {
+      navigate('/provider-calendar');
+    }
+  }, [currentRole, navigate]);
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
