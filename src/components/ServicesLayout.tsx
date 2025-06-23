@@ -60,12 +60,12 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-white">
+      <div className="min-h-screen pt-20 bg-background">
         <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
           <ModernServicesHeader />
 
           {/* Sticky Filter Bar */}
-          <div className="sticky top-20 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100 pb-4">
+          <div className="sticky top-20 z-40 bg-background/95 backdrop-blur-md border-b border-gray-100 pb-4">
             <ModernServiceFilters
               searchTerm={searchTerm}
               selectedCategory={selectedCategory}
@@ -85,7 +85,7 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
           </div>
 
           {/* Interactive Map Section */}
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="fintech-card overflow-hidden">
             <InteractiveServicesMap
               providers={filteredProviders}
               hoveredProviderId={hoveredProviderId}

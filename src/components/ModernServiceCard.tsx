@@ -53,7 +53,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
 
   return (
     <Card 
-      className="border border-gray-100 hover:shadow-lg transition-all duration-200 bg-white rounded-2xl overflow-hidden"
+      className="fintech-card hover:shadow-xl transition-all duration-200 overflow-hidden"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
@@ -135,7 +135,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
               
               <Button 
                 onClick={() => onBookNow(service)}
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-8 py-3 font-semibold shadow-md hover:shadow-lg transition-all duration-200"
+                className="fintech-button-primary"
                 disabled={!isAvailable}
               >
                 {isAvailable ? 'Book Now' : 'Unavailable'}
