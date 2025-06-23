@@ -8,13 +8,17 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Bell } from 'lucide-react';
+import { Bell, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import { getUserDropdownItems, NavigationItem } from '@/utils/navigationConfig';
+import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
 import { useNotifications } from '@/hooks/useNotifications';
 import { CreamPill } from '@/components/ui/cream-pill';
 import NotificationDropdown from '@/components/NotificationDropdown';
@@ -48,16 +52,24 @@ const UserMenu = () => {
     }
   };
 
-  // Memoize dropdown items with currentRole as dependency to force re-calculation
+  // Memoize dropdown items with currentRole as dependency
   const userDropdownItems = useMemo(() => {
     console.log('🔧 Recalculating dropdown items for role:', currentRole);
     const items = getUserDropdownItems(user, currentRole);
     console.log('🔧 Dashboard item href:', items.find(item => item.label === 'Dashboard')?.href);
     
-    // Filter out Bookings item to centralize booking management in dashboard
-    const filteredItems = items.filter(item => item.label !== 'Bookings');
+    // Filter out items that will be moved to submenu
+    const filteredItems = items.filter(item => 
+      item.label !== 'Gamification' && 
+      item.label !== 'Achievement History' && 
+      item.label !== 'Territory Control'
+    );
     return filteredItems;
   }, [user, currentRole]);
+
+  const loyaltyMenuItems = useMemo(() => {
+    return getLoyaltyMenuItems(currentRole);
+  }, [currentRole]);
 
   const enhancedDropdownItems: NavigationItem[] = user ? [
     { 
@@ -105,6 +117,30 @@ const UserMenu = () => {
           {enhancedDropdownItems.map((item, index) => {
             if (item.separator) {
               return <DropdownMenuSeparator key={index} />;
+            }
+
+            // Handle Loyalty & Rewards submenu
+            if (item.label === 'Loyalty & Rewards') {
+              return (
+                <DropdownMenuSub key={`${index}-${item.label}`}>
+                  <DropdownMenuSubTrigger className="cursor-pointer">
+                    <span className="mr-2">{item.icon}</span>
+                    <span>{item.label}</span>
+                  </DropdownMenuSubTrigger>
+                  <DropdownMenuSubContent>
+                    {loyaltyMenuItems.map((subItem, subIndex) => (
+                      <DropdownMenuItem
+                        key={`${subIndex}-${subItem.label}`}
+                        onClick={() => handleDropdownAction(subItem)}
+                        className="cursor-pointer"
+                      >
+                        <span className="mr-2">{subItem.icon}</span>
+                        <span>{subItem.label}</span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuSubContent>
+                </DropdownMenuSub>
+              );
             }
             
             return (

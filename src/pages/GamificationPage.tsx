@@ -2,10 +2,10 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
-import GamificationDashboard from '@/components/gamification/GamificationDashboard';
+import GamificationAnalytics from '@/components/gamification/GamificationAnalytics';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { GamepadIcon, Trophy, Star, Crown } from 'lucide-react';
+import { GamepadIcon, Trophy, Star, Crown, TrendingUp, BarChart3 } from 'lucide-react';
 
 const GamificationPage: React.FC = () => {
   const { user } = useAuth();
@@ -17,12 +17,12 @@ const GamificationPage: React.FC = () => {
         <Card className="fintech-card max-w-md mx-auto">
           <CardContent className="p-6 text-center">
             <GamepadIcon className="h-12 w-12 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-xl font-bold mb-2">Join the Game!</h2>
+            <h2 className="text-xl font-bold mb-2">Join the Loyalty Program!</h2>
             <p className="text-gray-600 mb-4">
-              Sign in to access achievements, loyalty points, and competitive features.
+              Sign in to access achievements, loyalty points, and exclusive rewards.
             </p>
             <Button className="fintech-button-primary">
-              Sign In to Play
+              Sign In to Start Earning
             </Button>
           </CardContent>
         </Card>
@@ -35,15 +35,15 @@ const GamificationPage: React.FC = () => {
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
-          <GamepadIcon className="h-8 w-8 text-blue-600" />
+          <BarChart3 className="h-8 w-8 text-blue-600" />
           <h1 className="text-3xl font-bold">
-            {currentRole === 'provider' ? 'Provider' : 'Customer'} Gamification
+            Loyalty & Rewards Analytics
           </h1>
         </div>
         <p className="text-gray-600">
           {currentRole === 'provider' 
-            ? 'Claim territories, earn achievements, and climb the leaderboards!'
-            : 'Earn loyalty points, unlock achievements, and enjoy exclusive benefits!'
+            ? 'Track your performance, territory control, and earnings growth through comprehensive analytics.'
+            : 'Monitor your loyalty points, achievements, and rewards progress with detailed insights.'
           }
         </p>
       </div>
@@ -54,21 +54,27 @@ const GamificationPage: React.FC = () => {
           <div className="flex items-center gap-4">
             {currentRole === 'provider' ? (
               <>
-                <Crown className="h-8 w-8 text-purple-600" />
+                <div className="flex items-center gap-2">
+                  <Crown className="h-6 w-6 text-purple-600" />
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-purple-800">Provider Benefits</h3>
+                  <h3 className="font-semibold text-purple-800">Provider Performance Dashboard</h3>
                   <p className="text-sm text-purple-600">
-                    Territory control • Performance badges • Earnings leaderboards • Exclusive zones
+                    Territory analytics • Earnings trends • Performance metrics • Competitive rankings
                   </p>
                 </div>
               </>
             ) : (
               <>
-                <Star className="h-8 w-8 text-blue-600" />
+                <div className="flex items-center gap-2">
+                  <Star className="h-6 w-6 text-blue-600" />
+                  <Trophy className="h-6 w-6 text-yellow-600" />
+                </div>
                 <div>
-                  <h3 className="font-semibold text-blue-800">Customer Benefits</h3>
+                  <h3 className="font-semibold text-blue-800">Customer Loyalty Dashboard</h3>
                   <p className="text-sm text-blue-600">
-                    Loyalty points • Preferred status • Review rewards • Booking discounts
+                    Points tracking • Tier progression • Achievement analytics • Reward optimization
                   </p>
                 </div>
               </>
@@ -77,8 +83,8 @@ const GamificationPage: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Main Dashboard */}
-      <GamificationDashboard />
+      {/* Main Analytics Dashboard */}
+      <GamificationAnalytics />
     </div>
   );
 };

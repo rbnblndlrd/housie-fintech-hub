@@ -1,4 +1,3 @@
-
 export interface NavigationItem {
   label: string;
   href: string;
@@ -65,7 +64,8 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
-    { label: "Gamification", href: "/gamification", icon: "🎮" },
+    { separator: true, label: "", href: "", icon: "" },
+    { label: "Loyalty & Rewards", href: "/gamification", icon: "🎯" },
     { label: "Payment Methods", href: "/provider-profile", icon: "💳" },
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
     { label: "Verification Status", href: "/provider-profile", icon: "✅" },
