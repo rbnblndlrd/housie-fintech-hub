@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { useToast } from "@/hooks/use-toast";
@@ -12,12 +13,10 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
-import Dashboard from "@/pages/Dashboard";
 import Services from "@/pages/Services";
 import Calendar from "@/pages/Calendar";
 import CustomerCalendar from "@/pages/CustomerCalendar";
 import ProviderCalendar from "@/pages/ProviderCalendar";
-import Analytics from "@/pages/Analytics";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import PerformanceDashboard from "@/pages/PerformanceDashboard";
 import BusinessInsights from "@/pages/BusinessInsights";
@@ -71,7 +70,6 @@ const App = () => {
                       <Route path="/" element={<Index />} />
                       <Route path="/auth" element={<Auth />} />
                       <Route path="/welcome" element={<Welcome />} />
-                      <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/services" element={<Services />} />
                       <Route path="/provider/:id" element={<PublicProviderProfile />} />
                       
@@ -131,7 +129,6 @@ const App = () => {
                       
                       {/* Shared routes */}
                       <Route path="/calendar" element={<Calendar />} />
-                      <Route path="/analytics" element={<Analytics />} />
                       <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
                       <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
                       <Route path="/business-insights" element={<BusinessInsights />} />
