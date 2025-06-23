@@ -1,8 +1,5 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MessageSquare, Users, Bot, Settings } from 'lucide-react';
 import MessagesTab from './MessagesTab';
 import ClaudeConversation from './ClaudeConversation';
 import CreditsWidget from '@/components/credits/CreditsWidget';
@@ -21,77 +18,32 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [activeTab, setActiveTab] = useState(externalActiveTab || 'messages');
   const [claudeSessionId] = useState(() => crypto.randomUUID());
 
-  // Update internal state when external activeTab changes
   useEffect(() => {
     if (externalActiveTab) {
       setActiveTab(externalActiveTab);
     }
   }, [externalActiveTab]);
 
-  const handleTabChange = (value: string) => {
-    if (value === 'messages' || value === 'ai') {
-      setActiveTab(value);
-    }
-  };
-
-  const handleBackToTabs = () => {
-    setActiveTab('messages');
-  };
-
   return (
-    <div className="h-full flex flex-col">
-      {/* Credits Widget at the top */}
-      {user && (
-        <div className="p-4 border-b bg-white">
+    <div className="h-full flex flex-col bg-white dark:bg-gray-900">
+      {/* Credits Widget - Only show for AI tab */}
+      {user && activeTab === 'ai' && (
+        <div className="p-3 border-b border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-850">
           <CreditsWidget compact />
         </div>
       )}
 
-      {/* Chat Tabs */}
-      <Tabs value={activeTab} onValueChange={handleTabChange} className="flex-1 flex flex-col">
-        <TabsList className="grid w-full grid-cols-2 m-4 mb-0">
-          <TabsTrigger value="messages" className="flex items-center gap-2">
-            <MessageSquare className="h-4 w-4" />
-            Messages
-          </TabsTrigger>
-          <TabsTrigger value="ai" className="flex items-center gap-2">
-            <Bot className="h-4 w-4" />
-            AI Assistant
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="messages" className="flex-1 m-4 mt-0">
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <MessageSquare className="h-5 w-5" />
-                Direct Messages
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="h-full">
-              <MessagesTab />
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="ai" className="flex-1 m-4 mt-0">
-          <Card className="h-full">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bot className="h-5 w-5" />
-                HOUSIE AI Assistant
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="h-full p-0">
-              <ClaudeConversation 
-                sessionId={claudeSessionId}
-                onBack={handleBackToTabs}
-                onPopArtTrigger={onPopArtTrigger}
-              />
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
+      {/* Content */}
+      <div className="flex-1 overflow-hidden">
+        {activeTab === 'messages' ? (
+          <MessagesTab />
+        ) : (
+          <ClaudeConversation 
+            sessionId={claudeSessionId}
+            onPopArtTrigger={onPopArtTrigger}
+          />
+        )}
+      </div>
     </div>
   );
 };
