@@ -47,8 +47,8 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
   const verified = service.provider?.verified || Math.random() > 0.3;
   const backgroundCheck = service.provider?.background_check_verified || Math.random() > 0.5;
   
-  // Mock availability and distance
-  const isAvailable = Math.random() > 0.3;
+  // Static availability and distance (no random changes on hover)
+  const isAvailable = true; // Always show as available
   const distance = Math.floor(Math.random() * 10) + 1;
 
   return (
@@ -106,9 +106,9 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
             {/* Trust Badges and Availability */}
             <div className="flex items-center gap-3 mb-4">
               <div className="flex items-center gap-2">
-                <Clock className={`w-4 h-4 ${isAvailable ? 'text-green-500' : 'text-gray-400'}`} />
-                <span className={`text-sm font-medium ${isAvailable ? 'text-green-600' : 'text-gray-500'}`}>
-                  {isAvailable ? 'Available now' : 'Busy'}
+                <Clock className="w-4 h-4 text-green-500" />
+                <span className="text-sm font-medium text-green-600">
+                  Available now
                 </span>
               </div>
               
@@ -136,9 +136,8 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
               <Button 
                 onClick={() => onBookNow(service)}
                 className="fintech-button-primary"
-                disabled={!isAvailable}
               >
-                {isAvailable ? 'Book Now' : 'Unavailable'}
+                Book Now
               </Button>
             </div>
           </div>

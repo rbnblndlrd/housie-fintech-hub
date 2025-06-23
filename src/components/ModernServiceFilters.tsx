@@ -22,6 +22,7 @@ const locations = [
 ];
 
 const timeSlots = [
+  'Any time',
   '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
   '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM'
 ];
@@ -115,7 +116,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
         <SelectTrigger className="w-[150px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
           <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-gray-500" />
-            <SelectValue placeholder="10:30 AM" />
+            <SelectValue placeholder="Any time" />
           </div>
         </SelectTrigger>
         <SelectContent className="fintech-card border-4 border-black shadow-xl">
