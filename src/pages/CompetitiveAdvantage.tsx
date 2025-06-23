@@ -3,273 +3,267 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Shield, DollarSign, FileCheck, Users, Zap, Crown, Sword, Target } from 'lucide-react';
+import { Shield, DollarSign, FileCheck, Users, Zap, Crown, Target, TrendingUp } from 'lucide-react';
 import Header from '@/components/Header';
 
 const CompetitiveAdvantage = () => {
-  const competitors = [
+  const oldApproaches = [
     {
-      name: "Uber",
-      model: "Commission-based",
-      issues: ["No payment protection", "Driver income uncertainty", "Complex dispute resolution"],
-      color: "text-gray-500"
+      title: "Traditional Payment Models",
+      issues: ["Payment uncertainty", "Trust gaps", "Complex disputes", "Higher risk exposure"]
     },
     {
-      name: "Airbnb", 
-      model: "Fee-based",
-      issues: ["Host payment delays", "Guest refund complications", "Trust issues"],
-      color: "text-red-500"
+      title: "Commission-Heavy Platforms", 
+      issues: ["Provider income erosion", "Hidden fee structures", "Payment delays", "Limited protection"]
     },
     {
-      name: "TaskRabbit",
-      model: "Traditional payment",
-      issues: ["Payment processing risks", "No guaranteed payment", "Limited protection"],
-      color: "text-orange-500"
+      title: "Legacy Service Models",
+      issues: ["Outdated payment flows", "Compliance complications", "Trust deficits", "Poor dispute resolution"]
     }
   ];
 
-  const escrowAdvantages = [
+  const ourAdvantages = [
     {
-      icon: <Shield className="h-6 w-6" />,
-      title: "Ultimate Protection",
-      description: "Money held safely until service completion - both sides protected"
+      icon: <Shield className="h-8 w-8" />,
+      title: "Escrow Protection",
+      description: "Money secured until service completion - revolutionary trust model",
+      metric: "100% Protected"
     },
     {
-      icon: <DollarSign className="h-6 w-6" />,
-      title: "Guaranteed Payment", 
-      description: "Providers know they'll get paid, customers know their money is safe"
+      icon: <DollarSign className="h-8 w-8" />,
+      title: "Guaranteed Outcomes", 
+      description: "Providers know they'll be paid, customers know their investment is safe",
+      metric: "94% to Provider"
     },
     {
-      icon: <FileCheck className="h-6 w-6" />,
-      title: "CRA Compliance Made Easy",
-      description: "Clear audit trails, simplified reporting, reduced compliance costs"
+      icon: <FileCheck className="h-8 w-8" />,
+      title: "Compliance Simplified",
+      description: "Built-in audit trails, streamlined reporting, reduced regulatory burden",
+      metric: "$10K Savings"
     },
     {
-      icon: <Users className="h-6 w-6" />,
-      title: "Built-in Dispute Resolution",
-      description: "Natural conflict resolution with money held neutrally until resolved"
+      icon: <Users className="h-8 w-8" />,
+      title: "Natural Dispute Resolution",
+      description: "Escrow creates inherent fairness - conflicts resolve themselves",
+      metric: "85% Auto-Resolve"
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-white">
       <Header />
       
-      {/* Hero Section - Battle Theme */}
+      {/* Hero Section */}
       <section className="pt-24 pb-16 px-4">
         <div className="max-w-6xl mx-auto text-center">
-          <div className="flex items-center justify-center mb-6">
-            <Crown className="h-12 w-12 text-yellow-500 mr-4" />
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">
-              THE LAST ONE STANDING
+          <div className="flex items-center justify-center mb-8">
+            <Crown className="h-16 w-16 text-yellow-600 mr-4" />
+            <h1 className="text-6xl font-bold bg-gradient-to-r from-yellow-600 via-yellow-500 to-amber-400 bg-clip-text text-transparent">
+              US vs THEM
             </h1>
-            <Sword className="h-12 w-12 text-yellow-500 ml-4" />
+            <Target className="h-16 w-16 text-yellow-600 ml-4" />
           </div>
           
-          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
-            After the dust settled from the platform wars, only one business model survived the battle: 
-            <span className="text-yellow-400 font-semibold"> The Escrow Revolution</span>
+          <p className="text-2xl text-gray-300 mb-8 max-w-4xl mx-auto leading-relaxed">
+            In a world divided between outdated approaches and revolutionary solutions,
+            <span className="text-yellow-400 font-semibold"> we chose evolution</span>
           </p>
           
-          <div className="flex items-center justify-center space-x-4 mb-12">
-            <Badge variant="outline" className="bg-yellow-500/10 text-yellow-400 border-yellow-500/50 px-4 py-2">
-              <Target className="h-4 w-4 mr-2" />
-              94% to Providers
-            </Badge>
-            <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50 px-4 py-2">
-              <Shield className="h-4 w-4 mr-2" />
-              100% Protected
-            </Badge>
-            <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/50 px-4 py-2">
-              <Zap className="h-4 w-4 mr-2" />
-              Game Changer
+          <div className="flex items-center justify-center space-x-8 mb-12">
+            <Badge className="bg-gradient-to-r from-yellow-600 to-amber-500 text-black px-6 py-3 text-lg font-bold">
+              THE EVOLVED SOLUTION
             </Badge>
           </div>
         </div>
       </section>
 
-      {/* Escrow Model Showcase */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-900/20 to-purple-900/20">
+      {/* The Divide Section */}
+      <section className="py-16 px-4 bg-gradient-to-r from-slate-800/40 to-gray-800/40">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 text-yellow-400">
-              THE ESCROW REVOLUTION
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-6 text-gray-100">
+              THE FUNDAMENTAL DIVIDE
             </h2>
-            <p className="text-xl text-gray-300">How HOUSIE changed the game forever</p>
+            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+              While they clung to broken models, we built the future
+            </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-6 mb-12">
-            <Card className="bg-gray-800/50 border-gray-700 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">1️⃣</span>
-                </div>
-                <h3 className="font-semibold text-green-400 mb-2">Customer Pays</h3>
-                <p className="text-sm text-gray-400">Money safely held in HOUSIE escrow</p>
-              </CardContent>
-            </Card>
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* THEM - Old Ways */}
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold text-gray-400 mb-4">THEM</h3>
+                <p className="text-gray-500">The Old Guard</p>
+              </div>
+              
+              {oldApproaches.map((approach, index) => (
+                <Card key={index} className="bg-gray-800/60 border-gray-600 opacity-80">
+                  <CardHeader>
+                    <CardTitle className="text-gray-400 text-lg">{approach.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {approach.issues.map((issue, issueIndex) => (
+                        <div key={issueIndex} className="flex items-start text-sm text-gray-500">
+                          <span className="mr-2 text-red-400">✗</span>
+                          <span>{issue}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-            <Card className="bg-gray-800/50 border-gray-700 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">2️⃣</span>
-                </div>
-                <h3 className="font-semibold text-blue-400 mb-2">Service Delivered</h3>
-                <p className="text-sm text-gray-400">Provider completes the work</p>
-              </CardContent>
-            </Card>
+            {/* US - New Way */}
+            <div className="space-y-6">
+              <div className="text-center mb-8">
+                <h3 className="text-3xl font-bold bg-gradient-to-r from-yellow-500 to-amber-400 bg-clip-text text-transparent mb-4">
+                  US
+                </h3>
+                <p className="text-yellow-400">The Evolution</p>
+              </div>
 
-            <Card className="bg-gray-800/50 border-gray-700 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">3️⃣</span>
-                </div>
-                <h3 className="font-semibold text-purple-400 mb-2">Customer Confirms</h3>
-                <p className="text-sm text-gray-400">Work approved and accepted</p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gray-800/50 border-gray-700 text-center">
-              <CardContent className="p-6">
-                <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">4️⃣</span>
-                </div>
-                <h3 className="font-semibold text-yellow-400 mb-2">Payment Released</h3>
-                <p className="text-sm text-gray-400">94% to provider, 6% to HOUSIE</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {escrowAdvantages.map((advantage, index) => (
-              <Card key={index} className="bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors">
-                <CardContent className="p-6">
-                  <div className="text-yellow-400 mb-4">{advantage.icon}</div>
-                  <h3 className="font-semibold text-white mb-2">{advantage.title}</h3>
-                  <p className="text-sm text-gray-400">{advantage.description}</p>
+              <Card className="bg-gradient-to-br from-yellow-600/20 to-amber-500/20 border-yellow-500/30 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-yellow-600/5 to-transparent"></div>
+                <CardHeader>
+                  <CardTitle className="text-yellow-400 text-2xl">The Escrow Revolution</CardTitle>
+                </CardHeader>
+                <CardContent className="relative">
+                  <div className="grid grid-cols-4 gap-4 mb-6">
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-yellow-400 font-bold">1</span>
+                      </div>
+                      <p className="text-xs text-gray-300">Pay</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-yellow-400 font-bold">2</span>
+                      </div>
+                      <p className="text-xs text-gray-300">Deliver</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-yellow-400 font-bold">3</span>
+                      </div>
+                      <p className="text-xs text-gray-300">Confirm</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                        <span className="text-yellow-400 font-bold">4</span>
+                      </div>
+                      <p className="text-xs text-gray-300">Release</p>
+                    </div>
+                  </div>
+                  <p className="text-gray-300 text-center">
+                    Money protected in escrow until perfect satisfaction
+                  </p>
                 </CardContent>
               </Card>
-            ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Battlefield Comparison */}
+      {/* Why We Won */}
       <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-4 text-red-400">
-              THE BATTLEFIELD
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-yellow-500 to-amber-400 bg-clip-text text-transparent">
+              WHY WE WON
             </h2>
-            <p className="text-xl text-gray-300">How the competition fell one by one</p>
+            <p className="text-xl text-gray-400">The advantages that changed everything</p>
           </div>
 
-          <div className="grid lg:grid-cols-4 gap-6 mb-8">
-            {/* HOUSIE - The Winner */}
-            <Card className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/50 relative overflow-hidden">
-              <div className="absolute top-2 right-2">
-                <Crown className="h-6 w-6 text-yellow-400" />
-              </div>
-              <CardHeader>
-                <CardTitle className="text-yellow-400 text-center">HOUSIE</CardTitle>
-                <Badge className="bg-yellow-500 text-black mx-auto">WINNER</Badge>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 text-sm">
-                  <div className="flex items-center text-green-400">
-                    <Shield className="h-4 w-4 mr-2" />
-                    Escrow Protection
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {ourAdvantages.map((advantage, index) => (
+              <Card key={index} className="bg-gradient-to-br from-slate-800/50 to-gray-800/50 border-gray-700 hover:border-yellow-500/50 transition-all duration-300 group">
+                <CardContent className="p-8 text-center">
+                  <div className="text-yellow-500 mb-6 group-hover:scale-110 transition-transform duration-300">
+                    {advantage.icon}
                   </div>
-                  <div className="flex items-center text-green-400">
-                    <DollarSign className="h-4 w-4 mr-2" />
-                    Guaranteed Payment
-                  </div>
-                  <div className="flex items-center text-green-400">
-                    <FileCheck className="h-4 w-4 mr-2" />
-                    CRA Compliant
-                  </div>
-                  <div className="flex items-center text-green-400">
-                    <Users className="h-4 w-4 mr-2" />
-                    Built-in Disputes
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Competitors - The Fallen */}
-            {competitors.map((competitor, index) => (
-              <Card key={index} className="bg-gray-800/30 border-gray-600 opacity-75">
-                <CardHeader>
-                  <CardTitle className={`${competitor.color} text-center`}>{competitor.name}</CardTitle>
-                  <Badge variant="outline" className="border-red-500 text-red-400 mx-auto">FALLEN</Badge>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-gray-500 mb-3">{competitor.model}</p>
-                  <div className="space-y-2">
-                    {competitor.issues.map((issue, issueIndex) => (
-                      <div key={issueIndex} className="flex items-start text-xs text-red-400">
-                        <span className="mr-2">❌</span>
-                        <span>{issue}</span>
-                      </div>
-                    ))}
-                  </div>
+                  <h3 className="font-bold text-white mb-4 text-lg">{advantage.title}</h3>
+                  <p className="text-sm text-gray-400 mb-4 leading-relaxed">{advantage.description}</p>
+                  <Badge className="bg-yellow-600/20 text-yellow-400 border-yellow-500/30">
+                    {advantage.metric}
+                  </Badge>
                 </CardContent>
               </Card>
             ))}
           </div>
-
-          {/* Battle Stats */}
-          <Card className="bg-gray-800/50 border-gray-700">
-            <CardHeader>
-              <CardTitle className="text-center text-yellow-400">VICTORY STATISTICS</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-8 text-center">
-                <div>
-                  <div className="text-3xl font-bold text-green-400 mb-2">$15K</div>
-                  <p className="text-sm text-gray-400">Annual Compliance Costs<br/><span className="text-red-400">(vs $25K traditional)</span></p>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-blue-400 mb-2">94%</div>
-                  <p className="text-sm text-gray-400">Provider Earnings<br/><span className="text-green-400">(Industry leading)</span></p>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-purple-400 mb-2">100%</div>
-                  <p className="text-sm text-gray-400">Payment Protection<br/><span className="text-green-400">(Both sides covered)</span></p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </section>
 
-      {/* Future Vision Teaser */}
-      <section className="py-16 px-4 bg-gradient-to-r from-purple-900/20 to-blue-900/20">
+      {/* The Numbers */}
+      <section className="py-16 px-4 bg-gradient-to-r from-slate-800/40 to-gray-800/40">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold mb-6 text-gray-100">
+              THE VICTORY METRICS
+            </h2>
+            <p className="text-xl text-gray-400">Numbers don't lie</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-gradient-to-br from-slate-800/60 to-gray-800/60 border-gray-700 text-center">
+              <CardContent className="p-8">
+                <TrendingUp className="h-12 w-12 text-green-400 mx-auto mb-4" />
+                <div className="text-4xl font-bold text-green-400 mb-2">94%</div>
+                <p className="text-gray-400">Provider Earnings</p>
+                <p className="text-xs text-gray-500 mt-2">vs industry standard 70-85%</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-slate-800/60 to-gray-800/60 border-gray-700 text-center">
+              <CardContent className="p-8">
+                <Shield className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+                <div className="text-4xl font-bold text-blue-400 mb-2">100%</div>
+                <p className="text-gray-400">Payment Protection</p>
+                <p className="text-xs text-gray-500 mt-2">Both sides fully covered</p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-to-br from-slate-800/60 to-gray-800/60 border-gray-700 text-center">
+              <CardContent className="p-8">
+                <FileCheck className="h-12 w-12 text-purple-400 mx-auto mb-4" />
+                <div className="text-4xl font-bold text-purple-400 mb-2">$10K</div>
+                <p className="text-gray-400">Annual Savings</p>
+                <p className="text-xs text-gray-500 mt-2">Compliance costs reduced</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Future Vision */}
+      <section className="py-16 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-6 text-purple-400">
-            THE EMPIRE EXPANDS
+          <h2 className="text-5xl font-bold mb-8 bg-gradient-to-r from-yellow-500 to-amber-400 bg-clip-text text-transparent">
+            THE FUTURE IS OURS
           </h2>
-          <p className="text-xl text-gray-300 mb-8">
-            The escrow revolution was just the beginning...
+          <p className="text-xl text-gray-300 mb-12 leading-relaxed">
+            While they scramble to catch up, we're already building tomorrow
           </p>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <Badge variant="outline" className="bg-purple-500/10 text-purple-400 border-purple-500/50 p-3">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <Badge className="bg-slate-800/60 text-gray-300 border-gray-600 p-4 text-center">
               🧠 AI-Powered Analytics
             </Badge>
-            <Badge variant="outline" className="bg-blue-500/10 text-blue-400 border-blue-500/50 p-3">
+            <Badge className="bg-slate-800/60 text-gray-300 border-gray-600 p-4 text-center">
               💰 Complete Fintech Suite
             </Badge>
-            <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/50 p-3">
+            <Badge className="bg-slate-800/60 text-gray-300 border-gray-600 p-4 text-center">
               🤖 Smart Automation
             </Badge>
-            <Badge variant="outline" className="bg-yellow-500/10 text-yellow-400 border-yellow-500/50 p-3">
+            <Badge className="bg-slate-800/60 text-gray-300 border-gray-600 p-4 text-center">
               📊 Business Intelligence
             </Badge>
           </div>
 
-          <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-8 py-3">
-            Join the Revolution
+          <Button className="bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-700 hover:to-amber-600 text-black font-bold px-12 py-4 text-lg">
+            Join the Winning Side
           </Button>
         </div>
       </section>
