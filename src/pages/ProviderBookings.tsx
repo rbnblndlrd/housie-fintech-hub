@@ -1,7 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { useProviderData } from '@/hooks/useProviderData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,8 +26,17 @@ import {
 const ProviderBookings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const { stats, loading, error } = useProviderData(user?.id);
   const [activeTab, setActiveTab] = useState('pending');
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  // Redirect if role changes to customer
+  useEffect(() => {
+    if (currentRole === 'customer') {
+      navigate('/customer-bookings');
+    }
+  }, [currentRole, navigate]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-CA', {
@@ -43,6 +53,41 @@ const ProviderBookings = () => {
       case 'completed': return 'bg-gray-100 text-gray-800';
       default: return 'bg-gray-100 text-gray-800';
     }
+  };
+
+  // Mock function to get bookings for selected date
+  const getBookingsForDate = (date: Date) => {
+    const dateStr = date.toISOString().split('T')[0];
+    // This would normally fetch from your backend based on the date
+    // For now, returning mock data based on specific dates
+    const mockBookings = {
+      '2024-01-15': [
+        {
+          id: 'today-1',
+          service: { title: 'House Cleaning Service' },
+          customer: { full_name: 'John Doe' },
+          scheduled_date: dateStr,
+          scheduled_time: '10:00',
+          service_address: '123 Main St, Montreal, QC',
+          total_amount: 150,
+          status: 'confirmed',
+          instructions: 'Please focus on the kitchen and bathrooms'
+        }
+      ],
+      '2024-01-18': [
+        {
+          id: 'selected-1',
+          service: { title: 'Lawn Maintenance' },
+          customer: { full_name: 'Sarah Wilson' },
+          scheduled_date: dateStr,
+          scheduled_time: '14:00',
+          service_address: '456 Oak Ave, Montreal, QC',
+          total_amount: 80,
+          status: 'pending'
+        }
+      ]
+    };
+    return mockBookings[dateStr] || [];
   };
 
   const BookingCard = ({ booking, showActions = false }: { booking: any; showActions?: boolean }) => (
@@ -101,66 +146,98 @@ const ProviderBookings = () => {
     </Card>
   );
 
-  const CalendarPreview = () => (
-    <Card className="fintech-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
-          Calendar Preview
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-600 mb-2">
-            {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-              <div key={day} className="p-2">{day}</div>
-            ))}
-          </div>
-          
-          <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: 35 }, (_, i) => {
-              const date = i + 1;
-              const hasBooking = [5, 12, 18, 25].includes(date);
-              const isToday = date === 15;
+  const CalendarPreview = () => {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+    const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDayOfMonth.getDate();
+    const startingDayOfWeek = firstDayOfMonth.getDay();
+
+    const handleDateClick = (day: number) => {
+      const clickedDate = new Date(currentYear, currentMonth, day);
+      setSelectedDate(clickedDate);
+    };
+
+    return (
+      <Card className="fintech-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Calendar Preview
+          </CardTitle>
+          <p className="text-sm text-gray-600">
+            Selected: {selectedDate.toLocaleDateString()}
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            <div className="grid grid-cols-7 gap-1 text-center text-sm font-medium text-gray-600 mb-2">
+              {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                <div key={day} className="p-2">{day}</div>
+              ))}
+            </div>
+            
+            <div className="grid grid-cols-7 gap-1">
+              {/* Empty cells for days before month starts */}
+              {Array.from({ length: startingDayOfWeek }, (_, i) => (
+                <div key={`empty-${i}`} className="p-2"></div>
+              ))}
               
-              return (
-                <div 
-                  key={i} 
-                  className={`
-                    p-2 text-center text-sm rounded cursor-pointer transition-colors
-                    ${isToday ? 'bg-blue-600 text-white' : ''}
-                    ${hasBooking && !isToday ? 'bg-green-100 text-green-800' : ''}
-                    ${!hasBooking && !isToday ? 'hover:bg-gray-100' : ''}
-                  `}
-                >
-                  {date <= 31 ? date : ''}
-                </div>
-              );
-            })}
-          </div>
-          
-          <div className="flex justify-between text-xs text-gray-600 pt-3 border-t">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-green-100 rounded"></div>
-              <span>Booked</span>
+              {/* Days of the month */}
+              {Array.from({ length: daysInMonth }, (_, i) => {
+                const day = i + 1;
+                const currentDate = new Date(currentYear, currentMonth, day);
+                const hasBooking = [5, 12, 15, 18, 25].includes(day);
+                const isToday = currentDate.toDateString() === today.toDateString();
+                const isSelected = currentDate.toDateString() === selectedDate.toDateString();
+                
+                return (
+                  <div 
+                    key={day} 
+                    onClick={() => handleDateClick(day)}
+                    className={`
+                      p-2 text-center text-sm rounded cursor-pointer transition-colors
+                      ${isSelected ? 'bg-purple-600 text-white' : ''}
+                      ${isToday && !isSelected ? 'bg-blue-600 text-white' : ''}
+                      ${hasBooking && !isSelected && !isToday ? 'bg-green-100 text-green-800' : ''}
+                      ${!hasBooking && !isSelected && !isToday ? 'hover:bg-gray-100' : ''}
+                    `}
+                  >
+                    {day}
+                  </div>
+                );
+              })}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-blue-600 rounded"></div>
-              <span>Today</span>
+            
+            <div className="flex justify-between text-xs text-gray-600 pt-3 border-t">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-green-100 rounded"></div>
+                <span>Booked</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-blue-600 rounded"></div>
+                <span>Today</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 bg-purple-600 rounded"></div>
+                <span>Selected</span>
+              </div>
             </div>
+            
+            <Button 
+              variant="outline" 
+              className="w-full mt-4"
+              onClick={() => navigate('/calendar')}
+            >
+              View Full Calendar
+            </Button>
           </div>
-          
-          <Button 
-            variant="outline" 
-            className="w-full mt-4"
-            onClick={() => navigate('/calendar')}
-          >
-            View Full Calendar
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+        </CardContent>
+      </Card>
+    );
+  };
 
   if (error) {
     return (
@@ -180,6 +257,7 @@ const ProviderBookings = () => {
 
   // Calculate pending bookings from existing data
   const pendingBookingsCount = stats.totalBookings - stats.completedJobs - stats.activeJobs;
+  const selectedDateBookings = getBookingsForDate(selectedDate);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -215,6 +293,34 @@ const ProviderBookings = () => {
           <div className="grid lg:grid-cols-3 gap-8">
             {/* Main Content - Bookings */}
             <div className="lg:col-span-2">
+              {/* Show bookings for selected date */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Bookings for {selectedDate.toLocaleDateString()}
+                </h2>
+                <div className="space-y-4">
+                  {loading ? (
+                    Array.from({ length: 2 }).map((_, i) => (
+                      <Skeleton key={i} className="h-48 w-full" />
+                    ))
+                  ) : selectedDateBookings.length > 0 ? (
+                    selectedDateBookings.map((booking) => (
+                      <BookingCard 
+                        key={booking.id}
+                        booking={booking}
+                        showActions={true}
+                      />
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No bookings for this date</h3>
+                      <p className="text-gray-600">Select another date to view bookings</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid grid-cols-3 w-full mb-6">
                   <TabsTrigger value="pending">
