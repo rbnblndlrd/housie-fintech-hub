@@ -19,7 +19,7 @@ export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
   { label: "Dashboard", href: "/customer-dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "My Bookings", href: "/booking-history", icon: "📅" }
+  { label: "Why HOUSIE?", href: "/competitive-advantage", icon: "👑" }
 ];
 
 export const providerNav: NavigationItem[] = [

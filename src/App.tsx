@@ -39,6 +39,7 @@ import FAQArchive from "@/pages/FAQArchive";
 import PublicProviderProfile from "@/pages/PublicProviderProfile";
 import NotFound from "@/pages/NotFound";
 import GoogleCalendarCallback from "@/components/GoogleCalendarCallback";
+import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
 
 const queryClient = new QueryClient();
 
@@ -89,6 +90,7 @@ const App = () => {
                       <Route path="/about" element={<About />} />
                       <Route path="/faq" element={<FAQ />} />
                       <Route path="/faq-archive" element={<FAQArchive />} />
+                      <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
                       <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
