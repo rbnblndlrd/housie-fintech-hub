@@ -17,7 +17,7 @@ import {
   Clock,
   AlertCircle
 } from 'lucide-react';
-import { LineChart, Line, PieChart as RechartsPieChart, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, PieChart as RechartsPieChart, Cell, Pie, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 const BusinessInsights = () => {
