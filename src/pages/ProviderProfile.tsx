@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -142,7 +141,7 @@ const ProviderProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
         <div className="pt-16 flex items-center justify-center min-h-screen">
           <div className="text-center">
@@ -156,7 +155,7 @@ const ProviderProfile = () => {
 
   if (!providerProfile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
         <div className="pt-16 p-6">
           <div className="max-w-4xl mx-auto">
@@ -187,7 +186,7 @@ const ProviderProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-50 to-pink-100">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       <div className="pt-16 p-6">
         <div className="max-w-6xl mx-auto space-y-8">

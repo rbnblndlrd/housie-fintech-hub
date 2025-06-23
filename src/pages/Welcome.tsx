@@ -25,7 +25,7 @@ export const Welcome = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
       <div className="pt-20 flex items-center justify-center min-h-screen px-4">

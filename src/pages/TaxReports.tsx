@@ -77,7 +77,7 @@ const TaxReports = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
@@ -107,7 +107,7 @@ const TaxReports = () => {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
       <div className="pt-20 px-4 pb-8">

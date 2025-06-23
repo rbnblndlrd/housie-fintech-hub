@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
@@ -104,7 +103,7 @@ const AdminDashboard = () => {
     return (
       <>
         <Header />
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 flex items-center justify-center pt-20">
+        <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 p-6 flex items-center justify-center pt-20">
           <div className="text-center">
             <div className="text-lg mb-4">Checking admin permissions...</div>
             {error && (
@@ -139,7 +138,7 @@ const AdminDashboard = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 p-6 pt-20">
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 p-6 pt-20">
         <div className="max-w-7xl mx-auto space-y-6">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>

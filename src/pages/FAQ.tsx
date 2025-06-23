@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from "@/components/Header";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -94,7 +93,7 @@ const FAQ = () => {
   return (
     <>
       <Header />
-      <div className="min-h-screen pt-20 bg-white dark:bg-gray-900">
+      <div className="min-h-screen pt-20 bg-gradient-to-br from-yellow-50 to-orange-50">
         <div className="max-w-7xl mx-auto px-4 py-12">
           {/* Header Section */}
           <div className="text-center mb-16">
@@ -166,37 +165,16 @@ const FAQ = () => {
                   <CardContent className="px-8 pb-8">
                     <ul className="space-y-2">
                       {category.questions.map((question, qIndex) => (
-                        <li key={qIndex} className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors duration-200">
+                        <li key={qIndex} className="text-sm text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer transition-colors">
                           • {question}
                         </li>
                       ))}
                     </ul>
-                    <Button variant="ghost" className="w-full mt-4 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl font-medium">
-                      Voir tous les articles →
-                    </Button>
                   </CardContent>
                 </Card>
               ))}
             </div>
           </div>
-
-          {/* Contact Support Section */}
-          <Card className="fintech-gradient-card bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 text-white">
-            <CardContent className="text-center py-16 px-8">
-              <h3 className="text-4xl font-bold mb-6">Une question ? Une suggestion ?</h3>
-              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-                N'hésitez pas à nous contacter ! Notre équipe est disponible du lundi au vendredi de 9h à 18h.
-              </p>
-              <div className="flex flex-wrap justify-center gap-6">
-                <Button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-8 py-4 rounded-2xl border border-white/20 font-bold text-white text-lg">
-                  💬 Chat en Direct
-                </Button>
-                <Button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-8 py-4 rounded-2xl border border-white/20 font-bold text-white text-lg">
-                  📧 Nous Contacter
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
         </div>
       </div>
     </>
