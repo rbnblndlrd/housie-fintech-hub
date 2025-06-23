@@ -310,7 +310,7 @@ const ProviderDashboard = () => {
             <Button 
               variant="outline" 
               className="h-20 text-lg"
-              onClick={() => navigate('/calendar')}
+              onClick={() => navigate('/provider-calendar')}
             >
               <Calendar className="h-6 w-6 mr-2" />
               Calendar

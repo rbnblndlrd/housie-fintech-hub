@@ -32,17 +32,14 @@ export const providerNav: NavigationItem[] = [
   { label: "Profile", href: "/provider-profile", icon: "👤" }
 ];
 
-export const getNavigationItems = (user: any): NavigationItem[] => {
+export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provider'): NavigationItem[] => {
   if (!user) return visitorNav;
   
-  // Check if user has provider capabilities or role
-  // For now, we'll default to customer navigation for most users
-  // This can be expanded later with proper role detection from user metadata or database
-  const userRole = user.user_metadata?.user_role || 'customer';
-  const canProvide = user.user_metadata?.can_provide || false;
+  // Use the currentRole parameter if provided, otherwise fallback to user metadata
+  const activeRole = currentRole || user.user_metadata?.user_role || 'customer';
   
-  // If user is explicitly a provider or can provide services, show provider nav
-  if (userRole === 'provider' || canProvide) {
+  // Return navigation based on current active role
+  if (activeRole === 'provider') {
     return providerNav;
   }
   

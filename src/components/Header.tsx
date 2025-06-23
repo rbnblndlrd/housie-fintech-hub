@@ -3,6 +3,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRole } from '@/contexts/RoleContext';
 import { getNavigationItems } from '@/utils/navigationConfig';
 import DynamicNavigation from './DynamicNavigation';
 import UserMenu from './header/UserMenu';
@@ -11,13 +12,14 @@ import HeaderActions from './header/HeaderActions';
 
 const Header = () => {
   const { user } = useAuth();
+  const { currentRole } = useRole();
   const navigate = useNavigate();
 
   const handleLogoClick = () => {
     navigate('/');
   };
 
-  const navigationItems = getNavigationItems(user);
+  const navigationItems = getNavigationItems(user, currentRole);
 
   return (
     <TooltipProvider>
