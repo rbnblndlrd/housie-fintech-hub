@@ -44,6 +44,7 @@ import NotFound from "@/pages/NotFound";
 import GoogleCalendarCallback from "@/components/GoogleCalendarCallback";
 import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
 import InteractiveMapPage from "@/pages/InteractiveMapPage";
+import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -145,6 +146,7 @@ const App = () => {
                       <Route path="/faq-archive" element={<FAQArchive />} />
                       <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
                       <Route path="/interactive-map" element={<InteractiveMapPage />} />
+                      <Route path="/gamification" element={<GamificationPage />} />
                       <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
