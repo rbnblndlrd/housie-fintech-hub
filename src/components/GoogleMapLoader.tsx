@@ -32,9 +32,9 @@ export const GoogleMapLoader: React.FC<GoogleMapLoaderProps> = ({
   const callbackName = useRef(`initGoogleMaps_${Date.now()}`);
 
   useEffect(() => {
-    // Check if Google Maps is already loaded
-    if (window.google && window.google.maps) {
-      console.log('Google Maps already loaded');
+    // Check if Google Maps is already loaded and ready
+    if (window.google && window.google.maps && window.google.maps.Map) {
+      console.log('Google Maps already loaded and ready');
       setIsLoaded(true);
       onLoad();
       return;
@@ -42,7 +42,7 @@ export const GoogleMapLoader: React.FC<GoogleMapLoaderProps> = ({
 
     // Check if script is already loading
     const existingScript = document.querySelector('script[src*="maps.googleapis.com"]');
-    if (existingScript) {
+    if (existingScript && !isLoading) {
       console.log('Google Maps script already exists, waiting for load...');
       setIsLoading(true);
       
@@ -53,11 +53,11 @@ export const GoogleMapLoader: React.FC<GoogleMapLoaderProps> = ({
         setError(loadError);
         setIsLoading(false);
         onError(loadError);
-      }, 10000);
+      }, 12000);
 
-      // Poll for Google Maps availability
+      // Poll for Google Maps availability with better checks
       const pollInterval = setInterval(() => {
-        if (window.google && window.google.maps) {
+        if (window.google && window.google.maps && window.google.maps.Map) {
           clearInterval(pollInterval);
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
@@ -77,61 +77,84 @@ export const GoogleMapLoader: React.FC<GoogleMapLoaderProps> = ({
       };
     }
 
-    // Load Google Maps script
-    const loadGoogleMaps = () => {
-      setIsLoading(true);
-      console.log('Loading Google Maps script...');
+    // Load Google Maps script if not already loading
+    if (!isLoading && !existingScript) {
+      const loadGoogleMaps = () => {
+        setIsLoading(true);
+        console.log('Loading Google Maps script...');
 
-      // Create callback function
-      window[callbackName.current] = () => {
-        console.log('Google Maps script loaded successfully');
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
+        // Validate API key
+        if (!apiKey || apiKey.trim() === '') {
+          const apiKeyError = new Error('Google Maps API key is missing or invalid');
+          console.error('Google Maps API key validation failed');
+          setError(apiKeyError);
+          setIsLoading(false);
+          onError(apiKeyError);
+          return;
         }
-        setIsLoaded(true);
-        setIsLoading(false);
-        onLoad();
-        // Clean up callback
-        delete window[callbackName.current];
+
+        // Create callback function
+        window[callbackName.current] = () => {
+          console.log('Google Maps script loaded successfully');
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          
+          // Double-check that all required objects are available
+          if (window.google && window.google.maps && window.google.maps.Map) {
+            setIsLoaded(true);
+            setIsLoading(false);
+            onLoad();
+          } else {
+            const loadError = new Error('Google Maps API loaded but missing required objects');
+            console.error('Google Maps API incomplete after load');
+            setError(loadError);
+            setIsLoading(false);
+            onError(loadError);
+          }
+          
+          // Clean up callback
+          delete window[callbackName.current];
+        };
+
+        // Create script element
+        const script = document.createElement('script');
+        const librariesParam = libraries.length > 0 ? `&libraries=${libraries.join(',')}` : '';
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}${librariesParam}&callback=${callbackName.current}`;
+        script.async = true;
+        script.defer = true;
+
+        // Handle script load errors
+        script.onerror = (event) => {
+          const loadError = new Error('Failed to load Google Maps script - check API key and network connection');
+          console.error('Google Maps script failed to load:', event);
+          if (timeoutRef.current) {
+            clearTimeout(timeoutRef.current);
+          }
+          setError(loadError);
+          setIsLoading(false);
+          onError(loadError);
+          // Clean up callback
+          delete window[callbackName.current];
+        };
+
+        // Set up timeout
+        timeoutRef.current = setTimeout(() => {
+          const timeoutError = new Error('Google Maps loading timeout - check API key, billing, and network connection');
+          console.error('Google Maps loading timeout');
+          setError(timeoutError);
+          setIsLoading(false);
+          onError(timeoutError);
+          // Clean up callback
+          delete window[callbackName.current];
+        }, 15000);
+
+        // Add script to document
+        document.head.appendChild(script);
       };
 
-      // Create script element
-      const script = document.createElement('script');
-      const librariesParam = libraries.length > 0 ? `&libraries=${libraries.join(',')}` : '';
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}${librariesParam}&callback=${callbackName.current}`;
-      script.async = true;
-      script.defer = true;
-
-      // Handle script load errors
-      script.onerror = () => {
-        const loadError = new Error('Failed to load Google Maps script');
-        console.error('Google Maps script failed to load');
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-        setError(loadError);
-        setIsLoading(false);
-        onError(loadError);
-        // Clean up callback
-        delete window[callbackName.current];
-      };
-
-      // Set up timeout
-      timeoutRef.current = setTimeout(() => {
-        const timeoutError = new Error('Google Maps loading timeout - check API key and billing');
-        console.error('Google Maps loading timeout');
-        setError(timeoutError);
-        setIsLoading(false);
-        onError(timeoutError);
-        // Clean up callback
-        delete window[callbackName.current];
-      }, 15000);
-
-      // Add script to document
-      document.head.appendChild(script);
-    };
-
-    loadGoogleMaps();
+      loadGoogleMaps();
+    }
 
     return () => {
       if (timeoutRef.current) {
@@ -142,7 +165,7 @@ export const GoogleMapLoader: React.FC<GoogleMapLoaderProps> = ({
         delete window[callbackName.current];
       }
     };
-  }, [apiKey, libraries, onLoad, onError]);
+  }, [apiKey, libraries, onLoad, onError, isLoading]);
 
   if (error) {
     return null; // Let parent component handle error display

@@ -15,11 +15,16 @@ const GoogleMapMarkers: React.FC<GoogleMapMarkersProps> = ({
   onMarkerClick
 }) => {
   const getMarkerIcon = (availability: string) => {
-    if (!isMapReady || typeof window.google === 'undefined') {
+    if (!isMapReady || !window.google || !window.google.maps) {
       return undefined;
     }
     
     try {
+      if (!window.google.maps.SymbolPath) {
+        console.warn('Google Maps SymbolPath not available');
+        return undefined;
+      }
+
       return {
         path: window.google.maps.SymbolPath.CIRCLE,
         scale: 8,
@@ -34,7 +39,7 @@ const GoogleMapMarkers: React.FC<GoogleMapMarkersProps> = ({
     }
   };
 
-  if (!isMapReady) return null;
+  if (!isMapReady || !window.google || !window.google.maps) return null;
 
   return (
     <>

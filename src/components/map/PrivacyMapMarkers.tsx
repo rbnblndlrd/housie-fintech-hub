@@ -39,12 +39,15 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
   onProviderClick,
   onJobClick
 }) => {
-  if (!isMapReady) return null;
+  if (!isMapReady || !window.google || !window.google.maps) return null;
 
   const getProviderIcon = (availability: string, verified: boolean) => {
-    if (!window.google) return undefined;
-    
     try {
+      if (!window.google?.maps?.SymbolPath) {
+        console.warn('Google Maps SymbolPath not available, using default marker');
+        return undefined;
+      }
+      
       return {
         path: window.google.maps.SymbolPath.CIRCLE,
         scale: verified ? 10 : 8,
@@ -91,6 +94,26 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
     }
   };
 
+  const getJobMarkerIcon = (priority: string) => {
+    try {
+      if (!window.google?.maps?.SymbolPath) {
+        return undefined;
+      }
+      
+      return {
+        path: window.google.maps.SymbolPath.CIRCLE,
+        scale: 6,
+        fillColor: priority === 'emergency' ? '#ef4444' : '#3b82f6',
+        fillOpacity: 1,
+        strokeColor: '#ffffff',
+        strokeWeight: 2
+      };
+    } catch (error) {
+      console.error('Error creating job marker icon:', error);
+      return undefined;
+    }
+  };
+
   return (
     <>
       {/* Privacy-protected provider markers (anonymous fuzzy locations) */}
@@ -123,14 +146,7 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
               lng: job.serviceCircle.lng
             }}
             onClick={() => onJobClick(job)}
-            icon={{
-              path: window.google?.maps.SymbolPath.CIRCLE,
-              scale: 6,
-              fillColor: job.priority === 'emergency' ? '#ef4444' : '#3b82f6',
-              fillOpacity: 1,
-              strokeColor: '#ffffff',
-              strokeWeight: 2
-            }}
+            icon={getJobMarkerIcon(job.priority)}
             title={`${job.title} - ${job.zone} ($${job.price})`}
           />
         </React.Fragment>

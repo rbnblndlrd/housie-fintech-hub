@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Circle, Polygon } from '@react-google-maps/api';
+import { Circle } from '@react-google-maps/api';
 import type { MontrealZone } from '@/utils/locationPrivacy';
 
 interface MontrealHeatZonesProps {
@@ -55,10 +55,9 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
   };
 
   return (
-    <>
+    <div>
       {zones.map(zone => (
-        <React.Fragment key={zone.id}>
-          {/* Zone circle */}
+        <div key={zone.id}>
           <Circle
             center={zone.center_coordinates}
             radius={zone.zone_radius}
@@ -66,7 +65,6 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
             onClick={() => onZoneClick(zone)}
           />
           
-          {/* Zone label (if enabled) */}
           {showLabels && (
             <div
               style={{
@@ -89,9 +87,9 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
               </span>
             </div>
           )}
-        </React.Fragment>
+        </div>
       ))}
-    </>
+    </div>
   );
 };
 
