@@ -1,14 +1,26 @@
 
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Switch } from '@/components/ui/switch';
 import { useRole } from '@/contexts/RoleContext';
 
 const RoleToggle = () => {
   const { currentRole, toggleRole } = useRole();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleRoleToggle = (checked: boolean) => {
     console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
     toggleRole();
+    
+    // Instantly redirect to the appropriate dashboard
+    const newRole = checked ? 'provider' : 'customer';
+    
+    // Check if user is currently on a dashboard page
+    if (location.pathname === '/customer-dashboard' || location.pathname === '/provider-dashboard') {
+      const targetDashboard = newRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+      navigate(targetDashboard);
+    }
   };
 
   // Comprehensive event handling for the switch container
