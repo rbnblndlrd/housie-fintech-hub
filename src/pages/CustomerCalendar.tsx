@@ -11,14 +11,14 @@ import { Calendar as CalendarIcon, ArrowLeft, Clock, MapPin } from "lucide-react
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { addDays, format, subMonths, addMonths, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
+import { addDays, format, subMonths, addMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
 
 const CustomerCalendar = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
-  const [viewMode, setViewMode] = useState<'today' | 'week'>('today');
+  const [viewMode, setViewMode] = useState<'today' | 'week' | 'month'>('today');
 
   const handleDateSelect = (date: Date | undefined) => {
     setSelectedDate(date);
@@ -58,9 +58,11 @@ const CustomerCalendar = () => {
     );
   };
 
-  const renderWeekView = () => {
-    const startDate = startOfWeek(currentDate, { weekStartsOn: 1 }); // Start on Monday
-    const endDate = endOfWeek(currentDate, { weekStartsOn: 1 });
+  const renderMonthView = () => {
+    const monthStart = startOfMonth(currentDate);
+    const monthEnd = endOfMonth(currentDate);
+    const startDate = startOfWeek(monthStart, { weekStartsOn: 1 }); // Start on Monday
+    const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 });
     const days = eachDayOfInterval({ start: startDate, end: endDate });
 
     return (
@@ -188,14 +190,17 @@ const CustomerCalendar = () => {
                       <Button onClick={goToNextMonth} variant="ghost">Next</Button>
                     </div>
 
-                    <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'today' | 'week')} className="mb-4">
-                      <TabsList className="grid w-full grid-cols-2">
+                    <Tabs value={viewMode} onValueChange={(value) => setViewMode(value as 'today' | 'week' | 'month')} className="mb-4">
+                      <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="today">Today View</TabsTrigger>
                         <TabsTrigger value="week">Week View</TabsTrigger>
+                        <TabsTrigger value="month">Month View</TabsTrigger>
                       </TabsList>
                     </Tabs>
 
-                    {viewMode === 'week' ? (
+                    {viewMode === 'month' ? (
+                      renderMonthView()
+                    ) : viewMode === 'week' ? (
                       renderWeekView()
                     ) : (
                       <>

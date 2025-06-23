@@ -27,7 +27,7 @@ export const customerNav: NavigationItem[] = [
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
   { label: "Dashboard", href: "/provider-dashboard", icon: "📊" },
-  { label: "Calendar", href: "/provider-bookings", icon: "📅" },
+  { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "AI Assistant", href: "/notifications", icon: "🤖" },
   { label: "Profile", href: "/provider-profile", icon: "👤" }
 ];
