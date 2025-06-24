@@ -12,11 +12,14 @@ import SharedMapFeatures from "@/components/map/modes/SharedMapFeatures";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { 
   ArrowLeft, 
   Shield,
   Search,
-  Briefcase
+  Briefcase,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 const InteractiveMapPage = () => {
@@ -24,6 +27,7 @@ const InteractiveMapPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRole();
   const { emergencyJobs, liveStats, loading, error, acceptEmergencyJob } = usePrivacyEmergencyJobs();
+  const [showHeatZones, setShowHeatZones] = useState(true);
   
   // Role-based dashboard navigation
   const dashboardPath = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
@@ -35,9 +39,7 @@ const InteractiveMapPage = () => {
     : 'Connect with trusted service providers in Montreal';
 
   const handlePostJob = () => {
-    // Navigate to job posting flow
     console.log('Opening job posting flow...');
-    // TODO: Implement job posting modal or navigation
   };
 
   const handleAcceptJob = async (jobId: string) => {
@@ -49,7 +51,6 @@ const InteractiveMapPage = () => {
 
   const handleProviderMessage = (providerId: string) => {
     console.log('Opening message to provider:', providerId);
-    // TODO: Implement messaging functionality
   };
 
   return (
@@ -85,7 +86,6 @@ const InteractiveMapPage = () => {
                 </div>
               </div>
               
-              {/* Role Indicator Badge */}
               <Badge 
                 variant={currentRole === 'provider' ? 'default' : 'secondary'}
                 className="text-sm py-2 px-4"
@@ -111,12 +111,12 @@ const InteractiveMapPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Interactive Map Section */}
-            <div className="lg:col-span-2">
-              <Card className="fintech-card h-[600px] relative">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Interactive Map Section - Now 75% width */}
+            <div className="lg:col-span-3">
+              <Card className="fintech-card h-[700px] relative">
                 <CardContent className="p-0 h-full">
-                  <PrivacyInteractiveJobsMap />
+                  <PrivacyInteractiveJobsMap showHeatZones={showHeatZones} />
                   
                   {/* Shared Features Overlay */}
                   <SharedMapFeatures
@@ -128,8 +128,29 @@ const InteractiveMapPage = () => {
               </Card>
             </div>
 
-            {/* Role-Based Side Panel */}
+            {/* Role-Based Side Panel - Now 25% width */}
             <div className="space-y-6">
+              {/* Heat Zones Control for Providers */}
+              {currentRole === 'provider' && (
+                <Card className="fintech-card">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {showHeatZones ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        <span className="font-medium">Heat Zones</span>
+                      </div>
+                      <Switch
+                        checked={showHeatZones}
+                        onCheckedChange={setShowHeatZones}
+                      />
+                    </div>
+                    <p className="text-xs text-gray-600 mt-2">
+                      View market demand by Montreal neighborhood
+                    </p>
+                  </CardContent>
+                </Card>
+              )}
+
               {currentRole === 'customer' ? (
                 <CustomerMapMode
                   onPostJob={handlePostJob}

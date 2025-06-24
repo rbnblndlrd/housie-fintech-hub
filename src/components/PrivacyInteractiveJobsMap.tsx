@@ -5,7 +5,6 @@ import { useRole } from '@/contexts/RoleContext';
 import { getProviderFuzzyLocation } from '@/utils/locationPrivacy';
 import { montrealProviders } from '@/data/montrealProviders';
 import { UnifiedGoogleMap } from './UnifiedGoogleMap';
-import PrivacyMapControls from './map/PrivacyMapControls';
 import PrivacyMapMarkers from './map/PrivacyMapMarkers';
 import MontrealHeatZones from './map/MontrealHeatZones';
 import LiveStatsCard from './map/LiveStatsCard';
@@ -13,17 +12,20 @@ import LoadingOverlay from './map/LoadingOverlay';
 import SelectedJobCard from './map/SelectedJobCard';
 import SelectedZoneCard from './map/SelectedZoneCard';
 
-const PrivacyInteractiveJobsMap: React.FC = () => {
+interface PrivacyInteractiveJobsMapProps {
+  showHeatZones: boolean;
+}
+
+const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ showHeatZones }) => {
   const { emergencyJobs, liveStats, loading, acceptEmergencyJob } = usePrivacyEmergencyJobs();
   const { currentRole } = useRole();
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [selectedZone, setSelectedZone] = useState<any>(null);
-  const [showHeatZones, setShowHeatZones] = useState(true);
 
   // Convert providers to privacy-protected format
   const privacyProviders = montrealProviders.map(provider => ({
     id: provider.id.toString(),
-    name: `Provider ${provider.id}`, // Anonymous name
+    name: `Provider ${provider.id}`,
     fuzzyLocation: getProviderFuzzyLocation(provider),
     availability: provider.availability,
     rating: provider.rating,
@@ -49,12 +51,6 @@ const PrivacyInteractiveJobsMap: React.FC = () => {
 
   return (
     <div className="relative h-full w-full">
-      {/* Privacy Controls */}
-      <PrivacyMapControls
-        showHeatZones={showHeatZones}
-        onToggleHeatZones={setShowHeatZones}
-      />
-
       {/* Unified Google Map Container */}
       <UnifiedGoogleMap
         center={{ lat: 45.5017, lng: -73.5673 }}
@@ -71,8 +67,8 @@ const PrivacyInteractiveJobsMap: React.FC = () => {
           onJobClick={handleJobSelect}
         />
 
-        {/* Montreal Heat Zones */}
-        {showHeatZones && (
+        {/* Montreal Heat Zones - Only show if enabled and user is provider */}
+        {showHeatZones && currentRole === 'provider' && (
           <MontrealHeatZones
             zones={liveStats.montrealZones}
             isMapReady={true}
