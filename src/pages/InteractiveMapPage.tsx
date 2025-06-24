@@ -93,27 +93,27 @@ const InteractiveMapPage = () => {
                 {currentRole === 'provider' ? '🔧 Provider Mode' : '🏠 Customer Mode'}
               </Badge>
             </div>
+          </div>
 
-            {/* Privacy Notice Banner */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-              <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-blue-600" />
-                <div>
-                  <h3 className="font-medium text-blue-800">Privacy-First Location System</h3>
-                  <p className="text-sm text-blue-600 mt-1">
-                    {currentRole === 'provider' 
-                      ? 'Your location is anonymized • Job details revealed upon acceptance • Territory data aggregated for privacy'
-                      : 'Provider locations are anonymized • Service areas shown as coverage zones • Privacy protected throughout booking process'
-                    }
-                  </p>
-                </div>
+          {/* Privacy Notice Banner - Moved outside map */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+            <div className="flex items-center gap-3">
+              <Shield className="h-4 w-4 text-blue-600" />
+              <div className="text-sm">
+                <span className="font-medium text-blue-800">Privacy-First Location System:</span>
+                <span className="text-blue-600 ml-2">
+                  {currentRole === 'provider' 
+                    ? 'Your location is anonymized • Job details revealed upon acceptance • Territory data aggregated'
+                    : 'Provider locations are anonymized • Service areas shown as coverage zones • Privacy protected throughout'
+                  }
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Interactive Map Section - Now 75% width */}
-            <div className="lg:col-span-3">
+            <div className="lg:col-span-9">
               <Card className="fintech-card h-[700px] relative">
                 <CardContent className="p-0 h-full">
                   <PrivacyInteractiveJobsMap showHeatZones={showHeatZones} />
@@ -129,7 +129,7 @@ const InteractiveMapPage = () => {
             </div>
 
             {/* Role-Based Side Panel - Now 25% width */}
-            <div className="space-y-6">
+            <div className="lg:col-span-3 space-y-6">
               {/* Heat Zones Control for Providers */}
               {currentRole === 'provider' && (
                 <Card className="fintech-card">

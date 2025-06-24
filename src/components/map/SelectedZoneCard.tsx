@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { X, TrendingUp, TrendingDown, Minus, Home, Sprout, Heart, Dog, Truck, Snowflake, Sun, Leaf, MapPin } from 'lucide-react';
+import { MontrealHeatZone } from '@/data/montrealHeatZones';
 
 interface SelectedZoneCardProps {
-  selectedZone: any;
+  selectedZone: MontrealHeatZone | null;
   onClose: () => void;
 }
 
@@ -35,6 +36,7 @@ const getServiceIcon = (service: string) => {
     case 'wellness': return <Heart className="h-4 w-4 text-pink-500" />;
     case 'pet': return <Dog className="h-4 w-4 text-orange-500" />;
     case 'moving': return <Truck className="h-4 w-4 text-purple-500" />;
+    case 'handyman': return <Home className="h-4 w-4 text-gray-500" />;
     default: return <Home className="h-4 w-4 text-gray-500" />;
   }
 };
@@ -62,28 +64,32 @@ const getSeasonalModifier = (service: string, season: string) => {
       lawncare: { modifier: '-80%', reason: 'Snow removal replaces lawn care' },
       wellness: { modifier: '+15%', reason: 'Indoor wellness focus' },
       pet: { modifier: '+10%', reason: 'More indoor pet care' },
-      moving: { modifier: '-30%', reason: 'Fewer winter moves' }
+      moving: { modifier: '-30%', reason: 'Fewer winter moves' },
+      handyman: { modifier: '+25%', reason: 'Indoor repairs, heating issues' }
     },
     spring: {
       cleaning: { modifier: '+40%', reason: 'Spring cleaning season' },
       lawncare: { modifier: '+60%', reason: 'Lawn revival season' },
       wellness: { modifier: '+25%', reason: 'Spring wellness prep' },
       pet: { modifier: '+30%', reason: 'Outdoor pet activities' },
-      moving: { modifier: '+50%', reason: 'Peak moving season' }
+      moving: { modifier: '+50%', reason: 'Peak moving season' },
+      handyman: { modifier: '+35%', reason: 'Spring home improvements' }
     },
     summer: {
       cleaning: { modifier: '+0%', reason: 'Baseline demand' },
       lawncare: { modifier: '+80%', reason: 'Peak lawn maintenance' },
       wellness: { modifier: '+20%', reason: 'Summer wellness focus' },
       pet: { modifier: '+25%', reason: 'Active pet season' },
-      moving: { modifier: '+30%', reason: 'High moving activity' }
+      moving: { modifier: '+30%', reason: 'High moving activity' },
+      handyman: { modifier: '+15%', reason: 'Outdoor projects' }
     },
     fall: {
       cleaning: { modifier: '+30%', reason: 'Back-to-school deep clean' },
       lawncare: { modifier: '+40%', reason: 'Fall cleanup season' },
       wellness: { modifier: '+10%', reason: 'Wellness prep for winter' },
       pet: { modifier: '+15%', reason: 'Pre-winter pet prep' },
-      moving: { modifier: '+20%', reason: 'School-related moves' }
+      moving: { modifier: '+20%', reason: 'School-related moves' },
+      handyman: { modifier: '+30%', reason: 'Winter prep repairs' }
     }
   };
 
@@ -96,49 +102,23 @@ const SelectedZoneCard: React.FC<SelectedZoneCardProps> = ({ selectedZone, onClo
   const currentSeason = getCurrentSeason();
   const seasonName = currentSeason.charAt(0).toUpperCase() + currentSeason.slice(1);
 
-  // Service demand data with seasonal adjustments
-  const services = [
-    { 
-      key: 'cleaning', 
-      name: 'Cleaning Services', 
-      demand: selectedZone.keyServices?.cleaning?.demand || 75,
-      trending: selectedZone.keyServices?.cleaning?.trending || 'up',
-      avgRate: selectedZone.keyServices?.cleaning?.avgRate || 45,
-      context: selectedZone.zoneType === 'residential' ? 'High apartment turnover' : 'Commercial focus'
-    },
-    { 
-      key: 'lawncare', 
-      name: 'Lawn Care', 
-      demand: selectedZone.keyServices?.lawncare?.demand || 45,
-      trending: selectedZone.keyServices?.lawncare?.trending || 'stable',
-      avgRate: selectedZone.keyServices?.lawncare?.avgRate || 35,
-      context: selectedZone.zoneType === 'residential' ? 'Suburban yards' : 'Limited outdoor space'
-    },
-    { 
-      key: 'wellness', 
-      name: 'Wellness/Massage', 
-      demand: selectedZone.zoneType === 'premium' ? 85 : 55,
-      trending: 'up',
-      avgRate: selectedZone.zoneType === 'premium' ? 120 : 75,
-      context: selectedZone.zoneType === 'premium' ? 'Affluent clientele' : 'Growing market'
-    },
-    { 
-      key: 'pet', 
-      name: 'Pet Services', 
-      demand: selectedZone.zoneType === 'residential' ? 70 : 40,
-      trending: 'up',
-      avgRate: 40,
-      context: selectedZone.zoneType === 'residential' ? 'Family neighborhood' : 'Limited pet ownership'
-    },
-    { 
-      key: 'moving', 
-      name: 'Moving Services', 
-      demand: selectedZone.keyServices?.moving?.demand || 60,
-      trending: selectedZone.keyServices?.moving?.trending || 'stable',
-      avgRate: selectedZone.keyServices?.moving?.avgRate || 120,
-      context: selectedZone.vacancyRate < 1 ? 'High turnover' : 'Moderate activity'
-    }
-  ];
+  // Convert keyServices to array format for easier mapping
+  const services = Object.entries(selectedZone.keyServices).map(([key, data]) => ({
+    key,
+    name: key === 'cleaning' ? 'Cleaning Services' :
+          key === 'lawncare' ? 'Lawn Care' :
+          key === 'wellness' ? 'Wellness/Massage' :
+          key === 'pet' ? 'Pet Services' :
+          key === 'moving' ? 'Moving Services' :
+          key === 'handyman' ? 'Handyman Services' : key,
+    demand: data.demand,
+    trending: data.trending,
+    avgRate: data.avgRate,
+    providers: data.providers,
+    context: selectedZone.zoneType === 'residential' ? 'Residential focus' : 
+             selectedZone.zoneType === 'commercial' ? 'Commercial focus' :
+             selectedZone.zoneType === 'premium' ? 'Premium market' : 'Mixed area'
+  }));
 
   return (
     <div className="absolute top-4 right-4 z-30 w-96">
@@ -159,7 +139,7 @@ const SelectedZoneCard: React.FC<SelectedZoneCardProps> = ({ selectedZone, onClo
             </div>
             <div className="flex items-center gap-2">
               <Badge variant="secondary" className="bg-white/20 text-white border-white/30">
-                {selectedZone.zoneType || 'Mixed'} Zone
+                {selectedZone.zoneType} Zone
               </Badge>
               <Badge 
                 variant="secondary" 
@@ -167,7 +147,7 @@ const SelectedZoneCard: React.FC<SelectedZoneCardProps> = ({ selectedZone, onClo
                            selectedZone.demandLevel === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
                            'bg-gray-100 text-gray-800'}`}
               >
-                {selectedZone.demandLevel || 'Medium'} Demand
+                {selectedZone.demandLevel} Demand
               </Badge>
             </div>
           </div>
@@ -176,11 +156,11 @@ const SelectedZoneCard: React.FC<SelectedZoneCardProps> = ({ selectedZone, onClo
           <div className="p-4 border-b">
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="text-center">
-                <div className="font-bold text-xl text-green-600">${selectedZone.avgRent || 2100}</div>
+                <div className="font-bold text-xl text-green-600">${selectedZone.avgRent}</div>
                 <div className="text-gray-600">Avg Rent</div>
               </div>
               <div className="text-center">
-                <div className="font-bold text-xl text-blue-600">{selectedZone.vacancyRate || 1.5}%</div>
+                <div className="font-bold text-xl text-blue-600">{selectedZone.vacancyRate}%</div>
                 <div className="text-gray-600">Vacancy Rate</div>
               </div>
             </div>
@@ -224,7 +204,7 @@ const SelectedZoneCard: React.FC<SelectedZoneCardProps> = ({ selectedZone, onClo
                     </div>
                     
                     <div className="text-xs text-gray-700 mb-1">
-                      📍 {service.context}
+                      📍 {service.context} • {service.providers} providers
                     </div>
                     
                     <div className="bg-blue-50 rounded p-2 text-xs">
@@ -236,6 +216,22 @@ const SelectedZoneCard: React.FC<SelectedZoneCardProps> = ({ selectedZone, onClo
                   </div>
                 );
               })}
+            </div>
+          </div>
+
+          {/* Market Insights */}
+          <div className="p-4 border-t bg-gray-50">
+            <h4 className="font-semibold text-sm mb-2">Market Insights</h4>
+            <div className="text-xs text-gray-700 mb-3">
+              {selectedZone.marketInsights.description}
+            </div>
+            <div className="flex items-center gap-2 text-xs">
+              <Badge variant="outline" className="text-xs">
+                💰 Profitability: {selectedZone.marketInsights.profitability}%
+              </Badge>
+              <Badge variant="outline" className="text-xs">
+                🎯 Opportunity: {selectedZone.marketInsights.opportunity}
+              </Badge>
             </div>
           </div>
 

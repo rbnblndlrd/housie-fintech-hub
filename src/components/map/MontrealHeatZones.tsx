@@ -1,12 +1,12 @@
 
 import React from 'react';
-import { Circle } from '@react-google-maps/api';
-import type { MontrealZone } from '@/utils/locationPrivacy';
+import { Polygon } from '@react-google-maps/api';
+import { MontrealHeatZone } from '@/data/montrealHeatZones';
 
 interface MontrealHeatZonesProps {
-  zones: MontrealZone[];
+  zones: MontrealHeatZone[];
   isMapReady: boolean;
-  onZoneClick: (zone: MontrealZone) => void;
+  onZoneClick: (zone: MontrealHeatZone) => void;
   showLabels?: boolean;
 }
 
@@ -18,78 +18,83 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
 }) => {
   if (!isMapReady) return null;
 
-  const getZoneColor = (demandLevel: string, zoneType: string) => {
+  const getZoneColor = (demandLevel: 'high' | 'medium' | 'low') => {
     switch (demandLevel) {
       case 'high':
         return {
-          fillColor: zoneType === 'premium' ? '#8b5cf6' : '#ef4444',
-          strokeColor: zoneType === 'premium' ? '#7c3aed' : '#dc2626'
+          fillColor: '#ef4444',
+          strokeColor: '#dc2626',
+          fillOpacity: 0.25,
+          strokeOpacity: 0.8
         };
       case 'medium':
         return {
-          fillColor: zoneType === 'premium' ? '#a855f7' : '#f97316',
-          strokeColor: zoneType === 'premium' ? '#9333ea' : '#ea580c'
+          fillColor: '#f97316',
+          strokeColor: '#ea580c',
+          fillOpacity: 0.2,
+          strokeOpacity: 0.7
         };
       case 'low':
         return {
-          fillColor: '#10b981',
-          strokeColor: '#059669'
+          fillColor: '#22c55e',
+          strokeColor: '#16a34a',
+          fillOpacity: 0.15,
+          strokeOpacity: 0.6
         };
       default:
         return {
           fillColor: '#6b7280',
-          strokeColor: '#4b5563'
+          strokeColor: '#4b5563',
+          fillOpacity: 0.1,
+          strokeOpacity: 0.5
         };
     }
   };
 
-  const getZoneOptions = (zone: MontrealZone) => {
-    const colors = getZoneColor(zone.demand_level, zone.zone_type);
+  const getHoverColor = (demandLevel: 'high' | 'medium' | 'low') => {
+    const colors = getZoneColor(demandLevel);
     return {
       ...colors,
-      fillOpacity: 0.1,
-      strokeOpacity: 0.4,
-      strokeWeight: 2,
-      clickable: true
+      fillOpacity: colors.fillOpacity + 0.1,
+      strokeOpacity: 1,
+      strokeWeight: 3
     };
   };
 
   return (
-    <div>
-      {zones.map(zone => (
-        <div key={zone.id}>
-          <Circle
-            center={zone.center_coordinates}
-            radius={zone.zone_radius}
-            options={getZoneOptions(zone)}
+    <>
+      {zones.map((zone) => {
+        const colors = getZoneColor(zone.demandLevel);
+        const hoverColors = getHoverColor(zone.demandLevel);
+
+        return (
+          <Polygon
+            key={zone.id}
+            paths={zone.coordinates}
+            options={{
+              ...colors,
+              strokeWeight: 2,
+              clickable: true,
+              zIndex: 1
+            }}
             onClick={() => onZoneClick(zone)}
+            onMouseOver={(e) => {
+              if (e.overlay) {
+                e.overlay.setOptions(hoverColors);
+              }
+            }}
+            onMouseOut={(e) => {
+              if (e.overlay) {
+                e.overlay.setOptions({
+                  ...colors,
+                  strokeWeight: 2
+                });
+              }
+            }}
           />
-          
-          {showLabels && (
-            <div
-              style={{
-                position: 'absolute',
-                transform: 'translate(-50%, -50%)',
-                color: '#1f2937',
-                fontWeight: 'bold',
-                fontSize: '12px',
-                background: 'rgba(255, 255, 255, 0.9)',
-                padding: '4px 8px',
-                borderRadius: '4px',
-                pointerEvents: 'none',
-                zIndex: 1000
-              }}
-            >
-              {zone.zone_code}
-              <br />
-              <span style={{ fontSize: '10px', opacity: 0.8 }}>
-                {zone.demand_level} • ${zone.pricing_multiplier}x
-              </span>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
+        );
+      })}
+    </>
   );
 };
 

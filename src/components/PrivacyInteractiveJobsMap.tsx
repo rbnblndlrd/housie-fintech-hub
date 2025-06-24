@@ -4,6 +4,7 @@ import { usePrivacyEmergencyJobs } from '@/hooks/usePrivacyEmergencyJobs';
 import { useRole } from '@/contexts/RoleContext';
 import { getProviderFuzzyLocation } from '@/utils/locationPrivacy';
 import { montrealProviders } from '@/data/montrealProviders';
+import { montrealHeatZones } from '@/data/montrealHeatZones';
 import { UnifiedGoogleMap } from './UnifiedGoogleMap';
 import PrivacyMapMarkers from './map/PrivacyMapMarkers';
 import MontrealHeatZones from './map/MontrealHeatZones';
@@ -70,7 +71,7 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
         {/* Montreal Heat Zones - Only show if enabled and user is provider */}
         {showHeatZones && currentRole === 'provider' && (
           <MontrealHeatZones
-            zones={liveStats.montrealZones}
+            zones={montrealHeatZones}
             isMapReady={true}
             onZoneClick={handleZoneSelect}
             showLabels={true}
