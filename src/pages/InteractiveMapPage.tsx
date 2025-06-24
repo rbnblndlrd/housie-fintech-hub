@@ -4,9 +4,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from '@/components/Header';
 import HeatZoneMap from '@/components/HeatZoneMap';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import InteractiveMapRightPanel from '@/components/map/InteractiveMapRightPanel';
+import InteractiveMapBottomPanel from '@/components/map/InteractiveMapBottomPanel';
 import { useToast } from '@/hooks/use-toast';
 
 const InteractiveMapPage = () => {
@@ -33,31 +32,28 @@ const InteractiveMapPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Header />
       
-      <div className="relative h-screen pt-16">
-        {/* Heat Zone Map with Montreal Market Intelligence */}
-        <HeatZoneMap userRole={currentRole} />
+      <div className="pt-16 h-screen flex flex-col">
+        {/* Main Content Area with Map and Right Panel */}
+        <div className="flex flex-1">
+          {/* Map Container - Takes remaining space after right panel */}
+          <div className="flex-1 relative" style={{ height: '70vh' }}>
+            <HeatZoneMap 
+              userRole={currentRole} 
+              showHeatZones={showHeatZones}
+            />
+          </div>
 
-        {/* Control Panel - Heat Zones only */}
-        <div className="absolute bottom-4 left-4 z-10 space-y-3">
-          {/* Heat Zones Control */}
-          <Card className="p-4 bg-white/95 backdrop-blur-sm border shadow-lg">
-            <div className="flex items-center space-x-3">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-red-500 rounded-full"></div>
-                <Label htmlFor="heat-zones" className="text-sm font-medium">
-                  Heat Zones
-                </Label>
-              </div>
-              <Switch
-                id="heat-zones"
-                checked={showHeatZones}
-                onCheckedChange={handleHeatZonesToggle}
-              />
-            </div>
-            <p className="text-xs text-gray-600 mt-2">
-              View market demand by Montreal neighborhood
-            </p>
-          </Card>
+          {/* Right Side Panel */}
+          <InteractiveMapRightPanel
+            currentRole={currentRole}
+            showHeatZones={showHeatZones}
+            onHeatZonesToggle={handleHeatZonesToggle}
+          />
+        </div>
+
+        {/* Bottom Panel */}
+        <div className="h-[30vh] border-t bg-white">
+          <InteractiveMapBottomPanel currentRole={currentRole} />
         </div>
       </div>
     </div>
