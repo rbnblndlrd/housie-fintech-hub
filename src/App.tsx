@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { PopArtProvider } from "@/contexts/PopArtContext";
 import { RoleProvider } from "@/contexts/RoleContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { GoogleMapsProvider } from "@/components/map/GoogleMapsProvider";
 import { NotificationBubbles } from "@/components/chat/NotificationBubbles";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
@@ -65,100 +66,102 @@ const App = () => {
         <PopArtProvider>
           <LanguageProvider>
             <TooltipProvider>
-              <BrowserRouter>
-                <AuthProvider>
-                  <RoleProvider>
-                    <SubscriptionProvider>
-                      <NotificationBubbles />
-                      <Routes>
-                        <Route path="/" element={<Index />} />
-                        <Route path="/auth" element={<Auth />} />
-                        <Route path="/welcome" element={<Welcome />} />
-                        <Route path="/services" element={<Services />} />
-                        <Route path="/provider/:id" element={<PublicProviderProfile />} />
-                        
-                        {/* Customer-specific routes */}
-                        <Route path="/customer-dashboard" element={
-                          <RoleProtectedRoute requiredRole="customer">
-                            <CustomerDashboard />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/customer-bookings" element={
-                          <RoleProtectedRoute requiredRole="customer">
-                            <CustomerBookings />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/customer-settings" element={
-                          <RoleProtectedRoute requiredRole="customer">
-                            <CustomerSettings />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/customer-profile" element={
-                          <RoleProtectedRoute requiredRole="customer">
-                            <CustomerProfile />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/customer-calendar" element={
-                          <RoleProtectedRoute requiredRole="customer">
-                            <CustomerCalendar />
-                          </RoleProtectedRoute>
-                        } />
-                        
-                        {/* Provider-specific routes */}
-                        <Route path="/provider-dashboard" element={
-                          <RoleProtectedRoute requiredRole="provider">
-                            <ProviderDashboard />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/provider-bookings" element={
-                          <RoleProtectedRoute requiredRole="provider">
-                            <ProviderBookings />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/provider-settings" element={
-                          <RoleProtectedRoute requiredRole="provider">
-                            <ProviderSettings />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/provider-profile" element={
-                          <RoleProtectedRoute requiredRole="provider">
-                            <ProviderProfile />
-                          </RoleProtectedRoute>
-                        } />
-                        <Route path="/provider-calendar" element={
-                          <RoleProtectedRoute requiredRole="provider">
-                            <ProviderCalendar />
-                          </RoleProtectedRoute>
-                        } />
-                        
-                        {/* Shared routes */}
-                        <Route path="/calendar" element={<Calendar />} />
-                        <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
-                        <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
-                        <Route path="/business-insights" element={<BusinessInsights />} />
-                        <Route path="/tax-reports" element={<TaxReports />} />
-                        <Route path="/notifications" element={<Notifications />} />
-                        <Route path="/booking-history" element={<BookingHistory />} />
-                        <Route path="/booking-success" element={<BookingSuccess />} />
-                        <Route path="/booking-management" element={<BookingManagement />} />
-                        <Route path="/onboarding" element={<Onboarding />} />
-                        <Route path="/profile-setup" element={<ProfileSetup />} />
-                        <Route path="/admin" element={<AdminDashboard />} />
-                        <Route path="/about" element={<About />} />
-                        <Route path="/faq" element={<FAQ />} />
-                        <Route path="/faq-archive" element={<FAQArchive />} />
-                        <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
-                        <Route path="/interactive-map" element={<InteractiveMapPage />} />
-                        <Route path="/gamification" element={<GamificationPage />} />
-                        <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
-                        <Route path="*" element={<NotFound />} />
-                      </Routes>
-                      <Toaster />
-                      <Sonner />
-                    </SubscriptionProvider>
-                  </RoleProvider>
-                </AuthProvider>
-              </BrowserRouter>
+              <GoogleMapsProvider>
+                <BrowserRouter>
+                  <AuthProvider>
+                    <RoleProvider>
+                      <SubscriptionProvider>
+                        <NotificationBubbles />
+                        <Routes>
+                          <Route path="/" element={<Index />} />
+                          <Route path="/auth" element={<Auth />} />
+                          <Route path="/welcome" element={<Welcome />} />
+                          <Route path="/services" element={<Services />} />
+                          <Route path="/provider/:id" element={<PublicProviderProfile />} />
+                          
+                          {/* Customer-specific routes */}
+                          <Route path="/customer-dashboard" element={
+                            <RoleProtectedRoute requiredRole="customer">
+                              <CustomerDashboard />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/customer-bookings" element={
+                            <RoleProtectedRoute requiredRole="customer">
+                              <CustomerBookings />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/customer-settings" element={
+                            <RoleProtectedRoute requiredRole="customer">
+                              <CustomerSettings />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/customer-profile" element={
+                            <RoleProtectedRoute requiredRole="customer">
+                              <CustomerProfile />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/customer-calendar" element={
+                            <RoleProtectedRoute requiredRole="customer">
+                              <CustomerCalendar />
+                            </RoleProtectedRoute>
+                          } />
+                          
+                          {/* Provider-specific routes */}
+                          <Route path="/provider-dashboard" element={
+                            <RoleProtectedRoute requiredRole="provider">
+                              <ProviderDashboard />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/provider-bookings" element={
+                            <RoleProtectedRoute requiredRole="provider">
+                              <ProviderBookings />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/provider-settings" element={
+                            <RoleProtectedRoute requiredRole="provider">
+                              <ProviderSettings />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/provider-profile" element={
+                            <RoleProtectedRoute requiredRole="provider">
+                              <ProviderProfile />
+                            </RoleProtectedRoute>
+                          } />
+                          <Route path="/provider-calendar" element={
+                            <RoleProtectedRoute requiredRole="provider">
+                              <ProviderCalendar />
+                            </RoleProtectedRoute>
+                          } />
+                          
+                          {/* Shared routes */}
+                          <Route path="/calendar" element={<Calendar />} />
+                          <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                          <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+                          <Route path="/business-insights" element={<BusinessInsights />} />
+                          <Route path="/tax-reports" element={<TaxReports />} />
+                          <Route path="/notifications" element={<Notifications />} />
+                          <Route path="/booking-history" element={<BookingHistory />} />
+                          <Route path="/booking-success" element={<BookingSuccess />} />
+                          <Route path="/booking-management" element={<BookingManagement />} />
+                          <Route path="/onboarding" element={<Onboarding />} />
+                          <Route path="/profile-setup" element={<ProfileSetup />} />
+                          <Route path="/admin" element={<AdminDashboard />} />
+                          <Route path="/about" element={<About />} />
+                          <Route path="/faq" element={<FAQ />} />
+                          <Route path="/faq-archive" element={<FAQArchive />} />
+                          <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
+                          <Route path="/interactive-map" element={<InteractiveMapPage />} />
+                          <Route path="/gamification" element={<GamificationPage />} />
+                          <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
+                          <Route path="*" element={<NotFound />} />
+                        </Routes>
+                        <Toaster />
+                        <Sonner />
+                      </SubscriptionProvider>
+                    </RoleProvider>
+                  </AuthProvider>
+                </BrowserRouter>
+              </GoogleMapsProvider>
             </TooltipProvider>
           </LanguageProvider>
         </PopArtProvider>
