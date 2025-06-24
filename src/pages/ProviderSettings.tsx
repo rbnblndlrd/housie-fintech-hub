@@ -1,25 +1,15 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from "@/components/Header";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
-import LocationPrivacySettingsSection from "@/components/provider/LocationPrivacySettingsSection";
+import ProviderSettingsMegaMenu from "@/components/provider/ProviderSettingsMegaMenu";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { 
   Settings, 
-  User, 
-  Bell, 
-  CreditCard, 
-  Shield,
-  Clock,
   ArrowLeft
 } from 'lucide-react';
 
@@ -70,29 +60,6 @@ const ProviderSettings = () => {
     }
   };
 
-  const [settings, setSettings] = useState({
-    businessName: '',
-    description: '',
-    phone: '',
-    email: user?.email || '',
-    notifications: {
-      bookingRequests: true,
-      messages: true,
-      reviews: true,
-      marketing: false
-    },
-    availability: {
-      autoAccept: false,
-      advanceNotice: 2,
-      maxBookingsPerDay: 5
-    }
-  });
-
-  const handleSave = () => {
-    console.log('Saving settings:', settings);
-    // TODO: Implement save functionality
-  };
-
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -125,7 +92,7 @@ const ProviderSettings = () => {
       <Header />
       
       <div className="pt-20 px-4 pb-8">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="mb-8">
             <Button
@@ -144,199 +111,13 @@ const ProviderSettings = () => {
             <p className="text-gray-600">Gérez votre profil d'entreprise et vos préférences</p>
           </div>
 
-          <div className="grid gap-6">
-            {/* Privacy & Location Settings */}
-            <LocationPrivacySettingsSection
-              userId={user.id}
-              showOnMap={userProfile?.show_on_map ?? true}
-              confidentialityRadius={userProfile?.confidentiality_radius ?? 10000}
-              serviceType={userProfile?.service_type ?? 'customer_location'}
-              serviceRadius={userProfile?.service_radius ?? 15000}
+          {/* Megamenu Content */}
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden" style={{ height: 'calc(100vh - 200px)' }}>
+            <ProviderSettingsMegaMenu
+              user={user}
+              userProfile={userProfile}
               onSettingsUpdate={fetchUserProfile}
             />
-
-            {/* Business Information */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="h-5 w-5" />
-                  Business Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="businessName">Business Name</Label>
-                    <Input
-                      id="businessName"
-                      value={settings.businessName}
-                      onChange={(e) => setSettings({...settings, businessName: e.target.value})}
-                      placeholder="Your business name"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                      id="phone"
-                      value={settings.phone}
-                      onChange={(e) => setSettings({...settings, phone: e.target.value})}
-                      placeholder="+1 (555) 123-4567"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="description">Business Description</Label>
-                  <Textarea
-                    id="description"
-                    value={settings.description}
-                    onChange={(e) => setSettings({...settings, description: e.target.value})}
-                    placeholder="Describe your services and experience..."
-                    rows={4}
-                  />
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Availability Settings */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Availability Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <Label htmlFor="autoAccept">Auto-accept bookings</Label>
-                    <p className="text-sm text-gray-600">Automatically accept bookings that meet your criteria</p>
-                  </div>
-                  <Switch
-                    id="autoAccept"
-                    checked={settings.availability.autoAccept}
-                    onCheckedChange={(checked) => 
-                      setSettings({
-                        ...settings,
-                        availability: {...settings.availability, autoAccept: checked}
-                      })
-                    }
-                  />
-                </div>
-                
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <Label htmlFor="advanceNotice">Minimum advance notice (hours)</Label>
-                    <Input
-                      id="advanceNotice"
-                      type="number"
-                      value={settings.availability.advanceNotice}
-                      onChange={(e) => setSettings({
-                        ...settings,
-                        availability: {...settings.availability, advanceNotice: parseInt(e.target.value)}
-                      })}
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="maxBookings">Max bookings per day</Label>
-                    <Input
-                      id="maxBookings"
-                      type="number"
-                      value={settings.availability.maxBookingsPerDay}
-                      onChange={(e) => setSettings({
-                        ...settings,
-                        availability: {...settings.availability, maxBookingsPerDay: parseInt(e.target.value)}
-                      })}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Notification Preferences */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="h-5 w-5" />
-                  Notification Preferences
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {Object.entries({
-                  bookingRequests: 'New booking requests',
-                  messages: 'Customer messages',
-                  reviews: 'New reviews and ratings',
-                  marketing: 'Marketing and promotional emails'
-                }).map(([key, label]) => (
-                  <div key={key} className="flex items-center justify-between">
-                    <Label htmlFor={key}>{label}</Label>
-                    <Switch
-                      id={key}
-                      checked={settings.notifications[key as keyof typeof settings.notifications]}
-                      onCheckedChange={(checked) => 
-                        setSettings({
-                          ...settings,
-                          notifications: {...settings.notifications, [key]: checked}
-                        })
-                      }
-                    />
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Verification Status */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="h-5 w-5" />
-                  Verification Status
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
-                    <span className="text-green-800 font-medium">Email Verified</span>
-                    <span className="text-green-600">✓</span>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                    <span className="text-yellow-800 font-medium">Phone Verification</span>
-                    <Button variant="outline" size="sm">Verify</Button>
-                  </div>
-                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <span className="text-gray-600 font-medium">Background Check</span>
-                    <Button variant="outline" size="sm">Start</Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Payment Settings */}
-            <Card className="fintech-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="h-5 w-5" />
-                  Payment Settings
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-3 bg-blue-50 rounded-lg">
-                    <p className="text-blue-800 font-medium">Payment Method</p>
-                    <p className="text-blue-600 text-sm">Bank transfer • **** 1234</p>
-                  </div>
-                  <Button variant="outline" className="w-full">
-                    Update Payment Method
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Save Button */}
-            <div className="flex justify-end">
-              <Button onClick={handleSave} className="px-8">
-                Save Settings
-              </Button>
-            </div>
           </div>
         </div>
       </div>
