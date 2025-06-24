@@ -1,19 +1,23 @@
 
 import React from 'react';
 import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
+import PrivacyInteractiveJobsMap from '@/components/PrivacyInteractiveJobsMap';
+
+type UserRole = 'customer' | 'provider';
 
 interface PrivacyMapContainerProps {
-  onMapError: (error: string) => void;
+  showHeatZones: boolean;
+  userRole: UserRole;
 }
 
-const PrivacyMapContainer: React.FC<PrivacyMapContainerProps> = ({ onMapError }) => {
+const PrivacyMapContainer: React.FC<PrivacyMapContainerProps> = ({ 
+  showHeatZones, 
+  userRole 
+}) => {
   return (
     <div className="h-full w-full">
-      <UnifiedGoogleMap
-        center={{ lat: 45.5017, lng: -73.5673 }}
-        zoom={11}
-        className="w-full h-full rounded-lg"
-        mode="privacy"
+      <PrivacyInteractiveJobsMap 
+        showHeatZones={showHeatZones}
       />
     </div>
   );
