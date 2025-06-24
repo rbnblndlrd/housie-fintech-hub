@@ -1,5 +1,7 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { Marker, Circle } from '@react-google-maps/api';
+import ProviderHoverInfo from './ProviderHoverInfo';
 
 interface PrivacyProvider {
   id: string;
@@ -9,6 +11,10 @@ interface PrivacyProvider {
   rating: number;
   verified: boolean;
   showOnMap?: boolean;
+  serviceRadius?: number;
+  hourlyRate?: number;
+  service?: string;
+  reviewCount?: number;
 }
 
 interface PrivacyJob {
@@ -39,6 +45,9 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
   onProviderClick,
   onJobClick
 }) => {
+  const [hoveredProvider, setHoveredProvider] = useState<PrivacyProvider | null>(null);
+  const [hoverPosition, setHoverPosition] = useState<{ x: number; y: number } | null>(null);
+
   if (!isMapReady || !window.google || !window.google.maps) return null;
 
   // Filter providers who have opted to show on map
@@ -119,17 +128,52 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
     }
   };
 
+  const handleProviderMouseOver = (provider: PrivacyProvider, event: google.maps.MapMouseEvent) => {
+    if (event.domEvent) {
+      setHoveredProvider(provider);
+      setHoverPosition({
+        x: event.domEvent.clientX,
+        y: event.domEvent.clientY
+      });
+    }
+  };
+
+  const handleProviderMouseOut = () => {
+    setHoveredProvider(null);
+    setHoverPosition(null);
+  };
+
   return (
     <>
       {/* Privacy-protected provider markers (only show those who opted in) */}
       {visibleProviders.map(provider => (
-        <Marker
-          key={`provider-${provider.id}`}
-          position={provider.fuzzyLocation}
-          onClick={() => onProviderClick(provider)}
-          icon={getProviderIcon(provider.availability, provider.verified)}
-          title={`${provider.availability} Provider (${provider.rating}⭐) - Position approximative`}
-        />
+        <React.Fragment key={`provider-${provider.id}`}>
+          <Marker
+            position={provider.fuzzyLocation}
+            onClick={() => onProviderClick(provider)}
+            onMouseOver={(event) => handleProviderMouseOver(provider, event)}
+            onMouseOut={handleProviderMouseOut}
+            icon={getProviderIcon(provider.availability, provider.verified)}
+            title={`${provider.availability} Provider (${provider.rating}⭐) - Position approximative`}
+          />
+          
+          {/* Service Radius Circle - Only show on hover */}
+          {hoveredProvider?.id === provider.id && provider.serviceRadius && (
+            <Circle
+              center={provider.fuzzyLocation}
+              radius={provider.serviceRadius * 1000} // Convert km to meters
+              options={{
+                fillColor: '#3b82f6',
+                fillOpacity: 0.1,
+                strokeColor: '#3b82f6',
+                strokeOpacity: 0.5,
+                strokeWeight: 2,
+                strokeStyle: 'dashed',
+                clickable: false
+              }}
+            />
+          )}
+        </React.Fragment>
       ))}
 
       {/* Privacy-protected job service circles (approximate areas) */}
@@ -156,6 +200,24 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
           />
         </React.Fragment>
       ))}
+
+      {/* Hover Info Popup */}
+      {hoveredProvider && hoverPosition && (
+        <ProviderHoverInfo
+          provider={{
+            id: hoveredProvider.id,
+            name: hoveredProvider.name,
+            service: hoveredProvider.service || 'Service Provider',
+            rating: hoveredProvider.rating,
+            reviewCount: hoveredProvider.reviewCount,
+            serviceRadius: hoveredProvider.serviceRadius || 15,
+            hourlyRate: hoveredProvider.hourlyRate
+          }}
+          position={hoverPosition}
+          onViewProfile={() => console.log('View profile:', hoveredProvider.name)}
+          onBookNow={() => console.log('Book now:', hoveredProvider.name)}
+        />
+      )}
     </>
   );
 };

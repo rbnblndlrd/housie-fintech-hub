@@ -8,13 +8,14 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
-import { Shield, Eye, EyeOff, MapPin, Info, Home, Car } from 'lucide-react';
+import { Shield, Eye, EyeOff, MapPin, Info, Home, Car, Navigation } from 'lucide-react';
 
 interface LocationPrivacySettingsSectionProps {
   userId: string;
   showOnMap?: boolean;
   confidentialityRadius?: number;
   serviceType?: 'provider_location' | 'customer_location' | 'both';
+  serviceRadius?: number;
   onSettingsUpdate?: () => void;
 }
 
@@ -23,6 +24,7 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
   showOnMap = true,
   confidentialityRadius = 10000,
   serviceType = 'customer_location',
+  serviceRadius = 15000,
   onSettingsUpdate
 }) => {
   const { toast } = useToast();
@@ -30,7 +32,8 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
   const [settings, setSettings] = useState({
     showOnMap,
     confidentialityRadius: Math.round(confidentialityRadius / 1000), // Convert to km for display
-    serviceType
+    serviceType,
+    serviceRadius: Math.round(serviceRadius / 1000) // Convert to km for display
   });
 
   const handleSaveSettings = async () => {
@@ -43,6 +46,7 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
           show_on_map: settings.showOnMap,
           confidentiality_radius: settings.confidentialityRadius * 1000, // Convert to meters
           service_type: settings.serviceType,
+          service_radius: settings.serviceRadius * 1000, // Convert to meters
           updated_at: new Date().toISOString()
         })
         .eq('id', userId);
@@ -192,6 +196,45 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
           </div>
         )}
 
+        {/* Service Radius Slider - NEW */}
+        {settings.showOnMap && (
+          <div className="space-y-4">
+            <div className="flex items-center gap-2">
+              <Navigation className="h-4 w-4 text-green-600" />
+              <Label className="text-base font-medium">
+                Distance de déplacement: {settings.serviceRadius} km
+              </Label>
+            </div>
+            
+            <div className="px-2">
+              <Slider
+                value={[settings.serviceRadius]}
+                onValueChange={([value]) => 
+                  setSettings({ ...settings, serviceRadius: value })
+                }
+                min={5}
+                max={50}
+                step={1}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-gray-500 mt-1">
+                <span>5 km (Local)</span>
+                <span>50 km (Étendu)</span>
+              </div>
+            </div>
+            
+            <div className="bg-green-50 rounded-lg p-3">
+              <p className="text-sm text-gray-700">
+                <strong>Zone de service:</strong> Je me déplace jusqu'à{' '}
+                <span className="font-semibold text-green-600">
+                  {settings.serviceRadius} km
+                </span>{' '}
+                pour mes services. Cette zone s'affiche quand les clients survolent votre profil.
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Service Type Selection */}
         <div className="space-y-4">
           <div className="flex items-center gap-2">
@@ -288,6 +331,10 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 bg-green-500 rounded-full"></div>
               <span>Contrôle total sur le partage d'adresse</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+              <span>Zone de service visible au survol de votre profil</span>
             </div>
           </div>
         </div>

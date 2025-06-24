@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { usePrivacyEmergencyJobs } from '@/hooks/usePrivacyEmergencyJobs';
 import { useRole } from '@/contexts/RoleContext';
-import { getProviderFuzzyLocation } from '@/utils/locationPrivacy';
+import { getProviderWithServiceRadius } from '@/utils/locationPrivacy';
 import { montrealProviders } from '@/data/montrealProviders';
 import { montrealHeatZones } from '@/data/montrealHeatZones';
 import { UnifiedGoogleMap } from './UnifiedGoogleMap';
@@ -23,15 +23,23 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [selectedZone, setSelectedZone] = useState<any>(null);
 
-  // Convert providers to privacy-protected format
-  const privacyProviders = montrealProviders.map(provider => ({
-    id: provider.id.toString(),
-    name: `Provider ${provider.id}`,
-    fuzzyLocation: getProviderFuzzyLocation(provider),
-    availability: provider.availability,
-    rating: provider.rating,
-    verified: provider.verified || false
-  }));
+  // Convert providers to privacy-protected format with service radius
+  const privacyProviders = montrealProviders.map(provider => {
+    const enhancedProvider = getProviderWithServiceRadius(provider);
+    return {
+      id: provider.id.toString(),
+      name: `${enhancedProvider.service} Provider`,
+      fuzzyLocation: enhancedProvider.fuzzyLocation,
+      availability: provider.availability,
+      rating: provider.rating,
+      verified: provider.verified || false,
+      serviceRadius: enhancedProvider.serviceRadius,
+      hourlyRate: enhancedProvider.hourlyRate,
+      service: enhancedProvider.service,
+      reviewCount: enhancedProvider.reviewCount,
+      showOnMap: provider.show_on_map !== false
+    };
+  });
 
   const handleJobSelect = (job: any) => {
     setSelectedJob(job);

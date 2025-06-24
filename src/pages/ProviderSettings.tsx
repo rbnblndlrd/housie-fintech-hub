@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -129,12 +128,13 @@ const ProviderSettings = () => {
           </div>
 
           <div className="grid gap-6">
-            {/* Privacy & Location Settings - New Section */}
+            {/* Privacy & Location Settings - Updated with service radius */}
             <LocationPrivacySettingsSection
               userId={user?.id || ''}
               showOnMap={userProfile?.show_on_map}
               confidentialityRadius={userProfile?.confidentiality_radius}
               serviceType={userProfile?.service_type}
+              serviceRadius={userProfile?.service_radius}
               onSettingsUpdate={fetchUserProfile}
             />
 

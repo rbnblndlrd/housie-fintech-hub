@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface MontrealZone {
@@ -164,6 +163,18 @@ export const getProviderFuzzyLocation = (provider: any): { lat: number; lng: num
   
   // Final fallback: random Montreal location
   return generateFuzzyLocation(45.5017, -73.5673, 15000);
+};
+
+// Get provider with service radius
+export const getProviderWithServiceRadius = (provider: any) => {
+  return {
+    ...provider,
+    serviceRadius: Math.round((provider.service_radius || 15000) / 1000), // Convert to km
+    fuzzyLocation: getProviderFuzzyLocation(provider),
+    hourlyRate: provider.hourly_rate || 85,
+    service: provider.service_type || 'House Cleaning',
+    reviewCount: provider.review_count || Math.floor(Math.random() * 50) + 10
+  };
 };
 
 // Privacy-safe job location (service circle)
