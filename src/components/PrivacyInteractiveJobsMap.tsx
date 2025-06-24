@@ -23,6 +23,12 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [selectedZone, setSelectedZone] = useState<any>(null);
 
+  console.log('🗺️ PrivacyInteractiveJobsMap render:', { 
+    showHeatZones, 
+    currentRole, 
+    jobsCount: emergencyJobs.length 
+  });
+
   // Convert providers to privacy-protected format with service radius
   const privacyProviders = montrealProviders.map(provider => {
     const enhancedProvider = getProviderWithServiceRadius(provider);
