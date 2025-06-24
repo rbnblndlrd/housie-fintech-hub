@@ -13,7 +13,7 @@ import {
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronRight, Check } from 'lucide-react';
+import { ChevronRight, Check, Circle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -25,8 +25,18 @@ const UserMenu = () => {
   const { user, logout } = useAuth();
   const { currentRole, setCurrentRole } = useRole();
   const navigate = useNavigate();
+  const [providerStatus, setProviderStatus] = useState('Available');
 
   console.log('👤 UserMenu render:', { user: !!user, currentRole });
+
+  const statusOptions = [
+    { value: 'Available', label: 'Available', color: 'text-green-600', icon: '🟢' },
+    { value: 'Busy', label: 'Busy', color: 'text-yellow-600', icon: '🟡' },
+    { value: 'Away', label: 'Away', color: 'text-orange-600', icon: '🟠' },
+    { value: 'DnD', label: 'Do Not Disturb', color: 'text-red-600', icon: '🔴' }
+  ];
+
+  const currentStatus = statusOptions.find(status => status.value === providerStatus);
 
   const handleLogout = async () => {
     try {
@@ -36,6 +46,12 @@ const UserMenu = () => {
     } catch (error) {
       console.error('Error signing out:', error);
     }
+  };
+
+  const handleStatusChange = (newStatus: string) => {
+    setProviderStatus(newStatus);
+    console.log('Provider status changed to:', newStatus);
+    // TODO: Save status to database if needed
   };
 
   const handleDropdownAction = (item: NavigationItem) => {
@@ -114,6 +130,43 @@ const UserMenu = () => {
             <NotificationIndicator />
           </div>
         </div>
+
+        {/* Provider Status Selector - only show for providers */}
+        {currentRole === 'provider' && (
+          <>
+            <DropdownMenuSeparator />
+            <div className="px-2 py-1">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium text-gray-700">Status</span>
+                <div className="flex items-center gap-1">
+                  <span className="text-xs">{currentStatus?.icon}</span>
+                  <span className={`text-xs font-medium ${currentStatus?.color}`}>
+                    {currentStatus?.label}
+                  </span>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-1">
+                {statusOptions.map((status) => (
+                  <Button
+                    key={status.value}
+                    variant={providerStatus === status.value ? "default" : "ghost"}
+                    size="sm"
+                    onClick={() => handleStatusChange(status.value)}
+                    className={`h-8 text-xs justify-start ${
+                      providerStatus === status.value 
+                        ? 'bg-blue-600 text-white' 
+                        : 'hover:bg-gray-100'
+                    }`}
+                  >
+                    <span className="mr-1">{status.icon}</span>
+                    {status.value}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+
         <DropdownMenuSeparator />
         
         {/* Map */}
