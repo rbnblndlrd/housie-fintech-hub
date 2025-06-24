@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import LocationPrivacySettingsSection from "@/components/provider/LocationPrivacySettingsSection";
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Settings, 
   User, 
@@ -24,6 +28,9 @@ const ProviderSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { currentRole } = useRole();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<any>(null);
 
   // Redirect if role changes to customer
   useEffect(() => {
@@ -31,6 +38,34 @@ const ProviderSettings = () => {
       navigate('/customer-settings');
     }
   }, [currentRole, navigate]);
+
+  useEffect(() => {
+    if (user) {
+      fetchUserProfile();
+    }
+  }, [user]);
+
+  const fetchUserProfile = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+
+      if (error) throw error;
+      setUserProfile(data);
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load user profile",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [settings, setSettings] = useState({
     businessName: '',
@@ -54,6 +89,20 @@ const ProviderSettings = () => {
     console.log('Saving settings:', settings);
     // TODO: Implement save functionality
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading settings...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -80,6 +129,15 @@ const ProviderSettings = () => {
           </div>
 
           <div className="grid gap-6">
+            {/* Privacy & Location Settings - New Section */}
+            <LocationPrivacySettingsSection
+              userId={user?.id || ''}
+              showOnMap={userProfile?.show_on_map}
+              confidentialityRadius={userProfile?.confidentiality_radius}
+              serviceType={userProfile?.service_type}
+              onSettingsUpdate={fetchUserProfile}
+            />
+
             {/* Business Information */}
             <Card className="fintech-card">
               <CardHeader>
