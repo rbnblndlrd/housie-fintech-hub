@@ -18,7 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import { getUserDropdownItems, getProfileMenuItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
-import NotificationBell from '@/components/NotificationBell';
+import NotificationIndicator from '@/components/NotificationIndicator';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
@@ -108,7 +108,7 @@ const UserMenu = () => {
             )}
           </div>
           <div className="flex-shrink-0">
-            <NotificationBell />
+            <NotificationIndicator />
           </div>
         </div>
         <DropdownMenuSeparator />
