@@ -4,7 +4,7 @@ import { usePrivacyEmergencyJobs } from '@/hooks/usePrivacyEmergencyJobs';
 import { useRole } from '@/contexts/RoleContext';
 import { getProviderFuzzyLocation } from '@/utils/locationPrivacy';
 import { montrealProviders } from '@/data/montrealProviders';
-import PrivacyMapContainer from './map/PrivacyMapContainer';
+import { UnifiedGoogleMap } from './UnifiedGoogleMap';
 import PrivacyMapControls from './map/PrivacyMapControls';
 import PrivacyMapMarkers from './map/PrivacyMapMarkers';
 import MontrealHeatZones from './map/MontrealHeatZones';
@@ -12,7 +12,6 @@ import LiveStatsCard from './map/LiveStatsCard';
 import LoadingOverlay from './map/LoadingOverlay';
 import SelectedJobCard from './map/SelectedJobCard';
 import SelectedZoneCard from './map/SelectedZoneCard';
-import MapErrorFallback from './map/MapErrorFallback';
 
 const PrivacyInteractiveJobsMap: React.FC = () => {
   const { emergencyJobs, liveStats, loading, acceptEmergencyJob } = usePrivacyEmergencyJobs();
@@ -20,7 +19,6 @@ const PrivacyInteractiveJobsMap: React.FC = () => {
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [selectedZone, setSelectedZone] = useState<any>(null);
   const [showHeatZones, setShowHeatZones] = useState(true);
-  const [mapError, setMapError] = useState<string | null>(null);
 
   // Convert providers to privacy-protected format
   const privacyProviders = montrealProviders.map(provider => ({
@@ -49,14 +47,6 @@ const PrivacyInteractiveJobsMap: React.FC = () => {
     }
   };
 
-  const handleMapError = (error: string) => {
-    setMapError(error);
-  };
-
-  if (mapError) {
-    return <MapErrorFallback error={mapError} />;
-  }
-
   return (
     <div className="relative h-full w-full">
       {/* Privacy Controls */}
@@ -65,27 +55,32 @@ const PrivacyInteractiveJobsMap: React.FC = () => {
         onToggleHeatZones={setShowHeatZones}
       />
 
-      {/* Google Map Container */}
-      <PrivacyMapContainer onMapError={handleMapError} />
-
-      {/* Privacy-Protected Map Markers */}
-      <PrivacyMapMarkers
-        providers={privacyProviders}
-        jobs={emergencyJobs}
-        isMapReady={true}
-        onProviderClick={(provider) => console.log('Provider clicked:', provider.name)}
-        onJobClick={handleJobSelect}
-      />
-
-      {/* Montreal Heat Zones */}
-      {showHeatZones && (
-        <MontrealHeatZones
-          zones={liveStats.montrealZones}
+      {/* Unified Google Map Container */}
+      <UnifiedGoogleMap
+        center={{ lat: 45.5017, lng: -73.5673 }}
+        zoom={11}
+        className="w-full h-full rounded-lg"
+        mode="privacy"
+      >
+        {/* Privacy-Protected Map Markers */}
+        <PrivacyMapMarkers
+          providers={privacyProviders}
+          jobs={emergencyJobs}
           isMapReady={true}
-          onZoneClick={handleZoneSelect}
-          showLabels={true}
+          onProviderClick={(provider) => console.log('Provider clicked:', provider.name)}
+          onJobClick={handleJobSelect}
         />
-      )}
+
+        {/* Montreal Heat Zones */}
+        {showHeatZones && (
+          <MontrealHeatZones
+            zones={liveStats.montrealZones}
+            isMapReady={true}
+            onZoneClick={handleZoneSelect}
+            showLabels={true}
+          />
+        )}
+      </UnifiedGoogleMap>
 
       {/* Live Stats Card */}
       <LiveStatsCard liveStats={liveStats} />

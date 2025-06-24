@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ServiceCategories from "@/components/ServiceCategories";
-import { GoogleMap } from "@/components/GoogleMap";
+import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
 import { Provider } from "@/types/service";
 
 interface MapSectionProps {
@@ -34,12 +34,13 @@ const MapSection: React.FC<MapSectionProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <GoogleMap
+            <UnifiedGoogleMap
               center={{ lat: 45.5017, lng: -73.5673 }}
               zoom={12}
               className="h-64 rounded-xl"
               providers={providers}
               hoveredProviderId={hoveredProviderId}
+              mode="services"
             />
           </CardContent>
         </Card>
@@ -49,12 +50,13 @@ const MapSection: React.FC<MapSectionProps> = ({
 
   // For provider profile, render just the map without extra card wrapper
   return (
-    <GoogleMap
+    <UnifiedGoogleMap
       center={{ lat: 45.5017, lng: -73.5673 }}
       zoom={12}
       className="h-full rounded-xl"
       providers={providers}
       hoveredProviderId={hoveredProviderId}
+      mode="services"
     />
   );
 };

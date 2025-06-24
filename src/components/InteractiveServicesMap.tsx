@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { GoogleMap } from "@/components/GoogleMap";
+import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, MapPin, Clock } from 'lucide-react';
@@ -31,7 +31,6 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
   onProviderSelect
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
-  const [mapError, setMapError] = useState<string | null>(null);
 
   const handleProviderClick = (provider: Provider) => {
     console.log('Provider clicked in InteractiveServicesMap:', provider.name);
@@ -46,33 +45,16 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
     }
   };
 
-  const handleMapError = (error: string) => {
-    console.error('Map error in InteractiveServicesMap:', error);
-    setMapError(error);
-  };
-
-  if (mapError) {
-    return (
-      <div className="relative h-96 w-full bg-gray-100 rounded-lg flex items-center justify-center">
-        <div className="text-center p-6">
-          <div className="text-red-600 mb-2">🗺️ Map Unavailable</div>
-          <p className="text-gray-600 mb-2">{mapError}</p>
-          <p className="text-sm text-gray-500">
-            The interactive map is temporarily unavailable. You can still browse providers below.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="relative h-96 w-full">
-      <GoogleMap
+      <UnifiedGoogleMap
         center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={12}
         className="w-full h-full"
         providers={providers}
         hoveredProviderId={hoveredProviderId}
+        onProviderClick={handleProviderClick}
+        mode="services"
       />
       
       {selectedProvider && (
