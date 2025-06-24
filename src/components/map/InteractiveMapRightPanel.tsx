@@ -5,13 +5,16 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { 
   Zap, 
   TrendingUp, 
   Users, 
   DollarSign,
   MapPin,
-  AlertTriangle
+  AlertTriangle,
+  Filter
 } from 'lucide-react';
 
 interface InteractiveMapRightPanelProps {
@@ -20,11 +23,24 @@ interface InteractiveMapRightPanelProps {
   onHeatZonesToggle: (checked: boolean) => void;
 }
 
+const professionOptions = [
+  { value: 'all', label: 'All Services' },
+  { value: 'cleaning', label: 'Cleaning' },
+  { value: 'handyman', label: 'Handyman' },
+  { value: 'lawncare', label: 'Lawn Care' },
+  { value: 'moving', label: 'Moving' },
+  { value: 'concierge', label: 'Concierge' },
+  { value: 'security', label: 'Security' }
+];
+
 const InteractiveMapRightPanel: React.FC<InteractiveMapRightPanelProps> = ({
   currentRole,
   showHeatZones,
   onHeatZonesToggle
 }) => {
+  const [selectedProfession, setSelectedProfession] = React.useState('all');
+  const [demandThreshold, setDemandThreshold] = React.useState([0]);
+
   const emergencyJobsCount = 4;
   const userArea = "Plateau-Mont-Royal";
   const marketDemand = "High";
@@ -63,31 +79,44 @@ const InteractiveMapRightPanel: React.FC<InteractiveMapRightPanelProps> = ({
           </CardContent>
         </Card>
 
-        {/* Heat Zones Toggle */}
+        {/* Service Filters & Demand Controls */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
-              Heat Zones Control
+              <Filter className="h-4 w-4" />
+              Service Filters
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-red-500 rounded-full"></div>
-                <Label htmlFor="heat-zones-toggle" className="text-sm font-medium">
-                  Heat Zones
-                </Label>
+          <CardContent className="pt-0 space-y-3">
+            <div>
+              <Label className="text-xs text-gray-600 mb-2 block">Service Type</Label>
+              <Select value={selectedProfession} onValueChange={setSelectedProfession}>
+                <SelectTrigger className="h-8">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {professionOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <Label className="text-xs text-gray-600">Min Demand</Label>
+                <span className="text-xs text-gray-600">{demandThreshold[0]}%</span>
               </div>
-              <Switch
-                id="heat-zones-toggle"
-                checked={showHeatZones}
-                onCheckedChange={onHeatZonesToggle}
+              <Slider
+                value={demandThreshold}
+                onValueChange={setDemandThreshold}
+                max={100}
+                step={10}
+                className="w-full"
               />
             </div>
-            <p className="text-xs text-gray-600 mt-2">
-              {showHeatZones ? 'Showing' : 'Hiding'} market demand by neighborhood
-            </p>
           </CardContent>
         </Card>
 
@@ -152,6 +181,34 @@ const InteractiveMapRightPanel: React.FC<InteractiveMapRightPanelProps> = ({
                 }
               </p>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Heat Zones Toggle */}
+        <Card>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm flex items-center gap-2">
+              <TrendingUp className="h-4 w-4" />
+              Heat Zones Control
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="pt-0">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-red-500 rounded-full"></div>
+                <Label htmlFor="heat-zones-toggle" className="text-sm font-medium">
+                  Heat Zones
+                </Label>
+              </div>
+              <Switch
+                id="heat-zones-toggle"
+                checked={showHeatZones}
+                onCheckedChange={onHeatZonesToggle}
+              />
+            </div>
+            <p className="text-xs text-gray-600 mt-2">
+              {showHeatZones ? 'Showing' : 'Hiding'} market demand by neighborhood
+            </p>
           </CardContent>
         </Card>
       </div>

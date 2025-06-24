@@ -12,8 +12,15 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronRight, Check, Circle } from 'lucide-react';
+import { ChevronRight, Check, Circle, Zap, Clock, AlertTriangle, Minus } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -30,13 +37,14 @@ const UserMenu = () => {
   console.log('👤 UserMenu render:', { user: !!user, currentRole });
 
   const statusOptions = [
-    { value: 'Available', label: 'Available', color: 'text-green-600', icon: '🟢' },
-    { value: 'Busy', label: 'Busy', color: 'text-yellow-600', icon: '🟡' },
-    { value: 'Away', label: 'Away', color: 'text-orange-600', icon: '🟠' },
-    { value: 'DnD', label: 'Do Not Disturb', color: 'text-red-600', icon: '🔴' }
+    { value: 'Available', label: 'Available', icon: Zap, color: 'text-green-600' },
+    { value: 'Busy', label: 'Busy', icon: Clock, color: 'text-yellow-600' },
+    { value: 'Away', label: 'Away', icon: Minus, color: 'text-orange-600' },
+    { value: 'DnD', label: 'Do Not Disturb', icon: AlertTriangle, color: 'text-red-600' }
   ];
 
   const currentStatus = statusOptions.find(status => status.value === providerStatus);
+  const StatusIcon = currentStatus?.icon || Zap;
 
   const handleLogout = async () => {
     try {
@@ -139,30 +147,30 @@ const UserMenu = () => {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-gray-700">Status</span>
                 <div className="flex items-center gap-1">
-                  <span className="text-xs">{currentStatus?.icon}</span>
+                  <StatusIcon className={`h-3 w-3 ${currentStatus?.color}`} />
                   <span className={`text-xs font-medium ${currentStatus?.color}`}>
                     {currentStatus?.label}
                   </span>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-1">
-                {statusOptions.map((status) => (
-                  <Button
-                    key={status.value}
-                    variant={providerStatus === status.value ? "default" : "ghost"}
-                    size="sm"
-                    onClick={() => handleStatusChange(status.value)}
-                    className={`h-8 text-xs justify-start ${
-                      providerStatus === status.value 
-                        ? 'bg-blue-600 text-white' 
-                        : 'hover:bg-gray-100'
-                    }`}
-                  >
-                    <span className="mr-1">{status.icon}</span>
-                    {status.value}
-                  </Button>
-                ))}
-              </div>
+              <Select value={providerStatus} onValueChange={handleStatusChange}>
+                <SelectTrigger className="h-8 w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {statusOptions.map((status) => {
+                    const Icon = status.icon;
+                    return (
+                      <SelectItem key={status.value} value={status.value}>
+                        <div className="flex items-center gap-2">
+                          <Icon className={`h-3 w-3 ${status.color}`} />
+                          <span>{status.label}</span>
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
             </div>
           </>
         )}

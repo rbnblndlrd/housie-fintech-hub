@@ -3,30 +3,24 @@ import React, { useState } from 'react';
 import { UnifiedGoogleMap } from './UnifiedGoogleMap';
 import MontrealHeatZonesOverlay from './map/MontrealHeatZonesOverlay';
 import { montrealHeatZones, MontrealHeatZone } from '@/data/montrealHeatZones';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
-import { 
-  Filter
-} from 'lucide-react';
 
 interface HeatZoneMapProps {
   userRole: 'customer' | 'provider';
   showHeatZones?: boolean;
+  selectedProfession?: string;
+  demandThreshold?: number[];
+  onProfessionChange?: (profession: string) => void;
+  onDemandThresholdChange?: (threshold: number[]) => void;
 }
 
-const professionOptions = [
-  { value: 'all', label: 'All Services' },
-  { value: 'cleaning', label: 'Cleaning' },
-  { value: 'handyman', label: 'Handyman' },
-  { value: 'lawncare', label: 'Lawn Care' },
-  { value: 'moving', label: 'Moving' },
-  { value: 'concierge', label: 'Concierge' },
-  { value: 'security', label: 'Security' }
-];
-
-const HeatZoneMap: React.FC<HeatZoneMapProps> = ({ userRole, showHeatZones = true }) => {
-  const [selectedProfession, setSelectedProfession] = useState('all');
-  const [demandThreshold, setDemandThreshold] = useState([0]);
+const HeatZoneMap: React.FC<HeatZoneMapProps> = ({ 
+  userRole, 
+  showHeatZones = true,
+  selectedProfession = 'all',
+  demandThreshold = [0],
+  onProfessionChange,
+  onDemandThresholdChange
+}) => {
   const [selectedZone, setSelectedZone] = useState<MontrealHeatZone | null>(null);
 
   console.log('🗺️ HeatZoneMap render:', { userRole, showHeatZones, zonesCount: montrealHeatZones.length });
@@ -42,39 +36,6 @@ const HeatZoneMap: React.FC<HeatZoneMapProps> = ({ userRole, showHeatZones = tru
 
   return (
     <div className="w-full h-full relative">
-      {/* Controls */}
-      <div className="absolute top-4 left-4 z-10 bg-white rounded-lg shadow-lg p-4">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4" />
-            <Select value={selectedProfession} onValueChange={setSelectedProfession}>
-              <SelectTrigger className="w-36">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {professionOptions.map(option => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-medium">Min Demand:</span>
-            <Slider
-              value={demandThreshold}
-              onValueChange={setDemandThreshold}
-              max={100}
-              step={10}
-              className="w-20"
-            />
-            <span className="text-xs text-gray-600">{demandThreshold[0]}%</span>
-          </div>
-        </div>
-      </div>
-
       {/* Legend */}
       <div className="absolute bottom-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3">
         <div className="flex items-center gap-3 text-xs">
