@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Marker, Circle } from '@react-google-maps/api';
 
@@ -9,6 +8,7 @@ interface PrivacyProvider {
   availability: string;
   rating: number;
   verified: boolean;
+  showOnMap?: boolean;
 }
 
 interface PrivacyJob {
@@ -40,6 +40,11 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
   onJobClick
 }) => {
   if (!isMapReady || !window.google || !window.google.maps) return null;
+
+  // Filter providers who have opted to show on map
+  const visibleProviders = providers.filter(provider => 
+    provider.showOnMap !== false // Show by default if not specified
+  );
 
   const getProviderIcon = (availability: string, verified: boolean) => {
     try {
@@ -116,14 +121,14 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
 
   return (
     <>
-      {/* Privacy-protected provider markers (anonymous fuzzy locations) */}
-      {providers.map(provider => (
+      {/* Privacy-protected provider markers (only show those who opted in) */}
+      {visibleProviders.map(provider => (
         <Marker
           key={`provider-${provider.id}`}
           position={provider.fuzzyLocation}
           onClick={() => onProviderClick(provider)}
           icon={getProviderIcon(provider.availability, provider.verified)}
-          title={`${provider.availability} Provider (${provider.rating}⭐)`}
+          title={`${provider.availability} Provider (${provider.rating}⭐) - Position approximative`}
         />
       ))}
 

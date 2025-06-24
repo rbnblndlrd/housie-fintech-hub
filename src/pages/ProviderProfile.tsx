@@ -16,6 +16,7 @@ import BusinessInfoSection from '@/components/provider/BusinessInfoSection';
 import ServicesSection from '@/components/provider/ServicesSection';
 import ContactInfoSection from '@/components/provider/ContactInfoSection';
 import AvailabilitySection from '@/components/provider/AvailabilitySection';
+import PrivacySettingsSection from '@/components/provider/PrivacySettingsSection';
 
 interface ProviderProfile {
   id: string;
@@ -39,6 +40,8 @@ interface UserProfile {
   city: string;
   province: string;
   postal_code: string;
+  show_on_map?: boolean;
+  confidentiality_radius?: number;
 }
 
 const ProviderProfile = () => {
@@ -245,6 +248,16 @@ const ProviderProfile = () => {
             <AvailabilitySection 
               providerId={providerProfile.id}
             />
+            
+            {/* Add Privacy Settings Section */}
+            <div className="lg:col-span-2">
+              <PrivacySettingsSection
+                userId={user?.id || ''}
+                showOnMap={userProfile?.show_on_map}
+                confidentialityRadius={userProfile?.confidentiality_radius}
+                onSettingsUpdate={fetchUserProfile}
+              />
+            </div>
           </div>
         </div>
       </div>
