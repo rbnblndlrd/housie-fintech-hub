@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -25,6 +24,8 @@ const UserMenu = () => {
   const { user, logout } = useAuth();
   const { currentRole, setCurrentRole } = useRole();
   const navigate = useNavigate();
+
+  console.log('👤 UserMenu render:', { user: !!user, currentRole });
 
   const handleLogout = async () => {
     try {
@@ -106,7 +107,9 @@ const UserMenu = () => {
               </p>
             )}
           </div>
-          <NotificationBell />
+          <div className="flex-shrink-0">
+            <NotificationBell />
+          </div>
         </div>
         <DropdownMenuSeparator />
         

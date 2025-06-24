@@ -21,6 +21,8 @@ export const useNotifications = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
 
+  console.log('🔔 useNotifications hook:', { userId: user?.id, loading });
+
   const createNotification = async (
     userId: string,
     type: string,
@@ -29,6 +31,7 @@ export const useNotifications = () => {
     bookingId?: string
   ) => {
     try {
+      console.log('🔔 Creating notification:', { userId, type, title });
       const { error } = await supabase
         .from('notifications')
         .insert({
@@ -52,11 +55,13 @@ export const useNotifications = () => {
 
   const fetchNotifications = async () => {
     if (!user) {
+      console.log('🔔 No user, setting loading to false');
       setLoading(false);
       return;
     }
 
     try {
+      console.log('🔔 Fetching notifications for user:', user.id);
       const { data, error } = await supabase
         .from('notifications')
         .select('*')
@@ -68,6 +73,7 @@ export const useNotifications = () => {
         console.error('Error fetching notifications:', error);
         setNotifications([]);
       } else {
+        console.log('🔔 Fetched notifications:', data?.length || 0);
         setNotifications(data || []);
       }
     } catch (error) {
@@ -80,6 +86,7 @@ export const useNotifications = () => {
 
   const markAsRead = async (notificationId: string) => {
     try {
+      console.log('🔔 Marking notification as read:', notificationId);
       const { error } = await supabase
         .from('notifications')
         .update({ read: true })
@@ -104,6 +111,7 @@ export const useNotifications = () => {
     if (!user) return;
 
     try {
+      console.log('🔔 Marking all notifications as read for user:', user.id);
       const { error } = await supabase
         .from('notifications')
         .update({ read: true })
@@ -125,6 +133,7 @@ export const useNotifications = () => {
 
   useEffect(() => {
     if (!user) {
+      console.log('🔔 No user in useEffect, resetting state');
       setNotifications([]);
       setLoading(false);
       return;
@@ -215,6 +224,12 @@ export const useNotifications = () => {
   }, [user?.id]);
 
   const unreadCount = notifications.filter(n => !n.read).length;
+
+  console.log('🔔 useNotifications returning:', { 
+    notificationsCount: notifications.length, 
+    unreadCount, 
+    loading 
+  });
 
   return {
     notifications,
