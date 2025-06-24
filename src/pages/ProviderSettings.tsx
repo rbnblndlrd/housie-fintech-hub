@@ -46,6 +46,8 @@ const ProviderSettings = () => {
 
   const fetchUserProfile = async () => {
     try {
+      console.log('🔄 Fetching user profile for:', user?.id);
+      
       const { data, error } = await supabase
         .from('users')
         .select('*')
@@ -53,12 +55,14 @@ const ProviderSettings = () => {
         .single();
 
       if (error) throw error;
+      
+      console.log('✅ User profile loaded:', data);
       setUserProfile(data);
     } catch (error) {
-      console.error('Error fetching user profile:', error);
+      console.error('❌ Error fetching user profile:', error);
       toast({
-        title: "Error",
-        description: "Failed to load user profile",
+        title: "Erreur",
+        description: "Impossible de charger le profil utilisateur",
         variant: "destructive",
       });
     } finally {
@@ -96,7 +100,20 @@ const ProviderSettings = () => {
         <div className="pt-20 flex items-center justify-center min-h-screen">
           <div className="text-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading settings...</p>
+            <p className="text-gray-600">Chargement des paramètres...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <p className="text-gray-600">Utilisateur non connecté</p>
           </div>
         </div>
       </div>
@@ -117,24 +134,24 @@ const ProviderSettings = () => {
               className="mb-4"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Dashboard
+              Retour au tableau de bord
             </Button>
             
             <div className="flex items-center gap-3 mb-4">
               <Settings className="h-8 w-8 text-blue-600" />
-              <h1 className="text-4xl font-bold text-gray-900">Provider Settings</h1>
+              <h1 className="text-4xl font-bold text-gray-900">Paramètres Fournisseur</h1>
             </div>
-            <p className="text-gray-600">Manage your business profile and preferences</p>
+            <p className="text-gray-600">Gérez votre profil d'entreprise et vos préférences</p>
           </div>
 
           <div className="grid gap-6">
-            {/* Privacy & Location Settings - Updated with service radius */}
+            {/* Privacy & Location Settings */}
             <LocationPrivacySettingsSection
-              userId={user?.id || ''}
-              showOnMap={userProfile?.show_on_map}
-              confidentialityRadius={userProfile?.confidentiality_radius}
-              serviceType={userProfile?.service_type}
-              serviceRadius={userProfile?.service_radius}
+              userId={user.id}
+              showOnMap={userProfile?.show_on_map ?? true}
+              confidentialityRadius={userProfile?.confidentiality_radius ?? 10000}
+              serviceType={userProfile?.service_type ?? 'customer_location'}
+              serviceRadius={userProfile?.service_radius ?? 15000}
               onSettingsUpdate={fetchUserProfile}
             />
 

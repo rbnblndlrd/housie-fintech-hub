@@ -36,9 +36,29 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
     serviceRadius: Math.round(serviceRadius / 1000) // Convert to km for display
   });
 
+  // Update local state when props change
+  useEffect(() => {
+    setSettings({
+      showOnMap,
+      confidentialityRadius: Math.round(confidentialityRadius / 1000),
+      serviceType,
+      serviceRadius: Math.round(serviceRadius / 1000)
+    });
+  }, [showOnMap, confidentialityRadius, serviceType, serviceRadius]);
+
   const handleSaveSettings = async () => {
+    if (!userId) {
+      toast({
+        title: "Erreur",
+        description: "Utilisateur non identifié",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setSaving(true);
+      console.log('💾 Saving privacy settings for user:', userId, settings);
       
       const { error } = await supabase
         .from('users')
@@ -51,19 +71,26 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
         })
         .eq('id', userId);
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error saving privacy settings:', error);
+        throw error;
+      }
 
+      console.log('✅ Privacy settings saved successfully');
+      
       toast({
-        title: "Paramètres sauvegardés",
-        description: "Vos préférences de confidentialité ont été mises à jour",
+        title: "✅ Paramètres sauvegardés",
+        description: "Vos préférences de confidentialité ont été mises à jour avec succès",
       });
 
+      // Trigger refresh of parent component data
       onSettingsUpdate?.();
-    } catch (error) {
-      console.error('Error updating privacy settings:', error);
+
+    } catch (error: any) {
+      console.error('❌ Failed to save privacy settings:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les paramètres",
+        title: "❌ Erreur",
+        description: error.message || "Impossible de sauvegarder les paramètres",
         variant: "destructive",
       });
     } finally {
@@ -196,7 +223,7 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
           </div>
         )}
 
-        {/* Service Radius Slider - NEW */}
+        {/* Service Radius Slider */}
         {settings.showOnMap && (
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -345,7 +372,14 @@ const LocationPrivacySettingsSection: React.FC<LocationPrivacySettingsSectionPro
           disabled={saving}
           className="w-full fintech-button-primary"
         >
-          {saving ? 'Sauvegarde...' : 'Sauvegarder les paramètres'}
+          {saving ? (
+            <div className="flex items-center gap-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+              Sauvegarde...
+            </div>
+          ) : (
+            '💾 Sauvegarder les paramètres'
+          )}
         </Button>
       </CardContent>
     </Card>
