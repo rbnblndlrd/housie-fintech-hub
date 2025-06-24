@@ -40,7 +40,8 @@ export const mapOptions = {
   }
 };
 
-export const libraries: string[] = ["places", "geometry"];
+// Fix the libraries type to match @react-google-maps/api expectations
+export const libraries: ("places" | "geometry")[] = ["places", "geometry"];
 
 // Use your Web API key directly
 export const GOOGLE_MAPS_API_KEY = "AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o";
