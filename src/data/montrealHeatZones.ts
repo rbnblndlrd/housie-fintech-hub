@@ -113,7 +113,7 @@ export const montrealHeatZones: MontrealHeatZone[] = [
       handyman: { demand: 92, providers: 2, avgRate: 95, trending: 'up' },
       lawncare: { demand: 95, providers: 2, avgRate: 65, trending: 'stable' },
       wellness: { demand: 95, providers: 3, avgRate: 150, trending: 'up' },
-      pet: { deman: 85, providers: 2, avgRate: 55, trending: 'up' },
+      pet: { demand: 85, providers: 2, avgRate: 55, trending: 'up' },
       moving: { demand: 70, providers: 1, avgRate: 180, trending: 'stable' }
     },
     marketInsights: {
