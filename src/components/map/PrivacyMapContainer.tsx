@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
 import PrivacyInteractiveJobsMap from '@/components/PrivacyInteractiveJobsMap';
 
 type UserRole = 'customer' | 'provider';
