@@ -10,6 +10,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { PopArtProvider } from "@/contexts/PopArtContext";
 import { RoleProvider } from "@/contexts/RoleContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { NotificationBubbles } from "@/components/chat/NotificationBubbles";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
@@ -68,6 +69,7 @@ const App = () => {
                 <AuthProvider>
                   <RoleProvider>
                     <SubscriptionProvider>
+                      <NotificationBubbles />
                       <Routes>
                         <Route path="/" element={<Index />} />
                         <Route path="/auth" element={<Auth />} />

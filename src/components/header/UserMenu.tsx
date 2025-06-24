@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -82,6 +83,8 @@ const UserMenu = () => {
 
   // Dynamic dashboard link based on current role
   const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+  // Dynamic settings link based on current role
+  const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-settings';
 
   return (
     <DropdownMenu key={`dropdown-${currentRole}-${Date.now()}`}>
@@ -122,6 +125,15 @@ const UserMenu = () => {
           <span className="flex-1">Map</span>
         </DropdownMenuItem>
 
+        {/* Dashboard */}
+        <DropdownMenuItem
+          onClick={() => navigate(dashboardHref)}
+          className="cursor-pointer"
+        >
+          <span className="mr-2">📊</span>
+          <span className="flex-1">Dashboard</span>
+        </DropdownMenuItem>
+
         {/* Profile Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="cursor-pointer">
@@ -135,8 +147,13 @@ const UserMenu = () => {
                 return <DropdownMenuSeparator key={`separator-${subIndex}`} />;
               }
               
+              // Skip settings as it's now moved to main menu
+              if (subItem.label === 'Settings') {
+                return null;
+              }
+              
               // Handle role toggle items with active state
-              if (subItem.action && (subItem.action === 'toggle-customer' || subItem.action === 'toggle-provider')) {
+              if (subItem.action && (subItem.action === 'toggle-customer' || subItem.action === 'toggle-provider')) {    
                 return (
                   <DropdownMenuItem
                     key={`${subIndex}-${subItem.label}`}
@@ -164,15 +181,6 @@ const UserMenu = () => {
             })}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
-
-        {/* Dashboard */}
-        <DropdownMenuItem
-          onClick={() => navigate(dashboardHref)}
-          className="cursor-pointer"
-        >
-          <span className="mr-2">📊</span>
-          <span className="flex-1">Dashboard</span>
-        </DropdownMenuItem>
 
         {/* Analytics Submenu */}
         <DropdownMenuSub>
@@ -215,6 +223,15 @@ const UserMenu = () => {
         </DropdownMenuSub>
 
         <DropdownMenuSeparator />
+
+        {/* Settings */}
+        <DropdownMenuItem
+          onClick={() => navigate(settingsHref)}
+          className="cursor-pointer"
+        >
+          <span className="mr-2">⚙️</span>
+          <span className="flex-1">Settings</span>
+        </DropdownMenuItem>
 
         {/* Sign Out */}
         <DropdownMenuItem
