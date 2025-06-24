@@ -3,11 +3,10 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from '@/components/Header';
-import PrivacyMapContainer from '@/components/map/PrivacyMapContainer';
+import HeatZoneMap from '@/components/HeatZoneMap';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { MapProvider } from '@/components/MapProvider';
 import { useToast } from '@/hooks/use-toast';
 
 const InteractiveMapPage = () => {
@@ -35,12 +34,8 @@ const InteractiveMapPage = () => {
       <Header />
       
       <div className="relative h-screen pt-16">
-        <MapProvider>
-          <PrivacyMapContainer 
-            showHeatZones={showHeatZones}
-            userRole={currentRole}
-          />
-        </MapProvider>
+        {/* Heat Zone Map with Montreal Market Intelligence */}
+        <HeatZoneMap userRole={currentRole} />
 
         {/* Control Panel - Heat Zones only */}
         <div className="absolute bottom-4 left-4 z-10 space-y-3">
