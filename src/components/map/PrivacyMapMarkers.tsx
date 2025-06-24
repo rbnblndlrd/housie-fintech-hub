@@ -147,7 +147,7 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
     <>
       {/* Privacy-protected provider markers (only show those who opted in) */}
       {visibleProviders.map(provider => (
-        <React.Fragment key={`provider-${provider.id}`}>
+        <div key={`provider-${provider.id}`}>
           <Marker
             position={provider.fuzzyLocation}
             onClick={() => onProviderClick(provider)}
@@ -172,12 +172,12 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
               }}
             />
           )}
-        </React.Fragment>
+        </div>
       ))}
 
       {/* Privacy-protected job service circles (approximate areas) */}
       {jobs.map(job => (
-        <React.Fragment key={`job-${job.id}`}>
+        <div key={`job-${job.id}`}>
           <Circle
             center={{
               lat: job.serviceCircle.lat,
@@ -197,7 +197,7 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
             icon={getJobMarkerIcon(job.priority)}
             title={`${job.title} - ${job.zone} ($${job.price})`}
           />
-        </React.Fragment>
+        </div>
       ))}
 
       {/* Hover Info Popup */}
