@@ -78,14 +78,18 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
               zIndex: 1
             }}
             onClick={() => onZoneClick(zone)}
-            onMouseOver={(e) => {
-              if (e.overlay) {
-                e.overlay.setOptions(hoverColors);
+            onMouseOver={() => {
+              // Update polygon styles on hover - using the polygon instance directly
+              const polygon = window.google?.maps?.event?.target;
+              if (polygon && polygon.setOptions) {
+                polygon.setOptions(hoverColors);
               }
             }}
-            onMouseOut={(e) => {
-              if (e.overlay) {
-                e.overlay.setOptions({
+            onMouseOut={() => {
+              // Reset polygon styles on mouse out
+              const polygon = window.google?.maps?.event?.target;
+              if (polygon && polygon.setOptions) {
+                polygon.setOptions({
                   ...colors,
                   strokeWeight: 2
                 });
