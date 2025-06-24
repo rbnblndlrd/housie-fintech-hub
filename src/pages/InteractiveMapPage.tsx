@@ -111,11 +111,11 @@ const InteractiveMapPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-            {/* Interactive Map Section - Now 75% width */}
-            <div className="lg:col-span-9">
-              <Card className="fintech-card h-[700px] relative">
-                <CardContent className="p-0 h-full">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* Interactive Map Section - Now truly 75% width */}
+            <div className="lg:col-span-10">
+              <Card className="fintech-card h-[800px] relative">
+                <CardContent className="p-2 h-full">
                   <PrivacyInteractiveJobsMap showHeatZones={showHeatZones} />
                   
                   {/* Shared Features Overlay */}
@@ -129,22 +129,22 @@ const InteractiveMapPage = () => {
             </div>
 
             {/* Role-Based Side Panel - Now 25% width */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-2 space-y-4">
               {/* Heat Zones Control for Providers */}
               {currentRole === 'provider' && (
                 <Card className="fintech-card">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         {showHeatZones ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                        <span className="font-medium">Heat Zones</span>
+                        <span className="font-medium text-sm">Heat Zones</span>
                       </div>
                       <Switch
                         checked={showHeatZones}
                         onCheckedChange={setShowHeatZones}
                       />
                     </div>
-                    <p className="text-xs text-gray-600 mt-2">
+                    <p className="text-xs text-gray-600">
                       View market demand by Montreal neighborhood
                     </p>
                   </CardContent>
