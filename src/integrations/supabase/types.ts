@@ -2381,6 +2381,9 @@ export type Database = {
           profile_image: string | null
           province: string | null
           service_categories: string[] | null
+          service_radius: number | null
+          service_type: string | null
+          show_on_map: boolean | null
           special_instructions: string | null
           status: string | null
           stripe_customer_id: string | null
@@ -2420,6 +2423,9 @@ export type Database = {
           profile_image?: string | null
           province?: string | null
           service_categories?: string[] | null
+          service_radius?: number | null
+          service_type?: string | null
+          show_on_map?: boolean | null
           special_instructions?: string | null
           status?: string | null
           stripe_customer_id?: string | null
@@ -2459,6 +2465,9 @@ export type Database = {
           profile_image?: string | null
           province?: string | null
           service_categories?: string[] | null
+          service_radius?: number | null
+          service_type?: string | null
+          show_on_map?: boolean | null
           special_instructions?: string | null
           status?: string | null
           stripe_customer_id?: string | null
