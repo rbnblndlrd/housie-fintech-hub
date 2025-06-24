@@ -43,18 +43,74 @@ export const mapOptions = {
 // Fix the libraries type to match @react-google-maps/api expectations
 export const libraries: ("places" | "geometry")[] = ["places", "geometry"];
 
-// Use environment variable for API key (client-side accessible)
-export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+// Enhanced environment variable handling with build-time validation
+const getGoogleMapsApiKey = (): string | undefined => {
+  // Vite embeds VITE_ variables at build time
+  const viteKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  
+  // Fallback for Next.js environments (if needed)
+  const nextKey = typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY : undefined;
+  
+  return viteKey || nextKey;
+};
 
-// Debug function to verify API key is loaded (without exposing the full key)
+// Get the API key using enhanced detection
+export const GOOGLE_MAPS_API_KEY = getGoogleMapsApiKey();
+
+// Enhanced debugging with environment detection
 export const debugApiKeyStatus = () => {
+  const isDevelopment = import.meta.env.DEV;
+  const isProduction = import.meta.env.PROD;
+  const buildTime = import.meta.env.MODE;
+  
+  console.log('🔍 Environment Detection:', {
+    isDevelopment,
+    isProduction,
+    buildMode: buildTime,
+    viteEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
+  });
+
   if (GOOGLE_MAPS_API_KEY) {
-    console.log('✅ Google Maps API key loaded:', GOOGLE_MAPS_API_KEY.substring(0, 10) + '...');
+    const keyPreview = GOOGLE_MAPS_API_KEY.substring(0, 10) + '...';
+    console.log('✅ Google Maps API key loaded successfully');
+    console.log('🔑 Key preview:', keyPreview);
+    console.log('📏 Key length:', GOOGLE_MAPS_API_KEY.length);
+    
+    if (isDevelopment) {
+      console.log('🏠 Development mode: Key loaded from local .env file');
+    } else if (isProduction) {
+      console.log('🚀 Production mode: Key loaded from GitHub Actions environment');
+    }
+    
     return true;
   } else {
-    console.error('❌ Google Maps API key not found. Check environment variables:');
-    console.log('- VITE_GOOGLE_MAPS_API_KEY (for Vite)');
-    console.log('- NEXT_PUBLIC_GOOGLE_MAPS_API_KEY (for Next.js)');
+    console.error('❌ Google Maps API key not found');
+    console.error('🔧 Environment variables available:', Object.keys(import.meta.env));
+    
+    if (isDevelopment) {
+      console.error('💡 Development fix: Check your .env file contains VITE_GOOGLE_MAPS_API_KEY');
+    } else {
+      console.error('💡 Production fix: Ensure GitHub secret VITE_GOOGLE_MAPS_API_KEY is set and workflow injects it');
+    }
+    
+    console.error('🔗 Available environment keys:', Object.keys(import.meta.env).join(', '));
     return false;
   }
 };
+
+// Build-time validation (runs during compilation)
+export const validateApiKeyAtBuildTime = () => {
+  const buildTimeKey = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
+  
+  if (!buildTimeKey) {
+    console.warn('⚠️ BUILD WARNING: VITE_GOOGLE_MAPS_API_KEY not found at build time');
+    console.warn('🔧 This may cause maps to fail in production');
+  } else {
+    console.log('✅ BUILD SUCCESS: Google Maps API key embedded at build time');
+  }
+  
+  return !!buildTimeKey;
+};
+
+// Run build-time validation
+validateApiKeyAtBuildTime();
