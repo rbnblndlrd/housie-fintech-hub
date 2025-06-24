@@ -43,5 +43,18 @@ export const mapOptions = {
 // Fix the libraries type to match @react-google-maps/api expectations
 export const libraries: ("places" | "geometry")[] = ["places", "geometry"];
 
-// Use your Web API key directly
-export const GOOGLE_MAPS_API_KEY = "AIzaSyAJXkmufaWRLR5t4iFFp4qupryDKNZZO9o";
+// Use environment variable for API key (client-side accessible)
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
+
+// Debug function to verify API key is loaded (without exposing the full key)
+export const debugApiKeyStatus = () => {
+  if (GOOGLE_MAPS_API_KEY) {
+    console.log('✅ Google Maps API key loaded:', GOOGLE_MAPS_API_KEY.substring(0, 10) + '...');
+    return true;
+  } else {
+    console.error('❌ Google Maps API key not found. Check environment variables:');
+    console.log('- VITE_GOOGLE_MAPS_API_KEY (for Vite)');
+    console.log('- NEXT_PUBLIC_GOOGLE_MAPS_API_KEY (for Next.js)');
+    return false;
+  }
+};

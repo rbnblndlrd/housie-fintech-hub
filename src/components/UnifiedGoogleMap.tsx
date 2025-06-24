@@ -2,7 +2,7 @@
 import React, { useState, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
-import { GOOGLE_MAPS_API_KEY, libraries, mapOptions } from './map/GoogleMapConfig';
+import { GOOGLE_MAPS_API_KEY, libraries, mapOptions, debugApiKeyStatus } from './map/GoogleMapConfig';
 
 interface UnifiedGoogleMapProps {
   center: { lat: number; lng: number };
@@ -74,12 +74,20 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   // Find hovered provider
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);
 
+  // Check API key availability and debug status
+  React.useEffect(() => {
+    debugApiKeyStatus();
+  }, []);
+
   if (!GOOGLE_MAPS_API_KEY) {
     return (
       <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
         <div className="text-center">
           <div className="text-red-600 mb-2">🗺️ Maps Configuration Required</div>
           <p className="text-gray-600">Google Maps API key not configured</p>
+          <p className="text-sm text-gray-500 mt-2">
+            Set VITE_GOOGLE_MAPS_API_KEY or NEXT_PUBLIC_GOOGLE_MAPS_API_KEY environment variable
+          </p>
         </div>
       </div>
     );
