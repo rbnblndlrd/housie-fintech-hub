@@ -11,7 +11,7 @@ interface UnifiedGoogleMapProps {
   providers?: Provider[];
   hoveredProviderId?: string | null;
   onProviderClick?: (provider: Provider) => void;
-  mode?: 'services' | 'interactive' | 'privacy';
+  mode?: 'services' | 'interactive' | 'privacy' | 'heatZones';
   children?: React.ReactNode;
 }
 
@@ -140,8 +140,8 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
           onLoad={onLoad}
           onUnmount={onUnmount}
         >
-          {/* Provider Markers */}
-          {providers.map(provider => (
+          {/* Provider Markers - Only show in services/interactive modes */}
+          {(mode === 'services' || mode === 'interactive') && providers.map(provider => (
             <Marker
               key={provider.id}
               position={{ lat: provider.lat, lng: provider.lng }}
@@ -152,7 +152,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
           ))}
 
           {/* Service Radius Circle for Hovered Provider */}
-          {hoveredProvider && (
+          {hoveredProvider && (mode === 'services' || mode === 'interactive') && (
             <Circle
               center={{ lat: hoveredProvider.lat, lng: hoveredProvider.lng }}
               radius={hoveredProvider.serviceRadius ? hoveredProvider.serviceRadius * 1000 : 10000}
@@ -167,7 +167,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
           )}
 
           {/* Info Window for Selected Provider */}
-          {selectedProvider && (
+          {selectedProvider && (mode === 'services' || mode === 'interactive') && (
             <InfoWindow
               position={{ lat: selectedProvider.lat, lng: selectedProvider.lng }}
               onCloseClick={() => setSelectedProvider(null)}
@@ -186,7 +186,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
             </InfoWindow>
           )}
 
-          {/* Custom children (for privacy markers, job overlays, etc.) */}
+          {/* Custom children (for privacy markers, job overlays, heat zones, etc.) */}
           {children}
         </GoogleMap>
       </LoadScript>
