@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, Clock, CreditCard, Star, Calendar, X, Bell } from 'lucide-react';
+import { CheckCircle, Clock, CreditCard, Star, Calendar, X, Bell, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
@@ -42,7 +42,11 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       case 'booking_cancelled':
         return <X className="h-4 w-4 text-red-500" />;
       case 'new_message':
-        return <Bell className="h-4 w-4 text-purple-500" />;
+        return <MessageCircle className="h-4 w-4 text-purple-500" />;
+      case 'booking_update':
+        return <Clock className="h-4 w-4 text-orange-500" />;
+      case 'system':
+        return <Bell className="h-4 w-4 text-blue-500" />;
       default:
         return <Clock className="h-4 w-4 text-gray-500" />;
     }
@@ -59,21 +63,22 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       case 'new_booking':
       case 'booking_confirmed':
       case 'booking_cancelled':
+      case 'booking_update':
         navigate('/booking-management');
         break;
       case 'payment_received':
-        navigate('/analytics');
+        navigate('/analytics-dashboard');
         break;
       case 'review_received':
         navigate('/provider-profile');
         break;
       case 'new_message':
-        // For chat messages, we could navigate to a chat page if it exists
-        // For now, navigate to dashboard
-        navigate('/dashboard');
+        // For chat messages, navigate to notifications page for now
+        // In the future, this could navigate directly to the chat
+        navigate('/notifications');
         break;
       default:
-        navigate('/dashboard');
+        navigate('/customer-dashboard');
         break;
     }
   };
