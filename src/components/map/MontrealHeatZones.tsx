@@ -51,21 +51,10 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
     }
   };
 
-  const getHoverColor = (demandLevel: 'high' | 'medium' | 'low') => {
-    const colors = getZoneColor(demandLevel);
-    return {
-      ...colors,
-      fillOpacity: colors.fillOpacity + 0.1,
-      strokeOpacity: 1,
-      strokeWeight: 3
-    };
-  };
-
   return (
     <>
       {zones.map((zone) => {
         const colors = getZoneColor(zone.demandLevel);
-        const hoverColors = getHoverColor(zone.demandLevel);
 
         return (
           <Polygon
@@ -78,23 +67,6 @@ const MontrealHeatZones: React.FC<MontrealHeatZonesProps> = ({
               zIndex: 1
             }}
             onClick={() => onZoneClick(zone)}
-            onMouseOver={() => {
-              // Update polygon styles on hover - using the polygon instance directly
-              const polygon = window.google?.maps?.event?.target;
-              if (polygon && polygon.setOptions) {
-                polygon.setOptions(hoverColors);
-              }
-            }}
-            onMouseOut={() => {
-              // Reset polygon styles on mouse out
-              const polygon = window.google?.maps?.event?.target;
-              if (polygon && polygon.setOptions) {
-                polygon.setOptions({
-                  ...colors,
-                  strokeWeight: 2
-                });
-              }
-            }}
           />
         );
       })}
