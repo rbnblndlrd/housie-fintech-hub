@@ -7,7 +7,6 @@ import PrivacyMapContainer from '@/components/map/PrivacyMapContainer';
 import { Card } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
-import { GoogleMapsProvider } from '@/components/map/GoogleMapsProvider';
 import { MapProvider } from '@/components/MapProvider';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,14 +35,12 @@ const InteractiveMapPage = () => {
       <Header />
       
       <div className="relative h-screen pt-16">
-        <GoogleMapsProvider>
-          <MapProvider>
-            <PrivacyMapContainer 
-              showHeatZones={showHeatZones}
-              userRole={currentRole}
-            />
-          </MapProvider>
-        </GoogleMapsProvider>
+        <MapProvider>
+          <PrivacyMapContainer 
+            showHeatZones={showHeatZones}
+            userRole={currentRole}
+          />
+        </MapProvider>
 
         {/* Control Panel - Heat Zones only */}
         <div className="absolute bottom-4 left-4 z-10 space-y-3">
