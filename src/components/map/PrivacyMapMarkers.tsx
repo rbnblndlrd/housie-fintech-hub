@@ -129,7 +129,7 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
   };
 
   const handleProviderMouseOver = (provider: PrivacyProvider, event: google.maps.MapMouseEvent) => {
-    if (event.domEvent) {
+    if (event.domEvent && event.domEvent instanceof MouseEvent) {
       setHoveredProvider(provider);
       setHoverPosition({
         x: event.domEvent.clientX,
@@ -168,7 +168,6 @@ const PrivacyMapMarkers: React.FC<PrivacyMapMarkersProps> = ({
                 strokeColor: '#3b82f6',
                 strokeOpacity: 0.5,
                 strokeWeight: 2,
-                strokeStyle: 'dashed',
                 clickable: false
               }}
             />

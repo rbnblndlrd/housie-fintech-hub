@@ -11,6 +11,9 @@ export interface MontrealProvider {
   verified?: boolean;
   hourlyRate?: number;
   distance?: string;
+  show_on_map?: boolean;
+  confidentiality_radius?: number;
+  service_radius?: number;
 }
 
 export const montrealProviders: MontrealProvider[] = [
@@ -25,7 +28,8 @@ export const montrealProviders: MontrealProvider[] = [
     serviceRadius: 15,
     verified: true,
     hourlyRate: 45,
-    distance: "1.2 km"
+    distance: "1.2 km",
+    show_on_map: true
   },
   {
     id: 2,
@@ -38,7 +42,8 @@ export const montrealProviders: MontrealProvider[] = [
     serviceRadius: 20,
     verified: true,
     hourlyRate: 75,
-    distance: "2.8 km"
+    distance: "2.8 km",
+    show_on_map: true
   },
   {
     id: 3,
@@ -51,6 +56,7 @@ export const montrealProviders: MontrealProvider[] = [
     serviceRadius: 12,
     verified: true,
     hourlyRate: 65,
-    distance: "3.1 km"
+    distance: "3.1 km",
+    show_on_map: true
   }
 ];
