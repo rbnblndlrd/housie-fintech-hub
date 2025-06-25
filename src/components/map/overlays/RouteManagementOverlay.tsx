@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Navigation, Clock, Plus, RotateCcw, MapPin, Minimize2, GripVertical } from 'lucide-react';
-import { OverlayWrapper } from './OverlayWrapper';
+import OverlayWrapper from './OverlayWrapper';
 
 interface Job {
   id: string;

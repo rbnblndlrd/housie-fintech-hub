@@ -1,11 +1,10 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { TrendingUp, Eye, Users, MapPin, Minimize2, GripVertical } from 'lucide-react';
-import { OverlayWrapper } from './OverlayWrapper';
+import OverlayWrapper from './OverlayWrapper';
 
 interface MarketInsightsOverlayProps {
   position: string;
