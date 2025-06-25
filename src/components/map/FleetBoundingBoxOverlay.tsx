@@ -33,8 +33,7 @@ const FleetBoundingBoxOverlay: React.FC<FleetBoundingBoxOverlayProps> = ({
         fillOpacity: 0.05,
         strokeColor: '#3b82f6',
         strokeOpacity: 0.3,
-        strokeWeight: 2,
-        strokeDashArray: [10, 5]
+        strokeWeight: 2
       }}
     />
   );
