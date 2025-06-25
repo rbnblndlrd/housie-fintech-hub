@@ -53,15 +53,23 @@ const Index = () => {
   const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen" style={{ 
+      backgroundImage: `url('/lovable-uploads/a98e4703-b9ee-42e9-b838-dfa246ee2aa8.png')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    }}>
       <Header />
       
-      {/* Hero Section with Enhanced Mascot */}
-      <section className="pt-20 pb-20 px-4 bg-gradient-to-br from-yellow-50 via-orange-50 to-purple-50 relative overflow-hidden">
+      {/* Hero Section with Sunset Gradient */}
+      <section className="pt-20 pb-20 px-4 relative overflow-hidden" style={{
+        background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 25%, #ff6b9d 50%, #c44569 75%, #6c5ce7 100%)',
+        backgroundAttachment: 'fixed'
+      }}>
         {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(0,0,0,0.2) 2px, transparent 0), radial-gradient(circle at 75px 75px, rgba(0,0,0,0.1) 2px, transparent 0)`,
+            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(255,255,255,0.3) 2px, transparent 0), radial-gradient(circle at 75px 75px, rgba(255,255,255,0.2) 2px, transparent 0)`,
             backgroundSize: '100px 100px'
           }}></div>
         </div>
@@ -76,19 +84,19 @@ const Index = () => {
                   <PopArtMascot className="w-48 h-48 lg:w-56 lg:h-56" />
                   
                   {/* Animated rings around mascot */}
-                  <div className="absolute inset-0 rounded-full border-4 border-orange-200 animate-pulse opacity-50"></div>
-                  <div className="absolute inset-4 rounded-full border-2 border-purple-200 animate-pulse opacity-30" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute inset-0 rounded-full border-4 border-white/30 animate-pulse opacity-50"></div>
+                  <div className="absolute inset-4 rounded-full border-2 border-white/20 animate-pulse opacity-30" style={{ animationDelay: '1s' }}></div>
                 </div>
 
                 {/* Enhanced Speech Bubble */}
-                <div className="absolute -top-20 -right-8 lg:-right-16 bg-white rounded-2xl px-6 py-4 shadow-xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300">
+                <div className="absolute -top-20 -right-8 lg:-right-16 bg-white/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-white/50 transform rotate-2 hover:rotate-0 transition-transform duration-300">
                   <div className="text-lg font-black text-gray-800">
                     Welcome to HOUSIE! 👋
                   </div>
                   <div className="text-sm text-gray-600 font-medium">
                     Let's find you the perfect match!
                   </div>
-                  <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+                  <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-white/50"></div>
                 </div>
               </div>
             </div>
@@ -97,20 +105,20 @@ const Index = () => {
             <div className="space-y-8">
               <div className="space-y-6">
                 <div className="space-y-4">
-                  <h1 className="text-5xl lg:text-7xl font-black text-gray-900 leading-tight">
+                  <h1 className="text-5xl lg:text-7xl font-black text-white leading-tight drop-shadow-2xl">
                     Find Local<br />
-                    <span className="text-transparent bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 bg-clip-text">
+                    <span className="text-yellow-300 drop-shadow-lg">
                       Experts
                     </span>
                   </h1>
                   
-                  <p className="text-xl lg:text-2xl text-gray-600 font-medium leading-relaxed">
+                  <p className="text-xl lg:text-2xl text-white/90 font-medium leading-relaxed drop-shadow-lg">
                     Connect with verified professionals in your area. Safe, secure, and guaranteed.
                   </p>
                 </div>
                 
                 {/* Enhanced Value Props Card */}
-                <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 border-2 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
+                <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-8 border-2 border-white/50 shadow-2xl hover:shadow-3xl transition-all duration-300">
                   <h2 className="text-2xl font-black text-gray-800 mb-6 flex items-center gap-3">
                     <Shield className="h-8 w-8 text-orange-500" />
                     Why Choose HOUSIE?
@@ -147,7 +155,7 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Button className="bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-black py-6 px-10 rounded-2xl text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
+                <Button className="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white font-black py-6 px-10 rounded-2xl text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-white/30 hover:border-white/50">
                   Take the Tour
                   <ArrowRight className="h-6 w-6 ml-3" />
                 </Button>
@@ -158,7 +166,7 @@ const Index = () => {
       </section>
 
       {/* User Type Selection Wizard */}
-      <section className="py-24 px-4 bg-gradient-to-br from-white via-gray-50 to-blue-50 relative">
+      <section className="py-24 px-4 relative">
         {/* Section Background Pattern */}
         <div className="absolute inset-0 opacity-3">
           <div className="absolute inset-0" style={{
@@ -171,7 +179,7 @@ const Index = () => {
           <div className="text-center mb-20">
             {/* Mascot Speech Bubble for Section */}
             <div className="inline-block relative">
-              <div className="bg-white rounded-3xl px-10 py-8 border-2 border-black shadow-2xl relative transform hover:scale-105 transition-transform duration-300">
+              <div className="bg-white/95 backdrop-blur-sm rounded-3xl px-10 py-8 border-2 border-black shadow-2xl relative transform hover:scale-105 transition-transform duration-300">
                 <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
                   <div className="w-16 h-16 bg-gradient-to-br from-orange-400 to-purple-500 rounded-full flex items-center justify-center text-white text-2xl font-black border-2 border-black shadow-lg">
                     ?
@@ -195,7 +203,7 @@ const Index = () => {
             {userTypeOptions.map((option) => (
               <Card 
                 key={option.id}
-                className={`cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-3 bg-white border-2 border-black rounded-2xl p-8 relative overflow-hidden ${
+                className={`cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-3 bg-white/95 backdrop-blur-sm border-2 border-black rounded-2xl p-8 relative overflow-hidden ${
                   selectedUserType === option.id ? 'ring-4 ring-orange-400 shadow-2xl scale-105' : 'hover:scale-105'
                 }`}
                 onClick={() => handleUserTypeSelect(option.id)}
@@ -238,7 +246,7 @@ const Index = () => {
 
       {/* Interactive Demo Section */}
       {selectedOption && (
-        <section id="demo-section" className="py-24 px-4 bg-gradient-to-br from-gray-50 via-white to-purple-50 relative">
+        <section id="demo-section" className="py-24 px-4 relative">
           {/* Background decoration */}
           <div className="absolute inset-0 opacity-5">
             <div className="absolute top-20 left-10 w-32 h-32 bg-orange-200 rounded-full blur-3xl"></div>
@@ -247,7 +255,7 @@ const Index = () => {
 
           <div className="max-w-7xl mx-auto relative">
             <div className="text-center mb-20">
-              <div className="inline-block bg-white rounded-3xl px-10 py-8 border-2 border-black shadow-2xl relative">
+              <div className="inline-block bg-white/95 backdrop-blur-sm rounded-3xl px-10 py-8 border-2 border-black shadow-2xl relative">
                 <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-4">
                   See HOUSIE in Action
                 </h2>
@@ -259,7 +267,7 @@ const Index = () => {
 
             <div className="grid lg:grid-cols-2 gap-16 items-center">
               {/* Demo Screenshot */}
-              <div className="bg-white rounded-3xl border-2 border-black shadow-2xl p-8 transform hover:scale-105 transition-transform duration-300">
+              <div className="bg-white/95 backdrop-blur-sm rounded-3xl border-2 border-black shadow-2xl p-8 transform hover:scale-105 transition-transform duration-300">
                 <img 
                   src={selectedOption.demoImage} 
                   alt={`${selectedOption.title} Demo`}
@@ -269,7 +277,7 @@ const Index = () => {
 
               {/* Demo Benefits */}
               <div className="space-y-8">
-                <div className="bg-white rounded-3xl border-2 border-black shadow-2xl p-10">
+                <div className="bg-white/95 backdrop-blur-sm rounded-3xl border-2 border-black shadow-2xl p-10">
                   <h3 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
                     <Star className="h-8 w-8 text-orange-500" />
                     Why {selectedOption.title.replace('?', '')} Love HOUSIE
@@ -312,10 +320,10 @@ const Index = () => {
       )}
 
       {/* Enhanced Pricing Section */}
-      <div id="pricing-section" className="relative bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      <div id="pricing-section" className="relative">
         {/* Mascot pointing to best value */}
         <div className="absolute top-32 left-16 z-20 hidden lg:block">
-          <div className="bg-white rounded-2xl px-8 py-6 border-2 border-black shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-300">
+          <div className="bg-white/95 backdrop-blur-sm rounded-2xl px-8 py-6 border-2 border-black shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-300">
             <div className="text-lg font-black text-gray-800 flex items-center gap-2">
               <Star className="h-6 w-6 text-orange-500" />
               Best Value! 👆
