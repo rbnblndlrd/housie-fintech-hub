@@ -51,15 +51,15 @@ const InteractiveMapBottomPanel: React.FC<InteractiveMapBottomPanelProps> = ({
   return (
     <div className="h-full flex">
       {/* Regional Insights */}
-      <Card className="flex-1 m-4 mr-2">
-        <CardHeader className="pb-3">
+      <Card className="flex-1 m-2 mr-1">
+        <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             <TrendingUp className="h-4 w-4" />
             Regional Market Trends
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="grid grid-cols-3 gap-4 mb-4">
+          <div className="grid grid-cols-3 gap-3 mb-3">
             <div className="text-center">
               <div className="text-lg font-bold text-green-600">↗ 15%</div>
               <div className="text-xs text-gray-600">Demand Growth</div>
@@ -74,26 +74,26 @@ const InteractiveMapBottomPanel: React.FC<InteractiveMapBottomPanelProps> = ({
             </div>
           </div>
           
-          <div className="space-y-2">
+          <div className="space-y-1">
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Cleaning Services</span>
-              <Badge variant="secondary" className="bg-green-100 text-green-700">High Demand</Badge>
+              <Badge variant="secondary" className="bg-green-100 text-green-700 text-xs">High Demand</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Handyman Work</span>
-              <Badge variant="secondary" className="bg-yellow-100 text-yellow-700">Medium Demand</Badge>
+              <Badge variant="secondary" className="bg-yellow-100 text-yellow-700 text-xs">Medium Demand</Badge>
             </div>
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Moving Services</span>
-              <Badge variant="secondary" className="bg-red-100 text-red-700">Low Supply</Badge>
+              <Badge variant="secondary" className="bg-red-100 text-red-700 text-xs">Low Supply</Badge>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* Quick Actions */}
-      <Card className="w-80 m-4 mx-2">
-        <CardHeader className="pb-3">
+      <Card className="w-80 m-2 mx-1">
+        <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             <Activity className="h-4 w-4" />
             Quick Actions
@@ -135,15 +135,15 @@ const InteractiveMapBottomPanel: React.FC<InteractiveMapBottomPanelProps> = ({
       </Card>
 
       {/* Recent Activity */}
-      <Card className="flex-1 m-4 ml-2">
-        <CardHeader className="pb-3">
+      <Card className="flex-1 m-2 ml-1">
+        <CardHeader className="pb-2">
           <CardTitle className="text-sm flex items-center gap-2">
             <Activity className="h-4 w-4" />
             Recent Activity in Visible Area
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
-          <div className="space-y-3">
+          <div className="space-y-2">
             {recentActivity.map((activity) => (
               <div key={activity.id} className="flex items-center justify-between p-2 bg-gray-50 rounded">
                 <div className="flex-1">
