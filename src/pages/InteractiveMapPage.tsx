@@ -167,23 +167,23 @@ const InteractiveMapPage = () => {
     return shouldRender;
   };
 
-  // Simplified positioning system with safe viewport boundaries
+  // FIXED: Simplified positioning system with !important modifiers for visibility
   const getOverlayPositionClasses = (overlayId: string): string => {
     switch (overlayId) {
       case 'emergency-jobs':
-        return 'top-20 left-4 md:top-20 md:left-5';
+        return '!fixed !top-20 !left-4 !z-40 md:!top-20 md:!left-5';
       case 'market-insights':
-        return 'top-20 right-4 md:top-20 md:right-5';
+        return '!fixed !top-20 !right-4 !z-40 md:!top-20 md:!right-5';
       case 'location-analytics':
-        return 'bottom-20 right-4 md:bottom-20 md:right-5';
+        return '!fixed !bottom-20 !right-4 !z-40 md:!bottom-20 md:!right-5';
       case 'route-management':
-        return 'bottom-20 left-4 md:bottom-20 md:left-5';
+        return '!fixed !bottom-20 !left-4 !z-40 md:!bottom-20 md:!left-5';
       case 'fleet-management':
-        return 'top-20 left-4 md:top-20 md:left-5';
+        return '!fixed !top-20 !left-4 !z-40 md:!top-20 md:!left-5';
       case 'fleet-vehicles-view':
-        return 'bottom-20 left-1/2 transform -translate-x-1/2';
+        return '!fixed !bottom-20 !left-1/2 !transform !-translate-x-1/2 !z-40';
       default:
-        return 'top-20 right-4 md:top-20 md:right-5';
+        return '!fixed !top-20 !right-4 !z-40 md:!top-20 md:!right-5';
     }
   };
 
@@ -225,11 +225,11 @@ const InteractiveMapPage = () => {
           isPremium={isPremium}
         />
 
-        {/* Fixed Overlay Layout with Safe Positioning */}
+        {/* FIXED: Direct positioning with !important modifiers to ensure visibility */}
         
         {/* Emergency Jobs Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
-          <div className={`absolute ${getOverlayPositionClasses('emergency-jobs')} z-30`}>
+          <div className={getOverlayPositionClasses('emergency-jobs')}>
             <EmergencyJobsOverlay
               position=""
               visible={true}
@@ -246,7 +246,7 @@ const InteractiveMapPage = () => {
 
         {/* Route Management Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <div className={`absolute ${getOverlayPositionClasses('route-management')} z-30`}>
+          <div className={getOverlayPositionClasses('route-management')}>
             <RouteManagementOverlay
               position=""
               visible={true}
@@ -263,7 +263,7 @@ const InteractiveMapPage = () => {
 
         {/* Fleet Management Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <div className={`absolute ${getOverlayPositionClasses('fleet-management')} z-30`}>
+          <div className={getOverlayPositionClasses('fleet-management')}>
             <FleetManagementOverlay
               position=""
               visible={true}
@@ -277,7 +277,7 @@ const InteractiveMapPage = () => {
 
         {/* Market Insights Overlay - Always Visible */}
         {shouldRenderOverlay('market-insights') && (
-          <div className={`absolute ${getOverlayPositionClasses('market-insights')} z-30`}>
+          <div className={getOverlayPositionClasses('market-insights')}>
             <MarketInsightsOverlay
               position=""
               visible={true}
@@ -297,7 +297,7 @@ const InteractiveMapPage = () => {
 
         {/* Location Analytics Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <div className={`absolute ${getOverlayPositionClasses('location-analytics')} z-30`}>
+          <div className={getOverlayPositionClasses('location-analytics')}>
             <LocationAnalyticsOverlay
               position=""
               visible={true}
@@ -316,7 +316,7 @@ const InteractiveMapPage = () => {
 
         {/* Fleet Vehicles View Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <div className={`absolute ${getOverlayPositionClasses('fleet-vehicles-view')} z-30`}>
+          <div className={getOverlayPositionClasses('fleet-vehicles-view')}>
             <FleetVehiclesViewOverlay
               position=""
               visible={true}
