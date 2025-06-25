@@ -1,8 +1,7 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, Star, MessageCircle, BarChart3, Shield, Clock, DollarSign, Users, Zap, CheckCircle, Truck, Wrench, ArrowRight } from "lucide-react";
+import { Search, MapPin, Star, MessageCircle, BarChart3, Shield, Clock, DollarSign, Users, Zap, CheckCircle, Truck, Wrench, ArrowRight, Eye, FileCheck } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
@@ -37,7 +36,7 @@ const Index = () => {
       title: "Need a Local Expert?",
       description: "Find trusted, verified professionals for your home and business needs",
       icon: <Search className="h-12 w-12 text-purple-600" />,
-      benefits: ["Verified professionals", "Instant booking", "Secure payments", "Quality guarantee"],
+      benefits: ["Verified professionals", "Instant booking", "Secure payments", "Privacy focused"],
       demoImage: "/lovable-uploads/browse-services(broken).png"
     }
   ];
@@ -141,23 +140,23 @@ const Index = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream/80 rounded-xl border-2 border-black">
-                      <Star className="h-6 w-6 lg:h-8 lg:w-8 text-yellow-600 flex-shrink-0" />
+                      <Eye className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600 flex-shrink-0" />
                       <div>
-                        <span className="font-bold text-black block text-sm lg:text-base">Quality Guarantee</span>
-                        <span className="text-xs lg:text-sm text-gray-800">100% satisfaction</span>
+                        <span className="font-bold text-black block text-sm lg:text-base">Privacy Focused</span>
+                        <span className="text-xs lg:text-sm text-gray-800">Your data protected</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream/80 rounded-xl border-2 border-black">
-                      <Clock className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600 flex-shrink-0" />
+                      <FileCheck className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
                       <div>
-                        <span className="font-bold text-black block text-sm lg:text-base">24/7 Support</span>
-                        <span className="text-xs lg:text-sm text-gray-800">Always here to help</span>
+                        <span className="font-bold text-black block text-sm lg:text-base">2025 Compliant</span>
+                        <span className="text-xs lg:text-sm text-gray-800">Up to date regulations</span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <Button className="bg-orange-600 hover:bg-orange-700 text-cream font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
+                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
                   Take the Tour
                   <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
                 </Button>

@@ -154,30 +154,6 @@ export const PricingSection = () => {
             </Card>
           ))}
         </div>
-
-        {/* Additional Info */}
-        <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-orange-600 to-purple-600 text-cream rounded-xl p-8 max-w-4xl mx-auto border-3 border-black shadow-lg">
-            <h3 className="text-2xl font-black mb-4">
-              🎯 Garantie de Revenus Augmentés
-            </h3>
-            <p className="text-lg leading-relaxed mb-6">
-              Nos clients Pro et Premium voient leurs revenus augmenter de 40% en moyenne 
-              grâce à nos outils d'optimisation IA et nos réservations groupées. 
-              Garantie 30 jours ou remboursé!
-            </p>
-            <div className="flex flex-wrap justify-center gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4" />
-                <span>Conforme aux nouvelles lois</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4" />
-                <span>Annulation à tout moment</span>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );
