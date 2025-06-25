@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -166,33 +167,25 @@ const InteractiveMapPage = () => {
     return shouldRender;
   };
 
-  // Organized positioning system with proper spacing and collision detection
+  // Fixed positioning system using static Tailwind classes
   const getOverlayPosition = (overlayId: string): string => {
     const overlay = overlays.find(o => o.id === overlayId);
     if (!overlay) return 'top-20 right-4';
     
-    const baseSpacing = 20; // 20px from edges
-    const gapSpacing = 16; // 16px gaps between overlays
-    
+    // Mobile-first responsive positioning
     switch (overlay.position) {
       case 'top-left':
-        return `top-[${baseSpacing + 64}px] left-[${baseSpacing}px]`; // 64px for header height
+        return 'top-20 left-4 md:top-20 md:left-5';
       case 'top-right':
-        return `top-[${baseSpacing + 64}px] right-[${baseSpacing}px]`;
+        return 'top-20 right-4 md:top-20 md:right-5';
       case 'bottom-left':
-        return `bottom-[${baseSpacing}px] left-[${baseSpacing}px]`;
+        return 'bottom-4 left-4 md:bottom-5 md:left-5';
       case 'bottom-right':
-        // Stack bottom-right overlays with proper spacing
-        const bottomRightOverlays = overlays.filter(o => 
-          o.position === 'bottom-right' && o.visible && shouldRenderOverlay(o.id)
-        );
-        const overlayIndex = bottomRightOverlays.findIndex(o => o.id === overlayId);
-        const stackOffset = overlayIndex * (300 + gapSpacing); // 300px height + gap
-        return `bottom-[${baseSpacing + stackOffset}px] right-[${baseSpacing}px]`;
+        return 'bottom-4 right-4 md:bottom-5 md:right-5';
       case 'bottom-center':
-        return `bottom-[${baseSpacing}px] left-1/2 -translate-x-1/2`;
+        return 'bottom-4 left-1/2 transform -translate-x-1/2 md:bottom-5';
       default:
-        return `top-[${baseSpacing + 64}px] right-[${baseSpacing}px]`;
+        return 'top-20 right-4 md:top-20 md:right-5';
     }
   };
 
@@ -234,11 +227,11 @@ const InteractiveMapPage = () => {
           isPremium={isPremium}
         />
 
-        {/* LEFT SIDE OVERLAYS */}
+        {/* Mobile-First Overlay Layout */}
         
-        {/* Emergency Jobs Overlay - TOP-LEFT (Individual Mode Only, Hideable) */}
+        {/* Emergency Jobs Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
-          <div className={getOverlayPosition('emergency-jobs')}>
+          <div className={`absolute ${getOverlayPosition('emergency-jobs')} z-30`}>
             <EmergencyJobsOverlay
               position=""
               visible={true}
@@ -253,9 +246,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Route Management Overlay - BOTTOM-LEFT (Individual Mode Only) */}
+        {/* Route Management Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <div className={getOverlayPosition('route-management')}>
+          <div className={`absolute ${getOverlayPosition('route-management')} z-30`}>
             <RouteManagementOverlay
               position=""
               visible={true}
@@ -270,9 +263,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Fleet Management Overlay - TOP-LEFT (Fleet Mode Only) */}
+        {/* Fleet Management Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <div className={getOverlayPosition('fleet-management')}>
+          <div className={`absolute ${getOverlayPosition('fleet-management')} z-30`}>
             <FleetManagementOverlay
               position=""
               visible={true}
@@ -284,11 +277,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* RIGHT SIDE OVERLAYS - Organized Stack */}
-        
-        {/* Market Insights Overlay - TOP-RIGHT */}
+        {/* Market Insights Overlay - Always Visible */}
         {shouldRenderOverlay('market-insights') && (
-          <div className={getOverlayPosition('market-insights')}>
+          <div className={`absolute ${getOverlayPosition('market-insights')} z-30`}>
             <MarketInsightsOverlay
               position=""
               visible={true}
@@ -306,9 +297,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Location Analytics Overlay - BOTTOM-RIGHT (Individual Mode Only) */}
+        {/* Location Analytics Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <div className={getOverlayPosition('location-analytics')}>
+          <div className={`absolute ${getOverlayPosition('location-analytics')} z-30`}>
             <LocationAnalyticsOverlay
               position=""
               visible={true}
@@ -325,11 +316,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* BOTTOM CENTER OVERLAYS */}
-        
-        {/* Fleet Vehicles View Overlay - BOTTOM-CENTER (Fleet Mode Only) */}
+        {/* Fleet Vehicles View Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <div className={getOverlayPosition('fleet-vehicles-view')}>
+          <div className={`absolute ${getOverlayPosition('fleet-vehicles-view')} z-30`}>
             <FleetVehiclesViewOverlay
               position=""
               visible={true}
