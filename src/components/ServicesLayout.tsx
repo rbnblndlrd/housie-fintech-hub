@@ -5,6 +5,7 @@ import ModernServicesHeader from "@/components/ModernServicesHeader";
 import ModernServiceFilters from "@/components/ModernServiceFilters";
 import InteractiveServicesMap from "@/components/InteractiveServicesMap";
 import ModernServicesGrid from "@/components/ModernServicesGrid";
+import InteractiveMapToggle from "@/components/InteractiveMapToggle";
 import { Service } from "@/types/service";
 import { sampleProviders } from "@/data/sampleServices";
 
@@ -57,6 +58,14 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
     ? providersWithRadius.filter(provider => provider.verified)
     : providersWithRadius;
 
+  // Create URLSearchParams to pass current filters to interactive map
+  const searchParams = new URLSearchParams();
+  if (searchTerm) searchParams.set('search', searchTerm);
+  if (selectedCategory !== 'all') searchParams.set('category', selectedCategory);
+  if (selectedSubcategory !== 'all') searchParams.set('subcategory', selectedSubcategory);
+  if (selectedLocation !== 'montreal') searchParams.set('location', selectedLocation);
+  if (verifiedOnly) searchParams.set('verified', 'true');
+
   return (
     <>
       <Header />
@@ -84,8 +93,16 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
             />
           </div>
 
-          {/* Interactive Map Section */}
-          <div className="fintech-card overflow-hidden">
+          {/* Interactive Map Section with Toggle Button */}
+          <div className="fintech-card overflow-hidden relative">
+            {/* Interactive Map Toggle Button - Positioned in top-right */}
+            <div className="absolute top-4 right-4 z-10">
+              <InteractiveMapToggle 
+                searchParams={searchParams}
+                className="shadow-sm"
+              />
+            </div>
+            
             <InteractiveServicesMap
               providers={filteredProviders}
               hoveredProviderId={hoveredProviderId}
