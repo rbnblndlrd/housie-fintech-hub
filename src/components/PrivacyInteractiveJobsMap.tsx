@@ -4,14 +4,11 @@ import { usePrivacyEmergencyJobs } from '@/hooks/usePrivacyEmergencyJobs';
 import { useRole } from '@/contexts/RoleContext';
 import { getProviderWithServiceRadius } from '@/utils/locationPrivacy';
 import { montrealProviders } from '@/data/montrealProviders';
-import { montrealHeatZones } from '@/data/montrealHeatZones';
 import { UnifiedGoogleMap } from './UnifiedGoogleMap';
 import PrivacyMapMarkers from './map/PrivacyMapMarkers';
-import MontrealHeatZones from './map/MontrealHeatZones';
 import LiveStatsCard from './map/LiveStatsCard';
 import LoadingOverlay from './map/LoadingOverlay';
 import SelectedJobCard from './map/SelectedJobCard';
-import SelectedZoneCard from './map/SelectedZoneCard';
 
 interface PrivacyInteractiveJobsMapProps {
   showHeatZones: boolean;
@@ -21,7 +18,6 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
   const { emergencyJobs, liveStats, loading, acceptEmergencyJob } = usePrivacyEmergencyJobs();
   const { currentRole } = useRole();
   const [selectedJob, setSelectedJob] = useState<any>(null);
-  const [selectedZone, setSelectedZone] = useState<any>(null);
 
   console.log('🗺️ PrivacyInteractiveJobsMap render:', { 
     showHeatZones, 
@@ -51,10 +47,6 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
     setSelectedJob(job);
   };
 
-  const handleZoneSelect = (zone: any) => {
-    setSelectedZone(zone);
-  };
-
   const handleAcceptJob = async (jobId: string) => {
     if (currentRole === 'provider') {
       const success = await acceptEmergencyJob(jobId);
@@ -81,16 +73,6 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
           onProviderClick={(provider) => console.log('Provider clicked:', provider.name)}
           onJobClick={handleJobSelect}
         />
-
-        {/* Montreal Heat Zones - Only show if enabled and user is provider */}
-        {showHeatZones && currentRole === 'provider' && (
-          <MontrealHeatZones
-            zones={montrealHeatZones}
-            isMapReady={true}
-            onZoneClick={handleZoneSelect}
-            showLabels={true}
-          />
-        )}
       </UnifiedGoogleMap>
 
       {/* Live Stats Card */}
@@ -102,12 +84,6 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
         currentRole={currentRole}
         onClose={() => setSelectedJob(null)}
         onAcceptJob={handleAcceptJob}
-      />
-
-      {/* Selected Zone Info */}
-      <SelectedZoneCard
-        selectedZone={selectedZone}
-        onClose={() => setSelectedZone(null)}
       />
 
       {/* Loading Overlay */}
