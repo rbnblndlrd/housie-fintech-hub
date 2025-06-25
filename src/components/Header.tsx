@@ -45,30 +45,32 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-900 text-white shadow-lg">
+    <header className="bg-gray-900 text-white shadow-lg relative z-50 pointer-events-auto">
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left side - Logo and Navigation */}
-          <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={handleLogoClick}>
+          <div className="flex items-center space-x-8 pointer-events-auto">
+            <div className="flex items-center space-x-2 cursor-pointer pointer-events-auto" onClick={handleLogoClick}>
               <img 
                 src="/lovable-uploads/bf9b9088-19df-408a-89eb-3638be9d8ccf.png" 
                 alt="HOUSIE" 
                 className="h-8 w-auto" 
               />
             </div>
-            <DynamicNavigation items={navigationItems} />
+            <div className="pointer-events-auto">
+              <DynamicNavigation items={navigationItems} />
+            </div>
           </div>
 
           {/* Right side - Actions and User Menu */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 pointer-events-auto">
             <HeaderActions />
             {user ? (
               <UserMenu />
             ) : (
               <Button 
                 onClick={() => navigate('/auth')}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
+                className="bg-blue-600 hover:bg-blue-700 text-white pointer-events-auto"
               >
                 Sign In
               </Button>

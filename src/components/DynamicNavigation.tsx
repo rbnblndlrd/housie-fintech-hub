@@ -54,7 +54,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
   }
 
   return (
-    <div className={cn("flex items-center justify-center pointer-events-auto", className)}>
+    <nav className={cn("flex items-center justify-center pointer-events-auto", className)}>
       <div className="flex items-center space-x-6 pointer-events-auto">
         {/* Show all navigation items except the first one (HOUSIE logo) for desktop navigation */}
         {items.slice(1).map((item, index) => (
@@ -62,19 +62,23 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
             key={`desktop-nav-${index}-${item.href}`}
             to={item.href}
             className={cn(
-              "px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 cursor-pointer pointer-events-auto",
+              "px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 cursor-pointer pointer-events-auto relative z-50",
               "whitespace-nowrap min-w-[80px] text-center",
               "hover:text-white hover:bg-gray-800",
               isActive(item.href)
                 ? "text-white bg-gray-800"
                 : "text-gray-300"
             )}
+            onClick={(e) => {
+              console.log('🔗 Navigation link clicked:', item.href);
+              // Let React Router handle the navigation
+            }}
           >
             {item.label}
           </Link>
         ))}
       </div>
-    </div>
+    </nav>
   );
 };
 
