@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 interface OverlayWrapperProps {
   children: React.ReactNode;
@@ -16,51 +16,88 @@ export const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const elementRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!draggable) return;
+    if (!draggable || !elementRef.current) return;
+    
+    e.preventDefault();
+    
+    const rect = elementRef.current.getBoundingClientRect();
+    const offsetX = e.clientX - rect.left;
+    const offsetY = e.clientY - rect.top;
+    
+    setDragOffset({ x: offsetX, y: offsetY });
+    
+    // Set initial drag position to current element position
+    setDragPosition({
+      x: rect.left,
+      y: rect.top
+    });
+    
+    // Immediately disable transitions and apply dragging styles
+    elementRef.current.style.transition = 'none';
+    elementRef.current.style.position = 'fixed';
+    elementRef.current.style.zIndex = '9999';
+    elementRef.current.style.opacity = '0.9';
+    elementRef.current.style.transform = 'rotate(2deg)';
+    elementRef.current.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
     
     setIsDragging(true);
-    const rect = e.currentTarget.getBoundingClientRect();
-    setDragOffset({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    });
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !draggable) return;
+    if (!isDragging || !elementRef.current) return;
     
-    const element = document.getElementById('dragging-overlay');
-    if (element) {
-      element.style.left = `${e.clientX - dragOffset.x}px`;
-      element.style.top = `${e.clientY - dragOffset.y}px`;
-      element.style.position = 'fixed';
-    }
+    const newX = e.clientX - dragOffset.x;
+    const newY = e.clientY - dragOffset.y;
+    
+    setDragPosition({ x: newX, y: newY });
+    
+    // Use transform for smooth positioning
+    elementRef.current.style.left = `${newX}px`;
+    elementRef.current.style.top = `${newY}px`;
   };
 
   const handleMouseUp = () => {
-    if (!draggable) return;
+    if (!draggable || !elementRef.current) return;
+    
     setIsDragging(false);
+    
+    // Re-enable transitions and reset dragging styles
+    elementRef.current.style.transition = '';
+    elementRef.current.style.position = '';
+    elementRef.current.style.zIndex = '';
+    elementRef.current.style.opacity = '';
+    elementRef.current.style.transform = '';
+    elementRef.current.style.boxShadow = '';
+    elementRef.current.style.left = '';
+    elementRef.current.style.top = '';
   };
 
   React.useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
+      document.body.style.userSelect = 'none';
+      document.body.style.cursor = 'grabbing';
+      
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
+        document.body.style.userSelect = '';
+        document.body.style.cursor = '';
       };
     }
   }, [isDragging, dragOffset]);
 
   return (
     <div
-      id={isDragging ? 'dragging-overlay' : undefined}
+      ref={elementRef}
       className={`absolute ${position} ${className} ${
-        draggable ? 'cursor-move' : ''
-      } ${isDragging ? 'z-50 opacity-80' : ''}`}
+        draggable ? 'cursor-grab active:cursor-grabbing' : ''
+      } ${isDragging ? 'select-none' : ''}`}
       onMouseDown={handleMouseDown}
       style={draggable ? { userSelect: 'none' } : undefined}
     >
