@@ -62,16 +62,7 @@ const FleetMap: React.FC<FleetMapProps> = ({
       className="w-full h-full"
       providers={montrealProviders}
       mode="interactive"
-      options={{
-        styles: currentThemeConfig.styles,
-        disableDefaultUI: false,
-        zoomControl: true,
-        mapTypeControl: false,
-        scaleControl: false,
-        streetViewControl: false,
-        rotateControl: false,
-        fullscreenControl: false
-      }}
+      mapStyles={currentThemeConfig.styles}
     >
       {/* Fleet Vehicle Markers */}
       {fleetVehicles.length > 0 && (
