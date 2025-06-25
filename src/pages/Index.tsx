@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -156,10 +157,12 @@ const Index = () => {
                   </div>
                 </div>
 
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
-                  Take the Tour
-                  <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
-                </Button>
+                <Link to="/services">
+                  <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
+                    Take the Tour
+                    <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>
@@ -226,10 +229,12 @@ const Index = () => {
                     ))}
                   </ul>
 
-                  <Button className="w-full bg-gradient-to-r from-orange-600 to-purple-600 hover:from-orange-700 hover:to-purple-700 text-cream font-bold py-3 lg:py-4 rounded-2xl text-base lg:text-lg shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-black">
-                    Choose This Path
-                    <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 ml-2" />
-                  </Button>
+                  <Link to="/services">
+                    <Button className="w-full bg-gradient-to-r from-orange-600 to-purple-600 hover:from-orange-700 hover:to-purple-700 text-cream font-bold py-3 lg:py-4 rounded-2xl text-base lg:text-lg shadow-lg transform hover:scale-105 transition-all duration-200 border-2 border-black">
+                      Choose This Path
+                      <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 ml-2" />
+                    </Button>
+                  </Link>
                 </CardContent>
               </Card>
             ))}
