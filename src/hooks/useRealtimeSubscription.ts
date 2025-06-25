@@ -21,21 +21,31 @@ export const useRealtimeSubscription = ({
 }: RealtimeSubscriptionOptions) => {
   const channelRef = useRef<any>(null);
   const isSubscribedRef = useRef(false);
+  const optionsRef = useRef<string>('');
 
   useEffect(() => {
-    if (!enabled || !onUpdate || isSubscribedRef.current) return;
+    if (!enabled || !onUpdate) return;
+
+    // Create a unique key for these subscription options
+    const currentOptions = `${table}-${event}-${schema}-${filter}-${enabled}`;
+    
+    // Only setup if options have changed
+    if (isSubscribedRef.current && optionsRef.current === currentOptions) {
+      return;
+    }
 
     console.log(`Setting up real-time subscription for ${schema}.${table}`);
     
-    const channelName = `realtime-${table}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    
     // Clean up existing channel if any
     if (channelRef.current) {
+      console.log(`Cleaning up existing subscription for ${table}`);
       supabase.removeChannel(channelRef.current);
       channelRef.current = null;
       isSubscribedRef.current = false;
     }
 
+    const channelName = `realtime-${table}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    
     const channel = supabase
       .channel(channelName)
       .on(
@@ -55,6 +65,7 @@ export const useRealtimeSubscription = ({
 
     channelRef.current = channel;
     isSubscribedRef.current = true;
+    optionsRef.current = currentOptions;
 
     return () => {
       console.log(`Cleaning up real-time subscription for ${table}`);
@@ -62,9 +73,10 @@ export const useRealtimeSubscription = ({
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
         isSubscribedRef.current = false;
+        optionsRef.current = '';
       }
     };
-  }, [table, event, schema, filter, enabled]); // Removed onUpdate from dependencies to prevent re-subscriptions
+  }, [table, event, schema, filter, enabled]); // Include all dependencies
 
   return {
     isSubscribed: isSubscribedRef.current

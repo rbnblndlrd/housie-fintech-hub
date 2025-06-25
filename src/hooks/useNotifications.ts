@@ -22,6 +22,7 @@ export const useNotifications = () => {
   const [loading, setLoading] = useState(true);
   const channelsRef = useRef<any[]>([]);
   const isSubscribedRef = useRef(false);
+  const userIdRef = useRef<string | null>(null);
 
   console.log('🔔 useNotifications hook:', { userId: user?.id, loading });
 
@@ -133,7 +134,25 @@ export const useNotifications = () => {
     }
   };
 
+  const cleanupSubscriptions = () => {
+    console.log('🧹 Cleaning up notification subscriptions');
+    channelsRef.current.forEach(channel => {
+      supabase.removeChannel(channel);
+    });
+    channelsRef.current = [];
+    isSubscribedRef.current = false;
+  };
+
   useEffect(() => {
+    // Cleanup if user changes
+    if (userIdRef.current && userIdRef.current !== user?.id) {
+      cleanupSubscriptions();
+      setNotifications([]);
+      setLoading(true);
+    }
+
+    userIdRef.current = user?.id || null;
+
     if (!user || isSubscribedRef.current) {
       if (!user) {
         console.log('🔔 No user in useEffect, resetting state');
@@ -146,14 +165,14 @@ export const useNotifications = () => {
     console.log('🔔 Setting up notifications for user:', user.id);
     fetchNotifications();
 
-    // Clean up existing channels
-    channelsRef.current.forEach(channel => {
-      supabase.removeChannel(channel);
-    });
-    channelsRef.current = [];
+    // Clean up existing channels before creating new ones
+    cleanupSubscriptions();
 
-    // Set up real-time subscriptions
-    const notificationChannelName = `notifications-${user.id}-${Date.now()}`;
+    // Set up real-time subscriptions with unique channel names
+    const timestamp = Date.now();
+    const randomSuffix = Math.random().toString(36).substr(2, 9);
+    
+    const notificationChannelName = `notifications-${user.id}-${timestamp}-${randomSuffix}`;
     const notificationChannel = supabase
       .channel(notificationChannelName)
       .on(
@@ -188,8 +207,8 @@ export const useNotifications = () => {
       )
       .subscribe();
 
-    // Set up chat subscription for new messages
-    const chatChannelName = `chat-${user.id}-${Date.now()}`;
+    // Set up chat subscription for new messages with unique channel name
+    const chatChannelName = `chat-${user.id}-${timestamp}-${randomSuffix}`;
     const chatChannel = supabase
       .channel(chatChannelName)
       .on(
@@ -231,14 +250,7 @@ export const useNotifications = () => {
       Notification.requestPermission();
     }
 
-    return () => {
-      console.log('🧹 Cleaning up notification subscriptions');
-      channelsRef.current.forEach(channel => {
-        supabase.removeChannel(channel);
-      });
-      channelsRef.current = [];
-      isSubscribedRef.current = false;
-    };
+    return cleanupSubscriptions;
   }, [user?.id]); // Only depend on user.id
 
   const unreadCount = notifications.filter(n => !n.read).length;
