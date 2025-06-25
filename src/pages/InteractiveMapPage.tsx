@@ -34,6 +34,7 @@ const InteractiveMapPage = () => {
   // Overlay Management
   const {
     overlays,
+    allOverlays,
     isFleetMode,
     isCustomizeMode,
     isPremium,
@@ -151,6 +152,11 @@ const InteractiveMapPage = () => {
     }
   };
 
+  // Check if overlay should be rendered (exists in filtered overlays)
+  const shouldRenderOverlay = (overlayId: string) => {
+    return overlays.some(o => o.id === overlayId);
+  };
+
   const getOverlayPosition = (overlayId: string): string => {
     const overlay = overlays.find(o => o.id === overlayId);
     const position = overlay?.position || 'top-right';
@@ -163,7 +169,7 @@ const InteractiveMapPage = () => {
       case 'bottom-right': return 'bottom-4 right-4';
       case 'center-left': return 'top-1/2 left-4 -translate-y-1/2';
       case 'center-right': return 'top-1/2 right-4 -translate-y-1/2';
-      case 'bottom-center': return 'bottom-20 left-1/2 -translate-x-1/2'; // Moved up to avoid overlap
+      case 'bottom-center': return 'bottom-20 left-1/2 -translate-x-1/2';
       default: return 'top-20 right-4';
     }
   };
@@ -207,95 +213,109 @@ const InteractiveMapPage = () => {
         />
 
         {/* Emergency Jobs Overlay */}
-        <EmergencyJobsOverlay
-          position={getOverlayPosition('emergency-jobs')}
-          visible={getOverlayConfig('emergency-jobs').visible}
-          minimized={getOverlayConfig('emergency-jobs').minimized}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('emergency-jobs')}
-          onToggleAudio={() => setAudioEnabled(!audioEnabled)}
-          audioEnabled={audioEnabled}
-          emergencyCount={emergencyCount}
-          isFleetMode={isFleetMode}
-        />
+        {shouldRenderOverlay('emergency-jobs') && (
+          <EmergencyJobsOverlay
+            position={getOverlayPosition('emergency-jobs')}
+            visible={getOverlayConfig('emergency-jobs').visible}
+            minimized={getOverlayConfig('emergency-jobs').minimized}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('emergency-jobs')}
+            onToggleAudio={() => setAudioEnabled(!audioEnabled)}
+            audioEnabled={audioEnabled}
+            emergencyCount={emergencyCount}
+            isFleetMode={isFleetMode}
+          />
+        )}
 
-        {/* Market Insights Overlay - Heat Zones Disabled */}
-        <MarketInsightsOverlay
-          position={getOverlayPosition('market-insights')}
-          visible={getOverlayConfig('market-insights').visible}
-          minimized={getOverlayConfig('market-insights').minimized}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('market-insights')}
-          showHeatZones={false}
-          showProviders={showProviders}
-          showTrafficAreas={showTrafficAreas}
-          onToggleHeatZones={() => {}} // Disabled
-          onToggleProviders={setShowProviders}
-          onToggleTrafficAreas={setShowTrafficAreas}
-          isFleetMode={isFleetMode}
-        />
+        {/* Market Insights Overlay */}
+        {shouldRenderOverlay('market-insights') && (
+          <MarketInsightsOverlay
+            position={getOverlayPosition('market-insights')}
+            visible={getOverlayConfig('market-insights').visible}
+            minimized={getOverlayConfig('market-insights').minimized}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('market-insights')}
+            showHeatZones={false}
+            showProviders={showProviders}
+            showTrafficAreas={showTrafficAreas}
+            onToggleHeatZones={() => {}} // Disabled
+            onToggleProviders={setShowProviders}
+            onToggleTrafficAreas={setShowTrafficAreas}
+            isFleetMode={isFleetMode}
+          />
+        )}
 
         {/* AI Voice Assistant Overlay */}
-        <AIVoiceAssistantOverlay
-          position={getOverlayPosition('ai-assistant')}
-          visible={getOverlayConfig('ai-assistant').visible}
-          minimized={getOverlayConfig('ai-assistant').minimized}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('ai-assistant')}
-          isFleetMode={isFleetMode}
-        />
+        {shouldRenderOverlay('ai-assistant') && (
+          <AIVoiceAssistantOverlay
+            position={getOverlayPosition('ai-assistant')}
+            visible={getOverlayConfig('ai-assistant').visible}
+            minimized={getOverlayConfig('ai-assistant').minimized}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('ai-assistant')}
+            isFleetMode={isFleetMode}
+          />
+        )}
 
         {/* Location Analytics Overlay */}
-        <LocationAnalyticsOverlay
-          position={getOverlayPosition('location-analytics')}
-          visible={getOverlayConfig('location-analytics').visible}
-          minimized={getOverlayConfig('location-analytics').minimized}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('location-analytics')}
-          currentArea={currentArea}
-          marketDemand={marketDemand}
-          avgRate={avgRate}
-          competition={competition}
-          opportunityLevel={opportunityLevel}
-          isFleetMode={isFleetMode}
-        />
+        {shouldRenderOverlay('location-analytics') && (
+          <LocationAnalyticsOverlay
+            position={getOverlayPosition('location-analytics')}
+            visible={getOverlayConfig('location-analytics').visible}
+            minimized={getOverlayConfig('location-analytics').minimized}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('location-analytics')}
+            currentArea={currentArea}
+            marketDemand={marketDemand}
+            avgRate={avgRate}
+            competition={competition}
+            opportunityLevel={opportunityLevel}
+            isFleetMode={isFleetMode}
+          />
+        )}
 
         {/* Route Management Overlay */}
-        <RouteManagementOverlay
-          position={getOverlayPosition('route-management')}
-          visible={getOverlayConfig('route-management').visible}
-          minimized={getOverlayConfig('route-management').minimized}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('route-management')}
-          jobs={sampleJobs}
-          totalTravelTime={totalTravelTime}
-          nextJobCountdown={nextJobCountdown}
-          isFleetMode={isFleetMode}
-        />
+        {shouldRenderOverlay('route-management') && (
+          <RouteManagementOverlay
+            position={getOverlayPosition('route-management')}
+            visible={getOverlayConfig('route-management').visible}
+            minimized={getOverlayConfig('route-management').minimized}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('route-management')}
+            jobs={sampleJobs}
+            totalTravelTime={totalTravelTime}
+            nextJobCountdown={nextJobCountdown}
+            isFleetMode={isFleetMode}
+          />
+        )}
 
-        {/* Fleet Management Overlay */}
-        <FleetManagementOverlay
-          position={getOverlayPosition('fleet-management')}
-          visible={getOverlayConfig('fleet-management').visible}
-          minimized={getOverlayConfig('fleet-management').minimized}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('fleet-management')}
-          isFleetMode={isFleetMode}
-        />
+        {/* Fleet Management Overlay - Only in Fleet Mode */}
+        {shouldRenderOverlay('fleet-management') && (
+          <FleetManagementOverlay
+            position={getOverlayPosition('fleet-management')}
+            visible={getOverlayConfig('fleet-management').visible}
+            minimized={getOverlayConfig('fleet-management').minimized}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('fleet-management')}
+            isFleetMode={isFleetMode}
+          />
+        )}
 
-        {/* Fleet Vehicles View Overlay */}
-        <FleetVehiclesViewOverlay
-          position={getOverlayPosition('fleet-vehicles-view')}
-          visible={getOverlayConfig('fleet-vehicles-view')?.visible || isFleetMode}
-          minimized={getOverlayConfig('fleet-vehicles-view')?.minimized || false}
-          draggable={isCustomizeMode && isPremium}
-          onMinimize={() => toggleOverlay('fleet-vehicles-view')}
-          fleetVehicles={fleetVehicles}
-          followFleet={followFleet}
-          onToggleFollowFleet={handleToggleFollowFleet}
-          onCenterOnFleet={handleCenterOnFleet}
-          onFocusVehicle={handleFocusVehicle}
-        />
+        {/* Fleet Vehicles View Overlay - Only in Fleet Mode */}
+        {shouldRenderOverlay('fleet-vehicles-view') && (
+          <FleetVehiclesViewOverlay
+            position={getOverlayPosition('fleet-vehicles-view')}
+            visible={getOverlayConfig('fleet-vehicles-view')?.visible || isFleetMode}
+            minimized={getOverlayConfig('fleet-vehicles-view')?.minimized || false}
+            draggable={isCustomizeMode && isPremium}
+            onMinimize={() => toggleOverlay('fleet-vehicles-view')}
+            fleetVehicles={fleetVehicles}
+            followFleet={followFleet}
+            onToggleFollowFleet={handleToggleFollowFleet}
+            onCenterOnFleet={handleCenterOnFleet}
+            onFocusVehicle={handleFocusVehicle}
+          />
+        )}
       </div>
     </div>
   );
