@@ -283,8 +283,8 @@ const InteractiveMapPage = () => {
         {/* FIXED POSITIONING - Route Management Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
           <div 
-            className="absolute bottom-20 left-4 z-40 pointer-events-none"
-            style={{ position: 'fixed', bottom: '80px', left: '16px', zIndex: 40 }}
+            className="absolute bottom-20 left-80 z-40 pointer-events-none"
+            style={{ position: 'fixed', bottom: '80px', left: '320px', zIndex: 40 }}
           >
             <div className="pointer-events-auto">
               <RouteManagementOverlay
@@ -369,8 +369,8 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Chat Bubble - REPOSITIONED TO COMFORTABLE BOTTOM-RIGHT */}
-        <div className="fixed bottom-6 right-6 z-50 pointer-events-none">
+        {/* Chat Bubble - MOVED TO LEFT SIDE */}
+        <div className="fixed bottom-6 left-6 z-50 pointer-events-none">
           <div className="pointer-events-auto">
             <ChatBubble defaultTab="voice" showMicIcon={true} />
           </div>

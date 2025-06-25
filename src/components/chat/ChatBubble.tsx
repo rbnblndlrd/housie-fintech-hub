@@ -39,7 +39,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   return (
     <>
       {/* Clean Floating Chat Button */}
-      <div className="fixed bottom-6 right-6 z-50">
+      <div className="fixed bottom-6 left-6 z-50">
         {!isOpen ? (
           <Button
             onClick={handleOpen}
@@ -197,10 +197,10 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         )}
       </div>
 
-      {/* Minimal Side Indicators */}
+      {/* Minimal Side Indicators - Also moved to left side */}
       {!isOpen && totalUnreadCount > 0 && !useMicIcon && (
-        <div className="fixed left-0 top-1/2 transform -translate-y-1/2 z-40">
-          <div className="w-1 h-8 bg-red-500 rounded-r-full shadow-lg animate-pulse" />
+        <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-40">
+          <div className="w-1 h-8 bg-red-500 rounded-l-full shadow-lg animate-pulse" />
         </div>
       )}
     </>
