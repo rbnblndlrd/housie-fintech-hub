@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+
+import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
 import { GOOGLE_MAPS_API_KEY, mapOptions } from './map/GoogleMapConfig';
@@ -36,6 +37,15 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   const { isLoaded, loadError } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
+
+  // Debug logging for mapStyles changes
+  useEffect(() => {
+    console.log('🗺️ UnifiedGoogleMap: mapStyles updated:', {
+      hasStyles: !!mapStyles,
+      stylesLength: mapStyles?.length || 0,
+      firstStyleType: mapStyles?.[0]?.featureType || 'none'
+    });
+  }, [mapStyles]);
 
   const onLoad = useCallback((map: google.maps.Map) => {
     console.log('✅ Unified Google Map loaded successfully');
@@ -79,6 +89,14 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     ...mapOptions,
     ...(mapStyles && { styles: mapStyles })
   };
+
+  // Debug logging for custom map options
+  console.log('🗺️ UnifiedGoogleMap render:', {
+    hasMapStyles: !!mapStyles,
+    stylesLength: mapStyles?.length || 0,
+    customMapOptionsHasStyles: !!customMapOptions.styles,
+    mode
+  });
 
   // Find hovered provider
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);

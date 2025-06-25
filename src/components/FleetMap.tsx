@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
 import { montrealProviders } from '@/data/montrealProviders';
 import FleetVehicleMarkersOverlay from './map/FleetVehicleMarkersOverlay';
@@ -46,17 +46,28 @@ const FleetMap: React.FC<FleetMapProps> = ({
     ? (fleetVehicles.length === 1 ? 14 : 12) 
     : 11;
 
+  // Debug logging for theme changes
+  useEffect(() => {
+    console.log('🎨 FleetMap theme changed:', { 
+      currentTheme, 
+      themeConfig: currentThemeConfig,
+      stylesLength: currentThemeConfig.styles?.length || 0
+    });
+  }, [currentTheme, currentThemeConfig]);
+
   console.log('🗺️ FleetMap render:', { 
     userRole, 
     fleetVehiclesCount: fleetVehicles.length,
     followFleet,
     mapCenter,
     mapZoom,
-    currentTheme
+    currentTheme,
+    mapStyles: currentThemeConfig.styles
   });
 
   return (
     <UnifiedGoogleMap
+      key={`map-${currentTheme}`} // Force re-render when theme changes
       center={mapCenter}
       zoom={mapZoom}
       className="w-full h-full"
