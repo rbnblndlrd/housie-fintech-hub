@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
@@ -14,6 +13,7 @@ interface UnifiedGoogleMapProps {
   onProviderClick?: (provider: Provider) => void;
   mode?: 'services' | 'interactive' | 'privacy' | 'heatZones';
   children?: React.ReactNode;
+  mapStyles?: google.maps.MapTypeStyle[];
 }
 
 const mapContainerStyle = {
@@ -30,7 +30,8 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   hoveredProviderId = null,
   onProviderClick,
   mode = 'services',
-  children
+  children,
+  mapStyles
 }) => {
   const { isLoaded, loadError } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -71,6 +72,12 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       console.error('Error creating marker icon:', error);
       return undefined;
     }
+  };
+
+  // Create map options with custom styles if provided
+  const customMapOptions = {
+    ...mapOptions,
+    ...(mapStyles && { styles: mapStyles })
   };
 
   // Find hovered provider
@@ -166,7 +173,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
         mapContainerStyle={mapContainerStyle}
         center={center}
         zoom={zoom}
-        options={mapOptions}
+        options={customMapOptions}
         onLoad={onLoad}
         onUnmount={onUnmount}
       >
