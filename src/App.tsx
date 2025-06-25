@@ -1,4 +1,4 @@
-
+import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -9,7 +9,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { PopArtProvider } from "@/contexts/PopArtContext";
-import { RoleProvider } from "@/contexts/RoleProvider";
+import { RoleProvider } from "@/contexts/RoleContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { GoogleMapsProvider } from "@/components/map/GoogleMapsProvider";
 import { NotificationBubbles } from "@/components/chat/NotificationBubbles";
