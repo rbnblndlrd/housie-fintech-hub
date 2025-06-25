@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -47,7 +48,7 @@ const InteractiveMapPage = () => {
     resetLayout
   } = useOverlayManager();
 
-  // Map state - heat zones disabled
+  // Map state
   const [showProviders, setShowProviders] = useState(true);
   const [showTrafficAreas, setShowTrafficAreas] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -152,39 +153,39 @@ const InteractiveMapPage = () => {
     }
   };
 
-  // Check if overlay should be rendered (exists in filtered overlays)
+  // Check if overlay should be rendered (exists in filtered overlays and is visible)
   const shouldRenderOverlay = (overlayId: string) => {
-    return overlays.some(o => o.id === overlayId);
+    const overlay = overlays.find(o => o.id === overlayId);
+    return overlay && overlay.visible;
   };
 
+  // Organized positioning system with proper spacing and collision detection
   const getOverlayPosition = (overlayId: string): string => {
     const overlay = overlays.find(o => o.id === overlayId);
-    const position = overlay?.position || 'top-right';
+    if (!overlay) return 'top-20 right-4';
     
-    // Special positioning adjustments for Fleet mode to prevent collisions
-    if (isFleetMode) {
-      switch (overlayId) {
-        case 'market-insights': return 'top-4 left-4'; // Move to top-left to avoid fleet overlays
-        case 'fleet-management': return 'top-4 right-4';
-        case 'fleet-vehicles-view': return 'bottom-4 left-1/2 -translate-x-1/2';
-        case 'emergency-jobs': return 'top-20 left-4';
-        default: return getDefaultPosition(position);
-      }
-    }
+    const baseSpacing = 20; // 20px from edges
+    const gapSpacing = 16; // 16px gaps between overlays
     
-    return getDefaultPosition(position);
-  };
-
-  const getDefaultPosition = (position: string): string => {
-    switch (position) {
-      case 'top-left': return 'top-20 left-4';
-      case 'top-right': return 'top-20 right-4';
-      case 'bottom-left': return 'bottom-4 left-4';
-      case 'bottom-right': return 'bottom-4 right-4';
-      case 'center-left': return 'top-1/2 left-4 -translate-y-1/2';
-      case 'center-right': return 'top-1/2 right-4 -translate-y-1/2';
-      case 'bottom-center': return 'bottom-20 left-1/2 -translate-x-1/2';
-      default: return 'top-20 right-4';
+    switch (overlay.position) {
+      case 'top-left':
+        return `top-[${baseSpacing + 64}px] left-[${baseSpacing}px]`; // 64px for header height
+      case 'top-right':
+        return `top-[${baseSpacing + 64}px] right-[${baseSpacing}px]`;
+      case 'bottom-left':
+        return `bottom-[${baseSpacing}px] left-[${baseSpacing}px]`;
+      case 'bottom-right':
+        // Stack bottom-right overlays with proper spacing
+        const bottomRightOverlays = overlays.filter(o => 
+          o.position === 'bottom-right' && o.visible && shouldRenderOverlay(o.id)
+        );
+        const overlayIndex = bottomRightOverlays.findIndex(o => o.id === overlayId);
+        const stackOffset = overlayIndex * (300 + gapSpacing); // 300px height + gap
+        return `bottom-[${baseSpacing + stackOffset}px] right-[${baseSpacing}px]`;
+      case 'bottom-center':
+        return `bottom-[${baseSpacing}px] left-1/2 -translate-x-1/2`;
+      default:
+        return `top-[${baseSpacing + 64}px] right-[${baseSpacing}px]`;
     }
   };
 
@@ -213,7 +214,7 @@ const InteractiveMapPage = () => {
         <OverlayManager
           overlays={overlays.map(overlay => ({
             ...overlay,
-            draggable: true // Always draggable
+            draggable: false // Disable dragging for organized layout
           }))}
           onToggleOverlay={toggleOverlay}
           onToggleAll={toggleAllOverlays}
@@ -225,97 +226,115 @@ const InteractiveMapPage = () => {
           isPremium={isPremium}
         />
 
-        {/* Emergency Jobs Overlay - Show in both modes but with different content */}
-        {shouldRenderOverlay('emergency-jobs') && (
-          <EmergencyJobsOverlay
-            position={getOverlayPosition('emergency-jobs')}
-            visible={getOverlayConfig('emergency-jobs').visible}
-            minimized={getOverlayConfig('emergency-jobs').minimized}
-            draggable={true}
-            onMinimize={() => toggleOverlay('emergency-jobs')}
-            onToggleAudio={() => setAudioEnabled(!audioEnabled)}
-            audioEnabled={audioEnabled}
-            emergencyCount={emergencyCount}
-            isFleetMode={isFleetMode}
-          />
+        {/* LEFT SIDE OVERLAYS */}
+        
+        {/* Emergency Jobs Overlay - TOP-LEFT (Individual Mode Only, Hideable) */}
+        {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
+          <div className={getOverlayPosition('emergency-jobs')}>
+            <EmergencyJobsOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('emergency-jobs').minimized}
+              draggable={false}
+              onMinimize={() => toggleOverlay('emergency-jobs')}
+              onToggleAudio={() => setAudioEnabled(!audioEnabled)}
+              audioEnabled={audioEnabled}
+              emergencyCount={emergencyCount}
+              isFleetMode={isFleetMode}
+            />
+          </div>
         )}
 
-        {/* Market Insights Overlay - Always show but positioned to avoid collisions in Fleet mode */}
-        {shouldRenderOverlay('market-insights') && (
-          <MarketInsightsOverlay
-            position={getOverlayPosition('market-insights')}
-            visible={getOverlayConfig('market-insights').visible}
-            minimized={getOverlayConfig('market-insights').minimized}
-            draggable={true}
-            onMinimize={() => toggleOverlay('market-insights')}
-            showHeatZones={false}
-            showProviders={showProviders}
-            showTrafficAreas={showTrafficAreas}
-            onToggleHeatZones={() => {}} // Disabled
-            onToggleProviders={setShowProviders}
-            onToggleTrafficAreas={setShowTrafficAreas}
-            isFleetMode={isFleetMode}
-          />
-        )}
-
-        {/* Location Analytics Overlay - Individual mode only */}
-        {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <LocationAnalyticsOverlay
-            position={getOverlayPosition('location-analytics')}
-            visible={getOverlayConfig('location-analytics').visible}
-            minimized={getOverlayConfig('location-analytics').minimized}
-            draggable={true}
-            onMinimize={() => toggleOverlay('location-analytics')}
-            currentArea={currentArea}
-            marketDemand={marketDemand}
-            avgRate={avgRate}
-            competition={competition}
-            opportunityLevel={opportunityLevel}
-            isFleetMode={isFleetMode}
-          />
-        )}
-
-        {/* Route Management Overlay - Individual mode only */}
+        {/* Route Management Overlay - BOTTOM-LEFT (Individual Mode Only) */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <RouteManagementOverlay
-            position={getOverlayPosition('route-management')}
-            visible={getOverlayConfig('route-management').visible}
-            minimized={getOverlayConfig('route-management').minimized}
-            draggable={true}
-            onMinimize={() => toggleOverlay('route-management')}
-            jobs={sampleJobs}
-            totalTravelTime={totalTravelTime}
-            nextJobCountdown={nextJobCountdown}
-            isFleetMode={isFleetMode}
-          />
+          <div className={getOverlayPosition('route-management')}>
+            <RouteManagementOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('route-management').minimized}
+              draggable={false}
+              onMinimize={() => toggleOverlay('route-management')}
+              jobs={sampleJobs}
+              totalTravelTime={totalTravelTime}
+              nextJobCountdown={nextJobCountdown}
+              isFleetMode={isFleetMode}
+            />
+          </div>
         )}
 
-        {/* Fleet Management Overlay - Fleet mode only */}
+        {/* Fleet Management Overlay - TOP-LEFT (Fleet Mode Only) */}
         {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <FleetManagementOverlay
-            position={getOverlayPosition('fleet-management')}
-            visible={getOverlayConfig('fleet-management').visible}
-            minimized={getOverlayConfig('fleet-management').minimized}
-            draggable={true}
-            onMinimize={() => toggleOverlay('fleet-management')}
-            isFleetMode={isFleetMode}
-          />
+          <div className={getOverlayPosition('fleet-management')}>
+            <FleetManagementOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('fleet-management').minimized}
+              draggable={false}
+              onMinimize={() => toggleOverlay('fleet-management')}
+              isFleetMode={isFleetMode}
+            />
+          </div>
         )}
 
-        {/* Fleet Vehicles View Overlay - Fleet mode only */}
+        {/* RIGHT SIDE OVERLAYS - Organized Stack */}
+        
+        {/* Market Insights Overlay - TOP-RIGHT */}
+        {shouldRenderOverlay('market-insights') && (
+          <div className={getOverlayPosition('market-insights')}>
+            <MarketInsightsOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('market-insights').minimized}
+              draggable={false}
+              onMinimize={() => toggleOverlay('market-insights')}
+              showHeatZones={false}
+              showProviders={showProviders}
+              showTrafficAreas={showTrafficAreas}
+              onToggleHeatZones={() => {}}
+              onToggleProviders={setShowProviders}
+              onToggleTrafficAreas={setShowTrafficAreas}
+              isFleetMode={isFleetMode}
+            />
+          </div>
+        )}
+
+        {/* Location Analytics Overlay - BOTTOM-RIGHT (Individual Mode Only) */}
+        {!isFleetMode && shouldRenderOverlay('location-analytics') && (
+          <div className={getOverlayPosition('location-analytics')}>
+            <LocationAnalyticsOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('location-analytics').minimized}
+              draggable={false}
+              onMinimize={() => toggleOverlay('location-analytics')}
+              currentArea={currentArea}
+              marketDemand={marketDemand}
+              avgRate={avgRate}
+              competition={competition}
+              opportunityLevel={opportunityLevel}
+              isFleetMode={isFleetMode}
+            />
+          </div>
+        )}
+
+        {/* BOTTOM CENTER OVERLAYS */}
+        
+        {/* Fleet Vehicles View Overlay - BOTTOM-CENTER (Fleet Mode Only) */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <FleetVehiclesViewOverlay
-            position={getOverlayPosition('fleet-vehicles-view')}
-            visible={getOverlayConfig('fleet-vehicles-view')?.visible || isFleetMode}
-            minimized={getOverlayConfig('fleet-vehicles-view')?.minimized || false}
-            draggable={true}
-            onMinimize={() => toggleOverlay('fleet-vehicles-view')}
-            fleetVehicles={fleetVehicles}
-            followFleet={followFleet}
-            onToggleFollowFleet={handleToggleFollowFleet}
-            onCenterOnFleet={handleCenterOnFleet}
-            onFocusVehicle={handleFocusVehicle}
-          />
+          <div className={getOverlayPosition('fleet-vehicles-view')}>
+            <FleetVehiclesViewOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('fleet-vehicles-view').minimized}
+              draggable={false}
+              onMinimize={() => toggleOverlay('fleet-vehicles-view')}
+              fleetVehicles={fleetVehicles}
+              followFleet={followFleet}
+              onToggleFollowFleet={handleToggleFollowFleet}
+              onCenterOnFleet={handleCenterOnFleet}
+              onFocusVehicle={handleFocusVehicle}
+            />
+          </div>
         )}
 
         {/* Chat Bubble with integrated AI Voice Assistant */}

@@ -9,8 +9,9 @@ export interface OverlayConfig {
   position: OverlayPosition;
   visible: boolean;
   minimized: boolean;
+  hideable?: boolean; // New property for hideable overlays
   fleetOnly?: boolean;
-  individualOnly?: boolean; // New property for individual-only overlays
+  individualOnly?: boolean;
 }
 
 export const useOverlayManager = () => {
@@ -21,6 +22,7 @@ export const useOverlayManager = () => {
       position: 'top-left',
       visible: true,
       minimized: false,
+      hideable: true, // Emergency jobs can be hidden/shown
       fleetOnly: false
     },
     {
@@ -29,7 +31,8 @@ export const useOverlayManager = () => {
       position: 'top-right',
       visible: true,
       minimized: false,
-      fleetOnly: false // Always show in both modes
+      hideable: false, // Always visible
+      fleetOnly: false
     },
     {
       id: 'location-analytics',
@@ -37,25 +40,28 @@ export const useOverlayManager = () => {
       position: 'bottom-right',
       visible: true,
       minimized: false,
+      hideable: false, // Always visible
       fleetOnly: false,
-      individualOnly: true // Individual mode only
+      individualOnly: true
     },
     {
       id: 'route-management',
       title: 'Route Management',
-      position: 'center-left',
+      position: 'bottom-left',
       visible: true,
       minimized: false,
+      hideable: false, // Always visible
       fleetOnly: false,
-      individualOnly: true // Individual mode only
+      individualOnly: true
     },
     {
       id: 'fleet-management',
       title: 'Team Management',
-      position: 'center-right',
+      position: 'top-left', // Takes emergency jobs position in fleet mode
       visible: true,
       minimized: false,
-      fleetOnly: true // Fleet-only overlay
+      hideable: false, // Always visible in fleet mode
+      fleetOnly: true
     },
     {
       id: 'fleet-vehicles-view',
@@ -63,33 +69,40 @@ export const useOverlayManager = () => {
       position: 'bottom-center',
       visible: true,
       minimized: false,
-      fleetOnly: true // Fleet-only overlay
+      hideable: false, // Always visible in fleet mode
+      fleetOnly: true
     }
   ]);
 
   const [isFleetMode, setIsFleetMode] = useState(false);
   const [isCustomizeMode, setIsCustomizeMode] = useState(false);
-  const [isPremium] = useState(true); // Mock premium status
+  const [isPremium] = useState(true);
 
   // Filter overlays based on fleet mode
   const getVisibleOverlays = () => {
     return overlays.filter(overlay => {
       if (overlay.fleetOnly && !isFleetMode) {
-        return false; // Hide fleet-only overlays in individual mode
+        return false;
       }
       if (overlay.individualOnly && isFleetMode) {
-        return false; // Hide individual-only overlays in fleet mode
+        return false;
       }
       return true;
     });
   };
 
   const toggleOverlay = (overlayId: string) => {
-    setOverlays(prev => prev.map(overlay => 
-      overlay.id === overlayId 
-        ? { ...overlay, minimized: !overlay.minimized }
-        : overlay
-    ));
+    setOverlays(prev => prev.map(overlay => {
+      if (overlay.id === overlayId) {
+        // For hideable overlays, toggle visibility instead of minimized
+        if (overlay.hideable) {
+          return { ...overlay, visible: !overlay.visible };
+        } else {
+          return { ...overlay, minimized: !overlay.minimized };
+        }
+      }
+      return overlay;
+    }));
   };
 
   const visibleOverlays = getVisibleOverlays();
@@ -109,7 +122,6 @@ export const useOverlayManager = () => {
   };
 
   const resetLayout = () => {
-    // Reset to default positions
     setOverlays(prev => prev.map(overlay => ({
       ...overlay,
       visible: true,
@@ -120,8 +132,8 @@ export const useOverlayManager = () => {
   };
 
   return {
-    overlays: visibleOverlays, // Return filtered overlays
-    allOverlays: overlays, // All overlays for internal use
+    overlays: visibleOverlays,
+    allOverlays: overlays,
     isFleetMode,
     isCustomizeMode,
     isPremium,

@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown } from 'lucide-react';
+import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown, X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { OverlayConfig } from '@/hooks/useOverlayManager';
 import MapThemeSelector from './MapThemeSelector';
@@ -111,7 +111,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
       {/* Customize Mode Panel */}
       {isCustomizeMode && (
         <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-40">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-80">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-96">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-gray-900 flex items-center">
                 <LayoutGrid className="h-4 w-4 mr-2" />
@@ -126,21 +126,65 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
               {overlays.map((overlay) => (
                 <div
                   key={overlay.id}
-                  className="flex items-center justify-between p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                  className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
                 >
-                  <span className="text-sm font-medium text-gray-700">
-                    {overlay.title}
-                  </span>
-                  <Button
-                    variant={overlay.minimized ? "outline" : "default"}
-                    size="sm"
-                    onClick={() => onToggleOverlay(overlay.id)}
-                    className="text-xs h-7"
-                  >
-                    {overlay.minimized ? 'Show' : 'Hide'}
-                  </Button>
+                  <div className="flex items-center gap-3">
+                    <span className="text-sm font-medium text-gray-700">
+                      {overlay.title}
+                    </span>
+                    {overlay.hideable && (
+                      <Badge variant="outline" className="text-xs">
+                        Hideable
+                      </Badge>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {overlay.hideable ? (
+                      <Button
+                        variant={overlay.visible ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => onToggleOverlay(overlay.id)}
+                        className="text-xs h-7 min-w-[60px]"
+                      >
+                        {overlay.visible ? (
+                          <>
+                            <Eye className="h-3 w-3 mr-1" />
+                            Show
+                          </>
+                        ) : (
+                          <>
+                            <EyeOff className="h-3 w-3 mr-1" />
+                            Hide
+                          </>
+                        )}
+                      </Button>
+                    ) : (
+                      <Button
+                        variant={overlay.minimized ? "outline" : "default"}
+                        size="sm"
+                        onClick={() => onToggleOverlay(overlay.id)}
+                        className="text-xs h-7 min-w-[80px]"
+                      >
+                        {overlay.minimized ? 'Expand' : 'Minimize'}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ))}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-gray-200">
+              <div className="text-xs text-gray-600">
+                <div className="mb-2">
+                  <strong>Layout Rules:</strong>
+                </div>
+                <ul className="space-y-1 text-xs">
+                  <li>• Left: Emergency Jobs (hideable) + Route Management</li>
+                  <li>• Right: Market Insights + Location Analytics</li>
+                  <li>• 20px edge padding, 16px gaps between overlays</li>
+                  <li>• Fleet mode shows Team Management instead</li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
