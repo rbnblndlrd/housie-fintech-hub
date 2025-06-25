@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown, X } from 'lucide-react';
+import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown, X, RotateCcw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { OverlayConfig } from '@/hooks/useOverlayManager';
 import MapThemeSelector from './MapThemeSelector';
@@ -10,6 +10,7 @@ interface OverlayManagerProps {
   overlays: OverlayConfig[];
   onToggleOverlay: (overlayId: string) => void;
   onToggleAll: () => void;
+  onResetLayout: () => void;
   allVisible: boolean;
   isFleetMode: boolean;
   onToggleFleetMode: (enabled: boolean) => void;
@@ -22,6 +23,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
   overlays,
   onToggleOverlay,
   onToggleAll,
+  onResetLayout,
   allVisible,
   isFleetMode,
   onToggleFleetMode,
@@ -41,7 +43,8 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
     overlaysCount: overlays.length,
     isFleetMode,
     isCustomizeMode,
-    allVisible
+    allVisible,
+    overlayStates: overlays.map(o => ({ id: o.id, visible: o.visible, minimized: o.minimized }))
   });
 
   return (
@@ -137,6 +140,12 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                         Hideable
                       </Badge>
                     )}
+                    <div className="text-xs text-gray-500">
+                      {overlay.hideable ? 
+                        (overlay.visible ? 'Visible' : 'Hidden') : 
+                        (overlay.minimized ? 'Minimized' : 'Expanded')
+                      }
+                    </div>
                   </div>
                   <div className="flex items-center gap-2">
                     {overlay.hideable ? (
@@ -148,13 +157,13 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                       >
                         {overlay.visible ? (
                           <>
-                            <Eye className="h-3 w-3 mr-1" />
-                            Show
+                            <EyeOff className="h-3 w-3 mr-1" />
+                            Hide
                           </>
                         ) : (
                           <>
-                            <EyeOff className="h-3 w-3 mr-1" />
-                            Hide
+                            <Eye className="h-3 w-3 mr-1" />
+                            Show
                           </>
                         )}
                       </Button>
@@ -174,6 +183,18 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             </div>
 
             <div className="mt-4 pt-3 border-t border-gray-200">
+              <div className="flex items-center gap-2 mb-3">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={onResetLayout}
+                  className="flex-1"
+                >
+                  <RotateCcw className="h-4 w-4 mr-2" />
+                  Reset Layout
+                </Button>
+              </div>
+              
               <div className="text-xs text-gray-600">
                 <div className="mb-2">
                   <strong>Layout Rules:</strong>

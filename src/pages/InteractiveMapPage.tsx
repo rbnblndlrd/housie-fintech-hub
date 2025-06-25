@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -92,7 +91,13 @@ const InteractiveMapPage = () => {
     }
   ];
 
-  console.log('🗺️ InteractiveMapPage render:', { user: !!user, currentRole, isFleetMode, overlaysCount: overlays.length });
+  console.log('🗺️ InteractiveMapPage render:', { 
+    user: !!user, 
+    currentRole, 
+    isFleetMode, 
+    overlaysCount: overlays.length,
+    overlayStates: overlays.map(o => ({ id: o.id, visible: o.visible, minimized: o.minimized }))
+  });
 
   const handleFleetModeToggle = (enabled: boolean) => {
     if (!isPremium && enabled) {
@@ -156,7 +161,9 @@ const InteractiveMapPage = () => {
   // Check if overlay should be rendered (exists in filtered overlays and is visible)
   const shouldRenderOverlay = (overlayId: string) => {
     const overlay = overlays.find(o => o.id === overlayId);
-    return overlay && overlay.visible;
+    const shouldRender = overlay && overlay.visible;
+    console.log(`🔍 shouldRenderOverlay(${overlayId}):`, { overlay, shouldRender });
+    return shouldRender;
   };
 
   // Organized positioning system with proper spacing and collision detection
@@ -218,6 +225,7 @@ const InteractiveMapPage = () => {
           }))}
           onToggleOverlay={toggleOverlay}
           onToggleAll={toggleAllOverlays}
+          onResetLayout={resetLayout}
           allVisible={allOverlaysVisible}
           isFleetMode={isFleetMode}
           onToggleFleetMode={handleFleetModeToggle}

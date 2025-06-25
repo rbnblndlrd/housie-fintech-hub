@@ -92,14 +92,19 @@ export const useOverlayManager = () => {
   };
 
   const toggleOverlay = (overlayId: string) => {
+    console.log('🎛️ Toggling overlay:', overlayId);
     setOverlays(prev => prev.map(overlay => {
       if (overlay.id === overlayId) {
+        const newState = { ...overlay };
         // For hideable overlays, toggle visibility instead of minimized
         if (overlay.hideable) {
-          return { ...overlay, visible: !overlay.visible };
+          newState.visible = !overlay.visible;
+          console.log(`📦 ${overlayId} visibility changed to:`, newState.visible);
         } else {
-          return { ...overlay, minimized: !overlay.minimized };
+          newState.minimized = !overlay.minimized;
+          console.log(`📦 ${overlayId} minimized changed to:`, newState.minimized);
         }
+        return newState;
       }
       return overlay;
     }));
@@ -110,6 +115,7 @@ export const useOverlayManager = () => {
 
   const toggleAllOverlays = () => {
     const newVisibility = !allOverlaysVisible;
+    console.log('🎛️ Toggling all overlays to:', newVisibility);
     setOverlays(prev => prev.map(overlay => ({
       ...overlay,
       visible: newVisibility
@@ -122,13 +128,14 @@ export const useOverlayManager = () => {
   };
 
   const resetLayout = () => {
+    console.log('🔄 Resetting overlay layout to defaults');
     setOverlays(prev => prev.map(overlay => ({
       ...overlay,
       visible: true,
       minimized: false
     })));
     localStorage.removeItem('overlay-layout');
-    console.log('🔄 Overlay layout reset');
+    console.log('✅ All overlays restored to visible state');
   };
 
   return {
