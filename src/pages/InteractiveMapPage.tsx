@@ -36,7 +36,7 @@ const InteractiveMapPage = () => {
         {/* Main Content Area with Map and Right Panel */}
         <div className="flex flex-1">
           {/* Map Container - Takes remaining space after right panel */}
-          <div className="flex-1 relative" style={{ height: '70vh' }}>
+          <div className="flex-1 relative">
             <HeatZoneMap 
               userRole={currentRole} 
               showHeatZones={showHeatZones}
@@ -51,8 +51,8 @@ const InteractiveMapPage = () => {
           />
         </div>
 
-        {/* Bottom Panel - Reduced height */}
-        <div className="h-[20vh] border-t bg-white">
+        {/* Bottom Panel - Increased height */}
+        <div className="h-[28vh] border-t bg-white">
           <InteractiveMapBottomPanel currentRole={currentRole} />
         </div>
       </div>
