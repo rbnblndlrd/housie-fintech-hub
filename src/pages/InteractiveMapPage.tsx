@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from '@/components/Header';
-import HeatZoneMap from '@/components/HeatZoneMap';
+import FleetMap from '@/components/FleetMap';
 import { useToast } from '@/hooks/use-toast';
 import { useOverlayManager } from '@/hooks/useOverlayManager';
 import { useFleetVehicles, FleetVehicle } from '@/hooks/useFleetVehicles';
@@ -47,8 +46,7 @@ const InteractiveMapPage = () => {
     resetLayout
   } = useOverlayManager();
 
-  // Map state
-  const [showHeatZones, setShowHeatZones] = useState(true);
+  // Map state - heat zones disabled
   const [showProviders, setShowProviders] = useState(true);
   const [showTrafficAreas, setShowTrafficAreas] = useState(false);
   const [audioEnabled, setAudioEnabled] = useState(true);
@@ -135,8 +133,6 @@ const InteractiveMapPage = () => {
     
     console.log('🎯 Centering on fleet:', { bounds, center, vehicleCount: fleetVehicles.length });
     
-    // This would trigger map centering in a real implementation
-    // For now, we'll show a toast
     toast({
       title: "Fleet Centered",
       description: `Map centered on ${fleetVehicles.length} fleet vehicles`,
@@ -182,9 +178,8 @@ const InteractiveMapPage = () => {
       
       {/* Fullscreen Map Container */}
       <div className="fixed inset-0 pt-16">
-        <HeatZoneMap 
+        <FleetMap 
           userRole={currentRole} 
-          showHeatZones={showHeatZones}
           fleetVehicles={fleetVehicles}
           selectedVehicle={selectedVehicle}
           onVehicleSelect={setSelectedVehicle}
@@ -224,17 +219,17 @@ const InteractiveMapPage = () => {
           isFleetMode={isFleetMode}
         />
 
-        {/* Market Insights Overlay */}
+        {/* Market Insights Overlay - Heat Zones Disabled */}
         <MarketInsightsOverlay
           position={getOverlayPosition('market-insights')}
           visible={getOverlayConfig('market-insights').visible}
           minimized={getOverlayConfig('market-insights').minimized}
           draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('market-insights')}
-          showHeatZones={showHeatZones}
+          showHeatZones={false}
           showProviders={showProviders}
           showTrafficAreas={showTrafficAreas}
-          onToggleHeatZones={setShowHeatZones}
+          onToggleHeatZones={() => {}} // Disabled
           onToggleProviders={setShowProviders}
           onToggleTrafficAreas={setShowTrafficAreas}
           isFleetMode={isFleetMode}
@@ -288,7 +283,7 @@ const InteractiveMapPage = () => {
           isFleetMode={isFleetMode}
         />
 
-        {/* Fleet Vehicles View Overlay - NEW */}
+        {/* Fleet Vehicles View Overlay */}
         <FleetVehiclesViewOverlay
           position={getOverlayPosition('fleet-vehicles-view')}
           visible={getOverlayConfig('fleet-vehicles-view')?.visible || isFleetMode}

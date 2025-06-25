@@ -2,15 +2,12 @@
 import React, { useState } from 'react';
 import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
 import { montrealProviders } from '@/data/montrealProviders';
-import { montrealHeatZones } from '@/data/montrealHeatZones';
-import MontrealHeatZonesOverlay from './map/MontrealHeatZonesOverlay';
 import FleetVehicleMarkersOverlay from './map/FleetVehicleMarkersOverlay';
 import FleetBoundingBoxOverlay from './map/FleetBoundingBoxOverlay';
 import { FleetVehicle } from '@/hooks/useFleetVehicles';
 
-interface HeatZoneMapProps {
+interface FleetMapProps {
   userRole: string | null;
-  showHeatZones?: boolean;
   fleetVehicles?: FleetVehicle[];
   selectedVehicle?: FleetVehicle | null;
   onVehicleSelect?: (vehicle: FleetVehicle) => void;
@@ -26,9 +23,8 @@ interface HeatZoneMapProps {
   fleetCenter?: { lat: number; lng: number };
 }
 
-const HeatZoneMap: React.FC<HeatZoneMapProps> = ({
+const FleetMap: React.FC<FleetMapProps> = ({
   userRole,
-  showHeatZones = true,
   fleetVehicles = [],
   selectedVehicle,
   onVehicleSelect,
@@ -38,8 +34,6 @@ const HeatZoneMap: React.FC<HeatZoneMapProps> = ({
   followFleet = false,
   fleetCenter
 }) => {
-  const [selectedZone, setSelectedZone] = useState<any>(null);
-
   // Dynamic center and zoom based on fleet tracking
   const mapCenter = followFleet && fleetCenter 
     ? fleetCenter 
@@ -49,9 +43,8 @@ const HeatZoneMap: React.FC<HeatZoneMapProps> = ({
     ? (fleetVehicles.length === 1 ? 14 : 12) 
     : 11;
 
-  console.log('🗺️ HeatZoneMap render:', { 
+  console.log('🗺️ FleetMap render:', { 
     userRole, 
-    showHeatZones, 
     fleetVehiclesCount: fleetVehicles.length,
     followFleet,
     mapCenter,
@@ -64,18 +57,8 @@ const HeatZoneMap: React.FC<HeatZoneMapProps> = ({
       zoom={mapZoom}
       className="w-full h-full"
       providers={montrealProviders}
-      mode="heatZones"
+      mode="interactive"
     >
-      {/* Heat Zones Overlay */}
-      {showHeatZones && (
-        <MontrealHeatZonesOverlay
-          heatZones={montrealHeatZones}
-          onZoneClick={setSelectedZone}
-          selectedZone={selectedZone}
-          onCloseInfo={() => setSelectedZone(null)}
-        />
-      )}
-
       {/* Fleet Vehicle Markers */}
       {fleetVehicles.length > 0 && (
         <FleetVehicleMarkersOverlay
@@ -97,4 +80,4 @@ const HeatZoneMap: React.FC<HeatZoneMapProps> = ({
   );
 };
 
-export default HeatZoneMap;
+export default FleetMap;
