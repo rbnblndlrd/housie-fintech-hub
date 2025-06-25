@@ -10,11 +10,13 @@ import { Slider } from '@/components/ui/slider';
 import { 
   Zap, 
   TrendingUp, 
-  Users, 
-  DollarSign,
   MapPin,
-  AlertTriangle,
-  Filter
+  Filter,
+  Plus,
+  Search,
+  Clock,
+  Activity,
+  Calendar
 } from 'lucide-react';
 
 interface InteractiveMapRightPanelProps {
@@ -42,10 +44,6 @@ const InteractiveMapRightPanel: React.FC<InteractiveMapRightPanelProps> = ({
   const [demandThreshold, setDemandThreshold] = React.useState([0]);
 
   const emergencyJobsCount = 4;
-  const userArea = "Plateau-Mont-Royal";
-  const marketDemand = "High";
-  const avgRate = currentRole === 'provider' ? 45 : 50;
-  const competition = "Medium";
 
   return (
     <div className="w-80 bg-white border-l border-gray-200 flex flex-col overflow-y-auto">
@@ -120,67 +118,46 @@ const InteractiveMapRightPanel: React.FC<InteractiveMapRightPanelProps> = ({
           </CardContent>
         </Card>
 
-        {/* Location Analytics */}
+        {/* Quick Actions */}
         <Card>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm flex items-center gap-2">
-              <MapPin className="h-4 w-4" />
-              Location Analytics
+              <Activity className="h-4 w-4" />
+              Quick Actions
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-0 space-y-3">
-            <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs text-gray-600">Your Area:</span>
-                <span className="text-sm font-medium">{userArea}</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <div className="bg-gray-50 p-2 rounded">
-                <div className="flex items-center gap-1 mb-1">
-                  <TrendingUp className="h-3 w-3 text-green-600" />
-                  <span className="text-gray-600">Demand</span>
-                </div>
-                <div className="font-medium text-green-600">{marketDemand}</div>
-              </div>
-
-              <div className="bg-gray-50 p-2 rounded">
-                <div className="flex items-center gap-1 mb-1">
-                  <DollarSign className="h-3 w-3 text-blue-600" />
-                  <span className="text-gray-600">Avg Rate</span>
-                </div>
-                <div className="font-medium text-blue-600">${avgRate}/hr</div>
-              </div>
-
-              <div className="bg-gray-50 p-2 rounded">
-                <div className="flex items-center gap-1 mb-1">
-                  <Users className="h-3 w-3 text-orange-600" />
-                  <span className="text-gray-600">Competition</span>
-                </div>
-                <div className="font-medium text-orange-600">{competition}</div>
-              </div>
-
-              <div className="bg-gray-50 p-2 rounded">
-                <div className="flex items-center gap-1 mb-1">
-                  <AlertTriangle className="h-3 w-3 text-green-600" />
-                  <span className="text-gray-600">Opportunity</span>
-                </div>
-                <div className="font-medium text-green-600">High</div>
-              </div>
-            </div>
-
-            <div className="mt-3 p-2 bg-green-50 rounded border border-green-200">
-              <div className="text-xs text-green-700 font-medium mb-1">
-                Market Insight
-              </div>
-              <p className="text-xs text-green-600">
-                {currentRole === 'provider' 
-                  ? 'High demand for handyman services. Consider expanding to this area.' 
-                  : 'Great area with reliable service providers. Average response time: 2 hours.'
-                }
-              </p>
-            </div>
+          <CardContent className="pt-0 space-y-2">
+            {currentRole === 'provider' ? (
+              <>
+                <Button size="sm" className="w-full justify-start" variant="outline">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Update Availability
+                </Button>
+                <Button size="sm" className="w-full justify-start" variant="outline">
+                  <Search className="h-4 w-4 mr-2" />
+                  Find Work
+                </Button>
+                <Button size="sm" className="w-full justify-start" variant="outline">
+                  <MapPin className="h-4 w-4 mr-2" />
+                  Expand Service Area
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button size="sm" className="w-full justify-start">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Post New Job
+                </Button>
+                <Button size="sm" className="w-full justify-start" variant="outline">
+                  <Search className="h-4 w-4 mr-2" />
+                  Find Services
+                </Button>
+                <Button size="sm" className="w-full justify-start" variant="outline">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule Service
+                </Button>
+              </>
+            )}
           </CardContent>
         </Card>
 
