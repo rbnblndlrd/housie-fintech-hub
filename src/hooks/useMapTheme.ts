@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 
-export type MapTheme = 'standard' | 'dark' | 'retro';
+export type MapTheme = 'standard' | 'dark' | 'retro' | 'tealCream';
 
 export interface MapThemeConfig {
   name: string;
@@ -67,6 +67,54 @@ export const mapThemes: Record<MapTheme, MapThemeConfig> = {
       { featureType: "water", elementType: "geometry.fill", stylers: [{ color: "#b9d3c2" }] },
       { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#92998d" }] }
     ]
+  },
+  tealCream: {
+    name: 'Teal & Cream',
+    styles: [
+      // Base landscape styling - cream background
+      { elementType: "geometry", stylers: [{ color: "#f5f5dc" }] },
+      
+      // Text styling - dark slate gray for contrast
+      { elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      { elementType: "labels.text.stroke", stylers: [{ color: "#ffffff" }] },
+      
+      // Water styling - teal
+      { featureType: "water", elementType: "geometry", stylers: [{ color: "#008080" }] },
+      { featureType: "water", elementType: "labels.text.fill", stylers: [{ color: "#ffffff" }] },
+      
+      // Road styling - white with slight lightness
+      { featureType: "road", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
+      { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      { featureType: "road.arterial", elementType: "geometry", stylers: [{ color: "#f8f8ff" }] },
+      { featureType: "road.local", elementType: "geometry", stylers: [{ color: "#ffffff" }] },
+      
+      // Highway styling - darker teal
+      { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#4a9999" }] },
+      { featureType: "road.highway", elementType: "geometry.stroke", stylers: [{ color: "#008080" }] },
+      { featureType: "road.highway", elementType: "labels.text.fill", stylers: [{ color: "#ffffff" }] },
+      { featureType: "road.highway.controlled_access", elementType: "geometry", stylers: [{ color: "#4a9999" }] },
+      { featureType: "road.highway.controlled_access", elementType: "geometry.stroke", stylers: [{ color: "#008080" }] },
+      
+      // Parks and natural areas - light sea green
+      { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#20b2aa" }] },
+      { featureType: "poi.park", elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      { featureType: "landscape.natural", elementType: "geometry", stylers: [{ color: "#20b2aa" }] },
+      
+      // Administrative boundaries
+      { featureType: "administrative", elementType: "geometry.stroke", stylers: [{ color: "#4a9999" }] },
+      { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      { featureType: "administrative.country", elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      
+      // POI styling
+      { featureType: "poi", elementType: "geometry", stylers: [{ color: "#f0f8ff" }] },
+      { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      
+      // Transit styling
+      { featureType: "transit", elementType: "geometry", stylers: [{ color: "#4a9999" }] },
+      { featureType: "transit", elementType: "labels.text.fill", stylers: [{ color: "#2f4f4f" }] },
+      { featureType: "transit.line", elementType: "geometry", stylers: [{ color: "#4a9999" }] },
+      { featureType: "transit.station", elementType: "geometry", stylers: [{ color: "#20b2aa" }] }
+    ]
   }
 };
 
@@ -77,7 +125,7 @@ export const useMapTheme = () => {
   });
 
   const cycleTheme = () => {
-    const themes: MapTheme[] = ['standard', 'dark', 'retro'];
+    const themes: MapTheme[] = ['standard', 'dark', 'retro', 'tealCream'];
     const currentIndex = themes.indexOf(currentTheme);
     const nextIndex = (currentIndex + 1) % themes.length;
     const nextTheme = themes[nextIndex];
