@@ -65,18 +65,18 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
 
   // Mobile Bottom Sheet for Controls
   const MobileControls = () => (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 md:hidden">
+    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50 md:hidden pointer-events-auto">
       <Sheet>
         <SheetTrigger asChild>
           <Button
             size="lg"
-            className="bg-white/95 backdrop-blur-sm text-gray-900 border border-gray-200 hover:bg-white shadow-lg min-h-[44px] px-6"
+            className="bg-white/95 backdrop-blur-sm text-gray-900 border border-gray-200 hover:bg-white shadow-lg min-h-[44px] px-6 pointer-events-auto"
           >
             <Menu className="h-5 w-5 mr-2" />
             Controls
           </Button>
         </SheetTrigger>
-        <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto">
+        <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto pointer-events-auto">
           <SheetHeader>
             <SheetTitle className="text-left">Map Controls</SheetTitle>
           </SheetHeader>
@@ -89,7 +89,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 variant={isFleetMode ? "default" : "outline"}
                 size="lg"
                 onClick={handleFleetModeToggle}
-                className={`w-full min-h-[44px] justify-start ${
+                className={`w-full min-h-[44px] justify-start pointer-events-auto ${
                   isFleetMode 
                     ? 'bg-blue-600 hover:bg-blue-700 text-white' 
                     : 'bg-white hover:bg-gray-50'
@@ -118,7 +118,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 variant={isDraggableMode ? "default" : "outline"}
                 size="lg"
                 onClick={handleDraggableModeToggle}
-                className={`w-full min-h-[44px] justify-start ${
+                className={`w-full min-h-[44px] justify-start pointer-events-auto ${
                   isDraggableMode 
                     ? 'bg-green-600 hover:bg-green-700 text-white' 
                     : 'bg-white hover:bg-gray-50'
@@ -135,7 +135,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                   variant="outline"
                   size="lg"
                   onClick={onResetPositions}
-                  className="w-full min-h-[44px] justify-start"
+                  className="w-full min-h-[44px] justify-start pointer-events-auto"
                 >
                   <RotateCcw className="h-5 w-5 mr-3" />
                   <span className="text-base">Reset Positions</span>
@@ -156,7 +156,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 variant="outline"
                 size="lg"
                 onClick={onToggleAll}
-                className="w-full min-h-[44px] justify-start"
+                className="w-full min-h-[44px] justify-start pointer-events-auto"
               >
                 {allVisible ? <EyeOff className="h-5 w-5 mr-3" /> : <Eye className="h-5 w-5 mr-3" />}
                 <span className="text-base">
@@ -193,7 +193,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                       }
                       size="sm"
                       onClick={() => onToggleOverlay(overlay.id)}
-                      className="min-h-[36px] min-w-[80px] text-xs"
+                      className="min-h-[36px] min-w-[80px] text-xs pointer-events-auto"
                     >
                       {overlay.hideable ? (
                         overlay.visible ? (
@@ -219,7 +219,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 variant="outline"
                 size="lg"
                 onClick={onResetLayout}
-                className="w-full min-h-[44px] justify-start mt-4"
+                className="w-full min-h-[44px] justify-start mt-4 pointer-events-auto"
               >
                 <RotateCcw className="h-5 w-5 mr-3" />
                 <span className="text-base">Reset Layout</span>
@@ -233,16 +233,16 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
 
   // Desktop Control Bar
   const DesktopControls = () => (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 hidden md:block">
-      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-3">
-        <div className="flex items-center gap-3 min-w-[700px]">
+    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 hidden md:block pointer-events-auto">
+      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-3 pointer-events-auto">
+        <div className="flex items-center gap-3 min-w-[700px] pointer-events-auto">
           
           {/* Fleet/Individual Mode Toggle */}
           <Button
             variant={isFleetMode ? "default" : "outline"}
             size="sm"
             onClick={handleFleetModeToggle}
-            className={`transition-all duration-200 min-w-[140px] ${
+            className={`transition-all duration-200 min-w-[140px] pointer-events-auto ${
               isFleetMode 
                 ? 'bg-blue-600 hover:bg-blue-700 text-white' 
                 : 'bg-white hover:bg-gray-50'
@@ -259,7 +259,9 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
           <div className="h-6 w-px bg-gray-300" />
 
           {/* Map Theme Selector */}
-          <MapThemeSelector />
+          <div className="pointer-events-auto">
+            <MapThemeSelector />
+          </div>
 
           {/* Separator */}
           <div className="h-6 w-px bg-gray-300" />
@@ -269,7 +271,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             variant={isDraggableMode ? "default" : "outline"}
             size="sm"
             onClick={handleDraggableModeToggle}
-            className={`transition-all duration-200 min-w-[120px] ${
+            className={`transition-all duration-200 min-w-[120px] pointer-events-auto ${
               isDraggableMode 
                 ? 'bg-green-600 hover:bg-green-700 text-white' 
                 : 'bg-white hover:bg-gray-50'
@@ -285,7 +287,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
               variant="outline"
               size="sm"
               onClick={onResetPositions}
-              className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px]"
+              className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px] pointer-events-auto"
               title="Reset overlay positions to organized layout"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
@@ -298,7 +300,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             variant={isCustomizeMode ? "default" : "outline"}
             size="sm"
             onClick={handleCustomizeModeToggle}
-            className={`transition-all duration-200 min-w-[120px] ${
+            className={`transition-all duration-200 min-w-[120px] pointer-events-auto ${
               isCustomizeMode 
                 ? 'bg-purple-600 hover:bg-purple-700 text-white' 
                 : 'bg-white hover:bg-gray-50'
@@ -313,7 +315,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             variant="outline"
             size="sm"
             onClick={onToggleAll}
-            className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px]"
+            className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px] pointer-events-auto"
           >
             {allVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
             {allVisible ? 'Hide All' : 'Show All'}
@@ -331,8 +333,8 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
 
       {/* Desktop Customize Mode Panel */}
       {isCustomizeMode && !isMobile && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-40">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-96">
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-96 pointer-events-auto">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-gray-900 flex items-center">
                 <LayoutGrid className="h-4 w-4 mr-2" />
@@ -384,7 +386,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                         variant={overlay.visible ? "default" : "outline"}
                         size="sm"
                         onClick={() => onToggleOverlay(overlay.id)}
-                        className="text-xs h-7 min-w-[60px]"
+                        className="text-xs h-7 min-w-[60px] pointer-events-auto"
                       >
                         {overlay.visible ? (
                           <>
@@ -403,7 +405,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                         variant={overlay.minimized ? "outline" : "default"}
                         size="sm"
                         onClick={() => onToggleOverlay(overlay.id)}
-                        className="text-xs h-7 min-w-[80px]"
+                        className="text-xs h-7 min-w-[80px] pointer-events-auto"
                       >
                         {overlay.minimized ? 'Expand' : 'Minimize'}
                       </Button>
@@ -419,7 +421,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                   variant="outline"
                   size="sm"
                   onClick={onResetLayout}
-                  className="flex-1"
+                  className="flex-1 pointer-events-auto"
                 >
                   <RotateCcw className="h-4 w-4 mr-2" />
                   Reset Layout
