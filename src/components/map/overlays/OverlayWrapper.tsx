@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { useUIMode } from '@/hooks/useUIMode';
 import './OverlayStyles.css';
@@ -43,7 +42,15 @@ const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!draggable) return;
     
+    // Only start drag from the header/grip area
+    const target = e.target as HTMLElement;
+    const isGripIcon = target.closest('[data-grip="true"]');
+    const isHeader = target.closest('[data-draggable-header="true"]');
+    
+    if (!isGripIcon && !isHeader) return;
+    
     e.preventDefault();
+    e.stopPropagation();
     setIsDragging(true);
     
     const rect = overlayRef.current?.getBoundingClientRect();
@@ -60,9 +67,18 @@ const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging || !draggable) return;
     
+    e.preventDefault();
+    
+    const newX = e.clientX - dragOffset.x;
+    const newY = e.clientY - dragOffset.y;
+    
+    // Keep within viewport bounds
+    const maxX = window.innerWidth - 320; // Assume min overlay width
+    const maxY = window.innerHeight - 200; // Assume min overlay height
+    
     setCurrentPosition({
-      x: e.clientX - dragOffset.x,
-      y: e.clientY - dragOffset.y
+      x: Math.max(0, Math.min(newX, maxX)),
+      y: Math.max(0, Math.min(newY, maxY))
     });
   };
 
@@ -88,7 +104,7 @@ const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
   const overlayStyle = (isDragging || (currentPosition.x !== 0 || currentPosition.y !== 0)) ? {
     left: currentPosition.x,
     top: currentPosition.y,
-    zIndex: isDragging ? 9999 : 'auto'
+    zIndex: isDragging ? 9999 : 50
   } : {};
 
   return (
@@ -98,13 +114,12 @@ const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
         overlay-wrapper
         ${getPositionClasses()}
         ${isDragging ? 'overlay-dragging' : ''}
-        ${draggable ? 'draggable-overlay' : ''}
         ${className}
       `}
       style={overlayStyle}
       onMouseDown={handleMouseDown}
     >
-      <div className={`${getOverlayClasses()} backdrop-blur-sm rounded-2xl shadow-2xl transition-all duration-200`}>
+      <div className={`${getOverlayClasses()} backdrop-blur-sm rounded-2xl shadow-2xl transition-all duration-200 pointer-events-auto`}>
         {children}
       </div>
     </div>

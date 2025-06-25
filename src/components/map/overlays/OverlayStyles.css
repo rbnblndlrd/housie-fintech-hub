@@ -6,7 +6,7 @@
   opacity: 0.9;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   cursor: grabbing !important;
-  pointer-events: auto;
+  pointer-events: auto !important;
 }
 
 /* Prevent selection during drag */
@@ -24,43 +24,66 @@
   -ms-user-select: none !important;
 }
 
-/* Smooth transitions when not dragging */
+/* Fix overlay wrapper positioning - NO HOVER MOVEMENT */
 .overlay-wrapper {
-  transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+  pointer-events: auto;
+  /* Remove any transform or movement on hover */
 }
 
+/* Remove hover movement that causes dodging */
 .overlay-wrapper:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  /* NO transform or movement - keep overlay stable */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
-/* Draggable cursor states */
-.draggable-overlay {
+/* Draggable cursor states - only on grip areas */
+.draggable-overlay [data-grip="true"] {
   cursor: grab;
 }
 
-.draggable-overlay:active {
+.draggable-overlay [data-grip="true"]:active {
   cursor: grabbing;
 }
 
-/* Ensure proper cursor hierarchy */
-.overlay-dragging,
-.overlay-dragging * {
-  cursor: grabbing !important;
+.draggable-overlay [data-draggable-header="true"] {
+  cursor: grab;
 }
 
-/* Remove any conflicting cursor styles during drag */
-.drag-in-progress,
-.drag-in-progress * {
-  cursor: grabbing !important;
+.draggable-overlay [data-draggable-header="true"]:active {
+  cursor: grabbing;
 }
 
-/* Prevent pointer events on child elements during drag to avoid cursor conflicts */
-.overlay-dragging * {
+/* Ensure proper pointer events on overlay content */
+.overlay-wrapper > div {
+  pointer-events: auto;
+}
+
+/* During drag, only the wrapper should handle mouse events */
+.overlay-dragging {
+  pointer-events: auto;
+}
+
+.overlay-dragging > div {
   pointer-events: none;
 }
 
-/* Re-enable pointer events on the main dragging element */
+.overlay-dragging button,
+.overlay-dragging input,
+.overlay-dragging [role="button"] {
+  pointer-events: none;
+}
+
+/* Stable z-index hierarchy */
+.overlay-wrapper {
+  z-index: 40;
+}
+
 .overlay-dragging {
-  pointer-events: auto;
+  z-index: 9999;
+}
+
+/* Prevent any unwanted transforms or movements */
+.overlay-wrapper,
+.overlay-wrapper > div {
+  transform-origin: top left;
 }

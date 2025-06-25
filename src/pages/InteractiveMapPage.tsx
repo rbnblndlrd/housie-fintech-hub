@@ -155,7 +155,7 @@ const InteractiveMapPage = () => {
     const overlay = overlays.find(o => o.id === overlayId);
     const position = overlay?.position || 'top-right';
     
-    // Convert position to CSS classes
+    // Improved positioning with better spacing to prevent overlaps
     switch (position) {
       case 'top-left': return 'top-20 left-4';
       case 'top-right': return 'top-20 right-4';
@@ -163,7 +163,7 @@ const InteractiveMapPage = () => {
       case 'bottom-right': return 'bottom-4 right-4';
       case 'center-left': return 'top-1/2 left-4 -translate-y-1/2';
       case 'center-right': return 'top-1/2 right-4 -translate-y-1/2';
-      case 'bottom-center': return 'bottom-4 left-1/2 -translate-x-1/2';
+      case 'bottom-center': return 'bottom-20 left-1/2 -translate-x-1/2'; // Moved up to avoid overlap
       default: return 'top-20 right-4';
     }
   };

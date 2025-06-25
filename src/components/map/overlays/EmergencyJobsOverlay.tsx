@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -54,9 +55,14 @@ const EmergencyJobsOverlay: React.FC<EmergencyJobsOverlayProps> = ({
     >
       <Card className="w-80 bg-red-50/95 backdrop-blur-sm border-red-200 shadow-lg">
         <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between" data-draggable-header="true">
             <CardTitle className="text-red-700 flex items-center gap-2 text-sm">
-              {draggable && <GripVertical className="h-4 w-4 cursor-grab" />}
+              {draggable && (
+                <GripVertical 
+                  className="h-4 w-4 cursor-grab text-red-500" 
+                  data-grip="true"
+                />
+              )}
               <Zap className="h-4 w-4 animate-pulse" />
               🚨 {isFleetMode ? 'Fleet Emergency Jobs' : 'Emergency Jobs Available'}
             </CardTitle>
@@ -66,6 +72,7 @@ const EmergencyJobsOverlay: React.FC<EmergencyJobsOverlayProps> = ({
                 size="sm"
                 onClick={onToggleAudio}
                 className="h-6 w-6 p-0"
+                title={audioEnabled ? "Mute notifications" : "Enable notifications"}
               >
                 {audioEnabled ? <Volume2 className="h-3 w-3" /> : <VolumeX className="h-3 w-3" />}
               </Button>
@@ -74,6 +81,7 @@ const EmergencyJobsOverlay: React.FC<EmergencyJobsOverlayProps> = ({
                 size="sm"
                 onClick={onMinimize}
                 className="h-6 w-6 p-0"
+                title="Minimize"
               >
                 <Minimize2 className="h-3 w-3" />
               </Button>
