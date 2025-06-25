@@ -1,33 +1,20 @@
 
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import React from 'react';
 import { Button } from '@/components/ui/button';
+import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Eye, EyeOff, Settings, Users, User, Crown } from 'lucide-react';
-import { useRole } from '@/contexts/RoleContext';
-import UIModelToggle from './UIModeToggle';
-
-export type OverlayPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center-left' | 'center-right' | 'bottom-center';
-
-export interface OverlayConfig {
-  id: string;
-  title: string;
-  position: OverlayPosition;
-  visible: boolean;
-  minimized: boolean;
-  draggable: boolean;
-}
+import { OverlayConfig } from '@/hooks/useOverlayManager';
+import MapThemeSelector from './MapThemeSelector';
 
 interface OverlayManagerProps {
   overlays: OverlayConfig[];
-  onToggleOverlay: (id: string) => void;
+  onToggleOverlay: (overlayId: string) => void;
   onToggleAll: () => void;
   allVisible: boolean;
   isFleetMode: boolean;
-  onToggleFleetMode: (checked: boolean) => void;
+  onToggleFleetMode: (enabled: boolean) => void;
   isCustomizeMode: boolean;
-  onToggleCustomizeMode: (checked: boolean) => void;
+  onToggleCustomizeMode: (enabled: boolean) => void;
   isPremium: boolean;
 }
 
@@ -42,117 +29,120 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
   onToggleCustomizeMode,
   isPremium
 }) => {
-  const { currentRole } = useRole();
-  const [showControls, setShowControls] = useState(false);
+  const handleFleetModeToggle = () => {
+    onToggleFleetMode(!isFleetMode);
+  };
+
+  const handleCustomizeModeToggle = () => {
+    onToggleCustomizeMode(!isCustomizeMode);
+  };
+
+  console.log('🎛️ OverlayManager render:', { 
+    overlaysCount: overlays.length,
+    isFleetMode,
+    isCustomizeMode,
+    allVisible
+  });
 
   return (
     <>
-      {/* Master Controls Overlay - Top Right */}
-      <div className="absolute top-4 right-4 z-50">
-        <Card className="bg-white/90 backdrop-blur-sm border shadow-lg p-3">
-          <div className="flex items-center gap-2">
-            {/* Mode Toggle */}
-            <div className="flex items-center gap-2">
-              <User className="h-4 w-4 text-gray-600" />
-              <Switch
-                checked={isFleetMode}
-                onCheckedChange={onToggleFleetMode}
-                disabled={!isPremium}
-              />
-              <Users className="h-4 w-4 text-blue-600" />
-              {isPremium && isFleetMode && (
-                <Badge variant="default" className="text-xs">
-                  Fleet
-                </Badge>
+      {/* Top Control Bar - Fixed position and width */}
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-3">
+          <div className="flex items-center gap-3 min-w-[600px]">
+            
+            {/* Fleet/Individual Mode Toggle */}
+            <Button
+              variant={isFleetMode ? "default" : "outline"}
+              size="sm"
+              onClick={handleFleetModeToggle}
+              className={`transition-all duration-200 min-w-[140px] ${
+                isFleetMode 
+                  ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                  : 'bg-white hover:bg-gray-50'
+              }`}
+            >
+              {isFleetMode ? <Truck className="h-4 w-4 mr-2" /> : <User className="h-4 w-4 mr-2" />}
+              {isFleetMode ? 'Fleet Manager' : 'Individual'}
+              {isFleetMode && !isPremium && (
+                <Crown className="h-3 w-3 ml-1 text-yellow-400" />
               )}
-            </div>
+            </Button>
 
-            {/* UI Mode Toggle */}
-            {isPremium && (
-              <UIModelToggle />
-            )}
+            {/* Separator */}
+            <div className="h-6 w-px bg-gray-300" />
 
-            {/* Show/Hide All */}
+            {/* Map Theme Selector */}
+            <MapThemeSelector />
+
+            {/* Separator */}
+            <div className="h-6 w-px bg-gray-300" />
+
+            {/* Customize Mode Toggle */}
+            <Button
+              variant={isCustomizeMode ? "default" : "outline"}
+              size="sm"
+              onClick={handleCustomizeModeToggle}
+              className={`transition-all duration-200 min-w-[120px] ${
+                isCustomizeMode 
+                  ? 'bg-purple-600 hover:bg-purple-700 text-white' 
+                  : 'bg-white hover:bg-gray-50'
+              }`}
+            >
+              <Settings className="h-4 w-4 mr-2" />
+              Customize
+            </Button>
+
+            {/* Show/Hide All Overlays */}
             <Button
               variant="outline"
               size="sm"
               onClick={onToggleAll}
-              className="flex items-center gap-2"
+              className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px]"
             >
-              {allVisible ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              {allVisible ? 'Hide' : 'Show'}
+              {allVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
+              {allVisible ? 'Hide All' : 'Show All'}
             </Button>
 
-            {/* Customize Layout (Premium) */}
-            {isPremium && (
-              <Button
-                variant={isCustomizeMode ? "default" : "outline"}
-                size="sm"
-                onClick={() => onToggleCustomizeMode(!isCustomizeMode)}
-                className="flex items-center gap-2"
-              >
-                <Settings className="h-4 w-4" />
-                Customize
-                <Crown className="h-3 w-3 text-yellow-500" />
-              </Button>
-            )}
-
-            {/* Settings Toggle */}
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowControls(!showControls)}
-            >
-              ⋮
-            </Button>
           </div>
+        </div>
+      </div>
 
-          {/* Detailed Controls */}
-          {showControls && (
-            <div className="mt-3 pt-3 border-t space-y-2">
-              <div className="text-xs font-medium text-gray-600 mb-2">Overlay Controls:</div>
-              {overlays.map(overlay => (
-                <div key={overlay.id} className="flex items-center justify-between text-xs">
-                  <span>{overlay.title}</span>
-                  <Switch
-                    checked={overlay.visible}
-                    onCheckedChange={() => onToggleOverlay(overlay.id)}
-                  />
+      {/* Customize Mode Panel */}
+      {isCustomizeMode && (
+        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-40">
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-80">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-gray-900 flex items-center">
+                <LayoutGrid className="h-4 w-4 mr-2" />
+                Overlay Controls
+              </h3>
+              <Badge variant="secondary" className="text-xs">
+                {overlays.length} overlays
+              </Badge>
+            </div>
+            
+            <div className="space-y-2">
+              {overlays.map((overlay) => (
+                <div
+                  key={overlay.id}
+                  className="flex items-center justify-between p-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                >
+                  <span className="text-sm font-medium text-gray-700">
+                    {overlay.title}
+                  </span>
+                  <Button
+                    variant={overlay.minimized ? "outline" : "default"}
+                    size="sm"
+                    onClick={() => onToggleOverlay(overlay.id)}
+                    className="text-xs h-7"
+                  >
+                    {overlay.minimized ? 'Show' : 'Hide'}
+                  </Button>
                 </div>
               ))}
             </div>
-          )}
-        </Card>
-      </div>
-
-      {/* Mode Indicator */}
-      <div className="absolute top-4 left-4 z-40">
-        <Badge 
-          variant={isFleetMode ? "default" : "secondary"}
-          className="bg-white/90 backdrop-blur-sm text-sm font-medium"
-        >
-          {isFleetMode ? (
-            <>
-              <Users className="h-4 w-4 mr-1" />
-              Fleet Manager Mode
-              {isPremium && <Crown className="h-3 w-3 ml-1 text-yellow-500" />}
-            </>
-          ) : (
-            <>
-              <User className="h-4 w-4 mr-1" />
-              Individual Provider Mode
-            </>
-          )}
-        </Badge>
-      </div>
-
-      {/* Customize Mode Indicator */}
-      {isCustomizeMode && (
-        <div className="absolute top-16 left-4 z-40">
-          <Badge variant="outline" className="bg-blue-50/90 backdrop-blur-sm border-blue-200">
-            <Settings className="h-3 w-3 mr-1" />
-            Customize Layout Mode Active
-          </Badge>
+          </div>
         </div>
       )}
     </>

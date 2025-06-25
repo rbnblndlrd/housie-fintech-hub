@@ -1,4 +1,6 @@
 
+import { useMapTheme, mapThemes } from '@/hooks/useMapTheme';
+
 // Montreal-specific map styling and configuration
 export const mapContainerStyle = {
   width: '100%',
@@ -6,39 +8,33 @@ export const mapContainerStyle = {
   minHeight: '300px'
 };
 
-export const mapOptions = {
-  styles: [
-    {
-      featureType: "all",
-      elementType: "geometry.fill",
-      stylers: [{ color: "#f8fafc" }]
+// Base map options without styles - styles will be applied dynamically
+export const getMapOptions = (theme: string = 'standard') => {
+  const themeConfig = mapThemes[theme as keyof typeof mapThemes] || mapThemes.standard;
+  
+  return {
+    styles: themeConfig.styles,
+    restriction: {
+      latLngBounds: {
+        north: 46.0,
+        south: 45.0,
+        east: -73.0,
+        west: -74.5,
+      },
+      strictBounds: false,
     },
-    {
-      featureType: "water",
-      elementType: "geometry",
-      stylers: [{ color: "#3b82f6" }]
-    },
-    {
-      featureType: "road",
-      elementType: "geometry",
-      stylers: [{ color: "#e2e8f0" }]
-    },
-    {
-      featureType: "administrative.locality",
-      elementType: "labels.text.fill",
-      stylers: [{ color: "#1f2937" }]
-    }
-  ],
-  restriction: {
-    latLngBounds: {
-      north: 46.0,
-      south: 45.0,
-      east: -73.0,
-      west: -74.5,
-    },
-    strictBounds: false,
-  }
+    disableDefaultUI: false,
+    zoomControl: true,
+    mapTypeControl: false,
+    scaleControl: false,
+    streetViewControl: false,
+    rotateControl: false,
+    fullscreenControl: false
+  };
 };
+
+// Backward compatibility
+export const mapOptions = getMapOptions();
 
 // Fix the libraries type to match @react-google-maps/api expectations
 export const libraries: ("places" | "geometry")[] = ["places", "geometry"];
