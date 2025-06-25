@@ -211,8 +211,8 @@ const InteractiveMapPage = () => {
           />
         </div>
         
-        {/* Overlay Manager Controls - Improved Visibility */}
-        <div className="pointer-events-none absolute inset-0" style={{ zIndex: 50 }}>
+        {/* Overlay Manager Controls - LOWERED TO TOP-20 */}
+        <div className="pointer-events-none absolute inset-0" style={{ zIndex: 60 }}>
           <div className="pointer-events-auto">
             <OverlayManager
               overlays={overlays.map(overlay => ({
@@ -251,6 +251,30 @@ const InteractiveMapPage = () => {
                 onToggleAudio={() => setAudioEnabled(!audioEnabled)}
                 audioEnabled={audioEnabled}
                 emergencyCount={emergencyCount}
+                isFleetMode={isFleetMode}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* FIXED POSITIONING - Location Analytics Overlay - MOVED UNDER Emergency Jobs */}
+        {!isFleetMode && shouldRenderOverlay('location-analytics') && (
+          <div 
+            className="absolute top-96 left-4 z-40 pointer-events-none"
+            style={{ position: 'fixed', top: '384px', left: '16px', zIndex: 40 }}
+          >
+            <div className="pointer-events-auto">
+              <LocationAnalyticsOverlay
+                position=""
+                visible={true}
+                minimized={getOverlayConfig('location-analytics').minimized}
+                draggable={isDraggableMode}
+                onMinimize={() => toggleOverlay('location-analytics')}
+                currentArea={currentArea}
+                marketDemand={marketDemand}
+                avgRate={avgRate}
+                competition={competition}
+                opportunityLevel={opportunityLevel}
                 isFleetMode={isFleetMode}
               />
             </div>
@@ -323,30 +347,6 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* FIXED POSITIONING - Location Analytics Overlay - Individual Mode Only */}
-        {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <div 
-            className="absolute bottom-20 right-4 z-40 pointer-events-none"
-            style={{ position: 'fixed', bottom: '80px', right: '16px', zIndex: 40 }}
-          >
-            <div className="pointer-events-auto">
-              <LocationAnalyticsOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('location-analytics').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('location-analytics')}
-                currentArea={currentArea}
-                marketDemand={marketDemand}
-                avgRate={avgRate}
-                competition={competition}
-                opportunityLevel={opportunityLevel}
-                isFleetMode={isFleetMode}
-              />
-            </div>
-          </div>
-        )}
-
         {/* FIXED POSITIONING - Fleet Vehicles View Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
           <div 
@@ -370,9 +370,11 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Chat Bubble with integrated AI Voice Assistant */}
-        <div className="pointer-events-none">
-          <ChatBubble />
+        {/* Chat Bubble - REPOSITIONED NEXT TO ZOOM CONTROLS */}
+        <div className="fixed bottom-24 right-6 z-50 pointer-events-none">
+          <div className="pointer-events-auto">
+            <ChatBubble />
+          </div>
         </div>
       </div>
     </div>

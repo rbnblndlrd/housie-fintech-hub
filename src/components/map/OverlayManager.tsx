@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown, X, RotateCcw, Menu, Move, GripVertical } from 'lucide-react';
@@ -231,9 +230,9 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
     </div>
   );
 
-  // Desktop Control Bar
+  // Desktop Control Bar - LOWERED FROM TOP-4 TO TOP-20
   const DesktopControls = () => (
-    <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 hidden md:block pointer-events-auto">
+    <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50 hidden md:block pointer-events-auto">
       <div className="bg-white rounded-xl shadow-xl border-2 border-gray-300 p-4 pointer-events-auto">
         <div className="flex items-center gap-4 min-w-[700px] pointer-events-auto">
           
@@ -331,9 +330,9 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
       {/* Mobile Controls */}
       {isMobile ? <MobileControls /> : <DesktopControls />}
 
-      {/* Desktop Customize Mode Panel */}
+      {/* Desktop Customize Mode Panel - ALSO LOWERED TO TOP-32 */}
       {isCustomizeMode && !isMobile && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
+        <div className="absolute top-32 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
           <div className="bg-white rounded-xl shadow-xl border-2 border-gray-300 p-4 w-96 pointer-events-auto">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-gray-900 flex items-center">
