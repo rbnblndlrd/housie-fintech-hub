@@ -169,15 +169,7 @@ export const PricingSection = () => {
             <div className="flex flex-wrap justify-center gap-6 text-sm">
               <div className="flex items-center gap-2">
                 <Check className="h-4 w-4" />
-                <span>Conformité CRA 2025</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4" />
-                <span>Support 24/7</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Check className="h-4 w-4" />
-                <span>Essai gratuit 14 jours</span>
+                <span>Conforme aux nouvelles lois</span>
               </div>
               <div className="flex items-center gap-2">
                 <Check className="h-4 w-4" />

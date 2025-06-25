@@ -23,12 +23,11 @@ export const ChatBubble = () => {
             onClick={() => setIsOpen(true)}
             className={cn(
               "relative rounded-full w-14 h-14 shadow-lg transition-all duration-200 hover:scale-105",
-              "bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700",
-              "hover:border-blue-500 dark:hover:border-blue-400"
+              "bg-yellow-300 hover:bg-yellow-400 border-2 border-yellow-600"
             )}
             variant="ghost"
           >
-            <MessageCircle className="h-6 w-6 text-gray-700 dark:text-gray-300" />
+            <MessageCircle className="h-6 w-6 text-yellow-800" />
             {totalUnreadCount > 0 && (
               <Badge
                 variant="destructive"
@@ -39,30 +38,30 @@ export const ChatBubble = () => {
             )}
           </Button>
         ) : (
-          <div className="bg-white dark:bg-gray-900 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 w-96 h-[600px] flex flex-col overflow-hidden">
+          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
-            <div className="bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
-              <h3 className="font-semibold text-gray-900 dark:text-gray-100">Messages</h3>
+            <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
+              <h3 className="font-semibold text-yellow-900">Messages</h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0 hover:bg-gray-200 dark:hover:bg-gray-700"
+                className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
             {/* Clean Tab Navigation */}
-            <div className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-yellow-50 border-b-2 border-yellow-300">
               <div className="flex">
                 <button
                   onClick={() => setActiveTab('messages')}
                   className={cn(
                     "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                     activeTab === 'messages'
-                      ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50"
-                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      ? "text-blue-600 bg-yellow-100"
+                      : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
                   )}
                 >
                   Human Chat
@@ -72,7 +71,7 @@ export const ChatBubble = () => {
                     </Badge>
                   )}
                   {activeTab === 'messages' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400" />
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
                   )}
                 </button>
                 <button
@@ -80,13 +79,13 @@ export const ChatBubble = () => {
                   className={cn(
                     "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                     activeTab === 'ai'
-                      ? "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50"
-                      : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
+                      ? "text-purple-600 bg-yellow-100"
+                      : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
                   )}
                 >
                   AI Assistant
                   {activeTab === 'ai' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600 dark:bg-purple-400" />
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
                   )}
                 </button>
               </div>
