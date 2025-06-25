@@ -1,10 +1,11 @@
 
 import { useState, useEffect } from 'react';
+import type { OverlayPosition } from '@/components/map/OverlayManager';
 
 export interface OverlayConfig {
   id: string;
   title: string;
-  position: string;
+  position: OverlayPosition;
   visible: boolean;
   minimized: boolean;
   draggable: boolean;
@@ -97,7 +98,7 @@ export const useOverlayManager = () => {
   };
 
   // Update overlay position
-  const updateOverlayPosition = (id: string, position: string) => {
+  const updateOverlayPosition = (id: string, position: OverlayPosition) => {
     setOverlays(prev => prev.map(overlay =>
       overlay.id === id ? { ...overlay, position } : overlay
     ));

@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import HeatZoneMap from '@/components/HeatZoneMap';
 import { useToast } from '@/hooks/use-toast';
 import { useOverlayManager } from '@/hooks/useOverlayManager';
+import type { OverlayPosition } from '@/components/map/OverlayManager';
 
 // Overlay Components
 import OverlayManager from '@/components/map/OverlayManager';
@@ -122,7 +123,7 @@ const InteractiveMapPage = () => {
     });
   };
 
-  const getOverlayPosition = (overlayId: string) => {
+  const getOverlayPosition = (overlayId: string): string => {
     const overlay = overlays.find(o => o.id === overlayId);
     const position = overlay?.position || 'top-right';
     
