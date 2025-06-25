@@ -53,6 +53,20 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Add cream color definition
+        cream: {
+          DEFAULT: "#f9f7e8", // Warm cream color matching the design
+          50: "#fefcf7",
+          100: "#fdf9f0",
+          200: "#faf5e7",
+          300: "#f6f0db",
+          400: "#f1e8ca",
+          500: "#f9f7e8", // Default cream
+          600: "#e8d5a6",
+          700: "#d4b574",
+          800: "#b8954a",
+          900: "#997a3d",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -115,5 +129,12 @@ export default {
     'min-w-[44px]',
     'w-full',
     'max-w-sm',
+    // Cream color variations for safelist
+    'bg-cream',
+    'bg-cream/95',
+    'bg-cream/90',
+    'bg-cream/80',
+    'text-cream',
+    'border-cream',
   ],
 } satisfies Config;
