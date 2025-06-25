@@ -1,75 +1,99 @@
 
 import React, { useState } from 'react';
-import { UnifiedGoogleMap } from './UnifiedGoogleMap';
+import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
+import { montrealProviders } from '@/data/montrealProviders';
+import { montrealHeatZones } from '@/data/montrealHeatZones';
 import MontrealHeatZonesOverlay from './map/MontrealHeatZonesOverlay';
-import { montrealHeatZones, MontrealHeatZone } from '@/data/montrealHeatZones';
+import FleetVehicleMarkersOverlay from './map/FleetVehicleMarkersOverlay';
+import FleetBoundingBoxOverlay from './map/FleetBoundingBoxOverlay';
+import { FleetVehicle } from '@/hooks/useFleetVehicles';
 
 interface HeatZoneMapProps {
-  userRole: 'customer' | 'provider';
+  userRole: string | null;
   showHeatZones?: boolean;
-  selectedProfession?: string;
-  demandThreshold?: number[];
-  onProfessionChange?: (profession: string) => void;
-  onDemandThresholdChange?: (threshold: number[]) => void;
+  fleetVehicles?: FleetVehicle[];
+  selectedVehicle?: FleetVehicle | null;
+  onVehicleSelect?: (vehicle: FleetVehicle) => void;
+  onCloseVehicleInfo?: () => void;
+  showFleetBounds?: boolean;
+  fleetBounds?: {
+    north: number;
+    south: number;
+    east: number;
+    west: number;
+  } | null;
+  followFleet?: boolean;
+  fleetCenter?: { lat: number; lng: number };
 }
 
-const HeatZoneMap: React.FC<HeatZoneMapProps> = ({ 
-  userRole, 
+const HeatZoneMap: React.FC<HeatZoneMapProps> = ({
+  userRole,
   showHeatZones = true,
-  selectedProfession = 'all',
-  demandThreshold = [0],
-  onProfessionChange,
-  onDemandThresholdChange
+  fleetVehicles = [],
+  selectedVehicle,
+  onVehicleSelect,
+  onCloseVehicleInfo,
+  showFleetBounds = false,
+  fleetBounds,
+  followFleet = false,
+  fleetCenter
 }) => {
-  const [selectedZone, setSelectedZone] = useState<MontrealHeatZone | null>(null);
+  const [selectedZone, setSelectedZone] = useState<any>(null);
 
-  console.log('🗺️ HeatZoneMap render:', { userRole, showHeatZones, zonesCount: montrealHeatZones.length });
+  // Dynamic center and zoom based on fleet tracking
+  const mapCenter = followFleet && fleetCenter 
+    ? fleetCenter 
+    : { lat: 45.5017, lng: -73.5673 }; // Montreal center
 
-  const filteredZones = montrealHeatZones.filter(zone => {
-    if (selectedProfession === 'all') return zone.demandScore >= demandThreshold[0];
-    
-    const professionData = zone.keyServices[selectedProfession];
-    return professionData && professionData.demand >= demandThreshold[0];
+  const mapZoom = followFleet && fleetVehicles.length > 0 
+    ? (fleetVehicles.length === 1 ? 14 : 12) 
+    : 11;
+
+  console.log('🗺️ HeatZoneMap render:', { 
+    userRole, 
+    showHeatZones, 
+    fleetVehiclesCount: fleetVehicles.length,
+    followFleet,
+    mapCenter,
+    mapZoom
   });
 
-  const center = { lat: 45.5017, lng: -73.5673 };
-
   return (
-    <div className="w-full h-full relative">
-      {/* Legend */}
-      <div className="absolute bottom-4 right-4 z-10 bg-white rounded-lg shadow-lg p-3">
-        <div className="flex items-center gap-3 text-xs">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-green-500"></div>
-            <span>High Opportunity</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-            <span>Medium</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 rounded-full bg-gray-500"></div>
-            <span>Low</span>
-          </div>
-        </div>
-      </div>
+    <UnifiedGoogleMap
+      center={mapCenter}
+      zoom={mapZoom}
+      className="w-full h-full"
+      providers={montrealProviders}
+      mode="heatZones"
+    >
+      {/* Heat Zones Overlay */}
+      {showHeatZones && (
+        <MontrealHeatZonesOverlay
+          heatZones={montrealHeatZones}
+          onZoneClick={setSelectedZone}
+          selectedZone={selectedZone}
+          onCloseInfo={() => setSelectedZone(null)}
+        />
+      )}
 
-      {/* Unified Map with Heat Zones */}
-      <UnifiedGoogleMap
-        center={center}
-        zoom={11}
-        className="w-full h-full"
-        mode="heatZones"
-      >
-        {showHeatZones && (
-          <MontrealHeatZonesOverlay
-            zones={filteredZones}
-            userRole={userRole}
-            onZoneSelect={setSelectedZone}
-          />
-        )}
-      </UnifiedGoogleMap>
-    </div>
+      {/* Fleet Vehicle Markers */}
+      {fleetVehicles.length > 0 && (
+        <FleetVehicleMarkersOverlay
+          fleetVehicles={fleetVehicles}
+          onVehicleSelect={onVehicleSelect || (() => {})}
+          selectedVehicle={selectedVehicle}
+          onCloseInfo={onCloseVehicleInfo || (() => {})}
+        />
+      )}
+
+      {/* Fleet Bounding Box */}
+      {showFleetBounds && (
+        <FleetBoundingBoxOverlay
+          bounds={fleetBounds}
+          visible={showFleetBounds}
+        />
+      )}
+    </UnifiedGoogleMap>
   );
 };
 

@@ -1,12 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from '@/components/Header';
 import HeatZoneMap from '@/components/HeatZoneMap';
 import { useToast } from '@/hooks/use-toast';
 import { useOverlayManager } from '@/hooks/useOverlayManager';
-import type { OverlayPosition } from '@/components/map/OverlayManager';
+import { useFleetVehicles, FleetVehicle } from '@/hooks/useFleetVehicles';
 
 // Overlay Components
 import OverlayManager from '@/components/map/OverlayManager';
@@ -16,12 +16,22 @@ import AIVoiceAssistantOverlay from '@/components/map/overlays/AIVoiceAssistantO
 import LocationAnalyticsOverlay from '@/components/map/overlays/LocationAnalyticsOverlay';
 import RouteManagementOverlay from '@/components/map/overlays/RouteManagementOverlay';
 import FleetManagementOverlay from '@/components/map/overlays/FleetManagementOverlay';
+import FleetVehiclesViewOverlay from '@/components/map/overlays/FleetVehiclesViewOverlay';
 
 const InteractiveMapPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRole();
   const { toast } = useToast();
   
+  // Fleet Vehicles Hook
+  const {
+    fleetVehicles,
+    followFleet,
+    setFollowFleet,
+    calculateFleetBounds,
+    getFleetCenter
+  } = useFleetVehicles();
+
   // Overlay Management
   const {
     overlays,
@@ -38,10 +48,12 @@ const InteractiveMapPage = () => {
   } = useOverlayManager();
 
   // Map state
-  const [showHeatZones, setShowHeatZones] = React.useState(true);
-  const [showProviders, setShowProviders] = React.useState(true);
-  const [showTrafficAreas, setShowTrafficAreas] = React.useState(false);
-  const [audioEnabled, setAudioEnabled] = React.useState(true);
+  const [showHeatZones, setShowHeatZones] = useState(true);
+  const [showProviders, setShowProviders] = useState(true);
+  const [showTrafficAreas, setShowTrafficAreas] = useState(false);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [selectedVehicle, setSelectedVehicle] = useState<FleetVehicle | null>(null);
+  const [showFleetBounds, setShowFleetBounds] = useState(false);
 
   // Sample data
   const emergencyCount = isFleetMode ? 8 : 4;
@@ -82,18 +94,6 @@ const InteractiveMapPage = () => {
 
   console.log('🗺️ InteractiveMapPage render:', { user: !!user, currentRole, isFleetMode, overlaysCount: overlays.length });
 
-  const handleHeatZonesToggle = (checked: boolean) => {
-    setShowHeatZones(checked);
-    console.log('Heat zones visibility changed:', checked);
-    
-    toast({
-      title: checked ? "Heat Zones Enabled" : "Heat Zones Disabled",
-      description: checked 
-        ? "Now showing market demand by Montreal neighborhood" 
-        : "Heat zones are now hidden from the map",
-    });
-  };
-
   const handleFleetModeToggle = (enabled: boolean) => {
     if (!isPremium && enabled) {
       toast({
@@ -105,6 +105,9 @@ const InteractiveMapPage = () => {
     }
     
     setIsFleetMode(enabled);
+    if (enabled) {
+      setShowFleetBounds(true);
+    }
     toast({
       title: enabled ? "Fleet Manager Mode" : "Individual Provider Mode",
       description: enabled 
@@ -113,15 +116,43 @@ const InteractiveMapPage = () => {
     });
   };
 
-  const handleCustomizeModeToggle = (enabled: boolean) => {
-    setIsCustomizeMode(enabled);
-    // Enable draggable mode for all overlays
+  const handleToggleFollowFleet = (enabled: boolean) => {
+    setFollowFleet(enabled);
+    if (enabled) {
+      handleCenterOnFleet();
+    }
     toast({
-      title: enabled ? "Customize Mode On" : "Customize Mode Off",
+      title: enabled ? "Fleet Auto-Tracking On" : "Fleet Auto-Tracking Off",
       description: enabled 
-        ? "Overlays are now draggable. Drag to reposition."
-        : "Layout customization disabled"
+        ? "Map will automatically center on your fleet vehicles"
+        : "Fleet auto-tracking disabled"
     });
+  };
+
+  const handleCenterOnFleet = () => {
+    const bounds = calculateFleetBounds();
+    const center = getFleetCenter();
+    
+    console.log('🎯 Centering on fleet:', { bounds, center, vehicleCount: fleetVehicles.length });
+    
+    // This would trigger map centering in a real implementation
+    // For now, we'll show a toast
+    toast({
+      title: "Fleet Centered",
+      description: `Map centered on ${fleetVehicles.length} fleet vehicles`,
+    });
+  };
+
+  const handleFocusVehicle = (vehicleId: string) => {
+    const vehicle = fleetVehicles.find(v => v.id === vehicleId);
+    if (vehicle) {
+      setSelectedVehicle(vehicle);
+      console.log('🚛 Focusing on vehicle:', vehicle.driverName);
+      toast({
+        title: "Vehicle Focused",
+        description: `Centered on ${vehicle.driverName} (${vehicle.vehicleNumber})`,
+      });
+    }
   };
 
   const getOverlayPosition = (overlayId: string): string => {
@@ -154,6 +185,14 @@ const InteractiveMapPage = () => {
         <HeatZoneMap 
           userRole={currentRole} 
           showHeatZones={showHeatZones}
+          fleetVehicles={fleetVehicles}
+          selectedVehicle={selectedVehicle}
+          onVehicleSelect={setSelectedVehicle}
+          onCloseVehicleInfo={() => setSelectedVehicle(null)}
+          showFleetBounds={showFleetBounds && isFleetMode}
+          fleetBounds={calculateFleetBounds()}
+          followFleet={followFleet}
+          fleetCenter={getFleetCenter()}
         />
         
         {/* Overlay Manager Controls */}
@@ -168,7 +207,7 @@ const InteractiveMapPage = () => {
           isFleetMode={isFleetMode}
           onToggleFleetMode={handleFleetModeToggle}
           isCustomizeMode={isCustomizeMode}
-          onToggleCustomizeMode={handleCustomizeModeToggle}
+          onToggleCustomizeMode={(enabled) => setIsCustomizeMode(enabled)}
           isPremium={isPremium}
         />
 
@@ -239,7 +278,7 @@ const InteractiveMapPage = () => {
           isFleetMode={isFleetMode}
         />
 
-        {/* Fleet Management Overlay - NEW */}
+        {/* Fleet Management Overlay */}
         <FleetManagementOverlay
           position={getOverlayPosition('fleet-management')}
           visible={getOverlayConfig('fleet-management').visible}
@@ -247,6 +286,20 @@ const InteractiveMapPage = () => {
           draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('fleet-management')}
           isFleetMode={isFleetMode}
+        />
+
+        {/* Fleet Vehicles View Overlay - NEW */}
+        <FleetVehiclesViewOverlay
+          position={getOverlayPosition('fleet-vehicles-view')}
+          visible={getOverlayConfig('fleet-vehicles-view')?.visible || isFleetMode}
+          minimized={getOverlayConfig('fleet-vehicles-view')?.minimized || false}
+          draggable={isCustomizeMode && isPremium}
+          onMinimize={() => toggleOverlay('fleet-vehicles-view')}
+          fleetVehicles={fleetVehicles}
+          followFleet={followFleet}
+          onToggleFollowFleet={handleToggleFollowFleet}
+          onCenterOnFleet={handleCenterOnFleet}
+          onFocusVehicle={handleFocusVehicle}
         />
       </div>
     </div>
