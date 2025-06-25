@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,28 +53,32 @@ const Index = () => {
   const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <div className="min-h-screen relative" style={{ 
-      backgroundImage: 'url("/lovable-uploads/18731525-55a1-47e9-9046-d2b6588766c1.png")',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
+    <div className="min-h-screen relative" style={{
+      background: `
+        radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at top right, rgba(45, 27, 105, 0.2) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom left, rgba(30, 41, 59, 0.25) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(234, 88, 12, 0.1) 0%, transparent 50%),
+        linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #2d1b69 50%, #1a1a1a 100%)
+      `,
       backgroundAttachment: 'fixed'
     }}>
       <Header />
       
+      {/* Subtle overlay pattern for additional depth */}
+      <div className="absolute inset-0 opacity-5" style={{
+        backgroundImage: `
+          radial-gradient(circle at 25px 25px, rgba(139, 92, 246, 0.4) 2px, transparent 0),
+          radial-gradient(circle at 75px 75px, rgba(139, 92, 246, 0.2) 2px, transparent 0)
+        `,
+        backgroundSize: '100px 100px'
+      }}></div>
+      
       {/* Hero Section with Enhanced Width Usage */}
       <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden">
-        {/* Background overlay for text readability */}
-        <div className="absolute inset-0 bg-black/30"></div>
+        {/* Additional dark overlay for text readability */}
+        <div className="absolute inset-0 bg-black/20"></div>
         
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 25px 25px, rgba(245,245,220,0.3) 2px, transparent 0), radial-gradient(circle at 75px 75px, rgba(245,245,220,0.2) 2px, transparent 0)`,
-            backgroundSize: '100px 100px'
-          }}></div>
-        </div>
-
         <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh]">
             {/* Left Side - Enhanced Mascot */}
@@ -165,7 +170,7 @@ const Index = () => {
       {/* User Type Selection Wizard - Full Width Usage */}
       <section className="py-16 lg:py-24 px-2 sm:px-4 relative">
         {/* Background overlay for readability */}
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-black/10"></div>
         
         <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
           <div className="text-center mb-16 lg:mb-20">
@@ -237,7 +242,7 @@ const Index = () => {
       {selectedOption && (
         <section id="demo-section" className="py-16 lg:py-24 px-2 sm:px-4 relative">
           {/* Background overlay for readability */}
-          <div className="absolute inset-0 bg-black/20"></div>
+          <div className="absolute inset-0 bg-black/10"></div>
           
           <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
             <div className="text-center mb-16 lg:mb-20">
@@ -308,7 +313,7 @@ const Index = () => {
       {/* Enhanced Pricing Section - Full Width */}
       <div id="pricing-section" className="relative">
         {/* Background overlay for readability */}
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-black/10"></div>
         
         {/* Mascot pointing to best value */}
         <div className="absolute top-24 lg:top-32 left-8 lg:left-16 z-20 hidden lg:block">
