@@ -24,10 +24,10 @@ const MapThemeSelector: React.FC = () => {
       variant="outline"
       size="sm"
       onClick={handleThemeChange}
-      className="bg-white/90 backdrop-blur-sm border-gray-200 hover:bg-white/95 transition-all duration-200 min-w-[120px] justify-start"
+      className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500 transition-all duration-200 min-w-[120px] justify-start font-medium pointer-events-auto"
     >
-      <Palette className="h-4 w-4 mr-2" />
-      <span className="font-medium">Theme: {currentThemeConfig.name}</span>
+      <Palette className="h-4 w-4 mr-2 text-gray-900" />
+      <span className="font-medium text-gray-900">Theme: {currentThemeConfig.name}</span>
     </Button>
   );
 };

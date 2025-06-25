@@ -70,10 +70,10 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
         <SheetTrigger asChild>
           <Button
             size="lg"
-            className="bg-white/95 backdrop-blur-sm text-gray-900 border border-gray-200 hover:bg-white shadow-lg min-h-[44px] px-6 pointer-events-auto"
+            className="bg-white text-gray-900 border-2 border-gray-400 hover:bg-gray-50 hover:border-gray-500 shadow-lg min-h-[44px] px-6 pointer-events-auto"
           >
-            <Menu className="h-5 w-5 mr-2" />
-            Controls
+            <Menu className="h-5 w-5 mr-2 text-gray-900" />
+            <span className="text-gray-900 font-medium">Controls</span>
           </Button>
         </SheetTrigger>
         <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto pointer-events-auto">
@@ -92,7 +92,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 className={`w-full min-h-[44px] justify-start pointer-events-auto ${
                   isFleetMode 
                     ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                    : 'bg-white hover:bg-gray-50'
+                    : 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400'
                 }`}
               >
                 {isFleetMode ? <Truck className="h-5 w-5 mr-3" /> : <User className="h-5 w-5 mr-3" />}
@@ -234,29 +234,29 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
   // Desktop Control Bar
   const DesktopControls = () => (
     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 hidden md:block pointer-events-auto">
-      <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-3 pointer-events-auto">
-        <div className="flex items-center gap-3 min-w-[700px] pointer-events-auto">
+      <div className="bg-white rounded-xl shadow-xl border-2 border-gray-300 p-4 pointer-events-auto">
+        <div className="flex items-center gap-4 min-w-[700px] pointer-events-auto">
           
           {/* Fleet/Individual Mode Toggle */}
           <Button
             variant={isFleetMode ? "default" : "outline"}
             size="sm"
             onClick={handleFleetModeToggle}
-            className={`transition-all duration-200 min-w-[140px] pointer-events-auto ${
+            className={`transition-all duration-200 min-w-[140px] pointer-events-auto font-medium ${
               isFleetMode 
-                ? 'bg-blue-600 hover:bg-blue-700 text-white' 
-                : 'bg-white hover:bg-gray-50'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white border-blue-600' 
+                : 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500'
             }`}
           >
             {isFleetMode ? <Truck className="h-4 w-4 mr-2" /> : <User className="h-4 w-4 mr-2" />}
-            {isFleetMode ? 'Fleet Manager' : 'Individual'}
+            <span className="font-medium">{isFleetMode ? 'Fleet Manager' : 'Individual'}</span>
             {isFleetMode && !isPremium && (
               <Crown className="h-3 w-3 ml-1 text-yellow-400" />
             )}
           </Button>
 
           {/* Separator */}
-          <div className="h-6 w-px bg-gray-300" />
+          <div className="h-6 w-px bg-gray-400" />
 
           {/* Map Theme Selector */}
           <div className="pointer-events-auto">
@@ -264,21 +264,21 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
           </div>
 
           {/* Separator */}
-          <div className="h-6 w-px bg-gray-300" />
+          <div className="h-6 w-px bg-gray-400" />
 
           {/* Draggable Mode Toggle */}
           <Button
             variant={isDraggableMode ? "default" : "outline"}
             size="sm"
             onClick={handleDraggableModeToggle}
-            className={`transition-all duration-200 min-w-[120px] pointer-events-auto ${
+            className={`transition-all duration-200 min-w-[120px] pointer-events-auto font-medium ${
               isDraggableMode 
-                ? 'bg-green-600 hover:bg-green-700 text-white' 
-                : 'bg-white hover:bg-gray-50'
+                ? 'bg-green-600 hover:bg-green-700 text-white border-green-600' 
+                : 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500'
             }`}
           >
             <Move className="h-4 w-4 mr-2" />
-            {isDraggableMode ? 'Dragging' : 'Drag Mode'}
+            <span className="font-medium">{isDraggableMode ? 'Dragging' : 'Drag Mode'}</span>
           </Button>
 
           {/* Reset Positions (only show when dragging is enabled) */}
@@ -287,11 +287,11 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
               variant="outline"
               size="sm"
               onClick={onResetPositions}
-              className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px] pointer-events-auto"
+              className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500 transition-all duration-200 min-w-[100px] pointer-events-auto font-medium"
               title="Reset overlay positions to organized layout"
             >
               <RotateCcw className="h-4 w-4 mr-2" />
-              Reset Pos
+              <span className="font-medium">Reset Pos</span>
             </Button>
           )}
 
@@ -300,14 +300,14 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             variant={isCustomizeMode ? "default" : "outline"}
             size="sm"
             onClick={handleCustomizeModeToggle}
-            className={`transition-all duration-200 min-w-[120px] pointer-events-auto ${
+            className={`transition-all duration-200 min-w-[120px] pointer-events-auto font-medium ${
               isCustomizeMode 
-                ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                : 'bg-white hover:bg-gray-50'
+                ? 'bg-purple-600 hover:bg-purple-700 text-white border-purple-600' 
+                : 'bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500'
             }`}
           >
             <Settings className="h-4 w-4 mr-2" />
-            Customize
+            <span className="font-medium">Customize</span>
           </Button>
 
           {/* Show/Hide All Overlays */}
@@ -315,10 +315,10 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             variant="outline"
             size="sm"
             onClick={onToggleAll}
-            className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px] pointer-events-auto"
+            className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500 transition-all duration-200 min-w-[100px] pointer-events-auto font-medium"
           >
             {allVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
-            {allVisible ? 'Hide All' : 'Show All'}
+            <span className="font-medium">{allVisible ? 'Hide All' : 'Show All'}</span>
           </Button>
 
         </div>
@@ -334,7 +334,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
       {/* Desktop Customize Mode Panel */}
       {isCustomizeMode && !isMobile && (
         <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
-          <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-4 w-96 pointer-events-auto">
+          <div className="bg-white rounded-xl shadow-xl border-2 border-gray-300 p-4 w-96 pointer-events-auto">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-gray-900 flex items-center">
                 <LayoutGrid className="h-4 w-4 mr-2" />
@@ -430,7 +430,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
               
               <div className="text-xs text-gray-600">
                 <div className="mb-2">
-                  <strong>Layout Rules:</strong>
+                  <strong className="text-gray-900">Layout Rules:</strong>
                 </div>
                 <ul className="space-y-1 text-xs">
                   <li>• Mobile: Single column stack with touch controls</li>
