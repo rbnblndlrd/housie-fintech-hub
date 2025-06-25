@@ -25,6 +25,9 @@ export const getMapOptions = (theme: string = 'standard') => {
     },
     disableDefaultUI: false,
     zoomControl: true,
+    zoomControlOptions: {
+      position: google.maps.ControlPosition.RIGHT_TOP
+    },
     mapTypeControl: false,
     scaleControl: false,
     streetViewControl: false,
