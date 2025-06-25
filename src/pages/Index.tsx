@@ -1,7 +1,8 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, MapPin, Star, MessageCircle, BarChart3, Shield, Clock, DollarSign, Users, Zap, CheckCircle } from "lucide-react";
+import { Search, MapPin, Star, MessageCircle, BarChart3, Shield, Clock, DollarSign, Users, Zap, CheckCircle, Truck, Wrench, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Header from "@/components/Header";
@@ -12,218 +13,162 @@ import PopArtMascot from "@/components/PopArtMascot";
 
 const Index = () => {
   const [searchLocation, setSearchLocation] = useState("");
+  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
 
-  const valueProps = [
+  const userTypeOptions = [
     {
-      icon: <Shield className="h-8 w-8 text-orange-500" />,
-      title: "Conformité CRA Garantie",
-      description: "Tous nos professionnels sont vérifiés et conformes aux exigences de l'Agence du revenu du Canada. Travaillez en toute tranquillité d'esprit."
+      id: "fleet",
+      title: "Managing a Fleet?",
+      description: "Coordinate multiple service providers and manage operations efficiently",
+      icon: <Truck className="h-12 w-12 text-blue-600" />,
+      benefits: ["Team coordination", "Bulk scheduling", "Fleet analytics", "Revenue optimization"],
+      demoImage: "/lovable-uploads/analytics-dashboard.png"
     },
     {
-      icon: <BarChart3 className="h-8 w-8 text-purple-600" />,
-      title: "Outils Fintech Intégrés",
-      description: "Suivi automatique des dépenses, optimisation fiscale et rapports détaillés pour maximiser vos déductions d'affaires."
+      id: "provider",
+      title: "Looking for Work?",
+      description: "Join our network of verified service providers and grow your business",
+      icon: <Wrench className="h-12 w-12 text-green-600" />,
+      benefits: ["Verified leads", "Flexible scheduling", "Payment protection", "Business tools"],
+      demoImage: "/lovable-uploads/housiepro.png"
     },
     {
-      icon: <Users className="h-8 w-8 text-cyan-500" />,
-      title: "Réservations Groupées",
-      description: "Économisez jusqu'à 30% en vous regroupant avec vos voisins pour des services similaires. L'IA coordonne automatiquement."
-    },
-    {
-      icon: <Zap className="h-8 w-8 text-orange-500" />,
-      title: "Assistant IA Personnel",
-      description: "Notre assistant IA optimise vos horaires, trouve les meilleures opportunités d'économies et gère vos finances d'entreprise."
+      id: "customer",
+      title: "Need a Local Expert?",
+      description: "Find trusted, verified professionals for your home and business needs",
+      icon: <Search className="h-12 w-12 text-purple-600" />,
+      benefits: ["Verified professionals", "Instant booking", "Secure payments", "Quality guarantee"],
+      demoImage: "/lovable-uploads/browse-services(broken).png"
     }
   ];
 
-  const serviceCategories = [
-    { name: "Ménage Résidentiel", icon: "🏠", color: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200" },
-    { name: "Entretien Paysager", icon: "🌿", color: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200" },
-    { name: "Soins Personnels", icon: "💆‍♀️", color: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200" },
-    { name: "Soins d'Animaux", icon: "🐕", color: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-200" }
-  ];
+  const handleUserTypeSelect = (userType: string) => {
+    setSelectedUserType(userType);
+    // Smooth scroll to demo section
+    setTimeout(() => {
+      document.getElementById('demo-section')?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
 
-  const trustIndicators = [
-    "Plus de 10,000 services complétés",
-    "4.9/5 étoiles de satisfaction",
-    "Assurance responsabilité incluse",
-    "Paiements sécurisés par Stripe"
-  ];
+  const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-purple-50">
       <Header />
       
-      {/* Hero Section with Pop Art Style and Mascot */}
-      <section className="pt-20 pb-16 px-4 relative overflow-hidden bg-gradient-to-br from-yellow-100 via-orange-50 to-purple-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-purple-900/20">
-        {/* Background decorative elements */}
-        <div className="absolute top-20 right-10 w-32 h-32 bg-orange-400/20 rounded-full opacity-50 animate-pulse"></div>
-        <div className="absolute bottom-10 left-20 w-24 h-24 bg-purple-500/20 rounded-full opacity-50 animate-bounce"></div>
-        <div className="absolute top-40 left-10 w-16 h-16 bg-cyan-400/20 rounded-full opacity-40"></div>
-        
+      {/* Hero Section with Mascot */}
+      <section className="pt-20 pb-16 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Mascot */}
+            <div className="relative flex justify-center lg:justify-start">
+              <div className="relative">
+                <PopArtMascot className="transform hover:scale-105 transition-transform duration-300" />
+                {/* Speech Bubble */}
+                <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 bg-white rounded-2xl px-6 py-4 shadow-lg border-2 border-black">
+                  <div className="text-lg font-bold text-gray-800">
+                    Welcome to HOUSIE! 👋
+                  </div>
+                  <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-black"></div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Hero Content */}
             <div className="space-y-8">
               <div className="space-y-6">
-                <div className="flex items-center gap-2 mb-4">
-                  <Badge className="bg-gradient-to-r from-orange-500 to-purple-600 text-white px-4 py-2 text-sm font-medium border-0 rounded-2xl shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)]">
-                    🚀 NOUVEAU: IA Fintech pour Entrepreneurs
-                  </Badge>
-                </div>
-                
-                <h1 className="text-5xl lg:text-6xl font-black text-gray-900 dark:text-white leading-tight">
-                  Canada's Trusted<br />
-                  <span className="text-transparent bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text">
-                    Marketplace for
-                  </span><br />
-                  <span className="text-purple-600">Home Services</span>
+                <h1 className="text-5xl lg:text-6xl font-black text-gray-900 leading-tight">
+                  Find Local<br />
+                  <span className="text-transparent bg-gradient-to-r from-orange-500 to-purple-600 bg-clip-text">
+                    Experts
+                  </span>
                 </h1>
                 
-                <p className="text-xl text-gray-700 dark:text-gray-300 leading-relaxed max-w-lg">
-                  We connect you with verified, CRA-compliant professionals for 
-                  cleaning, lawn care, and more across all Canadian provinces.
-                </p>
-              </div>
-
-              {/* Search Bar */}
-              <div className="fintech-card p-3 max-w-lg">
-                <div className="flex items-center gap-3">
-                  <MapPin className="h-6 w-6 text-orange-500 ml-2" />
-                  <Input
-                    placeholder="Enter your city or postal code"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="border-0 bg-transparent focus-visible:ring-0 text-lg font-medium dark:text-white"
-                  />
-                  <Link to="/services">
-                    <Button className="fintech-button-primary rounded-xl px-8 py-3 font-bold text-white">
-                      <Search className="h-5 w-5 mr-2" />
-                      SEARCH
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-
-              {/* Trust Indicators */}
-              <div className="grid grid-cols-2 gap-4 pt-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>CRA compliance guaranteed</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Verified professionals</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Secure payment</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
-                  <CheckCircle className="h-4 w-4 text-green-500" />
-                  <span>Liability insurance included</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Mascot and Assistant Preview */}
-            <div className="relative space-y-6">
-              {/* HOUSIE Mascot with Pop Art Easter Egg */}
-              <div className="fintech-gradient-card bg-gradient-to-br from-purple-500 to-blue-600 rounded-3xl p-8 relative overflow-hidden">
-                <div className="absolute -top-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
-                <div className="absolute -bottom-4 -left-4 w-24 h-24 bg-orange-400/20 rounded-full"></div>
-                
-                <div className="flex items-center justify-center mb-6">
-                  <PopArtMascot />
-                </div>
-
-                <div className="text-center text-white">
-                  <p className="text-base opacity-90 mb-3">Hello! I'm your HOUSIE assistant.</p>
-                                    
-                  <div className="flex gap-2">
-                    <Link to="/onboarding" className="flex-1">
-                      <Button className="w-full fintech-button-secondary text-purple-600 font-bold px-8 py-4 rounded-xl text-lg">
-                        GET STARTED
-                      </Button>
-                    </Link>
+                <div className="bg-white rounded-xl p-6 border-2 border-black shadow-lg">
+                  <h2 className="text-xl font-bold text-gray-800 mb-4">Why Choose HOUSIE?</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-6 w-6 text-green-500" />
+                      <span className="font-medium">Escrow Protection</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <CheckCircle className="h-6 w-6 text-green-500" />
+                      <span className="font-medium">Verified Providers</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Star className="h-6 w-6 text-green-500" />
+                      <span className="font-medium">Quality Guarantee</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="h-6 w-6 text-green-500" />
+                      <span className="font-medium">24/7 Support</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Pourquoi choisir HOUSIE section */}
-              <div className="fintech-card p-6">
-                <h3 className="font-bold text-xl text-gray-800 dark:text-white mb-4 text-center">
-                  Pourquoi choisir HOUSIE ?
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 text-center text-sm">
-                  Nous sommes plus qu'une plateforme - nous sommes votre partenaire pour 
-                  faire croître votre entreprise en toute simplicité.
-                </p>
+                <Button className="bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-bold py-4 px-8 rounded-xl text-lg shadow-lg transform hover:scale-105 transition-all duration-200">
+                  Take the Tour
+                  <ArrowRight className="h-5 w-5 ml-2" />
+                </Button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Service Categories */}
-      <section className="py-20 px-4 bg-gray-50/50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-black text-gray-900 dark:text-white mb-6">Services Populaires</h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Plus de 50 catégories de services avec des professionnels vérifiés dans toutes les provinces canadiennes
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {serviceCategories.map((category, index) => (
-              <Card key={index} className="fintech-card text-center group">
-                <CardHeader className="pb-4 pt-8">
-                  <div className="text-5xl mb-4 transition-transform duration-300 group-hover:scale-110">{category.icon}</div>
-                  <CardTitle className="text-lg font-bold text-gray-800 dark:text-white">
-                    {category.name}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pb-8">
-                  <Badge className={`${category.color} text-sm font-medium rounded-2xl px-4 py-2`}>
-                    Disponible 24/7
-                  </Badge>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Value Propositions */}
+      {/* User Type Selection Wizard */}
       <section className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-5xl font-black text-gray-900 dark:text-white mb-6">
-              Pourquoi <span className="housie-text-gradient">HOUSIE</span> Révolutionne 
-              <br />le Travail Autonome au Canada ?
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto leading-relaxed">
-              La seule plateforme qui combine marketplace de services ET 
-              outils fintech avancés pour maximiser vos revenus et simplifier vos finances.
-            </p>
+          <div className="text-center mb-16 relative">
+            <div className="inline-block bg-white rounded-2xl px-8 py-6 border-2 border-black shadow-lg relative">
+              <h2 className="text-4xl font-black text-gray-900 mb-4">
+                What brings you here today?
+              </h2>
+              <p className="text-xl text-gray-600">
+                Choose your path to get started with HOUSIE
+              </p>
+              {/* Mascot pointing arrow */}
+              <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-4xl animate-bounce">
+                👇
+              </div>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {valueProps.map((prop, index) => (
-              <Card key={index} className="fintech-card relative overflow-hidden group">
-                <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-orange-100/50 to-purple-100/50 dark:from-orange-900/20 dark:to-purple-900/20 rounded-full -translate-y-6 translate-x-6"></div>
-                <CardHeader className="text-center pb-6 relative z-10 pt-8">
-                  <div className="mx-auto mb-6 p-4 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl w-fit backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                    {prop.icon}
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {userTypeOptions.map((option) => (
+              <Card 
+                key={option.id}
+                className={`cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 bg-white border-2 border-black rounded-xl p-6 ${
+                  selectedUserType === option.id ? 'ring-4 ring-orange-400 shadow-2xl' : ''
+                }`}
+                onClick={() => handleUserTypeSelect(option.id)}
+              >
+                <CardHeader className="text-center pb-4">
+                  <div className="mx-auto mb-6 p-4 bg-gray-50 rounded-2xl w-fit">
+                    {option.icon}
                   </div>
-                  <CardTitle className="text-xl font-black text-gray-900 dark:text-white leading-tight">
-                    {prop.title}
+                  <CardTitle className="text-2xl font-black text-gray-900">
+                    {option.title}
                   </CardTitle>
+                  <CardDescription className="text-gray-600 text-lg">
+                    {option.description}
+                  </CardDescription>
                 </CardHeader>
-                <CardContent className="relative z-10 pb-8">
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed text-center">
-                    {prop.description}
-                  </p>
+
+                <CardContent>
+                  <ul className="space-y-3 mb-6">
+                    {option.benefits.map((benefit, index) => (
+                      <li key={index} className="flex items-center gap-3">
+                        <CheckCircle className="h-5 w-5 text-green-500" />
+                        <span className="text-gray-700">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Button className="w-full bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-bold py-3 rounded-xl">
+                    Choose This Path
+                    <ArrowRight className="h-4 w-4 ml-2" />
+                  </Button>
                 </CardContent>
               </Card>
             ))}
@@ -231,33 +176,87 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 px-4 bg-gray-900/95 dark:bg-black/95 text-white backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
-            <div className="space-y-3">
-              <div className="text-4xl font-black text-orange-400">2.9M</div>
-              <div className="text-gray-300 text-lg">Travailleurs Autonomes Ciblés</div>
+      {/* Interactive Demo Section */}
+      {selectedOption && (
+        <section id="demo-section" className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16">
+              <div className="inline-block bg-white rounded-2xl px-8 py-6 border-2 border-black shadow-lg">
+                <h2 className="text-4xl font-black text-gray-900 mb-4">
+                  See HOUSIE in Action
+                </h2>
+                <p className="text-xl text-gray-600">
+                  Here's what you can expect as a {selectedOption.title.toLowerCase().replace('?', '')}
+                </p>
+              </div>
             </div>
-            <div className="space-y-3">
-              <div className="text-4xl font-black text-purple-400">$312M</div>
-              <div className="text-gray-300 text-lg">Évaluation Projetée</div>
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              {/* Demo Screenshot */}
+              <div className="bg-white rounded-xl border-2 border-black shadow-lg p-6">
+                <img 
+                  src={selectedOption.demoImage} 
+                  alt={`${selectedOption.title} Demo`}
+                  className="w-full h-auto rounded-lg shadow-md"
+                />
+              </div>
+
+              {/* Demo Benefits */}
+              <div className="space-y-6">
+                <div className="bg-white rounded-xl border-2 border-black shadow-lg p-8">
+                  <h3 className="text-2xl font-black text-gray-900 mb-6">
+                    Why {selectedOption.title.replace('?', '')} Love HOUSIE
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    {selectedOption.benefits.map((benefit, index) => (
+                      <div key={index} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+                        <CheckCircle className="h-6 w-6 text-green-500 mt-1" />
+                        <div>
+                          <h4 className="font-bold text-gray-800">{benefit}</h4>
+                          <p className="text-gray-600 text-sm mt-1">
+                            Professional tools and features designed for your success
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex gap-4">
+                  <Link to="/services" className="flex-1">
+                    <Button className="w-full bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white font-bold py-4 rounded-xl text-lg">
+                      Get Started Now
+                      <ArrowRight className="h-5 w-5 ml-2" />
+                    </Button>
+                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="px-8 py-4 border-2 border-black rounded-xl font-bold hover:bg-gray-50"
+                    onClick={() => document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' })}
+                  >
+                    View Pricing
+                  </Button>
+                </div>
+              </div>
             </div>
-            <div className="space-y-3">
-              <div className="text-4xl font-black text-cyan-400">40%</div>
-              <div className="text-gray-300 text-lg">Économies Moyennes</div>
-            </div>
-            <div className="space-y-3">
-              <div className="text-4xl font-black text-green-400">6%</div>
-              <div className="text-gray-300 text-lg">Frais vs 15-30% Ailleurs</div>
+          </div>
+        </section>
+      )}
+
+      {/* Enhanced Pricing Section */}
+      <div id="pricing-section" className="relative">
+        {/* Mascot pointing to best value */}
+        <div className="absolute top-20 left-8 z-10 hidden lg:block">
+          <div className="bg-white rounded-2xl px-6 py-4 border-2 border-black shadow-lg">
+            <div className="text-sm font-bold text-gray-800">
+              Best Value! 👆
             </div>
           </div>
         </div>
-      </section>
-
-      <div id="pricing-section">
         <PricingSection />
       </div>
+
       <ChatAssistant />
     </div>
   );

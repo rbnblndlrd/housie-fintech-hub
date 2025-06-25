@@ -86,25 +86,27 @@ export const PricingSection = () => {
     <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <Badge className="bg-orange-500 text-white px-4 py-2 text-sm font-bold mb-4">
-            💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
-          </Badge>
-          <h2 className="text-5xl font-black text-gray-900 mb-6">
-            Tarifs <span className="text-orange-500">Transparents</span>
-            <br />Sans Surprise
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Choisissez le plan qui correspond à vos besoins. 
-            Tous les plans incluent notre garantie de conformité CRA et nos outils fintech.
-          </p>
+          <div className="inline-block bg-white rounded-xl px-8 py-6 border-2 border-black shadow-lg mb-6">
+            <Badge className="bg-orange-500 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl">
+              💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
+            </Badge>
+            <h2 className="text-5xl font-black text-gray-900 mb-6">
+              Tarifs <span className="text-orange-500">Transparents</span>
+              <br />Sans Surprise
+            </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Choisissez le plan qui correspond à vos besoins. 
+              Tous les plans incluent notre garantie de conformité CRA et nos outils fintech.
+            </p>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan, index) => (
             <Card 
               key={index} 
-              className={`${plan.bgColor} ${plan.color} border-2 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
-                plan.popular ? 'ring-2 ring-purple-400 ring-offset-2' : ''
+              className={`${plan.bgColor} border-2 border-black rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
+                plan.popular ? 'ring-4 ring-purple-400 shadow-2xl' : ''
               }`}
             >
               {plan.popular && (
@@ -114,7 +116,7 @@ export const PricingSection = () => {
               )}
               
               <CardHeader className={`text-center ${plan.popular ? 'pt-12' : 'pt-6'}`}>
-                <div className="mx-auto mb-4 p-3 bg-white rounded-2xl w-fit shadow-lg">
+                <div className="mx-auto mb-4 p-3 bg-white rounded-2xl w-fit shadow-lg border-2 border-black">
                   {plan.icon}
                 </div>
                 <CardTitle className="text-2xl font-black text-gray-900">
@@ -133,8 +135,8 @@ export const PricingSection = () => {
                 </div>
               </CardHeader>
 
-              <CardContent>
-                <Button className={`w-full ${plan.buttonColor} text-white font-bold py-3 rounded-xl mb-6 shadow-lg`}>
+              <CardContent className="p-6">
+                <Button className={`w-full ${plan.buttonColor} text-white font-bold py-3 rounded-xl mb-6 shadow-lg border-2 border-black`}>
                   {plan.name === "Gratuit" ? "COMMENCER GRATUIT" : "CHOISIR CE PLAN"}
                 </Button>
 
@@ -155,7 +157,7 @@ export const PricingSection = () => {
 
         {/* Additional Info */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-orange-500 to-purple-600 text-white rounded-2xl p-8 max-w-4xl mx-auto">
+          <div className="bg-gradient-to-r from-orange-500 to-purple-600 text-white rounded-xl p-8 max-w-4xl mx-auto border-2 border-black shadow-lg">
             <h3 className="text-2xl font-black mb-4">
               🎯 Garantie de Revenus Augmentés
             </h3>
