@@ -111,6 +111,17 @@ const InteractiveMapPage = () => {
     });
   };
 
+  const handleCustomizeModeToggle = (enabled: boolean) => {
+    setIsCustomizeMode(enabled);
+    // Enable draggable mode for all overlays
+    toast({
+      title: enabled ? "Customize Mode On" : "Customize Mode Off",
+      description: enabled 
+        ? "Overlays are now draggable. Drag to reposition."
+        : "Layout customization disabled"
+    });
+  };
+
   const getOverlayPosition = (overlayId: string) => {
     const overlay = overlays.find(o => o.id === overlayId);
     const position = overlay?.position || 'top-right';
@@ -145,14 +156,17 @@ const InteractiveMapPage = () => {
         
         {/* Overlay Manager Controls */}
         <OverlayManager
-          overlays={overlays}
+          overlays={overlays.map(overlay => ({
+            ...overlay,
+            draggable: isCustomizeMode && isPremium
+          }))}
           onToggleOverlay={toggleOverlay}
           onToggleAll={toggleAllOverlays}
           allVisible={allOverlaysVisible}
           isFleetMode={isFleetMode}
           onToggleFleetMode={handleFleetModeToggle}
           isCustomizeMode={isCustomizeMode}
-          onToggleCustomizeMode={setIsCustomizeMode}
+          onToggleCustomizeMode={handleCustomizeModeToggle}
           isPremium={isPremium}
         />
 
@@ -161,7 +175,7 @@ const InteractiveMapPage = () => {
           position={getOverlayPosition('emergency-jobs')}
           visible={getOverlayConfig('emergency-jobs').visible}
           minimized={getOverlayConfig('emergency-jobs').minimized}
-          draggable={isCustomizeMode}
+          draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('emergency-jobs')}
           onToggleAudio={() => setAudioEnabled(!audioEnabled)}
           audioEnabled={audioEnabled}
@@ -174,7 +188,7 @@ const InteractiveMapPage = () => {
           position={getOverlayPosition('market-insights')}
           visible={getOverlayConfig('market-insights').visible}
           minimized={getOverlayConfig('market-insights').minimized}
-          draggable={isCustomizeMode}
+          draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('market-insights')}
           showHeatZones={showHeatZones}
           showProviders={showProviders}
@@ -190,7 +204,7 @@ const InteractiveMapPage = () => {
           position={getOverlayPosition('ai-assistant')}
           visible={getOverlayConfig('ai-assistant').visible}
           minimized={getOverlayConfig('ai-assistant').minimized}
-          draggable={isCustomizeMode}
+          draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('ai-assistant')}
           isFleetMode={isFleetMode}
         />
@@ -200,7 +214,7 @@ const InteractiveMapPage = () => {
           position={getOverlayPosition('location-analytics')}
           visible={getOverlayConfig('location-analytics').visible}
           minimized={getOverlayConfig('location-analytics').minimized}
-          draggable={isCustomizeMode}
+          draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('location-analytics')}
           currentArea={currentArea}
           marketDemand={marketDemand}
@@ -215,7 +229,7 @@ const InteractiveMapPage = () => {
           position={getOverlayPosition('route-management')}
           visible={getOverlayConfig('route-management').visible}
           minimized={getOverlayConfig('route-management').minimized}
-          draggable={isCustomizeMode}
+          draggable={isCustomizeMode && isPremium}
           onMinimize={() => toggleOverlay('route-management')}
           jobs={sampleJobs}
           totalTravelTime={totalTravelTime}

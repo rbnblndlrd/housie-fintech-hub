@@ -24,9 +24,9 @@ interface OverlayManagerProps {
   onToggleAll: () => void;
   allVisible: boolean;
   isFleetMode: boolean;
-  onToggleFleetMode: () => void;
+  onToggleFleetMode: (checked: boolean) => void;
   isCustomizeMode: boolean;
-  onToggleCustomizeMode: () => void;
+  onToggleCustomizeMode: (checked: boolean) => void;
   isPremium: boolean;
 }
 
@@ -95,7 +95,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
               <Button
                 variant={isCustomizeMode ? "default" : "outline"}
                 size="sm"
-                onClick={onToggleCustomizeMode}
+                onClick={() => onToggleCustomizeMode(!isCustomizeMode)}
                 className="flex items-center gap-2"
               >
                 <Settings className="h-4 w-4" />
@@ -124,7 +124,6 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                   <Switch
                     checked={overlay.visible}
                     onCheckedChange={() => onToggleOverlay(overlay.id)}
-                    size="sm"
                   />
                 </div>
               ))}

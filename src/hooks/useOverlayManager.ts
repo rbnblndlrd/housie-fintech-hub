@@ -7,6 +7,7 @@ export interface OverlayConfig {
   position: string;
   visible: boolean;
   minimized: boolean;
+  draggable: boolean;
 }
 
 const defaultOverlays: OverlayConfig[] = [
@@ -15,35 +16,40 @@ const defaultOverlays: OverlayConfig[] = [
     title: 'Emergency Jobs',
     position: 'top-right',
     visible: true,
-    minimized: false
+    minimized: false,
+    draggable: false
   },
   {
     id: 'market-insights',
     title: 'Market Insights',
     position: 'center-right',
     visible: true,
-    minimized: false
+    minimized: false,
+    draggable: false
   },
   {
     id: 'ai-assistant',
     title: 'AI Voice Assistant',
     position: 'bottom-right',
     visible: true,
-    minimized: false
+    minimized: false,
+    draggable: false
   },
   {
     id: 'location-analytics',
     title: 'Location Analytics',
     position: 'bottom-left',
     visible: true,
-    minimized: false
+    minimized: false,
+    draggable: false
   },
   {
     id: 'route-management',
     title: 'Route Management',
     position: 'bottom-center',
     visible: true,
-    minimized: false
+    minimized: false,
+    draggable: false
   }
 ];
 
