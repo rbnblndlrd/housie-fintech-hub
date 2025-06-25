@@ -9,7 +9,8 @@ export interface OverlayConfig {
   position: OverlayPosition;
   visible: boolean;
   minimized: boolean;
-  fleetOnly?: boolean; // New property to mark fleet-only overlays
+  fleetOnly?: boolean;
+  individualOnly?: boolean; // New property for individual-only overlays
 }
 
 export const useOverlayManager = () => {
@@ -28,15 +29,7 @@ export const useOverlayManager = () => {
       position: 'top-right',
       visible: true,
       minimized: false,
-      fleetOnly: false
-    },
-    {
-      id: 'ai-assistant',
-      title: 'AI Assistant',
-      position: 'bottom-left',
-      visible: true,
-      minimized: false,
-      fleetOnly: false
+      fleetOnly: false // Always show in both modes
     },
     {
       id: 'location-analytics',
@@ -44,7 +37,8 @@ export const useOverlayManager = () => {
       position: 'bottom-right',
       visible: true,
       minimized: false,
-      fleetOnly: false
+      fleetOnly: false,
+      individualOnly: true // Individual mode only
     },
     {
       id: 'route-management',
@@ -52,7 +46,8 @@ export const useOverlayManager = () => {
       position: 'center-left',
       visible: true,
       minimized: false,
-      fleetOnly: false
+      fleetOnly: false,
+      individualOnly: true // Individual mode only
     },
     {
       id: 'fleet-management',
@@ -81,6 +76,9 @@ export const useOverlayManager = () => {
     return overlays.filter(overlay => {
       if (overlay.fleetOnly && !isFleetMode) {
         return false; // Hide fleet-only overlays in individual mode
+      }
+      if (overlay.individualOnly && isFleetMode) {
+        return false; // Hide individual-only overlays in fleet mode
       }
       return true;
     });

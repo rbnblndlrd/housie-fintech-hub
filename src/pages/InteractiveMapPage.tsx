@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -6,12 +7,12 @@ import FleetMap from '@/components/FleetMap';
 import { useToast } from '@/hooks/use-toast';
 import { useOverlayManager } from '@/hooks/useOverlayManager';
 import { useFleetVehicles, FleetVehicle } from '@/hooks/useFleetVehicles';
+import { ChatBubble } from '@/components/chat/ChatBubble';
 
 // Overlay Components
 import OverlayManager from '@/components/map/OverlayManager';
 import EmergencyJobsOverlay from '@/components/map/overlays/EmergencyJobsOverlay';
 import MarketInsightsOverlay from '@/components/map/overlays/MarketInsightsOverlay';
-import AIVoiceAssistantOverlay from '@/components/map/overlays/AIVoiceAssistantOverlay';
 import LocationAnalyticsOverlay from '@/components/map/overlays/LocationAnalyticsOverlay';
 import RouteManagementOverlay from '@/components/map/overlays/RouteManagementOverlay';
 import FleetManagementOverlay from '@/components/map/overlays/FleetManagementOverlay';
@@ -157,11 +158,26 @@ const InteractiveMapPage = () => {
     return overlays.some(o => o.id === overlayId);
   };
 
+  // Adjusted positioning for better Fleet mode layout
   const getOverlayPosition = (overlayId: string): string => {
     const overlay = overlays.find(o => o.id === overlayId);
     const position = overlay?.position || 'top-right';
     
-    // Improved positioning with better spacing to prevent overlaps
+    // Special positioning adjustments for Fleet mode to prevent collisions
+    if (isFleetMode) {
+      switch (overlayId) {
+        case 'market-insights': return 'top-4 left-4'; // Move to top-left to avoid fleet overlays
+        case 'fleet-management': return 'top-4 right-4';
+        case 'fleet-vehicles-view': return 'bottom-4 left-1/2 -translate-x-1/2';
+        case 'emergency-jobs': return 'top-20 left-4';
+        default: return getDefaultPosition(position);
+      }
+    }
+    
+    return getDefaultPosition(position);
+  };
+
+  const getDefaultPosition = (position: string): string => {
     switch (position) {
       case 'top-left': return 'top-20 left-4';
       case 'top-right': return 'top-20 right-4';
@@ -200,7 +216,7 @@ const InteractiveMapPage = () => {
         <OverlayManager
           overlays={overlays.map(overlay => ({
             ...overlay,
-            draggable: isCustomizeMode && isPremium
+            draggable: true // Always draggable
           }))}
           onToggleOverlay={toggleOverlay}
           onToggleAll={toggleAllOverlays}
@@ -212,13 +228,13 @@ const InteractiveMapPage = () => {
           isPremium={isPremium}
         />
 
-        {/* Emergency Jobs Overlay */}
+        {/* Emergency Jobs Overlay - Show in both modes but with different content */}
         {shouldRenderOverlay('emergency-jobs') && (
           <EmergencyJobsOverlay
             position={getOverlayPosition('emergency-jobs')}
             visible={getOverlayConfig('emergency-jobs').visible}
             minimized={getOverlayConfig('emergency-jobs').minimized}
-            draggable={isCustomizeMode && isPremium}
+            draggable={true}
             onMinimize={() => toggleOverlay('emergency-jobs')}
             onToggleAudio={() => setAudioEnabled(!audioEnabled)}
             audioEnabled={audioEnabled}
@@ -227,13 +243,13 @@ const InteractiveMapPage = () => {
           />
         )}
 
-        {/* Market Insights Overlay */}
+        {/* Market Insights Overlay - Always show but positioned to avoid collisions in Fleet mode */}
         {shouldRenderOverlay('market-insights') && (
           <MarketInsightsOverlay
             position={getOverlayPosition('market-insights')}
             visible={getOverlayConfig('market-insights').visible}
             minimized={getOverlayConfig('market-insights').minimized}
-            draggable={isCustomizeMode && isPremium}
+            draggable={true}
             onMinimize={() => toggleOverlay('market-insights')}
             showHeatZones={false}
             showProviders={showProviders}
@@ -245,25 +261,13 @@ const InteractiveMapPage = () => {
           />
         )}
 
-        {/* AI Voice Assistant Overlay */}
-        {shouldRenderOverlay('ai-assistant') && (
-          <AIVoiceAssistantOverlay
-            position={getOverlayPosition('ai-assistant')}
-            visible={getOverlayConfig('ai-assistant').visible}
-            minimized={getOverlayConfig('ai-assistant').minimized}
-            draggable={isCustomizeMode && isPremium}
-            onMinimize={() => toggleOverlay('ai-assistant')}
-            isFleetMode={isFleetMode}
-          />
-        )}
-
-        {/* Location Analytics Overlay */}
-        {shouldRenderOverlay('location-analytics') && (
+        {/* Location Analytics Overlay - Individual mode only */}
+        {!isFleetMode && shouldRenderOverlay('location-analytics') && (
           <LocationAnalyticsOverlay
             position={getOverlayPosition('location-analytics')}
             visible={getOverlayConfig('location-analytics').visible}
             minimized={getOverlayConfig('location-analytics').minimized}
-            draggable={isCustomizeMode && isPremium}
+            draggable={true}
             onMinimize={() => toggleOverlay('location-analytics')}
             currentArea={currentArea}
             marketDemand={marketDemand}
@@ -274,13 +278,13 @@ const InteractiveMapPage = () => {
           />
         )}
 
-        {/* Route Management Overlay */}
-        {shouldRenderOverlay('route-management') && (
+        {/* Route Management Overlay - Individual mode only */}
+        {!isFleetMode && shouldRenderOverlay('route-management') && (
           <RouteManagementOverlay
             position={getOverlayPosition('route-management')}
             visible={getOverlayConfig('route-management').visible}
             minimized={getOverlayConfig('route-management').minimized}
-            draggable={isCustomizeMode && isPremium}
+            draggable={true}
             onMinimize={() => toggleOverlay('route-management')}
             jobs={sampleJobs}
             totalTravelTime={totalTravelTime}
@@ -289,25 +293,25 @@ const InteractiveMapPage = () => {
           />
         )}
 
-        {/* Fleet Management Overlay - Only in Fleet Mode */}
-        {shouldRenderOverlay('fleet-management') && (
+        {/* Fleet Management Overlay - Fleet mode only */}
+        {isFleetMode && shouldRenderOverlay('fleet-management') && (
           <FleetManagementOverlay
             position={getOverlayPosition('fleet-management')}
             visible={getOverlayConfig('fleet-management').visible}
             minimized={getOverlayConfig('fleet-management').minimized}
-            draggable={isCustomizeMode && isPremium}
+            draggable={true}
             onMinimize={() => toggleOverlay('fleet-management')}
             isFleetMode={isFleetMode}
           />
         )}
 
-        {/* Fleet Vehicles View Overlay - Only in Fleet Mode */}
-        {shouldRenderOverlay('fleet-vehicles-view') && (
+        {/* Fleet Vehicles View Overlay - Fleet mode only */}
+        {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
           <FleetVehiclesViewOverlay
             position={getOverlayPosition('fleet-vehicles-view')}
             visible={getOverlayConfig('fleet-vehicles-view')?.visible || isFleetMode}
             minimized={getOverlayConfig('fleet-vehicles-view')?.minimized || false}
-            draggable={isCustomizeMode && isPremium}
+            draggable={true}
             onMinimize={() => toggleOverlay('fleet-vehicles-view')}
             fleetVehicles={fleetVehicles}
             followFleet={followFleet}
@@ -316,6 +320,9 @@ const InteractiveMapPage = () => {
             onFocusVehicle={handleFocusVehicle}
           />
         )}
+
+        {/* Chat Bubble with integrated AI Voice Assistant */}
+        <ChatBubble />
       </div>
     </div>
   );

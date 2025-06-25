@@ -10,7 +10,7 @@ import { usePopArt } from '@/contexts/PopArtContext';
 
 export const ChatBubble = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'messages' | 'ai'>('messages');
+  const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>('messages');
   const { totalUnreadCount } = useChat();
   const { triggerPopArt } = usePopArt();
 
@@ -41,7 +41,7 @@ export const ChatBubble = () => {
           <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
             <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
-              <h3 className="font-semibold text-yellow-900">Messages</h3>
+              <h3 className="font-semibold text-yellow-900">Assistant</h3>
               <Button
                 variant="ghost"
                 size="sm"
@@ -64,7 +64,7 @@ export const ChatBubble = () => {
                       : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
                   )}
                 >
-                  Human Chat
+                  Chat
                   {totalUnreadCount > 0 && (
                     <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
                       {totalUnreadCount}
@@ -83,9 +83,23 @@ export const ChatBubble = () => {
                       : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
                   )}
                 >
-                  AI Assistant
+                  AI Text
                   {activeTab === 'ai' && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
+                  )}
+                </button>
+                <button
+                  onClick={() => setActiveTab('voice')}
+                  className={cn(
+                    "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                    activeTab === 'voice'
+                      ? "text-green-600 bg-yellow-100"
+                      : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                  )}
+                >
+                  🗣️ Voice
+                  {activeTab === 'voice' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
                   )}
                 </button>
               </div>
