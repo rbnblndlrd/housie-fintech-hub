@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,10 +9,11 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { PopArtProvider } from "@/contexts/PopArtContext";
-import { RoleProvider } from "@/contexts/RoleContext";
+import { RoleProvider } from "@/contexts/RoleProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { GoogleMapsProvider } from "@/components/map/GoogleMapsProvider";
 import { NotificationBubbles } from "@/components/chat/NotificationBubbles";
+import NavigationTest from "@/components/NavigationTest";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
@@ -61,6 +63,10 @@ const App = () => {
     return null; // Desktop app handles its own routing
   }
 
+  React.useEffect(() => {
+    console.log('🚀 App component mounted, checking router setup...');
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -73,6 +79,7 @@ const App = () => {
                     <RoleProvider>
                       <SubscriptionProvider>
                         <NotificationBubbles />
+                        <NavigationTest />
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/auth" element={<Auth />} />

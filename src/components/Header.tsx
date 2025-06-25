@@ -21,8 +21,28 @@ const Header = () => {
     hasUser: !!user, 
     currentRole, 
     navigationItemsCount: navigationItems.length,
-    navigationItems: navigationItems.map(item => ({ label: item.label, href: item.href }))
+    navigationItems: navigationItems.map(item => ({ label: item.label, href: item.href })),
+    hasNavigateFunction: typeof navigate === 'function'
   });
+
+  // Test navigation function
+  React.useEffect(() => {
+    console.log('🏠 Header navigation test:', {
+      navigateType: typeof navigate,
+      canNavigate: typeof navigate === 'function'
+    });
+  }, [navigate]);
+
+  const handleLogoClick = () => {
+    console.log('🏠 Logo clicked, navigating to home');
+    try {
+      navigate('/');
+      console.log('✅ Logo navigation successful');
+    } catch (error) {
+      console.error('❌ Logo navigation failed:', error);
+      window.location.href = '/';
+    }
+  };
 
   return (
     <header className="bg-gray-900 text-white shadow-lg">
@@ -30,7 +50,7 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Left side - Logo and Navigation */}
           <div className="flex items-center space-x-8">
-            <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
+            <div className="flex items-center space-x-2 cursor-pointer" onClick={handleLogoClick}>
               <img 
                 src="/lovable-uploads/bf9b9088-19df-408a-89eb-3638be9d8ccf.png" 
                 alt="HOUSIE" 
