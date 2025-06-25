@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNotificationSound } from './useNotificationSound';
@@ -20,6 +20,8 @@ export const useNotifications = () => {
   const { playNotificationSound } = useNotificationSound();
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
+  const channelsRef = useRef<any[]>([]);
+  const isSubscribedRef = useRef(false);
 
   console.log('🔔 useNotifications hook:', { userId: user?.id, loading });
 
@@ -132,19 +134,28 @@ export const useNotifications = () => {
   };
 
   useEffect(() => {
-    if (!user) {
-      console.log('🔔 No user in useEffect, resetting state');
-      setNotifications([]);
-      setLoading(false);
+    if (!user || isSubscribedRef.current) {
+      if (!user) {
+        console.log('🔔 No user in useEffect, resetting state');
+        setNotifications([]);
+        setLoading(false);
+      }
       return;
     }
 
     console.log('🔔 Setting up notifications for user:', user.id);
     fetchNotifications();
 
+    // Clean up existing channels
+    channelsRef.current.forEach(channel => {
+      supabase.removeChannel(channel);
+    });
+    channelsRef.current = [];
+
     // Set up real-time subscriptions
+    const notificationChannelName = `notifications-${user.id}-${Date.now()}`;
     const notificationChannel = supabase
-      .channel(`notifications-${user.id}`)
+      .channel(notificationChannelName)
       .on(
         'postgres_changes',
         {
@@ -178,8 +189,9 @@ export const useNotifications = () => {
       .subscribe();
 
     // Set up chat subscription for new messages
+    const chatChannelName = `chat-${user.id}-${Date.now()}`;
     const chatChannel = supabase
-      .channel(`chat-${user.id}`)
+      .channel(chatChannelName)
       .on(
         'postgres_changes',
         {
@@ -211,6 +223,9 @@ export const useNotifications = () => {
       )
       .subscribe();
 
+    channelsRef.current = [notificationChannel, chatChannel];
+    isSubscribedRef.current = true;
+
     // Request notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       Notification.requestPermission();
@@ -218,10 +233,13 @@ export const useNotifications = () => {
 
     return () => {
       console.log('🧹 Cleaning up notification subscriptions');
-      supabase.removeChannel(notificationChannel);
-      supabase.removeChannel(chatChannel);
+      channelsRef.current.forEach(channel => {
+        supabase.removeChannel(channel);
+      });
+      channelsRef.current = [];
+      isSubscribedRef.current = false;
     };
-  }, [user?.id]);
+  }, [user?.id]); // Only depend on user.id
 
   const unreadCount = notifications.filter(n => !n.read).length;
 

@@ -91,7 +91,7 @@ const Index = () => {
                 {/* Enhanced Speech Bubble */}
                 <div className="absolute -top-16 lg:-top-20 -right-4 lg:-right-16 bg-cream/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-xs lg:max-w-sm">
                   <div className="text-lg lg:text-xl font-black text-black">
-                    Find Local Experts! 🔍
+                    Need a local expert? 🔍
                   </div>
                   <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-cream/95"></div>
                 </div>

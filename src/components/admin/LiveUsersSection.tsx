@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SessionTracker } from './SessionTracker';
@@ -32,6 +32,8 @@ const LiveUsersSection = () => {
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const channelRef = useRef<any>(null);
+  const isSubscribedRef = useRef(false);
 
   // Load active sessions
   const loadActiveSessions = async () => {
@@ -67,10 +69,13 @@ const LiveUsersSection = () => {
 
   // Set up real-time subscription
   useEffect(() => {
+    if (isSubscribedRef.current) return;
+
     loadActiveSessions();
 
+    const channelName = `user-sessions-changes-${Date.now()}`;
     const channel = supabase
-      .channel('user-sessions-changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
@@ -85,6 +90,9 @@ const LiveUsersSection = () => {
       )
       .subscribe();
 
+    channelRef.current = channel;
+    isSubscribedRef.current = true;
+
     // Set up periodic cleanup
     const cleanupInterval = setInterval(async () => {
       try {
@@ -96,10 +104,14 @@ const LiveUsersSection = () => {
     }, 60000); // Every minute
 
     return () => {
-      supabase.removeChannel(channel);
+      if (channelRef.current) {
+        supabase.removeChannel(channelRef.current);
+        channelRef.current = null;
+        isSubscribedRef.current = false;
+      }
       clearInterval(cleanupInterval);
     };
-  }, []);
+  }, []); // Empty dependency array
 
   if (loading) {
     return (
