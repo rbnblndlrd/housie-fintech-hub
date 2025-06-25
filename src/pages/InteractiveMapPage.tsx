@@ -369,8 +369,8 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Chat Bubble - REPOSITIONED TO LEFT OF ZOOM CONTROLS */}
-        <div className="fixed bottom-24 right-16 z-50 pointer-events-none">
+        {/* Chat Bubble - REPOSITIONED FURTHER LEFT TO AVOID ZOOM CONTROLS */}
+        <div className="fixed bottom-24 right-28 z-50 pointer-events-none">
           <div className="pointer-events-auto">
             <ChatBubble defaultTab="voice" showMicIcon={true} />
           </div>
