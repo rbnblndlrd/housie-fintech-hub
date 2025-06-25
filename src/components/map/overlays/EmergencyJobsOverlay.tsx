@@ -5,6 +5,16 @@ import { Badge } from '@/components/ui/badge';
 import { Zap, Volume2, VolumeX, Minimize2, GripVertical, ChevronUp, ChevronDown, X } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
+interface EmergencyJob {
+  id: string;
+  title: string;
+  description: string;
+  price: string;
+  timePosted: string;
+  location: string;
+  priority: string;
+}
+
 interface EmergencyJobsOverlayProps {
   position: string;
   visible: boolean;
