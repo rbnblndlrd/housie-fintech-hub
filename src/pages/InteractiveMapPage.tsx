@@ -211,26 +211,28 @@ const InteractiveMapPage = () => {
           />
         </div>
         
-        {/* Overlay Manager Controls */}
-        <div className="pointer-events-none absolute inset-0">
-          <OverlayManager
-            overlays={overlays.map(overlay => ({
-              ...overlay,
-              draggable: isDraggableMode
-            }))}
-            onToggleOverlay={toggleOverlay}
-            onToggleAll={toggleAllOverlays}
-            onResetLayout={resetLayout}
-            onResetPositions={resetPositions}
-            allVisible={allOverlaysVisible}
-            isFleetMode={isFleetMode}
-            onToggleFleetMode={handleFleetModeToggle}
-            isCustomizeMode={isCustomizeMode}
-            onToggleCustomizeMode={(enabled) => setIsCustomizeMode(enabled)}
-            isDraggableMode={isDraggableMode}
-            onToggleDraggableMode={handleToggleDraggableMode}
-            isPremium={isPremium}
-          />
+        {/* Overlay Manager Controls - Improved Visibility */}
+        <div className="pointer-events-none absolute inset-0" style={{ zIndex: 50 }}>
+          <div className="pointer-events-auto">
+            <OverlayManager
+              overlays={overlays.map(overlay => ({
+                ...overlay,
+                draggable: isDraggableMode
+              }))}
+              onToggleOverlay={toggleOverlay}
+              onToggleAll={toggleAllOverlays}
+              onResetLayout={resetLayout}
+              onResetPositions={resetPositions}
+              allVisible={allOverlaysVisible}
+              isFleetMode={isFleetMode}
+              onToggleFleetMode={handleFleetModeToggle}
+              isCustomizeMode={isCustomizeMode}
+              onToggleCustomizeMode={(enabled) => setIsCustomizeMode(enabled)}
+              isDraggableMode={isDraggableMode}
+              onToggleDraggableMode={handleToggleDraggableMode}
+              isPremium={isPremium}
+            />
+          </div>
         </div>
 
         {/* FIXED POSITIONING - Emergency Jobs Overlay - Individual Mode Only */}
