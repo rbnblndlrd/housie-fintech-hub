@@ -51,6 +51,14 @@ const defaultOverlays: OverlayConfig[] = [
     visible: true,
     minimized: false,
     draggable: false
+  },
+  {
+    id: 'fleet-management',
+    title: 'Fleet Management',
+    position: 'center-left',
+    visible: true,
+    minimized: false,
+    draggable: false
   }
 ];
 

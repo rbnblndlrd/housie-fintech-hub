@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { Eye, EyeOff, Settings, Users, User, Crown } from 'lucide-react';
 import { useRole } from '@/contexts/RoleContext';
+import UIModelToggle from './UIModeToggle';
 
 export type OverlayPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center-left' | 'center-right' | 'bottom-center';
 
@@ -44,19 +45,6 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
   const { currentRole } = useRole();
   const [showControls, setShowControls] = useState(false);
 
-  const getPositionClass = (position: OverlayPosition) => {
-    switch (position) {
-      case 'top-left': return 'top-4 left-4';
-      case 'top-right': return 'top-4 right-4';
-      case 'bottom-left': return 'bottom-4 left-4';
-      case 'bottom-right': return 'bottom-4 right-4';
-      case 'center-left': return 'top-1/2 left-4 -translate-y-1/2';
-      case 'center-right': return 'top-1/2 right-4 -translate-y-1/2';
-      case 'bottom-center': return 'bottom-4 left-1/2 -translate-x-1/2';
-      default: return 'top-4 right-4';
-    }
-  };
-
   return (
     <>
       {/* Master Controls Overlay - Top Right */}
@@ -78,6 +66,11 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 </Badge>
               )}
             </div>
+
+            {/* UI Mode Toggle */}
+            {isPremium && (
+              <UIModelToggle />
+            )}
 
             {/* Show/Hide All */}
             <Button

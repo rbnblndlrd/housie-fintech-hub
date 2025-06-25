@@ -1,5 +1,7 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
+import { useUIMode } from '@/hooks/useUIMode';
+import './OverlayStyles.css';
 
 interface OverlayWrapperProps {
   children: React.ReactNode;
@@ -8,7 +10,7 @@ interface OverlayWrapperProps {
   className?: string;
 }
 
-export const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
+const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
   children,
   position,
   draggable = false,
@@ -16,64 +18,62 @@ export const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [dragTranslate, setDragTranslate] = useState({ x: 0, y: 0 });
-  const elementRef = useRef<HTMLDivElement>(null);
+  const [currentPosition, setCurrentPosition] = useState({ x: 0, y: 0 });
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const { getOverlayClasses } = useUIMode();
+
+  // Convert position string to CSS classes
+  const getPositionClasses = () => {
+    if (isDragging || (currentPosition.x !== 0 || currentPosition.y !== 0)) {
+      return 'fixed';
+    }
+    
+    switch (position) {
+      case 'top-20 left-4': return 'absolute top-20 left-4';
+      case 'top-20 right-4': return 'absolute top-20 right-4';
+      case 'bottom-4 left-4': return 'absolute bottom-4 left-4';
+      case 'bottom-4 right-4': return 'absolute bottom-4 right-4';
+      case 'top-1/2 left-4 -translate-y-1/2': return 'absolute top-1/2 left-4 -translate-y-1/2';
+      case 'top-1/2 right-4 -translate-y-1/2': return 'absolute top-1/2 right-4 -translate-y-1/2';
+      case 'bottom-4 left-1/2 -translate-x-1/2': return 'absolute bottom-4 left-1/2 -translate-x-1/2';
+      default: return `absolute ${position}`;
+    }
+  };
 
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (!draggable || !elementRef.current) return;
+    if (!draggable) return;
     
     e.preventDefault();
-    e.stopPropagation();
-    
-    const rect = elementRef.current.getBoundingClientRect();
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-    
-    setDragOffset({ x: offsetX, y: offsetY });
-    setDragTranslate({ x: 0, y: 0 }); // Reset translate on new drag
-    
-    // Apply dragging class immediately for visual feedback
-    elementRef.current.classList.add('overlay-dragging');
-    
-    // Set cursor on document body
-    document.body.style.cursor = 'grabbing';
-    document.body.style.userSelect = 'none';
-    
     setIsDragging(true);
+    
+    const rect = overlayRef.current?.getBoundingClientRect();
+    if (rect) {
+      setDragOffset({
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+    }
+    
+    document.body.classList.add('drag-in-progress');
   };
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (!isDragging || !elementRef.current) return;
+    if (!isDragging || !draggable) return;
     
-    // Calculate new translate values based on mouse movement
-    const rect = elementRef.current.getBoundingClientRect();
-    const translateX = e.clientX - rect.left - dragOffset.x;
-    const translateY = e.clientY - rect.top - dragOffset.y;
-    
-    setDragTranslate({ x: translateX, y: translateY });
-    
-    // Apply transform using CSS transform for smooth movement
-    elementRef.current.style.transform = `translate(${translateX}px, ${translateY}px) rotate(2deg)`;
+    setCurrentPosition({
+      x: e.clientX - dragOffset.x,
+      y: e.clientY - dragOffset.y
+    });
   };
 
   const handleMouseUp = () => {
-    if (!draggable || !elementRef.current || !isDragging) return;
+    if (!isDragging) return;
     
     setIsDragging(false);
-    
-    // Clean up dragging styles and classes
-    elementRef.current.classList.remove('overlay-dragging');
-    elementRef.current.style.transform = '';
-    
-    // Reset cursor and user select
-    document.body.style.cursor = '';
-    document.body.style.userSelect = '';
-    
-    // Reset translate state
-    setDragTranslate({ x: 0, y: 0 });
+    document.body.classList.remove('drag-in-progress');
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
@@ -85,25 +85,30 @@ export const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
     }
   }, [isDragging, dragOffset]);
 
-  // Clean up on unmount
-  React.useEffect(() => {
-    return () => {
-      if (isDragging) {
-        document.body.style.cursor = '';
-        document.body.style.userSelect = '';
-      }
-    };
-  }, []);
+  const overlayStyle = (isDragging || (currentPosition.x !== 0 || currentPosition.y !== 0)) ? {
+    left: currentPosition.x,
+    top: currentPosition.y,
+    zIndex: isDragging ? 9999 : 'auto'
+  } : {};
 
   return (
     <div
-      ref={elementRef}
-      className={`absolute ${position} ${className} ${
-        draggable ? 'draggable-overlay' : ''
-      } ${isDragging ? 'drag-in-progress' : ''}`}
+      ref={overlayRef}
+      className={`
+        overlay-wrapper
+        ${getPositionClasses()}
+        ${isDragging ? 'overlay-dragging' : ''}
+        ${draggable ? 'draggable-overlay' : ''}
+        ${className}
+      `}
+      style={overlayStyle}
       onMouseDown={handleMouseDown}
     >
-      {children}
+      <div className={`${getOverlayClasses()} backdrop-blur-sm rounded-2xl shadow-2xl transition-all duration-200`}>
+        {children}
+      </div>
     </div>
   );
 };
+
+export default OverlayWrapper;

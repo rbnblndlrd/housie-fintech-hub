@@ -15,6 +15,7 @@ import MarketInsightsOverlay from '@/components/map/overlays/MarketInsightsOverl
 import AIVoiceAssistantOverlay from '@/components/map/overlays/AIVoiceAssistantOverlay';
 import LocationAnalyticsOverlay from '@/components/map/overlays/LocationAnalyticsOverlay';
 import RouteManagementOverlay from '@/components/map/overlays/RouteManagementOverlay';
+import FleetManagementOverlay from '@/components/map/overlays/FleetManagementOverlay';
 
 const InteractiveMapPage = () => {
   const { user } = useAuth();
@@ -235,6 +236,16 @@ const InteractiveMapPage = () => {
           jobs={sampleJobs}
           totalTravelTime={totalTravelTime}
           nextJobCountdown={nextJobCountdown}
+          isFleetMode={isFleetMode}
+        />
+
+        {/* Fleet Management Overlay - NEW */}
+        <FleetManagementOverlay
+          position={getOverlayPosition('fleet-management')}
+          visible={getOverlayConfig('fleet-management').visible}
+          minimized={getOverlayConfig('fleet-management').minimized}
+          draggable={isCustomizeMode && isPremium}
+          onMinimize={() => toggleOverlay('fleet-management')}
           isFleetMode={isFleetMode}
         />
       </div>
