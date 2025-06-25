@@ -4,17 +4,9 @@
   transition: none !important;
   z-index: 9999 !important;
   opacity: 0.9;
-  transform: rotate(2deg);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   cursor: grabbing !important;
-}
-
-.overlay-card.dragging {
-  transition: none;
-  z-index: 9999;
-  opacity: 0.9;
-  transform: rotate(2deg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
 }
 
 /* Prevent selection during drag */
@@ -23,6 +15,13 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+}
+
+.drag-in-progress * {
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
 }
 
 /* Smooth transitions when not dragging */
@@ -42,4 +41,26 @@
 
 .draggable-overlay:active {
   cursor: grabbing;
+}
+
+/* Ensure proper cursor hierarchy */
+.overlay-dragging,
+.overlay-dragging * {
+  cursor: grabbing !important;
+}
+
+/* Remove any conflicting cursor styles during drag */
+.drag-in-progress,
+.drag-in-progress * {
+  cursor: grabbing !important;
+}
+
+/* Prevent pointer events on child elements during drag to avoid cursor conflicts */
+.overlay-dragging * {
+  pointer-events: none;
+}
+
+/* Re-enable pointer events on the main dragging element */
+.overlay-dragging {
+  pointer-events: auto;
 }

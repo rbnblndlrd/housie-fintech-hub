@@ -16,33 +16,28 @@ export const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const [dragTranslate, setDragTranslate] = useState({ x: 0, y: 0 });
   const elementRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent) => {
     if (!draggable || !elementRef.current) return;
     
     e.preventDefault();
+    e.stopPropagation();
     
     const rect = elementRef.current.getBoundingClientRect();
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
     
     setDragOffset({ x: offsetX, y: offsetY });
+    setDragTranslate({ x: 0, y: 0 }); // Reset translate on new drag
     
-    // Set initial drag position to current element position
-    setDragPosition({
-      x: rect.left,
-      y: rect.top
-    });
+    // Apply dragging class immediately for visual feedback
+    elementRef.current.classList.add('overlay-dragging');
     
-    // Immediately disable transitions and apply dragging styles
-    elementRef.current.style.transition = 'none';
-    elementRef.current.style.position = 'fixed';
-    elementRef.current.style.zIndex = '9999';
-    elementRef.current.style.opacity = '0.9';
-    elementRef.current.style.transform = 'rotate(2deg)';
-    elementRef.current.style.boxShadow = '0 8px 32px rgba(0,0,0,0.3)';
+    // Set cursor on document body
+    document.body.style.cursor = 'grabbing';
+    document.body.style.userSelect = 'none';
     
     setIsDragging(true);
   };
@@ -50,56 +45,63 @@ export const OverlayWrapper: React.FC<OverlayWrapperProps> = ({
   const handleMouseMove = (e: MouseEvent) => {
     if (!isDragging || !elementRef.current) return;
     
-    const newX = e.clientX - dragOffset.x;
-    const newY = e.clientY - dragOffset.y;
+    // Calculate new translate values based on mouse movement
+    const rect = elementRef.current.getBoundingClientRect();
+    const translateX = e.clientX - rect.left - dragOffset.x;
+    const translateY = e.clientY - rect.top - dragOffset.y;
     
-    setDragPosition({ x: newX, y: newY });
+    setDragTranslate({ x: translateX, y: translateY });
     
-    // Use transform for smooth positioning
-    elementRef.current.style.left = `${newX}px`;
-    elementRef.current.style.top = `${newY}px`;
+    // Apply transform using CSS transform for smooth movement
+    elementRef.current.style.transform = `translate(${translateX}px, ${translateY}px) rotate(2deg)`;
   };
 
   const handleMouseUp = () => {
-    if (!draggable || !elementRef.current) return;
+    if (!draggable || !elementRef.current || !isDragging) return;
     
     setIsDragging(false);
     
-    // Re-enable transitions and reset dragging styles
-    elementRef.current.style.transition = '';
-    elementRef.current.style.position = '';
-    elementRef.current.style.zIndex = '';
-    elementRef.current.style.opacity = '';
+    // Clean up dragging styles and classes
+    elementRef.current.classList.remove('overlay-dragging');
     elementRef.current.style.transform = '';
-    elementRef.current.style.boxShadow = '';
-    elementRef.current.style.left = '';
-    elementRef.current.style.top = '';
+    
+    // Reset cursor and user select
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+    
+    // Reset translate state
+    setDragTranslate({ x: 0, y: 0 });
   };
 
   React.useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      document.body.style.userSelect = 'none';
-      document.body.style.cursor = 'grabbing';
       
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
-        document.body.style.userSelect = '';
-        document.body.style.cursor = '';
       };
     }
   }, [isDragging, dragOffset]);
+
+  // Clean up on unmount
+  React.useEffect(() => {
+    return () => {
+      if (isDragging) {
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+      }
+    };
+  }, []);
 
   return (
     <div
       ref={elementRef}
       className={`absolute ${position} ${className} ${
-        draggable ? 'cursor-grab active:cursor-grabbing' : ''
-      } ${isDragging ? 'select-none' : ''}`}
+        draggable ? 'draggable-overlay' : ''
+      } ${isDragging ? 'drag-in-progress' : ''}`}
       onMouseDown={handleMouseDown}
-      style={draggable ? { userSelect: 'none' } : undefined}
     >
       {children}
     </div>
