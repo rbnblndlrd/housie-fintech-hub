@@ -17,6 +17,13 @@ const Header = () => {
   // Get navigation items based on user and current role
   const navigationItems = getNavigationItems(user, currentRole);
 
+  console.log('🏠 Header render:', { 
+    hasUser: !!user, 
+    currentRole, 
+    navigationItemsCount: navigationItems.length,
+    navigationItems: navigationItems.map(item => ({ label: item.label, href: item.href }))
+  });
+
   return (
     <header className="bg-gray-900 text-white shadow-lg">
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto px-4 py-3">
