@@ -12,8 +12,8 @@ export const PricingSection = () => {
       period: "pour toujours",
       description: "Parfait pour commencer",
       icon: <Star className="h-6 w-6" />,
-      color: "border-gray-200",
-      bgColor: "bg-white",
+      color: "border-black",
+      bgColor: "bg-cream",
       buttonColor: "bg-gray-600 hover:bg-gray-700",
       features: [
         "Jusqu'à 3 types de services",
@@ -29,9 +29,9 @@ export const PricingSection = () => {
       period: "/mois",
       description: "Pour les entrepreneurs actifs",
       icon: <Zap className="h-6 w-6" />,
-      color: "border-orange-300",
-      bgColor: "bg-orange-50",
-      buttonColor: "bg-orange-500 hover:bg-orange-600",
+      color: "border-black",
+      bgColor: "bg-cream",
+      buttonColor: "bg-orange-600 hover:bg-orange-700",
       features: [
         "Jusqu'à 8 types de services",
         "Analytiques avancées",
@@ -47,8 +47,8 @@ export const PricingSection = () => {
       period: "/mois",
       description: "Notre plan le plus populaire",
       icon: <Crown className="h-6 w-6" />,
-      color: "border-purple-400",
-      bgColor: "bg-purple-50",
+      color: "border-black",
+      bgColor: "bg-cream",
       buttonColor: "bg-purple-600 hover:bg-purple-700",
       popular: true,
       features: [
@@ -67,8 +67,8 @@ export const PricingSection = () => {
       period: "/mois",
       description: "Pour les pros qui veulent tout",
       icon: <Crown className="h-6 w-6" />,
-      color: "border-cyan-400",
-      bgColor: "bg-cyan-50",
+      color: "border-black",
+      bgColor: "bg-cream",
       buttonColor: "bg-cyan-600 hover:bg-cyan-700",
       features: [
         "Tout dans Pro +",
@@ -86,15 +86,15 @@ export const PricingSection = () => {
     <section className="py-20 px-4 relative">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block bg-white/95 backdrop-blur-sm rounded-xl px-8 py-6 border-2 border-black shadow-lg mb-6">
-            <Badge className="bg-orange-500 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl">
+          <div className="inline-block bg-cream/95 backdrop-blur-sm rounded-xl px-8 py-6 border-3 border-black shadow-lg mb-6">
+            <Badge className="bg-orange-600 text-cream px-4 py-2 text-sm font-bold mb-4 rounded-xl border-2 border-black">
               💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
             </Badge>
-            <h2 className="text-5xl font-black text-gray-900 mb-6">
-              Tarifs <span className="text-orange-500">Transparents</span>
+            <h2 className="text-5xl font-black text-black mb-6">
+              Tarifs <span className="text-orange-600">Transparents</span>
               <br />Sans Surprise
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed">
               Choisissez le plan qui correspond à vos besoins. 
               Tous les plans incluent notre garantie de conformité CRA et nos outils fintech.
             </p>
@@ -105,30 +105,30 @@ export const PricingSection = () => {
           {plans.map((plan, index) => (
             <Card 
               key={index} 
-              className={`${plan.bgColor} border-2 border-black rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
-                plan.popular ? 'ring-4 ring-purple-400 shadow-2xl' : ''
+              className={`${plan.bgColor} border-3 border-black rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
+                plan.popular ? 'ring-4 ring-purple-600 shadow-2xl' : ''
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-500 to-purple-600 text-white text-center py-2 text-sm font-bold">
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-purple-700 text-cream text-center py-2 text-sm font-bold">
                   ⭐ PLUS POPULAIRE
                 </div>
               )}
               
               <CardHeader className={`text-center ${plan.popular ? 'pt-12' : 'pt-6'}`}>
-                <div className="mx-auto mb-4 p-3 bg-white rounded-2xl w-fit shadow-lg border-2 border-black">
+                <div className="mx-auto mb-4 p-3 bg-cream rounded-2xl w-fit shadow-lg border-2 border-black">
                   {plan.icon}
                 </div>
-                <CardTitle className="text-2xl font-black text-gray-900">
+                <CardTitle className="text-2xl font-black text-black">
                   {plan.name}
                 </CardTitle>
-                <CardDescription className="text-gray-600 font-medium">
+                <CardDescription className="text-gray-800 font-medium">
                   {plan.description}
                 </CardDescription>
                 <div className="py-4">
-                  <div className="text-4xl font-black text-gray-900">
+                  <div className="text-4xl font-black text-black">
                     ${plan.price}
-                    <span className="text-lg font-normal text-gray-600">
+                    <span className="text-lg font-normal text-gray-800">
                       {plan.period}
                     </span>
                   </div>
@@ -136,15 +136,15 @@ export const PricingSection = () => {
               </CardHeader>
 
               <CardContent className="p-6">
-                <Button className={`w-full ${plan.buttonColor} text-white font-bold py-3 rounded-xl mb-6 shadow-lg border-2 border-black`}>
+                <Button className={`w-full ${plan.buttonColor} text-cream font-bold py-3 rounded-xl mb-6 shadow-lg border-2 border-black`}>
                   {plan.name === "Gratuit" ? "COMMENCER GRATUIT" : "CHOISIR CE PLAN"}
                 </Button>
 
                 <ul className="space-y-3">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
-                      <Check className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                      <span className="text-gray-700 text-sm leading-relaxed">
+                      <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span className="text-black text-sm leading-relaxed">
                         {feature}
                       </span>
                     </li>
@@ -157,7 +157,7 @@ export const PricingSection = () => {
 
         {/* Additional Info */}
         <div className="mt-16 text-center">
-          <div className="bg-gradient-to-r from-orange-500 to-purple-600 text-white rounded-xl p-8 max-w-4xl mx-auto border-2 border-black shadow-lg">
+          <div className="bg-gradient-to-r from-orange-600 to-purple-600 text-cream rounded-xl p-8 max-w-4xl mx-auto border-3 border-black shadow-lg">
             <h3 className="text-2xl font-black mb-4">
               🎯 Garantie de Revenus Augmentés
             </h3>

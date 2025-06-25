@@ -37,6 +37,16 @@ export default {
 					sage: '#87a96b',
 					charcoal: '#374151'
 				},
+				// Enhanced Dark Theme Colors
+				cream: '#F5F5DC',
+				'dark-olive': '#556B2F',
+				'olive-green': '#6B8E23',
+				'dark-orange': '#CC5500',
+				'burnt-orange': '#B8460E',
+				'deep-purple': '#4B0082',
+				'dark-purple': '#5D2E5D',
+				'rich-black': '#1a1a1a',
+				'sophisticated-grey': '#4a4a4a',
 				// Dark mode colors
 				dark: {
 					primary: '#1a1a1a',
@@ -90,6 +100,9 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			borderWidth: {
+				'3': '3px'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
