@@ -54,11 +54,11 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative" style={{ 
-      backgroundImage: `url('/lovable-uploads/a98e4703-b9ee-42e9-b838-dfa246ee2aa8.png')`,
+      backgroundImage: `url('/lovable-uploads/cc04522b-5dd0-43c4-8cea-fd892168600e.png')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      backgroundAttachment: 'scroll'
+      backgroundAttachment: 'fixed'
     }}>
       <Header />
       
