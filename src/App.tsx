@@ -13,7 +13,6 @@ import { RoleProvider } from "@/contexts/RoleContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { GoogleMapsProvider } from "@/components/map/GoogleMapsProvider";
 import { NotificationBubbles } from "@/components/chat/NotificationBubbles";
-import NavigationTest from "@/components/NavigationTest";
 import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
@@ -79,7 +78,6 @@ const App = () => {
                     <RoleProvider>
                       <SubscriptionProvider>
                         <NotificationBubbles />
-                        <NavigationTest />
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/auth" element={<Auth />} />

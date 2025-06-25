@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -158,7 +157,6 @@ const InteractiveMapPage = () => {
     return overlays.some(o => o.id === overlayId);
   };
 
-  // Adjusted positioning for better Fleet mode layout
   const getOverlayPosition = (overlayId: string): string => {
     const overlay = overlays.find(o => o.id === overlayId);
     const position = overlay?.position || 'top-right';
@@ -212,7 +210,6 @@ const InteractiveMapPage = () => {
           fleetCenter={getFleetCenter()}
         />
         
-        {/* Overlay Manager Controls */}
         <OverlayManager
           overlays={overlays.map(overlay => ({
             ...overlay,
