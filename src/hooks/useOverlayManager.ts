@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 
 export type OverlayPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'center-left' | 'center-right' | 'bottom-center';
@@ -76,6 +75,7 @@ export const useOverlayManager = () => {
 
   const [isFleetMode, setIsFleetMode] = useState(false);
   const [isCustomizeMode, setIsCustomizeMode] = useState(false);
+  const [isDraggableMode, setIsDraggableMode] = useState(false);
   const [isPremium] = useState(true);
 
   // Filter overlays based on fleet mode
@@ -134,8 +134,16 @@ export const useOverlayManager = () => {
       visible: true,
       minimized: false
     })));
+    setIsDraggableMode(false);
     localStorage.removeItem('overlay-layout');
+    localStorage.removeItem('overlay-positions');
     console.log('✅ All overlays restored to visible state');
+  };
+
+  const resetPositions = () => {
+    console.log('🔄 Resetting overlay positions to organized layout');
+    localStorage.removeItem('overlay-positions');
+    console.log('✅ Overlay positions reset to default organized layout');
   };
 
   return {
@@ -143,13 +151,16 @@ export const useOverlayManager = () => {
     allOverlays: overlays,
     isFleetMode,
     isCustomizeMode,
+    isDraggableMode,
     isPremium,
     allOverlaysVisible,
     setIsFleetMode,
     setIsCustomizeMode,
+    setIsDraggableMode,
     toggleOverlay,
     toggleAllOverlays,
     saveLayout,
-    resetLayout
+    resetLayout,
+    resetPositions
   };
 };

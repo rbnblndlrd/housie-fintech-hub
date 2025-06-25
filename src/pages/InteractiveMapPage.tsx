@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -38,14 +37,17 @@ const InteractiveMapPage = () => {
     allOverlays,
     isFleetMode,
     isCustomizeMode,
+    isDraggableMode,
     isPremium,
     allOverlaysVisible,
     setIsFleetMode,
     setIsCustomizeMode,
+    setIsDraggableMode,
     toggleOverlay,
     toggleAllOverlays,
     saveLayout,
-    resetLayout
+    resetLayout,
+    resetPositions
   } = useOverlayManager();
 
   // Map state
@@ -96,6 +98,7 @@ const InteractiveMapPage = () => {
     user: !!user, 
     currentRole, 
     isFleetMode, 
+    isDraggableMode,
     overlaysCount: overlays.length,
     overlayStates: overlays.map(o => ({ id: o.id, visible: o.visible, minimized: o.minimized }))
   });
@@ -119,6 +122,16 @@ const InteractiveMapPage = () => {
       description: enabled 
         ? "Now showing fleet management tools and multi-vehicle view"
         : "Switched to individual provider interface"
+    });
+  };
+
+  const handleToggleDraggableMode = (enabled: boolean) => {
+    setIsDraggableMode(enabled);
+    toast({
+      title: enabled ? "Drag Mode Enabled" : "Drag Mode Disabled",
+      description: enabled 
+        ? "You can now drag overlays freely around the screen"
+        : "Overlays returned to organized layout positions"
     });
   };
 
@@ -195,16 +208,19 @@ const InteractiveMapPage = () => {
           <OverlayManager
             overlays={overlays.map(overlay => ({
               ...overlay,
-              draggable: false // Disable dragging for organized layout
+              draggable: isDraggableMode // Use draggable mode state
             }))}
             onToggleOverlay={toggleOverlay}
             onToggleAll={toggleAllOverlays}
             onResetLayout={resetLayout}
+            onResetPositions={resetPositions}
             allVisible={allOverlaysVisible}
             isFleetMode={isFleetMode}
             onToggleFleetMode={handleFleetModeToggle}
             isCustomizeMode={isCustomizeMode}
             onToggleCustomizeMode={(enabled) => setIsCustomizeMode(enabled)}
+            isDraggableMode={isDraggableMode}
+            onToggleDraggableMode={handleToggleDraggableMode}
             isPremium={isPremium}
           />
         </div>
@@ -217,7 +233,7 @@ const InteractiveMapPage = () => {
                 position=""
                 visible={true}
                 minimized={getOverlayConfig('emergency-jobs').minimized}
-                draggable={false}
+                draggable={isDraggableMode}
                 onMinimize={() => toggleOverlay('emergency-jobs')}
                 onToggleAudio={() => setAudioEnabled(!audioEnabled)}
                 audioEnabled={audioEnabled}
@@ -236,7 +252,7 @@ const InteractiveMapPage = () => {
                 position=""
                 visible={true}
                 minimized={getOverlayConfig('route-management').minimized}
-                draggable={false}
+                draggable={isDraggableMode}
                 onMinimize={() => toggleOverlay('route-management')}
                 jobs={sampleJobs}
                 totalTravelTime={totalTravelTime}
@@ -255,7 +271,7 @@ const InteractiveMapPage = () => {
                 position=""
                 visible={true}
                 minimized={getOverlayConfig('fleet-management').minimized}
-                draggable={false}
+                draggable={isDraggableMode}
                 onMinimize={() => toggleOverlay('fleet-management')}
                 isFleetMode={isFleetMode}
               />
@@ -271,7 +287,7 @@ const InteractiveMapPage = () => {
                 position=""
                 visible={true}
                 minimized={getOverlayConfig('market-insights').minimized}
-                draggable={false}
+                draggable={isDraggableMode}
                 onMinimize={() => toggleOverlay('market-insights')}
                 showHeatZones={false}
                 showProviders={showProviders}
@@ -293,7 +309,7 @@ const InteractiveMapPage = () => {
                 position=""
                 visible={true}
                 minimized={getOverlayConfig('location-analytics').minimized}
-                draggable={false}
+                draggable={isDraggableMode}
                 onMinimize={() => toggleOverlay('location-analytics')}
                 currentArea={currentArea}
                 marketDemand={marketDemand}
@@ -314,7 +330,7 @@ const InteractiveMapPage = () => {
                 position=""
                 visible={true}
                 minimized={getOverlayConfig('fleet-vehicles-view').minimized}
-                draggable={false}
+                draggable={isDraggableMode}
                 onMinimize={() => toggleOverlay('fleet-vehicles-view')}
                 fleetVehicles={fleetVehicles}
                 followFleet={followFleet}

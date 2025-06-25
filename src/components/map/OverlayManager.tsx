@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown, X, RotateCcw, Menu } from 'lucide-react';
+import { LayoutGrid, Eye, EyeOff, Truck, User, Settings, Crown, X, RotateCcw, Menu, Move, GripVertical } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { OverlayConfig } from '@/hooks/useOverlayManager';
 import MapThemeSelector from './MapThemeSelector';
@@ -13,11 +13,14 @@ interface OverlayManagerProps {
   onToggleOverlay: (overlayId: string) => void;
   onToggleAll: () => void;
   onResetLayout: () => void;
+  onResetPositions: () => void;
   allVisible: boolean;
   isFleetMode: boolean;
   onToggleFleetMode: (enabled: boolean) => void;
   isCustomizeMode: boolean;
   onToggleCustomizeMode: (enabled: boolean) => void;
+  isDraggableMode: boolean;
+  onToggleDraggableMode: (enabled: boolean) => void;
   isPremium: boolean;
 }
 
@@ -26,11 +29,14 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
   onToggleOverlay,
   onToggleAll,
   onResetLayout,
+  onResetPositions,
   allVisible,
   isFleetMode,
   onToggleFleetMode,
   isCustomizeMode,
   onToggleCustomizeMode,
+  isDraggableMode,
+  onToggleDraggableMode,
   isPremium
 }) => {
   const isMobile = useIsMobile();
@@ -43,10 +49,15 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
     onToggleCustomizeMode(!isCustomizeMode);
   };
 
+  const handleDraggableModeToggle = () => {
+    onToggleDraggableMode(!isDraggableMode);
+  };
+
   console.log('🎛️ OverlayManager render:', { 
     overlaysCount: overlays.length,
     isFleetMode,
     isCustomizeMode,
+    isDraggableMode,
     allVisible,
     isMobile,
     overlayStates: overlays.map(o => ({ id: o.id, visible: o.visible, minimized: o.minimized }))
@@ -98,6 +109,38 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
             <div className="space-y-3">
               <h3 className="font-medium text-gray-900">Map Theme</h3>
               <MapThemeSelector />
+            </div>
+
+            {/* Draggable Mode Toggle */}
+            <div className="space-y-3">
+              <h3 className="font-medium text-gray-900">Layout Options</h3>
+              <Button
+                variant={isDraggableMode ? "default" : "outline"}
+                size="lg"
+                onClick={handleDraggableModeToggle}
+                className={`w-full min-h-[44px] justify-start ${
+                  isDraggableMode 
+                    ? 'bg-green-600 hover:bg-green-700 text-white' 
+                    : 'bg-white hover:bg-gray-50'
+                }`}
+              >
+                <Move className="h-5 w-5 mr-3" />
+                <span className="text-base">
+                  {isDraggableMode ? 'Free Drag Mode' : 'Enable Dragging'}
+                </span>
+              </Button>
+              
+              {isDraggableMode && (
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={onResetPositions}
+                  className="w-full min-h-[44px] justify-start"
+                >
+                  <RotateCcw className="h-5 w-5 mr-3" />
+                  <span className="text-base">Reset Positions</span>
+                </Button>
+              )}
             </div>
 
             {/* Overlay Controls */}
@@ -192,7 +235,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
   const DesktopControls = () => (
     <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-50 hidden md:block">
       <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-gray-200 p-3">
-        <div className="flex items-center gap-3 min-w-[600px]">
+        <div className="flex items-center gap-3 min-w-[700px]">
           
           {/* Fleet/Individual Mode Toggle */}
           <Button
@@ -220,6 +263,35 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
 
           {/* Separator */}
           <div className="h-6 w-px bg-gray-300" />
+
+          {/* Draggable Mode Toggle */}
+          <Button
+            variant={isDraggableMode ? "default" : "outline"}
+            size="sm"
+            onClick={handleDraggableModeToggle}
+            className={`transition-all duration-200 min-w-[120px] ${
+              isDraggableMode 
+                ? 'bg-green-600 hover:bg-green-700 text-white' 
+                : 'bg-white hover:bg-gray-50'
+            }`}
+          >
+            <Move className="h-4 w-4 mr-2" />
+            {isDraggableMode ? 'Dragging' : 'Drag Mode'}
+          </Button>
+
+          {/* Reset Positions (only show when dragging is enabled) */}
+          {isDraggableMode && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onResetPositions}
+              className="bg-white hover:bg-gray-50 transition-all duration-200 min-w-[100px]"
+              title="Reset overlay positions to organized layout"
+            >
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Reset Pos
+            </Button>
+          )}
 
           {/* Customize Mode Toggle */}
           <Button
@@ -270,6 +342,19 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                 {overlays.length} overlays
               </Badge>
             </div>
+            
+            {/* Dragging Status Indicator */}
+            {isDraggableMode && (
+              <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                <div className="flex items-center gap-2 text-green-700">
+                  <GripVertical className="h-4 w-4" />
+                  <span className="text-sm font-medium">Drag Mode Active</span>
+                </div>
+                <p className="text-xs text-green-600 mt-1">
+                  Click and drag overlay headers to reposition them freely
+                </p>
+              </div>
+            )}
             
             <div className="space-y-2">
               {overlays.map((overlay) => (
@@ -349,6 +434,7 @@ const OverlayManager: React.FC<OverlayManagerProps> = ({
                   <li>• Mobile: Single column stack with touch controls</li>
                   <li>• Desktop: Left/Right organized layout with 20px padding</li>
                   <li>• Fleet mode shows Team Management instead of Emergency Jobs</li>
+                  <li>• {isDraggableMode ? 'Drag mode: Click headers to move overlays freely' : 'Organized mode: Fixed positioning system'}</li>
                 </ul>
               </div>
             </div>
