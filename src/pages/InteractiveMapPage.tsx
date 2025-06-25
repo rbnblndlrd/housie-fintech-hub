@@ -167,26 +167,6 @@ const InteractiveMapPage = () => {
     return shouldRender;
   };
 
-  // FIXED: Simplified positioning system with !important modifiers for visibility
-  const getOverlayPositionClasses = (overlayId: string): string => {
-    switch (overlayId) {
-      case 'emergency-jobs':
-        return '!fixed !top-20 !left-4 !z-40 md:!top-20 md:!left-5';
-      case 'market-insights':
-        return '!fixed !top-20 !right-4 !z-40 md:!top-20 md:!right-5';
-      case 'location-analytics':
-        return '!fixed !bottom-20 !right-4 !z-40 md:!bottom-20 md:!right-5';
-      case 'route-management':
-        return '!fixed !bottom-20 !left-4 !z-40 md:!bottom-20 md:!left-5';
-      case 'fleet-management':
-        return '!fixed !top-20 !left-4 !z-40 md:!top-20 md:!left-5';
-      case 'fleet-vehicles-view':
-        return '!fixed !bottom-20 !left-1/2 !transform !-translate-x-1/2 !z-40';
-      default:
-        return '!fixed !top-20 !right-4 !z-40 md:!top-20 md:!right-5';
-    }
-  };
-
   const getOverlayConfig = (overlayId: string) => {
     return overlays.find(o => o.id === overlayId) || overlays[0];
   };
@@ -225,11 +205,9 @@ const InteractiveMapPage = () => {
           isPremium={isPremium}
         />
 
-        {/* FIXED: Direct positioning with !important modifiers to ensure visibility */}
-        
-        {/* Emergency Jobs Overlay - Individual Mode Only */}
+        {/* DIRECT POSITIONING - Emergency Jobs Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
-          <div className={getOverlayPositionClasses('emergency-jobs')}>
+          <div className="fixed top-20 left-4 z-40 pointer-events-auto">
             <EmergencyJobsOverlay
               position=""
               visible={true}
@@ -244,9 +222,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Route Management Overlay - Individual Mode Only */}
+        {/* DIRECT POSITIONING - Route Management Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <div className={getOverlayPositionClasses('route-management')}>
+          <div className="fixed bottom-20 left-4 z-40 pointer-events-auto">
             <RouteManagementOverlay
               position=""
               visible={true}
@@ -261,9 +239,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Fleet Management Overlay - Fleet Mode Only */}
+        {/* DIRECT POSITIONING - Fleet Management Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <div className={getOverlayPositionClasses('fleet-management')}>
+          <div className="fixed top-20 left-4 z-40 pointer-events-auto">
             <FleetManagementOverlay
               position=""
               visible={true}
@@ -275,9 +253,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Market Insights Overlay - Always Visible */}
+        {/* DIRECT POSITIONING - Market Insights Overlay - Always Visible */}
         {shouldRenderOverlay('market-insights') && (
-          <div className={getOverlayPositionClasses('market-insights')}>
+          <div className="fixed top-20 right-4 z-40 pointer-events-auto">
             <MarketInsightsOverlay
               position=""
               visible={true}
@@ -295,9 +273,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Location Analytics Overlay - Individual Mode Only */}
+        {/* DIRECT POSITIONING - Location Analytics Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <div className={getOverlayPositionClasses('location-analytics')}>
+          <div className="fixed bottom-20 right-4 z-40 pointer-events-auto">
             <LocationAnalyticsOverlay
               position=""
               visible={true}
@@ -314,9 +292,9 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Fleet Vehicles View Overlay - Fleet Mode Only */}
+        {/* DIRECT POSITIONING - Fleet Vehicles View Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <div className={getOverlayPositionClasses('fleet-vehicles-view')}>
+          <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-auto">
             <FleetVehiclesViewOverlay
               position=""
               visible={true}
