@@ -1,4 +1,3 @@
-
 export interface NavigationItem {
   label: string;
   href: string;
@@ -19,7 +18,6 @@ export const visitorNav: NavigationItem[] = [
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Interactive Map", href: "/interactive-map", icon: "🗺️" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];
@@ -27,7 +25,6 @@ export const customerNav: NavigationItem[] = [
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Interactive Map", href: "/interactive-map", icon: "🗺️" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];

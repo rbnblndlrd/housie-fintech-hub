@@ -175,13 +175,13 @@ const UserMenu = () => {
 
         <DropdownMenuSeparator />
         
-        {/* Map */}
+        {/* Map - First item in dropdown */}
         <DropdownMenuItem
           onClick={() => navigate("/interactive-map")}
           className="cursor-pointer"
         >
           <span className="mr-2">🗺️</span>
-          <span className="flex-1">Map</span>
+          <span className="flex-1">Interactive Map</span>
         </DropdownMenuItem>
 
         {/* Dashboard */}
@@ -191,6 +191,15 @@ const UserMenu = () => {
         >
           <span className="mr-2">📊</span>
           <span className="flex-1">Dashboard</span>
+        </DropdownMenuItem>
+
+        {/* AI Assistant */}
+        <DropdownMenuItem
+          onClick={() => navigate("/notifications")}
+          className="cursor-pointer"
+        >
+          <span className="mr-2">🤖</span>
+          <span className="flex-1">AI Assistant</span>
         </DropdownMenuItem>
 
         {/* Profile Submenu */}
