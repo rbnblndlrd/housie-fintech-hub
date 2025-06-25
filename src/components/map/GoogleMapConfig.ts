@@ -8,6 +8,11 @@ export const mapContainerStyle = {
   minHeight: '300px'
 };
 
+// Google Maps Control Position constants
+const CONTROL_POSITIONS = {
+  RIGHT_TOP: 8
+} as const;
+
 // Base map options without styles - styles will be applied dynamically
 export const getMapOptions = (theme: string = 'standard') => {
   const themeConfig = mapThemes[theme as keyof typeof mapThemes] || mapThemes.standard;
@@ -34,9 +39,9 @@ export const getMapOptions = (theme: string = 'standard') => {
   };
 
   // Only add zoom control position if google.maps is available (runtime)
-  if (typeof window !== 'undefined' && window.google?.maps?.ControlPosition) {
+  if (typeof window !== 'undefined' && window.google?.maps) {
     options.zoomControlOptions = {
-      position: window.google.maps.ControlPosition.RIGHT_TOP
+      position: CONTROL_POSITIONS.RIGHT_TOP
     };
   }
 
@@ -146,3 +151,4 @@ validateApiKeyAtBuildTime();
 
 // Run wallet conflict prevention
 preventWalletConflicts();
+
