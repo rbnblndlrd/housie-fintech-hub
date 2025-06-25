@@ -19,7 +19,7 @@ const Header = () => {
 
   return (
     <header className="bg-gray-900 text-white shadow-lg">
-      <div className="container mx-auto px-4 py-3">
+      <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
           {/* Left side - Logo and Navigation */}
           <div className="flex items-center space-x-8">

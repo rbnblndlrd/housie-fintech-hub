@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -54,15 +53,19 @@ const Index = () => {
 
   return (
     <div className="min-h-screen relative" style={{ 
-      background: 'linear-gradient(135deg, #4a4a4a 0%, #6B8E23 50%, #5D2E5D 100%)',
+      backgroundImage: 'url("/lovable-uploads/18731525-55a1-47e9-9046-d2b6588766c1.png")',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
       backgroundAttachment: 'fixed'
     }}>
       <Header />
       
       {/* Hero Section with Enhanced Width Usage */}
-      <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden" style={{
-        background: 'linear-gradient(135deg, #4B0082 0%, #CC5500 50%, #1a1a1a 100%)'
-      }}>
+      <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden">
+        {/* Background overlay for text readability */}
+        <div className="absolute inset-0 bg-black/30"></div>
+        
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
@@ -88,10 +91,7 @@ const Index = () => {
                 {/* Enhanced Speech Bubble */}
                 <div className="absolute -top-16 lg:-top-20 -right-4 lg:-right-16 bg-cream/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-xs lg:max-w-sm">
                   <div className="text-lg lg:text-xl font-black text-black">
-                    Welcome to HOUSIE! 👋
-                  </div>
-                  <div className="text-sm lg:text-base text-gray-800 font-medium">
-                    Let's find you the perfect match!
+                    Find Local Experts! 🔍
                   </div>
                   <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-cream/95"></div>
                 </div>
@@ -103,9 +103,9 @@ const Index = () => {
               <div className="space-y-6">
                 <div className="space-y-4">
                   <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-cream leading-tight drop-shadow-2xl">
-                    Find Local<br />
+                    Connect with<br />
                     <span className="text-orange-300 drop-shadow-lg">
-                      Experts
+                      Professionals
                     </span>
                   </h1>
                   
@@ -164,6 +164,9 @@ const Index = () => {
 
       {/* User Type Selection Wizard - Full Width Usage */}
       <section className="py-16 lg:py-24 px-2 sm:px-4 relative">
+        {/* Background overlay for readability */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        
         <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
           <div className="text-center mb-16 lg:mb-20">
             {/* Mascot Speech Bubble for Section */}
@@ -233,6 +236,9 @@ const Index = () => {
       {/* Interactive Demo Section - Full Width */}
       {selectedOption && (
         <section id="demo-section" className="py-16 lg:py-24 px-2 sm:px-4 relative">
+          {/* Background overlay for readability */}
+          <div className="absolute inset-0 bg-black/20"></div>
+          
           <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
             <div className="text-center mb-16 lg:mb-20">
               <div className="inline-block bg-cream/95 backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 border-3 border-black shadow-2xl relative">
@@ -301,6 +307,9 @@ const Index = () => {
 
       {/* Enhanced Pricing Section - Full Width */}
       <div id="pricing-section" className="relative">
+        {/* Background overlay for readability */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        
         {/* Mascot pointing to best value */}
         <div className="absolute top-24 lg:top-32 left-8 lg:left-16 z-20 hidden lg:block">
           <div className="bg-cream/95 backdrop-blur-sm rounded-2xl px-6 lg:px-8 py-4 lg:py-6 border-3 border-black shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-300">
