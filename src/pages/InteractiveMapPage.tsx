@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from '@/components/Header';
@@ -7,6 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useOverlayManager } from '@/hooks/useOverlayManager';
 import { useFleetVehicles, FleetVehicle } from '@/hooks/useFleetVehicles';
 import { ChatBubble } from '@/components/chat/ChatBubble';
+import { preventWalletConflicts } from '@/components/map/GoogleMapConfig';
 
 // Overlay Components
 import OverlayManager from '@/components/map/OverlayManager';
@@ -21,6 +23,11 @@ const InteractiveMapPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRole();
   const { toast } = useToast();
+
+  // Prevent wallet conflicts on mount
+  useEffect(() => {
+    preventWalletConflicts();
+  }, []);
   
   // Fleet Vehicles Hook
   const {
@@ -190,7 +197,7 @@ const InteractiveMapPage = () => {
       
       {/* Fullscreen Map Container */}
       <div className="fixed inset-0 pt-16 pointer-events-none">
-        <div className="pointer-events-auto">
+        <div className="pointer-events-auto w-full h-full">
           <FleetMap 
             userRole={currentRole} 
             fleetVehicles={fleetVehicles}
@@ -204,11 +211,12 @@ const InteractiveMapPage = () => {
           />
         </div>
         
-        <div className="pointer-events-none">
+        {/* Overlay Manager Controls */}
+        <div className="pointer-events-none absolute inset-0">
           <OverlayManager
             overlays={overlays.map(overlay => ({
               ...overlay,
-              draggable: isDraggableMode // Use draggable mode state
+              draggable: isDraggableMode
             }))}
             onToggleOverlay={toggleOverlay}
             onToggleAll={toggleAllOverlays}
@@ -225,9 +233,12 @@ const InteractiveMapPage = () => {
           />
         </div>
 
-        {/* DIRECT POSITIONING - Emergency Jobs Overlay - Individual Mode Only */}
+        {/* FIXED POSITIONING - Emergency Jobs Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
-          <div className="fixed top-20 left-4 z-40 pointer-events-none">
+          <div 
+            className="absolute top-20 left-4 z-40 pointer-events-none"
+            style={{ position: 'fixed', top: '80px', left: '16px', zIndex: 40 }}
+          >
             <div className="pointer-events-auto">
               <EmergencyJobsOverlay
                 position=""
@@ -244,9 +255,12 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* DIRECT POSITIONING - Route Management Overlay - Individual Mode Only */}
+        {/* FIXED POSITIONING - Route Management Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <div className="fixed bottom-20 left-4 z-40 pointer-events-none">
+          <div 
+            className="absolute bottom-20 left-4 z-40 pointer-events-none"
+            style={{ position: 'fixed', bottom: '80px', left: '16px', zIndex: 40 }}
+          >
             <div className="pointer-events-auto">
               <RouteManagementOverlay
                 position=""
@@ -263,9 +277,12 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* DIRECT POSITIONING - Fleet Management Overlay - Fleet Mode Only */}
+        {/* FIXED POSITIONING - Fleet Management Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <div className="fixed top-20 left-4 z-40 pointer-events-none">
+          <div 
+            className="absolute top-20 left-4 z-40 pointer-events-none"
+            style={{ position: 'fixed', top: '80px', left: '16px', zIndex: 40 }}
+          >
             <div className="pointer-events-auto">
               <FleetManagementOverlay
                 position=""
@@ -279,9 +296,12 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* DIRECT POSITIONING - Market Insights Overlay - Always Visible */}
+        {/* FIXED POSITIONING - Market Insights Overlay - Always Visible */}
         {shouldRenderOverlay('market-insights') && (
-          <div className="fixed top-20 right-4 z-40 pointer-events-none">
+          <div 
+            className="absolute top-20 right-4 z-40 pointer-events-none"
+            style={{ position: 'fixed', top: '80px', right: '16px', zIndex: 40 }}
+          >
             <div className="pointer-events-auto">
               <MarketInsightsOverlay
                 position=""
@@ -301,9 +321,12 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* DIRECT POSITIONING - Location Analytics Overlay - Individual Mode Only */}
+        {/* FIXED POSITIONING - Location Analytics Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <div className="fixed bottom-20 right-4 z-40 pointer-events-none">
+          <div 
+            className="absolute bottom-20 right-4 z-40 pointer-events-none"
+            style={{ position: 'fixed', bottom: '80px', right: '16px', zIndex: 40 }}
+          >
             <div className="pointer-events-auto">
               <LocationAnalyticsOverlay
                 position=""
@@ -322,9 +345,12 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* DIRECT POSITIONING - Fleet Vehicles View Overlay - Fleet Mode Only */}
+        {/* FIXED POSITIONING - Fleet Vehicles View Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-none">
+          <div 
+            className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-none"
+            style={{ position: 'fixed', bottom: '80px', left: '50%', transform: 'translateX(-50%)', zIndex: 40 }}
+          >
             <div className="pointer-events-auto">
               <FleetVehiclesViewOverlay
                 position=""

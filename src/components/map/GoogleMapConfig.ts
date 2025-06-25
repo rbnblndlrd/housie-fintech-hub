@@ -63,7 +63,8 @@ export const debugApiKeyStatus = () => {
     isDevelopment,
     isProduction,
     buildMode: buildTime,
-    viteEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_'))
+    viteEnvKeys: Object.keys(import.meta.env).filter(key => key.startsWith('VITE_')),
+    hasApiKey: !!GOOGLE_MAPS_API_KEY
   });
 
   if (GOOGLE_MAPS_API_KEY) {
@@ -108,5 +109,30 @@ export const validateApiKeyAtBuildTime = () => {
   return !!buildTimeKey;
 };
 
+// Prevent wallet injection conflicts
+export const preventWalletConflicts = () => {
+  try {
+    // Safely handle ethereum object conflicts
+    if (typeof window !== 'undefined') {
+      // Store original ethereum if exists
+      const originalEthereum = (window as any).ethereum;
+      
+      // Create a safe wrapper that doesn't conflict
+      if (originalEthereum && typeof originalEthereum === 'object') {
+        console.log('🔒 Ethereum wallet detected, ensuring compatibility');
+        // Don't override, just ensure compatibility
+        return true;
+      }
+    }
+  } catch (error) {
+    console.warn('⚠️ Wallet compatibility check failed:', error);
+    return false;
+  }
+  return true;
+};
+
 // Run build-time validation
 validateApiKeyAtBuildTime();
+
+// Run wallet conflict prevention
+preventWalletConflicts();

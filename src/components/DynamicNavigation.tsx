@@ -32,18 +32,23 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
 
   if (isMobile) {
     return (
-      <div className={cn("flex flex-col space-y-2 pointer-events-auto", className)}>
+      <div className={cn("flex flex-col space-y-2", className)} style={{ pointerEvents: 'auto' }}>
         {items.map((item, index) => (
           <Link
             key={`mobile-nav-${index}-${item.href}`}
             to={item.href}
             className={cn(
-              "flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 cursor-pointer pointer-events-auto",
+              "flex items-center space-x-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200",
               "hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20",
               isActive(item.href) 
                 ? "bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 text-blue-700 dark:text-blue-300"
                 : "text-gray-900 dark:text-white"
             )}
+            style={{ 
+              pointerEvents: 'auto', 
+              cursor: 'pointer',
+              textDecoration: 'none'
+            }}
           >
             <span className="text-lg">{item.icon}</span>
             <span>{item.label}</span>
@@ -54,24 +59,30 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
   }
 
   return (
-    <nav className={cn("flex items-center justify-center pointer-events-auto", className)}>
-      <div className="flex items-center space-x-6 pointer-events-auto">
+    <nav className={cn("flex items-center justify-center", className)} style={{ pointerEvents: 'auto' }}>
+      <div className="flex items-center space-x-6" style={{ pointerEvents: 'auto' }}>
         {/* Show all navigation items except the first one (HOUSIE logo) for desktop navigation */}
         {items.slice(1).map((item, index) => (
           <Link
             key={`desktop-nav-${index}-${item.href}`}
             to={item.href}
             className={cn(
-              "px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 cursor-pointer pointer-events-auto relative z-50",
+              "px-4 py-2 rounded-xl text-sm font-medium transition-colors duration-200 relative z-50",
               "whitespace-nowrap min-w-[80px] text-center",
               "hover:text-white hover:bg-gray-800",
               isActive(item.href)
                 ? "text-white bg-gray-800"
                 : "text-gray-300"
             )}
+            style={{ 
+              pointerEvents: 'auto', 
+              cursor: 'pointer',
+              textDecoration: 'none',
+              display: 'inline-block'
+            }}
             onClick={(e) => {
               console.log('🔗 Navigation link clicked:', item.href);
-              // Let React Router handle the navigation
+              // Let React Router handle the navigation naturally
             }}
           >
             {item.label}
