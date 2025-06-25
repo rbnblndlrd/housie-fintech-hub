@@ -12,27 +12,24 @@ export interface NavigationItem {
 export const visitorNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Become a Provider", href: "/onboarding", icon: "💼" },
-  { label: "How It Works", href: "/about", icon: "❓" },
-  { label: "Sign In", href: "/auth", icon: "🔐" }
+  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
+  { label: "Help Center", href: "/help", icon: "❓" }
 ];
 
 export const customerNav: NavigationItem[] = [
-  { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
-  { label: "Dashboard", href: "/customer-dashboard", icon: "📊" },
+  { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Interactive Map", href: "/interactive-map", icon: "🗺️" },
-  { label: "My Bookings", href: "/customer-bookings", icon: "📅" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" }
+  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
+  { label: "Help Center", href: "/help", icon: "❓" }
 ];
 
 export const providerNav: NavigationItem[] = [
-  { label: "HOUSIE", href: "/dashboard", icon: "🏠" },
-  { label: "Dashboard", href: "/provider-dashboard", icon: "📊" },
-  { label: "Find Work", href: "/interactive-map", icon: "🗺️" },
+  { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "AI Assistant", href: "/notifications", icon: "🤖" },
-  { label: "Profile", href: "/provider-profile", icon: "👤" }
+  { label: "Interactive Map", href: "/interactive-map", icon: "🗺️" },
+  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
+  { label: "Help Center", href: "/help", icon: "❓" }
 ];
 
 export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provider'): NavigationItem[] => {
@@ -59,6 +56,7 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   return [
     { label: "Map", href: "/interactive-map", icon: "🗺️" },
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
+    { label: "AI Assistant", href: "/notifications", icon: "🤖" },
     { separator: true, label: "", href: "", icon: "" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
   ];

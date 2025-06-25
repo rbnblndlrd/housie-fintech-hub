@@ -48,6 +48,7 @@ import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
 import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
+import Help from "@/pages/Help";
 
 const queryClient = new QueryClient();
 
@@ -77,6 +78,7 @@ const App = () => {
                           <Route path="/auth" element={<Auth />} />
                           <Route path="/welcome" element={<Welcome />} />
                           <Route path="/services" element={<Services />} />
+                          <Route path="/help" element={<Help />} />
                           <Route path="/provider/:id" element={<PublicProviderProfile />} />
                           
                           {/* Customer-specific routes */}

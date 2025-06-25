@@ -51,6 +51,7 @@ const DynamicNavigation: React.FC<DynamicNavigationProps> = ({
   return (
     <div className={cn("flex items-center justify-center", className)}>
       <div className="flex items-center space-x-6">
+        {/* Skip the first item (HOUSIE logo) for desktop navigation, show the rest */}
         {items.slice(1).map((item, index) => (
           <Link
             key={index}
