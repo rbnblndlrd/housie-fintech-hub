@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -370,10 +369,10 @@ const InteractiveMapPage = () => {
           </div>
         )}
 
-        {/* Chat Bubble - REPOSITIONED NEXT TO ZOOM CONTROLS */}
-        <div className="fixed bottom-24 right-6 z-50 pointer-events-none">
+        {/* Chat Bubble - REPOSITIONED TO LEFT OF ZOOM CONTROLS */}
+        <div className="fixed bottom-24 right-16 z-50 pointer-events-none">
           <div className="pointer-events-auto">
-            <ChatBubble />
+            <ChatBubble defaultTab="voice" showMicIcon={true} />
           </div>
         </div>
       </div>
