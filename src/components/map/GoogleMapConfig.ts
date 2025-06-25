@@ -12,7 +12,8 @@ export const mapContainerStyle = {
 export const getMapOptions = (theme: string = 'standard') => {
   const themeConfig = mapThemes[theme as keyof typeof mapThemes] || mapThemes.standard;
   
-  return {
+  // Create options object with conditional zoom control positioning
+  const options: any = {
     styles: themeConfig.styles,
     restriction: {
       latLngBounds: {
@@ -25,15 +26,21 @@ export const getMapOptions = (theme: string = 'standard') => {
     },
     disableDefaultUI: false,
     zoomControl: true,
-    zoomControlOptions: {
-      position: google.maps.ControlPosition.RIGHT_TOP
-    },
     mapTypeControl: false,
     scaleControl: false,
     streetViewControl: false,
     rotateControl: false,
     fullscreenControl: false
   };
+
+  // Only add zoom control position if google.maps is available (runtime)
+  if (typeof window !== 'undefined' && window.google?.maps?.ControlPosition) {
+    options.zoomControlOptions = {
+      position: window.google.maps.ControlPosition.RIGHT_TOP
+    };
+  }
+
+  return options;
 };
 
 // Backward compatibility

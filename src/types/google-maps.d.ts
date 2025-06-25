@@ -28,10 +28,44 @@ declare namespace google.maps {
     constructor(width: number, height: number, widthUnit?: string, heightUnit?: string);
   }
 
+  enum ControlPosition {
+    BOTTOM_CENTER = 0,
+    BOTTOM_LEFT = 1,
+    BOTTOM_RIGHT = 2,
+    LEFT_BOTTOM = 3,
+    LEFT_CENTER = 4,
+    LEFT_TOP = 5,
+    RIGHT_BOTTOM = 6,
+    RIGHT_CENTER = 7,
+    RIGHT_TOP = 8,
+    TOP_CENTER = 9,
+    TOP_LEFT = 10,
+    TOP_RIGHT = 11
+  }
+
   interface MapOptions {
     center?: google.maps.LatLng | google.maps.LatLngLiteral;
     zoom?: number;
     styles?: google.maps.MapTypeStyle[];
+    zoomControl?: boolean;
+    zoomControlOptions?: {
+      position?: google.maps.ControlPosition;
+    };
+    mapTypeControl?: boolean;
+    scaleControl?: boolean;
+    streetViewControl?: boolean;
+    rotateControl?: boolean;
+    fullscreenControl?: boolean;
+    disableDefaultUI?: boolean;
+    restriction?: {
+      latLngBounds: {
+        north: number;
+        south: number;
+        east: number;
+        west: number;
+      };
+      strictBounds: boolean;
+    };
   }
 
   interface MarkerOptions {
