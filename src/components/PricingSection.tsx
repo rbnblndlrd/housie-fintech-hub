@@ -83,10 +83,10 @@ export const PricingSection = () => {
   ];
 
   return (
-    <section className="py-20 px-4 bg-gradient-to-br from-gray-50 to-white">
+    <section className="py-20 px-4 relative">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block bg-white rounded-xl px-8 py-6 border-2 border-black shadow-lg mb-6">
+          <div className="inline-block bg-white/95 backdrop-blur-sm rounded-xl px-8 py-6 border-2 border-black shadow-lg mb-6">
             <Badge className="bg-orange-500 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl">
               💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
             </Badge>

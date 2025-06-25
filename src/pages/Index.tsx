@@ -53,18 +53,18 @@ const Index = () => {
   const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <div className="min-h-screen" style={{ 
+    <div className="min-h-screen relative" style={{ 
       backgroundImage: `url('/lovable-uploads/a98e4703-b9ee-42e9-b838-dfa246ee2aa8.png')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'scroll'
     }}>
       <Header />
       
       {/* Hero Section with Sunset Gradient */}
       <section className="pt-20 pb-20 px-4 relative overflow-hidden" style={{
-        background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 25%, #ff6b9d 50%, #c44569 75%, #6c5ce7 100%)',
-        backgroundAttachment: 'fixed'
+        background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8e53 25%, #ff6b9d 50%, #c44569 75%, #6c5ce7 100%)'
       }}>
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
@@ -167,14 +167,6 @@ const Index = () => {
 
       {/* User Type Selection Wizard */}
       <section className="py-24 px-4 relative">
-        {/* Section Background Pattern */}
-        <div className="absolute inset-0 opacity-3">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(45deg, rgba(0,0,0,0.02) 25%, transparent 25%), linear-gradient(-45deg, rgba(0,0,0,0.02) 25%, transparent 25%)`,
-            backgroundSize: '20px 20px'
-          }}></div>
-        </div>
-
         <div className="max-w-7xl mx-auto relative">
           <div className="text-center mb-20">
             {/* Mascot Speech Bubble for Section */}
@@ -247,12 +239,6 @@ const Index = () => {
       {/* Interactive Demo Section */}
       {selectedOption && (
         <section id="demo-section" className="py-24 px-4 relative">
-          {/* Background decoration */}
-          <div className="absolute inset-0 opacity-5">
-            <div className="absolute top-20 left-10 w-32 h-32 bg-orange-200 rounded-full blur-3xl"></div>
-            <div className="absolute bottom-20 right-10 w-40 h-40 bg-purple-200 rounded-full blur-3xl"></div>
-          </div>
-
           <div className="max-w-7xl mx-auto relative">
             <div className="text-center mb-20">
               <div className="inline-block bg-white/95 backdrop-blur-sm rounded-3xl px-10 py-8 border-2 border-black shadow-2xl relative">
