@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -11,6 +12,7 @@ import { preventWalletConflicts } from '@/components/map/GoogleMapConfig';
 
 // Overlay Components
 import OverlayManager from '@/components/map/OverlayManager';
+import OverlayWrapper from '@/components/map/overlays/OverlayWrapper';
 import EmergencyJobsOverlay from '@/components/map/overlays/EmergencyJobsOverlay';
 import MarketInsightsOverlay from '@/components/map/overlays/MarketInsightsOverlay';
 import LocationAnalyticsOverlay from '@/components/map/overlays/LocationAnalyticsOverlay';
@@ -99,15 +101,6 @@ const InteractiveMapPage = () => {
       status: 'completed' as const
     }
   ];
-
-  console.log('🗺️ InteractiveMapPage render:', { 
-    user: !!user, 
-    currentRole, 
-    isFleetMode, 
-    isDraggableMode,
-    overlaysCount: overlays.length,
-    overlayStates: overlays.map(o => ({ id: o.id, visible: o.visible, minimized: o.minimized }))
-  });
 
   const handleFleetModeToggle = (enabled: boolean) => {
     if (!isPremium && enabled) {
@@ -210,7 +203,7 @@ const InteractiveMapPage = () => {
           />
         </div>
         
-        {/* Overlay Manager Controls - LOWERED TO TOP-20 */}
+        {/* Overlay Manager Controls */}
         <div className="pointer-events-none absolute inset-0" style={{ zIndex: 60 }}>
           <div className="pointer-events-auto">
             <OverlayManager
@@ -234,142 +227,136 @@ const InteractiveMapPage = () => {
           </div>
         </div>
 
-        {/* FIXED POSITIONING - Emergency Jobs Overlay - Individual Mode Only */}
+        {/* Emergency Jobs Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
-          <div 
-            className="absolute top-20 left-4 z-40 pointer-events-none"
-            style={{ position: 'fixed', top: '80px', left: '16px', zIndex: 40 }}
+          <OverlayWrapper
+            position="top-20 left-4"
+            draggable={isDraggableMode}
+            className="z-40"
           >
-            <div className="pointer-events-auto">
-              <EmergencyJobsOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('emergency-jobs').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('emergency-jobs')}
-                onToggleAudio={() => setAudioEnabled(!audioEnabled)}
-                audioEnabled={audioEnabled}
-                emergencyCount={emergencyCount}
-                isFleetMode={isFleetMode}
-              />
-            </div>
-          </div>
+            <EmergencyJobsOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('emergency-jobs').minimized}
+              draggable={isDraggableMode}
+              onMinimize={() => toggleOverlay('emergency-jobs')}
+              onToggleAudio={() => setAudioEnabled(!audioEnabled)}
+              audioEnabled={audioEnabled}
+              emergencyCount={emergencyCount}
+              isFleetMode={isFleetMode}
+            />
+          </OverlayWrapper>
         )}
 
-        {/* FIXED POSITIONING - Location Analytics Overlay - MOVED UNDER Emergency Jobs */}
+        {/* Location Analytics Overlay */}
         {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <div 
-            className="absolute top-96 left-4 z-40 pointer-events-none"
-            style={{ position: 'fixed', top: '384px', left: '16px', zIndex: 40 }}
+          <OverlayWrapper
+            position="top-96 left-4"
+            draggable={isDraggableMode}
+            className="z-40"
           >
-            <div className="pointer-events-auto">
-              <LocationAnalyticsOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('location-analytics').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('location-analytics')}
-                currentArea={currentArea}
-                marketDemand={marketDemand}
-                avgRate={avgRate}
-                competition={competition}
-                opportunityLevel={opportunityLevel}
-                isFleetMode={isFleetMode}
-              />
-            </div>
-          </div>
+            <LocationAnalyticsOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('location-analytics').minimized}
+              draggable={isDraggableMode}
+              onMinimize={() => toggleOverlay('location-analytics')}
+              currentArea={currentArea}
+              marketDemand={marketDemand}
+              avgRate={avgRate}
+              competition={competition}
+              opportunityLevel={opportunityLevel}
+              isFleetMode={isFleetMode}
+            />
+          </OverlayWrapper>
         )}
 
-        {/* FIXED POSITIONING - Route Management Overlay - Individual Mode Only */}
+        {/* Route Management Overlay - Individual Mode Only */}
         {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <div 
-            className="absolute bottom-20 left-80 z-40 pointer-events-none"
-            style={{ position: 'fixed', bottom: '80px', left: '320px', zIndex: 40 }}
+          <OverlayWrapper
+            position="bottom-20 left-80"
+            draggable={isDraggableMode}
+            className="z-40"
           >
-            <div className="pointer-events-auto">
-              <RouteManagementOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('route-management').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('route-management')}
-                jobs={sampleJobs}
-                totalTravelTime={totalTravelTime}
-                nextJobCountdown={nextJobCountdown}
-                isFleetMode={isFleetMode}
-              />
-            </div>
-          </div>
+            <RouteManagementOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('route-management').minimized}
+              draggable={isDraggableMode}
+              onMinimize={() => toggleOverlay('route-management')}
+              jobs={sampleJobs}
+              totalTravelTime={totalTravelTime}
+              nextJobCountdown={nextJobCountdown}
+              isFleetMode={isFleetMode}
+            />
+          </OverlayWrapper>
         )}
 
-        {/* FIXED POSITIONING - Fleet Management Overlay - Fleet Mode Only */}
+        {/* Fleet Management Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <div 
-            className="absolute top-20 left-4 z-40 pointer-events-none"
-            style={{ position: 'fixed', top: '80px', left: '16px', zIndex: 40 }}
+          <OverlayWrapper
+            position="top-20 left-4"
+            draggable={isDraggableMode}
+            className="z-40"
           >
-            <div className="pointer-events-auto">
-              <FleetManagementOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('fleet-management').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('fleet-management')}
-                isFleetMode={isFleetMode}
-              />
-            </div>
-          </div>
+            <FleetManagementOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('fleet-management').minimized}
+              draggable={isDraggableMode}
+              onMinimize={() => toggleOverlay('fleet-management')}
+              isFleetMode={isFleetMode}
+            />
+          </OverlayWrapper>
         )}
 
-        {/* FIXED POSITIONING - Market Insights Overlay - Always Visible */}
+        {/* Market Insights Overlay - Always Visible */}
         {shouldRenderOverlay('market-insights') && (
-          <div 
-            className="absolute top-20 right-4 z-40 pointer-events-none"
-            style={{ position: 'fixed', top: '80px', right: '16px', zIndex: 40 }}
+          <OverlayWrapper
+            position="top-20 right-4"
+            draggable={isDraggableMode}
+            className="z-40"
           >
-            <div className="pointer-events-auto">
-              <MarketInsightsOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('market-insights').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('market-insights')}
-                showHeatZones={false}
-                showProviders={showProviders}
-                showTrafficAreas={showTrafficAreas}
-                onToggleHeatZones={() => {}}
-                onToggleProviders={setShowProviders}
-                onToggleTrafficAreas={setShowTrafficAreas}
-                isFleetMode={isFleetMode}
-              />
-            </div>
-          </div>
+            <MarketInsightsOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('market-insights').minimized}
+              draggable={isDraggableMode}
+              onMinimize={() => toggleOverlay('market-insights')}
+              showHeatZones={false}
+              showProviders={showProviders}
+              showTrafficAreas={showTrafficAreas}
+              onToggleHeatZones={() => {}}
+              onToggleProviders={setShowProviders}
+              onToggleTrafficAreas={setShowTrafficAreas}
+              isFleetMode={isFleetMode}
+            />
+          </OverlayWrapper>
         )}
 
-        {/* FIXED POSITIONING - Fleet Vehicles View Overlay - Fleet Mode Only */}
+        {/* Fleet Vehicles View Overlay - Fleet Mode Only */}
         {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <div 
-            className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-40 pointer-events-none"
-            style={{ position: 'fixed', bottom: '80px', left: '50%', transform: 'translateX(-50%)', zIndex: 40 }}
+          <OverlayWrapper
+            position="bottom-20 left-1/2 -translate-x-1/2"
+            draggable={isDraggableMode}
+            className="z-40"
           >
-            <div className="pointer-events-auto">
-              <FleetVehiclesViewOverlay
-                position=""
-                visible={true}
-                minimized={getOverlayConfig('fleet-vehicles-view').minimized}
-                draggable={isDraggableMode}
-                onMinimize={() => toggleOverlay('fleet-vehicles-view')}
-                fleetVehicles={fleetVehicles}
-                followFleet={followFleet}
-                onToggleFollowFleet={handleToggleFollowFleet}
-                onCenterOnFleet={handleCenterOnFleet}
-                onFocusVehicle={handleFocusVehicle}
-              />
-            </div>
-          </div>
+            <FleetVehiclesViewOverlay
+              position=""
+              visible={true}
+              minimized={getOverlayConfig('fleet-vehicles-view').minimized}
+              draggable={isDraggableMode}
+              onMinimize={() => toggleOverlay('fleet-vehicles-view')}
+              fleetVehicles={fleetVehicles}
+              followFleet={followFleet}
+              onToggleFollowFleet={handleToggleFollowFleet}
+              onCenterOnFleet={handleCenterOnFleet}
+              onFocusVehicle={handleFocusVehicle}
+            />
+          </OverlayWrapper>
         )}
 
-        {/* Chat Bubble - MOVED TO LEFT SIDE */}
+        {/* Chat Bubble */}
         <div className="fixed bottom-6 left-6 z-50 pointer-events-none">
           <div className="pointer-events-auto">
             <ChatBubble defaultTab="voice" showMicIcon={true} />

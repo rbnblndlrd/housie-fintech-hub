@@ -1,89 +1,77 @@
 
-/* Overlay Dragging Styles */
-.overlay-dragging {
-  transition: none !important;
-  z-index: 9999 !important;
-  opacity: 0.9;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  cursor: grabbing !important;
-  pointer-events: auto !important;
-}
-
-/* Prevent selection during drag */
-.drag-in-progress {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-}
-
-.drag-in-progress * {
-  user-select: none !important;
-  -webkit-user-select: none !important;
-  -moz-user-select: none !important;
-  -ms-user-select: none !important;
-}
-
-/* Fix overlay wrapper positioning - NO HOVER MOVEMENT */
+/* Overlay wrapper styles */
 .overlay-wrapper {
-  pointer-events: auto;
-  /* Remove any transform or movement on hover */
+  transition: all 0.2s ease-in-out;
 }
 
-/* Remove hover movement that causes dodging */
-.overlay-wrapper:hover {
-  /* NO transform or movement - keep overlay stable */
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+.overlay-wrapper.overlay-dragging {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  z-index: 9999 !important;
 }
 
-/* Draggable cursor states - only on grip areas */
-.draggable-overlay [data-grip="true"] {
+.overlay-wrapper.overlay-draggable:hover {
+  transform: translateY(-1px);
+}
+
+/* Drag handle styles */
+.drag-handle,
+[data-grip="true"],
+[data-draggable-header="true"] {
   cursor: grab;
+  user-select: none;
 }
 
-.draggable-overlay [data-grip="true"]:active {
-  cursor: grabbing;
+.drag-handle:active,
+[data-grip="true"]:active,
+[data-draggable-header="true"]:active,
+.overlay-dragging .drag-handle,
+.overlay-dragging [data-grip="true"],
+.overlay-dragging [data-draggable-header="true"] {
+  cursor: grabbing !important;
 }
 
-.draggable-overlay [data-draggable-header="true"] {
-  cursor: grab;
+/* Body styles during drag */
+body.drag-in-progress {
+  user-select: none !important;
+  cursor: grabbing !important;
 }
 
-.draggable-overlay [data-draggable-header="true"]:active {
-  cursor: grabbing;
+body.drag-in-progress * {
+  cursor: grabbing !important;
 }
 
-/* Ensure proper pointer events on overlay content */
-.overlay-wrapper > div {
-  pointer-events: auto;
-}
-
-/* During drag, only the wrapper should handle mouse events */
-.overlay-dragging {
-  pointer-events: auto;
+/* Prevent text selection during drag */
+.overlay-dragging,
+.overlay-dragging * {
+  user-select: none !important;
+  pointer-events: none;
 }
 
 .overlay-dragging > div {
-  pointer-events: none;
+  pointer-events: auto;
 }
 
-.overlay-dragging button,
-.overlay-dragging input,
-.overlay-dragging [role="button"] {
-  pointer-events: none;
+/* Enhanced visual feedback */
+.overlay-wrapper:not(.overlay-dragging).overlay-draggable {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Stable z-index hierarchy */
+.overlay-wrapper:not(.overlay-dragging).overlay-draggable:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Ensure proper z-index stacking */
 .overlay-wrapper {
   z-index: 40;
 }
 
-.overlay-dragging {
-  z-index: 9999;
+.overlay-wrapper.overlay-dragging {
+  z-index: 9999 !important;
 }
 
-/* Prevent any unwanted transforms or movements */
-.overlay-wrapper,
+/* Smooth transitions for theme changes */
 .overlay-wrapper > div {
-  transform-origin: top left;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
