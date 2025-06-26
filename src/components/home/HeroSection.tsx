@@ -19,9 +19,34 @@ const HeroSection = () => {
               <div className="relative transform hover:scale-105 transition-all duration-300">
                 <PopArtMascot className="w-56 h-56 lg:w-72 lg:h-72 xl:w-80 xl:h-80" />
                 
-                {/* Animated rings around mascot */}
-                <div className="absolute inset-0 rounded-full border-4 border-cream/30 animate-pulse opacity-50"></div>
-                <div className="absolute inset-4 rounded-full border-2 border-cream/20 animate-pulse opacity-30" style={{ animationDelay: '1s' }}></div>
+                {/* Dynamic animated decorative elements */}
+                <div className="absolute inset-0 -z-10">
+                  {/* Floating geometric shapes */}
+                  <div className="absolute -top-8 -left-8 w-16 h-16 bg-gradient-to-br from-orange-400/30 to-purple-400/30 rounded-full animate-pulse"></div>
+                  <div className="absolute -top-12 -right-12 w-20 h-20 bg-gradient-to-br from-blue-400/30 to-green-400/30 transform rotate-45 animate-pulse" style={{ animationDelay: '1s' }}></div>
+                  <div className="absolute -bottom-10 -left-10 w-12 h-12 bg-gradient-to-br from-purple-400/30 to-pink-400/30 rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+                  <div className="absolute -bottom-8 -right-8 w-14 h-14 bg-gradient-to-br from-yellow-400/30 to-orange-400/30 transform rotate-12 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                  
+                  {/* Orbiting elements */}
+                  <div className="absolute inset-0 animate-spin" style={{ animationDuration: '20s' }}>
+                    <div className="w-4 h-4 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full absolute -top-20 left-1/2 transform -translate-x-1/2"></div>
+                  </div>
+                  <div className="absolute inset-0 animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}>
+                    <div className="w-3 h-3 bg-gradient-to-br from-orange-500 to-red-500 rounded-full absolute -bottom-20 left-1/2 transform -translate-x-1/2"></div>
+                  </div>
+                  <div className="absolute inset-0 animate-spin" style={{ animationDuration: '25s' }}>
+                    <div className="w-2 h-2 bg-gradient-to-br from-green-500 to-teal-500 rounded-full absolute top-1/2 -left-20 transform -translate-y-1/2"></div>
+                  </div>
+                  <div className="absolute inset-0 animate-spin" style={{ animationDuration: '18s', animationDirection: 'reverse' }}>
+                    <div className="w-3 h-3 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full absolute top-1/2 -right-20 transform -translate-y-1/2"></div>
+                  </div>
+                  
+                  {/* Animated background texture */}
+                  <div className="absolute inset-0 -z-20 opacity-20">
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-transparent via-cream/10 to-transparent animate-pulse"></div>
+                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tl from-transparent via-orange-300/10 to-transparent animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+                  </div>
+                </div>
               </div>
 
               {/* Enhanced Speech Bubble */}
@@ -88,7 +113,7 @@ const HeroSection = () => {
                 </div>
               </div>
 
-              <Link to="/services">
+              <Link to="/competitive-advantage">
                 <Button className="font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black text-black" style={{ backgroundColor: '#f5d478' }}>
                   Take the Tour
                   <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
