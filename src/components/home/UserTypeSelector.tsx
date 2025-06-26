@@ -67,7 +67,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
         <div className="text-center mb-16 lg:mb-20">
           {/* Mascot Speech Bubble for Section */}
           <div className="inline-block relative">
-            <div className="bg-cream backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 border-3 border-black shadow-2xl relative transform hover:scale-105 transition-transform duration-300">
+            <div className="bg-orange-50 backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 border-3 border-black shadow-2xl relative transform hover:scale-105 transition-transform duration-300">
               <div className="absolute -top-6 lg:-top-8 left-1/2 transform -translate-x-1/2">
                 <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-600 to-purple-600 rounded-full flex items-center justify-center text-cream text-xl lg:text-2xl font-black border-2 border-black shadow-lg">
                   {selectedOption ? (
@@ -77,7 +77,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
                       {selectedOption.id === 'customer' && <Search className="h-6 w-6 lg:h-8 lg:w-8" />}
                     </div>
                   ) : (
-                    ?
+                    "?"
                   )}
                 </div>
               </div>
@@ -88,7 +88,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
                 Choose your path to get started with HOUSIE
               </p>
               {/* Pointing arrow - changed to orange */}
-              <div className="absolute -bottom-8 lg:-bottom-12 left-1/2 transform -translate-x-1/2 text-4xl lg:text-5xl animate-bounce" style={{ filter: 'hue-rotate(180deg) saturate(1.5)' }}>
+              <div className="absolute -bottom-8 lg:-bottom-12 left-1/2 transform -translate-x-1/2 text-4xl lg:text-5xl animate-bounce text-orange-400">
                 👇
               </div>
             </div>
@@ -99,13 +99,13 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
           {userTypeOptions.map((option) => (
             <Card 
               key={option.id}
-              className={`bg-cream border-3 border-black cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-3 backdrop-blur-sm rounded-2xl p-6 lg:p-8 relative overflow-hidden ${
+              className={`bg-orange-50 border-3 border-black cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-3 backdrop-blur-sm rounded-2xl p-6 lg:p-8 relative overflow-hidden ${
                 selectedUserType === option.id ? 'ring-4 ring-orange-600 shadow-2xl scale-105' : 'hover:scale-105'
               }`}
               onClick={() => handleUserTypeSelect(option.id)}
             >
               <CardHeader className="text-center pb-6 relative z-10">
-                <div className="mx-auto mb-6 lg:mb-8 p-4 lg:p-6 bg-cream border-2 border-black rounded-3xl w-fit shadow-lg">
+                <div className="mx-auto mb-6 lg:mb-8 p-4 lg:p-6 bg-orange-50 border-2 border-black rounded-3xl w-fit shadow-lg">
                   {option.icon}
                 </div>
                 <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-black text-black mb-4">
