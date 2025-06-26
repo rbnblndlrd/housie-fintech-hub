@@ -3,358 +3,176 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import Header from '@/components/Header';
-import FleetMap from '@/components/FleetMap';
 import { useToast } from '@/hooks/use-toast';
-import { useOverlayManager } from '@/hooks/useOverlayManager';
-import { useFleetVehicles, FleetVehicle } from '@/hooks/useFleetVehicles';
 import { ChatBubble } from '@/components/chat/ChatBubble';
 import { preventWalletConflicts } from '@/components/map/GoogleMapConfig';
+import { UnifiedGoogleMap } from '@/components/UnifiedGoogleMap';
+import { useMapTheme } from '@/hooks/useMapTheme';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Settings, Move } from 'lucide-react';
+import MapThemeSelector from '@/components/map/MapThemeSelector';
 
-// Overlay Components
-import OverlayManager from '@/components/map/OverlayManager';
-import OverlayWrapper from '@/components/map/overlays/OverlayWrapper';
-import EmergencyJobsOverlay from '@/components/map/overlays/EmergencyJobsOverlay';
-import MarketInsightsOverlay from '@/components/map/overlays/MarketInsightsOverlay';
-import LocationAnalyticsOverlay from '@/components/map/overlays/LocationAnalyticsOverlay';
-import RouteManagementOverlay from '@/components/map/overlays/RouteManagementOverlay';
-import FleetManagementOverlay from '@/components/map/overlays/FleetManagementOverlay';
-import FleetVehiclesViewOverlay from '@/components/map/overlays/FleetVehiclesViewOverlay';
+type UserMode = 'customer' | 'provider' | 'fleet-manager';
 
 const InteractiveMapPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRole();
   const { toast } = useToast();
+  const { currentThemeConfig } = useMapTheme();
 
   // Prevent wallet conflicts on mount
   useEffect(() => {
     preventWalletConflicts();
   }, []);
-  
-  // Fleet Vehicles Hook
-  const {
-    fleetVehicles,
-    followFleet,
-    setFollowFleet,
-    calculateFleetBounds,
-    getFleetCenter
-  } = useFleetVehicles();
 
-  // Overlay Management
-  const {
-    overlays,
-    allOverlays,
-    isFleetMode,
-    isCustomizeMode,
-    isDraggableMode,
-    isPremium,
-    allOverlaysVisible,
-    setIsFleetMode,
-    setIsCustomizeMode,
-    setIsDraggableMode,
-    toggleOverlay,
-    toggleAllOverlays,
-    saveLayout,
-    resetLayout,
-    resetPositions
-  } = useOverlayManager();
+  // Clean state management
+  const [userMode, setUserMode] = useState<UserMode>('customer');
+  const [isDragging, setIsDragging] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
-  // Map state
-  const [showProviders, setShowProviders] = useState(true);
-  const [showTrafficAreas, setShowTrafficAreas] = useState(false);
-  const [audioEnabled, setAudioEnabled] = useState(true);
-  const [selectedVehicle, setSelectedVehicle] = useState<FleetVehicle | null>(null);
-  const [showFleetBounds, setShowFleetBounds] = useState(false);
+  // Quebec/Montreal center coordinates
+  const quebecCenter = { lat: 45.5017, lng: -73.5673 };
 
-  // Sample data
-  const emergencyCount = isFleetMode ? 8 : 4;
-  const currentArea = "Plateau-Mont-Royal";
-  const marketDemand = "High";
-  const avgRate = isFleetMode ? 52 : 45;
-  const competition = "Medium";
-  const opportunityLevel = "High";
-  const totalTravelTime = "2h 15m";
-  const nextJobCountdown = "45 min";
-
-  const sampleJobs = [
-    {
-      id: '1',
-      title: 'Apartment Cleaning',
-      location: 'Downtown',
-      time: '10:00 AM',
-      duration: '2h',
-      status: 'pending' as const
-    },
-    {
-      id: '2',
-      title: 'Handyman Repair',
-      location: 'Plateau',
-      time: '1:00 PM', 
-      duration: '3h',
-      status: 'pending' as const
-    },
-    {
-      id: '3',
-      title: 'Garden Maintenance',
-      location: 'Westmount',
-      time: '4:00 PM',
-      duration: '1.5h',
-      status: 'completed' as const
-    }
-  ];
-
-  const handleFleetModeToggle = (enabled: boolean) => {
-    if (!isPremium && enabled) {
-      toast({
-        title: "Premium Feature",
-        description: "Fleet Management requires a premium subscription",
-        variant: "destructive"
-      });
-      return;
-    }
-    
-    setIsFleetMode(enabled);
-    if (enabled) {
-      setShowFleetBounds(true);
-    }
+  const handleUserModeChange = (mode: UserMode) => {
+    setUserMode(mode);
     toast({
-      title: enabled ? "Fleet Manager Mode" : "Individual Provider Mode",
-      description: enabled 
-        ? "Now showing fleet management tools and multi-vehicle view"
-        : "Switched to individual provider interface"
+      title: "Mode Changed",
+      description: `Switched to ${mode.replace('-', ' ')} mode`,
     });
   };
 
-  const handleToggleDraggableMode = (enabled: boolean) => {
-    setIsDraggableMode(enabled);
+  const handleSettingsToggle = () => {
+    setShowSettings(!showSettings);
+  };
+
+  const handleDraggingToggle = () => {
+    setIsDragging(!isDragging);
     toast({
-      title: enabled ? "Drag Mode Enabled" : "Drag Mode Disabled",
-      description: enabled 
-        ? "You can now drag overlays freely around the screen"
-        : "Overlays returned to organized layout positions"
+      title: isDragging ? "Dragging Disabled" : "Dragging Enabled",
+      description: isDragging 
+        ? "Map interactions restored to normal"
+        : "You can now drag map elements"
     });
-  };
-
-  const handleToggleFollowFleet = (enabled: boolean) => {
-    setFollowFleet(enabled);
-    if (enabled) {
-      handleCenterOnFleet();
-    }
-    toast({
-      title: enabled ? "Fleet Auto-Tracking On" : "Fleet Auto-Tracking Off",
-      description: enabled 
-        ? "Map will automatically center on your fleet vehicles"
-        : "Fleet auto-tracking disabled"
-    });
-  };
-
-  const handleCenterOnFleet = () => {
-    const bounds = calculateFleetBounds();
-    const center = getFleetCenter();
-    
-    console.log('🎯 Centering on fleet:', { bounds, center, vehicleCount: fleetVehicles.length });
-    
-    toast({
-      title: "Fleet Centered",
-      description: `Map centered on ${fleetVehicles.length} fleet vehicles`,
-    });
-  };
-
-  const handleFocusVehicle = (vehicleId: string) => {
-    const vehicle = fleetVehicles.find(v => v.id === vehicleId);
-    if (vehicle) {
-      setSelectedVehicle(vehicle);
-      console.log('🚛 Focusing on vehicle:', vehicle.driverName);
-      toast({
-        title: "Vehicle Focused",
-        description: `Centered on ${vehicle.driverName} (${vehicle.vehicleNumber})`,
-      });
-    }
-  };
-
-  // Check if overlay should be rendered (exists in filtered overlays and is visible)
-  const shouldRenderOverlay = (overlayId: string) => {
-    const overlay = overlays.find(o => o.id === overlayId);
-    const shouldRender = overlay && overlay.visible;
-    console.log(`🔍 shouldRenderOverlay(${overlayId}):`, { overlay, shouldRender });
-    return shouldRender;
-  };
-
-  const getOverlayConfig = (overlayId: string) => {
-    return overlays.find(o => o.id === overlayId) || overlays[0];
   };
 
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
       
-      {/* Fullscreen Map Container */}
-      <div className="fixed inset-0 pt-16 pointer-events-none">
-        <div className="pointer-events-auto w-full h-full">
-          <FleetMap 
-            userRole={currentRole} 
-            fleetVehicles={fleetVehicles}
-            selectedVehicle={selectedVehicle}
-            onVehicleSelect={setSelectedVehicle}
-            onCloseVehicleInfo={() => setSelectedVehicle(null)}
-            showFleetBounds={showFleetBounds && isFleetMode}
-            fleetBounds={calculateFleetBounds()}
-            followFleet={followFleet}
-            fleetCenter={getFleetCenter()}
+      {/* Clean Map Container */}
+      <div className="fixed inset-0 pt-16">
+        <div className="w-full h-full relative">
+          {/* Clean Google Map with Teal & Cream Theme */}
+          <UnifiedGoogleMap
+            center={quebecCenter}
+            zoom={10}
+            className="w-full h-full"
+            mode="interactive"
+            mapStyles={currentThemeConfig.styles}
           />
-        </div>
-        
-        {/* Overlay Manager Controls */}
-        <div className="pointer-events-none absolute inset-0" style={{ zIndex: 60 }}>
-          <div className="pointer-events-auto">
-            <OverlayManager
-              overlays={overlays.map(overlay => ({
-                ...overlay,
-                draggable: isDraggableMode
-              }))}
-              onToggleOverlay={toggleOverlay}
-              onToggleAll={toggleAllOverlays}
-              onResetLayout={resetLayout}
-              onResetPositions={resetPositions}
-              allVisible={allOverlaysVisible}
-              isFleetMode={isFleetMode}
-              onToggleFleetMode={handleFleetModeToggle}
-              isCustomizeMode={isCustomizeMode}
-              onToggleCustomizeMode={(enabled) => setIsCustomizeMode(enabled)}
-              isDraggableMode={isDraggableMode}
-              onToggleDraggableMode={handleToggleDraggableMode}
-              isPremium={isPremium}
-            />
+
+          {/* Top Controls Bar */}
+          <div className="absolute top-4 left-4 right-4 z-50 pointer-events-none">
+            <div className="flex items-center justify-between">
+              {/* Left Controls */}
+              <div className="flex items-center gap-3 pointer-events-auto">
+                {/* User Mode Selector */}
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-gray-300 p-2">
+                  <Select value={userMode} onValueChange={handleUserModeChange}>
+                    <SelectTrigger className="w-40 border-none bg-transparent">
+                      <SelectValue placeholder="Select mode" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="customer">Customer</SelectItem>
+                      <SelectItem value="provider">Provider</SelectItem>
+                      <SelectItem value="fleet-manager">Fleet Manager</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Right Controls */}
+              <div className="flex items-center gap-3 pointer-events-auto">
+                {/* Map Theme Selector */}
+                <MapThemeSelector />
+                
+                {/* Settings Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSettingsToggle}
+                  className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
+                    showSettings ? 'bg-blue-50 border-blue-500' : ''
+                  }`}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Button>
+
+                {/* Dragging Toggle */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDraggingToggle}
+                  className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
+                    isDragging ? 'bg-orange-50 border-orange-500' : ''
+                  }`}
+                >
+                  <Move className="h-4 w-4 mr-2" />
+                  {isDragging ? 'Dragging On' : 'Dragging Off'}
+                </Button>
+              </div>
+            </div>
           </div>
+
+          {/* Mode-specific Content Area (placeholder for future overlays) */}
+          <div className="absolute inset-0 pointer-events-none z-40">
+            {userMode === 'customer' && (
+              <div className="absolute bottom-4 left-4 pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300">
+                  <h3 className="font-semibold text-gray-900 mb-2">Customer Mode</h3>
+                  <p className="text-sm text-gray-600">Find services in your area</p>
+                </div>
+              </div>
+            )}
+
+            {userMode === 'provider' && (
+              <div className="absolute bottom-4 left-4 pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300">
+                  <h3 className="font-semibold text-gray-900 mb-2">Provider Mode</h3>
+                  <p className="text-sm text-gray-600">Manage your service area</p>
+                </div>
+              </div>
+            )}
+
+            {userMode === 'fleet-manager' && (
+              <div className="absolute bottom-4 left-4 pointer-events-auto">
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300">
+                  <h3 className="font-semibold text-gray-900 mb-2">Fleet Manager Mode</h3>
+                  <p className="text-sm text-gray-600">Coordinate your fleet operations</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Settings Panel (when enabled) */}
+          {showSettings && (
+            <div className="absolute top-20 right-4 z-50 pointer-events-auto">
+              <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300 w-64">
+                <h3 className="font-semibold text-gray-900 mb-3">Map Settings</h3>
+                <div className="space-y-3 text-sm text-gray-600">
+                  <div>Current Mode: <span className="font-medium capitalize">{userMode.replace('-', ' ')}</span></div>
+                  <div>Theme: <span className="font-medium">{currentThemeConfig.name}</span></div>
+                  <div>Dragging: <span className="font-medium">{isDragging ? 'Enabled' : 'Disabled'}</span></div>
+                  <div className="pt-2 text-xs text-gray-500">
+                    More settings and overlays coming soon...
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-
-        {/* Emergency Jobs Overlay - Individual Mode Only */}
-        {!isFleetMode && shouldRenderOverlay('emergency-jobs') && (
-          <OverlayWrapper
-            position="top-20 left-4"
-            draggable={isDraggableMode}
-            className="z-40"
-          >
-            <EmergencyJobsOverlay
-              position=""
-              visible={true}
-              minimized={getOverlayConfig('emergency-jobs').minimized}
-              draggable={isDraggableMode}
-              onMinimize={() => toggleOverlay('emergency-jobs')}
-              onToggleAudio={() => setAudioEnabled(!audioEnabled)}
-              audioEnabled={audioEnabled}
-              emergencyCount={emergencyCount}
-              isFleetMode={isFleetMode}
-            />
-          </OverlayWrapper>
-        )}
-
-        {/* Location Analytics Overlay */}
-        {!isFleetMode && shouldRenderOverlay('location-analytics') && (
-          <OverlayWrapper
-            position="top-96 left-4"
-            draggable={isDraggableMode}
-            className="z-40"
-          >
-            <LocationAnalyticsOverlay
-              position=""
-              visible={true}
-              minimized={getOverlayConfig('location-analytics').minimized}
-              draggable={isDraggableMode}
-              onMinimize={() => toggleOverlay('location-analytics')}
-              currentArea={currentArea}
-              marketDemand={marketDemand}
-              avgRate={avgRate}
-              competition={competition}
-              opportunityLevel={opportunityLevel}
-              isFleetMode={isFleetMode}
-            />
-          </OverlayWrapper>
-        )}
-
-        {/* Route Management Overlay - Individual Mode Only */}
-        {!isFleetMode && shouldRenderOverlay('route-management') && (
-          <OverlayWrapper
-            position="bottom-20 left-80"
-            draggable={isDraggableMode}
-            className="z-40"
-          >
-            <RouteManagementOverlay
-              position=""
-              visible={true}
-              minimized={getOverlayConfig('route-management').minimized}
-              draggable={isDraggableMode}
-              onMinimize={() => toggleOverlay('route-management')}
-              jobs={sampleJobs}
-              totalTravelTime={totalTravelTime}
-              nextJobCountdown={nextJobCountdown}
-              isFleetMode={isFleetMode}
-            />
-          </OverlayWrapper>
-        )}
-
-        {/* Fleet Management Overlay - Fleet Mode Only */}
-        {isFleetMode && shouldRenderOverlay('fleet-management') && (
-          <OverlayWrapper
-            position="top-20 left-4"
-            draggable={isDraggableMode}
-            className="z-40"
-          >
-            <FleetManagementOverlay
-              position=""
-              visible={true}
-              minimized={getOverlayConfig('fleet-management').minimized}
-              draggable={isDraggableMode}
-              onMinimize={() => toggleOverlay('fleet-management')}
-              isFleetMode={isFleetMode}
-            />
-          </OverlayWrapper>
-        )}
-
-        {/* Market Insights Overlay - Always Visible */}
-        {shouldRenderOverlay('market-insights') && (
-          <OverlayWrapper
-            position="top-20 right-4"
-            draggable={isDraggableMode}
-            className="z-40"
-          >
-            <MarketInsightsOverlay
-              position=""
-              visible={true}
-              minimized={getOverlayConfig('market-insights').minimized}
-              draggable={isDraggableMode}
-              onMinimize={() => toggleOverlay('market-insights')}
-              showHeatZones={false}
-              showProviders={showProviders}
-              showTrafficAreas={showTrafficAreas}
-              onToggleHeatZones={() => {}}
-              onToggleProviders={setShowProviders}
-              onToggleTrafficAreas={setShowTrafficAreas}
-              isFleetMode={isFleetMode}
-            />
-          </OverlayWrapper>
-        )}
-
-        {/* Fleet Vehicles View Overlay - Fleet Mode Only */}
-        {isFleetMode && shouldRenderOverlay('fleet-vehicles-view') && (
-          <OverlayWrapper
-            position="bottom-20 left-1/2 -translate-x-1/2"
-            draggable={isDraggableMode}
-            className="z-40"
-          >
-            <FleetVehiclesViewOverlay
-              position=""
-              visible={true}
-              minimized={getOverlayConfig('fleet-vehicles-view').minimized}
-              draggable={isDraggableMode}
-              onMinimize={() => toggleOverlay('fleet-vehicles-view')}
-              fleetVehicles={fleetVehicles}
-              followFleet={followFleet}
-              onToggleFollowFleet={handleToggleFollowFleet}
-              onCenterOnFleet={handleCenterOnFleet}
-              onFocusVehicle={handleFocusVehicle}
-            />
-          </OverlayWrapper>
-        )}
 
         {/* Chat Bubble */}
         <div className="fixed bottom-6 left-6 z-50 pointer-events-none">
