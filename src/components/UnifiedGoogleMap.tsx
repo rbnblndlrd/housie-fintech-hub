@@ -111,6 +111,34 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   // Find hovered provider
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);
 
+  // Quebec data area polygons for Customer Mode
+  const quebecAreaPolygons = {
+    'Montreal Downtown': [
+      { lat: 45.501, lng: -73.567 },
+      { lat: 45.515, lng: -73.567 },
+      { lat: 45.515, lng: -73.545 },
+      { lat: 45.501, lng: -73.545 }
+    ],
+    'Longueuil': [
+      { lat: 45.531, lng: -73.518 },
+      { lat: 45.545, lng: -73.518 },
+      { lat: 45.545, lng: -73.496 },
+      { lat: 45.531, lng: -73.496 }
+    ],
+    'Laval': [
+      { lat: 45.570, lng: -73.692 },
+      { lat: 45.584, lng: -73.692 },
+      { lat: 45.584, lng: -73.670 },
+      { lat: 45.570, lng: -73.670 }
+    ],
+    'Gatineau': [
+      { lat: 45.477, lng: -75.701 },
+      { lat: 45.491, lng: -75.701 },
+      { lat: 45.491, lng: -75.679 },
+      { lat: 45.477, lng: -75.679 }
+    ]
+  };
+
   // Completely different area polygons for each layer type
   const demandPolygons = {
     'NDG Residential': [
@@ -405,7 +433,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
                            crime.area === 'Longueuil' ? 8.5 :
                            crime.area === 'Laval' ? 8.2 : 9.2;
         
-        const polygon = areaPolygons[crime.area as keyof typeof areaPolygons];
+        const polygon = quebecAreaPolygons[crime.area as keyof typeof quebecAreaPolygons];
         if (polygon) {
           const redIntensity = Math.max(0.2, (10 - safetyScore) / 10);
           
@@ -429,7 +457,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     // Demographics Income Overlay
     if (enabledLayers.demographics && demographicData.length > 0) {
       demographicData.forEach((demo, index) => {
-        const polygon = areaPolygons[demo.area as keyof typeof areaPolygons];
+        const polygon = quebecAreaPolygons[demo.area as keyof typeof quebecAreaPolygons];
         if (polygon) {
           const blueIntensity = Math.min(1, demo.avgIncome / 100000);
           
