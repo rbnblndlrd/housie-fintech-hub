@@ -2,11 +2,17 @@
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/home/HeroSection';
-import ServiceCategories from '@/components/ServiceCategories';
-import FeaturedProviders from '@/components/FeaturedProviders';
+import { UserTypeSelector } from '@/components/home/UserTypeSelector';
 import DemoSection from '@/components/home/DemoSection';
+import { useState } from 'react';
 
 const Index = () => {
+  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
+
+  const handleUserTypeSelect = (userType: string) => {
+    setSelectedUserType(userType);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
       <Header />
@@ -16,14 +22,12 @@ const Index = () => {
         <HeroSection />
       </ErrorBoundary>
       
-      {/* Service Categories with error boundary */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Service categories loading...</div>}>
-        <ServiceCategories onCategorySelect={() => {}} />
-      </ErrorBoundary>
-      
-      {/* Featured Providers with error boundary */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Featured providers loading...</div>}>
-        <FeaturedProviders />
+      {/* User Type Selector with error boundary */}
+      <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
+        <UserTypeSelector 
+          onUserTypeSelect={handleUserTypeSelect}
+          selectedUserType={selectedUserType}
+        />
       </ErrorBoundary>
       
       {/* Demo Section with error boundary */}
