@@ -13,10 +13,10 @@ interface UserTypeOption {
 }
 
 interface DemoSectionProps {
-  selectedOption: UserTypeOption | undefined;
+  selectedOption?: UserTypeOption;
 }
 
-export const DemoSection = ({ selectedOption }: DemoSectionProps) => {
+const DemoSection = ({ selectedOption }: DemoSectionProps) => {
   if (!selectedOption) return null;
 
   return (
@@ -91,3 +91,5 @@ export const DemoSection = ({ selectedOption }: DemoSectionProps) => {
     </section>
   );
 };
+
+export default DemoSection;

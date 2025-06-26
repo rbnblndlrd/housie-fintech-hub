@@ -11,7 +11,7 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       <HeroSection />
-      <ServiceCategories />
+      <ServiceCategories onCategorySelect={() => {}} categories={[]} />
       <FeaturedProviders />
       <DemoSection />
     </div>

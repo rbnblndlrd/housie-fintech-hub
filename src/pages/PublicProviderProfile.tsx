@@ -65,7 +65,7 @@ const PublicProviderProfile = () => {
         average_rating: sampleProvider.averageRating,
         total_bookings: sampleProvider.totalBookings,
         verified: sampleProvider.verified,
-        verification_level: 'basic',
+        verification_level: 'basic' as const,
         background_check_verified: sampleProvider.backgroundCheck,
         ccq_verified: false,
         rbq_verified: false,
@@ -90,7 +90,7 @@ const PublicProviderProfile = () => {
           risk_category: 'low'
         })),
         // Add sample-specific data
-        _sampleData: sampleProvider
+        sampleData: sampleProvider
       };
     },
     enabled: !!id
@@ -209,7 +209,7 @@ const PublicProviderProfile = () => {
     );
   }
 
-  const sampleData = provider._sampleData;
+  const sampleData = (provider as any).sampleData;
 
   return (
     <>

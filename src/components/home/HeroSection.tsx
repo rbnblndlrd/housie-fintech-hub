@@ -4,7 +4,7 @@ import { ArrowRight, Shield, CheckCircle, Eye, FileCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import PopArtMascot from "@/components/PopArtMascot";
 
-export const HeroSection = () => {
+const HeroSection = () => {
   return (
     <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden">
       {/* Additional dark overlay for text readability */}
@@ -101,3 +101,5 @@ export const HeroSection = () => {
     </section>
   );
 };
+
+export default HeroSection;
