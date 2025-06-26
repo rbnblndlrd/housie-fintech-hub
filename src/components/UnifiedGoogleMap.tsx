@@ -1,10 +1,11 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, Marker, Circle, InfoWindow, Polygon } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle, InfoWindow, Polygon, Polyline } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
 import { GOOGLE_MAPS_API_KEY, mapOptions } from './map/GoogleMapConfig';
 import { useGoogleMaps } from './map/GoogleMapsProvider';
 import { useQuebecData } from '@/hooks/useQuebecData';
 import { useProviderIntelligence } from '@/hooks/useProviderIntelligence';
+import { useFleetOperations } from '@/hooks/useFleetOperations';
 
 interface UnifiedGoogleMapProps {
   center: { lat: number; lng: number };
@@ -47,6 +48,12 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     tipData, 
     opportunityData 
   } = useProviderIntelligence();
+  const {
+    activeVehicles,
+    currentJobs,
+    performanceZones,
+    routeOptimization
+  } = useFleetOperations();
 
   // Debug logging for mapStyles changes
   useEffect(() => {
@@ -618,6 +625,117 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     return overlays;
   };
 
+  // Create Fleet Manager overlays
+  const renderFleetManagerOverlays = () => {
+    const overlays = [];
+
+    // Live Fleet Tracking (Blue vehicle icons)
+    if (enabledLayers.fleetTracking && activeVehicles.length > 0) {
+      activeVehicles.forEach((vehicle, index) => {
+        const statusColor = vehicle.status === 'active' ? '#10b981' :
+                           vehicle.status === 'en-route' ? '#3b82f6' :
+                           vehicle.status === 'available' ? '#f59e0b' : '#6b7280';
+
+        overlays.push(
+          <Marker
+            key={`fleet-vehicle-${index}`}
+            position={{ lat: vehicle.lat, lng: vehicle.lng }}
+            icon={{
+              path: window.google?.maps?.SymbolPath?.CIRCLE || 0,
+              scale: 12,
+              fillColor: statusColor,
+              fillOpacity: 0.9,
+              strokeColor: '#ffffff',
+              strokeWeight: 3
+            }}
+            title={`${vehicle.id} - ${vehicle.driverName} (${vehicle.status})`}
+          />
+        );
+      });
+    }
+
+    // Job Distribution (Purple zones showing workload density)
+    if (enabledLayers.jobDistribution && currentJobs.length > 0) {
+      currentJobs.forEach((job, index) => {
+        const intensityRadius = job.priority === 'high' ? 2000 :
+                               job.priority === 'medium' ? 1500 : 1000;
+        
+        overlays.push(
+          <Circle
+            key={`job-zone-${index}`}
+            center={{ lat: job.lat, lng: job.lng }}
+            radius={intensityRadius}
+            options={{
+              fillColor: '#8b5cf6',
+              fillOpacity: job.priority === 'high' ? 0.4 : job.priority === 'medium' ? 0.3 : 0.2,
+              strokeColor: '#7c3aed',
+              strokeOpacity: 0.6,
+              strokeWeight: 2
+            }}
+          />
+        );
+      });
+    }
+
+    // Performance Zones (Green gradients showing profitable areas)
+    if (enabledLayers.performanceZones && performanceZones.length > 0) {
+      performanceZones.forEach((zone, index) => {
+        const performanceIntensity = Math.min(1, zone.revenuePerHour / 120);
+        const radius = 1800 + (zone.jobCount * 10);
+        
+        overlays.push(
+          <Circle
+            key={`performance-zone-${index}`}
+            center={{ lat: zone.lat, lng: zone.lng }}
+            radius={radius}
+            options={{
+              fillColor: '#16a34a',
+              fillOpacity: performanceIntensity * 0.5,
+              strokeColor: '#15803d',
+              strokeOpacity: 0.7,
+              strokeWeight: 2
+            }}
+          />
+        );
+      });
+    }
+
+    // Route Optimization (Colored lines showing optimized paths)
+    if (enabledLayers.routeOptimization && routeOptimization.length > 0) {
+      routeOptimization.forEach((route, index) => {
+        const pathCoordinates = route.route.map(point => ({
+          lat: point.lat,
+          lng: point.lng
+        }));
+
+        if (pathCoordinates.length > 1) {
+          overlays.push(
+            <Polyline
+              key={`route-${index}`}
+              path={pathCoordinates}
+              options={{
+                strokeColor: index % 2 === 0 ? '#f97316' : '#06b6d4',
+                strokeOpacity: 0.8,
+                strokeWeight: 4,
+                icons: [{
+                  icon: {
+                    path: window.google?.maps?.SymbolPath?.FORWARD_CLOSED_ARROW || 0,
+                    scale: 3,
+                    strokeColor: '#ffffff'
+                  },
+                  offset: '100%',
+                  repeat: '200px'
+                }]
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    return overlays;
+  };
+
   return (
     <div className={`w-full h-full rounded-lg ${className}`}>
       <GoogleMap
@@ -679,6 +797,9 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
 
         {/* Provider Mode Overlays with Independent Data */}
         {mode === 'interactive' && renderProviderOverlays()}
+
+        {/* Fleet Manager Overlays */}
+        {mode === 'interactive' && renderFleetManagerOverlays()}
 
         {/* Custom children (for privacy markers, job overlays, heat zones, etc.) */}
         {children}

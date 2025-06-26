@@ -13,6 +13,7 @@ import { Settings, Move } from 'lucide-react';
 import MapThemeSelector from '@/components/map/MapThemeSelector';
 import CustomerMapMode from '@/components/map/modes/CustomerMapMode';
 import ProviderMapMode from '@/components/map/modes/ProviderMapMode';
+import FleetManagerMode from '@/components/map/modes/FleetManagerMode';
 
 type UserMode = 'customer' | 'provider' | 'fleet-manager';
 
@@ -32,9 +33,20 @@ const InteractiveMapPage = () => {
   const [isDragging, setIsDragging] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [enabledLayers, setEnabledLayers] = useState<Record<string, boolean>>({
+    // Customer layers
     crime: false,
     demographics: false,
-    services: false
+    services: false,
+    // Provider layers
+    demand: false,
+    competition: false,
+    tips: false,
+    opportunity: false,
+    // Fleet Manager layers
+    fleetTracking: false,
+    jobDistribution: false,
+    performanceZones: false,
+    routeOptimization: false
   });
 
   // Quebec/Montreal center coordinates
@@ -182,12 +194,10 @@ const InteractiveMapPage = () => {
           )}
 
           {userMode === 'fleet-manager' && (
-            <div className="w-80 bg-white border-l border-gray-200 flex items-center justify-center">
-              <div className="text-center p-6">
-                <h3 className="font-semibold text-gray-900 mb-2">Fleet Manager Mode</h3>
-                <p className="text-sm text-gray-600">Fleet management interface coming soon...</p>
-              </div>
-            </div>
+            <FleetManagerMode 
+              onDataLayerToggle={handleDataLayerToggle}
+              enabledLayers={enabledLayers}
+            />
           )}
         </div>
 
