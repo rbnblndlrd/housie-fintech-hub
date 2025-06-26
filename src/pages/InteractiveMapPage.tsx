@@ -63,6 +63,7 @@ const InteractiveMapPage = () => {
   };
 
   const handleDataLayerToggle = (layer: string, enabled: boolean) => {
+    console.log('🎛️ Layer toggle:', layer, enabled);
     setEnabledLayers(prev => ({
       ...prev,
       [layer]: enabled
@@ -90,6 +91,7 @@ const InteractiveMapPage = () => {
               className="w-full h-full"
               mode="interactive"
               mapStyles={currentThemeConfig.styles}
+              enabledLayers={enabledLayers}
             />
 
             {/* Top Controls Bar */}

@@ -18,6 +18,7 @@ export interface DemographicDataPoint {
   population: number;
   ageGroup: string;
   primaryLanguage: string;
+  area: string;
 }
 
 export interface ServiceProvider {
@@ -28,6 +29,7 @@ export interface ServiceProvider {
   category: string;
   rating: number;
   verified: boolean;
+  area: string;
 }
 
 class QuebecDataService {
@@ -109,7 +111,8 @@ class QuebecDataService {
           avgIncome: 52000,
           population: 15000,
           ageGroup: '25-45',
-          primaryLanguage: 'French'
+          primaryLanguage: 'French',
+          area: 'Montreal Downtown'
         },
         {
           postalCode: 'J4K',
@@ -118,7 +121,8 @@ class QuebecDataService {
           avgIncome: 67000,
           population: 25000,
           ageGroup: '35-55',
-          primaryLanguage: 'French'
+          primaryLanguage: 'French',
+          area: 'Longueuil'
         },
         {
           postalCode: 'H7E',
@@ -127,7 +131,8 @@ class QuebecDataService {
           avgIncome: 71000,
           population: 35000,
           ageGroup: '30-50',
-          primaryLanguage: 'French'
+          primaryLanguage: 'French',
+          area: 'Laval'
         },
         {
           postalCode: 'H3Z',
@@ -136,7 +141,8 @@ class QuebecDataService {
           avgIncome: 95000,
           population: 8000,
           ageGroup: '40-65',
-          primaryLanguage: 'English'
+          primaryLanguage: 'English',
+          area: 'Westmount'
         }
       ];
 
@@ -161,7 +167,8 @@ class QuebecDataService {
           businessName: 'Montreal Cleaning Pro',
           category: 'cleaning',
           rating: 4.5,
-          verified: true
+          verified: true,
+          area: 'Montreal Downtown'
         },
         {
           id: '2',
@@ -170,7 +177,8 @@ class QuebecDataService {
           businessName: 'Longueuil Handyman',
           category: 'handyman',
           rating: 4.8,
-          verified: true
+          verified: true,
+          area: 'Longueuil'
         },
         {
           id: '3',
@@ -179,7 +187,8 @@ class QuebecDataService {
           businessName: 'Laval Moving Services',
           category: 'moving',
           rating: 4.2,
-          verified: false
+          verified: false,
+          area: 'Laval'
         },
         {
           id: '4',
@@ -188,7 +197,8 @@ class QuebecDataService {
           businessName: 'Westmount Concierge',
           category: 'concierge',
           rating: 4.9,
-          verified: true
+          verified: true,
+          area: 'Westmount'
         }
       ];
 

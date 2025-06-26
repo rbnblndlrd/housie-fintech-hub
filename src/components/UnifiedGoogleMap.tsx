@@ -1,9 +1,10 @@
 
 import React, { useState, useCallback, useEffect } from 'react';
-import { GoogleMap, Marker, Circle, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, Marker, Circle, InfoWindow, Polygon } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
 import { GOOGLE_MAPS_API_KEY, mapOptions } from './map/GoogleMapConfig';
 import { useGoogleMaps } from './map/GoogleMapsProvider';
+import { useQuebecData } from '@/hooks/useQuebecData';
 
 interface UnifiedGoogleMapProps {
   center: { lat: number; lng: number };
@@ -15,6 +16,7 @@ interface UnifiedGoogleMapProps {
   mode?: 'services' | 'interactive' | 'privacy' | 'heatZones';
   children?: React.ReactNode;
   mapStyles?: google.maps.MapTypeStyle[];
+  enabledLayers?: Record<string, boolean>;
 }
 
 const mapContainerStyle = {
@@ -32,11 +34,13 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   onProviderClick,
   mode = 'services',
   children,
-  mapStyles
+  mapStyles,
+  enabledLayers = {}
 }) => {
   const { isLoaded, loadError } = useGoogleMaps();
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
+  const { crimeData, demographicData, serviceData } = useQuebecData();
 
   // Debug logging for mapStyles changes
   useEffect(() => {
@@ -100,6 +104,158 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
 
   // Find hovered provider
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);
+
+  // Create Quebec data overlays based on enabled layers
+  const renderQuebecOverlays = () => {
+    const overlays = [];
+
+    // Crime Heat Map Overlay
+    if (enabledLayers.crime && crimeData.length > 0) {
+      crimeData.forEach((crime, index) => {
+        const safetyScore = crime.area === 'Montreal Downtown' ? 7.8 :
+                           crime.area === 'Longueuil' ? 8.5 :
+                           crime.area === 'Laval' ? 8.2 : 9.2;
+        
+        // Create a rough polygon for the area (simplified for demo)
+        const areaPolygons = {
+          'Montreal Downtown': [
+            { lat: 45.495, lng: -73.600 },
+            { lat: 45.515, lng: -73.600 },
+            { lat: 45.515, lng: -73.570 },
+            { lat: 45.495, lng: -73.570 }
+          ],
+          'Longueuil': [
+            { lat: 45.410, lng: -73.480 },
+            { lat: 45.430, lng: -73.480 },
+            { lat: 45.430, lng: -73.450 },
+            { lat: 45.410, lng: -73.450 }
+          ],
+          'Laval': [
+            { lat: 45.560, lng: -73.730 },
+            { lat: 45.580, lng: -73.730 },
+            { lat: 45.580, lng: -73.700 },
+            { lat: 45.560, lng: -73.700 }
+          ],
+          'Westmount': [
+            { lat: 45.475, lng: -73.605 },
+            { lat: 45.495, lng: -73.605 },
+            { lat: 45.495, lng: -73.575 },
+            { lat: 45.475, lng: -73.575 }
+          ]
+        };
+
+        const polygon = areaPolygons[crime.area as keyof typeof areaPolygons];
+        if (polygon) {
+          // Higher crime = lower safety score = more red
+          const redIntensity = Math.max(0.2, (10 - safetyScore) / 10);
+          
+          overlays.push(
+            <Polygon
+              key={`crime-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#ef4444',
+                fillOpacity: redIntensity * 0.5,
+                strokeColor: '#dc2626',
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    // Demographics Income Overlay
+    if (enabledLayers.demographics && demographicData.length > 0) {
+      demographicData.forEach((demo, index) => {
+        // Create a rough polygon for the area
+        const areaPolygons = {
+          'Montreal Downtown': [
+            { lat: 45.495, lng: -73.600 },
+            { lat: 45.515, lng: -73.600 },
+            { lat: 45.515, lng: -73.570 },
+            { lat: 45.495, lng: -73.570 }
+          ],
+          'Longueuil': [
+            { lat: 45.410, lng: -73.480 },
+            { lat: 45.430, lng: -73.480 },
+            { lat: 45.430, lng: -73.450 },
+            { lat: 45.410, lng: -73.450 }
+          ],
+          'Laval': [
+            { lat: 45.560, lng: -73.730 },
+            { lat: 45.580, lng: -73.730 },
+            { lat: 45.580, lng: -73.700 },
+            { lat: 45.560, lng: -73.700 }
+          ],
+          'Westmount': [
+            { lat: 45.475, lng: -73.605 },
+            { lat: 45.495, lng: -73.605 },
+            { lat: 45.495, lng: -73.575 },
+            { lat: 45.475, lng: -73.575 }
+          ]
+        };
+
+        const polygon = areaPolygons[demo.area as keyof typeof areaPolygons];
+        if (polygon) {
+          // Higher income = more blue intensity
+          const blueIntensity = Math.min(1, demo.avgIncome / 100000);
+          
+          overlays.push(
+            <Polygon
+              key={`demo-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#3b82f6',
+                fillOpacity: blueIntensity * 0.4,
+                strokeColor: '#2563eb',
+                strokeOpacity: 0.6,
+                strokeWeight: 1
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    // Service Provider Density Overlay
+    if (enabledLayers.services && serviceData.length > 0) {
+      serviceData.forEach((service, index) => {
+        const providerCount = service.area === 'Montreal Downtown' ? 245 :
+                             service.area === 'Longueuil' ? 89 :
+                             service.area === 'Laval' ? 156 : 67;
+
+        // Create multiple markers to represent density
+        const markersToShow = Math.min(10, Math.ceil(providerCount / 25));
+        
+        for (let i = 0; i < markersToShow; i++) {
+          const offsetLat = (Math.random() - 0.5) * 0.02;
+          const offsetLng = (Math.random() - 0.5) * 0.02;
+          
+          overlays.push(
+            <Marker
+              key={`service-${index}-${i}`}
+              position={{
+                lat: service.lat + offsetLat,
+                lng: service.lng + offsetLng
+              }}
+              icon={{
+                path: window.google?.maps?.SymbolPath?.CIRCLE || 0,
+                scale: 6,
+                fillColor: '#22c55e',
+                fillOpacity: 0.8,
+                strokeColor: '#16a34a',
+                strokeWeight: 1
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    return overlays;
+  };
 
   if (loadError) {
     return (
@@ -240,6 +396,9 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
             </div>
           </InfoWindow>
         )}
+
+        {/* Quebec Data Overlays */}
+        {mode === 'interactive' && renderQuebecOverlays()}
 
         {/* Custom children (for privacy markers, job overlays, heat zones, etc.) */}
         {children}
