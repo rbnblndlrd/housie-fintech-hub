@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Star, CheckCircle } from "lucide-react";
+import { ArrowRight, Star, CheckCircle, Shield, Eye, FileCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface UserTypeOption {
@@ -17,7 +17,20 @@ interface DemoSectionProps {
 }
 
 const DemoSection = ({ selectedOption }: DemoSectionProps) => {
-  if (!selectedOption) return null;
+  // Default demo content when no specific option is selected
+  const defaultDemo = {
+    title: "HOUSIE Platform",
+    description: "Experience our comprehensive service marketplace",
+    benefits: [
+      "Find verified professionals instantly",
+      "Secure escrow payment protection", 
+      "Real-time booking and scheduling",
+      "24/7 customer support"
+    ],
+    demoImage: "/api/placeholder/600/400"
+  };
+
+  const demoContent = selectedOption || defaultDemo;
 
   return (
     <section id="demo-section" className="py-16 lg:py-24 px-2 sm:px-4 relative">
@@ -31,7 +44,10 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
               See HOUSIE in Action
             </h2>
             <p className="text-lg sm:text-xl lg:text-2xl text-gray-800 font-medium">
-              Here's what you can expect as a {selectedOption.title.toLowerCase().replace('?', '')}
+              {selectedOption 
+                ? `Here's what you can expect as a ${selectedOption.title.toLowerCase().replace('?', '')}`
+                : "Discover how HOUSIE connects you with trusted professionals"
+              }
             </p>
           </div>
         </div>
@@ -40,8 +56,8 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
           {/* Demo Screenshot */}
           <div className="backdrop-blur-sm rounded-3xl border-3 border-black shadow-2xl p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300" style={{ backgroundColor: '#F5F5DC' }}>
             <img 
-              src={selectedOption.demoImage} 
-              alt={`${selectedOption.title} Demo`}
+              src={demoContent.demoImage} 
+              alt={`${demoContent.title} Demo`}
               className="w-full h-auto rounded-2xl shadow-xl border-2 border-black"
             />
           </div>
@@ -51,11 +67,14 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
             <div className="backdrop-blur-sm rounded-3xl border-3 border-black shadow-2xl p-8 lg:p-10" style={{ backgroundColor: '#F5F5DC' }}>
               <h3 className="text-2xl lg:text-3xl font-black text-black mb-6 lg:mb-8 flex items-center gap-3">
                 <Star className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
-                Why {selectedOption.title.replace('?', '')} Love HOUSIE
+                {selectedOption 
+                  ? `Why ${selectedOption.title.replace('?', '')} Love HOUSIE`
+                  : "Why People Love HOUSIE"
+                }
               </h3>
               
               <div className="space-y-4 lg:space-y-6">
-                {selectedOption.benefits.map((benefit, index) => (
+                {demoContent.benefits.map((benefit, index) => (
                   <div key={index} className="flex items-start gap-4 lg:gap-6 p-4 lg:p-6 rounded-2xl border-2 border-black hover:shadow-lg transition-shadow duration-200" style={{ backgroundColor: '#F5F5DC' }}>
                     <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 mt-1 flex-shrink-0" />
                     <div>

@@ -7,10 +7,20 @@ interface PopArtMascotProps {
 }
 
 const PopArtMascot: React.FC<PopArtMascotProps> = ({ className = "" }) => {
-  const { isPopArtMode, activatePopArt } = usePopArt();
   const [clickCount, setClickCount] = useState(0);
   const [clickTimeout, setClickTimeout] = useState<NodeJS.Timeout | null>(null);
   const [showMessage, setShowMessage] = useState(false);
+
+  // Safely get PopArt context with fallback
+  let popArtContext;
+  try {
+    popArtContext = usePopArt();
+  } catch (error) {
+    console.warn('PopArt context not available:', error);
+    popArtContext = { isPopArtMode: false, activatePopArt: () => {} };
+  }
+
+  const { isPopArtMode, activatePopArt } = popArtContext;
 
   const handleTripleClick = useCallback(() => {
     setClickCount(prev => {
@@ -29,9 +39,13 @@ const PopArtMascot: React.FC<PopArtMascotProps> = ({ className = "" }) => {
 
       // Check for triple click
       if (newCount === 3) {
-        activatePopArt();
-        setShowMessage(true);
-        setTimeout(() => setShowMessage(false), 3000);
+        try {
+          activatePopArt();
+          setShowMessage(true);
+          setTimeout(() => setShowMessage(false), 3000);
+        } catch (error) {
+          console.warn('PopArt activation failed:', error);
+        }
         setClickCount(0);
         if (clickTimeout) clearTimeout(clickTimeout);
       }
@@ -73,6 +87,10 @@ const PopArtMascot: React.FC<PopArtMascotProps> = ({ className = "" }) => {
               className={`w-full h-full rounded-xl object-cover transition-all duration-500 ${
                 isPopArtMode ? 'hue-rotate-45 saturate-150 brightness-110' : ''
               }`}
+              onError={(e) => {
+                console.warn('Mascot image failed to load');
+                e.currentTarget.style.display = 'none';
+              }}
             />
           </div>
         </div>

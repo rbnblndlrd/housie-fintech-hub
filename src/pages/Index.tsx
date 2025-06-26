@@ -10,12 +10,56 @@ const Index = () => {
   return (
     <div className="min-h-screen">
       <Header />
-      <HeroSection />
-      <ServiceCategories onCategorySelect={() => {}} />
-      <FeaturedProviders />
-      <DemoSection />
+      
+      {/* Hero Section with error boundary */}
+      <ErrorBoundary fallback={<div className="py-20 text-center">Hero section temporarily unavailable</div>}>
+        <HeroSection />
+      </ErrorBoundary>
+      
+      {/* Service Categories with error boundary */}
+      <ErrorBoundary fallback={<div className="py-12 text-center">Service categories loading...</div>}>
+        <ServiceCategories onCategorySelect={() => {}} />
+      </ErrorBoundary>
+      
+      {/* Featured Providers with error boundary */}
+      <ErrorBoundary fallback={<div className="py-12 text-center">Featured providers loading...</div>}>
+        <FeaturedProviders />
+      </ErrorBoundary>
+      
+      {/* Demo Section with error boundary */}
+      <ErrorBoundary fallback={<div className="py-12 text-center">Demo section loading...</div>}>
+        <DemoSection />
+      </ErrorBoundary>
     </div>
   );
 };
+
+// Simple Error Boundary Component
+class ErrorBoundary extends React.Component<
+  { children: React.ReactNode; fallback: React.ReactNode }, 
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    console.warn('Component error caught:', error);
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.warn('Error boundary caught error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+
+    return this.props.children;
+  }
+}
 
 export default Index;
