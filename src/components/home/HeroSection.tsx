@@ -50,35 +50,35 @@ export const HeroSection = () => {
                 </p>
               </div>
               
-              {/* Enhanced Value Props Card with Better Spacing */}
-              <div className="bg-cream/95 backdrop-blur-sm rounded-2xl p-6 lg:p-8 border-3 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
+              {/* Enhanced Value Props Card with Warm Cream Background */}
+              <div className="bg-cream backdrop-blur-sm rounded-2xl p-6 lg:p-8 border-3 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
                 <h2 className="text-xl lg:text-2xl font-black text-black mb-6 flex items-center gap-3">
                   <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
                   Why Choose HOUSIE?
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream/80 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream rounded-xl border-2 border-black">
                     <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">Escrow Protection</span>
                       <span className="text-xs lg:text-sm text-gray-800">Your money is safe</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream/80 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream rounded-xl border-2 border-black">
                     <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">Verified Providers</span>
                       <span className="text-xs lg:text-sm text-gray-800">Background checked</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream/80 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream rounded-xl border-2 border-black">
                     <Eye className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">Privacy Focused</span>
                       <span className="text-xs lg:text-sm text-gray-800">Your data protected</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream/80 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-cream rounded-xl border-2 border-black">
                     <FileCheck className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">2025 Compliant</span>
@@ -89,7 +89,7 @@ export const HeroSection = () => {
               </div>
 
               <Link to="/services">
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
+                <Button className="bg-orange-400 hover:bg-orange-500 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
                   Take the Tour
                   <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
                 </Button>
