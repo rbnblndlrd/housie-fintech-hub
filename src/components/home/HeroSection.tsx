@@ -6,10 +6,7 @@ import PopArtMascot from "@/components/PopArtMascot";
 
 export const HeroSection = () => {
   return (
-    <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden">
-      {/* Additional dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/20"></div>
-      
+    <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden bg-green-700">
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh]">
           {/* Left Side - Enhanced Mascot */}
@@ -25,11 +22,12 @@ export const HeroSection = () => {
               </div>
 
               {/* Enhanced Speech Bubble */}
-              <div className="absolute -top-16 lg:-top-20 -right-4 lg:-right-16 bg-cream/95 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-xs lg:max-w-sm">
-                <div className="text-lg lg:text-xl font-black text-black">
-                  Need a local expert? 🔍
+              <div className="absolute -top-16 lg:-top-20 -right-4 lg:-right-16 bg-cream rounded-2xl px-6 py-4 shadow-2xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-xs lg:max-w-sm">
+                <div className="text-lg lg:text-xl font-black text-black flex items-center gap-2">
+                  Need a local expert? 
+                  <div className="text-orange-400">👉</div>
                 </div>
-                <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-cream/95"></div>
+                <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-cream"></div>
               </div>
             </div>
           </div>
@@ -51,7 +49,7 @@ export const HeroSection = () => {
               </div>
               
               {/* Enhanced Value Props Card with Better Spacing */}
-              <div className="bg-cream/95 backdrop-blur-sm rounded-2xl p-6 lg:p-8 border-3 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <div className="bg-cream rounded-2xl p-6 lg:p-8 border-3 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
                 <h2 className="text-xl lg:text-2xl font-black text-black mb-6 flex items-center gap-3">
                   <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
                   Why Choose HOUSIE?
@@ -89,7 +87,7 @@ export const HeroSection = () => {
               </div>
 
               <Link to="/services">
-                <Button className="bg-yellow-500 hover:bg-yellow-600 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
+                <Button className="bg-orange-400 hover:bg-orange-500 text-black font-black py-4 lg:py-6 px-8 lg:px-10 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
                   Take the Tour
                   <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
                 </Button>

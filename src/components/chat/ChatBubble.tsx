@@ -45,14 +45,14 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             onClick={handleOpen}
             className={cn(
               "relative rounded-full w-14 h-14 shadow-lg transition-all duration-200 hover:scale-105",
-              "bg-yellow-300 hover:bg-yellow-400 border-2 border-yellow-600"
+              "bg-orange-400 hover:bg-orange-500 border-2 border-black"
             )}
             variant="ghost"
           >
             {useMicIcon ? (
-              <Mic className="h-6 w-6 text-yellow-800" />
+              <Mic className="h-6 w-6 text-black" />
             ) : (
-              <MessageCircle className="h-6 w-6 text-yellow-800" />
+              <MessageCircle className="h-6 w-6 text-black" />
             )}
             {totalUnreadCount > 0 && !useMicIcon && (
               <Badge
@@ -64,24 +64,24 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             )}
           </Button>
         ) : (
-          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
+          <div className="bg-cream border-2 border-black rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
-            <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
-              <h3 className="font-semibold text-yellow-900">
+            <div className="bg-orange-400 border-b-2 border-black p-4 flex items-center justify-between">
+              <h3 className="font-semibold text-black">
                 {useMicIcon ? 'Voice Assistant' : 'Assistant'}
               </h3>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
+                className="h-8 w-8 p-0 hover:bg-orange-500 text-black"
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
 
             {/* Clean Tab Navigation - Reordered for interactive map */}
-            <div className="bg-yellow-50 border-b-2 border-yellow-300">
+            <div className="bg-cream border-b-2 border-black">
               <div className="flex">
                 {isInteractiveMap ? (
                   // Voice tab first for interactive map
@@ -91,8 +91,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'voice'
-                          ? "text-green-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                          ? "text-green-600 bg-orange-100"
+                          : "text-black hover:text-gray-900 hover:bg-orange-100"
                       )}
                     >
                       🗣️ Voice
@@ -105,8 +105,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'ai'
-                          ? "text-purple-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                          ? "text-purple-600 bg-orange-100"
+                          : "text-black hover:text-gray-900 hover:bg-orange-100"
                       )}
                     >
                       AI Text
@@ -119,8 +119,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'messages'
-                          ? "text-blue-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                          ? "text-blue-600 bg-orange-100"
+                          : "text-black hover:text-gray-900 hover:bg-orange-100"
                       )}
                     >
                       Chat
@@ -142,8 +142,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'messages'
-                          ? "text-blue-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                          ? "text-blue-600 bg-orange-100"
+                          : "text-black hover:text-gray-900 hover:bg-orange-100"
                       )}
                     >
                       Chat
@@ -161,8 +161,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'ai'
-                          ? "text-purple-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                          ? "text-purple-600 bg-orange-100"
+                          : "text-black hover:text-gray-900 hover:bg-orange-100"
                       )}
                     >
                       AI Text
@@ -175,8 +175,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'voice'
-                          ? "text-green-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                          ? "text-green-600 bg-orange-100"
+                          : "text-black hover:text-gray-900 hover:bg-orange-100"
                       )}
                     >
                       🗣️ Voice

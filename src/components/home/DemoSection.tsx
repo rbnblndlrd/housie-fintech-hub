@@ -1,9 +1,9 @@
 
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Star, CheckCircle } from "lucide-react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Search, Truck, Wrench } from 'lucide-react';
 
-interface UserTypeOption {
+interface DemoOption {
   id: string;
   title: string;
   description: string;
@@ -13,79 +13,85 @@ interface UserTypeOption {
 }
 
 interface DemoSectionProps {
-  selectedOption: UserTypeOption | undefined;
+  selectedOption: DemoOption | undefined;
 }
 
-export const DemoSection = ({ selectedOption }: DemoSectionProps) => {
+export const DemoSection: React.FC<DemoSectionProps> = ({ selectedOption }) => {
   if (!selectedOption) return null;
 
+  const getIconForOption = (optionId: string) => {
+    switch (optionId) {
+      case 'fleet':
+        return <Truck className="h-8 w-8 text-orange-600" />;
+      case 'provider':
+        return <Wrench className="h-8 w-8 text-green-600" />;
+      case 'customer':
+        return <Search className="h-8 w-8 text-purple-600" />;
+      default:
+        return <Search className="h-8 w-8 text-purple-600" />;
+    }
+  };
+
   return (
-    <section id="demo-section" className="py-16 lg:py-24 px-2 sm:px-4 relative">
-      {/* Background overlay for readability */}
-      <div className="absolute inset-0 bg-black/10"></div>
-      
-      <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
-        <div className="text-center mb-16 lg:mb-20">
-          <div className="inline-block bg-cream/95 backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 border-3 border-black shadow-2xl relative">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black mb-4">
-              See HOUSIE in Action
+    <section id="demo-section" className="py-16 lg:py-24 px-2 sm:px-4 bg-gray-800">
+      <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-3 mb-4">
+            {getIconForOption(selectedOption.id)}
+            <h2 className="text-3xl lg:text-4xl font-black text-cream">
+              {selectedOption.title.replace('?', '')} Demo
             </h2>
-            <p className="text-lg sm:text-xl lg:text-2xl text-gray-800 font-medium">
-              Here's what you can expect as a {selectedOption.title.toLowerCase().replace('?', '')}
-            </p>
           </div>
+          <p className="text-lg lg:text-xl text-gray-300 max-w-3xl mx-auto">
+            See how HOUSIE works for your specific needs
+          </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          {/* Demo Screenshot */}
-          <div className="bg-cream/95 backdrop-blur-sm rounded-3xl border-3 border-black shadow-2xl p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300">
-            <img 
-              src={selectedOption.demoImage} 
-              alt={`${selectedOption.title} Demo`}
-              className="w-full h-auto rounded-2xl shadow-xl border-2 border-black"
-            />
-          </div>
-
-          {/* Demo Benefits */}
-          <div className="space-y-8">
-            <div className="bg-cream/95 backdrop-blur-sm rounded-3xl border-3 border-black shadow-2xl p-8 lg:p-10">
-              <h3 className="text-2xl lg:text-3xl font-black text-black mb-6 lg:mb-8 flex items-center gap-3">
-                <Star className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
-                Why {selectedOption.title.replace('?', '')} Love HOUSIE
+        <Card className="bg-cream border-3 border-black rounded-2xl overflow-hidden shadow-2xl">
+          <CardContent className="p-0">
+            <div className="aspect-video bg-gray-100 rounded-2xl m-4 overflow-hidden border-2 border-black">
+              <img
+                src={selectedOption.demoImage}
+                alt={`${selectedOption.title} Demo`}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `
+                      <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                        <div class="text-center">
+                          <div class="mb-4">${selectedOption.icon}</div>
+                          <h3 class="text-xl font-bold text-gray-800 mb-2">${selectedOption.title}</h3>
+                          <p class="text-gray-600">${selectedOption.description}</p>
+                        </div>
+                      </div>
+                    `;
+                  }
+                }}
+              />
+            </div>
+            
+            <div className="p-6 lg:p-8">
+              <h3 className="text-2xl lg:text-3xl font-black text-black mb-4">
+                Perfect for {selectedOption.title.toLowerCase().replace('?', '')}
               </h3>
+              <p className="text-gray-800 text-lg mb-6">
+                {selectedOption.description}
+              </p>
               
-              <div className="space-y-4 lg:space-y-6">
+              <div className="grid grid-cols-2 gap-4">
                 {selectedOption.benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-start gap-4 lg:gap-6 p-4 lg:p-6 bg-cream/80 rounded-2xl border-2 border-black hover:shadow-lg transition-shadow duration-200">
-                    <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 mt-1 flex-shrink-0" />
-                    <div>
-                      <h4 className="font-black text-black text-base lg:text-lg mb-2">{benefit}</h4>
-                      <p className="text-gray-800 font-medium text-sm lg:text-base">
-                        Professional tools and features designed for your success
-                      </p>
-                    </div>
+                  <div key={index} className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                    <span className="text-black font-medium">{benefit}</span>
                   </div>
                 ))}
               </div>
             </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 lg:gap-6">
-              <Link to="/services" className="flex-1">
-                <Button className="w-full bg-gradient-to-r from-orange-600 to-purple-600 hover:from-orange-700 hover:to-purple-700 text-cream font-black py-4 lg:py-6 rounded-2xl text-lg lg:text-xl shadow-2xl transform hover:scale-105 hover:-translate-y-1 transition-all duration-200 border-2 border-black">
-                  Get Started Now
-                  <ArrowRight className="h-5 w-5 lg:h-6 lg:w-6 ml-3" />
-                </Button>
-              </Link>
-              <Button 
-                variant="outline" 
-                className="px-8 lg:px-10 py-4 lg:py-6 border-3 border-black bg-cream text-black rounded-2xl font-bold hover:bg-cream/80 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200"
-                onClick={() => document.getElementById('pricing-section')?.scrollIntoView({ behavior: 'smooth' })}
-              >
-                View Pricing
-              </Button>
-            </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </section>
   );

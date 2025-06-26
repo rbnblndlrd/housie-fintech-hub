@@ -46,26 +46,8 @@ const Index = () => {
   const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <div className="min-h-screen relative" style={{
-      background: `
-        radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at top right, rgba(45, 27, 105, 0.2) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom left, rgba(30, 41, 59, 0.25) 0%, transparent 50%),
-        radial-gradient(ellipse at bottom right, rgba(234, 88, 12, 0.1) 0%, transparent 50%),
-        linear-gradient(135deg, #0f172a 0%, #1e293b 25%, #2d1b69 50%, #1a1a1a 100%)
-      `,
-      backgroundAttachment: 'fixed'
-    }}>
+    <div className="min-h-screen relative">
       <Header />
-      
-      {/* Subtle overlay pattern for additional depth */}
-      <div className="absolute inset-0 opacity-5" style={{
-        backgroundImage: `
-          radial-gradient(circle at 25px 25px, rgba(139, 92, 246, 0.4) 2px, transparent 0),
-          radial-gradient(circle at 75px 75px, rgba(139, 92, 246, 0.2) 2px, transparent 0)
-        `,
-        backgroundSize: '100px 100px'
-      }}></div>
       
       <HeroSection />
       
@@ -76,11 +58,8 @@ const Index = () => {
 
       <DemoSection selectedOption={selectedOption} />
 
-      {/* Enhanced Pricing Section - Full Width */}
-      <div id="pricing-section" className="relative">
-        {/* Background overlay for readability */}
-        <div className="absolute inset-0 bg-black/10"></div>
-        
+      {/* Enhanced Pricing Section - Full Width with Dark Background */}
+      <div id="pricing-section" className="relative bg-gray-900">
         {/* Mascot pointing to best value */}
         <div className="absolute top-24 lg:top-32 left-8 lg:left-16 z-20 hidden lg:block">
           <div className="bg-cream/95 backdrop-blur-sm rounded-2xl px-6 lg:px-8 py-4 lg:py-6 border-3 border-black shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-300">
