@@ -38,21 +38,22 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   return (
     <>
-      {/* Clean Floating Chat Button - Changed to orange */}
+      {/* Clean Floating Chat Button - Changed to bright yellow */}
       <div className="fixed bottom-6 left-6 z-50">
         {!isOpen ? (
           <Button
             onClick={handleOpen}
             className={cn(
               "relative rounded-full w-14 h-14 shadow-lg transition-all duration-200 hover:scale-105",
-              "bg-orange-400 hover:bg-orange-500 border-2 border-orange-600"
+              "border-2 border-orange-600 text-black"
             )}
+            style={{ backgroundColor: '#f5d478' }}
             variant="ghost"
           >
             {useMicIcon ? (
-              <Mic className="h-6 w-6 text-orange-800" />
+              <Mic className="h-6 w-6 text-black" />
             ) : (
-              <MessageCircle className="h-6 w-6 text-orange-800" />
+              <MessageCircle className="h-6 w-6 text-black" />
             )}
             {totalUnreadCount > 0 && !useMicIcon && (
               <Badge
