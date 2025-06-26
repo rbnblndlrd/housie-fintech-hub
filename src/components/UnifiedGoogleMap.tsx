@@ -111,51 +111,288 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   // Find hovered provider
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);
 
-  // Area polygons for overlays
-  const areaPolygons = {
-    'Montreal Downtown': [
-      { lat: 45.495, lng: -73.600 },
-      { lat: 45.515, lng: -73.600 },
-      { lat: 45.515, lng: -73.570 },
-      { lat: 45.495, lng: -73.570 }
+  // Completely different area polygons for each layer type
+  const demandPolygons = {
+    'NDG Residential': [
+      { lat: 45.470, lng: -73.625 },
+      { lat: 45.485, lng: -73.625 },
+      { lat: 45.485, lng: -73.605 },
+      { lat: 45.470, lng: -73.605 }
     ],
-    'Longueuil': [
-      { lat: 45.410, lng: -73.480 },
-      { lat: 45.430, lng: -73.480 },
-      { lat: 45.430, lng: -73.450 },
-      { lat: 45.410, lng: -73.450 }
+    'McGill University Area': [
+      { lat: 45.500, lng: -73.582 },
+      { lat: 45.510, lng: -73.582 },
+      { lat: 45.510, lng: -73.572 },
+      { lat: 45.500, lng: -73.572 }
     ],
-    'Laval': [
-      { lat: 45.560, lng: -73.730 },
-      { lat: 45.580, lng: -73.730 },
-      { lat: 45.580, lng: -73.700 },
-      { lat: 45.560, lng: -73.700 }
+    'Concordia Campus Zone': [
+      { lat: 45.492, lng: -73.585 },
+      { lat: 45.502, lng: -73.585 },
+      { lat: 45.502, lng: -73.572 },
+      { lat: 45.492, lng: -73.572 }
     ],
-    'Westmount': [
-      { lat: 45.475, lng: -73.605 },
-      { lat: 45.495, lng: -73.605 },
-      { lat: 45.495, lng: -73.575 },
-      { lat: 45.475, lng: -73.575 }
+    'Plateau Residential': [
+      { lat: 45.520, lng: -73.585 },
+      { lat: 45.530, lng: -73.585 },
+      { lat: 45.530, lng: -73.570 },
+      { lat: 45.520, lng: -73.570 }
     ],
-    'Quebec City Old Town': [
-      { lat: 46.805, lng: -71.220 },
-      { lat: 46.825, lng: -71.220 },
-      { lat: 46.825, lng: -71.190 },
-      { lat: 46.805, lng: -71.190 }
+    'Rosemont Family District': [
+      { lat: 45.546, lng: -73.590 },
+      { lat: 45.557, lng: -73.590 },
+      { lat: 45.557, lng: -73.569 },
+      { lat: 45.546, lng: -73.569 }
     ],
-    'Sherbrooke Centre': [
-      { lat: 45.395, lng: -71.905 },
-      { lat: 45.415, lng: -71.905 },
-      { lat: 45.415, lng: -71.875 },
-      { lat: 45.395, lng: -71.875 }
+    'Brossard Suburbs': [
+      { lat: 45.453, lng: -73.480 },
+      { lat: 45.463, lng: -73.480 },
+      { lat: 45.463, lng: -73.456 },
+      { lat: 45.453, lng: -73.456 }
     ],
-    'Gatineau': [
-      { lat: 45.465, lng: -75.715 },
-      { lat: 45.485, lng: -75.715 },
-      { lat: 45.485, lng: -75.685 },
-      { lat: 45.465, lng: -75.685 }
+    'Laval University Hub': [
+      { lat: 46.773, lng: -71.285 },
+      { lat: 46.783, lng: -71.285 },
+      { lat: 46.783, lng: -71.266 },
+      { lat: 46.773, lng: -71.266 }
+    ],
+    'Dollard-des-Ormeaux': [
+      { lat: 45.489, lng: -73.834 },
+      { lat: 45.499, lng: -73.834 },
+      { lat: 45.499, lng: -73.814 },
+      { lat: 45.489, lng: -73.814 }
     ]
   };
+
+  const competitionPolygons = {
+    'St-Laurent Business Strip': [
+      { lat: 45.525, lng: -73.630 },
+      { lat: 45.540, lng: -73.630 },
+      { lat: 45.540, lng: -73.608 },
+      { lat: 45.525, lng: -73.608 }
+    ],
+    'Cavendish Mall Corridor': [
+      { lat: 45.454, lng: -73.640 },
+      { lat: 45.466, lng: -73.640 },
+      { lat: 45.466, lng: -73.618 },
+      { lat: 45.454, lng: -73.618 }
+    ],
+    'Technoparc Montreal': [
+      { lat: 45.500, lng: -73.665 },
+      { lat: 45.511, lng: -73.665 },
+      { lat: 45.511, lng: -73.635 },
+      { lat: 45.500, lng: -73.635 }
+    ],
+    'Marché Central': [
+      { lat: 45.539, lng: -73.660 },
+      { lat: 45.550, lng: -73.660 },
+      { lat: 45.550, lng: -73.637 },
+      { lat: 45.539, lng: -73.637 }
+    ],
+    'Quartier DIX30': [
+      { lat: 45.498, lng: -73.476 },
+      { lat: 45.509, lng: -73.476 },
+      { lat: 45.509, lng: -73.455 },
+      { lat: 45.498, lng: -73.455 }
+    ],
+    'Anjou Industrial Park': [
+      { lat: 45.600, lng: -73.556 },
+      { lat: 45.611, lng: -73.556 },
+      { lat: 45.611, lng: -73.535 },
+      { lat: 45.600, lng: -73.535 }
+    ],
+    'Galeries d\'Anjou Area': [
+      { lat: 45.603, lng: -73.570 },
+      { lat: 45.614, lng: -73.570 },
+      { lat: 45.614, lng: -73.549 },
+      { lat: 45.603, lng: -73.549 }
+    ]
+  };
+
+  const tipPolygons = {
+    'Westmount Luxury': [
+      { lat: 45.479, lng: -73.602 },
+      { lat: 45.490, lng: -73.602 },
+      { lat: 45.490, lng: -73.581 },
+      { lat: 45.479, lng: -73.581 }
+    ],
+    'Outremont Affluent': [
+      { lat: 45.513, lng: -73.616 },
+      { lat: 45.524, lng: -73.616 },
+      { lat: 45.524, lng: -73.595 },
+      { lat: 45.513, lng: -73.595 }
+    ],
+    'Town of Mount Royal': [
+      { lat: 45.507, lng: -73.640 },
+      { lat: 45.518, lng: -73.640 },
+      { lat: 45.518, lng: -73.619 },
+      { lat: 45.507, lng: -73.619 }
+    ],
+    'Beaconsfield Waterfront': [
+      { lat: 45.421, lng: -73.872 },
+      { lat: 45.432, lng: -73.872 },
+      { lat: 45.432, lng: -73.851 },
+      { lat: 45.421, lng: -73.851 }
+    ],
+    'Kirkland Executive': [
+      { lat: 45.441, lng: -73.855 },
+      { lat: 45.452, lng: -73.855 },
+      { lat: 45.452, lng: -73.835 },
+      { lat: 45.441, lng: -73.835 }
+    ],
+    'Brossard Professionals': [
+      { lat: 45.445, lng: -73.452 },
+      { lat: 45.456, lng: -73.452 },
+      { lat: 45.456, lng: -73.432 },
+      { lat: 45.445, lng: -73.432 }
+    ],
+    'Laval Executive District': [
+      { lat: 45.559, lng: -73.734 },
+      { lat: 45.570, lng: -73.734 },
+      { lat: 45.570, lng: -73.713 },
+      { lat: 45.559, lng: -73.713 }
+    ],
+    'Dollard Professionals': [
+      { lat: 45.487, lng: -73.850 },
+      { lat: 45.498, lng: -73.850 },
+      { lat: 45.498, lng: -73.830 },
+      { lat: 45.487, lng: -73.830 }
+    ]
+  };
+
+  const opportunityPolygons = {
+    'Pierrefonds Growth Zone': [
+      { lat: 45.489, lng: -73.870 },
+      { lat: 45.500, lng: -73.870 },
+      { lat: 45.500, lng: -73.849 },
+      { lat: 45.489, lng: -73.849 }
+    ],
+    'Ste-Dorothée Emerging': [
+      { lat: 45.560, lng: -73.812 },
+      { lat: 45.571, lng: -73.812 },
+      { lat: 45.571, lng: -73.790 },
+      { lat: 45.560, lng: -73.790 }
+    ],
+    'Rivière-des-Prairies': [
+      { lat: 45.640, lng: -73.509 },
+      { lat: 45.651, lng: -73.509 },
+      { lat: 45.651, lng: -73.488 },
+      { lat: 45.640, lng: -73.488 }
+    ],
+    'Pointe-aux-Trembles': [
+      { lat: 45.682, lng: -73.506 },
+      { lat: 45.693, lng: -73.506 },
+      { lat: 45.693, lng: -73.485 },
+      { lat: 45.682, lng: -73.485 }
+    ],
+    'Candiac New Development': [
+      { lat: 45.380, lng: -73.526 },
+      { lat: 45.391, lng: -73.526 },
+      { lat: 45.391, lng: -73.505 },
+      { lat: 45.380, lng: -73.505 }
+    ],
+    'Mirabel Airport Region': [
+      { lat: 45.673, lng: -74.047 },
+      { lat: 45.684, lng: -74.047 },
+      { lat: 45.684, lng: -74.026 },
+      { lat: 45.673, lng: -74.026 }
+    ],
+    'Vaudreuil-Dorion': [
+      { lat: 45.396, lng: -74.040 },
+      { lat: 45.407, lng: -74.040 },
+      { lat: 45.407, lng: -74.018 },
+      { lat: 45.396, lng: -74.018 }
+    ],
+    'Terrebonne Expansion': [
+      { lat: 45.695, lng: -73.656 },
+      { lat: 45.706, lng: -73.656 },
+      { lat: 45.706, lng: -73.635 },
+      { lat: 45.695, lng: -73.635 }
+    ]
+  };
+
+  if (loadError) {
+    return (
+      <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
+        <div className="text-center p-6">
+          <div className="text-red-600 mb-3 text-xl">🗺️ Maps Loading Error</div>
+          <p className="text-gray-700 mb-2 font-medium">Google Maps failed to load</p>
+          
+          <div className="text-sm text-gray-600 space-y-1">
+            {loadError.message.includes('RefererNotAllowedMapError') ? (
+              <>
+                <p className="text-red-600 font-medium">🚨 Domain Authorization Error</p>
+                <p>Your Google Maps API key is not authorized for this domain</p>
+                <p className="mt-2"><strong>Fix:</strong> Go to Google Cloud Console → APIs & Services → Credentials</p>
+                <p>Add this domain to your API key restrictions:</p>
+                <p className="font-mono text-xs bg-gray-100 p-2 rounded mt-1">
+                  *.lovable.app
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-red-600 font-medium">Error: {loadError.message}</p>
+                {import.meta.env.DEV ? (
+                  <p>🏠 <strong>Development:</strong> Check your .env file and API key</p>
+                ) : (
+                  <p>🚀 <strong>Production:</strong> Check GitHub Actions environment variables</p>
+                )}
+              </>
+            )}
+          </div>
+          
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+            <p><strong>Build Mode:</strong> {import.meta.env.MODE}</p>
+            <p><strong>Environment:</strong> {import.meta.env.DEV ? 'Development' : 'Production'}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!GOOGLE_MAPS_API_KEY) {
+    return (
+      <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
+        <div className="text-center p-6">
+          <div className="text-red-600 mb-3 text-xl">🗺️ Maps Configuration Required</div>
+          <p className="text-gray-700 mb-2 font-medium">Google Maps API key not configured</p>
+          
+          <div className="text-sm text-gray-600 space-y-1">
+            {import.meta.env.DEV ? (
+              <>
+                <p>🏠 <strong>Development:</strong> Add VITE_GOOGLE_MAPS_API_KEY to your .env file</p>
+                <p>📁 Create .env in project root with your API key</p>
+              </>
+            ) : (
+              <>
+                <p>🚀 <strong>Production:</strong> Check GitHub Actions workflow</p>
+                <p>🔐 Ensure VITE_GOOGLE_MAPS_API_KEY secret is set in GitHub</p>
+                <p>⚙️ Verify workflow injects the environment variable during build</p>
+              </>
+            )}
+          </div>
+          
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
+            <p><strong>Build Mode:</strong> {import.meta.env.MODE}</p>
+            <p><strong>Environment:</strong> {import.meta.env.DEV ? 'Development' : 'Production'}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isLoaded) {
+    return (
+      <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+          <p className="text-gray-600">Loading Montreal map...</p>
+          <p className="text-xs text-gray-500 mt-1">
+            {import.meta.env.DEV ? 'Development' : 'Production'} Mode
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   // Create Quebec data overlays based on enabled layers
   const renderQuebecOverlays = () => {
@@ -250,16 +487,15 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     return overlays;
   };
 
-  // Create Provider Mode overlays with independent data sources
+  // Create Provider Mode overlays with completely independent geographic areas
   const renderProviderOverlays = () => {
     const overlays = [];
 
-    // Demand Hot Zones (Orange) - Based on service requests + demographics
+    // Demand Hot Zones (Orange) - Residential & Student Areas
     if (enabledLayers.demand && demandData.length > 0) {
       demandData.forEach((area, index) => {
-        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
+        const polygon = demandPolygons[area.area as keyof typeof demandPolygons];
         if (polygon) {
-          // Use actual demand score from service request data
           const demandIntensity = Math.min(1, area.demandScore / 100);
           
           overlays.push(
@@ -268,8 +504,32 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
               paths={polygon}
               options={{
                 fillColor: '#f97316',
-                fillOpacity: demandIntensity * 0.6,
+                fillOpacity: demandIntensity * 0.7,
                 strokeColor: '#ea580c',
+                strokeOpacity: 0.9,
+                strokeWeight: 2
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    // Competition Analysis (Red) - Commercial Corridors & Business Parks
+    if (enabledLayers.competition && competitionData.length > 0) {
+      competitionData.forEach((area, index) => {
+        const polygon = competitionPolygons[area.area as keyof typeof competitionPolygons];
+        if (polygon) {
+          const competitionIntensity = Math.min(1, area.marketSaturation);
+          
+          overlays.push(
+            <Polygon
+              key={`competition-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#dc2626',
+                fillOpacity: competitionIntensity * 0.6,
+                strokeColor: '#b91c1c',
                 strokeOpacity: 0.8,
                 strokeWeight: 2
               }}
@@ -279,38 +539,12 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       });
     }
 
-    // Competition Analysis (Red) - Based on business registry data
-    if (enabledLayers.competition && competitionData.length > 0) {
-      competitionData.forEach((area, index) => {
-        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
-        if (polygon) {
-          // Use market saturation from business registry
-          const competitionIntensity = Math.min(1, area.marketSaturation);
-          
-          overlays.push(
-            <Polygon
-              key={`competition-${index}`}
-              paths={polygon}
-              options={{
-                fillColor: '#dc2626',
-                fillOpacity: competitionIntensity * 0.5,
-                strokeColor: '#b91c1c',
-                strokeOpacity: 0.7,
-                strokeWeight: 2
-              }}
-            />
-          );
-        }
-      });
-    }
-
-    // Tip Zone Mapping (Gold) - Based on income + spending patterns
+    // Tip Zone Mapping (Gold) - Wealth Clusters
     if (enabledLayers.tips && tipData.length > 0) {
       tipData.forEach((area, index) => {
-        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
+        const polygon = tipPolygons[area.area as keyof typeof tipPolygons];
         if (polygon) {
-          // Use spending index, not just income
-          const tipIntensity = Math.min(1, area.spendingIndex);
+          const tipIntensity = Math.min(1, area.spendingIndex / 2);
           
           overlays.push(
             <Polygon
@@ -318,9 +552,9 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
               paths={polygon}
               options={{
                 fillColor: '#eab308',
-                fillOpacity: tipIntensity * 0.5,
+                fillOpacity: tipIntensity * 0.65,
                 strokeColor: '#ca8a04',
-                strokeOpacity: 0.7,
+                strokeOpacity: 0.8,
                 strokeWeight: 2
               }}
             />
@@ -329,13 +563,12 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       });
     }
 
-    // Opportunity Areas (Green) - Based on market gap analysis
+    // Opportunity Areas (Green) - Growth Zones & Market Gaps
     if (enabledLayers.opportunity && opportunityData.length > 0) {
       opportunityData.forEach((area, index) => {
-        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
+        const polygon = opportunityPolygons[area.area as keyof typeof opportunityPolygons];
         if (polygon) {
-          // Use market gap calculation, not demand calculation
-          const opportunityIntensity = Math.min(1, area.marketGap / 2);
+          const opportunityIntensity = Math.min(1, area.marketGap / 3);
           
           overlays.push(
             <Polygon
@@ -343,9 +576,9 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
               paths={polygon}
               options={{
                 fillColor: '#16a34a',
-                fillOpacity: opportunityIntensity * 0.5,
+                fillOpacity: opportunityIntensity * 0.6,
                 strokeColor: '#15803d',
-                strokeOpacity: 0.7,
+                strokeOpacity: 0.8,
                 strokeWeight: 2
               }}
             />
@@ -356,90 +589,6 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
 
     return overlays;
   };
-
-  if (loadError) {
-    return (
-      <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
-        <div className="text-center p-6">
-          <div className="text-red-600 mb-3 text-xl">🗺️ Maps Loading Error</div>
-          <p className="text-gray-700 mb-2 font-medium">Google Maps failed to load</p>
-          
-          <div className="text-sm text-gray-600 space-y-1">
-            {loadError.message.includes('RefererNotAllowedMapError') ? (
-              <>
-                <p className="text-red-600 font-medium">🚨 Domain Authorization Error</p>
-                <p>Your Google Maps API key is not authorized for this domain</p>
-                <p className="mt-2"><strong>Fix:</strong> Go to Google Cloud Console → APIs & Services → Credentials</p>
-                <p>Add this domain to your API key restrictions:</p>
-                <p className="font-mono text-xs bg-gray-100 p-2 rounded mt-1">
-                  *.lovable.app
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-red-600 font-medium">Error: {loadError.message}</p>
-                {import.meta.env.DEV ? (
-                  <p>🏠 <strong>Development:</strong> Check your .env file and API key</p>
-                ) : (
-                  <p>🚀 <strong>Production:</strong> Check GitHub Actions environment variables</p>
-                )}
-              </>
-            )}
-          </div>
-          
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
-            <p><strong>Build Mode:</strong> {import.meta.env.MODE}</p>
-            <p><strong>Environment:</strong> {import.meta.env.DEV ? 'Development' : 'Production'}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!GOOGLE_MAPS_API_KEY) {
-    return (
-      <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
-        <div className="text-center p-6">
-          <div className="text-red-600 mb-3 text-xl">🗺️ Maps Configuration Required</div>
-          <p className="text-gray-700 mb-2 font-medium">Google Maps API key not configured</p>
-          
-          <div className="text-sm text-gray-600 space-y-1">
-            {import.meta.env.DEV ? (
-              <>
-                <p>🏠 <strong>Development:</strong> Add VITE_GOOGLE_MAPS_API_KEY to your .env file</p>
-                <p>📁 Create .env in project root with your API key</p>
-              </>
-            ) : (
-              <>
-                <p>🚀 <strong>Production:</strong> Check GitHub Actions workflow</p>
-                <p>🔐 Ensure VITE_GOOGLE_MAPS_API_KEY secret is set in GitHub</p>
-                <p>⚙️ Verify workflow injects the environment variable during build</p>
-              </>
-            )}
-          </div>
-          
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg text-xs text-blue-700">
-            <p><strong>Build Mode:</strong> {import.meta.env.MODE}</p>
-            <p><strong>Environment:</strong> {import.meta.env.DEV ? 'Development' : 'Production'}</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!isLoaded) {
-    return (
-      <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
-          <p className="text-gray-600">Loading Montreal map...</p>
-          <p className="text-xs text-gray-500 mt-1">
-            {import.meta.env.DEV ? 'Development' : 'Production'} Mode
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`w-full h-full rounded-lg ${className}`}>
