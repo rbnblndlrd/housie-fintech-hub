@@ -18,7 +18,9 @@ import {
   Activity,
   DollarSign,
   Radio,
-  Brain
+  Brain,
+  BarChart3,
+  Target
 } from 'lucide-react';
 import { useFleetOperations } from '@/hooks/useFleetOperations';
 
@@ -26,6 +28,8 @@ interface FleetManagerModeProps {
   onDataLayerToggle: (layer: string, enabled: boolean) => void;
   enabledLayers: Record<string, boolean>;
 }
+
+type FleetPreset = 'operations-command' | 'performance-analytics' | 'strategic-planning';
 
 const FleetManagerMode: React.FC<FleetManagerModeProps> = ({
   onDataLayerToggle,
@@ -40,6 +44,8 @@ const FleetManagerMode: React.FC<FleetManagerModeProps> = ({
     fleetStats
   } = useFleetOperations();
 
+  const [selectedPreset, setSelectedPreset] = useState<FleetPreset>('operations-command');
+
   const handleLayerToggle = (layerName: string) => {
     const newState = !enabledLayers[layerName];
     onDataLayerToggle(layerName, newState);
@@ -49,6 +55,12 @@ const FleetManagerMode: React.FC<FleetManagerModeProps> = ({
     console.log('🚨 Emergency dispatch activated');
     // Emergency dispatch logic would go here
   };
+
+  const presetTabs = [
+    { id: 'operations-command', label: 'Operations Command', icon: Activity },
+    { id: 'performance-analytics', label: 'Performance Analytics', icon: BarChart3 },
+    { id: 'strategic-planning', label: 'Strategic Planning', icon: Target }
+  ];
 
   if (isLoading) {
     return (
@@ -67,9 +79,27 @@ const FleetManagerMode: React.FC<FleetManagerModeProps> = ({
       <div className="p-4 border-b border-gray-700 bg-gray-800">
         <h2 className="text-lg font-semibold text-white flex items-center gap-2">
           <Activity className="h-5 w-5 text-blue-400" />
-          Operations Command
+          Fleet Command
         </h2>
-        <p className="text-sm text-gray-400 mt-1">Fleet coordination and performance</p>
+        <p className="text-sm text-gray-400 mt-1">Operations and coordination center</p>
+        
+        {/* Preset Tabs */}
+        <div className="mt-3">
+          <Tabs value={selectedPreset} onValueChange={(value) => setSelectedPreset(value as FleetPreset)}>
+            <TabsList className="grid w-full grid-cols-3 bg-gray-700">
+              {presetTabs.map((preset) => (
+                <TabsTrigger 
+                  key={preset.id} 
+                  value={preset.id}
+                  className="text-xs data-[state=active]:bg-blue-600 data-[state=active]:text-white"
+                >
+                  <preset.icon className="h-3 w-3 mr-1" />
+                  {preset.label.split(' ')[0]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
         
         {/* Quick Stats */}
         <div className="grid grid-cols-2 gap-2 mt-3">
@@ -92,101 +122,140 @@ const FleetManagerMode: React.FC<FleetManagerModeProps> = ({
           </TabsList>
 
           <TabsContent value="data-layers" className="p-4 space-y-4">
-            {/* Live Fleet Tracking */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2 text-white">
-                  <Truck className="h-4 w-4 text-blue-400" />
-                  Live Fleet Tracking
-                </CardTitle>
-                <p className="text-xs text-gray-400">Real-time vehicle locations</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="fleet-layer" className="text-sm text-gray-300">Fleet Positions</Label>
-                  <Switch
-                    id="fleet-layer"
-                    checked={enabledLayers.fleetTracking || false}
-                    onCheckedChange={() => handleLayerToggle('fleetTracking')}
-                  />
-                </div>
-                <div className="text-xs text-gray-400">
-                  GPS tracking every 30 seconds
-                </div>
-              </CardContent>
-            </Card>
+            {/* Operations Command Content */}
+            {selectedPreset === 'operations-command' && (
+              <>
+                {/* Live Fleet Tracking */}
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2 text-white">
+                      <Truck className="h-4 w-4 text-blue-400" />
+                      Live Fleet Tracking
+                    </CardTitle>
+                    <p className="text-xs text-gray-400">Real-time vehicle locations</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="fleet-layer" className="text-sm text-gray-300">Fleet Positions</Label>
+                      <Switch
+                        id="fleet-layer"
+                        checked={enabledLayers.fleetTracking || false}
+                        onCheckedChange={() => handleLayerToggle('fleetTracking')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      GPS tracking every 30 seconds
+                    </div>
+                  </CardContent>
+                </Card>
 
-            {/* Job Distribution */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2 text-white">
-                  <MapPin className="h-4 w-4 text-purple-400" />
-                  Job Distribution
-                </CardTitle>
-                <p className="text-xs text-gray-400">Current assignments and workload</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="jobs-layer" className="text-sm text-gray-300">Workload Zones</Label>
-                  <Switch
-                    id="jobs-layer"
-                    checked={enabledLayers.jobDistribution || false}
-                    onCheckedChange={() => handleLayerToggle('jobDistribution')}
-                  />
-                </div>
-                <div className="text-xs text-gray-400">
-                  Active jobs + pending assignments
-                </div>
-              </CardContent>
-            </Card>
+                {/* Job Distribution */}
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2 text-white">
+                      <MapPin className="h-4 w-4 text-purple-400" />
+                      Job Distribution
+                    </CardTitle>
+                    <p className="text-xs text-gray-400">Current assignments and workload</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="jobs-layer" className="text-sm text-gray-300">Workload Zones</Label>
+                      <Switch
+                        id="jobs-layer"
+                        checked={enabledLayers.jobDistribution || false}
+                        onCheckedChange={() => handleLayerToggle('jobDistribution')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      Active jobs + pending assignments
+                    </div>
+                  </CardContent>
+                </Card>
 
-            {/* Performance Zones */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2 text-white">
-                  <TrendingUp className="h-4 w-4 text-green-400" />
-                  Performance Zones
-                </CardTitle>
-                <p className="text-xs text-gray-400">Revenue and efficiency by area</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="performance-layer" className="text-sm text-gray-300">Revenue Heat Map</Label>
-                  <Switch
-                    id="performance-layer"
-                    checked={enabledLayers.performanceZones || false}
-                    onCheckedChange={() => handleLayerToggle('performanceZones')}
-                  />
-                </div>
-                <div className="text-xs text-gray-400">
-                  $/hour efficiency metrics
-                </div>
-              </CardContent>
-            </Card>
+                {/* Performance Zones */}
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2 text-white">
+                      <TrendingUp className="h-4 w-4 text-green-400" />
+                      Performance Zones
+                    </CardTitle>
+                    <p className="text-xs text-gray-400">Revenue and efficiency by area</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="performance-layer" className="text-sm text-gray-300">Revenue Heat Map</Label>
+                      <Switch
+                        id="performance-layer"
+                        checked={enabledLayers.performanceZones || false}
+                        onCheckedChange={() => handleLayerToggle('performanceZones')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      $/hour efficiency metrics
+                    </div>
+                  </CardContent>
+                </Card>
 
-            {/* Route Optimization */}
-            <Card className="bg-gray-800 border-gray-700">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2 text-white">
-                  <Route className="h-4 w-4 text-orange-400" />
-                  Route Optimization
-                </CardTitle>
-                <p className="text-xs text-gray-400">Multi-vehicle coordination</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="routes-layer" className="text-sm text-gray-300">Optimized Routes</Label>
-                  <Switch
-                    id="routes-layer"
-                    checked={enabledLayers.routeOptimization || false}
-                    onCheckedChange={() => handleLayerToggle('routeOptimization')}
-                  />
-                </div>
-                <div className="text-xs text-gray-400">
-                  AI-powered route planning
-                </div>
-              </CardContent>
-            </Card>
+                {/* Route Optimization */}
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2 text-white">
+                      <Route className="h-4 w-4 text-orange-400" />
+                      Route Optimization
+                    </CardTitle>
+                    <p className="text-xs text-gray-400">Multi-vehicle coordination</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="routes-layer" className="text-sm text-gray-300">Optimized Routes</Label>
+                      <Switch
+                        id="routes-layer"
+                        checked={enabledLayers.routeOptimization || false}
+                        onCheckedChange={() => handleLayerToggle('routeOptimization')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-400">
+                      AI-powered route planning
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+
+            {/* Performance Analytics Content */}
+            {selectedPreset === 'performance-analytics' && (
+              <>
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm">Performance Analytics Features</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="text-sm text-gray-400">
+                      Advanced performance metrics and KPI tracking
+                    </div>
+                    <Badge variant="outline" className="mt-2 bg-gray-700">Coming Soon</Badge>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+
+            {/* Strategic Planning Content */}
+            {selectedPreset === 'strategic-planning' && (
+              <>
+                <Card className="bg-gray-800 border-gray-700">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm">Strategic Planning Features</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="text-sm text-gray-400">
+                      Long-term fleet optimization and market expansion
+                    </div>
+                    <Badge variant="outline" className="mt-2 bg-gray-700">Coming Soon</Badge>
+                  </CardContent>
+                </Card>
+              </>
+            )}
 
             {/* Coming Soon Features */}
             <Card className="bg-gray-800 border-gray-700 border-dashed">

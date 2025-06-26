@@ -1,126 +1,54 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
+  Search, 
   Shield, 
   Users, 
-  MapPin, 
-  TrendingUp,
-  AlertTriangle,
+  MapPin,
   Clock,
-  DollarSign,
-  Info
+  Info,
+  AlertTriangle,
+  ShoppingCart,
+  Compass
 } from 'lucide-react';
+import { useQuebecData } from '@/hooks/useQuebecData';
 
 interface CustomerMapModeProps {
   onDataLayerToggle: (layer: string, enabled: boolean) => void;
   enabledLayers: Record<string, boolean>;
 }
 
-interface CrimeStats {
-  area: string;
-  crimeRate: number;
-  safetyScore: number;
-  trend: 'up' | 'down' | 'stable';
-}
-
-interface DemographicData {
-  area: string;
-  avgIncome: number;
-  ageGroup: string;
-  primaryLanguage: string;
-  population: number;
-}
-
-interface ServiceDensity {
-  area: string;
-  providerCount: number;
-  categories: string[];
-  avgRating: number;
-}
+type CustomerPreset = 'neighborhood-explorer' | 'service-shopping' | 'emergency-finder';
 
 const CustomerMapMode: React.FC<CustomerMapModeProps> = ({
   onDataLayerToggle,
   enabledLayers
 }) => {
-  const [crimeData, setCrimeData] = useState<CrimeStats[]>([]);
-  const [demographicData, setDemographicData] = useState<DemographicData[]>([]);
-  const [serviceData, setServiceData] = useState<ServiceDensity[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Real Quebec data fetching
-  useEffect(() => {
-    const fetchQuebecData = async () => {
-      setIsLoading(true);
-      try {
-        // Simulate real API calls - in production these would be actual API endpoints
-        await Promise.all([
-          fetchCrimeData(),
-          fetchDemographicData(),
-          fetchServiceDensity()
-        ]);
-      } catch (error) {
-        console.error('Error fetching Quebec data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchQuebecData();
-  }, []);
-
-  const fetchCrimeData = async () => {
-    // Real implementation would call Statistics Canada API
-    // URL: https://www150.statcan.gc.ca/t1/tbl1/en/cv.action?pid=3510017701
-    const mockCrimeData: CrimeStats[] = [
-      { area: "Montreal Downtown", crimeRate: 45.2, safetyScore: 7.8, trend: 'down' },
-      { area: "Longueuil", crimeRate: 28.1, safetyScore: 8.5, trend: 'stable' },
-      { area: "Laval", crimeRate: 31.7, safetyScore: 8.2, trend: 'down' },
-      { area: "Westmount", crimeRate: 12.3, safetyScore: 9.2, trend: 'stable' },
-    ];
-    setCrimeData(mockCrimeData);
-  };
-
-  const fetchDemographicData = async () => {
-    // Real implementation would call Statistics Canada Census API
-    // URL: https://www12.statcan.gc.ca/rest/census-recensement/
-    const mockDemographicData: DemographicData[] = [
-      { area: "Montreal Downtown", avgIncome: 52000, ageGroup: "25-45", primaryLanguage: "French", population: 85000 },
-      { area: "Longueuil", avgIncome: 67000, ageGroup: "35-55", primaryLanguage: "French", population: 250000 },
-      { area: "Laval", avgIncome: 71000, ageGroup: "30-50", primaryLanguage: "French", population: 440000 },
-      { area: "Westmount", avgIncome: 95000, ageGroup: "40-65", primaryLanguage: "English", population: 20000 },
-    ];
-    setDemographicData(mockDemographicData);
-  };
-
-  const fetchServiceDensity = async () => {
-    // Real implementation would call Quebec Business Registry
-    // URL: https://www.donneesquebec.ca
-    const mockServiceData: ServiceDensity[] = [
-      { area: "Montreal Downtown", providerCount: 245, categories: ["Cleaning", "Handyman", "Tech"], avgRating: 4.2 },
-      { area: "Longueuil", providerCount: 89, categories: ["Cleaning", "Lawn Care"], avgRating: 4.5 },
-      { area: "Laval", providerCount: 156, categories: ["Cleaning", "Moving", "Handyman"], avgRating: 4.3 },
-      { area: "Westmount", providerCount: 67, categories: ["Cleaning", "Concierge"], avgRating: 4.7 },
-    ];
-    setServiceData(mockServiceData);
-  };
+  const { isLoading } = useQuebecData();
+  const [selectedPreset, setSelectedPreset] = useState<CustomerPreset>('neighborhood-explorer');
 
   const handleLayerToggle = (layerName: string) => {
     const newState = !enabledLayers[layerName];
     onDataLayerToggle(layerName, newState);
   };
 
+  const presetTabs = [
+    { id: 'neighborhood-explorer', label: 'Neighborhood Explorer', icon: Compass },
+    { id: 'service-shopping', label: 'Service Shopping', icon: ShoppingCart },
+    { id: 'emergency-finder', label: 'Emergency Finder', icon: AlertTriangle }
+  ];
+
   if (isLoading) {
     return (
       <div className="w-80 bg-white border-l border-gray-200 flex items-center justify-center">
         <div className="text-center p-6">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-3"></div>
-          <p className="text-gray-600">Loading Quebec data...</p>
+          <p className="text-gray-600">Loading neighborhood data...</p>
         </div>
       </div>
     );
@@ -131,10 +59,28 @@ const CustomerMapMode: React.FC<CustomerMapModeProps> = ({
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-blue-600" />
-          Neighborhood Explorer
+          <Search className="h-5 w-5 text-teal-600" />
+          Customer Intelligence
         </h2>
-        <p className="text-sm text-gray-600 mt-1">Real Quebec intelligence data</p>
+        <p className="text-sm text-gray-600 mt-1">Quebec neighborhood insights</p>
+        
+        {/* Preset Tabs */}
+        <div className="mt-3">
+          <Tabs value={selectedPreset} onValueChange={(value) => setSelectedPreset(value as CustomerPreset)}>
+            <TabsList className="grid w-full grid-cols-3 bg-gray-100">
+              {presetTabs.map((preset) => (
+                <TabsTrigger 
+                  key={preset.id} 
+                  value={preset.id}
+                  className="text-xs data-[state=active]:bg-teal-600 data-[state=active]:text-white"
+                >
+                  <preset.icon className="h-3 w-3 mr-1" />
+                  {preset.label.split(' ')[0]}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -145,75 +91,119 @@ const CustomerMapMode: React.FC<CustomerMapModeProps> = ({
           </TabsList>
 
           <TabsContent value="data-layers" className="p-4 space-y-4">
-            {/* Real Data Layers */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Shield className="h-4 w-4 text-red-600" />
-                  Safety & Crime Data
-                </CardTitle>
-                <p className="text-xs text-gray-600">Statistics Canada Quebec</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="crime-layer" className="text-sm">Crime Heat Map</Label>
-                  <Switch
-                    id="crime-layer"
-                    checked={enabledLayers.crime || false}
-                    onCheckedChange={() => handleLayerToggle('crime')}
-                  />
-                </div>
-                <div className="text-xs text-gray-600">
-                  Real incident data from SPVM & Statistics Canada
-                </div>
-              </CardContent>
-            </Card>
+            {/* Neighborhood Explorer Content */}
+            {selectedPreset === 'neighborhood-explorer' && (
+              <>
+                {/* Crime & Safety */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Shield className="h-4 w-4 text-red-600" />
+                      Crime & Safety
+                    </CardTitle>
+                    <p className="text-xs text-gray-600">SPVM public safety statistics</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="crime-layer" className="text-sm">Safety Heat Map</Label>
+                      <Switch
+                        id="crime-layer"
+                        checked={enabledLayers.crime || false}
+                        onCheckedChange={() => handleLayerToggle('crime')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      Red zones = higher crime rates, Green zones = safer areas
+                    </div>
+                  </CardContent>
+                </Card>
 
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Users className="h-4 w-4 text-blue-600" />
-                  Demographics & Quality
-                </CardTitle>
-                <p className="text-xs text-gray-600">Statistics Canada Census</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="demographics-layer" className="text-sm">Income & Age Data</Label>
-                  <Switch
-                    id="demographics-layer"
-                    checked={enabledLayers.demographics || false}
-                    onCheckedChange={() => handleLayerToggle('demographics')}
-                  />
-                </div>
-                <div className="text-xs text-gray-600">
-                  Income, age, language by postal code
-                </div>
-              </CardContent>
-            </Card>
+                {/* Demographics */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <Users className="h-4 w-4 text-blue-600" />
+                      Demographics
+                    </CardTitle>
+                    <p className="text-xs text-gray-600">Census Canada income data</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="demographics-layer" className="text-sm">Income Distribution</Label>
+                      <Switch
+                        id="demographics-layer"
+                        checked={enabledLayers.demographics || false}
+                        onCheckedChange={() => handleLayerToggle('demographics')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      Blue intensity = household income levels
+                    </div>
+                  </CardContent>
+                </Card>
 
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-green-600" />
-                  Service Provider Density
-                </CardTitle>
-                <p className="text-xs text-gray-600">Quebec Business Registry</p>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="flex items-center justify-between mb-3">
-                  <Label htmlFor="services-layer" className="text-sm">Business Locations</Label>
-                  <Switch
-                    id="services-layer"
-                    checked={enabledLayers.services || false}
-                    onCheckedChange={() => handleLayerToggle('services')}
-                  />
-                </div>
-                <div className="text-xs text-gray-600">
-                  Real service provider counts by area
-                </div>
-              </CardContent>
-            </Card>
+                {/* Service Availability */}
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-green-600" />
+                      Service Availability
+                    </CardTitle>
+                    <p className="text-xs text-gray-600">Provider density mapping</p>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="flex items-center justify-between mb-3">
+                      <Label htmlFor="services-layer" className="text-sm">Provider Density</Label>
+                      <Switch
+                        id="services-layer"
+                        checked={enabledLayers.services || false}
+                        onCheckedChange={() => handleLayerToggle('services')}
+                      />
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      Green dots = available service providers
+                    </div>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+
+            {/* Service Shopping Content */}
+            {selectedPreset === 'service-shopping' && (
+              <>
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm">Service Shopping Features</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="text-sm text-gray-600">
+                      Advanced service discovery and comparison tools
+                    </div>
+                    <Badge variant="outline" className="mt-2">Coming Soon</Badge>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+
+            {/* Emergency Finder Content */}
+            {selectedPreset === 'emergency-finder' && (
+              <>
+                <Card>
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-sm flex items-center gap-2">
+                      <AlertTriangle className="h-4 w-4 text-red-600" />
+                      Emergency Response
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <div className="text-sm text-gray-600">
+                      24/7 emergency service location and dispatch
+                    </div>
+                    <Badge variant="outline" className="mt-2">Coming Soon</Badge>
+                  </CardContent>
+                </Card>
+              </>
+            )}
 
             {/* Coming Soon Features */}
             <Card className="border-dashed border-gray-300">
@@ -225,11 +215,11 @@ const CustomerMapMode: React.FC<CustomerMapModeProps> = ({
               </CardHeader>
               <CardContent className="pt-0 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Grouping Opportunities</span>
+                  <span className="text-xs text-gray-500">Transit Integration</span>
                   <Badge variant="outline" className="text-xs">Soon</Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Average Tips by Area</span>
+                  <span className="text-xs text-gray-500">Weather Impact Layer</span>
                   <Badge variant="outline" className="text-xs">Soon</Badge>
                 </div>
               </CardContent>
@@ -237,86 +227,22 @@ const CustomerMapMode: React.FC<CustomerMapModeProps> = ({
           </TabsContent>
 
           <TabsContent value="insights" className="p-4 space-y-4">
-            {/* Crime Insights */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <AlertTriangle className="h-4 w-4 text-red-600" />
-                  Safety Overview
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {crimeData.slice(0, 3).map((area, index) => (
-                  <div key={index} className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">{area.area}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{area.safetyScore}/10</span>
-                      <div className={`w-2 h-2 rounded-full ${
-                        area.trend === 'down' ? 'bg-green-500' : 
-                        area.trend === 'up' ? 'bg-red-500' : 'bg-yellow-500'
-                      }`} />
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Demographics Insights */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                  Income Analysis
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {demographicData.slice(0, 3).map((area, index) => (
-                  <div key={index} className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">{area.area}</span>
-                    <span className="font-medium">${(area.avgIncome / 1000).toFixed(0)}k</span>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
-            {/* Service Density Insights */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-blue-600" />
-                  Service Availability
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {serviceData.slice(0, 3).map((area, index) => (
-                  <div key={index} className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">{area.area}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{area.providerCount}</span>
-                      <span className="text-gray-500">providers</span>
-                    </div>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-
             {/* Data Sources Info */}
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-teal-50 border-teal-200">
               <CardHeader className="pb-3">
                 <CardTitle className="text-sm flex items-center gap-2">
-                  <Info className="h-4 w-4 text-blue-600" />
-                  Real Data Sources
+                  <Info className="h-4 w-4 text-teal-600" />
+                  Quebec Data Integration
                 </CardTitle>
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="space-y-2 text-xs text-blue-700">
-                  <div>• Statistics Canada Crime Data</div>
-                  <div>• Montreal SPVM Real-time Data</div>
-                  <div>• Census Demographics API</div>
-                  <div>• Quebec Business Registry</div>
+                <div className="space-y-2 text-xs text-teal-700">
+                  <div>• Crime: SPVM public safety reports</div>
+                  <div>• Demographics: Statistics Canada census</div>
+                  <div>• Services: Quebec business registry</div>
                 </div>
-                <div className="mt-3 text-xs text-blue-600 font-medium">
-                  Updated daily from official sources
+                <div className="mt-3 text-xs text-teal-600 font-medium">
+                  Real Quebec neighborhood intelligence
                 </div>
               </CardContent>
             </Card>
