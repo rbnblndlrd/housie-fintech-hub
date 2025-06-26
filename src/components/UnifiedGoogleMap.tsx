@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, Polygon } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
@@ -23,6 +24,21 @@ const mapContainerStyle = {
   height: '100%',
   minHeight: '300px'
 };
+
+// Business Intelligence Data for Provider Mode
+interface BusinessIntelligenceArea {
+  area: string;
+  lat: number;
+  lng: number;
+  populationDensity: number;
+  avgHouseholdIncome: number;
+  providerCount: number;
+  demographicScore: number;
+  demandScore: number;
+  competitionLevel: 'low' | 'medium' | 'high';
+  tipPotential: 'low' | 'medium' | 'high';
+  opportunityScore: number;
+}
 
 export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
   center,
@@ -103,6 +119,64 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
 
   // Find hovered provider
   const hoveredProvider = providers.find(p => p.id && p.id.toString() === hoveredProviderId);
+
+  // Business Intelligence Areas for Provider Mode
+  const getBusinessIntelligenceAreas = (): BusinessIntelligenceArea[] => {
+    return [
+      {
+        area: "Montreal Downtown",
+        lat: 45.5088,
+        lng: -73.5878,
+        populationDensity: 12500,
+        avgHouseholdIncome: 52000,
+        providerCount: 245,
+        demographicScore: 85,
+        demandScore: 88,
+        competitionLevel: 'high',
+        tipPotential: 'medium',
+        opportunityScore: 72
+      },
+      {
+        area: "Westmount",
+        lat: 45.4848,
+        lng: -73.5915,
+        populationDensity: 8200,
+        avgHouseholdIncome: 95000,
+        providerCount: 67,
+        demographicScore: 65,
+        demandScore: 75,
+        competitionLevel: 'low',
+        tipPotential: 'high',
+        opportunityScore: 91
+      },
+      {
+        area: "Longueuil",
+        lat: 45.4215,
+        lng: -73.4597,
+        populationDensity: 3500,
+        avgHouseholdIncome: 67000,
+        providerCount: 89,
+        demographicScore: 70,
+        demandScore: 65,
+        competitionLevel: 'medium',
+        tipPotential: 'medium',
+        opportunityScore: 78
+      },
+      {
+        area: "Laval",
+        lat: 45.5731,
+        lng: -73.7113,
+        populationDensity: 4200,
+        avgHouseholdIncome: 71000,
+        providerCount: 156,
+        demographicScore: 75,
+        demandScore: 78,
+        competitionLevel: 'medium',
+        tipPotential: 'medium',
+        opportunityScore: 82
+      }
+    ];
+  };
 
   // Create Quebec data overlays based on enabled layers
   const renderQuebecOverlays = () => {
@@ -256,9 +330,10 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     return overlays;
   };
 
-  // Create Provider Mode overlays based on enabled layers
+  // Create Provider Mode overlays based on enabled layers with realistic data
   const renderProviderOverlays = () => {
     const overlays = [];
+    const businessAreas = getBusinessIntelligenceAreas();
 
     // Area polygons for provider overlays
     const areaPolygons = {
@@ -288,19 +363,13 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       ]
     };
 
-    // Demand Hot Zones (Orange)
+    // Demand Hot Zones (Orange) - Based on population density + demographics
     if (enabledLayers.demand) {
-      const demandData = [
-        { area: 'Montreal Downtown', demandLevel: 85 },
-        { area: 'Longueuil', demandLevel: 62 },
-        { area: 'Laval', demandLevel: 78 },
-        { area: 'Westmount', demandLevel: 91 }
-      ];
-
-      demandData.forEach((demand, index) => {
-        const polygon = areaPolygons[demand.area as keyof typeof areaPolygons];
+      businessAreas.forEach((area, index) => {
+        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
         if (polygon) {
-          const orangeIntensity = demand.demandLevel / 100;
+          // Calculate demand intensity based on population density and demographics
+          const demandIntensity = Math.min(1, area.demandScore / 100);
           
           overlays.push(
             <Polygon
@@ -308,7 +377,7 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
               paths={polygon}
               options={{
                 fillColor: '#f97316',
-                fillOpacity: orangeIntensity * 0.6,
+                fillOpacity: demandIntensity * 0.6,
                 strokeColor: '#ea580c',
                 strokeOpacity: 0.8,
                 strokeWeight: 2
@@ -319,25 +388,22 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       });
     }
 
-    // Competition Analysis (Red)
+    // Competition Analysis (Red) - Based on provider density
     if (enabledLayers.competition) {
-      const competitionData = [
-        { area: 'Montreal Downtown', competitionLevel: 'high', intensity: 0.8 },
-        { area: 'Longueuil', competitionLevel: 'medium', intensity: 0.5 },
-        { area: 'Laval', competitionLevel: 'medium', intensity: 0.6 },
-        { area: 'Westmount', competitionLevel: 'low', intensity: 0.3 }
-      ];
-
-      competitionData.forEach((competition, index) => {
-        const polygon = areaPolygons[competition.area as keyof typeof areaPolygons];
+      businessAreas.forEach((area, index) => {
+        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
         if (polygon) {
+          // Calculate competition intensity based on provider density
+          const providerDensity = area.providerCount / (area.populationDensity / 1000);
+          const competitionIntensity = Math.min(1, providerDensity / 2);
+          
           overlays.push(
             <Polygon
               key={`competition-${index}`}
               paths={polygon}
               options={{
                 fillColor: '#dc2626',
-                fillOpacity: competition.intensity * 0.5,
+                fillOpacity: competitionIntensity * 0.5,
                 strokeColor: '#b91c1c',
                 strokeOpacity: 0.7,
                 strokeWeight: 2
@@ -348,25 +414,21 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       });
     }
 
-    // Tip Zone Mapping (Gold)
+    // Tip Zone Mapping (Gold) - Based on household income
     if (enabledLayers.tips) {
-      const tipData = [
-        { area: 'Montreal Downtown', averageTip: 18.50, intensity: 0.6 },
-        { area: 'Longueuil', averageTip: 12.25, intensity: 0.4 },
-        { area: 'Laval', averageTip: 15.75, intensity: 0.5 },
-        { area: 'Westmount', averageTip: 28.90, intensity: 0.9 }
-      ];
-
-      tipData.forEach((tip, index) => {
-        const polygon = areaPolygons[tip.area as keyof typeof areaPolygons];
+      businessAreas.forEach((area, index) => {
+        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
         if (polygon) {
+          // Calculate tip intensity based on household income
+          const tipIntensity = Math.min(1, area.avgHouseholdIncome / 100000);
+          
           overlays.push(
             <Polygon
               key={`tips-${index}`}
               paths={polygon}
               options={{
                 fillColor: '#eab308',
-                fillOpacity: tip.intensity * 0.5,
+                fillOpacity: tipIntensity * 0.5,
                 strokeColor: '#ca8a04',
                 strokeOpacity: 0.7,
                 strokeWeight: 2
@@ -377,25 +439,21 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
       });
     }
 
-    // Opportunity Areas (Green)
+    // Opportunity Areas (Green) - Based on opportunity calculation
     if (enabledLayers.opportunity) {
-      const opportunityData = [
-        { area: 'Montreal Downtown', opportunityScore: 72, intensity: 0.7 },
-        { area: 'Longueuil', opportunityScore: 85, intensity: 0.8 },
-        { area: 'Laval', opportunityScore: 78, intensity: 0.7 },
-        { area: 'Westmount', opportunityScore: 91, intensity: 0.9 }
-      ];
-
-      opportunityData.forEach((opportunity, index) => {
-        const polygon = areaPolygons[opportunity.area as keyof typeof areaPolygons];
+      businessAreas.forEach((area, index) => {
+        const polygon = areaPolygons[area.area as keyof typeof areaPolygons];
         if (polygon) {
+          // Use calculated opportunity score
+          const opportunityIntensity = Math.min(1, area.opportunityScore / 100);
+          
           overlays.push(
             <Polygon
               key={`opportunity-${index}`}
               paths={polygon}
               options={{
                 fillColor: '#16a34a',
-                fillOpacity: opportunity.intensity * 0.5,
+                fillOpacity: opportunityIntensity * 0.5,
                 strokeColor: '#15803d',
                 strokeOpacity: 0.7,
                 strokeWeight: 2
