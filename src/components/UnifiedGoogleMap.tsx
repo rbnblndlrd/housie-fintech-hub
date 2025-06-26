@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import { GoogleMap, Marker, Circle, InfoWindow, Polygon } from '@react-google-maps/api';
 import { Provider } from "@/types/service";
@@ -257,6 +256,159 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
     return overlays;
   };
 
+  // Create Provider Mode overlays based on enabled layers
+  const renderProviderOverlays = () => {
+    const overlays = [];
+
+    // Area polygons for provider overlays
+    const areaPolygons = {
+      'Montreal Downtown': [
+        { lat: 45.495, lng: -73.600 },
+        { lat: 45.515, lng: -73.600 },
+        { lat: 45.515, lng: -73.570 },
+        { lat: 45.495, lng: -73.570 }
+      ],
+      'Longueuil': [
+        { lat: 45.410, lng: -73.480 },
+        { lat: 45.430, lng: -73.480 },
+        { lat: 45.430, lng: -73.450 },
+        { lat: 45.410, lng: -73.450 }
+      ],
+      'Laval': [
+        { lat: 45.560, lng: -73.730 },
+        { lat: 45.580, lng: -73.730 },
+        { lat: 45.580, lng: -73.700 },
+        { lat: 45.560, lng: -73.700 }
+      ],
+      'Westmount': [
+        { lat: 45.475, lng: -73.605 },
+        { lat: 45.495, lng: -73.605 },
+        { lat: 45.495, lng: -73.575 },
+        { lat: 45.475, lng: -73.575 }
+      ]
+    };
+
+    // Demand Hot Zones (Orange)
+    if (enabledLayers.demand) {
+      const demandData = [
+        { area: 'Montreal Downtown', demandLevel: 85 },
+        { area: 'Longueuil', demandLevel: 62 },
+        { area: 'Laval', demandLevel: 78 },
+        { area: 'Westmount', demandLevel: 91 }
+      ];
+
+      demandData.forEach((demand, index) => {
+        const polygon = areaPolygons[demand.area as keyof typeof areaPolygons];
+        if (polygon) {
+          const orangeIntensity = demand.demandLevel / 100;
+          
+          overlays.push(
+            <Polygon
+              key={`demand-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#f97316',
+                fillOpacity: orangeIntensity * 0.6,
+                strokeColor: '#ea580c',
+                strokeOpacity: 0.8,
+                strokeWeight: 2
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    // Competition Analysis (Red)
+    if (enabledLayers.competition) {
+      const competitionData = [
+        { area: 'Montreal Downtown', competitionLevel: 'high', intensity: 0.8 },
+        { area: 'Longueuil', competitionLevel: 'medium', intensity: 0.5 },
+        { area: 'Laval', competitionLevel: 'medium', intensity: 0.6 },
+        { area: 'Westmount', competitionLevel: 'low', intensity: 0.3 }
+      ];
+
+      competitionData.forEach((competition, index) => {
+        const polygon = areaPolygons[competition.area as keyof typeof areaPolygons];
+        if (polygon) {
+          overlays.push(
+            <Polygon
+              key={`competition-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#dc2626',
+                fillOpacity: competition.intensity * 0.5,
+                strokeColor: '#b91c1c',
+                strokeOpacity: 0.7,
+                strokeWeight: 2
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    // Tip Zone Mapping (Gold)
+    if (enabledLayers.tips) {
+      const tipData = [
+        { area: 'Montreal Downtown', averageTip: 18.50, intensity: 0.6 },
+        { area: 'Longueuil', averageTip: 12.25, intensity: 0.4 },
+        { area: 'Laval', averageTip: 15.75, intensity: 0.5 },
+        { area: 'Westmount', averageTip: 28.90, intensity: 0.9 }
+      ];
+
+      tipData.forEach((tip, index) => {
+        const polygon = areaPolygons[tip.area as keyof typeof areaPolygons];
+        if (polygon) {
+          overlays.push(
+            <Polygon
+              key={`tips-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#eab308',
+                fillOpacity: tip.intensity * 0.5,
+                strokeColor: '#ca8a04',
+                strokeOpacity: 0.7,
+                strokeWeight: 2
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    // Opportunity Areas (Green)
+    if (enabledLayers.opportunity) {
+      const opportunityData = [
+        { area: 'Montreal Downtown', opportunityScore: 72, intensity: 0.7 },
+        { area: 'Longueuil', opportunityScore: 85, intensity: 0.8 },
+        { area: 'Laval', opportunityScore: 78, intensity: 0.7 },
+        { area: 'Westmount', opportunityScore: 91, intensity: 0.9 }
+      ];
+
+      opportunityData.forEach((opportunity, index) => {
+        const polygon = areaPolygons[opportunity.area as keyof typeof areaPolygons];
+        if (polygon) {
+          overlays.push(
+            <Polygon
+              key={`opportunity-${index}`}
+              paths={polygon}
+              options={{
+                fillColor: '#16a34a',
+                fillOpacity: opportunity.intensity * 0.5,
+                strokeColor: '#15803d',
+                strokeOpacity: 0.7,
+                strokeWeight: 2
+              }}
+            />
+          );
+        }
+      });
+    }
+
+    return overlays;
+  };
+
   if (loadError) {
     return (
       <div className={`w-full h-full flex items-center justify-center bg-gray-50 rounded-lg ${className}`}>
@@ -397,8 +549,11 @@ export const UnifiedGoogleMap: React.FC<UnifiedGoogleMapProps> = ({
           </InfoWindow>
         )}
 
-        {/* Quebec Data Overlays */}
+        {/* Quebec Data Overlays for Customer Mode */}
         {mode === 'interactive' && renderQuebecOverlays()}
+
+        {/* Provider Mode Overlays */}
+        {mode === 'interactive' && renderProviderOverlays()}
 
         {/* Custom children (for privacy markers, job overlays, heat zones, etc.) */}
         {children}

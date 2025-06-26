@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -13,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Settings, Move } from 'lucide-react';
 import MapThemeSelector from '@/components/map/MapThemeSelector';
 import CustomerMapMode from '@/components/map/modes/CustomerMapMode';
+import ProviderMapMode from '@/components/map/modes/ProviderMapMode';
 
 type UserMode = 'customer' | 'provider' | 'fleet-manager';
 
@@ -71,7 +71,7 @@ const InteractiveMapPage = () => {
     
     toast({
       title: `${layer} Layer ${enabled ? 'Enabled' : 'Disabled'}`,
-      description: `Real Quebec ${layer} data ${enabled ? 'now showing' : 'hidden'} on map`,
+      description: `${layer} data ${enabled ? 'now showing' : 'hidden'} on map`,
     });
   };
 
@@ -175,12 +175,10 @@ const InteractiveMapPage = () => {
           )}
 
           {userMode === 'provider' && (
-            <div className="w-80 bg-white border-l border-gray-200 flex items-center justify-center">
-              <div className="text-center p-6">
-                <h3 className="font-semibold text-gray-900 mb-2">Provider Mode</h3>
-                <p className="text-sm text-gray-600">Provider interface coming soon...</p>
-              </div>
-            </div>
+            <ProviderMapMode 
+              onDataLayerToggle={handleDataLayerToggle}
+              enabledLayers={enabledLayers}
+            />
           )}
 
           {userMode === 'fleet-manager' && (
