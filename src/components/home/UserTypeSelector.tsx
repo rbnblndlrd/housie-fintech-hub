@@ -24,7 +24,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
       id: "customer",
       title: "Need a Local Expert?",
       subtitle: "Find trusted professionals",
-      description: "Get quality services from verified providers in Montreal",
+      description: "Get quality services from verified providers in Quebec",
       icon: <Search className="h-8 w-8 text-orange-600" />,
       color: "from-orange-600 to-red-600",
       features: ["Background-checked providers", "Payment protection", "Licensed professionals"]
@@ -57,10 +57,10 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="text-center mb-16 lg:mb-20">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
-            Choose Your Path
+            HOUSIE: Where Good Work Meets Good People
           </h1>
           <p className="text-xl sm:text-2xl lg:text-3xl text-white/90 font-medium max-w-4xl mx-auto">
-            Whether you need services, provide them, or manage a team - we've got you covered
+            Find people who care about your quality of life across Quebec
           </p>
         </div>
 
