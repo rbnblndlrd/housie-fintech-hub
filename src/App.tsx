@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -50,7 +49,6 @@ import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
 import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
-import AdminProtectedRoute from "@/components/AdminProtectedRoute";
 import Help from "@/pages/Help";
 
 const queryClient = new QueryClient();
@@ -154,6 +152,7 @@ const App = () => {
                           <Route path="/booking-management" element={<BookingManagement />} />
                           <Route path="/onboarding" element={<Onboarding />} />
                           <Route path="/profile-setup" element={<ProfileSetup />} />
+                          <Route path="/admin" element={<AdminDashboard />} />
                           <Route path="/about" element={<About />} />
                           <Route path="/faq" element={<FAQ />} />
                           <Route path="/faq-archive" element={<FAQArchive />} />
@@ -161,14 +160,6 @@ const App = () => {
                           <Route path="/interactive-map" element={<InteractiveMapPage />} />
                           <Route path="/gamification" element={<GamificationPage />} />
                           <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
-                          
-                          {/* Admin routes - protected and hidden from regular users */}
-                          <Route path="/admin" element={
-                            <AdminProtectedRoute>
-                              <AdminDashboard />
-                            </AdminProtectedRoute>
-                          } />
-                          
                           <Route path="*" element={<NotFound />} />
                         </Routes>
                         <Toaster />

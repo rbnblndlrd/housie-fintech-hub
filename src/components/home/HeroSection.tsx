@@ -64,14 +64,14 @@ const HeroSection = () => {
             <div className="space-y-6">
               <div className="space-y-4">
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-black text-cream leading-tight drop-shadow-2xl">
-                  HOUSIE: Where Good Work<br />
+                  Connect with<br />
                   <span className="text-orange-300 drop-shadow-lg">
-                    Meets Good People
+                    Professionals
                   </span>
                 </h1>
                 
                 <p className="text-lg sm:text-xl lg:text-2xl text-cream/90 font-medium leading-relaxed drop-shadow-lg max-w-2xl">
-                  Find people who care about your quality of life
+                  Connect with verified professionals in your area. Safe, secure, and guaranteed.
                 </p>
               </div>
               
