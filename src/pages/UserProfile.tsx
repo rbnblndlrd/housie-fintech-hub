@@ -75,7 +75,7 @@ const UserProfile = () => {
         .from('reviews')
         .select(`
           *,
-          reviewer:user_profiles!reviews_reviewer_id_fkey(username, full_name, profile_image_url)
+          reviewer:reviewer_id(username, full_name, profile_image_url)
         `)
         .eq('provider_id', profile.user_id)
         .eq('verified_transaction', true)
@@ -126,6 +126,8 @@ const UserProfile = () => {
       </>
     );
   }
+
+  const primaryRole = profile.user_role_preferences?.[0]?.primary_role || 'customer';
 
   return (
     <>
@@ -285,7 +287,7 @@ const UserProfile = () => {
                 </CardHeader>
                 <CardContent>
                   <Badge className="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
-                    {profile.user_role_preferences?.[0]?.primary_role?.replace('_', ' ').toUpperCase() || 'CUSTOMER'}
+                    {primaryRole?.replace('_', ' ').toUpperCase()}
                   </Badge>
                 </CardContent>
               </Card>

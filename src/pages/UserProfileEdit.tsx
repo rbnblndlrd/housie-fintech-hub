@@ -62,6 +62,7 @@ const UserProfileEdit = () => {
 
   React.useEffect(() => {
     if (profile) {
+      const rolePreferences = profile.user_role_preferences?.[0];
       setFormData({
         full_name: profile.full_name || '',
         bio: profile.bio || '',
@@ -75,8 +76,8 @@ const UserProfileEdit = () => {
         privacy_level: profile.privacy_level || 'public',
         show_contact_info: profile.show_contact_info,
         show_location: profile.show_location,
-        primary_role: profile.user_role_preferences?.[0]?.primary_role || 'customer',
-        auto_switch_based_on_context: profile.user_role_preferences?.[0]?.auto_switch_based_on_context || true
+        primary_role: rolePreferences?.primary_role || 'customer',
+        auto_switch_based_on_context: rolePreferences?.auto_switch_based_on_context || true
       });
     }
   }, [profile]);
