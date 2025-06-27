@@ -100,23 +100,23 @@ const CompetitiveAdvantage = () => {
           </div>
 
           <div className="grid lg:grid-cols-3 gap-12 items-start">
-            {/* THEM - Left Side with Faded Styling */}
-            <div className="lg:col-span-1 space-y-8 transform lg:-rotate-2 opacity-75">
-              <div className="text-center mb-12 p-8 bg-stone-200/60 rounded-2xl border-2 border-stone-300/50 shadow-lg">
-                <h3 className="text-4xl font-display font-bold text-stone-600 mb-4">THEM</h3>
-                <p className="text-stone-500 font-heading text-lg">The Old Guard</p>
+            {/* THEM - Left Side with Better Contrast */}
+            <div className="lg:col-span-1 space-y-8 transform lg:-rotate-2">
+              <div className="text-center mb-12 p-8 fintech-card shadow-xl">
+                <h3 className="text-4xl font-display font-bold text-gray-600 mb-4">THEM</h3>
+                <p className="text-gray-700 font-heading text-lg font-semibold">The Old Guard</p>
               </div>
               
               {oldApproaches.map((approach, index) => (
-                <Card key={index} className="bg-white/60 border-2 border-stone-300/50 shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm">
+                <Card key={index} className="fintech-card shadow-xl hover:shadow-2xl transition-all duration-300">
                   <CardHeader className="pb-4">
-                    <CardTitle className="text-stone-600 text-xl font-heading font-semibold">{approach.title}</CardTitle>
+                    <CardTitle className="text-gray-800 text-xl font-heading font-bold">{approach.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
                     <div className="space-y-3">
                       {approach.issues.map((issue, issueIndex) => (
-                        <div key={issueIndex} className="flex items-start text-sm text-stone-500 font-medium">
-                          <span className="mr-3 text-red-400 text-lg">✗</span>
+                        <div key={issueIndex} className="flex items-start text-sm text-gray-700 font-semibold">
+                          <span className="mr-3 text-red-500 text-lg font-bold">✗</span>
                           <span>{issue}</span>
                         </div>
                       ))}
@@ -142,16 +142,16 @@ const CompetitiveAdvantage = () => {
               <ArrowRight className="h-12 w-12 text-competitive-gold mt-12 transform rotate-90 lg:rotate-0 animate-pulse" />
             </div>
 
-            {/* US - Right Side with Golden Accent */}
+            {/* US - Right Side with Fintech Card */}
             <div className="lg:col-span-1 transform lg:rotate-2">
-              <div className="text-center mb-12 p-8 bg-gradient-to-br from-competitive-gold/15 to-competitive-bronze/15 rounded-2xl border-2 border-competitive-gold/40 shadow-xl backdrop-blur-sm">
+              <div className="text-center mb-12 p-8 fintech-card bg-gradient-to-br from-competitive-gold/15 to-competitive-bronze/15 shadow-xl">
                 <h3 className="text-4xl font-display font-bold bg-gradient-to-r from-competitive-navy to-competitive-gold bg-clip-text text-transparent mb-4">
                   US
                 </h3>
                 <p className="text-competitive-gold font-heading text-lg font-semibold">The Evolution</p>
               </div>
 
-              <Card className="bg-gradient-to-br from-white/90 to-competitive-cream/90 border-2 border-competitive-gold/60 relative overflow-hidden hover:scale-105 transition-all duration-500 shadow-2xl backdrop-blur-sm">
+              <Card className="fintech-card bg-gradient-to-br from-white/90 to-competitive-cream/90 relative overflow-hidden hover:scale-105 transition-all duration-500 shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-r from-competitive-gold/10 to-transparent"></div>
                 <CardHeader className="relative z-10">
                   <CardTitle className="text-competitive-navy text-3xl font-display font-bold flex items-center">
@@ -195,7 +195,7 @@ const CompetitiveAdvantage = () => {
             {ourAdvantages.map((advantage, index) => (
               <div key={index} className={`flex items-center gap-16 ${index % 2 === 1 ? 'flex-row-reverse' : ''}`}>
                 <div className="flex-1">
-                  <Card className={`bg-gradient-to-br from-white/95 to-stone-50/95 border-2 border-competitive-gold/30 hover:border-competitive-gold/60 transition-all duration-500 transform hover:scale-105 ${index % 2 === 1 ? 'hover:rotate-2' : 'hover:-rotate-2'} shadow-xl hover:shadow-2xl backdrop-blur-sm`}>
+                  <Card className={`fintech-card bg-gradient-to-br from-white/95 to-stone-50/95 hover:scale-105 ${index % 2 === 1 ? 'hover:rotate-2' : 'hover:-rotate-2'} shadow-xl hover:shadow-2xl transition-all duration-500`}>
                     <CardContent className="p-10">
                       <div className="flex items-start gap-8">
                         <div className={`text-${advantage.color}-600 group-hover:scale-110 transition-transform duration-300 p-4 rounded-2xl bg-gradient-to-br from-competitive-gold/10 to-competitive-bronze/10 border border-competitive-gold/20`}>
@@ -241,7 +241,7 @@ const CompetitiveAdvantage = () => {
               { icon: Shield, value: "100%", label: "Payment Protection", subtitle: "Both sides fully covered", color: "blue" },
               { icon: FileCheck, value: "$10K", label: "Annual Savings", subtitle: "Compliance costs reduced", color: "purple" }
             ].map((metric, index) => (
-              <Card key={index} className="bg-gradient-to-br from-white/95 to-stone-50/95 border-2 border-competitive-gold/40 text-center hover:scale-110 transition-all duration-500 hover:border-competitive-gold/70 shadow-xl hover:shadow-2xl backdrop-blur-sm group">
+              <Card key={index} className="fintech-card bg-gradient-to-br from-white/95 to-stone-50/95 text-center hover:scale-110 transition-all duration-500 shadow-xl hover:shadow-2xl group">
                 <CardContent className="p-10">
                   <div className="p-6 rounded-2xl bg-gradient-to-br from-competitive-gold/10 to-competitive-bronze/10 border border-competitive-gold/20 mb-6 group-hover:scale-105 transition-transform duration-300">
                     <metric.icon className={`h-16 w-16 mx-auto text-${metric.color}-600`} />
@@ -274,7 +274,7 @@ const CompetitiveAdvantage = () => {
               { icon: "📊", label: "Business Intelligence", desc: "Data-driven decision making" }
             ].map((feature, index) => (
               <div key={index} className="group">
-                <Card className="bg-gradient-to-br from-white/95 to-stone-50/95 border-2 border-competitive-gold/30 p-8 hover:border-competitive-gold/60 transition-all duration-500 hover:scale-105 shadow-lg hover:shadow-xl backdrop-blur-sm">
+                <Card className="fintech-card bg-gradient-to-br from-white/95 to-stone-50/95 p-8 hover:scale-105 shadow-lg hover:shadow-xl transition-all duration-500">
                   <CardContent className="p-0 text-center">
                     <div className="text-6xl mb-6 group-hover:scale-125 transition-transform duration-500">
                       {feature.icon}

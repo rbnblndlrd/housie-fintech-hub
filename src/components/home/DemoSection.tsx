@@ -39,7 +39,7 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
       
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="text-center mb-16 lg:mb-20">
-          <div className="inline-block backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 border-3 border-black shadow-2xl relative" style={{ backgroundColor: '#F5F5DC' }}>
+          <div className="inline-block fintech-card backdrop-blur-sm px-8 lg:px-10 py-6 lg:py-8 shadow-2xl relative" style={{ backgroundColor: '#F5F5DC' }}>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black mb-4">
               See HOUSIE in Action
             </h2>
@@ -54,7 +54,7 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Demo Screenshot */}
-          <div className="backdrop-blur-sm rounded-3xl border-3 border-black shadow-2xl p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300" style={{ backgroundColor: '#F5F5DC' }}>
+          <div className="fintech-card backdrop-blur-sm p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300 shadow-2xl" style={{ backgroundColor: '#F5F5DC' }}>
             <img 
               src={demoContent.demoImage} 
               alt={`${demoContent.title} Demo`}
@@ -64,7 +64,7 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
 
           {/* Demo Benefits */}
           <div className="space-y-8">
-            <div className="backdrop-blur-sm rounded-3xl border-3 border-black shadow-2xl p-8 lg:p-10" style={{ backgroundColor: '#F5F5DC' }}>
+            <div className="fintech-card backdrop-blur-sm p-8 lg:p-10 shadow-2xl" style={{ backgroundColor: '#F5F5DC' }}>
               <h3 className="text-2xl lg:text-3xl font-black text-black mb-6 lg:mb-8 flex items-center gap-3">
                 <Star className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
                 {selectedOption 

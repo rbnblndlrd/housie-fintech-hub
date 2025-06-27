@@ -75,8 +75,8 @@ const HeroSection = () => {
                 </p>
               </div>
               
-              {/* Enhanced Value Props Card with Warm Cream Background */}
-              <div style={{ backgroundColor: '#F5F5DC' }} className="backdrop-blur-sm rounded-2xl p-6 lg:p-8 border-3 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
+              {/* Enhanced Value Props Card with Fintech Black Border */}
+              <div className="fintech-card backdrop-blur-sm p-6 lg:p-8 shadow-2xl hover:shadow-3xl transition-all duration-300" style={{ backgroundColor: '#F5F5DC' }}>
                 <h2 className="text-xl lg:text-2xl font-black text-black mb-6 flex items-center gap-3">
                   <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
                   Why Choose HOUSIE?

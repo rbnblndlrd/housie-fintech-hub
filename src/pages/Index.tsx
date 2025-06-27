@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import HeroSection from '@/components/home/HeroSection';
 import { UserTypeSelector } from '@/components/home/UserTypeSelector';
 import DemoSection from '@/components/home/DemoSection';
+import { PricingSection } from '@/components/PricingSection';
 import { useState } from 'react';
 
 const Index = () => {
@@ -33,6 +34,13 @@ const Index = () => {
       {/* Demo Section with error boundary */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
         <DemoSection />
+      </ErrorBoundary>
+
+      {/* Pricing Section with error boundary and proper ID for scroll */}
+      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing section loading...</div>}>
+        <div id="pricing-section">
+          <PricingSection />
+        </div>
       </ErrorBoundary>
     </div>
   );
