@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -23,7 +22,8 @@ import {
   MapPin,
   Settings,
   User,
-  MessageSquare
+  MessageSquare,
+  ArrowLeft
 } from 'lucide-react';
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -474,7 +474,18 @@ const ProviderDashboard = () => {
 
             <TabsContent value="jobs" className="space-y-6">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-bold">Job Management</h2>
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setActiveTab('overview')}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Dashboard
+                  </Button>
+                  <h2 className="text-2xl font-bold">Job Management</h2>
+                </div>
               </div>
 
               <Tabs defaultValue="upcoming" className="space-y-4">
@@ -547,6 +558,21 @@ const ProviderDashboard = () => {
             </TabsContent>
 
             <TabsContent value="calendar" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setActiveTab('overview')}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Dashboard
+                  </Button>
+                  <h2 className="text-2xl font-bold">Schedule Calendar</h2>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2">
                   <Card className="fintech-card">
@@ -595,6 +621,21 @@ const ProviderDashboard = () => {
             </TabsContent>
 
             <TabsContent value="business" className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Button 
+                    variant="ghost" 
+                    size="sm"
+                    onClick={() => setActiveTab('overview')}
+                    className="text-gray-600 hover:text-gray-900"
+                  >
+                    <ArrowLeft className="h-4 w-4 mr-2" />
+                    Back to Dashboard
+                  </Button>
+                  <h2 className="text-2xl font-bold">Business Management</h2>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <Card className="fintech-card">
                   <CardHeader>
