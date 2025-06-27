@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -26,7 +27,6 @@ import { useRole } from '@/contexts/RoleContext';
 import { getUserDropdownItems, getProfileMenuItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
 import NotificationIndicator from '@/components/NotificationIndicator';
-import { navigateToProfile } from '@/utils/profileRoutes';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
@@ -71,13 +71,6 @@ const UserMenu = () => {
     if (window.location.pathname.includes('dashboard')) {
       const targetDashboard = newRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
       navigate(targetDashboard);
-    }
-  };
-
-  const handleProfileClick = async () => {
-    if (user?.id) {
-      const profileUrl = await navigateToProfile(user.id);
-      navigate(profileUrl);
     }
   };
 
@@ -209,20 +202,11 @@ const UserMenu = () => {
           <span className="flex-1">AI Assistant</span>
         </DropdownMenuItem>
 
-        {/* Profile - NEW */}
-        <DropdownMenuItem
-          onClick={handleProfileClick}
-          className="cursor-pointer"
-        >
-          <span className="mr-2">👤</span>
-          <span className="flex-1">My Profile</span>
-        </DropdownMenuItem>
-
-        {/* Profile Submenu - Updated to remove redundant items */}
+        {/* Profile Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-2">⚙️</span>
-            <span>Account Settings</span>
+            <span className="mr-2">👤</span>
+            <span>Profile</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {profileMenuItems.map((subItem, subIndex) => {

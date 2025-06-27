@@ -11,6 +11,7 @@ import ServiceBookingWrapper from '@/components/ServiceBookingWrapper';
 import ProviderProfileNavigation from '@/components/ProviderProfileNavigation';
 import ProviderProfileHeader from '@/components/ProviderProfileHeader';
 import ProviderServicesList from '@/components/ProviderServicesList';
+import ProviderReviewSystem from '@/components/provider/ProviderReviewSystem';
 import ProviderServiceGallery from '@/components/provider/ProviderServiceGallery';
 import MapSection from '@/components/MapSection';
 import { sampleProviderProfiles } from '@/data/sampleProviderProfiles';
@@ -319,22 +320,14 @@ const PublicProviderProfile = () => {
             />
           )}
 
-          {activeTab === 'reviews' && (
-            <div className="p-8 border rounded-lg bg-gradient-to-br from-blue-50 to-purple-50">
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">Reviews & Network</h3>
-              <p className="text-gray-700 mb-6">
-                Transaction-verified review system coming soon. This will be a gated social network where every review and connection is earned through real business relationships.
-              </p>
-              <div className="bg-white p-4 rounded-lg border">
-                <h4 className="font-semibold mb-2">Coming Features:</h4>
-                <ul className="list-disc list-inside text-sm text-gray-600 space-y-1">
-                  <li>Transaction-verified reviews only</li>
-                  <li>Earned messaging privileges after service completion</li>
-                  <li>Professional network building</li>
-                  <li>Trust-based connections</li>
-                </ul>
-              </div>
-            </div>
+          {activeTab === 'reviews' && sampleData && (
+            <ProviderReviewSystem
+              providerId={provider.id}
+              reviews={sampleData.reviews}
+              averageRating={sampleData.averageRating}
+              totalReviews={sampleData.totalReviews}
+              onSubmitReview={handleSubmitReview}
+            />
           )}
         </div>
       </div>

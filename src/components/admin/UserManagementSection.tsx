@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -6,7 +7,6 @@ import { adminService } from '@/services/adminService';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import UserStatsCards from './user-management/UserStatsCards';
 import UserManagementTable from './user-management/UserManagementTable';
-import SampleProfileSeeder from '@/components/SampleProfileSeeder';
 
 interface User {
   id: string;
@@ -303,7 +303,7 @@ const UserManagementSection = () => {
   }).length;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <UserStatsCards
         totalUsers={totalUsers}
         verifiedProviders={verifiedProviders}
@@ -311,9 +311,6 @@ const UserManagementSection = () => {
         newUsersLast30Days={newUsersLast30Days}
       />
 
-      {/* Sample Profile Seeder */}
-      <SampleProfileSeeder />
-      
       <UserManagementTable
         users={users}
         loading={loading}

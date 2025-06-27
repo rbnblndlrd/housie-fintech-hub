@@ -1274,55 +1274,6 @@ export type Database = {
           },
         ]
       }
-      messaging_permissions: {
-        Row: {
-          created_at: string | null
-          granted_by_booking_id: string | null
-          id: string
-          permission_type: string | null
-          user_one_id: string
-          user_two_id: string
-        }
-        Insert: {
-          created_at?: string | null
-          granted_by_booking_id?: string | null
-          id?: string
-          permission_type?: string | null
-          user_one_id: string
-          user_two_id: string
-        }
-        Update: {
-          created_at?: string | null
-          granted_by_booking_id?: string | null
-          id?: string
-          permission_type?: string | null
-          user_one_id?: string
-          user_two_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messaging_permissions_granted_by_booking_id_fkey"
-            columns: ["granted_by_booking_id"]
-            isOneToOne: false
-            referencedRelation: "bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messaging_permissions_user_one_id_fkey"
-            columns: ["user_one_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "messaging_permissions_user_two_id_fkey"
-            columns: ["user_two_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       montreal_zones: {
         Row: {
           center_coordinates: unknown
@@ -1358,55 +1309,6 @@ export type Database = {
           zone_type?: string | null
         }
         Relationships: []
-      }
-      network_connections: {
-        Row: {
-          connection_type: string | null
-          created_at: string | null
-          created_from_booking_id: string | null
-          customer_id: string
-          id: string
-          provider_id: string
-        }
-        Insert: {
-          connection_type?: string | null
-          created_at?: string | null
-          created_from_booking_id?: string | null
-          customer_id: string
-          id?: string
-          provider_id: string
-        }
-        Update: {
-          connection_type?: string | null
-          created_at?: string | null
-          created_from_booking_id?: string | null
-          customer_id?: string
-          id?: string
-          provider_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "network_connections_created_from_booking_id_fkey"
-            columns: ["created_from_booking_id"]
-            isOneToOne: false
-            referencedRelation: "bookings"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "network_connections_customer_id_fkey"
-            columns: ["customer_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "network_connections_provider_id_fkey"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       notifications: {
         Row: {
@@ -1910,33 +1812,27 @@ export type Database = {
           comment: string | null
           created_at: string | null
           id: string
-          network_connection: boolean | null
           provider_id: string
           rating: number
           reviewer_id: string
-          verified_transaction: boolean | null
         }
         Insert: {
           booking_id: string
           comment?: string | null
           created_at?: string | null
           id?: string
-          network_connection?: boolean | null
           provider_id: string
           rating: number
           reviewer_id: string
-          verified_transaction?: boolean | null
         }
         Update: {
           booking_id?: string
           comment?: string | null
           created_at?: string | null
           id?: string
-          network_connection?: boolean | null
           provider_id?: string
           rating?: number
           reviewer_id?: string
-          verified_transaction?: boolean | null
         }
         Relationships: [
           {
@@ -2285,81 +2181,6 @@ export type Database = {
           },
         ]
       }
-      user_profiles: {
-        Row: {
-          average_rating: number | null
-          bio: string | null
-          company: string | null
-          created_at: string | null
-          full_name: string
-          id: string
-          is_verified: boolean | null
-          location: string | null
-          network_connections_count: number | null
-          phone: string | null
-          privacy_level: string | null
-          profession: string | null
-          profile_image_url: string | null
-          show_contact_info: boolean | null
-          show_location: boolean | null
-          social_facebook: string | null
-          social_linkedin: string | null
-          total_reviews_received: number | null
-          updated_at: string | null
-          user_id: string
-          username: string
-          website: string | null
-        }
-        Insert: {
-          average_rating?: number | null
-          bio?: string | null
-          company?: string | null
-          created_at?: string | null
-          full_name: string
-          id?: string
-          is_verified?: boolean | null
-          location?: string | null
-          network_connections_count?: number | null
-          phone?: string | null
-          privacy_level?: string | null
-          profession?: string | null
-          profile_image_url?: string | null
-          show_contact_info?: boolean | null
-          show_location?: boolean | null
-          social_facebook?: string | null
-          social_linkedin?: string | null
-          total_reviews_received?: number | null
-          updated_at?: string | null
-          user_id: string
-          username: string
-          website?: string | null
-        }
-        Update: {
-          average_rating?: number | null
-          bio?: string | null
-          company?: string | null
-          created_at?: string | null
-          full_name?: string
-          id?: string
-          is_verified?: boolean | null
-          location?: string | null
-          network_connections_count?: number | null
-          phone?: string | null
-          privacy_level?: string | null
-          profession?: string | null
-          profile_image_url?: string | null
-          show_contact_info?: boolean | null
-          show_location?: boolean | null
-          social_facebook?: string | null
-          social_linkedin?: string | null
-          total_reviews_received?: number | null
-          updated_at?: string | null
-          user_id?: string
-          username?: string
-          website?: string | null
-        }
-        Relationships: []
-      }
       user_rate_limits: {
         Row: {
           abuse_flags: number | null
@@ -2403,36 +2224,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      user_role_preferences: {
-        Row: {
-          auto_switch_based_on_context: boolean | null
-          created_at: string | null
-          id: string
-          primary_role: string
-          secondary_roles: string[] | null
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          auto_switch_based_on_context?: boolean | null
-          created_at?: string | null
-          id?: string
-          primary_role?: string
-          secondary_roles?: string[] | null
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          auto_switch_based_on_context?: boolean | null
-          created_at?: string | null
-          id?: string
-          primary_role?: string
-          secondary_roles?: string[] | null
-          updated_at?: string | null
-          user_id?: string
-        }
-        Relationships: []
       }
       user_roles: {
         Row: {
@@ -2580,7 +2371,6 @@ export type Database = {
           id: string
           last_booking_date: string | null
           last_fuzzy_update: string | null
-          network_count: number | null
           notification_preferences: boolean | null
           password_hash: string | null
           phone: string | null
@@ -2623,7 +2413,6 @@ export type Database = {
           id?: string
           last_booking_date?: string | null
           last_fuzzy_update?: string | null
-          network_count?: number | null
           notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
@@ -2666,7 +2455,6 @@ export type Database = {
           id?: string
           last_booking_date?: string | null
           last_fuzzy_update?: string | null
-          network_count?: number | null
           notification_preferences?: boolean | null
           password_hash?: string | null
           phone?: string | null
@@ -2864,10 +2652,6 @@ export type Database = {
           used_credits: number
           remaining_credits: number
         }[]
-      }
-      get_user_current_role: {
-        Args: { target_user_id: string }
-        Returns: string
       }
       get_user_risk_level: {
         Args: { user_uuid: string }

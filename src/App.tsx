@@ -50,15 +50,13 @@ import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
 import Help from "@/pages/Help";
-import UserProfile from '@/pages/UserProfile';
-import UserProfileEdit from '@/pages/UserProfileEdit';
 
 const queryClient = new QueryClient();
 
 // Check if running in desktop mode
 const isDesktopMode = typeof window !== 'undefined' && (window as any).DESKTOP_MODE;
 
-function App() {
+const App = () => {
   // If in desktop mode, redirect to desktop app
   if (isDesktopMode) {
     return null; // Desktop app handles its own routing
@@ -162,11 +160,6 @@ function App() {
                           <Route path="/interactive-map" element={<InteractiveMapPage />} />
                           <Route path="/gamification" element={<GamificationPage />} />
                           <Route path="/google-calendar-callback" element={<GoogleCalendarCallback />} />
-                          
-                          {/* User Profile Routes */}
-                          <Route path="/profile/:username" element={<UserProfile />} />
-                          <Route path="/profile/:username/edit" element={<UserProfileEdit />} />
-                          
                           <Route path="*" element={<NotFound />} />
                         </Routes>
                         <Toaster />
@@ -182,6 +175,6 @@ function App() {
       </ThemeProvider>
     </QueryClientProvider>
   );
-}
+};
 
 export default App;
