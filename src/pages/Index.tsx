@@ -8,7 +8,7 @@ import { PricingSection } from '@/components/PricingSection';
 import { useState } from 'react';
 
 const Index = () => {
-  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
+  const [selectedUserType, setSelectedUserType] = useState<string>('customer'); // Default to customer for launch
 
   const handleUserTypeSelect = (userType: string) => {
     setSelectedUserType(userType);
@@ -18,26 +18,21 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
       <Header />
       
-      {/* Hero Section with error boundary */}
-      <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
-        <HeroSection />
-      </ErrorBoundary>
-      
-      {/* User Type Selector with error boundary */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
+      {/* Simplified Hero Section focused on customers */}
+      <ErrorBoundary fallback={<div className="py-20 text-center text-white">Loading your trusted service platform...</div>}>
         <UserTypeSelector 
           onUserTypeSelect={handleUserTypeSelect}
           selectedUserType={selectedUserType}
         />
       </ErrorBoundary>
       
-      {/* Demo Section with error boundary */}
+      {/* Demo Section with customer focus */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
         <DemoSection />
       </ErrorBoundary>
 
-      {/* Pricing Section with error boundary and proper ID for scroll */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing section loading...</div>}>
+      {/* Simplified Pricing Section */}
+      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing information loading...</div>}>
         <div id="pricing-section">
           <PricingSection />
         </div>

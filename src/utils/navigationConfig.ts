@@ -1,4 +1,3 @@
-
 export interface NavigationItem {
   label: string;
   href: string;
@@ -9,80 +8,75 @@ export interface NavigationItem {
   active?: boolean;
 }
 
+// Simplified navigation for launch mode - customer focused
 export const visitorNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
-  { label: "Help Center", href: "/help", icon: "❓" }
+  { label: "How It Works", href: "/help", icon: "❓" }
 ];
 
+// Simplified customer navigation for launch
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
-  { label: "Help Center", href: "/help", icon: "❓" }
+  { label: "My Bookings", href: "/customer-bookings", icon: "📋" },
+  { label: "Help", href: "/help", icon: "❓" }
 ];
 
+// Keep provider nav minimal for now (hidden from main interface)
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
-  { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
-  { label: "Help Center", href: "/help", icon: "❓" }
+  { label: "Dashboard", href: "/provider-dashboard", icon: "📊" },
+  { label: "My Services", href: "/provider-bookings", icon: "💼" },
+  { label: "Help", href: "/help", icon: "❓" }
 ];
 
 export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provider'): NavigationItem[] => {
   if (!user) return visitorNav;
   
-  // Use the currentRole parameter if provided, otherwise fallback to user metadata
-  const activeRole = currentRole || user.user_metadata?.user_role || 'customer';
+  // For launch mode, default to customer experience
+  const activeRole = currentRole || 'customer';
   
-  // Return navigation based on current active role
   if (activeRole === 'provider') {
     return providerNav;
   }
   
-  // Default to customer navigation for authenticated users
   return customerNav;
 };
 
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
 
-  // Dynamic dashboard link based on current role
+  // Simplified dropdown for launch
   const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
 
   return [
-    { label: "Map", href: "/interactive-map", icon: "🗺️" },
     { label: "Dashboard", href: dashboardHref, icon: "📊" },
-    { label: "AI Assistant", href: "/notifications", icon: "🤖" },
+    { label: "My Bookings", href: "/customer-bookings", icon: "📋" },
+    { label: "Settings", href: "/customer-settings", icon: "⚙️" },
     { separator: true, label: "", href: "", icon: "" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
   ];
 };
 
 export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
-  // Dynamic profile link based on current role
+  // Simplified profile menu for launch
   const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
-
-  // Dynamic settings link based on current role
   const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-settings';
 
   return [
     { label: "Profile", href: profileHref, icon: "👤" },
     { label: "Settings", href: settingsHref, icon: "⚙️" },
     { label: "Payment Methods", href: "/payment-methods", icon: "💳" },
-    { label: "Verification Status", href: "/provider-profile", icon: "✅" },
     { separator: true, label: "", href: "", icon: "" },
-    { label: "Switch to Customer", href: "", icon: "👥", action: "toggle-customer", active: currentRole === 'customer' },
+    // Hidden for launch mode - keep provider switching minimal
     { label: "Switch to Provider", href: "", icon: "💼", action: "toggle-provider", active: currentRole === 'provider' }
   ];
 };
 
+// Simplified analytics - hidden from main interface for launch
 export const getAnalyticsMenuItems = (): NavigationItem[] => {
   return [
-    { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
-    { label: "Performance", href: "/performance-dashboard", icon: "📈" },
-    { label: "Business Insights", href: "/business-insights", icon: "💼" },
-    { label: "Tax Reports", href: "/tax-reports", icon: "📋" }
+    { label: "Analytics", href: "/analytics-dashboard", icon: "📊" }
   ];
 };
