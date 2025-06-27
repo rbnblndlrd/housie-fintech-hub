@@ -6,9 +6,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Camera, Calendar, Clock, MapPin, Upload, X, Image } from 'lucide-react';
+import { Calendar, Clock, MapPin, ArrowLeft } from 'lucide-react';
 import Header from "@/components/Header";
 import { useToast } from "@/hooks/use-toast";
+import PhotoUploadSection from "@/components/booking/PhotoUploadSection";
+import BookingSummary from "@/components/booking/BookingSummary";
 
 const BookingForm = () => {
   const [searchParams] = useSearchParams();
@@ -24,54 +26,29 @@ const BookingForm = () => {
     date: '',
     time: '',
     address: '',
-    duration: '1',
+    duration: 1,
     instructions: '',
-    photos: [] as File[],
-    photoRequirements: false
   });
 
-  const [dragActive, setDragActive] = useState(false);
-  const [uploading, setUploading] = useState(false);
+  const [photos, setPhotos] = useState<File[]>([]);
+  const [photoRequirements, setPhotoRequirements] = useState({
+    requirePhotos: false,
+    showPreviewToProviders: true,
+    requireCompletionPhotos: false
+  });
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const newPhotos = Array.from(e.target.files);
-      setFormData(prev => ({
-        ...prev,
-        photos: [...prev.photos, ...newPhotos]
-      }));
-    }
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Mock service and provider data (in real app, this would come from API)
+  const serviceData = {
+    title: `Service #${serviceId}`,
+    pricing_type: 'fixed', // or 'hourly'
+    base_price: parseInt(price || '0')
   };
 
-  const handleDrag = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
-      setDragActive(true);
-    } else if (e.type === "dragleave") {
-      setDragActive(false);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setDragActive(false);
-    
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const newPhotos = Array.from(e.dataTransfer.files);
-      setFormData(prev => ({
-        ...prev,
-        photos: [...prev.photos, ...newPhotos]
-      }));
-    }
-  };
-
-  const removePhoto = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      photos: prev.photos.filter((_, i) => i !== index)
-    }));
+  const providerData = {
+    business_name: providerName || 'Unknown Provider',
+    hourly_rate: parseInt(price || '0')
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -86,6 +63,18 @@ const BookingForm = () => {
       });
       return;
     }
+
+    // Validate photo requirements
+    if (photoRequirements.requirePhotos && photos.length === 0) {
+      toast({
+        title: "Photos Required",
+        description: "Please upload at least one photo or change photo requirements",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsSubmitting(true);
     
     // Navigate to payment with booking details
     const params = new URLSearchParams({
@@ -95,11 +84,17 @@ const BookingForm = () => {
       date: formData.date,
       time: formData.time,
       address: formData.address,
-      duration: formData.duration,
+      duration: formData.duration.toString(),
       instructions: formData.instructions,
-      photo_count: formData.photos.length.toString(),
-      photos_required: formData.photoRequirements.toString()
+      photo_count: photos.length.toString(),
+      photos_required: photoRequirements.requirePhotos.toString(),
+      show_preview: photoRequirements.showPreviewToProviders.toString(),
+      completion_photos: photoRequirements.requireCompletionPhotos.toString()
     });
+    
+    // In a real app, you would save the photos to a server/database here
+    console.log('Photos to upload:', photos);
+    console.log('Photo requirements:', photoRequirements);
     
     navigate(`/payment?${params.toString()}`);
   };
@@ -109,210 +104,147 @@ const BookingForm = () => {
       <Header />
       
       <div className="pt-20 px-4 pb-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-8">
-            
-            {/* Service Summary */}
-            <Card className="h-fit">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <span className="text-purple-600 font-bold">
-                      {providerName?.charAt(0)}
-                    </span>
-                  </div>
-                  {providerName}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h3 className="font-medium">Service sélectionné</h3>
-                    <p className="text-sm text-gray-600">Service ID: {serviceId}</p>
-                    <p className="text-lg font-bold text-purple-600">{price}$ CAD</p>
-                  </div>
-                  
-                  {/* Photo Requirements Toggle */}
-                  <div className="p-4 border rounded-lg">
-                    <div className="flex items-center gap-3 mb-3">
-                      <Camera className="h-5 w-5 text-purple-600" />
-                      <Label className="font-medium">Photos requises</Label>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        id="photoReq"
-                        checked={formData.photoRequirements}
-                        onChange={(e) => setFormData(prev => ({
-                          ...prev,
-                          photoRequirements: e.target.checked
-                        }))}
-                        className="rounded"
-                      />
-                      <Label htmlFor="photoReq" className="text-sm">
-                        Demander des photos avant/après
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+        <div className="max-w-7xl mx-auto">
+          {/* Back Navigation */}
+          <div className="mb-6">
+            <Button
+              variant="ghost"
+              onClick={() => navigate(-1)}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Services
+            </Button>
+          </div>
 
-            {/* Booking Form */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Détails de la réservation</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  
-                  {/* Date & Time */}
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <Label className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        Date souhaitée *
-                      </Label>
-                      <Input
-                        type="date"
-                        value={formData.date}
-                        onChange={(e) => setFormData(prev => ({...prev, date: e.target.value}))}
-                        required
-                        min={new Date().toISOString().split('T')[0]}
-                        className="mt-1"
-                      />
-                    </div>
-                    <div>
-                      <Label className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        Heure souhaitée *
-                      </Label>
-                      <Input
-                        type="time"
-                        value={formData.time}
-                        onChange={(e) => setFormData(prev => ({...prev, time: e.target.value}))}
-                        required
-                        className="mt-1"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Address */}
-                  <div>
-                    <Label className="flex items-center gap-2">
-                      <MapPin className="h-4 w-4" />
-                      Adresse du service *
-                    </Label>
-                    <Input
-                      type="text"
-                      value={formData.address}
-                      onChange={(e) => setFormData(prev => ({...prev, address: e.target.value}))}
-                      placeholder="123 Rue Example, Montreal, QC"
-                      required
-                      className="mt-1"
-                    />
-                  </div>
-
-                  {/* Duration */}
-                  <div>
-                    <Label>Durée estimée (heures)</Label>
-                    <Input
-                      type="number"
-                      value={formData.duration}
-                      onChange={(e) => setFormData(prev => ({...prev, duration: e.target.value}))}
-                      min="0.5"
-                      step="0.5"
-                      className="mt-1"
-                    />
-                  </div>
-
-                  {/* Instructions */}
-                  <div>
-                    <Label>Instructions spéciales</Label>
-                    <Textarea
-                      value={formData.instructions}
-                      onChange={(e) => setFormData(prev => ({...prev, instructions: e.target.value}))}
-                      placeholder="Détails additionnels, accès, préférences..."
-                      rows={3}
-                      className="mt-1"
-                    />
-                  </div>
-
-                  {/* Photo Upload Section */}
-                  <div>
-                    <Label className="flex items-center gap-2 mb-3">
-                      <Upload className="h-4 w-4" />
-                      Photos de référence (optionnel)
-                    </Label>
-                    
-                    {/* Drag and Drop Area */}
-                    <div
-                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                        dragActive 
-                          ? 'border-purple-500 bg-purple-50' 
-                          : 'border-gray-300 hover:border-purple-400'
-                      }`}
-                      onDragEnter={handleDrag}
-                      onDragLeave={handleDrag}
-                      onDragOver={handleDrag}
-                      onDrop={handleDrop}
-                    >
-                      <div className="space-y-2">
-                        <Upload className="h-8 w-8 text-gray-400 mx-auto" />
-                        <p className="text-sm text-gray-600">
-                          Glissez vos photos ici ou 
-                          <label className="text-purple-600 hover:text-purple-700 cursor-pointer font-medium ml-1">
-                            parcourir
-                            <input
-                              type="file"
-                              multiple
-                              accept="image/*"
-                              onChange={handlePhotoUpload}
-                              className="hidden"
-                            />
-                          </label>
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          PNG, JPG, HEIC jusqu'à 10MB chacune
-                        </p>
+          <div className="grid lg:grid-cols-3 gap-8">
+            {/* Main Form - Left Side (2/3) */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Booking Details Card */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Booking Details</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    {/* Date & Time */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          Preferred Date *
+                        </Label>
+                        <Input
+                          type="date"
+                          value={formData.date}
+                          onChange={(e) => setFormData(prev => ({...prev, date: e.target.value}))}
+                          required
+                          min={new Date().toISOString().split('T')[0]}
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          Preferred Time *
+                        </Label>
+                        <Input
+                          type="time"
+                          value={formData.time}
+                          onChange={(e) => setFormData(prev => ({...prev, time: e.target.value}))}
+                          required
+                          className="mt-1"
+                        />
                       </div>
                     </div>
 
-                    {/* Photo Previews */}
-                    {formData.photos.length > 0 && (
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-4">
-                        {formData.photos.map((photo, index) => (
-                          <div key={index} className="relative group">
-                            <div className="aspect-square bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden">
-                              <Image className="h-8 w-8 text-gray-400" />
-                            </div>
-                            <button
-                              type="button"
-                              onClick={() => removePhoto(index)}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                            <p className="text-xs text-gray-500 mt-1 truncate">
-                              {photo.name}
-                            </p>
-                          </div>
-                        ))}
+                    {/* Address */}
+                    <div>
+                      <Label className="flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        Service Address *
+                      </Label>
+                      <Input
+                        type="text"
+                        value={formData.address}
+                        onChange={(e) => setFormData(prev => ({...prev, address: e.target.value}))}
+                        placeholder="123 Example Street, Montreal, QC"
+                        required
+                        className="mt-1"
+                      />
+                    </div>
+
+                    {/* Duration (only for hourly services) */}
+                    {serviceData.pricing_type === 'hourly' && (
+                      <div>
+                        <Label>Estimated Duration (hours)</Label>
+                        <Input
+                          type="number"
+                          value={formData.duration}
+                          onChange={(e) => setFormData(prev => ({...prev, duration: parseInt(e.target.value)}))}
+                          min="1"
+                          max="8"
+                          className="mt-1"
+                        />
                       </div>
                     )}
-                  </div>
 
-                  {/* Submit Button */}
-                  <Button 
-                    type="submit"
-                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl py-3 font-medium shadow-lg hover:shadow-xl transition-all duration-200"
-                    disabled={uploading}
-                  >
-                    {uploading ? 'Traitement...' : 'Continuer vers le paiement'}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
+                    {/* Instructions */}
+                    <div>
+                      <Label>Special Instructions (optional)</Label>
+                      <Textarea
+                        value={formData.instructions}
+                        onChange={(e) => setFormData(prev => ({...prev, instructions: e.target.value}))}
+                        placeholder="Any special requirements, access instructions, or details about the job..."
+                        rows={3}
+                        className="mt-1"
+                      />
+                    </div>
+                  </form>
+                </CardContent>
+              </Card>
+
+              {/* Photo Upload Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Photos & Requirements</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <PhotoUploadSection
+                    photos={photos}
+                    onPhotosChange={setPhotos}
+                    photoRequirements={photoRequirements}
+                    onRequirementsChange={setPhotoRequirements}
+                  />
+                </CardContent>
+              </Card>
+
+              {/* Submit Button */}
+              <div className="flex justify-end">
+                <Button 
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-8 py-3 font-medium shadow-lg hover:shadow-xl transition-all duration-200 min-w-48"
+                >
+                  {isSubmitting ? 'Processing...' : 'Continue to Payment'}
+                </Button>
+              </div>
+            </div>
+
+            {/* Booking Summary - Right Side (1/3) */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24">
+                <BookingSummary
+                  service={serviceData}
+                  provider={providerData}
+                  bookingData={formData}
+                  photoData={{
+                    photos,
+                    requirements: photoRequirements
+                  }}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
