@@ -64,7 +64,7 @@ const NotificationDropdown: React.FC<NotificationDropdownProps> = ({
       case 'booking_confirmed':
       case 'booking_cancelled':
       case 'booking_update':
-        navigate('/booking-management');
+        navigate('/provider-bookings');
         break;
       case 'payment_received':
         navigate('/analytics-dashboard');

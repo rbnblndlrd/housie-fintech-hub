@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -36,7 +35,6 @@ import ProviderBookings from "@/pages/ProviderBookings";
 import ProviderSettings from "@/pages/ProviderSettings";
 import CustomerProfile from "@/pages/CustomerProfile";
 import ProviderProfile from "@/pages/ProviderProfile";
-import BookingManagement from "@/pages/BookingManagement";
 import Onboarding from "@/pages/Onboarding";
 import ProfileSetup from "@/pages/ProfileSetup";
 import AdminDashboard from "@/pages/AdminDashboard";
@@ -51,8 +49,6 @@ import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
 import Help from "@/pages/Help";
-
-const queryClient = new QueryClient();
 
 // Check if running in desktop mode
 const isDesktopMode = typeof window !== 'undefined' && (window as any).DESKTOP_MODE;
@@ -150,7 +146,6 @@ const App = () => {
                           <Route path="/notifications" element={<Notifications />} />
                           <Route path="/booking-history" element={<BookingHistory />} />
                           <Route path="/booking-success" element={<BookingSuccess />} />
-                          <Route path="/booking-management" element={<BookingManagement />} />
                           <Route path="/onboarding" element={<Onboarding />} />
                           <Route path="/profile-setup" element={<ProfileSetup />} />
                           <Route path="/admin" element={<AdminDashboard />} />
