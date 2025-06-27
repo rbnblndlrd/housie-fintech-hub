@@ -19,7 +19,6 @@ import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
 import Services from "@/pages/Services";
 import BookingForm from "@/pages/BookingForm";
-import Calendar from "@/pages/Calendar";
 import CustomerCalendar from "@/pages/CustomerCalendar";
 import ProviderCalendar from "@/pages/ProviderCalendar";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
@@ -144,7 +143,6 @@ const App = () => {
                           } />
                           
                           {/* Shared routes */}
-                          <Route path="/calendar" element={<Calendar />} />
                           <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
                           <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
                           <Route path="/business-insights" element={<BusinessInsights />} />
