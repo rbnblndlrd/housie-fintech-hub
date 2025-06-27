@@ -2285,6 +2285,81 @@ export type Database = {
           },
         ]
       }
+      user_profiles: {
+        Row: {
+          average_rating: number | null
+          bio: string | null
+          company: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          is_verified: boolean | null
+          location: string | null
+          network_connections_count: number | null
+          phone: string | null
+          privacy_level: string | null
+          profession: string | null
+          profile_image_url: string | null
+          show_contact_info: boolean | null
+          show_location: boolean | null
+          social_facebook: string | null
+          social_linkedin: string | null
+          total_reviews_received: number | null
+          updated_at: string | null
+          user_id: string
+          username: string
+          website: string | null
+        }
+        Insert: {
+          average_rating?: number | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          full_name: string
+          id?: string
+          is_verified?: boolean | null
+          location?: string | null
+          network_connections_count?: number | null
+          phone?: string | null
+          privacy_level?: string | null
+          profession?: string | null
+          profile_image_url?: string | null
+          show_contact_info?: boolean | null
+          show_location?: boolean | null
+          social_facebook?: string | null
+          social_linkedin?: string | null
+          total_reviews_received?: number | null
+          updated_at?: string | null
+          user_id: string
+          username: string
+          website?: string | null
+        }
+        Update: {
+          average_rating?: number | null
+          bio?: string | null
+          company?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          is_verified?: boolean | null
+          location?: string | null
+          network_connections_count?: number | null
+          phone?: string | null
+          privacy_level?: string | null
+          profession?: string | null
+          profile_image_url?: string | null
+          show_contact_info?: boolean | null
+          show_location?: boolean | null
+          social_facebook?: string | null
+          social_linkedin?: string | null
+          total_reviews_received?: number | null
+          updated_at?: string | null
+          user_id?: string
+          username?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       user_rate_limits: {
         Row: {
           abuse_flags: number | null
@@ -2328,6 +2403,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_role_preferences: {
+        Row: {
+          auto_switch_based_on_context: boolean | null
+          created_at: string | null
+          id: string
+          primary_role: string
+          secondary_roles: string[] | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          auto_switch_based_on_context?: boolean | null
+          created_at?: string | null
+          id?: string
+          primary_role?: string
+          secondary_roles?: string[] | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          auto_switch_based_on_context?: boolean | null
+          created_at?: string | null
+          id?: string
+          primary_role?: string
+          secondary_roles?: string[] | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -2759,6 +2864,10 @@ export type Database = {
           used_credits: number
           remaining_credits: number
         }[]
+      }
+      get_user_current_role: {
+        Args: { target_user_id: string }
+        Returns: string
       }
       get_user_risk_level: {
         Args: { user_uuid: string }

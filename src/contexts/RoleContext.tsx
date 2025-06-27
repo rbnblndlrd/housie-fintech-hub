@@ -33,6 +33,26 @@ export const RoleProvider: React.FC<RoleProviderProps> = ({ children }) => {
   useEffect(() => {
     // Save role to localStorage whenever it changes
     localStorage.setItem('housie-user-role', currentRole);
+    
+    // Sync with user_role_preferences in database if user is logged in
+    const syncRolePreferences = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase
+            .from('user_role_preferences')
+            .upsert({
+              user_id: user.id,
+              primary_role: currentRole,
+              updated_at: new Date().toISOString()
+            });
+        }
+      } catch (error) {
+        console.error('Error syncing role preferences:', error);
+      }
+    };
+
+    syncRolePreferences();
   }, [currentRole]);
 
   const toggleRole = () => {
