@@ -45,8 +45,13 @@ const PhotoUploadSection: React.FC<PhotoUploadSectionProps> = ({
   const compressImage = async (file: File, maxSizeKB = 1024): Promise<File> => {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
-      const img = new Image();
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve(file);
+        return;
+      }
+      
+      const img = document.createElement('img') as HTMLImageElement;
       
       img.onload = () => {
         // Calculate new dimensions to stay under size limit
@@ -98,6 +103,11 @@ const PhotoUploadSection: React.FC<PhotoUploadSectionProps> = ({
       reader.onload = (e) => {
         try {
           const arrayBuffer = e.target?.result as ArrayBuffer;
+          if (!arrayBuffer) {
+            resolve(file);
+            return;
+          }
+          
           const dataView = new DataView(arrayBuffer);
           
           // Check if it's a JPEG
@@ -125,8 +135,13 @@ const PhotoUploadSection: React.FC<PhotoUploadSectionProps> = ({
   const createBlurredPreview = (file: File): Promise<string> => {
     return new Promise((resolve) => {
       const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d')!;
-      const img = new Image();
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        resolve('');
+        return;
+      }
+      
+      const img = document.createElement('img') as HTMLImageElement;
       
       img.onload = () => {
         // Create small, blurred version
