@@ -27,14 +27,16 @@ import { useRole } from '@/contexts/RoleContext';
 import { getUserDropdownItems, getProfileMenuItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
 import NotificationIndicator from '@/components/NotificationIndicator';
+import { useAdminStatus } from '@/hooks/useAdminStatus';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
   const { currentRole, setCurrentRole } = useRole();
   const navigate = useNavigate();
   const [providerStatus, setProviderStatus] = useState('Available');
+  const { isAdmin } = useAdminStatus();
 
-  console.log('👤 UserMenu render:', { user: !!user, currentRole });
+  console.log('👤 UserMenu render:', { user: !!user, currentRole, isAdmin });
 
   const statusOptions = [
     { value: 'Available', label: 'Available', icon: Zap, color: 'text-green-600' },
@@ -302,6 +304,17 @@ const UserMenu = () => {
           <span className="mr-2">⚙️</span>
           <span className="flex-1">Settings</span>
         </DropdownMenuItem>
+
+        {/* Admin Dashboard - only show for admin users */}
+        {isAdmin && (
+          <DropdownMenuItem
+            onClick={() => navigate("/admin")}
+            className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
+          >
+            <span className="mr-2">🔧</span>
+            <span className="flex-1">Admin Dashboard</span>
+          </DropdownMenuItem>
+        )}
 
         {/* Sign Out */}
         <DropdownMenuItem
