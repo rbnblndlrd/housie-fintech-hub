@@ -57,10 +57,10 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="text-center mb-16 lg:mb-20">
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white mb-6">
-            HOUSIE: Where Good Work Meets Good People
+            HOUSIE: Professional Services You Can Trust
           </h1>
           <p className="text-xl sm:text-2xl lg:text-3xl text-white/90 font-medium max-w-4xl mx-auto">
-            Find people who care about your quality of life across Quebec
+            Connect with verified professionals across Quebec
           </p>
         </div>
 
