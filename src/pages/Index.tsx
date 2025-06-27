@@ -8,7 +8,7 @@ import { PricingSection } from '@/components/PricingSection';
 import { useState } from 'react';
 
 const Index = () => {
-  const [selectedUserType, setSelectedUserType] = useState<string>('customer'); // Default to customer for launch
+  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
 
   const handleUserTypeSelect = (userType: string) => {
     setSelectedUserType(userType);
@@ -18,7 +18,7 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
       <Header />
       
-      {/* Simplified Hero Section focused on customers */}
+      {/* User Type Selection */}
       <ErrorBoundary fallback={<div className="py-20 text-center text-white">Loading your trusted service platform...</div>}>
         <UserTypeSelector 
           onUserTypeSelect={handleUserTypeSelect}
@@ -26,12 +26,12 @@ const Index = () => {
         />
       </ErrorBoundary>
       
-      {/* Demo Section with customer focus */}
+      {/* Demo Section */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
         <DemoSection />
       </ErrorBoundary>
 
-      {/* Simplified Pricing Section */}
+      {/* Pricing Section */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing information loading...</div>}>
         <div id="pricing-section">
           <PricingSection />
