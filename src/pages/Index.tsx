@@ -19,54 +19,22 @@ const Index = () => {
       <Header />
       
       {/* User Type Selection */}
-      <ErrorBoundary fallback={<div className="py-20 text-center text-white">Loading your trusted service platform...</div>}>
-        <UserTypeSelector 
-          onUserTypeSelect={handleUserTypeSelect}
-          selectedUserType={selectedUserType}
-        />
-      </ErrorBoundary>
+      <UserTypeSelector 
+        onUserTypeSelect={handleUserTypeSelect}
+        selectedUserType={selectedUserType}
+      />
       
       {/* Demo Section */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
+      <div id="demo-section">
         <DemoSection />
-      </ErrorBoundary>
+      </div>
 
       {/* Pricing Section */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing information loading...</div>}>
-        <div id="pricing-section">
-          <PricingSection />
-        </div>
-      </ErrorBoundary>
+      <div id="pricing-section">
+        <PricingSection />
+      </div>
     </div>
   );
 };
-
-// Simple Error Boundary Component
-class ErrorBoundary extends React.Component<
-  { children: React.ReactNode; fallback: React.ReactNode }, 
-  { hasError: boolean }
-> {
-  constructor(props: { children: React.ReactNode; fallback: React.ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error) {
-    console.warn('Component error caught:', error);
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn('Error boundary caught error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return this.props.fallback;
-    }
-
-    return this.props.children;
-  }
-}
 
 export default Index;
