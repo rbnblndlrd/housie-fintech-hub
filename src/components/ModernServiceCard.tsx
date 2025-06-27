@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -41,14 +40,14 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
   };
 
   const getVerificationBadge = () => {
-    if (service.provider.verification_level === 'premium') {
+    if (service.provider.verification_level === 'professional_license') {
       return (
         <Badge className="bg-purple-100 text-purple-700 border-purple-200">
           <Award className="h-3 w-3 mr-1" />
           Premium Verified
         </Badge>
       );
-    } else if (service.provider.verification_level === 'verified') {
+    } else if (service.provider.verification_level === 'background_check') {
       return (
         <Badge className="bg-blue-100 text-blue-700 border-blue-200">
           <Verified className="h-3 w-3 mr-1" />

@@ -268,6 +268,8 @@ export type Database = {
       bookings: {
         Row: {
           accepted_at: string | null
+          after_photos: Json | null
+          before_photos: Json | null
           completed_at: string | null
           created_at: string | null
           customer_id: string
@@ -275,6 +277,7 @@ export type Database = {
           id: string
           instructions: string | null
           payment_status: string | null
+          photos_required: boolean | null
           priority: string | null
           provider_id: string
           public_location: unknown | null
@@ -293,6 +296,8 @@ export type Database = {
         }
         Insert: {
           accepted_at?: string | null
+          after_photos?: Json | null
+          before_photos?: Json | null
           completed_at?: string | null
           created_at?: string | null
           customer_id: string
@@ -300,6 +305,7 @@ export type Database = {
           id?: string
           instructions?: string | null
           payment_status?: string | null
+          photos_required?: boolean | null
           priority?: string | null
           provider_id: string
           public_location?: unknown | null
@@ -318,6 +324,8 @@ export type Database = {
         }
         Update: {
           accepted_at?: string | null
+          after_photos?: Json | null
+          before_photos?: Json | null
           completed_at?: string | null
           created_at?: string | null
           customer_id?: string
@@ -325,6 +333,7 @@ export type Database = {
           id?: string
           instructions?: string | null
           payment_status?: string | null
+          photos_required?: boolean | null
           priority?: string | null
           provider_id?: string
           public_location?: unknown | null
@@ -2296,6 +2305,7 @@ export type Database = {
           is_verified: boolean | null
           location: string | null
           network_connections_count: number | null
+          network_points: number | null
           phone: string | null
           privacy_level: string | null
           profession: string | null
@@ -2320,6 +2330,7 @@ export type Database = {
           is_verified?: boolean | null
           location?: string | null
           network_connections_count?: number | null
+          network_points?: number | null
           phone?: string | null
           privacy_level?: string | null
           profession?: string | null
@@ -2344,6 +2355,7 @@ export type Database = {
           is_verified?: boolean | null
           location?: string | null
           network_connections_count?: number | null
+          network_points?: number | null
           phone?: string | null
           privacy_level?: string | null
           profession?: string | null

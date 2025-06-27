@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -24,7 +23,6 @@ const PublicProviderProfile = () => {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [activeTab, setActiveTab] = useState<'services' | 'reviews' | 'gallery'>('services');
 
-  // Try to fetch from database first, then fallback to sample data
   const { data: provider, isLoading } = useQuery({
     queryKey: ['public-provider', id],
     queryFn: async () => {
@@ -76,7 +74,7 @@ const PublicProviderProfile = () => {
           city: sampleProvider.city,
           province: sampleProvider.province
         },
-        services: sampleProvider.services.map(s => ({
+        services: sampleProvider.services?.map(s => ({
           id: s.id,
           title: s.title,
           description: s.description,
@@ -88,7 +86,7 @@ const PublicProviderProfile = () => {
           background_check_required: false,
           ccq_rbq_required: false,
           risk_category: 'low'
-        })),
+        })) || [],
         // Add sample-specific data
         sampleData: sampleProvider
       };
@@ -277,6 +275,7 @@ const PublicProviderProfile = () => {
                 <ProviderServicesList 
                   services={provider.services || []}
                   providerHourlyRate={provider.hourly_rate}
+                  providerName={provider.business_name || provider.user.full_name}
                   onBookNow={handleBookNow}
                 />
               </div>
