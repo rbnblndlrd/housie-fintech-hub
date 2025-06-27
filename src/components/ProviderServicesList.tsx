@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DollarSign, Shield } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 interface Service {
   id: string;
@@ -28,21 +27,10 @@ const ProviderServicesList: React.FC<ProviderServicesListProps> = ({
   providerName,
   onBookNow 
 }) => {
-  const navigate = useNavigate();
-
   const handleBookNow = (service: Service) => {
+    // Call the parent handler directly for booking confirmation
     if (onBookNow) {
       onBookNow(service);
-    } else {
-      // Navigate to booking form with service details
-      const params = new URLSearchParams({
-        service_id: service.id,
-        provider: providerName,
-        price: service.pricing_type === 'hourly' 
-          ? providerHourlyRate.toString()
-          : service.base_price.toString()
-      });
-      navigate(`/booking-form?${params.toString()}`);
     }
   };
 

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +13,6 @@ import {
   Verified
 } from 'lucide-react';
 import { Service } from "@/types/service";
-import { useNavigate } from 'react-router-dom';
 
 interface ModernServiceCardProps {
   service: Service;
@@ -25,18 +25,9 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
   onBookNow, 
   onHoverProvider 
 }) => {
-  const navigate = useNavigate();
-
   const handleBookNow = () => {
-    // Navigate to booking form with service details
-    const params = new URLSearchParams({
-      service_id: service.id,
-      provider: service.provider.business_name || service.provider.user.full_name,
-      price: service.pricing_type === 'hourly' 
-        ? service.provider.hourly_rate?.toString() || service.base_price.toString()
-        : service.base_price.toString()
-    });
-    navigate(`/booking-form?${params.toString()}`);
+    // Call the parent handler directly for booking confirmation
+    onBookNow(service);
   };
 
   const getVerificationBadge = () => {
