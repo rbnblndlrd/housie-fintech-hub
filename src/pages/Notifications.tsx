@@ -102,19 +102,19 @@ const Notifications = () => {
       case 'new_booking':
       case 'booking_confirmed':
       case 'booking_cancelled':
-        navigate('/provider-bookings');
+        navigate('/provider-dashboard');
         break;
       case 'payment_received':
-        navigate('/analytics');
+        navigate('/analytics-dashboard');
         break;
       case 'review_received':
         navigate('/provider-profile');
         break;
       case 'new_message':
-        navigate('/dashboard');
+        navigate('/customer-dashboard');
         break;
       default:
-        navigate('/dashboard');
+        navigate('/customer-dashboard');
         break;
     }
   };
@@ -145,7 +145,7 @@ const Notifications = () => {
             <h1 className="text-5xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-4">
               Notifications
             </h1>
-            <p className="text-xl text-gray-600">Restez informé de toutes vos activités</p>
+            <p className="text-xl text-gray-600">Stay informed about all your activities</p>
           </div>
 
           <Card className="fintech-card">
@@ -159,7 +159,7 @@ const Notifications = () => {
                     <CardTitle className="text-2xl font-bold text-gray-900">Notifications</CardTitle>
                     {unreadCount > 0 && (
                       <CreamBadge variant="info" className="mt-2">
-                        {unreadCount} non lue{unreadCount > 1 ? 's' : ''}
+                        {unreadCount} unread
                       </CreamBadge>
                     )}
                   </div>
@@ -171,7 +171,7 @@ const Notifications = () => {
                     onClick={markAllAsRead}
                     className="rounded-2xl border-gray-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 hover:border-blue-200 transition-all duration-200"
                   >
-                    Tout marquer comme lu
+                    Mark all as read
                   </Button>
                 )}
               </div>
@@ -182,8 +182,8 @@ const Notifications = () => {
                   <div className="w-24 h-24 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <Bell className="h-12 w-12 text-white" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Aucune notification</h3>
-                  <p className="text-gray-600 text-lg">Aucune notification pour le moment</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">No notifications</h3>
+                  <p className="text-gray-600 text-lg">No notifications at the moment</p>
                 </div>
               ) : (
                 <ScrollArea className="max-h-[600px]">

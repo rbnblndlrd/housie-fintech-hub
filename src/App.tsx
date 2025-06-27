@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -18,8 +19,6 @@ import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
 import Services from "@/pages/Services";
 import BookingForm from "@/pages/BookingForm";
-import CustomerCalendar from "@/pages/CustomerCalendar";
-import ProviderCalendar from "@/pages/ProviderCalendar";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import PerformanceDashboard from "@/pages/PerformanceDashboard";
 import BusinessInsights from "@/pages/BusinessInsights";
@@ -28,10 +27,8 @@ import Notifications from "@/pages/Notifications";
 import BookingHistory from "@/pages/BookingHistory";
 import BookingSuccess from "@/pages/BookingSuccess";
 import CustomerDashboard from "@/pages/CustomerDashboard";
-import CustomerBookings from "@/pages/CustomerBookings";
 import CustomerSettings from "@/pages/CustomerSettings";
 import ProviderDashboard from "@/pages/ProviderDashboard";
-import ProviderBookings from "@/pages/ProviderBookings";
 import ProviderSettings from "@/pages/ProviderSettings";
 import CustomerProfile from "@/pages/CustomerProfile";
 import ProviderProfile from "@/pages/ProviderProfile";
@@ -49,6 +46,8 @@ import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
 import Help from "@/pages/Help";
+
+const queryClient = new QueryClient();
 
 // Check if running in desktop mode
 const isDesktopMode = typeof window !== 'undefined' && (window as any).DESKTOP_MODE;
@@ -90,11 +89,6 @@ const App = () => {
                               <CustomerDashboard />
                             </RoleProtectedRoute>
                           } />
-                          <Route path="/customer-bookings" element={
-                            <RoleProtectedRoute requiredRole="customer">
-                              <CustomerBookings />
-                            </RoleProtectedRoute>
-                          } />
                           <Route path="/customer-settings" element={
                             <RoleProtectedRoute requiredRole="customer">
                               <CustomerSettings />
@@ -105,21 +99,11 @@ const App = () => {
                               <CustomerProfile />
                             </RoleProtectedRoute>
                           } />
-                          <Route path="/customer-calendar" element={
-                            <RoleProtectedRoute requiredRole="customer">
-                              <CustomerCalendar />
-                            </RoleProtectedRoute>
-                          } />
                           
                           {/* Provider-specific routes */}
                           <Route path="/provider-dashboard" element={
                             <RoleProtectedRoute requiredRole="provider">
                               <ProviderDashboard />
-                            </RoleProtectedRoute>
-                          } />
-                          <Route path="/provider-bookings" element={
-                            <RoleProtectedRoute requiredRole="provider">
-                              <ProviderBookings />
                             </RoleProtectedRoute>
                           } />
                           <Route path="/provider-settings" element={
@@ -130,11 +114,6 @@ const App = () => {
                           <Route path="/provider-profile" element={
                             <RoleProtectedRoute requiredRole="provider">
                               <ProviderProfile />
-                            </RoleProtectedRoute>
-                          } />
-                          <Route path="/provider-calendar" element={
-                            <RoleProtectedRoute requiredRole="provider">
-                              <ProviderCalendar />
                             </RoleProtectedRoute>
                           } />
                           
