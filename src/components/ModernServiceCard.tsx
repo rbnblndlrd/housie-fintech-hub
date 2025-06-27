@@ -3,7 +3,15 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Clock, Shield, CheckCircle, DollarSign, User } from 'lucide-react';
+import { 
+  Star, 
+  MapPin, 
+  DollarSign, 
+  Shield, 
+  Award,
+  Clock,
+  Verified
+} from 'lucide-react';
 import { Service } from "@/types/service";
 import { useNavigate } from 'react-router-dom';
 
@@ -20,138 +28,149 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
 }) => {
   const navigate = useNavigate();
 
-  const handleMouseEnter = () => {
-    if (onHoverProvider && service.provider?.id) {
-      onHoverProvider(service.provider.id);
-    }
+  const handleBookNow = () => {
+    // Navigate to booking form with service details
+    const params = new URLSearchParams({
+      service_id: service.id,
+      provider: service.provider.business_name || service.provider.user.full_name,
+      price: service.pricing_type === 'hourly' 
+        ? service.provider.hourly_rate?.toString() || service.base_price.toString()
+        : service.base_price.toString()
+    });
+    navigate(`/booking-form?${params.toString()}`);
   };
 
-  const handleMouseLeave = () => {
-    if (onHoverProvider) {
-      onHoverProvider(null);
+  const getVerificationBadge = () => {
+    if (service.provider.verification_level === 'premium') {
+      return (
+        <Badge className="bg-purple-100 text-purple-700 border-purple-200">
+          <Award className="h-3 w-3 mr-1" />
+          Premium Verified
+        </Badge>
+      );
+    } else if (service.provider.verification_level === 'verified') {
+      return (
+        <Badge className="bg-blue-100 text-blue-700 border-blue-200">
+          <Verified className="h-3 w-3 mr-1" />
+          Verified
+        </Badge>
+      );
     }
+    return null;
   };
 
-  const handleViewProfile = () => {
-    if (service.provider?.id) {
-      navigate(`/provider/${service.provider.id}`);
+  const getRequirementsBadges = () => {
+    const badges = [];
+    
+    if (service.background_check_required) {
+      badges.push(
+        <Badge key="bg-check" variant="outline" className="text-xs">
+          <Shield className="h-3 w-3 mr-1" />
+          Background Check
+        </Badge>
+      );
     }
-  };
+    
+    if (service.ccq_rbq_required) {
+      badges.push(
+        <Badge key="ccq-rbq" variant="outline" className="text-xs">
+          <Award className="h-3 w-3 mr-1" />
+          Professional License
+        </Badge>
+      );
+    }
 
-  // Safely get provider data with fallbacks
-  const businessName = service.provider?.business_name || 'Professional Service';
-  const userCity = service.provider?.user?.city || 'Montreal';
-  const averageRating = service.provider?.average_rating || 4.8;
-  const totalBookings = service.provider?.total_bookings || 120;
-  const hourlyRate = service.provider?.hourly_rate || service.base_price || 35;
-  const verified = service.provider?.verified || Math.random() > 0.3;
-  const backgroundCheck = service.provider?.background_check_verified || Math.random() > 0.5;
-  
-  // Static availability and distance (no random changes on hover)
-  const isAvailable = true; // Always show as available
-  // Generate a consistent distance based on service ID to avoid changes on hover
-  const distance = service.id ? (parseInt(service.id) % 10) + 1 : Math.floor(Math.random() * 10) + 1;
+    return badges;
+  };
 
   return (
     <Card 
-      className="fintech-card hover:shadow-xl transition-all duration-200 overflow-hidden"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      className="fintech-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
+      onMouseEnter={() => onHoverProvider?.(service.provider.id)}
+      onMouseLeave={() => onHoverProvider?.(null)}
     >
-      <CardContent className="p-6">
-        <div className="flex items-start gap-4">
-          {/* Profile Avatar */}
-          <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-lg shrink-0 shadow-md">
-            {businessName.split(' ').map(n => n[0]).join('').slice(0, 2)}
-          </div>
-          
-          <div className="flex-1 min-w-0">
-            {/* Header */}
-            <div className="flex items-start justify-between mb-3">
-              <div>
-                <button 
-                  onClick={handleViewProfile}
-                  className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors text-left"
-                >
-                  {businessName}
-                </button>
-                <p className="text-gray-600 font-medium">{service.title}</p>
+      <CardContent className="p-0">
+        <div className="p-6 pb-4">
+          {/* Header with provider info */}
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                {(service.provider.business_name || service.provider.user.full_name).charAt(0)}
               </div>
-              
-              <div className="flex flex-col items-end gap-2">
-                <div className="text-right">
-                  <p className="text-2xl font-bold text-gray-900">
-                    ${hourlyRate}
-                    <span className="text-sm font-normal text-gray-500">/hour</span>
-                  </p>
+              <div>
+                <h3 className="font-bold text-gray-900 text-lg group-hover:text-purple-600 transition-colors">
+                  {service.provider.business_name || service.provider.user.full_name}
+                </h3>
+                <div className="flex items-center gap-2 text-sm text-gray-600">
+                  <MapPin className="h-3 w-3" />
+                  <span>{service.provider.user.city}, {service.provider.user.province}</span>
                 </div>
               </div>
             </div>
-
-            {/* Rating and Location */}
-            <div className="flex items-center gap-6 mb-4">
-              <div className="flex items-center gap-1">
-                <Star className="w-4 h-4 text-yellow-400 fill-current" />
-                <span className="font-semibold text-gray-900">{averageRating}</span>
-                <span className="text-gray-500 text-sm">({totalBookings})</span>
-              </div>
-              
-              <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4 text-gray-400" />
-                <span className="text-gray-600">{userCity}</span>
-                <span className="text-gray-400">•</span>
-                <span className="text-gray-600">{distance} km away</span>
-              </div>
+            <div className="flex flex-col items-end gap-2">
+              {getVerificationBadge()}
+              {service.provider.average_rating && (
+                <div className="flex items-center gap-1">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                  <span className="font-medium text-gray-900">
+                    {service.provider.average_rating.toFixed(1)}
+                  </span>
+                  <span className="text-sm text-gray-500">
+                    ({service.provider.total_bookings || 0})
+                  </span>
+                </div>
+              )}
             </div>
+          </div>
 
-            {/* Trust Badges and Availability */}
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-green-500" />
-                <span className="text-sm font-medium text-green-600">
-                  Available now
+          {/* Service details */}
+          <div className="mb-4">
+            <h4 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+              {service.title}
+            </h4>
+            <p className="text-gray-700 leading-relaxed line-clamp-2">
+              {service.description}
+            </p>
+          </div>
+
+          {/* Service badges and requirements */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            <Badge className="bg-gray-100 text-gray-700 capitalize">
+              {service.category.replace('_', ' ')}
+            </Badge>
+            {service.subcategory && (
+              <Badge variant="outline" className="capitalize">
+                {service.subcategory.replace('_', ' ')}
+              </Badge>
+            )}
+            {getRequirementsBadges()}
+          </div>
+
+          {/* Pricing and booking */}
+          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-1">
+                <DollarSign className="h-5 w-5 text-green-600" />
+                <span className="text-2xl font-bold text-gray-900">
+                  {service.pricing_type === 'hourly' 
+                    ? service.provider.hourly_rate || service.base_price
+                    : service.base_price}
+                </span>
+                <span className="text-gray-600">
+                  {service.pricing_type === 'hourly' ? '/hr' : ''}
                 </span>
               </div>
-              
-              {verified && (
-                <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
-                  <CheckCircle className="w-3 h-3 mr-1" />
-                  Verified
-                </Badge>
-              )}
-              
-              {backgroundCheck && (
-                <Badge variant="outline" className="text-green-600 border-green-200 bg-green-50">
-                  <Shield className="w-3 h-3 mr-1" />
-                  Background checked
-                </Badge>
-              )}
+              <div className="text-sm text-gray-500">
+                + 6% platform fee
+              </div>
             </div>
 
-            {/* Action Buttons */}
-            <div className="flex items-center justify-between pt-2">
-              <div className="text-sm text-gray-500">
-                <span className="font-medium">Includes 6% HOUSIE fee</span>
-              </div>
-              
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="outline"
-                  size="sm"
-                  onClick={handleViewProfile}
-                  className="flex items-center gap-2 hover:bg-gray-50"
-                >
-                  <User className="h-4 w-4" />
-                  View Profile
-                </Button>
-                <Button 
-                  onClick={() => onBookNow(service)}
-                  className="fintech-button-primary"
-                >
-                  Book Now
-                </Button>
-              </div>
-            </div>
+            <Button 
+              onClick={handleBookNow}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 py-2 font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+            >
+              Book Now
+            </Button>
           </div>
         </div>
       </CardContent>

@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DollarSign, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface Service {
   id: string;
@@ -17,14 +18,34 @@ interface Service {
 interface ProviderServicesListProps {
   services: Service[];
   providerHourlyRate: number;
-  onBookNow: (service: Service) => void;
+  providerName: string;
+  onBookNow?: (service: Service) => void;
 }
 
 const ProviderServicesList: React.FC<ProviderServicesListProps> = ({ 
   services, 
   providerHourlyRate, 
+  providerName,
   onBookNow 
 }) => {
+  const navigate = useNavigate();
+
+  const handleBookNow = (service: Service) => {
+    if (onBookNow) {
+      onBookNow(service);
+    } else {
+      // Navigate to booking form with service details
+      const params = new URLSearchParams({
+        service_id: service.id,
+        provider: providerName,
+        price: service.pricing_type === 'hourly' 
+          ? providerHourlyRate.toString()
+          : service.base_price.toString()
+      });
+      navigate(`/booking-form?${params.toString()}`);
+    }
+  };
+
   return (
     <Card className="fintech-card">
       <CardHeader>
@@ -68,7 +89,7 @@ const ProviderServicesList: React.FC<ProviderServicesListProps> = ({
                   </div>
 
                   <Button 
-                    onClick={() => onBookNow(service)}
+                    onClick={() => handleBookNow(service)}
                     className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-8 py-3 font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
                   >
                     Book Now

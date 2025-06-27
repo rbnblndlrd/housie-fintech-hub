@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -17,6 +18,7 @@ import Index from "@/pages/Index";
 import Auth from "@/pages/Auth";
 import Welcome from "@/pages/Welcome";
 import Services from "@/pages/Services";
+import BookingForm from "@/pages/BookingForm";
 import Calendar from "@/pages/Calendar";
 import CustomerCalendar from "@/pages/CustomerCalendar";
 import ProviderCalendar from "@/pages/ProviderCalendar";
@@ -83,6 +85,7 @@ const App = () => {
                           <Route path="/auth" element={<Auth />} />
                           <Route path="/welcome" element={<Welcome />} />
                           <Route path="/services" element={<Services />} />
+                          <Route path="/booking-form" element={<BookingForm />} />
                           <Route path="/help" element={<Help />} />
                           <Route path="/provider/:id" element={<PublicProviderProfile />} />
                           
