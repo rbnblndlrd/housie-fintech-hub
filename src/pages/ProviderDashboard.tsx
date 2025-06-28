@@ -23,11 +23,17 @@ import {
   Settings,
   User,
   MessageSquare,
-  ArrowLeft
+  ArrowLeft,
+  GripVertical,
+  Timer,
+  MapPinned,
+  Play,
+  Pause,
+  CheckCircle2
 } from 'lucide-react';
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { format, subMonths, addMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
+import { format, subMonths, addMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, isSameMonth, isToday } from "date-fns";
 
 interface Booking {
   id: string;
@@ -57,6 +63,8 @@ const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [draggedItem, setDraggedItem] = useState<string | null>(null);
+  const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
 
   const fetchBookings = async () => {
     if (!user) return;
@@ -111,6 +119,281 @@ const ProviderDashboard = () => {
     }
   };
 
+  // New job management functions
+  const getJobsByColumn = (columnType: 'pending' | 'today' | 'pool' | 'completed') => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    switch (columnType) {
+      case 'pending':
+        return bookings.filter(booking => booking.status === 'pending');
+      case 'today':
+        return bookings.filter(booking => {
+          const bookingDate = new Date(booking.scheduled_date);
+          return (booking.status === 'confirmed' || booking.status === 'in_progress') && 
+                 bookingDate.toDateString() === today.toDateString();
+        });
+      case 'pool':
+        return bookings.filter(booking => {
+          const bookingDate = new Date(booking.scheduled_date);
+          return booking.status === 'confirmed' && bookingDate > today;
+        });
+      case 'completed':
+        return bookings.filter(booking => booking.status === 'completed');
+      default:
+        return [];
+    }
+  };
+
+  const handleDragStart = (e: React.DragEvent, bookingId: string) => {
+    setDraggedItem(bookingId);
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', bookingId);
+  };
+
+  const handleDragOver = (e: React.DragEvent, columnType: string) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    setDragOverColumn(columnType);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverColumn(null);
+  };
+
+  const handleDrop = async (e: React.DragEvent, targetColumn: 'pending' | 'today' | 'pool' | 'completed') => {
+    e.preventDefault();
+    const bookingId = draggedItem;
+    if (!bookingId) return;
+
+    const booking = bookings.find(b => b.id === bookingId);
+    if (!booking) return;
+
+    let newStatus = booking.status;
+    
+    // Determine new status based on target column
+    switch (targetColumn) {
+      case 'pending':
+        newStatus = 'pending';
+        break;
+      case 'today':
+        newStatus = 'in_progress';
+        break;
+      case 'pool':
+        newStatus = 'confirmed';
+        break;
+      case 'completed':
+        newStatus = 'completed';
+        break;
+    }
+
+    // Show confirmation for critical moves
+    if (targetColumn === 'completed' && booking.status !== 'completed') {
+      const confirmed = window.confirm('Mark this job as completed? This will trigger payment processing.');
+      if (!confirmed) {
+        setDraggedItem(null);
+        setDragOverColumn(null);
+        return;
+      }
+    }
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: newStatus })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      // Update local state
+      setBookings(prev => prev.map(b => 
+        b.id === bookingId ? { ...b, status: newStatus } : b
+      ));
+
+      toast({
+        title: "Job Updated",
+        description: `Job moved to ${targetColumn} column successfully.`,
+      });
+
+    } catch (error) {
+      console.error('Error updating booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update job status.",
+        variant: "destructive",
+      });
+    }
+
+    setDraggedItem(null);
+    setDragOverColumn(null);
+  };
+
+  const handleAcceptJob = async (bookingId: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ 
+          status: 'confirmed',
+          accepted_at: new Date().toISOString()
+        })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      setBookings(prev => prev.map(b => 
+        b.id === bookingId ? { ...b, status: 'confirmed', accepted_at: new Date().toISOString() } : b
+      ));
+
+      toast({
+        title: "Job Accepted!",
+        description: "You've successfully accepted this job.",
+      });
+
+    } catch (error) {
+      console.error('Error accepting job:', error);
+      toast({
+        title: "Error",
+        description: "Failed to accept job. It may have been taken by another provider.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const JobCard = ({ booking, isDragging = false }: { booking: Booking; isDragging?: boolean }) => (
+    <Card 
+      className={cn(
+        "fintech-card mb-4 cursor-move transition-all duration-200 hover:shadow-lg",
+        isDragging && "opacity-50 rotate-3 scale-105"
+      )}
+      draggable
+      onDragStart={(e) => handleDragStart(e, booking.id)}
+    >
+      <CardContent className="p-4">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <GripVertical className="h-4 w-4 text-gray-400" />
+            <div>
+              <h3 className="font-semibold text-sm text-gray-900">
+                {booking.service?.title || 'Service Request'}
+              </h3>
+              <Badge variant={getStatusBadgeVariant(booking.status)} className="mt-1">
+                {booking.status}
+              </Badge>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="font-bold text-lg text-gray-900">
+              {formatCurrency(Number(booking.total_amount) || 0)}
+            </p>
+          </div>
+        </div>
+        
+        <div className="space-y-2 text-sm text-gray-600">
+          <div className="flex items-center gap-2">
+            <User className="h-3 w-3" />
+            <span>{booking.customer?.full_name || 'Customer'}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Clock className="h-3 w-3" />
+            <span>{new Date(booking.scheduled_date).toLocaleDateString()} at {booking.scheduled_time}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <MapPin className="h-3 w-3" />
+            <span className="truncate">{booking.service_address}</span>
+          </div>
+        </div>
+        
+        {booking.status === 'pending' && (
+          <div className="flex gap-2 mt-3 pt-3 border-t">
+            <Button 
+              size="sm" 
+              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500"
+              onClick={() => handleAcceptJob(booking.id)}
+            >
+              <CheckCircle className="h-3 w-3 mr-1" />
+              Accept
+            </Button>
+            <Button size="sm" variant="outline" className="flex-1">
+              <MessageSquare className="h-3 w-3 mr-1" />
+              Message
+            </Button>
+          </div>
+        )}
+        
+        {booking.status === 'in_progress' && (
+          <div className="flex gap-2 mt-3 pt-3 border-t">
+            <Button size="sm" variant="outline" className="flex-1">
+              <MapPinned className="h-3 w-3 mr-1" />
+              On Site
+            </Button>
+            <Button size="sm" variant="outline" className="flex-1">
+              <Pause className="h-3 w-3 mr-1" />
+              Break
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  const JobColumn = ({ 
+    title, 
+    columnType, 
+    jobs, 
+    icon: Icon, 
+    color 
+  }: { 
+    title: string; 
+    columnType: 'pending' | 'today' | 'pool' | 'completed'; 
+    jobs: Booking[]; 
+    icon: any; 
+    color: string;
+  }) => (
+    <div className="flex-1 min-h-[600px]">
+      <Card className="fintech-card h-full">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className={`p-2 rounded-lg ${color}`}>
+                <Icon className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <CardTitle className="text-lg">{title}</CardTitle>
+                <p className="text-sm text-gray-500">({jobs.length})</p>
+              </div>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent 
+          className={cn(
+            "p-4 min-h-[500px] transition-all duration-200",
+            dragOverColumn === columnType && "bg-blue-50 border-2 border-dashed border-blue-300"
+          )}
+          onDragOver={(e) => handleDragOver(e, columnType)}
+          onDragLeave={handleDragLeave}
+          onDrop={(e) => handleDrop(e, columnType)}
+        >
+          {jobs.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <Icon className="h-8 w-8 mx-auto mb-2 opacity-50" />
+              <p className="text-sm">No jobs in this category</p>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {jobs.map((job) => (
+                <JobCard 
+                  key={job.id} 
+                  booking={job} 
+                  isDragging={draggedItem === job.id}
+                />
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+
   const filterBookings = (status: string) => {
     const now = new Date();
     
@@ -158,66 +441,6 @@ const ProviderDashboard = () => {
     </Card>
   );
 
-  const BookingCard = ({ booking }: { booking: Booking }) => (
-    <Card className="fintech-card mb-4">
-      <CardContent className="p-6">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex-1">
-            <h3 className="font-semibold text-lg text-gray-900 mb-2">
-              {booking.service?.title || 'Service Request'}
-            </h3>
-            <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-              <div className="flex items-center gap-1">
-                <User className="h-4 w-4" />
-                <span>Customer: {booking.customer?.full_name || 'Customer'}</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span>{new Date(booking.scheduled_date).toLocaleDateString()} at {booking.scheduled_time}</span>
-              </div>
-            </div>
-          </div>
-          <div className="text-right">
-            <Badge variant={getStatusBadgeVariant(booking.status)}>
-              {booking.status}
-            </Badge>
-            <p className="font-bold text-lg text-gray-900 mt-2">
-              {formatCurrency(Number(booking.total_amount) || 0)}
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex gap-2 pt-4 border-t">
-          {booking.status === 'pending' && (
-            <>
-              <Button size="sm" className="flex-1">
-                <CheckCircle className="h-4 w-4 mr-1" />
-                Accept
-              </Button>
-              <Button size="sm" variant="destructive" className="flex-1">
-                Decline
-              </Button>
-            </>
-          )}
-          {booking.status === 'confirmed' && (
-            <Button size="sm" className="flex-1">
-              Start Job
-            </Button>
-          )}
-          {booking.status === 'in_progress' && (
-            <Button size="sm" className="flex-1">
-              Complete Job
-            </Button>
-          )}
-          <Button size="sm" variant="outline" className="flex-1">
-            <MessageSquare className="h-4 w-4 mr-1" />
-            Message
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
   const renderCalendarView = () => {
     const monthStart = startOfMonth(currentDate);
     const monthEnd = endOfMonth(currentDate);
@@ -248,7 +471,7 @@ const ProviderDashboard = () => {
           
           {days.map((day) => {
             const dayBookings = getBookingsForDate(day);
-            const isToday = isSameDay(day, new Date());
+            const isTodayDate = isSameDay(day, new Date());
             const isCurrentMonth = isSameMonth(day, currentDate);
             
             return (
@@ -256,14 +479,14 @@ const ProviderDashboard = () => {
                 key={day.toString()}
                 className={cn(
                   "min-h-[100px] p-2 border rounded cursor-pointer transition-colors",
-                  isToday ? "bg-blue-50 border-blue-200" : "bg-white hover:bg-gray-50",
+                  isTodayDate ? "bg-blue-50 border-blue-200" : "bg-white hover:bg-gray-50",
                   !isCurrentMonth && "text-gray-400 bg-gray-50"
                 )}
                 onClick={() => setSelectedDate(day)}
               >
                 <div className={cn(
                   "text-sm font-medium mb-2",
-                  isToday && "text-blue-600 font-bold"
+                  isTodayDate && "text-blue-600 font-bold"
                 )}>
                   {format(day, 'd')}
                 </div>
@@ -435,41 +658,6 @@ const ProviderDashboard = () => {
                   </CardContent>
                 </Card>
               </div>
-
-              {/* Quick Actions */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <Button 
-                  className="h-20 text-lg"
-                  onClick={() => setActiveTab('jobs')}
-                >
-                  <Calendar className="h-6 w-6 mr-2" />
-                  Manage Jobs
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-20 text-lg"
-                  onClick={() => setActiveTab('calendar')}
-                >
-                  <Calendar className="h-6 w-6 mr-2" />
-                  Calendar
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-20 text-lg"
-                  onClick={() => navigate('/interactive-map')}
-                >
-                  <MapPin className="h-6 w-6 mr-2" />
-                  Interactive Map
-                </Button>
-                <Button 
-                  variant="outline" 
-                  className="h-20 text-lg"
-                  onClick={() => setActiveTab('business')}
-                >
-                  <Settings className="h-6 w-6 mr-2" />
-                  Settings
-                </Button>
-              </div>
             </TabsContent>
 
             <TabsContent value="jobs" className="space-y-6">
@@ -488,73 +676,37 @@ const ProviderDashboard = () => {
                 </div>
               </div>
 
-              <Tabs defaultValue="upcoming" className="space-y-4">
-                <TabsList className="grid grid-cols-3 w-full max-w-md">
-                  <TabsTrigger value="upcoming">
-                    Upcoming ({upcomingJobs.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="active">
-                    Active ({activeJobs.length})
-                  </TabsTrigger>
-                  <TabsTrigger value="completed">
-                    Completed ({completedJobs.length})
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="upcoming">
-                  <div className="space-y-4">
-                    {bookingsLoading ? (
-                      <div className="space-y-3">
-                        {[...Array(3)].map((_, i) => (
-                          <Skeleton key={i} className="h-48 w-full" />
-                        ))}
-                      </div>
-                    ) : upcomingJobs.length > 0 ? (
-                      upcomingJobs.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
-                      ))
-                    ) : (
-                      <div className="text-center py-8">
-                        <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No upcoming jobs</h3>
-                        <p className="text-gray-600">New booking requests will appear here</p>
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="active">
-                  <div className="space-y-4">
-                    {activeJobs.length > 0 ? (
-                      activeJobs.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
-                      ))
-                    ) : (
-                      <div className="text-center py-8">
-                        <Clock className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No active jobs</h3>
-                        <p className="text-gray-600">Jobs in progress will appear here</p>
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="completed">
-                  <div className="space-y-4">
-                    {completedJobs.length > 0 ? (
-                      completedJobs.map((booking) => (
-                        <BookingCard key={booking.id} booking={booking} />
-                      ))
-                    ) : (
-                      <div className="text-center py-8">
-                        <CheckCircle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No completed jobs</h3>
-                        <p className="text-gray-600">Completed jobs will appear here</p>
-                      </div>
-                    )}
-                  </div>
-                </TabsContent>
-              </Tabs>
+              {/* Four-Column Job Management */}
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <JobColumn
+                  title="Pending"
+                  columnType="pending"
+                  jobs={getJobsByColumn('pending')}
+                  icon={Timer}
+                  color="bg-gradient-to-r from-yellow-500 to-orange-500"
+                />
+                <JobColumn
+                  title="Today"
+                  columnType="today"
+                  jobs={getJobsByColumn('today')}
+                  icon={Play}
+                  color="bg-gradient-to-r from-blue-500 to-blue-600"
+                />
+                <JobColumn
+                  title="Pool"
+                  columnType="pool"
+                  jobs={getJobsByColumn('pool')}
+                  icon={Clock}
+                  color="bg-gradient-to-r from-purple-500 to-purple-600"
+                />
+                <JobColumn
+                  title="Completed"
+                  columnType="completed"
+                  jobs={getJobsByColumn('completed')}
+                  icon={CheckCircle2}
+                  color="bg-gradient-to-r from-green-500 to-emerald-500"
+                />
+              </div>
             </TabsContent>
 
             <TabsContent value="calendar" className="space-y-6">
