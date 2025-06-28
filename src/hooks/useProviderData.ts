@@ -51,10 +51,16 @@ export const useProviderData = (userId: string | undefined) => {
         .eq('user_id', userId)
         .single();
 
-      if (profileError) throw profileError;
-      if (!providerProfile) throw new Error('Provider profile not found');
+      if (profileError) {
+        console.error('Error getting provider profile:', profileError);
+        throw new Error('Provider profile not found. Please complete your provider setup.');
+      }
 
-      console.log('👤 Provider profile loaded:', providerProfile.business_name);
+      if (!providerProfile) {
+        throw new Error('Provider profile not found');
+      }
+
+      console.log('👤 Provider profile loaded:', providerProfile.business_name || 'Provider');
 
       // Get all provider bookings
       const { data: bookings, error: bookingsError } = await supabase
@@ -67,7 +73,7 @@ export const useProviderData = (userId: string | undefined) => {
             email,
             phone
           ),
-          service:services!inner(
+          service:services!service_id(
             id,
             title,
             category,
@@ -77,7 +83,11 @@ export const useProviderData = (userId: string | undefined) => {
         .eq('provider_id', providerProfile.id)
         .order('created_at', { ascending: false });
 
-      if (bookingsError) throw bookingsError;
+      if (bookingsError) {
+        console.error('Error getting bookings:', bookingsError);
+        // Don't throw error for bookings - just log it
+        console.log('No bookings found or error occurred');
+      }
 
       const allBookings = bookings || [];
       console.log('📊 Provider bookings loaded:', allBookings.length);
@@ -158,11 +168,6 @@ export const useProviderData = (userId: string | undefined) => {
     } catch (error: any) {
       console.error('❌ Failed to load provider data:', error);
       setError(error.message);
-      toast({
-        title: "Error",
-        description: "Failed to load provider data",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
@@ -178,14 +183,8 @@ export const useProviderData = (userId: string | undefined) => {
         .on('postgres_changes', 
           { event: '*', schema: 'public', table: 'bookings' },
           (payload) => {
-            // Only refresh if this booking involves our provider
-            const newRecord = payload.new as any;
-            const oldRecord = payload.old as any;
-            
-            if (newRecord?.provider_id || oldRecord?.provider_id) {
-              console.log('📡 Provider booking data changed, refreshing...');
-              loadProviderData();
-            }
+            console.log('📡 Provider booking data changed, refreshing...');
+            loadProviderData();
           }
         )
         .on('postgres_changes', 

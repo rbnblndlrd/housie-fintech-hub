@@ -56,263 +56,28 @@ interface Booking {
   service_address: string;
   status: string;
   payment_status: string;
+  instructions?: string;
   customer: {
+    id: string;
     full_name: string;
     phone: string;
+    email: string;
   };
   service: {
+    id: string;
     title: string;
     category: string;
+    description: string;
   };
-  notes?: string;
 }
-
-// Mock data for comprehensive testing
-const MOCK_BOOKINGS: Booking[] = [
-  // Pending Jobs
-  {
-    id: 'pending-1',
-    scheduled_date: '2024-06-28',
-    scheduled_time: '14:00',
-    duration_hours: 2,
-    total_amount: 150,
-    service_address: '1234 Rue Sainte-Catherine, Montréal, QC H3H 1N4',
-    status: 'pending',
-    payment_status: 'pending',
-    customer: {
-      full_name: 'Marie-Claire Dubois',
-      phone: '+1-514-555-0123'
-    },
-    service: {
-      title: 'Kitchen Deep Clean',
-      category: 'Cleaning'
-    },
-    notes: 'Client mentioned grease buildup around stove area. Access code: 1542'
-  },
-  {
-    id: 'pending-2',
-    scheduled_date: '2024-06-29',
-    scheduled_time: '10:00',
-    duration_hours: 3,
-    total_amount: 275,
-    service_address: '5678 Boulevard Saint-Laurent, Montréal, QC H2T 1S1',
-    status: 'pending',
-    payment_status: 'pending',
-    customer: {
-      full_name: 'Jean-François Tremblay',
-      phone: '+1-514-555-0156'
-    },
-    service: {
-      title: 'Bathroom Renovation Cleanup',
-      category: 'Cleaning'
-    },
-    notes: 'Post-renovation cleaning, dust removal priority'
-  },
-  
-  // Today's Jobs
-  {
-    id: 'today-1',
-    scheduled_date: '2024-06-28',
-    scheduled_time: '11:30',
-    duration_hours: 1.5,
-    total_amount: 120,
-    service_address: '91 Avenue du Mont-Royal Est, Montréal, QC H2T 1N6',
-    status: 'in_progress',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Isabelle Gagnon',
-      phone: '+1-514-555-0189'
-    },
-    service: {
-      title: 'Therapeutic Massage',
-      category: 'Wellness'
-    },
-    notes: 'Regular client, prefers medium pressure. Has lower back issues.'
-  },
-  
-  // Pool (Future Jobs)
-  {
-    id: 'pool-1',
-    scheduled_date: '2024-06-24',
-    scheduled_time: '14:00',
-    duration_hours: 2,
-    total_amount: 180,
-    service_address: '2468 Rue Peel, Montréal, QC H3A 1T8',
-    status: 'confirmed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Julie Rousseau',
-      phone: '+1-514-555-0234'
-    },
-    service: {
-      title: 'Kitchen Repair',
-      category: 'Home Repair'
-    },
-    notes: 'Cabinet door hinges need replacement. Tools provided by client.'
-  },
-  {
-    id: 'pool-2',
-    scheduled_date: '2024-06-25',
-    scheduled_time: '10:30',
-    duration_hours: 2.5,
-    total_amount: 220,
-    service_address: '1357 Rue Notre-Dame Ouest, Montréal, QC H3C 1K4',
-    status: 'confirmed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Marc Leblanc',
-      phone: '+1-514-555-0267'
-    },
-    service: {
-      title: 'Plumbing Fix',
-      category: 'Home Repair'
-    },
-    notes: 'Kitchen sink leak, parts already purchased by homeowner'
-  },
-  {
-    id: 'pool-3',
-    scheduled_date: '2024-06-27',
-    scheduled_time: '15:15',
-    duration_hours: 3,
-    total_amount: 200,
-    service_address: '999 Chemin de la Côte-des-Neiges, Montréal, QC H3S 1Z2',
-    status: 'confirmed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Sophie Morin',
-      phone: '+1-514-555-0291'
-    },
-    service: {
-      title: 'House Cleaning',
-      category: 'Cleaning'
-    },
-    notes: 'Full house clean, pet-friendly products requested (2 cats)'
-  },
-  {
-    id: 'pool-4',
-    scheduled_date: '2024-07-01',
-    scheduled_time: '09:00',
-    duration_hours: 4,
-    total_amount: 320,
-    service_address: '777 Avenue des Pins, Montréal, QC H2W 1S5',
-    status: 'confirmed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'David Kouri',
-      phone: '+1-514-555-0345'
-    },
-    service: {
-      title: 'Lawn Care',
-      category: 'Landscaping'
-    },
-    notes: 'Spring cleanup, fertilizer application, edge trimming'
-  },
-  
-  // Completed Jobs
-  {
-    id: 'completed-1',
-    scheduled_date: '2024-06-26',
-    scheduled_time: '13:00',
-    duration_hours: 2,
-    total_amount: 160,
-    service_address: '321 Rue Sherbrooke Ouest, Montréal, QC H3A 1B9',
-    status: 'completed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Céline Bergeron',
-      phone: '+1-514-555-0378'
-    },
-    service: {
-      title: 'Deep Tissue Massage',
-      category: 'Wellness'
-    },
-    notes: 'Client very satisfied, requested weekly appointments'
-  },
-  {
-    id: 'completed-2',
-    scheduled_date: '2024-06-25',
-    scheduled_time: '16:30',
-    duration_hours: 1.5,
-    total_amount: 95,
-    service_address: '456 Rue Saint-Denis, Montréal, QC H2X 3L4',
-    status: 'completed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Patrick Villeneuve',
-      phone: '+1-514-555-0412'
-    },
-    service: {
-      title: 'Window Cleaning',
-      category: 'Cleaning'
-    },
-    notes: 'Interior and exterior windows, 3rd floor apartment'
-  },
-  {
-    id: 'completed-3',
-    scheduled_date: '2024-06-24',
-    scheduled_time: '11:00',
-    duration_hours: 2,
-    total_amount: 140,
-    service_address: '789 Boulevard René-Lévesque Est, Montréal, QC H2L 4P5',
-    status: 'completed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Nathalie Roy',
-      phone: '+1-514-555-0445'
-    },
-    service: {
-      title: 'Office Cleaning',
-      category: 'Cleaning'
-    },
-    notes: 'Small dental office, weekly recurring service confirmed'
-  },
-  {
-    id: 'completed-4',
-    scheduled_date: '2024-06-23',
-    scheduled_time: '09:30',
-    duration_hours: 3,
-    total_amount: 250,
-    service_address: '1111 Rue Guy, Montréal, QC H3H 2L7',
-    status: 'completed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'François Lavoie',
-      phone: '+1-514-555-0478'
-    },
-    service: {
-      title: 'Home Organization',
-      category: 'Organization'
-    },
-    notes: 'Garage organization project, client extremely pleased'
-  },
-  {
-    id: 'completed-5',
-    scheduled_date: '2024-06-22',
-    scheduled_time: '14:45',
-    duration_hours: 1,
-    total_amount: 80,
-    service_address: '2222 Avenue Papineau, Montréal, QC H2K 4J5',
-    status: 'completed',
-    payment_status: 'paid',
-    customer: {
-      full_name: 'Sylvie Bélanger',
-      phone: '+1-514-555-0501'
-    },
-    service: {
-      title: 'Pet Grooming',
-      category: 'Pet Care'
-    },
-    notes: 'Golden Retriever, very well behaved, monthly appointment set'
-  }
-];
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { stats, loading, error, refreshData } = useProviderData(user?.id);
   const { toast } = useToast();
-  const [bookings, setBookings] = useState<Booking[]>(MOCK_BOOKINGS);
-  const [bookingsLoading, setBookingsLoading] = useState(false);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookingsLoading, setBookingsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -392,23 +157,90 @@ const ProviderDashboard = () => {
 
   const fetchBookings = async () => {
     if (!user) return;
-
+    
+    setBookingsLoading(true);
     try {
-      const { data, error } = await supabase
+      console.log('🔄 Fetching bookings for user:', user.email);
+
+      // First get the provider profile
+      const { data: providerProfile, error: profileError } = await supabase
+        .from('provider_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileError) {
+        console.error('Error fetching provider profile:', profileError);
+        toast({
+          title: "Error",
+          description: "Could not find your provider profile. Please complete your provider setup.",
+          variant: "destructive",
+        });
+        setBookingsLoading(false);
+        return;
+      }
+
+      if (!providerProfile) {
+        console.log('No provider profile found');
+        setBookings([]);
+        setBookingsLoading(false);
+        return;
+      }
+
+      console.log('📊 Provider profile found:', providerProfile.id);
+
+      // Get bookings for this provider
+      const { data: bookingsData, error: bookingsError } = await supabase
         .from('bookings')
         .select(`
           *,
-          customer:customer_id (full_name, phone),
-          service:service_id (
+          customer:users!customer_id (
+            id,
+            full_name,
+            phone,
+            email
+          ),
+          service:services!service_id (
+            id,
             title,
-            category
+            category,
+            description
           )
         `)
-        .eq('provider_id', user.id)
-        .order('created_at', { ascending: false });
+        .eq('provider_id', providerProfile.id)
+        .order('scheduled_date', { ascending: true });
 
-      if (error) throw error;
-      setBookings(data || []);
+      if (bookingsError) {
+        console.error('Error fetching bookings:', bookingsError);
+        throw bookingsError;
+      }
+
+      const formattedBookings = (bookingsData || []).map(booking => ({
+        id: booking.id,
+        scheduled_date: booking.scheduled_date,
+        scheduled_time: booking.scheduled_time,
+        duration_hours: booking.duration_hours || 0,
+        total_amount: booking.total_amount || 0,
+        service_address: booking.service_address || '',
+        status: booking.status,
+        payment_status: booking.payment_status,
+        instructions: booking.instructions,
+        customer: {
+          id: booking.customer?.id || '',
+          full_name: booking.customer?.full_name || 'Unknown Customer',
+          phone: booking.customer?.phone || '',
+          email: booking.customer?.email || ''
+        },
+        service: {
+          id: booking.service?.id || '',
+          title: booking.service?.title || 'Unknown Service',
+          category: booking.service?.category || '',
+          description: booking.service?.description || ''
+        }
+      }));
+
+      console.log('✅ Bookings loaded:', formattedBookings.length);
+      setBookings(formattedBookings);
     } catch (error) {
       console.error('Error fetching bookings:', error);
       toast({
@@ -418,6 +250,31 @@ const ProviderDashboard = () => {
       });
     } finally {
       setBookingsLoading(false);
+    }
+  };
+
+  const updateBookingStatus = async (bookingId: string, newStatus: string) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: newStatus })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      // Update local state
+      setBookings(prev => prev.map(b => 
+        b.id === bookingId ? { ...b, status: newStatus } : b
+      ));
+
+      console.log('✅ Booking status updated:', bookingId, newStatus);
+    } catch (error) {
+      console.error('Error updating booking status:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update booking status.",
+        variant: "destructive",
+      });
     }
   };
 
@@ -520,10 +377,8 @@ const ProviderDashboard = () => {
       }
     }
 
-    // Update local state for demo purposes (in real app, this would call API)
-    setBookings(prev => prev.map(b => 
-      b.id === bookingId ? { ...b, status: newStatus } : b
-    ));
+    // Update in database
+    await updateBookingStatus(bookingId, newStatus);
 
     toast({
       title: "Job Updated",
@@ -535,11 +390,7 @@ const ProviderDashboard = () => {
   };
 
   const handleAcceptJob = async (bookingId: string) => {
-    // Update local state for demo purposes
-    setBookings(prev => prev.map(b => 
-      b.id === bookingId ? { ...b, status: 'confirmed' } : b
-    ));
-
+    await updateBookingStatus(bookingId, 'confirmed');
     toast({
       title: "Job Accepted!",
       description: "You've successfully accepted this job.",
@@ -564,11 +415,8 @@ const ProviderDashboard = () => {
     window.open(`tel:${job.customer.phone}`);
   };
 
-  const handleUpdateJobStatus = (jobId: string, newStatus: string) => {
-    setBookings(prev => prev.map(b => 
-      b.id === jobId ? { ...b, status: newStatus } : b
-    ));
-    
+  const handleUpdateJobStatus = async (jobId: string, newStatus: string) => {
+    await updateBookingStatus(jobId, newStatus);
     toast({
       title: "Status Updated",
       description: `Job status updated to ${newStatus}`,
@@ -592,7 +440,7 @@ const ProviderDashboard = () => {
             <GripVertical className="h-5 w-5 text-gray-400" />
             <div>
               <h3 className="font-semibold text-base text-gray-900">
-                {booking.service?.title || 'Service Request'}
+                {booking.service.title}
               </h3>
               <Badge variant={getStatusBadgeVariant(booking.status)} className="mt-1">
                 {booking.status}
@@ -601,7 +449,7 @@ const ProviderDashboard = () => {
           </div>
           <div className="text-right">
             <p className="font-bold text-xl text-gray-900">
-              {formatCurrency(Number(booking.total_amount) || 0)}
+              {formatCurrency(booking.total_amount)}
             </p>
           </div>
         </div>
@@ -609,7 +457,7 @@ const ProviderDashboard = () => {
         <div className="space-y-3 text-sm text-gray-600">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span className="text-base">{booking.customer?.full_name || 'Customer'}</span>
+            <span className="text-base">{booking.customer.full_name}</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
@@ -802,9 +650,9 @@ const ProviderDashboard = () => {
             <div className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
               <p className="text-base text-gray-600 mb-2">Next Appointment</p>
               <p className="text-xl font-bold text-gray-900 mb-2">
-                {nextJob.customer?.full_name?.split(' ')[0]} {nextJob.customer?.full_name?.split(' ')[1]?.[0]}. - {nextJob.scheduled_time}
+                {nextJob.customer.full_name.split(' ')[0]} {nextJob.customer.full_name.split(' ')[1]?.[0]}. - {nextJob.scheduled_time}
               </p>
-              <p className="text-base text-gray-600 mb-4">{nextJob.service?.title}</p>
+              <p className="text-base text-gray-600 mb-4">{nextJob.service.title}</p>
               <Button 
                 size="lg" 
                 className="w-full h-12"
@@ -837,13 +685,34 @@ const ProviderDashboard = () => {
                   )}
                   onClick={() => setSelectedDate(date)}
                 >
-                  <div className="text-base font-medium">{date.getDate()}</div>
-                  {holiday && (
-                    <div className="text-lg mt-1">{holiday.icon}</div>
-                  )}
-                  {dayBookings.length > 0 && (
-                    <div className="w-3 h-3 bg-green-500 rounded-full mx-auto mt-1"></div>
-                  )}
+                  <div className={cn(
+                    "text-base font-medium mb-2 flex items-center justify-between",
+                    isToday(date) && "text-blue-600 font-bold"
+                  )}>
+                    <span>{format(date, 'd')}</span>
+                    {holiday && <span className="text-lg">{holiday.icon}</span>}
+                  </div>
+                  
+                  <div className="space-y-1">
+                    {dayBookings.slice(0, 2).map((booking) => (
+                      <div
+                        key={booking.id}
+                        className={cn(
+                          "text-xs p-2 rounded truncate",
+                          booking.status === 'confirmed' 
+                            ? "bg-green-100 text-green-800" 
+                            : "bg-yellow-100 text-yellow-800"
+                        )}
+                      >
+                        {booking.scheduled_time} - {booking.service.title}
+                      </div>
+                    ))}
+                    {dayBookings.length > 2 && (
+                      <div className="text-sm text-gray-500">
+                        +{dayBookings.length - 2} more
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })}
@@ -888,7 +757,7 @@ const ProviderDashboard = () => {
         </div>
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-base text-gray-600">To Julie R.</span>
+            <span className="text-base text-gray-600">To Next Client</span>
             <span className="font-bold text-lg text-green-600">8 min</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3">
@@ -951,9 +820,9 @@ const ProviderDashboard = () => {
         </CardHeader>
         <CardContent className="p-6 space-y-6">
           <div>
-            <h3 className="font-semibold text-xl">{job.service?.title}</h3>
-            <p className="text-lg text-gray-600">{job.customer?.full_name}</p>
-            <p className="text-base text-gray-500">{job.customer?.phone}</p>
+            <h3 className="font-semibold text-xl">{job.service.title}</h3>
+            <p className="text-lg text-gray-600">{job.customer.full_name}</p>
+            <p className="text-base text-gray-500">{job.customer.phone}</p>
           </div>
           
           <div className="space-y-3">
@@ -971,10 +840,10 @@ const ProviderDashboard = () => {
             </div>
           </div>
 
-          {job.notes && (
+          {job.instructions && (
             <div className="bg-blue-50 p-4 rounded-lg">
               <h4 className="font-medium text-base mb-2">Job Notes:</h4>
-              <p className="text-base text-gray-700">{job.notes}</p>
+              <p className="text-base text-gray-700">{job.instructions}</p>
             </div>
           )}
 
@@ -1094,7 +963,7 @@ const ProviderDashboard = () => {
                           : "bg-yellow-100 text-yellow-800"
                       )}
                     >
-                      {booking.scheduled_time} - {booking.service?.title}
+                      {booking.scheduled_time} - {booking.service.title}
                     </div>
                   ))}
                   {dayBookings.length > 2 && (
@@ -1136,6 +1005,27 @@ const ProviderDashboard = () => {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (bookingsLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <Skeleton className="h-8 w-64 mb-2" />
+              <Skeleton className="h-4 w-96" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[...Array(4)].map((_, i) => (
+                <Skeleton key={i} className="h-32" />
+              ))}
+            </div>
           </div>
         </div>
       </div>
