@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -130,7 +129,7 @@ const AdminTestingDashboard = () => {
 
     setOperationLoading(true);
     try {
-      const { error } = await supabase.rpc('admin_add_community_points', {
+      const { error } = await supabase.rpc('award_community_rating_points', {
         p_user_id: selectedUser.id,
         p_points: points,
         p_reason: reason
