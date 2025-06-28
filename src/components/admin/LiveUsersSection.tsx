@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { SessionTracker } from './SessionTracker';
 import LiveUsersStats from './live-users/LiveUsersStats';
-import LiveUsersMapCard from './live-users/LiveUsersMapCard';
+import LiveUsersMapSafe from './LiveUsersMapSafe';
 import LiveUsersTable from './live-users/LiveUsersTable';
 
 interface UserSession {
@@ -31,6 +31,7 @@ interface UserSession {
 const LiveUsersSection = () => {
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
   const channelRef = useRef<any>(null);
   const isSubscribedRef = useRef(false);
@@ -38,6 +39,7 @@ const LiveUsersSection = () => {
   // Load active sessions
   const loadActiveSessions = async () => {
     try {
+      console.log('🔄 Loading active sessions...');
       const { data, error } = await supabase
         .from('user_sessions')
         .select(`
@@ -59,9 +61,12 @@ const LiveUsersSection = () => {
         user: Array.isArray(session.users) ? session.users[0] : session.users
       })) as UserSession[];
 
+      console.log('✅ Loaded sessions:', typedSessions.length);
       setSessions(typedSessions);
+      setError(null);
     } catch (error) {
-      console.error('Error loading sessions:', error);
+      console.error('❌ Error loading sessions:', error);
+      setError(error.message);
     } finally {
       setLoading(false);
     }
@@ -71,6 +76,7 @@ const LiveUsersSection = () => {
   useEffect(() => {
     if (isSubscribedRef.current) return;
 
+    console.log('🔄 Setting up LiveUsersSection...');
     loadActiveSessions();
 
     const channelName = `user-sessions-changes-${Date.now()}`;
@@ -84,7 +90,7 @@ const LiveUsersSection = () => {
           table: 'user_sessions'
         },
         (payload) => {
-          console.log('Session change:', payload);
+          console.log('📡 Session change:', payload);
           loadActiveSessions(); // Reload data on any change
         }
       )
@@ -113,6 +119,27 @@ const LiveUsersSection = () => {
     };
   }, []); // Empty dependency array
 
+  if (error) {
+    return (
+      <div className="space-y-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <h3 className="text-red-800 font-medium">Error Loading Live Users</h3>
+          <p className="text-red-600 text-sm">{error}</p>
+          <button 
+            onClick={() => {
+              setError(null);
+              setLoading(true);
+              loadActiveSessions();
+            }}
+            className="mt-2 px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className="space-y-8">
@@ -129,6 +156,8 @@ const LiveUsersSection = () => {
     );
   }
 
+  console.log('✅ LiveUsersSection rendering with', sessions.length, 'sessions');
+
   return (
     <div className="space-y-8">
       {/* Session Tracker Component */}
@@ -137,8 +166,8 @@ const LiveUsersSection = () => {
       {/* Live Stats Cards */}
       <LiveUsersStats sessions={sessions} />
 
-      {/* Simplified Live Users Map */}
-      <LiveUsersMapCard sessions={sessions} />
+      {/* Safe Live Users Map */}
+      <LiveUsersMapSafe sessions={sessions} />
 
       {/* Live Users Table */}
       <LiveUsersTable sessions={sessions} />
