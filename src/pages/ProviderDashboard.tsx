@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -59,20 +58,261 @@ interface Booking {
   payment_status: string;
   customer: {
     full_name: string;
+    phone: string;
   };
   service: {
     title: string;
     category: string;
   };
+  notes?: string;
 }
+
+// Mock data for comprehensive testing
+const MOCK_BOOKINGS: Booking[] = [
+  // Pending Jobs
+  {
+    id: 'pending-1',
+    scheduled_date: '2024-06-28',
+    scheduled_time: '14:00',
+    duration_hours: 2,
+    total_amount: 150,
+    service_address: '1234 Rue Sainte-Catherine, Montréal, QC H3H 1N4',
+    status: 'pending',
+    payment_status: 'pending',
+    customer: {
+      full_name: 'Marie-Claire Dubois',
+      phone: '+1-514-555-0123'
+    },
+    service: {
+      title: 'Kitchen Deep Clean',
+      category: 'Cleaning'
+    },
+    notes: 'Client mentioned grease buildup around stove area. Access code: 1542'
+  },
+  {
+    id: 'pending-2',
+    scheduled_date: '2024-06-29',
+    scheduled_time: '10:00',
+    duration_hours: 3,
+    total_amount: 275,
+    service_address: '5678 Boulevard Saint-Laurent, Montréal, QC H2T 1S1',
+    status: 'pending',
+    payment_status: 'pending',
+    customer: {
+      full_name: 'Jean-François Tremblay',
+      phone: '+1-514-555-0156'
+    },
+    service: {
+      title: 'Bathroom Renovation Cleanup',
+      category: 'Cleaning'
+    },
+    notes: 'Post-renovation cleaning, dust removal priority'
+  },
+  
+  // Today's Jobs
+  {
+    id: 'today-1',
+    scheduled_date: '2024-06-28',
+    scheduled_time: '11:30',
+    duration_hours: 1.5,
+    total_amount: 120,
+    service_address: '91 Avenue du Mont-Royal Est, Montréal, QC H2T 1N6',
+    status: 'in_progress',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Isabelle Gagnon',
+      phone: '+1-514-555-0189'
+    },
+    service: {
+      title: 'Therapeutic Massage',
+      category: 'Wellness'
+    },
+    notes: 'Regular client, prefers medium pressure. Has lower back issues.'
+  },
+  
+  // Pool (Future Jobs)
+  {
+    id: 'pool-1',
+    scheduled_date: '2024-06-24',
+    scheduled_time: '14:00',
+    duration_hours: 2,
+    total_amount: 180,
+    service_address: '2468 Rue Peel, Montréal, QC H3A 1T8',
+    status: 'confirmed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Julie Rousseau',
+      phone: '+1-514-555-0234'
+    },
+    service: {
+      title: 'Kitchen Repair',
+      category: 'Home Repair'
+    },
+    notes: 'Cabinet door hinges need replacement. Tools provided by client.'
+  },
+  {
+    id: 'pool-2',
+    scheduled_date: '2024-06-25',
+    scheduled_time: '10:30',
+    duration_hours: 2.5,
+    total_amount: 220,
+    service_address: '1357 Rue Notre-Dame Ouest, Montréal, QC H3C 1K4',
+    status: 'confirmed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Marc Leblanc',
+      phone: '+1-514-555-0267'
+    },
+    service: {
+      title: 'Plumbing Fix',
+      category: 'Home Repair'
+    },
+    notes: 'Kitchen sink leak, parts already purchased by homeowner'
+  },
+  {
+    id: 'pool-3',
+    scheduled_date: '2024-06-27',
+    scheduled_time: '15:15',
+    duration_hours: 3,
+    total_amount: 200,
+    service_address: '999 Chemin de la Côte-des-Neiges, Montréal, QC H3S 1Z2',
+    status: 'confirmed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Sophie Morin',
+      phone: '+1-514-555-0291'
+    },
+    service: {
+      title: 'House Cleaning',
+      category: 'Cleaning'
+    },
+    notes: 'Full house clean, pet-friendly products requested (2 cats)'
+  },
+  {
+    id: 'pool-4',
+    scheduled_date: '2024-07-01',
+    scheduled_time: '09:00',
+    duration_hours: 4,
+    total_amount: 320,
+    service_address: '777 Avenue des Pins, Montréal, QC H2W 1S5',
+    status: 'confirmed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'David Kouri',
+      phone: '+1-514-555-0345'
+    },
+    service: {
+      title: 'Lawn Care',
+      category: 'Landscaping'
+    },
+    notes: 'Spring cleanup, fertilizer application, edge trimming'
+  },
+  
+  // Completed Jobs
+  {
+    id: 'completed-1',
+    scheduled_date: '2024-06-26',
+    scheduled_time: '13:00',
+    duration_hours: 2,
+    total_amount: 160,
+    service_address: '321 Rue Sherbrooke Ouest, Montréal, QC H3A 1B9',
+    status: 'completed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Céline Bergeron',
+      phone: '+1-514-555-0378'
+    },
+    service: {
+      title: 'Deep Tissue Massage',
+      category: 'Wellness'
+    },
+    notes: 'Client very satisfied, requested weekly appointments'
+  },
+  {
+    id: 'completed-2',
+    scheduled_date: '2024-06-25',
+    scheduled_time: '16:30',
+    duration_hours: 1.5,
+    total_amount: 95,
+    service_address: '456 Rue Saint-Denis, Montréal, QC H2X 3L4',
+    status: 'completed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Patrick Villeneuve',
+      phone: '+1-514-555-0412'
+    },
+    service: {
+      title: 'Window Cleaning',
+      category: 'Cleaning'
+    },
+    notes: 'Interior and exterior windows, 3rd floor apartment'
+  },
+  {
+    id: 'completed-3',
+    scheduled_date: '2024-06-24',
+    scheduled_time: '11:00',
+    duration_hours: 2,
+    total_amount: 140,
+    service_address: '789 Boulevard René-Lévesque Est, Montréal, QC H2L 4P5',
+    status: 'completed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Nathalie Roy',
+      phone: '+1-514-555-0445'
+    },
+    service: {
+      title: 'Office Cleaning',
+      category: 'Cleaning'
+    },
+    notes: 'Small dental office, weekly recurring service confirmed'
+  },
+  {
+    id: 'completed-4',
+    scheduled_date: '2024-06-23',
+    scheduled_time: '09:30',
+    duration_hours: 3,
+    total_amount: 250,
+    service_address: '1111 Rue Guy, Montréal, QC H3H 2L7',
+    status: 'completed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'François Lavoie',
+      phone: '+1-514-555-0478'
+    },
+    service: {
+      title: 'Home Organization',
+      category: 'Organization'
+    },
+    notes: 'Garage organization project, client extremely pleased'
+  },
+  {
+    id: 'completed-5',
+    scheduled_date: '2024-06-22',
+    scheduled_time: '14:45',
+    duration_hours: 1,
+    total_amount: 80,
+    service_address: '2222 Avenue Papineau, Montréal, QC H2K 4J5',
+    status: 'completed',
+    payment_status: 'paid',
+    customer: {
+      full_name: 'Sylvie Bélanger',
+      phone: '+1-514-555-0501'
+    },
+    service: {
+      title: 'Pet Grooming',
+      category: 'Pet Care'
+    },
+    notes: 'Golden Retriever, very well behaved, monthly appointment set'
+  }
+];
 
 const ProviderDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { stats, loading, error, refreshData } = useProviderData(user?.id);
   const { toast } = useToast();
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [bookingsLoading, setBookingsLoading] = useState(true);
+  const [bookings, setBookings] = useState<Booking[]>(MOCK_BOOKINGS);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
@@ -158,7 +398,7 @@ const ProviderDashboard = () => {
         .from('bookings')
         .select(`
           *,
-          customer:customer_id (full_name),
+          customer:customer_id (full_name, phone),
           service:service_id (
             title,
             category
@@ -280,66 +520,59 @@ const ProviderDashboard = () => {
       }
     }
 
-    try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ status: newStatus })
-        .eq('id', bookingId);
+    // Update local state for demo purposes (in real app, this would call API)
+    setBookings(prev => prev.map(b => 
+      b.id === bookingId ? { ...b, status: newStatus } : b
+    ));
 
-      if (error) throw error;
-
-      // Update local state
-      setBookings(prev => prev.map(b => 
-        b.id === bookingId ? { ...b, status: newStatus } : b
-      ));
-
-      toast({
-        title: "Job Updated",
-        description: `Job moved to ${targetColumn} column successfully.`,
-      });
-
-    } catch (error) {
-      console.error('Error updating booking:', error);
-      toast({
-        title: "Error",
-        description: "Failed to update job status.",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Job Updated",
+      description: `Job moved to ${targetColumn} column successfully.`,
+    });
 
     setDraggedItem(null);
     setDragOverColumn(null);
   };
 
   const handleAcceptJob = async (bookingId: string) => {
-    try {
-      const { error } = await supabase
-        .from('bookings')
-        .update({ 
-          status: 'confirmed',
-          accepted_at: new Date().toISOString()
-        })
-        .eq('id', bookingId);
+    // Update local state for demo purposes
+    setBookings(prev => prev.map(b => 
+      b.id === bookingId ? { ...b, status: 'confirmed' } : b
+    ));
 
-      if (error) throw error;
+    toast({
+      title: "Job Accepted!",
+      description: "You've successfully accepted this job.",
+    });
+  };
 
-      setBookings(prev => prev.map(b => 
-        b.id === bookingId ? { ...b, status: 'confirmed', accepted_at: new Date().toISOString() } : b
-      ));
+  const handleRunningLate = (job: Booking) => {
+    const customerFirstName = job.customer.full_name.split(' ')[0];
+    toast({
+      title: "Running Late Alert Sent",
+      description: `${customerFirstName} has been notified you're running 10 minutes late.`,
+    });
+  };
 
-      toast({
-        title: "Job Accepted!",
-        description: "You've successfully accepted this job.",
-      });
+  const handleCallClient = (job: Booking) => {
+    const customerFirstName = job.customer.full_name.split(' ')[0];
+    toast({
+      title: "Calling Client",
+      description: `Calling ${customerFirstName} at ${job.customer.phone}`,
+    });
+    // In a real app, this would integrate with the phone system
+    window.open(`tel:${job.customer.phone}`);
+  };
 
-    } catch (error) {
-      console.error('Error accepting job:', error);
-      toast({
-        title: "Error",
-        description: "Failed to accept job. It may have been taken by another provider.",
-        variant: "destructive",
-      });
-    }
+  const handleUpdateJobStatus = (jobId: string, newStatus: string) => {
+    setBookings(prev => prev.map(b => 
+      b.id === jobId ? { ...b, status: newStatus } : b
+    ));
+    
+    toast({
+      title: "Status Updated",
+      description: `Job status updated to ${newStatus}`,
+    });
   };
 
   // Mobile-optimized Job Card with larger touch targets
@@ -351,6 +584,7 @@ const ProviderDashboard = () => {
       )}
       draggable
       onDragStart={(e) => handleDragStart(e, booking.id)}
+      onClick={() => setSelectedJob(booking)}
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-3">
@@ -392,7 +626,10 @@ const ProviderDashboard = () => {
             <Button 
               size="lg"
               className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 h-12"
-              onClick={() => handleAcceptJob(booking.id)}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleAcceptJob(booking.id);
+              }}
             >
               <CheckCircle className="h-4 w-4 mr-2" />
               Accept
@@ -700,10 +937,10 @@ const ProviderDashboard = () => {
     </Card>
   );
 
-  // Mobile-optimized Job Overlay
+  // Mobile-optimized Job Overlay with comprehensive client information
   const JobOverlay = ({ job, onClose }: { job: Booking; onClose: () => void }) => (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <Card className="fintech-card max-w-md w-full animate-scale-in">
+      <Card className="fintech-card max-w-md w-full animate-scale-in max-h-[90vh] overflow-y-auto">
         <CardHeader className="border-b">
           <div className="flex items-center justify-between">
             <CardTitle className="text-lg">Job Details</CardTitle>
@@ -716,6 +953,7 @@ const ProviderDashboard = () => {
           <div>
             <h3 className="font-semibold text-xl">{job.service?.title}</h3>
             <p className="text-lg text-gray-600">{job.customer?.full_name}</p>
+            <p className="text-base text-gray-500">{job.customer?.phone}</p>
           </div>
           
           <div className="space-y-3">
@@ -727,33 +965,66 @@ const ProviderDashboard = () => {
               <MapPin className="h-5 w-5 text-gray-500" />
               <span className="text-base">{job.service_address}</span>
             </div>
+            <div className="flex items-center gap-3">
+              <DollarSign className="h-5 w-5 text-gray-500" />
+              <span className="text-base font-semibold">{formatCurrency(job.total_amount)}</span>
+            </div>
           </div>
 
-          <div className="flex gap-3">
-            <Button size="lg" className="flex-1 h-12">
-              <Phone className="h-4 w-4 mr-2" />
-              Call Client
-            </Button>
-            <Button size="lg" variant="outline" className="flex-1 h-12">
-              <Navigation className="h-4 w-4 mr-2" />
-              Directions
-            </Button>
-          </div>
+          {job.notes && (
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-medium text-base mb-2">Job Notes:</h4>
+              <p className="text-base text-gray-700">{job.notes}</p>
+            </div>
+          )}
 
-          <Button 
-            variant="outline" 
-            className="w-full h-12 text-base"
-            onClick={() => {
-              toast({
-                title: "Running Late Alert Sent",
-                description: "Client has been notified you're running 10 minutes late.",
-              });
-              onClose();
-            }}
-          >
-            <Clock className="h-5 w-5 mr-2" />
-            Running Late (Notify Client)
-          </Button>
+          <div className="space-y-3">
+            <div className="flex gap-3">
+              <Button 
+                size="lg" 
+                className="flex-1 h-12"
+                onClick={() => handleCallClient(job)}
+              >
+                <Phone className="h-4 w-4 mr-2" />
+                Call Client
+              </Button>
+              <Button size="lg" variant="outline" className="flex-1 h-12">
+                <Navigation className="h-4 w-4 mr-2" />
+                Directions
+              </Button>
+            </div>
+
+            <Button 
+              variant="outline" 
+              className="w-full h-12 text-base"
+              onClick={() => {
+                handleRunningLate(job);
+                onClose();
+              }}
+            >
+              <Clock className="h-5 w-5 mr-2" />
+              Running Late (Notify Client)
+            </Button>
+
+            {job.status !== 'completed' && (
+              <div className="pt-4 border-t">
+                <label className="block text-sm font-medium mb-2">Update Status:</label>
+                <select 
+                  className="w-full p-3 border rounded-lg text-base"
+                  value={job.status}
+                  onChange={(e) => {
+                    handleUpdateJobStatus(job.id, e.target.value);
+                    onClose();
+                  }}
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -1051,14 +1322,14 @@ const ProviderDashboard = () => {
                     <CardContent className="space-y-4">
                       <Button 
                         variant="outline" 
-                        className="w-full h-12 text-base"
+                        className="w-full justify-start h-12 text-base"
                         onClick={() => navigate('/provider-settings')}
                       >
                         Working Hours
                       </Button>
                       <Button 
                         variant="outline" 
-                        className="w-full h-12 text-base"
+                        className="w-full justify-start h-12 text-base"
                         onClick={() => setActiveTab('bookings')}
                       >
                         View All Jobs
