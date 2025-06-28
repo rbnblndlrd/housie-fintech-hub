@@ -65,22 +65,32 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
       if (profileError) throw profileError;
       setStats(profileData);
 
-      // Fetch review photos
-      const { data: photosData, error: photosError } = await supabase
-        .from('review_photos')
-        .select('id, photo_url, uploaded_at')
-        .eq('allow_portfolio_use', true)
-        .in('review_id', 
-          supabase
-            .from('reviews')
-            .select('id')
-            .eq('provider_id', providerId)
-        )
-        .order('uploaded_at', { ascending: false })
-        .limit(20);
+      // First get the review IDs for this provider
+      const { data: reviewIds, error: reviewsError } = await supabase
+        .from('reviews')
+        .select('id')
+        .eq('provider_id', providerId);
 
-      if (photosError) throw photosError;
-      setPhotos(photosData || []);
+      if (reviewsError) throw reviewsError;
+
+      // Extract the IDs into an array
+      const reviewIdArray = reviewIds?.map(review => review.id) || [];
+
+      // Only fetch photos if we have review IDs
+      if (reviewIdArray.length > 0) {
+        const { data: photosData, error: photosError } = await supabase
+          .from('review_photos')
+          .select('id, photo_url, uploaded_at')
+          .eq('allow_portfolio_use', true)
+          .in('review_id', reviewIdArray)
+          .order('uploaded_at', { ascending: false })
+          .limit(20);
+
+        if (photosError) throw photosError;
+        setPhotos(photosData || []);
+      } else {
+        setPhotos([]);
+      }
     } catch (error) {
       console.error('Error fetching provider data:', error);
     } finally {
