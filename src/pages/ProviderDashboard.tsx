@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { 
   Calendar, 
   DollarSign, 
@@ -29,7 +30,17 @@ import {
   MapPinned,
   Play,
   Pause,
-  CheckCircle2
+  CheckCircle2,
+  Bell,
+  Phone,
+  Navigation,
+  CloudRain,
+  Sun,
+  Cloud,
+  Zap,
+  Activity,
+  Eye,
+  ToggleLeft
 } from 'lucide-react';
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
@@ -65,6 +76,9 @@ const ProviderDashboard = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [draggedItem, setDraggedItem] = useState<string | null>(null);
   const [dragOverColumn, setDragOverColumn] = useState<string | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Booking | null>(null);
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [emergencyMode, setEmergencyMode] = useState(false);
 
   const fetchBookings = async () => {
     if (!user) return;
@@ -519,6 +533,285 @@ const ProviderDashboard = () => {
     );
   };
 
+  const AlertBanner = ({ type, count, message, onClick }: { 
+    type: 'pending' | 'updates'; 
+    count: number; 
+    message: string; 
+    onClick: () => void;
+  }) => (
+    <Card 
+      className={cn(
+        "fintech-card cursor-pointer transition-all duration-200 hover:shadow-lg border-l-4",
+        type === 'pending' ? "border-l-orange-500 bg-gradient-to-r from-orange-50 to-yellow-50" : "border-l-red-500 bg-gradient-to-r from-red-50 to-pink-50"
+      )}
+      onClick={onClick}
+    >
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={cn(
+              "w-8 h-8 rounded-full flex items-center justify-center",
+              type === 'pending' ? "bg-orange-500" : "bg-red-500"
+            )}>
+              <Bell className="h-4 w-4 text-white" />
+            </div>
+            <div>
+              <p className="font-semibold text-gray-900">{message}</p>
+              <Badge variant="outline" className="mt-1">
+                {count} {type === 'pending' ? 'pending' : 'updates'}
+              </Badge>
+            </div>
+          </div>
+          <Button size="sm" variant="outline">
+            {type === 'pending' ? 'Review' : 'View All'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const EnhancedCalendarWidget = () => {
+    const nextJob = bookings
+      .filter(b => ['confirmed', 'in_progress'].includes(b.status))
+      .sort((a, b) => new Date(a.scheduled_date).getTime() - new Date(b.scheduled_date).getTime())[0];
+
+    return (
+      <Card className="fintech-card">
+        <CardHeader>
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Schedule Preview
+            </div>
+            <Button variant="ghost" size="sm" onClick={() => setActiveTab('calendar')}>
+              <Eye className="h-4 w-4 mr-2" />
+              Full View
+            </Button>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {nextJob && (
+            <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-blue-200">
+              <p className="text-sm text-gray-600 mb-1">Next Appointment</p>
+              <p className="text-lg font-bold text-gray-900">
+                {nextJob.customer?.full_name?.split(' ')[0]} {nextJob.customer?.full_name?.split(' ')[1]?.[0]}. - {nextJob.scheduled_time}
+              </p>
+              <p className="text-sm text-gray-600">{nextJob.service?.title}</p>
+              <Button 
+                size="sm" 
+                className="mt-2"
+                onClick={() => setSelectedJob(nextJob)}
+              >
+                Quick Actions
+              </Button>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-7 gap-1">
+            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
+              <div key={day} className="text-center text-xs font-medium text-gray-500 p-2">
+                {day}
+              </div>
+            ))}
+            {Array.from({ length: 14 }, (_, i) => {
+              const date = new Date();
+              date.setDate(date.getDate() + i - 7);
+              const dayBookings = getBookingsForDate(date);
+              const isHoliday = [25, 1].includes(date.getDate()); // Mock holidays
+              
+              return (
+                <div
+                  key={i}
+                  className={cn(
+                    "p-2 text-center rounded cursor-pointer transition-colors relative",
+                    isToday(date) ? "bg-blue-100 text-blue-900 font-bold" : "hover:bg-gray-50",
+                    isHoliday && "border-2 border-red-200"
+                  )}
+                  onClick={() => setSelectedDate(date)}
+                >
+                  <div className="text-sm">{date.getDate()}</div>
+                  {dayBookings.length > 0 && (
+                    <div className="w-2 h-2 bg-green-500 rounded-full mx-auto mt-1"></div>
+                  )}
+                  {isHoliday && (
+                    <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const JobOverlay = ({ job, onClose }: { job: Booking; onClose: () => void }) => (
+    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+      <Card className="fintech-card max-w-md w-full animate-scale-in">
+        <CardHeader className="border-b">
+          <div className="flex items-center justify-between">
+            <CardTitle>Job Details</CardTitle>
+            <Button variant="ghost" size="sm" onClick={onClose}>
+              ×
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="p-6 space-y-4">
+          <div>
+            <h3 className="font-semibold text-lg">{job.service?.title}</h3>
+            <p className="text-gray-600">{job.customer?.full_name}</p>
+          </div>
+          
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <Clock className="h-4 w-4 text-gray-500" />
+              <span>{new Date(job.scheduled_date).toLocaleDateString()} at {job.scheduled_time}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-gray-500" />
+              <span className="text-sm">{job.service_address}</span>
+            </div>
+          </div>
+
+          <div className="flex gap-2">
+            <Button size="sm" className="flex-1">
+              <Phone className="h-3 w-3 mr-1" />
+              Call Client
+            </Button>
+            <Button size="sm" variant="outline" className="flex-1">
+              <Navigation className="h-3 w-3 mr-1" />
+              Directions
+            </Button>
+          </div>
+
+          <Button 
+            variant="outline" 
+            className="w-full"
+            onClick={() => {
+              toast({
+                title: "Running Late Alert Sent",
+                description: "Client has been notified you're running 10 minutes late.",
+              });
+              onClose();
+            }}
+          >
+            <Clock className="h-4 w-4 mr-2" />
+            Running Late (Notify Client)
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+
+  const WeatherWidget = () => (
+    <Card className="fintech-card">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold">Weather</h3>
+          <div className="flex items-center gap-1">
+            <CloudRain className="h-4 w-4 text-blue-500 animate-pulse" />
+            <span className="text-sm text-gray-600">Montreal</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="text-2xl font-bold">15°C</div>
+          <div className="text-sm text-gray-600">
+            <p>Light rain</p>
+            <p className="text-orange-600 font-medium">⚠️ Outdoor job alert: Rain 2-4 PM</p>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const TrafficWidget = () => (
+    <Card className="fintech-card">
+      <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="font-semibold">Next Route</h3>
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className="text-sm text-green-600">Light traffic</span>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">To Julie R.</span>
+            <span className="font-bold text-green-600">8 min</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-green-500 h-2 rounded-full w-3/4 animate-pulse"></div>
+          </div>
+          <p className="text-xs text-gray-500">Route via Rue Sainte-Catherine</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  const ActivityFeed = () => (
+    <Card className="fintech-card">
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2">
+          <Activity className="h-5 w-5" />
+          Recent Activity
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3">
+        {[
+          { text: "Payment received for Bathroom Clean", time: "2 min ago", type: "payment" },
+          { text: "Client added note to Kitchen Repair job", time: "15 min ago", type: "note" },
+          { text: "New booking request from Marie D.", time: "1 hour ago", type: "booking" }
+        ].map((activity, index) => (
+          <div key={index} className="flex items-start gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors">
+            <div className={cn(
+              "w-2 h-2 rounded-full mt-2",
+              activity.type === 'payment' ? "bg-green-500" : 
+              activity.type === 'note' ? "bg-blue-500" : "bg-orange-500"
+            )}></div>
+            <div className="flex-1">
+              <p className="text-sm text-gray-900">{activity.text}</p>
+              <p className="text-xs text-gray-500">{activity.time}</p>
+            </div>
+          </div>
+        ))}
+      </CardContent>
+    </Card>
+  );
+
+  const QuickActions = () => (
+    <Card className="fintech-card">
+      <CardHeader>
+        <CardTitle>Quick Actions</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Available for Jobs</span>
+          <Switch 
+            checked={isAvailable} 
+            onCheckedChange={setIsAvailable}
+          />
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <span className="text-sm font-medium">Emergency Mode</span>
+          <Switch 
+            checked={emergencyMode} 
+            onCheckedChange={setEmergencyMode}
+          />
+        </div>
+
+        <Button 
+          variant="outline" 
+          className="w-full"
+          onClick={() => navigate('/interactive-map')}
+        >
+          <MapPin className="h-4 w-4 mr-2" />
+          View Map
+        </Button>
+      </CardContent>
+    </Card>
+  );
+
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -553,6 +846,8 @@ const ProviderDashboard = () => {
   const upcomingJobs = filterBookings('upcoming');
   const activeJobs = filterBookings('active');
   const completedJobs = filterBookings('completed');
+  const pendingRequests = getJobsByColumn('pending');
+  const unreadUpdates = 3; // Mock data
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -570,97 +865,90 @@ const ProviderDashboard = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
             <TabsList className="grid grid-cols-4 w-full max-w-2xl">
               <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="jobs">Jobs</TabsTrigger>
+              <TabsTrigger value="bookings">Bookings</TabsTrigger>
               <TabsTrigger value="calendar">Calendar</TabsTrigger>
               <TabsTrigger value="business">Business</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
-              {/* Stats Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <StatCard
-                  title="Total Bookings"
-                  value={loading ? "..." : stats.totalBookings.toString()}
-                  subtitle={`${stats.completedJobs} completed`}
-                  icon={Calendar}
-                  loading={loading}
+              {/* Alert Banners */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <AlertBanner
+                  type="pending"
+                  count={pendingRequests.length}
+                  message="Pending Requests"
+                  onClick={() => setActiveTab('bookings')}
                 />
-                <StatCard
-                  title="Active Jobs"
-                  value={loading ? "..." : stats.activeJobs.toString()}
-                  subtitle="Currently in progress"
-                  icon={Clock}
-                  loading={loading}
-                />
-                <StatCard
-                  title="Total Earnings"
-                  value={loading ? "..." : formatCurrency(stats.totalEarnings)}
-                  subtitle={`${formatCurrency(stats.monthlyEarnings)} this month`}
-                  icon={DollarSign}
-                  loading={loading}
-                />
-                <StatCard
-                  title="Average Rating"
-                  value={loading ? "..." : stats.averageRating.toFixed(1)}
-                  subtitle="From customer reviews"
-                  icon={Star}
-                  loading={loading}
+                <AlertBanner
+                  type="updates"
+                  count={unreadUpdates}
+                  message="Client Status Updates"
+                  onClick={() => setActiveTab('bookings')}
                 />
               </div>
 
-              {/* Performance Metrics */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <Card className="fintech-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-1">Completion Rate</p>
-                        {loading ? (
-                          <Skeleton className="h-8 w-16" />
-                        ) : (
-                          <p className="text-2xl font-bold text-green-600">{stats.completionRate.toFixed(1)}%</p>
-                        )}
-                      </div>
-                      <CheckCircle className="h-8 w-8 text-green-600" />
-                    </div>
-                  </CardContent>
-                </Card>
+              {/* Main Dashboard Grid */}
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Left Column - Calendar & Weather */}
+                <div className="space-y-6">
+                  <EnhancedCalendarWidget />
+                  <WeatherWidget />
+                </div>
 
-                <Card className="fintech-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-1">Response Time</p>
-                        {loading ? (
-                          <Skeleton className="h-8 w-16" />
-                        ) : (
-                          <p className="text-2xl font-bold text-blue-600">{stats.responseTime}h</p>
-                        )}
-                      </div>
-                      <Clock className="h-8 w-8 text-blue-600" />
-                    </div>
-                  </CardContent>
-                </Card>
+                {/* Middle Column - Stats & Traffic */}
+                <div className="space-y-6">
+                  <div className="grid grid-cols-2 gap-4">
+                    <StatCard
+                      title="Active Jobs"
+                      value={loading ? "..." : stats.activeJobs.toString()}
+                      subtitle="In progress"
+                      icon={Clock}
+                      loading={loading}
+                    />
+                    <StatCard
+                      title="Today's Earnings"
+                      value={loading ? "..." : formatCurrency(stats.monthlyEarnings / 30)}
+                      subtitle="Estimated"
+                      icon={DollarSign}
+                      loading={loading}
+                    />
+                  </div>
+                  <TrafficWidget />
+                  <QuickActions />
+                </div>
 
-                <Card className="fintech-card">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600 mb-1">Weekly Bookings</p>
-                        {loading ? (
-                          <Skeleton className="h-8 w-16" />
-                        ) : (
-                          <p className="text-2xl font-bold text-purple-600">{stats.weeklyBookings}</p>
-                        )}
+                {/* Right Column - Activity Feed */}
+                <div className="space-y-6">
+                  <ActivityFeed />
+                  
+                  {/* Performance Summary */}
+                  <Card className="fintech-card">
+                    <CardContent className="p-6">
+                      <div className="flex items-center justify-between mb-4">
+                        <h3 className="font-semibold">Performance</h3>
+                        <Badge variant="outline">{stats.averageRating.toFixed(1)} ⭐</Badge>
                       </div>
-                      <TrendingUp className="h-8 w-8 text-purple-600" />
-                    </div>
-                  </CardContent>
-                </Card>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Completion Rate</span>
+                          <span className="font-medium">{stats.completionRate.toFixed(1)}%</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Response Time</span>
+                          <span className="font-medium">{stats.responseTime}h</span>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">Total Earnings</span>
+                          <span className="font-medium">{formatCurrency(stats.totalEarnings)}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </TabsContent>
 
-            <TabsContent value="jobs" className="space-y-6">
+            <TabsContent value="bookings" className="space-y-6">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
                   <Button 
@@ -672,7 +960,7 @@ const ProviderDashboard = () => {
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     Back to Dashboard
                   </Button>
-                  <h2 className="text-2xl font-bold">Job Management</h2>
+                  <h2 className="text-2xl font-bold">Booking Management</h2>
                 </div>
               </div>
 
@@ -839,6 +1127,14 @@ const ProviderDashboard = () => {
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* Job Overlay */}
+          {selectedJob && (
+            <JobOverlay 
+              job={selectedJob} 
+              onClose={() => setSelectedJob(null)} 
+            />
+          )}
         </div>
       </div>
     </div>
