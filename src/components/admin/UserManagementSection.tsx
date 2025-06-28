@@ -7,6 +7,7 @@ import { adminService } from '@/services/adminService';
 import { useRealtimeSubscription } from '@/hooks/useRealtimeSubscription';
 import UserStatsCards from './user-management/UserStatsCards';
 import UserManagementTable from './user-management/UserManagementTable';
+import BulkUserDeletion from './user-management/BulkUserDeletion';
 
 interface User {
   id: string;
@@ -309,6 +310,11 @@ const UserManagementSection = () => {
         verifiedProviders={verifiedProviders}
         pendingProviders={pendingProviders}
         newUsersLast30Days={newUsersLast30Days}
+      />
+
+      <BulkUserDeletion 
+        users={users}
+        onUsersDeleted={fetchUsers}
       />
 
       <UserManagementTable
