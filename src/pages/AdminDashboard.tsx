@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRole } from "@/contexts/RoleContext";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -22,9 +21,9 @@ import AdminTestingDashboard from "@/components/admin/AdminTestingDashboard";
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
-  const { currentRole } = useRole();
 
-  const isAdmin = currentRole === 'admin' || user?.email?.includes('admin');
+  // Use email-based admin detection instead of role-based
+  const isAdmin = user?.email?.includes('admin') || user?.email === '7utie@gmail.com';
   const roleLoading = false;
 
   if (authLoading || roleLoading) {
