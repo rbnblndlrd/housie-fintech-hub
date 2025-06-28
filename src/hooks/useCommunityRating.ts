@@ -112,7 +112,17 @@ export const useCommunityRating = (userId?: string) => {
         .limit(20);
 
       if (error) throw error;
-      setPointTransactions(data || []);
+      
+      // Type cast the data to match our interface
+      const typedTransactions: PointTransaction[] = (data || []).map(item => ({
+        id: item.id,
+        points_amount: item.points_amount,
+        reason: item.reason,
+        transaction_type: item.transaction_type as 'earned' | 'penalty' | 'bonus' | 'adjustment',
+        created_at: item.created_at
+      }));
+      
+      setPointTransactions(typedTransactions);
     } catch (error: any) {
       console.error('❌ Error fetching point transactions:', error);
     }

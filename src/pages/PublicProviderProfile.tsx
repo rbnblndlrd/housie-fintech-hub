@@ -34,7 +34,7 @@ const PublicProviderProfile = () => {
           .from('provider_profiles')
           .select(`
             *,
-            user:users!inner(full_name, email, phone, city, province),
+            user:users!inner(id, full_name, email, phone, city, province),
             services:services(*)
           `)
           .eq('id', id)
@@ -68,6 +68,7 @@ const PublicProviderProfile = () => {
         ccq_verified: false,
         rbq_verified: false,
         user: {
+          id: sampleProvider.id, // Use provider id as user id for sample data
           full_name: sampleProvider.fullName,
           email: sampleProvider.email,
           phone: sampleProvider.phone,

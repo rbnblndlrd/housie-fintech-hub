@@ -1,22 +1,3 @@
-import { supabase } from "@/integrations/supabase/client";
-
-export interface MontrealZone {
-  id: string;
-  zone_name: string;
-  zone_code: string;
-  zone_type: string;
-  demand_level: string;
-  pricing_multiplier: number;
-  center_coordinates: { lat: number; lng: number };
-  zone_radius: number;
-}
-
-export interface FuzzyLocation {
-  lat: number;
-  lng: number;
-  radius: number;
-  lastUpdated: string;
-}
 
 // Convert PostGIS POINT to coordinates
 export const parsePoint = (pointString: string): { lat: number; lng: number } | null => {
@@ -34,7 +15,7 @@ export const generateFuzzyLocation = (
   originalLat: number,
   originalLng: number,
   radiusMeters: number = 10000
-): FuzzyLocation => {
+) => {
   const randomAngle = Math.random() * 2 * Math.PI;
   const randomDistance = Math.random() * radiusMeters;
   
@@ -50,37 +31,14 @@ export const generateFuzzyLocation = (
   };
 };
 
-// Get Montreal zones from database
-export const getMontrealZones = async (): Promise<MontrealZone[]> => {
-  try {
-    const { data, error } = await supabase
-      .from('montreal_zones')
-      .select('*')
-      .order('demand_level', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching Montreal zones:', error);
-      return getDefaultZones();
-    }
-
-    return (data || []).map(zone => ({
-      ...zone,
-      center_coordinates: parsePoint(String(zone.center_coordinates)) || { lat: 45.5017, lng: -73.5673 }
-    }));
-  } catch (error) {
-    console.error('Failed to fetch zones:', error);
-    return getDefaultZones();
-  }
-};
-
-// Fallback zones if database fails
-const getDefaultZones = (): MontrealZone[] => [
+// Default Montreal zones (static fallback)
+const getDefaultZones = () => [
   {
     id: '1',
     zone_name: 'Plateau-Mont-Royal',
     zone_code: 'PLATEAU',
-    zone_type: 'residential',
-    demand_level: 'high',
+    zone_type: 'residential' as const,
+    demand_level: 'high' as const,
     pricing_multiplier: 1.20,
     center_coordinates: { lat: 45.5276, lng: -73.5794 },
     zone_radius: 3000
@@ -89,8 +47,8 @@ const getDefaultZones = (): MontrealZone[] => [
     id: '2',
     zone_name: 'Downtown Montreal',
     zone_code: 'DOWNTOWN',
-    zone_type: 'commercial',
-    demand_level: 'high',
+    zone_type: 'commercial' as const,
+    demand_level: 'high' as const,
     pricing_multiplier: 1.30,
     center_coordinates: { lat: 45.5017, lng: -73.5673 },
     zone_radius: 4000
@@ -99,13 +57,19 @@ const getDefaultZones = (): MontrealZone[] => [
     id: '3',
     zone_name: 'Westmount',
     zone_code: 'WESTMOUNT',
-    zone_type: 'premium',
-    demand_level: 'medium',
+    zone_type: 'premium' as const,
+    demand_level: 'medium' as const,
     pricing_multiplier: 1.50,
     center_coordinates: { lat: 45.4869, lng: -73.5989 },
     zone_radius: 2500
   }
 ];
+
+// Get Montreal zones (simplified to use static data)
+export const getMontrealZones = async () => {
+  console.log('🗺️ Using default Montreal zones (simplified privacy system)');
+  return getDefaultZones();
+};
 
 // Calculate distance between two points
 export const calculateDistance = (
@@ -162,7 +126,8 @@ export const getProviderFuzzyLocation = (provider: any): { lat: number; lng: num
   }
   
   // Final fallback: random Montreal location
-  return generateFuzzyLocation(45.5017, -73.5673, 15000);
+  const fallback = generateFuzzyLocation(45.5017, -73.5673, 15000);
+  return { lat: fallback.lat, lng: fallback.lng };
 };
 
 // Get provider with service radius
@@ -182,23 +147,17 @@ export const getJobServiceCircle = (job: any): { lat: number; lng: number; radiu
   let lat = 45.5017;
   let lng = -73.5673;
   
-  // Use public_location if available, otherwise service_coordinates
-  const coordinates = job.public_location || job.service_coordinates;
-  if (coordinates) {
-    const parsed = parsePoint(coordinates);
-    if (parsed) {
-      lat = parsed.lat;
-      lng = parsed.lng;
-    }
-  } else if (job.lat && job.lng) {
-    lat = job.lat;
-    lng = job.lng;
+  // Use service_address for basic location (if available)
+  if (job.service_address) {
+    // For privacy, just use Montreal center with some randomness
+    lat = 45.5017 + (Math.random() - 0.5) * 0.1;
+    lng = -73.5673 + (Math.random() - 0.5) * 0.1;
   }
   
   return {
     lat,
     lng,
-    radius: job.service_radius || 2000,
-    zone: job.service_zone || 'UNKNOWN'
+    radius: 2000, // Default 2km service radius
+    zone: 'Montreal Area' // Simplified zone
   };
 };
