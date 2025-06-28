@@ -19,18 +19,28 @@ import CreditAnalyticsSection from "@/components/admin/CreditAnalyticsSection";
 import DevelopmentToolsSection from "@/components/admin/DevelopmentToolsSection";
 import AdminTestingDashboard from "@/components/admin/AdminTestingDashboard";
 
-// Error Boundary Component
-class ErrorBoundary extends React.Component {
-  constructor(props) {
+// Properly typed interfaces for ErrorBoundary
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+// Error Boundary Component with proper TypeScript typing
+class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Admin Dashboard Error:', error, errorInfo);
   }
 
@@ -59,7 +69,7 @@ class ErrorBoundary extends React.Component {
 
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
-  const [renderError, setRenderError] = useState(null);
+  const [renderError, setRenderError] = useState<string | null>(null);
 
   // Updated admin detection logic with explicit email checks and debugging
   const isAdmin = user?.email === '7utile@gmail.com' || 
@@ -73,7 +83,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     // Add error handling for the entire component
-    const handleError = (error) => {
+    const handleError = (error: ErrorEvent) => {
       console.error('Admin Dashboard Runtime Error:', error);
       setRenderError(error.message);
     };
