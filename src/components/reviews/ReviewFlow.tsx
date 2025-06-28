@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CommendationSelector } from './CommendationSelector';
 import { ReviewForm } from './ReviewForm';
@@ -101,22 +100,12 @@ export const ReviewFlow: React.FC<ReviewFlowProps> = ({
         }
       }
 
-      // Award community points
-      let totalPoints = 1; // Base review point
-      totalPoints += selectedCommendations.length; // Commendation points
-      if (reviewData.rating === 5 && reviewData.comment.trim()) {
-        totalPoints += 3; // 5-star bonus
-      }
-
-      await supabase.rpc('award_community_points', {
-        p_provider_id: booking.provider_id,
-        p_points: totalPoints,
-        p_reason: 'Review and commendations received'
-      });
+      // Points are now automatically awarded via database triggers
+      const totalPoints = calculateExpectedPoints(reviewData.rating, reviewData.comment.trim(), selectedCommendations.length);
 
       toast({
         title: "Review submitted!",
-        description: `Thank you for your feedback. You've earned ${totalPoints} community points!`,
+        description: `Thank you for your feedback. Community points awarded automatically based on review quality!`,
       });
 
       onComplete();
@@ -128,6 +117,25 @@ export const ReviewFlow: React.FC<ReviewFlowProps> = ({
         variant: "destructive"
       });
     }
+  };
+
+  const calculateExpectedPoints = (rating: number, comment: string, commendations: number) => {
+    let providerPoints = 2; // Job completion bonus
+    
+    // Review quality points
+    if (rating >= 4.5) providerPoints += 3;
+    else if (rating >= 3.5) providerPoints += 2;
+    else if (rating >= 2.5) providerPoints += 1;
+    else if (rating >= 1.5) providerPoints += 0;
+    else providerPoints -= 1;
+    
+    // Excellence bonus
+    if (rating === 5 && comment.length > 10) providerPoints += 2;
+    
+    // Commendation points
+    providerPoints += commendations;
+    
+    return { provider: providerPoints, customer: 1 }; // Customer always gets +1
   };
 
   const handleLearnMore = () => {

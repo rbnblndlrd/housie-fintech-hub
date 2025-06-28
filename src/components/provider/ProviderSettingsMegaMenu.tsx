@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -78,6 +77,12 @@ const ProviderSettingsMegaMenu: React.FC<ProviderSettingsMegaMenuProps> = ({
       title: 'Distance & Service Type',
       icon: Truck,
       color: 'text-green-600'
+    },
+    {
+      id: 'community-rating',
+      title: 'Community Rating',
+      icon: CheckCircle,
+      color: 'text-purple-600'
     },
     {
       id: 'notifications',
@@ -187,6 +192,64 @@ const ProviderSettingsMegaMenu: React.FC<ProviderSettingsMegaMenuProps> = ({
 
   const renderContent = () => {
     switch (activeSection) {
+      case 'community-rating':
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-purple-600" />
+                Community Rating & Points
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <Info className="h-5 w-5 text-purple-600 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-purple-800 mb-1">Quality-Based Point System</p>
+                    <p className="text-purple-700">
+                      Earn points based on service quality: 5★ reviews = +3pts, 4★ = +2pts, 3★ = +1pt. 
+                      Poor service (1-2★) results in penalties. Consistent excellence unlocks momentum bonuses!
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <CommunityRatingDisplay userId={user.id} />
+
+              <div className="bg-gray-50 rounded-lg p-4">
+                <h4 className="font-medium text-gray-900 mb-3">Point Earning Guide</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span>Job Completion</span>
+                    <span className="font-medium text-green-600">+2 points</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>5★ Review</span>
+                    <span className="font-medium text-green-600">+3 points</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>5★ + Detailed Comment</span>
+                    <span className="font-medium text-green-600">+5 points</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Excellence Streak Bonus</span>
+                    <span className="font-medium text-green-600">+1 point</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Each Commendation</span>
+                    <span className="font-medium text-green-600">+1 point</span>
+                  </div>
+                  <div className="flex justify-between border-t pt-2">
+                    <span>1★ Review (ELO Hell)</span>
+                    <span className="font-medium text-red-600">-3 points</span>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
       case 'confidentiality':
         return (
           <Card className="fintech-card">

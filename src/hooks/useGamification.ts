@@ -2,8 +2,10 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCommunityRating } from './useCommunityRating';
 import { toast } from 'sonner';
 
+// Legacy interfaces for backward compatibility
 export interface Achievement {
   id: string;
   achievement_type: string;
@@ -44,206 +46,81 @@ export interface LeaderboardEntry {
   metadata: any;
 }
 
+// Updated hook that provides backward compatibility while using new community rating system
 export const useGamification = (userId?: string) => {
   const { user } = useAuth();
-  const [achievements, setAchievements] = useState<Achievement[]>([]);
-  const [loyaltyPoints, setLoyaltyPoints] = useState<LoyaltyPoints | null>(null);
-  const [territoryClaims, setTerritoryClaims] = useState<TerritoryClaim[]>([]);
-  const [leaderboards, setLeaderboards] = useState<LeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { communityRating, pointTransactions, loading, error } = useCommunityRating(userId);
+  
+  // Legacy empty data for backward compatibility
+  const [achievements] = useState<Achievement[]>([]);
+  const [territoryClaims] = useState<TerritoryClaim[]>([]);
+  const [leaderboards] = useState<LeaderboardEntry[]>([]);
 
   const targetUserId = userId || user?.id;
 
-  const fetchAchievements = async () => {
-    if (!targetUserId) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_achievements')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .order('unlocked_at', { ascending: false });
-
-      if (error) throw error;
-      setAchievements(data || []);
-    } catch (error: any) {
-      console.error('Error fetching achievements:', error);
-      setError(error.message);
+  // Convert community rating to legacy loyalty points format
+  const loyaltyPoints: LoyaltyPoints | null = communityRating ? {
+    total_points: communityRating.totalPoints,
+    available_points: communityRating.totalPoints,
+    lifetime_earned: communityRating.totalPoints,
+    tier_level: communityRating.tier,
+    tier_benefits: {
+      tier: communityRating.tier,
+      progress: communityRating.tierProgress,
+      networkConnections: communityRating.networkConnections
     }
-  };
+  } : null;
 
-  const fetchLoyaltyPoints = async () => {
-    if (!targetUserId) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('loyalty_points')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .single();
-
-      if (error && error.code !== 'PGRST116') throw error;
-      setLoyaltyPoints(data);
-    } catch (error: any) {
-      console.error('Error fetching loyalty points:', error);
-      setError(error.message);
-    }
-  };
-
-  const fetchTerritoryClaims = async () => {
-    if (!targetUserId) return;
-
-    try {
-      // First get provider profile
-      const { data: providerProfile } = await supabase
-        .from('provider_profiles')
-        .select('id')
-        .eq('user_id', targetUserId)
-        .single();
-
-      if (!providerProfile) {
-        setTerritoryClaims([]);
-        return;
-      }
-
-      const { data, error } = await supabase
-        .from('territory_claims')
-        .select(`
-          *,
-          montreal_zones!inner(zone_name)
-        `)
-        .eq('provider_id', providerProfile.id)
-        .order('claimed_at', { ascending: false });
-
-      if (error) throw error;
-      
-      const claimsWithZoneNames = (data || []).map(claim => ({
-        ...claim,
-        zone_name: claim.montreal_zones?.zone_name
-      }));
-      
-      setTerritoryClaims(claimsWithZoneNames);
-    } catch (error: any) {
-      console.error('Error fetching territory claims:', error);
-      setError(error.message);
-    }
-  };
-
-  const fetchLeaderboards = async () => {
-    if (!targetUserId) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('leaderboards')
-        .select('*')
-        .eq('user_id', targetUserId)
-        .order('rank_position', { ascending: true });
-
-      if (error) throw error;
-      setLeaderboards(data || []);
-    } catch (error: any) {
-      console.error('Error fetching leaderboards:', error);
-      setError(error.message);
-    }
-  };
-
+  // Legacy territory claim function (deprecated)
   const claimTerritory = async (zoneCode: string) => {
-    if (!targetUserId) return false;
-
-    try {
-      // Get provider profile
-      const { data: providerProfile } = await supabase
-        .from('provider_profiles')
-        .select('id')
-        .eq('user_id', targetUserId)
-        .single();
-
-      if (!providerProfile) {
-        toast.error('You must be a provider to claim territory');
-        return false;
-      }
-
-      const { data, error } = await supabase.rpc('claim_territory', {
-        claiming_provider_id: providerProfile.id,
-        target_zone_code: zoneCode
-      });
-
-      if (error) throw error;
-
-      if (data) {
-        toast.success(`Territory ${zoneCode} claimed successfully! +100 points`);
-        await fetchTerritoryClaims();
-        await fetchLoyaltyPoints();
-        return true;
-      } else {
-        toast.error('Territory already claimed or invalid');
-        return false;
-      }
-    } catch (error: any) {
-      console.error('Error claiming territory:', error);
-      toast.error('Failed to claim territory');
-      return false;
-    }
+    console.warn('Territory claiming is deprecated in the new community rating system');
+    toast.error('Territory system has been replaced with community rating points');
+    return false;
   };
 
+  // Award points using new system
   const awardPoints = async (points: number, reason: string, bookingId?: string) => {
     if (!targetUserId) return false;
 
     try {
-      const { error } = await supabase.rpc('award_points', {
-        target_user_id: targetUserId,
-        points: points,
-        reason: reason,
-        transaction_type: 'earned',
-        related_booking_id: bookingId
+      // Call the new database function
+      const { error } = await supabase.rpc('award_community_rating_points', {
+        p_user_id: targetUserId,
+        p_points: points,
+        p_reason: reason
       });
 
       if (error) throw error;
 
       toast.success(`+${points} points: ${reason}`);
-      await fetchLoyaltyPoints();
       return true;
     } catch (error: any) {
       console.error('Error awarding points:', error);
+      toast.error('Failed to award points');
       return false;
     }
   };
 
-  useEffect(() => {
-    const loadData = async () => {
-      if (!targetUserId) return;
-      
-      setLoading(true);
-      setError(null);
-      
-      await Promise.all([
-        fetchAchievements(),
-        fetchLoyaltyPoints(),
-        fetchTerritoryClaims(),
-        fetchLeaderboards()
-      ]);
-      
-      setLoading(false);
-    };
-
-    loadData();
-  }, [targetUserId]);
-
   return {
+    // New community rating data
+    communityRating,
+    pointTransactions,
+    
+    // Legacy data (empty for backward compatibility)
     achievements,
     loyaltyPoints,
     territoryClaims,
     leaderboards,
+    
+    // Status
     loading,
     error,
+    
+    // Functions
     claimTerritory,
     awardPoints,
     refetch: () => {
-      fetchAchievements();
-      fetchLoyaltyPoints();
-      fetchTerritoryClaims();
-      fetchLeaderboards();
+      // Refetch is handled by useCommunityRating hook
     }
   };
 };
