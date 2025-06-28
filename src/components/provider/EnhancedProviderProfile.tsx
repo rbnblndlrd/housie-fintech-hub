@@ -7,7 +7,9 @@ import {
   Star, 
   Users, 
   Camera, 
-  Award,
+  Award, 
+  Handshake, 
+  Smile,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -46,6 +48,7 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
 
   const fetchProviderData = async () => {
     try {
+      // Fetch provider stats
       const { data: profileData, error: profileError } = await supabase
         .from('provider_profiles')
         .select(`
@@ -62,6 +65,7 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
       if (profileError) throw profileError;
       setStats(profileData);
 
+      // First get the review IDs for this provider
       const { data: reviewIds, error: reviewsError } = await supabase
         .from('reviews')
         .select('id')
@@ -69,8 +73,10 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
 
       if (reviewsError) throw reviewsError;
 
+      // Extract the IDs into an array
       const reviewIdArray = reviewIds?.map(review => review.id) || [];
 
+      // Only fetch photos if we have review IDs
       if (reviewIdArray.length > 0) {
         const { data: photosData, error: photosError } = await supabase
           .from('review_photos')
@@ -110,6 +116,7 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
 
   return (
     <div className="space-y-6">
+      {/* Provider Stats */}
       <Card className="fintech-card">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -118,7 +125,7 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
                 {stats.network_connections}
@@ -147,10 +154,43 @@ export const EnhancedProviderProfile: React.FC<EnhancedProviderProfileProps> = (
                 Average Rating
               </div>
             </div>
+            
+            <div className="text-center md:col-span-1 col-span-2">
+              <div className="flex justify-center gap-4">
+                <div className="text-center">
+                  <Badge className="bg-yellow-100 text-yellow-800 mb-1">
+                    {stats.quality_commendations}
+                  </Badge>
+                  <div className="text-xs text-gray-600 flex items-center gap-1">
+                    <Star className="h-3 w-3" />
+                    Quality
+                  </div>
+                </div>
+                <div className="text-center">
+                  <Badge className="bg-blue-100 text-blue-800 mb-1">
+                    {stats.reliability_commendations}
+                  </Badge>
+                  <div className="text-xs text-gray-600 flex items-center gap-1">
+                    <Handshake className="h-3 w-3" />
+                    Reliability
+                  </div>
+                </div>
+                <div className="text-center">
+                  <Badge className="bg-green-100 text-green-800 mb-1">
+                    {stats.courtesy_commendations}
+                  </Badge>
+                  <div className="text-xs text-gray-600 flex items-center gap-1">
+                    <Smile className="h-3 w-3" />
+                    Courtesy
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
 
+      {/* Customer Photo Gallery */}
       {photos.length > 0 && (
         <Card className="fintech-card">
           <CardHeader>

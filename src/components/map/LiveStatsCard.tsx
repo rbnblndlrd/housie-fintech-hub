@@ -4,6 +4,9 @@ import { Card, CardContent } from "@/components/ui/card";
 
 interface LiveStats {
   availableProviders: number;
+  activeZones: number;
+  avgResponseTime: string;
+  peakDemandZone: string;
 }
 
 interface LiveStatsCardProps {

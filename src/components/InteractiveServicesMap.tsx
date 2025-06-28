@@ -13,6 +13,7 @@ interface Provider {
   service: string;
   rating: number;
   availability: string;
+  serviceRadius?: number;
   verified?: boolean;
   hourlyRate?: number;
   distance?: string;
@@ -20,21 +21,25 @@ interface Provider {
 
 interface InteractiveServicesMapProps {
   providers: Provider[];
+  hoveredProviderId?: string | null;
   onProviderSelect: (provider: Provider) => void;
 }
 
 const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
   providers,
+  hoveredProviderId,
   onProviderSelect
 }) => {
   const [selectedProvider, setSelectedProvider] = useState<Provider | null>(null);
 
   const handleProviderClick = (provider: Provider) => {
+    console.log('Provider clicked in InteractiveServicesMap:', provider.name);
     setSelectedProvider(provider);
   };
 
   const handleBookNow = () => {
     if (selectedProvider) {
+      console.log('Booking provider:', selectedProvider.name);
       onProviderSelect(selectedProvider);
       setSelectedProvider(null);
     }
@@ -47,6 +52,7 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
         zoom={12}
         className="w-full h-full"
         providers={providers}
+        hoveredProviderId={hoveredProviderId}
         onProviderClick={handleProviderClick}
         mode="services"
       />
