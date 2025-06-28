@@ -12,6 +12,9 @@ export interface CommunityRating {
   qualityCommendations: number;
   reliabilityCommendations: number;
   courtesyCommendations: number;
+  shopPoints?: number;
+  shopPointsTier?: string;
+  shopPointsConversionRate?: number;
 }
 
 export interface PointTransaction {
@@ -38,6 +41,14 @@ export const useCommunityRating = (userId?: string) => {
     return { tier: 'Bronze' as const, progress: (points / 50) * 100 };
   };
 
+  const getShopPointsTier = (points: number) => {
+    if (points >= 500) return { tier: 'Elite', rate: 1.5 };
+    if (points >= 100) return { tier: 'Premium', rate: 1.25 };
+    if (points >= 50) return { tier: 'Established', rate: 1.0 };
+    if (points >= 10) return { tier: 'Growing', rate: 0.75 };
+    return { tier: 'New', rate: 0.5 };
+  };
+
   const fetchCommunityRating = async () => {
     if (!targetUserId) return;
 
@@ -49,6 +60,7 @@ export const useCommunityRating = (userId?: string) => {
         .from('provider_profiles')
         .select(`
           community_rating_points,
+          shop_points,
           network_connections,
           total_reviews,
           quality_commendations,
@@ -65,7 +77,7 @@ export const useCommunityRating = (userId?: string) => {
       // Get user credits for customers
       const { data: userCredits, error: creditsError } = await supabase
         .from('user_credits')
-        .select('total_credits')
+        .select('total_credits, shop_points')
         .eq('user_id', targetUserId)
         .single();
 
@@ -75,7 +87,9 @@ export const useCommunityRating = (userId?: string) => {
 
       // Use provider points if available, otherwise use customer credits
       const totalPoints = providerProfile?.community_rating_points || userCredits?.total_credits || 0;
+      const shopPoints = providerProfile?.shop_points || userCredits?.shop_points || 0;
       const tierInfo = getTierInfo(totalPoints);
+      const shopTierInfo = getShopPointsTier(totalPoints);
 
       setCommunityRating({
         totalPoints,
@@ -86,11 +100,16 @@ export const useCommunityRating = (userId?: string) => {
         qualityCommendations: providerProfile?.quality_commendations || 0,
         reliabilityCommendations: providerProfile?.reliability_commendations || 0,
         courtesyCommendations: providerProfile?.courtesy_commendations || 0,
+        shopPoints,
+        shopPointsTier: shopTierInfo.tier,
+        shopPointsConversionRate: shopTierInfo.rate,
       });
 
       console.log('✅ Community rating loaded:', {
         totalPoints,
+        shopPoints,
         tier: tierInfo.tier,
+        shopTier: shopTierInfo.tier,
         progress: tierInfo.progress
       });
 

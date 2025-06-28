@@ -2,8 +2,9 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star, Award, Users, ThumbsUp } from 'lucide-react';
+import { Star, Award, Users, ThumbsUp, ShoppingBag, TrendingUp } from 'lucide-react';
 import { useCommunityRating } from '@/hooks/useCommunityRating';
+import { useShopPoints } from '@/hooks/useShopPoints';
 
 interface CommunityRatingDisplayProps {
   userId: string;
@@ -15,6 +16,7 @@ const CommunityRatingDisplay: React.FC<CommunityRatingDisplayProps> = ({
   compact = false 
 }) => {
   const { communityRating, loading, error } = useCommunityRating(userId);
+  const { shopPointsData } = useShopPoints(userId);
 
   if (loading) {
     return (
@@ -61,6 +63,12 @@ const CommunityRatingDisplay: React.FC<CommunityRatingDisplayProps> = ({
           <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
           <span>{communityRating.totalPoints} pts</span>
         </div>
+        {shopPointsData && (
+          <div className="flex items-center gap-1 text-sm text-purple-600">
+            <ShoppingBag className="h-4 w-4" />
+            <span>{shopPointsData.shopPoints} shop</span>
+          </div>
+        )}
       </div>
     );
   }
@@ -82,9 +90,30 @@ const CommunityRatingDisplay: React.FC<CommunityRatingDisplayProps> = ({
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-gray-900">{communityRating.totalPoints}</div>
-            <div className="text-sm text-gray-600">Total Points</div>
+            <div className="text-sm text-gray-600">Community Points</div>
           </div>
         </div>
+
+        {/* Shop Points Integration */}
+        {shopPointsData && (
+          <div className="mb-4 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="h-5 w-5 text-purple-600" />
+                <span className="font-medium text-purple-900">Shop Points</span>
+              </div>
+              <div className="text-right">
+                <div className="text-xl font-bold text-purple-600">{shopPointsData.shopPoints}</div>
+                <div className="text-xs text-gray-600">{shopPointsData.tier} ({shopPointsData.conversionRate}x)</div>
+              </div>
+            </div>
+            {shopPointsData.nextTier && (
+              <div className="mt-2 text-xs text-gray-600">
+                {shopPointsData.nextTierPoints} points to {shopPointsData.nextTier}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Tier Progress Bar */}
         <div className="mb-4">

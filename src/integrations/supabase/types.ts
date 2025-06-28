@@ -1503,6 +1503,7 @@ export type Database = {
           reliability_commendations: number | null
           response_time_hours: number | null
           service_radius_km: number | null
+          shop_points: number | null
           total_bookings: number | null
           total_reviews: number | null
           updated_at: string | null
@@ -1539,6 +1540,7 @@ export type Database = {
           reliability_commendations?: number | null
           response_time_hours?: number | null
           service_radius_km?: number | null
+          shop_points?: number | null
           total_bookings?: number | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -1575,6 +1577,7 @@ export type Database = {
           reliability_commendations?: number | null
           response_time_hours?: number | null
           service_radius_km?: number | null
+          shop_points?: number | null
           total_bookings?: number | null
           total_reviews?: number | null
           updated_at?: string | null
@@ -2075,6 +2078,7 @@ export type Database = {
           id: string
           last_purchase_at: string | null
           remaining_credits: number | null
+          shop_points: number | null
           total_credits: number | null
           updated_at: string | null
           used_credits: number | null
@@ -2085,6 +2089,7 @@ export type Database = {
           id?: string
           last_purchase_at?: string | null
           remaining_credits?: number | null
+          shop_points?: number | null
           total_credits?: number | null
           updated_at?: string | null
           used_credits?: number | null
@@ -2095,6 +2100,7 @@ export type Database = {
           id?: string
           last_purchase_at?: string | null
           remaining_credits?: number | null
+          shop_points?: number | null
           total_credits?: number | null
           updated_at?: string | null
           used_credits?: number | null
@@ -2577,9 +2583,26 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_add_commendation: {
+        Args: { p_provider_user_id: string; p_commendation_type: string }
+        Returns: string
+      }
+      admin_create_test_review: {
+        Args: {
+          p_provider_user_id: string
+          p_rating: number
+          p_comment?: string
+          p_add_commendations?: boolean
+        }
+        Returns: string
+      }
       award_community_rating_points: {
         Args: { p_user_id: string; p_points: number; p_reason: string }
         Returns: undefined
+      }
+      calculate_shop_points: {
+        Args: { community_points: number }
+        Returns: number
       }
       check_rate_limit: {
         Args: {
@@ -2730,6 +2753,10 @@ export type Database = {
       update_daily_spend: {
         Args: { spend_amount: number }
         Returns: boolean
+      }
+      update_shop_points: {
+        Args: { p_user_id: string }
+        Returns: undefined
       }
     }
     Enums: {
