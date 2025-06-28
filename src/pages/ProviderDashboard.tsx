@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -41,8 +42,7 @@ import {
   Eye,
   ToggleLeft,
   Snowflake,
-  Heart,
-  Maple
+  Heart
 } from 'lucide-react';
 import { Calendar as ShadCalendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
