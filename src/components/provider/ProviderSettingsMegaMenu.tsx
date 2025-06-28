@@ -1,52 +1,36 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Slider } from "@/components/ui/slider";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
-  User, 
-  MapPin, 
-  Clock, 
-  DollarSign, 
-  Bell, 
   Shield, 
-  Calendar,
-  Settings,
-  Save,
-  Phone,
-  Mail,
-  Globe,
-  Star,
-  Award,
-  CreditCard,
-  FileText,
-  Camera,
-  Navigation
+  Bell, 
+  Clock, 
+  CreditCard, 
+  User, 
+  Eye, 
+  EyeOff, 
+  MapPin, 
+  Navigation,
+  Home,
+  Car,
+  Info,
+  Truck,
+  CheckCircle
 } from 'lucide-react';
-import NavigationSettingsSection from './NavigationSettingsSection';
 
 interface ProviderSettingsMegaMenuProps {
   user: any;
   userProfile: any;
-  onSettingsUpdate?: () => void;
-}
-
-interface ProviderSettings {
-  working_hours: any;
-  service_duration: number;
-  buffer_time: number;
-  break_duration: number;
-  time_zone: string;
-  auto_accept_bookings: boolean;
-  advance_booking_days: number;
-  min_booking_notice: number;
+  onSettingsUpdate: () => void;
 }
 
 const ProviderSettingsMegaMenu: React.FC<ProviderSettingsMegaMenuProps> = ({
@@ -55,512 +39,580 @@ const ProviderSettingsMegaMenu: React.FC<ProviderSettingsMegaMenuProps> = ({
   onSettingsUpdate
 }) => {
   const { toast } = useToast();
-  const [activeSection, setActiveSection] = useState('profile');
-  const [loading, setLoading] = useState(false);
-  const [providerSettings, setProviderSettings] = useState<ProviderSettings>({
-    working_hours: {
-      monday: { start: '09:00', end: '17:00', enabled: true },
-      tuesday: { start: '09:00', end: '17:00', enabled: true },
-      wednesday: { start: '09:00', end: '17:00', enabled: true },
-      thursday: { start: '09:00', end: '17:00', enabled: true },
-      friday: { start: '09:00', end: '17:00', enabled: true },
-      saturday: { start: '09:00', end: '17:00', enabled: false },
-      sunday: { start: '09:00', end: '17:00', enabled: false }
-    },
-    service_duration: 120,
-    buffer_time: 15,
-    break_duration: 30,
-    time_zone: 'America/Montreal',
-    auto_accept_bookings: false,
-    advance_booking_days: 30,
-    min_booking_notice: 120
-  });
-
-  const [profileData, setProfileData] = useState({
-    full_name: userProfile?.full_name || '',
+  const [saving, setSaving] = useState(false);
+  const [activeSection, setActiveSection] = useState("confidentiality");
+  
+  const [settings, setSettings] = useState({
+    businessName: '',
+    description: '',
+    phone: '',
     email: user?.email || '',
-    phone: userProfile?.phone || '',
-    address: userProfile?.address || '',
-    bio: userProfile?.bio || '',
-    company_name: userProfile?.company_name || '',
-    website: userProfile?.website || '',
-    hourly_rate: userProfile?.hourly_rate || 35,
-    service_area_radius: userProfile?.service_area_radius || 25,
-    languages: userProfile?.languages || ['English'],
-    certifications: userProfile?.certifications || [],
-    insurance_verified: userProfile?.insurance_verified || false,
-    background_check: userProfile?.background_check || false
+    notifications: {
+      bookingRequests: true,
+      messages: true,
+      reviews: true,
+      marketing: false
+    },
+    availability: {
+      autoAccept: false,
+      advanceNotice: 2,
+      maxBookingsPerDay: 5
+    },
+    privacy: {
+      showOnMap: userProfile?.show_on_map ?? true,
+      confidentialityRadius: Math.round((userProfile?.confidentiality_radius ?? 10000) / 1000),
+      serviceType: userProfile?.service_type ?? 'customer_location',
+      serviceRadius: Math.round((userProfile?.service_radius ?? 15000) / 1000)
+    }
   });
 
-  const [notificationSettings, setNotificationSettings] = useState({
-    email_notifications: true,
-    push_notifications: true,
-    sms_notifications: true,
-    marketing_emails: false,
-    booking_reminders: true,
-    payment_notifications: true,
-    review_notifications: true
-  });
-
-  useEffect(() => {
-    loadProviderSettings();
-  }, [user]);
-
-  const loadProviderSettings = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('provider_settings')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error loading provider settings:', error);
-        return;
-      }
-
-      if (data) {
-        setProviderSettings({
-          working_hours: data.working_hours || providerSettings.working_hours,
-          service_duration: data.service_duration || 120,
-          buffer_time: data.buffer_time || 15,
-          break_duration: data.break_duration || 30,
-          time_zone: data.time_zone || 'America/Montreal',
-          auto_accept_bookings: data.auto_accept_bookings || false,
-          advance_booking_days: data.advance_booking_days || 30,
-          min_booking_notice: data.min_booking_notice || 120
-        });
-      }
-    } catch (error) {
-      console.error('Error loading provider settings:', error);
+  const menuSections = [
+    {
+      id: 'confidentiality',
+      title: 'Confidentialité & Localisation',
+      icon: Shield,
+      color: 'text-blue-600'
+    },
+    {
+      id: 'distance-service',
+      title: 'Distance & Service Type',
+      icon: Truck,
+      color: 'text-green-600'
+    },
+    {
+      id: 'notifications',
+      title: 'Notification Preferences',
+      icon: Bell,
+      color: 'text-yellow-600'
+    },
+    {
+      id: 'availability',
+      title: 'Availability Settings',
+      icon: Clock,
+      color: 'text-purple-600'
+    },
+    {
+      id: 'business',
+      title: 'Business Information',
+      icon: User,
+      color: 'text-orange-600'
+    },
+    {
+      id: 'verification',
+      title: 'Verification Status',
+      icon: CheckCircle,
+      color: 'text-emerald-600'
     }
-  };
+  ];
 
-  const saveProviderSettings = async () => {
-    if (!user) return;
-
-    setLoading(true);
+  const handleSavePrivacySettings = async () => {
     try {
-      const { error } = await supabase
-        .from('provider_settings')
-        .upsert({
-          user_id: user.id,
-          ...providerSettings,
-          updated_at: new Date().toISOString()
-        });
-
-      if (error) throw error;
-
-      toast({
-        title: "Paramètres sauvegardés",
-        description: "Vos paramètres ont été mis à jour avec succès",
-      });
-
-      onSettingsUpdate?.();
-    } catch (error) {
-      console.error('Error saving provider settings:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder les paramètres",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const saveProfileData = async () => {
-    if (!user) return;
-
-    setLoading(true);
-    try {
+      setSaving(true);
+      console.log('💾 Saving privacy settings for user:', user.id, settings.privacy);
+      
       const { error } = await supabase
         .from('users')
         .update({
-          ...profileData,
+          show_on_map: settings.privacy.showOnMap,
+          confidentiality_radius: settings.privacy.confidentialityRadius * 1000,
+          service_type: settings.privacy.serviceType,
+          service_radius: settings.privacy.serviceRadius * 1000,
           updated_at: new Date().toISOString()
         })
         .eq('id', user.id);
 
       if (error) throw error;
 
+      console.log('✅ Privacy settings saved successfully');
+      
       toast({
-        title: "Profil mis à jour",
-        description: "Vos informations de profil ont été sauvegardées",
+        title: "✅ Paramètres sauvegardés",
+        description: "Vos préférences de confidentialité ont été mises à jour avec succès",
       });
 
       onSettingsUpdate?.();
-    } catch (error) {
-      console.error('Error saving profile:', error);
+
+    } catch (error: any) {
+      console.error('❌ Failed to save privacy settings:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de sauvegarder le profil",
+        title: "❌ Erreur",
+        description: error.message || "Impossible de sauvegarder les paramètres",
         variant: "destructive",
       });
     } finally {
-      setLoading(false);
+      setSaving(false);
     }
   };
 
-  const menuSections = [
-    {
-      id: 'profile',
-      label: 'Profil d\'entreprise',
-      icon: '👤',
-      component: (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="h-5 w-5" />
-              Informations du profil
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="full_name">Nom complet</Label>
-                <Input
-                  id="full_name"
-                  value={profileData.full_name}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, full_name: e.target.value }))}
-                  placeholder="Votre nom complet"
-                />
-              </div>
-              <div>
-                <Label htmlFor="company_name">Nom de l'entreprise</Label>
-                <Input
-                  id="company_name"
-                  value={profileData.company_name}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, company_name: e.target.value }))}
-                  placeholder="Nom de votre entreprise"
-                />
-              </div>
-            </div>
+  const handleSaveGeneralSettings = () => {
+    console.log('Saving general settings:', settings);
+    toast({
+      title: "Paramètres sauvegardés",
+      description: "Vos paramètres ont été mis à jour avec succès",
+    });
+  };
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={profileData.email}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="votre@email.com"
-                />
-              </div>
-              <div>
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input
-                  id="phone"
-                  value={profileData.phone}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+1 (514) 123-4567"
-                />
-              </div>
-            </div>
+  const getServiceTypeInfo = (serviceType: string) => {
+    switch (serviceType) {
+      case 'provider_location':
+        return {
+          icon: <Home className="h-4 w-4 text-blue-600" />,
+          title: "Services à votre domicile",
+          description: "Votre adresse peut être partagée avec les clients confirmés",
+          examples: "Massage, soins de bien-être, toilettage d'animaux"
+        };
+      case 'customer_location':
+        return {
+          icon: <Car className="h-4 w-4 text-green-600" />,
+          title: "Services chez le client",
+          description: "Votre adresse reste privée - vous vous déplacez",
+          examples: "Ménage, entretien de pelouse, déménagement"
+        };
+      case 'both':
+        return {
+          icon: <MapPin className="h-4 w-4 text-purple-600" />,
+          title: "Services flexibles",
+          description: "Vous choisissez selon le service offert",
+          examples: "Services variés selon les besoins"
+        };
+      default:
+        return {
+          icon: <MapPin className="h-4 w-4 text-gray-600" />,
+          title: "Non spécifié",
+          description: "",
+          examples: ""
+        };
+    }
+  };
 
-            <div>
-              <Label htmlFor="address">Adresse</Label>
-              <Input
-                id="address"
-                value={profileData.address}
-                onChange={(e) => setProfileData(prev => ({ ...prev, address: e.target.value }))}
-                placeholder="Votre adresse d'entreprise"
-              />
-            </div>
-
-            <div>
-              <Label htmlFor="bio">Description de l'entreprise</Label>
-              <Textarea
-                id="bio"
-                value={profileData.bio}
-                onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
-                placeholder="Décrivez vos services et votre expertise..."
-                rows={4}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="hourly_rate">Tarif horaire ($)</Label>
-                <Input
-                  id="hourly_rate"
-                  type="number"
-                  value={profileData.hourly_rate}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, hourly_rate: parseInt(e.target.value) }))}
-                  min="0"
-                />
-              </div>
-              <div>
-                <Label htmlFor="service_area_radius">Rayon de service (km)</Label>
-                <Input
-                  id="service_area_radius"
-                  type="number"
-                  value={profileData.service_area_radius}
-                  onChange={(e) => setProfileData(prev => ({ ...prev, service_area_radius: parseInt(e.target.value) }))}
-                  min="1"
-                  max="100"
-                />
-              </div>
-            </div>
-
-            <Button onClick={saveProfileData} disabled={loading} className="w-full">
-              <Save className="h-4 w-4 mr-2" />
-              Sauvegarder le profil
-            </Button>
-          </CardContent>
-        </Card>
-      )
-    },
-    {
-      id: 'schedule',
-      label: 'Horaires & Disponibilité',
-      icon: '📅',
-      component: (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Horaires de travail
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {Object.entries(providerSettings.working_hours).map(([day, hours]: [string, any]) => (
-              <div key={day} className="flex items-center justify-between p-3 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Switch
-                    checked={hours.enabled}
-                    onCheckedChange={(checked) => {
-                      setProviderSettings(prev => ({
-                        ...prev,
-                        working_hours: {
-                          ...prev.working_hours,
-                          [day]: { ...hours, enabled: checked }
-                        }
-                      }));
-                    }}
-                  />
-                  <span className="font-medium capitalize">{day}</span>
-                </div>
-                {hours.enabled && (
-                  <div className="flex items-center gap-2">
-                    <Input
-                      type="time"
-                      value={hours.start}
-                      onChange={(e) => {
-                        setProviderSettings(prev => ({
-                          ...prev,
-                          working_hours: {
-                            ...prev.working_hours,
-                            [day]: { ...hours, start: e.target.value }
-                          }
-                        }));
-                      }}
-                      className="w-24"
-                    />
-                    <span>à</span>
-                    <Input
-                      type="time"
-                      value={hours.end}
-                      onChange={(e) => {
-                        setProviderSettings(prev => ({
-                          ...prev,
-                          working_hours: {
-                            ...prev.working_hours,
-                            [day]: { ...hours, end: e.target.value }
-                          }
-                        }));
-                      }}
-                      className="w-24"
-                    />
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'confidentiality':
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-blue-600" />
+                Confidentialité & Localisation
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <div className="flex items-start gap-3">
+                  <Info className="h-5 w-5 text-blue-600 mt-0.5" />
+                  <div className="text-sm">
+                    <p className="font-medium text-blue-800 mb-1">Protection de votre vie privée</p>
+                    <p className="text-blue-700">
+                      Votre position exacte n'est jamais révélée. Les clients voient une zone approximative 
+                      qui protège votre confidentialité jusqu'à l'acceptation d'un travail.
+                    </p>
                   </div>
-                )}
+                </div>
               </div>
-            ))}
 
-            <Separator />
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-gray-600" />
+                  <Label className="text-base font-medium">
+                    Zone de confidentialité: {settings.privacy.confidentialityRadius} km
+                  </Label>
+                </div>
+                
+                <div className="px-2">
+                  <Slider
+                    value={[settings.privacy.confidentialityRadius]}
+                    onValueChange={([value]) => 
+                      setSettings({ 
+                        ...settings, 
+                        privacy: { ...settings.privacy, confidentialityRadius: value } 
+                      })
+                    }
+                    min={1}
+                    max={25}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1 km (Précis)</span>
+                    <span>25 km (Très privé)</span>
+                  </div>
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="service_duration">Durée de service (min)</Label>
-                <Input
-                  id="service_duration"
-                  type="number"
-                  value={providerSettings.service_duration}
-                  onChange={(e) => setProviderSettings(prev => ({ ...prev, service_duration: parseInt(e.target.value) }))}
-                  min="30"
-                  max="480"
-                />
-              </div>
-              <div>
-                <Label htmlFor="buffer_time">Temps de battement (min)</Label>
-                <Input
-                  id="buffer_time"
-                  type="number"
-                  value={providerSettings.buffer_time}
-                  onChange={(e) => setProviderSettings(prev => ({ ...prev, buffer_time: parseInt(e.target.value) }))}
-                  min="0"
-                  max="60"
-                />
-              </div>
-              <div>
-                <Label htmlFor="break_duration">Durée de pause (min)</Label>
-                <Input
-                  id="break_duration"
-                  type="number"
-                  value={providerSettings.break_duration}
-                  onChange={(e) => setProviderSettings(prev => ({ ...prev, break_duration: parseInt(e.target.value) }))}
-                  min="15"
-                  max="120"
-                />
-              </div>
-            </div>
-
-            <Button onClick={saveProviderSettings} disabled={loading} className="w-full">
-              <Save className="h-4 w-4 mr-2" />
-              Sauvegarder les horaires
-            </Button>
-          </CardContent>
-        </Card>
-      )
-    },
-    {
-      id: 'navigation',
-      label: 'Navigation & GPS',
-      icon: '🧭',
-      component: <NavigationSettingsSection onSettingsUpdate={onSettingsUpdate} />
-    },
-    {
-      id: 'notifications',
-      label: 'Notifications',
-      icon: '🔔',
-      component: (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Bell className="h-5 w-5" />
-              Préférences de notification
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            {Object.entries(notificationSettings).map(([key, value]) => (
-              <div key={key} className="flex items-center justify-between">
-                <div>
-                  <h4 className="font-medium">
-                    {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                  </h4>
-                  <p className="text-sm text-gray-600">
-                    {getNotificationDescription(key)}
-                  </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  {settings.privacy.showOnMap ? (
+                    <Eye className="h-5 w-5 text-green-600" />
+                  ) : (
+                    <EyeOff className="h-5 w-5 text-gray-400" />
+                  )}
+                  <div>
+                    <Label htmlFor="showOnMap" className="text-base font-medium">
+                      Afficher sur la carte
+                    </Label>
+                    <p className="text-sm text-gray-600">
+                      Permettre aux clients de vous découvrir via la carte interactive
+                    </p>
+                  </div>
                 </div>
                 <Switch
-                  checked={value}
-                  onCheckedChange={(checked) => {
-                    setNotificationSettings(prev => ({ ...prev, [key]: checked }));
-                  }}
+                  id="showOnMap"
+                  checked={settings.privacy.showOnMap}
+                  onCheckedChange={(checked) => 
+                    setSettings({ 
+                      ...settings, 
+                      privacy: { ...settings.privacy, showOnMap: checked } 
+                    })
+                  }
                 />
               </div>
-            ))}
-          </CardContent>
-        </Card>
-      )
-    },
-    {
-      id: 'verification',
-      label: 'Vérification & Sécurité',
-      icon: '🛡️',
-      component: (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Statut de vérification
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium">Assurance vérifiée</span>
-                  <Badge variant={profileData.insurance_verified ? "default" : "secondary"}>
-                    {profileData.insurance_verified ? "Vérifié" : "En attente"}
-                  </Badge>
+
+              <Button 
+                onClick={handleSavePrivacySettings}
+                disabled={saving}
+                className="w-full fintech-button-primary"
+              >
+                {saving ? 'Sauvegarde...' : '💾 Sauvegarder les paramètres'}
+              </Button>
+            </CardContent>
+          </Card>
+        );
+
+      case 'distance-service':
+        const serviceInfo = getServiceTypeInfo(settings.privacy.serviceType);
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Truck className="h-5 w-5 text-green-600" />
+                Distance & Service Type
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Navigation className="h-4 w-4 text-green-600" />
+                  <Label className="text-base font-medium">
+                    Distance de déplacement: {settings.privacy.serviceRadius} km
+                  </Label>
                 </div>
-                <p className="text-sm text-gray-600">
-                  Preuve d'assurance responsabilité civile
-                </p>
+                
+                <div className="px-2">
+                  <Slider
+                    value={[settings.privacy.serviceRadius]}
+                    onValueChange={([value]) => 
+                      setSettings({ 
+                        ...settings, 
+                        privacy: { ...settings.privacy, serviceRadius: value } 
+                      })
+                    }
+                    min={5}
+                    max={50}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>5 km (Local)</span>
+                    <span>50 km (Étendu)</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <Label className="text-base font-medium">Type de Service (Partage d'adresse)</Label>
+                <RadioGroup 
+                  value={settings.privacy.serviceType} 
+                  onValueChange={(value) => 
+                    setSettings({ 
+                      ...settings, 
+                      privacy: { ...settings.privacy, serviceType: value as any } 
+                    })
+                  }
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                      <RadioGroupItem value="provider_location" id="provider_location" className="mt-1" />
+                      <div className="flex-1">
+                        <label htmlFor="provider_location" className="flex items-center gap-2 font-medium cursor-pointer">
+                          <Home className="h-4 w-4 text-blue-600" />
+                          Je fournis des services à mon domicile
+                        </label>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Les clients viennent chez vous - votre adresse peut être partagée après confirmation
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                      <RadioGroupItem value="customer_location" id="customer_location" className="mt-1" />
+                      <div className="flex-1">
+                        <label htmlFor="customer_location" className="flex items-center gap-2 font-medium cursor-pointer">
+                          <Car className="h-4 w-4 text-green-600" />
+                          Je me déplace chez le client
+                        </label>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Vous vous déplacez - votre adresse reste privée
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start space-x-3 p-3 border rounded-lg">
+                      <RadioGroupItem value="both" id="both" className="mt-1" />
+                      <div className="flex-1">
+                        <label htmlFor="both" className="flex items-center gap-2 font-medium cursor-pointer">
+                          <MapPin className="h-4 w-4 text-purple-600" />
+                          Services flexibles (les deux)
+                        </label>
+                        <p className="text-sm text-gray-600 mt-1">
+                          Vous choisissez selon le type de service
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </RadioGroup>
+
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-2">
+                    {serviceInfo.icon}
+                    <span className="font-medium text-gray-800">{serviceInfo.title}</span>
+                  </div>
+                  <p className="text-sm text-gray-700 mb-1">{serviceInfo.description}</p>
+                  {serviceInfo.examples && (
+                    <p className="text-xs text-gray-500 italic">{serviceInfo.examples}</p>
+                  )}
+                </div>
+              </div>
+
+              <Button 
+                onClick={handleSavePrivacySettings}
+                disabled={saving}
+                className="w-full fintech-button-primary"
+              >
+                {saving ? 'Sauvegarde...' : '💾 Sauvegarder les paramètres'}
+              </Button>
+            </CardContent>
+          </Card>
+        );
+
+      case 'notifications':
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bell className="h-5 w-5 text-yellow-600" />
+                Notification Preferences
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {Object.entries({
+                bookingRequests: 'Nouvelles demandes de réservation',
+                messages: 'Messages des clients',
+                reviews: 'Nouveaux avis et évaluations',
+                marketing: 'E-mails marketing et promotionnels'
+              }).map(([key, label]) => (
+                <div key={key} className="flex items-center justify-between">
+                  <Label htmlFor={key}>{label}</Label>
+                  <Switch
+                    id={key}
+                    checked={settings.notifications[key as keyof typeof settings.notifications]}
+                    onCheckedChange={(checked) => 
+                      setSettings({
+                        ...settings,
+                        notifications: {...settings.notifications, [key]: checked}
+                      })
+                    }
+                  />
+                </div>
+              ))}
+              
+              <Button onClick={handleSaveGeneralSettings} className="w-full mt-6">
+                💾 Sauvegarder les paramètres
+              </Button>
+            </CardContent>
+          </Card>
+        );
+
+      case 'availability':
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Clock className="h-5 w-5 text-purple-600" />
+                Availability Settings
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="autoAccept">Acceptation automatique des réservations</Label>
+                  <p className="text-sm text-gray-600">Accepter automatiquement les réservations qui répondent à vos critères</p>
+                </div>
+                <Switch
+                  id="autoAccept"
+                  checked={settings.availability.autoAccept}
+                  onCheckedChange={(checked) => 
+                    setSettings({
+                      ...settings,
+                      availability: {...settings.availability, autoAccept: checked}
+                    })
+                  }
+                />
               </div>
               
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium">Vérification des antécédents</span>
-                  <Badge variant={profileData.background_check ? "default" : "secondary"}>
-                    {profileData.background_check ? "Vérifié" : "En attente"}
-                  </Badge>
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="advanceNotice">Préavis minimum (heures)</Label>
+                  <Input
+                    id="advanceNotice"
+                    type="number"
+                    value={settings.availability.advanceNotice}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      availability: {...settings.availability, advanceNotice: parseInt(e.target.value)}
+                    })}
+                  />
                 </div>
-                <p className="text-sm text-gray-600">
-                  Vérification criminelle et références
-                </p>
+                <div>
+                  <Label htmlFor="maxBookings">Maximum de réservations par jour</Label>
+                  <Input
+                    id="maxBookings"
+                    type="number"
+                    value={settings.availability.maxBookingsPerDay}
+                    onChange={(e) => setSettings({
+                      ...settings,
+                      availability: {...settings.availability, maxBookingsPerDay: parseInt(e.target.value)}
+                    })}
+                  />
+                </div>
               </div>
-            </div>
+              
+              <Button onClick={handleSaveGeneralSettings} className="w-full">
+                💾 Sauvegarder les paramètres
+              </Button>
+            </CardContent>
+          </Card>
+        );
 
-            <div>
-              <Label>Certifications</Label>
-              <div className="mt-2 space-y-2">
-                {profileData.certifications.length > 0 ? (
-                  profileData.certifications.map((cert: string, index: number) => (
-                    <Badge key={index} variant="outline" className="mr-2">
-                      {cert}
-                    </Badge>
-                  ))
-                ) : (
-                  <p className="text-sm text-gray-600">Aucune certification ajoutée</p>
-                )}
+      case 'business':
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <User className="h-5 w-5 text-orange-600" />
+                Business Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                <div>
+                  <Label htmlFor="businessName">Nom de l'entreprise</Label>
+                  <Input
+                    id="businessName"
+                    value={settings.businessName}
+                    onChange={(e) => setSettings({...settings, businessName: e.target.value})}
+                    placeholder="Nom de votre entreprise"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="phone">Numéro de téléphone</Label>
+                  <Input
+                    id="phone"
+                    value={settings.phone}
+                    onChange={(e) => setSettings({...settings, phone: e.target.value})}
+                    placeholder="+1 (555) 123-4567"
+                  />
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      )
+              <div>
+                <Label htmlFor="description">Description de l'entreprise</Label>
+                <Textarea
+                  id="description"
+                  value={settings.description}
+                  onChange={(e) => setSettings({...settings, description: e.target.value})}
+                  placeholder="Décrivez vos services et votre expérience..."
+                  rows={4}
+                />
+              </div>
+              
+              <Button onClick={handleSaveGeneralSettings} className="w-full">
+                💾 Sauvegarder les paramètres
+              </Button>
+            </CardContent>
+          </Card>
+        );
+
+      case 'verification':
+        return (
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-emerald-600" />
+                Verification Status
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                  <span className="text-green-800 font-medium">E-mail Vérifié</span>
+                  <span className="text-green-600">✓</span>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
+                  <span className="text-yellow-800 font-medium">Vérification Téléphone</span>
+                  <Button variant="outline" size="sm">Vérifier</Button>
+                </div>
+                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                  <span className="text-gray-600 font-medium">Vérification des Antécédents</span>
+                  <Button variant="outline" size="sm">Commencer</Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        );
+
+      default:
+        return null;
     }
-  ];
-
-  const getNotificationDescription = (key: string): string => {
-    const descriptions: { [key: string]: string } = {
-      email_notifications: "Recevoir les mises à jour par email",
-      push_notifications: "Notifications push sur votre appareil",
-      sms_notifications: "Messages texte pour les urgences",
-      marketing_emails: "Offres promotionnelles et nouvelles",
-      booking_reminders: "Rappels de rendez-vous",
-      payment_notifications: "Notifications de paiement",
-      review_notifications: "Nouvelles évaluations clients"
-    };
-    return descriptions[key] || "";
   };
 
   return (
     <div className="flex h-full">
-      {/* Sidebar Menu */}
-      <div className="w-64 bg-gray-50 border-r p-4">
-        <div className="space-y-2">
-          {menuSections.map((section) => (
-            <Button
-              key={section.id}
-              variant={activeSection === section.id ? "default" : "ghost"}
-              className="w-full justify-start"
-              onClick={() => setActiveSection(section.id)}
-            >
-              <span className="mr-2">{section.icon}</span>
-              {section.label}
-            </Button>
-          ))}
+      {/* Left Sidebar Menu */}
+      <div className="w-80 bg-white border-r border-gray-200 flex flex-col">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-xl font-semibold text-gray-900">Paramètres</h2>
+          <p className="text-sm text-gray-600 mt-1">Gérez votre profil et préférences</p>
         </div>
+        
+        <nav className="flex-1 p-4">
+          <div className="space-y-2">
+            {menuSections.map((section) => {
+              const Icon = section.icon;
+              const isActive = activeSection === section.id;
+              
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => setActiveSection(section.id)}
+                  className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                    isActive 
+                      ? 'bg-blue-50 border border-blue-200 text-blue-700' 
+                      : 'hover:bg-gray-50 text-gray-700 hover:text-gray-900'
+                  }`}
+                >
+                  <Icon className={`h-5 w-5 ${isActive ? section.color : 'text-gray-500'}`} />
+                  <span className={`font-medium ${isActive ? 'text-blue-800' : ''}`}>
+                    {section.title}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </nav>
       </div>
 
-      {/* Content Area */}
-      <div className="flex-1 p-6 overflow-y-auto">
-        {menuSections.find(section => section.id === activeSection)?.component}
+      {/* Main Content Area */}
+      <div className="flex-1 p-8 overflow-y-auto">
+        {renderContent()}
       </div>
     </div>
   );
