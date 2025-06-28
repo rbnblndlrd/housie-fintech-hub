@@ -278,6 +278,106 @@ const ProviderDashboard = () => {
     }
   };
 
+  const completeJob = async (bookingId: string) => {
+    try {
+      console.log('🔄 Completing job:', bookingId);
+      
+      // Update booking status to completed
+      const { error: updateError } = await supabase
+        .from('bookings')
+        .update({ 
+          status: 'completed',
+          completed_at: new Date().toISOString()
+        })
+        .eq('id', bookingId);
+
+      if (updateError) throw updateError;
+
+      // Get booking details for notification
+      const { data: booking, error: bookingError } = await supabase
+        .from('bookings')
+        .select(`
+          customer_id,
+          customer:users!customer_id(full_name, email),
+          service:services!service_id(title)
+        `)
+        .eq('id', bookingId)
+        .single();
+
+      if (bookingError) throw bookingError;
+
+      // Create notification for customer
+      const { error: notificationError } = await supabase
+        .from('notifications')
+        .insert({
+          user_id: booking.customer_id,
+          type: 'job_completed',
+          title: 'Job Completed!',
+          message: `Your ${booking.service.title} service has been completed. Please review your experience.`,
+          booking_id: bookingId
+        });
+
+      if (notificationError) throw notificationError;
+
+      // Award completion points to provider
+      const { data: providerProfile } = await supabase
+        .from('provider_profiles')
+        .select('id')
+        .eq('user_id', user?.id)
+        .single();
+
+      if (providerProfile) {
+        await supabase.rpc('award_community_points', {
+          p_provider_id: providerProfile.id,
+          p_points: 2,
+          p_reason: 'Job completion'
+        });
+      }
+
+      // Create persistent notification after 24 hours (this would normally be a scheduled job)
+      setTimeout(async () => {
+        try {
+          const { error: persistentError } = await supabase
+            .from('persistent_notifications')
+            .insert({
+              user_id: booking.customer_id,
+              type: 'pending_review',
+              booking_id: bookingId,
+              message: 'Awaiting Review (1)',
+              is_persistent: true
+            });
+
+          if (persistentError) {
+            console.error('Error creating persistent notification:', persistentError);
+          }
+        } catch (error) {
+          console.error('Error in delayed notification:', error);
+        }
+      }, 24 * 60 * 60 * 1000); // 24 hours
+
+      // Update local state
+      setBookings(prev => prev.map(b => 
+        b.id === bookingId 
+          ? { ...b, status: 'completed', completed_at: new Date().toISOString() }
+          : b
+      ));
+
+      toast({
+        title: "Job Completed!",
+        description: "Customer has been notified and payment will be processed.",
+      });
+
+      console.log('✅ Job completed successfully');
+    } catch (error) {
+      console.error('❌ Error completing job:', error);
+      toast({
+        title: "Error",
+        description: "Failed to complete job. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchBookings();
   }, [user]);
@@ -491,13 +591,20 @@ const ProviderDashboard = () => {
         
         {booking.status === 'in_progress' && (
           <div className="flex gap-3 mt-4 pt-4 border-t">
-            <Button size="lg" variant="outline" className="flex-1 h-12">
-              <MapPinned className="h-4 w-4 mr-2" />
-              On Site
+            <Button 
+              size="lg" 
+              className="flex-1 bg-gradient-to-r from-green-500 to-emerald-500 h-12"
+              onClick={(e) => {
+                e.stopPropagation();
+                completeJob(booking.id);
+              }}
+            >
+              <CheckCircle className="h-4 w-4 mr-2" />
+              Mark Complete
             </Button>
             <Button size="lg" variant="outline" className="flex-1 h-12">
               <Pause className="h-4 w-4 mr-2" />
-              Break
+              Take Break
             </Button>
           </div>
         )}

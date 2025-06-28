@@ -1531,6 +1531,47 @@ export type Database = {
           },
         ]
       }
+      persistent_notifications: {
+        Row: {
+          booking_id: string | null
+          created_at: string | null
+          dismissed_at: string | null
+          id: string
+          is_persistent: boolean | null
+          message: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string | null
+          dismissed_at?: string | null
+          id?: string
+          is_persistent?: boolean | null
+          message: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string | null
+          dismissed_at?: string | null
+          id?: string
+          is_persistent?: boolean | null
+          message?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "persistent_notifications_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       phone_verifications: {
         Row: {
           attempts: number | null
@@ -1633,6 +1674,8 @@ export type Database = {
           business_name: string | null
           ccq_license_number: string | null
           ccq_verified: boolean | null
+          community_rating_points: number | null
+          courtesy_commendations: number | null
           cra_compliant: boolean | null
           created_at: string | null
           description: string | null
@@ -1640,17 +1683,21 @@ export type Database = {
           id: string
           insurance_verified: boolean | null
           monthly_earnings: number | null
+          network_connections: number | null
           professional_license_type:
             | Database["public"]["Enums"]["professional_license_type"]
             | null
           professional_license_verified: boolean | null
+          quality_commendations: number | null
           rbq_license_number: string | null
           rbq_verified: boolean | null
+          reliability_commendations: number | null
           response_time_hours: number | null
           response_time_score: number | null
           service_radius_km: number | null
           territory_score: number | null
           total_bookings: number | null
+          total_reviews: number | null
           updated_at: string | null
           user_id: string
           verification_level:
@@ -1667,6 +1714,8 @@ export type Database = {
           business_name?: string | null
           ccq_license_number?: string | null
           ccq_verified?: boolean | null
+          community_rating_points?: number | null
+          courtesy_commendations?: number | null
           cra_compliant?: boolean | null
           created_at?: string | null
           description?: string | null
@@ -1674,17 +1723,21 @@ export type Database = {
           id?: string
           insurance_verified?: boolean | null
           monthly_earnings?: number | null
+          network_connections?: number | null
           professional_license_type?:
             | Database["public"]["Enums"]["professional_license_type"]
             | null
           professional_license_verified?: boolean | null
+          quality_commendations?: number | null
           rbq_license_number?: string | null
           rbq_verified?: boolean | null
+          reliability_commendations?: number | null
           response_time_hours?: number | null
           response_time_score?: number | null
           service_radius_km?: number | null
           territory_score?: number | null
           total_bookings?: number | null
+          total_reviews?: number | null
           updated_at?: string | null
           user_id: string
           verification_level?:
@@ -1701,6 +1754,8 @@ export type Database = {
           business_name?: string | null
           ccq_license_number?: string | null
           ccq_verified?: boolean | null
+          community_rating_points?: number | null
+          courtesy_commendations?: number | null
           cra_compliant?: boolean | null
           created_at?: string | null
           description?: string | null
@@ -1708,17 +1763,21 @@ export type Database = {
           id?: string
           insurance_verified?: boolean | null
           monthly_earnings?: number | null
+          network_connections?: number | null
           professional_license_type?:
             | Database["public"]["Enums"]["professional_license_type"]
             | null
           professional_license_verified?: boolean | null
+          quality_commendations?: number | null
           rbq_license_number?: string | null
           rbq_verified?: boolean | null
+          reliability_commendations?: number | null
           response_time_hours?: number | null
           response_time_score?: number | null
           service_radius_km?: number | null
           territory_score?: number | null
           total_bookings?: number | null
+          total_reviews?: number | null
           updated_at?: string | null
           user_id?: string
           verification_level?:
@@ -1782,6 +1841,70 @@ export type Database = {
           working_hours?: Json
         }
         Relationships: []
+      }
+      review_commendations: {
+        Row: {
+          commendation_type: string
+          created_at: string | null
+          id: string
+          review_id: string | null
+        }
+        Insert: {
+          commendation_type: string
+          created_at?: string | null
+          id?: string
+          review_id?: string | null
+        }
+        Update: {
+          commendation_type?: string
+          created_at?: string | null
+          id?: string
+          review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_commendations_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_photos: {
+        Row: {
+          allow_portfolio_use: boolean | null
+          created_at: string | null
+          id: string
+          photo_url: string
+          review_id: string | null
+          uploaded_at: string | null
+        }
+        Insert: {
+          allow_portfolio_use?: boolean | null
+          created_at?: string | null
+          id?: string
+          photo_url: string
+          review_id?: string | null
+          uploaded_at?: string | null
+        }
+        Update: {
+          allow_portfolio_use?: boolean | null
+          created_at?: string | null
+          id?: string
+          photo_url?: string
+          review_id?: string | null
+          uploaded_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_photos_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       review_quality_scores: {
         Row: {
@@ -2765,6 +2888,10 @@ export type Database = {
         Args: { service_coords: unknown }
         Returns: string
       }
+      award_community_points: {
+        Args: { p_provider_id: string; p_points: number; p_reason: string }
+        Returns: undefined
+      }
       award_points: {
         Args: {
           target_user_id: string
@@ -2799,6 +2926,10 @@ export type Database = {
           session_uuid?: string
         }
         Returns: Json
+      }
+      create_review_notification: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       emergency_disable_claude: {
         Args: Record<PropertyKey, never>

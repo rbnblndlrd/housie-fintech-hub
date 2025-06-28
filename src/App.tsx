@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -46,6 +45,7 @@ import InteractiveMapPage from "@/pages/InteractiveMapPage";
 import GamificationPage from "@/pages/GamificationPage";
 import RoleProtectedRoute from "@/components/RoleProtectedRoute";
 import Help from "@/pages/Help";
+import { PersistentNotificationBanner } from "@/components/notifications/PersistentNotificationBanner";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +74,7 @@ const App = () => {
                     <RoleProvider>
                       <SubscriptionProvider>
                         <NotificationBubbles />
+                        <PersistentNotificationBanner />
                         <Routes>
                           <Route path="/" element={<Index />} />
                           <Route path="/auth" element={<Auth />} />
