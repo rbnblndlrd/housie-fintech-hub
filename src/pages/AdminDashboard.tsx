@@ -22,8 +22,14 @@ import AdminTestingDashboard from "@/components/admin/AdminTestingDashboard";
 const AdminDashboard = () => {
   const { user, loading: authLoading } = useAuth();
 
-  // Use email-based admin detection instead of role-based
-  const isAdmin = user?.email?.includes('admin') || user?.email === '7utie@gmail.com';
+  // Updated admin detection logic with explicit email checks and debugging
+  const isAdmin = user?.email === '7utile@gmail.com' || 
+                  user?.email === 'gabeleven@gmail.com' || 
+                  user?.email === 'admin@housie.ca' ||
+                  user?.email?.includes('admin');
+  
+  console.log('Admin check:', { userEmail: user?.email, isAdmin });
+  
   const roleLoading = false;
 
   if (authLoading || roleLoading) {
@@ -49,6 +55,7 @@ const AdminDashboard = () => {
   }
 
   if (!isAdmin) {
+    console.log('Access denied for:', user?.email);
     return (
       <div className="min-h-screen bg-background">
         <Header />
