@@ -38,6 +38,7 @@ const ProviderOnboarding: React.FC<ProviderOnboardingProps> = ({ onProviderEnabl
         description: "You can now switch between customer and provider roles.",
       });
 
+      // Call the callback to update parent state
       onProviderEnabled();
     } catch (error) {
       console.error('Error enabling provider mode:', error);
@@ -52,44 +53,46 @@ const ProviderOnboarding: React.FC<ProviderOnboardingProps> = ({ onProviderEnabl
   };
 
   return (
-    <Card className="border-2 border-blue-200 bg-blue-50">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-blue-800">
-          <Briefcase className="h-5 w-5" />
-          Become a Service Provider
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <p className="text-blue-700">
-          Unlock additional features by becoming a service provider on HOUSIE.
-        </p>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="flex items-center gap-2 text-sm">
-            <Star className="h-4 w-4 text-yellow-500" />
-            <span>Earn Money</span>
+    <div className="transition-all duration-300 ease-in-out">
+      <Card className="border-2 border-blue-200 bg-blue-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-800">
+            <Briefcase className="h-5 w-5" />
+            Become a Service Provider
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-blue-700">
+            Unlock additional features by becoming a service provider on HOUSIE.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <Star className="h-4 w-4 text-yellow-500" />
+              <span>Earn Money</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <Shield className="h-4 w-4 text-green-500" />
+              <span>Build Network</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm">
+              <CheckCircle className="h-4 w-4 text-blue-500" />
+              <span>Verified Profile</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 text-sm">
-            <Shield className="h-4 w-4 text-green-500" />
-            <span>Build Network</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm">
-            <CheckCircle className="h-4 w-4 text-blue-500" />
-            <span>Verified Profile</span>
-          </div>
-        </div>
 
-        <div className="pt-2">
-          <Button 
-            onClick={enableProviderMode}
-            disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700"
-          >
-            {loading ? 'Enabling...' : 'Enable Provider Mode'}
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+          <div className="pt-2">
+            <Button 
+              onClick={enableProviderMode}
+              disabled={loading}
+              className="w-full bg-blue-600 hover:bg-blue-700"
+            >
+              {loading ? 'Enabling...' : 'Enable Provider Mode'}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 

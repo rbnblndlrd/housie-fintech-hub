@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -47,18 +46,42 @@ const Profile = () => {
         .eq('user_id', user.id)
         .single();
 
-      if (error) throw error;
-      
-      setCanProvideServices(data?.can_provide_services || false);
+      if (error) {
+        // If profile doesn't exist, create it
+        if (error.code === 'PGRST116') {
+          const { error: insertError } = await supabase
+            .from('user_profiles')
+            .insert({
+              user_id: user.id,
+              username: user.email?.split('@')[0] || 'user',
+              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+              active_role: 'customer',
+              can_provide_services: false,
+              can_book_services: true
+            });
+          
+          if (insertError) throw insertError;
+          setCanProvideServices(false);
+        } else {
+          throw error;
+        }
+      } else {
+        setCanProvideServices(data?.can_provide_services || false);
+      }
     } catch (error) {
       console.error('Error checking provider capability:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load profile data. Please refresh the page.",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   if (!user) {
-    navigate('/login');
+    navigate('/auth');
     return null;
   }
 
@@ -78,10 +101,23 @@ const Profile = () => {
     }
   };
 
-  const handleProviderEnabled = () => {
+  const handleProviderEnabled = async () => {
     setCanProvideServices(true);
-    // Refresh the page to update role context
-    window.location.reload();
+    // Refresh the role context without reloading the page
+    try {
+      const { data } = await supabase
+        .from('user_profiles')
+        .select('can_provide_services, active_role')
+        .eq('user_id', user.id)
+        .single();
+      
+      if (data?.can_provide_services) {
+        // Update the role context by switching to provider
+        await switchRole('provider');
+      }
+    } catch (error) {
+      console.error('Error refreshing role context:', error);
+    }
   };
 
   const getRoleIcon = (role: string) => {
@@ -174,63 +210,65 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-              {/* Provider Onboarding or Role Management */}
-              {!canProvideServices ? (
-                <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
-              ) : (
-                <Card className="border-2 border-gray-200">
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Crown className="h-5 w-5 text-purple-600" />
-                      Role Management
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <label className="text-sm font-medium text-gray-700 mb-2 block">
-                          Current Role
-                        </label>
-                        <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-base px-3 py-1">
-                          {getRoleIcon(currentRole)}
-                          <span className="ml-2">{getRoleLabel(currentRole)}</span>
-                        </Badge>
-                      </div>
-
-                      {availableRoles.length > 1 && (
+              {/* Dynamic Role Management Section */}
+              <div className="transition-all duration-300 ease-in-out">
+                {!canProvideServices ? (
+                  <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
+                ) : (
+                  <Card className="border-2 border-gray-200">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Crown className="h-5 w-5 text-purple-600" />
+                        Role Management
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
                         <div>
                           <label className="text-sm font-medium text-gray-700 mb-2 block">
-                            Switch Role
+                            Current Role
                           </label>
-                          <Select value={currentRole} onValueChange={handleRoleSwitch}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue>
-                                <div className="flex items-center gap-2">
-                                  {getRoleIcon(currentRole)}
-                                  {getRoleLabel(currentRole)}
-                                </div>
-                              </SelectValue>
-                            </SelectTrigger>
-                            <SelectContent>
-                              {availableRoles.map((role) => (
-                                <SelectItem key={role} value={role}>
-                                  <div className="flex items-center gap-2">
-                                    {getRoleIcon(role)}
-                                    {getRoleLabel(role)}
-                                  </div>
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                          <p className="text-xs text-gray-500 mt-1">
-                            Switch between customer and provider modes
-                          </p>
+                          <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-base px-3 py-1">
+                            {getRoleIcon(currentRole)}
+                            <span className="ml-2">{getRoleLabel(currentRole)}</span>
+                          </Badge>
                         </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+
+                        {availableRoles.length > 1 && (
+                          <div>
+                            <label className="text-sm font-medium text-gray-700 mb-2 block">
+                              Switch Role
+                            </label>
+                            <Select value={currentRole} onValueChange={handleRoleSwitch}>
+                              <SelectTrigger className="w-full">
+                                <SelectValue>
+                                  <div className="flex items-center gap-2">
+                                    {getRoleIcon(currentRole)}
+                                    {getRoleLabel(currentRole)}
+                                  </div>
+                                </SelectValue>
+                              </SelectTrigger>
+                              <SelectContent>
+                                {availableRoles.map((role) => (
+                                  <SelectItem key={role} value={role}>
+                                    <div className="flex items-center gap-2">
+                                      {getRoleIcon(role)}
+                                      {getRoleLabel(role)}
+                                    </div>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            <p className="text-xs text-gray-500 mt-1">
+                              Switch between customer and provider modes
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </div>
 
             {/* Quick Actions */}

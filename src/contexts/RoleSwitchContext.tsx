@@ -52,6 +52,34 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         .eq('user_id', user.id)
         .single();
 
+      if (error && error.code === 'PGRST116') {
+        // Profile doesn't exist, create it
+        console.log('⚠️ No profile found, creating default profile...');
+        const { data: newProfile, error: insertError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: user.id,
+            username: user.email?.split('@')[0] || 'user',
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            active_role: 'customer',
+            can_provide_services: false,
+            can_book_services: true
+          })
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error('❌ Error creating profile:', insertError);
+          return;
+        }
+
+        console.log('✅ Profile created:', newProfile);
+        setCurrentRole('customer');
+        setAvailableRoles(['customer']);
+        setCanSwitchToProvider(false);
+        return;
+      }
+
       if (error && error.code !== 'PGRST116') {
         console.error('❌ Error loading user capabilities:', error);
         return;
@@ -75,25 +103,6 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         
         setAvailableRoles(roles);
         console.log('✅ Roles set:', { activeRole, availableRoles: roles });
-      } else {
-        console.log('⚠️ No profile found, checking legacy users table...');
-        
-        // Fallback to checking users table for legacy support
-        const { data: userData } = await supabase
-          .from('users')
-          .select('can_provide, can_seek')
-          .eq('id', user.id)
-          .single();
-
-        if (userData) {
-          console.log('✅ Legacy user data:', userData);
-          const roles = ['customer'];
-          if (userData.can_provide) {
-            roles.push('provider');
-            setCanSwitchToProvider(true);
-          }
-          setAvailableRoles(roles);
-        }
       }
     } catch (error) {
       console.error('❌ Error in loadUserCapabilities:', error);
