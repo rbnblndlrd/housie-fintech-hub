@@ -7,7 +7,8 @@ import AddAppointmentDialog from '@/components/AddAppointmentDialog';
 import EditAppointmentDialog from '@/components/EditAppointmentDialog';
 import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, AlertCircle, RefreshCw } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface CalendarEvent {
   id: string;
@@ -24,10 +25,14 @@ interface CalendarEvent {
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
-  const { allEvents, createAppointment } = useUnifiedCalendarIntegration();
+  const { allEvents, loading, error, createAppointment, refreshData } = useUnifiedCalendarIntegration();
 
   const handleAddAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
-    await createAppointment(newAppointment);
+    try {
+      await createAppointment(newAppointment);
+    } catch (error) {
+      console.error('Failed to add appointment:', error);
+    }
   };
 
   const handleEditEvent = (eventId: string) => {
@@ -38,12 +43,14 @@ const Calendar = () => {
   };
 
   const handleUpdateAppointment = (updatedAppointment: CalendarEvent) => {
-    // This will be handled by the unified calendar integration
+    // Refresh data after update
+    refreshData();
     setEditingEvent(null);
   };
 
   const handleDeleteAppointment = (appointmentId: string) => {
-    // This will be handled by the unified calendar integration
+    // Refresh data after delete
+    refreshData();
     setEditingEvent(null);
   };
 
@@ -51,11 +58,39 @@ const Calendar = () => {
     setEditingEvent(null);
   };
 
-  // Function that matches ModernCalendar's expected signature
   const handleCalendarAddClick = () => {
-    // This will trigger when ModernCalendar wants to add an appointment
     console.log('Calendar add appointment clicked');
   };
+
+  const handleRetry = () => {
+    refreshData();
+  };
+
+  // Show error state with retry option
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <CalendarHeader />
+            
+            <Alert className="mb-6">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="flex items-center justify-between">
+                <span>Failed to load calendar data: {error}</span>
+                <Button onClick={handleRetry} variant="outline" size="sm">
+                  <RefreshCw className="h-4 w-4 mr-2" />
+                  Retry
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -70,21 +105,30 @@ const Calendar = () => {
               selectedDate={selectedDate}
               onAddAppointment={handleAddAppointment}
             >
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+              <Button 
+                className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                disabled={loading}
+              >
                 <Plus className="h-4 w-4 mr-2" />
                 Add Appointment
               </Button>
             </AddAppointmentDialog>
           </div>
           
-          <ModernCalendar
-            onAddAppointment={handleCalendarAddClick}
-            onEditEvent={handleEditEvent}
-          />
+          {loading ? (
+            <div className="flex items-center justify-center py-12">
+              <RefreshCw className="h-6 w-6 animate-spin mr-2" />
+              <span>Loading calendar...</span>
+            </div>
+          ) : (
+            <ModernCalendar
+              onAddAppointment={handleCalendarAddClick}
+              onEditEvent={handleEditEvent}
+            />
+          )}
         </div>
       </div>
 
-      {/* Edit Appointment Dialog */}
       {editingEvent && (
         <EditAppointmentDialog
           appointment={editingEvent}

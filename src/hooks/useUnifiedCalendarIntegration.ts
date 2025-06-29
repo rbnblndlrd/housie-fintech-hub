@@ -1,161 +1,266 @@
 
-import { useMemo } from 'react';
-import { useBookingCalendarIntegration, CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
-import { useCalendarAppointments } from '@/hooks/useCalendarAppointments';
+import { useState, useEffect, useCallback, useMemo } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
+
+export interface CalendarEvent {
+  id: string;
+  title: string;
+  date: Date;
+  time: string;
+  client: string;
+  location: string;
+  status: 'confirmed' | 'pending' | 'completed';
+  amount: number;
+  source: 'housie' | 'google';
+  booking_id?: string;
+  is_provider?: boolean;
+}
 
 export const useUnifiedCalendarIntegration = () => {
-  const { calendarEvents: bookingEvents, loading: bookingsLoading, updateBookingStatus } = useBookingCalendarIntegration();
-  const { 
-    appointments, 
-    loading: appointmentsLoading, 
-    createAppointment, 
-    updateAppointment, 
-    deleteAppointment 
-  } = useCalendarAppointments();
+  const { user } = useAuth();
+  const [allEvents, setAllEvents] = useState<CalendarEvent[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Convert database appointments to CalendarEvent format
-  const appointmentEvents: CalendarEvent[] = useMemo(() => {
-    console.log('Converting appointments to events:', appointments.length);
+  // Stable callback to fetch all calendar data
+  const fetchAllCalendarData = useCallback(async () => {
+    if (!user) {
+      setAllEvents([]);
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
     
-    return appointments.map(appointment => {
-      // Parse the date string properly - create local date without timezone conversion
-      const dateParts = appointment.scheduled_date.split('-');
-      const appointmentDate = new Date(
-        parseInt(dateParts[0]), // year
-        parseInt(dateParts[1]) - 1, // month (0-based)
-        parseInt(dateParts[2]) // day
-      );
-      
-      console.log('Processing appointment:', {
-        id: appointment.id,
-        title: appointment.title,
-        originalDateString: appointment.scheduled_date,
-        parsedDate: appointmentDate,
-        dateString: appointmentDate.toDateString(),
-        time: appointment.scheduled_time
+    try {
+      console.log('Fetching unified calendar data for user:', user.id);
+
+      // Fetch appointments
+      const { data: appointments, error: appointmentsError } = await supabase
+        .from('calendar_appointments')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('scheduled_date', { ascending: true });
+
+      if (appointmentsError) {
+        console.error('Error fetching appointments:', appointmentsError);
+        throw appointmentsError;
+      }
+
+      // Fetch bookings (customer bookings)
+      const { data: customerBookings, error: customerBookingsError } = await supabase
+        .from('bookings')
+        .select(`
+          *,
+          customer:customer_id (full_name, phone),
+          provider:provider_id (
+            business_name,
+            user:user_id (full_name)
+          ),
+          service:service_id (title)
+        `)
+        .eq('customer_id', user.id);
+
+      if (customerBookingsError) {
+        console.error('Error fetching customer bookings:', customerBookingsError);
+        // Don't throw, just log the error as bookings table might not exist or user might not have bookings
+      }
+
+      // Fetch provider bookings if user has a provider profile
+      let providerBookings = { data: [], error: null };
+      try {
+        const { data: providerProfile } = await supabase
+          .from('provider_profiles')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (providerProfile) {
+          providerBookings = await supabase
+            .from('bookings')
+            .select(`
+              *,
+              customer:customer_id (full_name, phone),
+              provider:provider_id (
+                business_name,
+                user:user_id (full_name)
+              ),
+              service:service_id (title)
+            `)
+            .eq('provider_id', providerProfile.id);
+        }
+      } catch (providerError) {
+        console.log('No provider profile found or error fetching provider bookings:', providerError);
+      }
+
+      // Convert appointments to calendar events
+      const appointmentEvents: CalendarEvent[] = (appointments || []).map(appointment => {
+        const dateParts = appointment.scheduled_date.split('-');
+        const appointmentDate = new Date(
+          parseInt(dateParts[0]),
+          parseInt(dateParts[1]) - 1,
+          parseInt(dateParts[2])
+        );
+        
+        return {
+          id: appointment.id,
+          title: appointment.title,
+          date: appointmentDate,
+          time: appointment.scheduled_time,
+          client: appointment.client_name,
+          location: appointment.location || '',
+          status: appointment.status as 'confirmed' | 'pending' | 'completed',
+          amount: Number(appointment.amount) || 0,
+          source: 'housie' as const,
+          booking_id: undefined,
+          is_provider: false
+        };
       });
-      
-      return {
-        id: appointment.id,
-        title: appointment.title,
-        date: appointmentDate,
-        time: appointment.scheduled_time,
-        client: appointment.client_name,
-        location: appointment.location || '',
-        status: appointment.status as 'confirmed' | 'pending' | 'completed',
-        amount: Number(appointment.amount) || 0,
+
+      // Convert bookings to calendar events
+      const allBookingsData = [
+        ...(customerBookings?.data || []),
+        ...(providerBookings.data || [])
+      ];
+
+      const bookingEvents: CalendarEvent[] = allBookingsData.map(booking => ({
+        id: `booking-${booking.id}`,
+        title: booking.service?.title || 'Service',
+        date: new Date(booking.scheduled_date),
+        time: booking.scheduled_time,
+        client: booking.customer_id === user.id 
+          ? booking.provider?.business_name || booking.provider?.user?.full_name || 'Provider'
+          : booking.customer?.full_name || 'Customer',
+        location: booking.service_address || 'Address not specified',
+        status: booking.status as 'confirmed' | 'pending' | 'completed',
+        amount: Number(booking.total_amount) || 0,
         source: 'housie' as const,
-        booking_id: undefined,
-        is_provider: false
-      };
-    });
-  }, [appointments]);
+        booking_id: booking.id,
+        is_provider: booking.provider_id !== user.id
+      }));
 
-  // Combine all events
-  const allEvents = useMemo(() => {
-    const combined = [
-      ...bookingEvents,
-      ...appointmentEvents
-    ];
-    
-    console.log('Combined events:', {
-      bookingEventsCount: bookingEvents.length,
-      appointmentEventsCount: appointmentEvents.length,
-      totalEvents: combined.length,
-      events: combined.map(event => ({
-        id: event.id,
-        title: event.title,
-        date: event.date,
-        dateString: event.date.toDateString(),
-        source: event.source
-      }))
-    });
-    
-    return combined;
-  }, [bookingEvents, appointmentEvents]);
+      // Combine all events
+      const combinedEvents = [...appointmentEvents, ...bookingEvents];
+      
+      console.log('Successfully fetched calendar data:', {
+        appointmentEvents: appointmentEvents.length,
+        bookingEvents: bookingEvents.length,
+        totalEvents: combinedEvents.length
+      });
 
-  const loading = bookingsLoading || appointmentsLoading;
+      setAllEvents(combinedEvents);
 
-  const handleCreateAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
-    console.log('Creating new appointment:', newAppointment);
-    
-    // Format date as YYYY-MM-DD for database storage
-    const year = newAppointment.date.getFullYear();
-    const month = String(newAppointment.date.getMonth() + 1).padStart(2, '0');
-    const day = String(newAppointment.date.getDate()).padStart(2, '0');
-    const dateString = `${year}-${month}-${day}`;
-    
-    console.log('Date conversion:', {
-      originalDate: newAppointment.date,
-      year,
-      month,
-      day,
-      dateString: dateString
-    });
-    
-    const appointmentData = {
-      title: newAppointment.title,
-      scheduled_date: dateString,
-      scheduled_time: newAppointment.time,
-      client_name: newAppointment.client,
-      location: newAppointment.location,
-      status: newAppointment.status,
-      amount: newAppointment.amount,
-      appointment_type: 'personal' as const
-    };
-    
-    console.log('Appointment data being sent to database:', appointmentData);
-    
-    return await createAppointment(appointmentData);
-  };
+    } catch (error) {
+      console.error('Error in fetchAllCalendarData:', error);
+      setError(error instanceof Error ? error.message : 'Failed to fetch calendar data');
+      setAllEvents([]);
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]); // Only depend on user.id
 
-  const handleUpdateEvent = async (eventId: string, updates: Partial<CalendarEvent>) => {
-    // Check if this is a booking or appointment
-    const isBooking = bookingEvents.find(event => event.id === eventId);
-    
-    if (isBooking && updates.status) {
-      // Handle booking status update
-      const booking = bookingEvents.find(event => event.id === eventId);
-      if (booking?.booking_id) {
-        await updateBookingStatus(booking.booking_id, updates.status);
-      }
-    } else {
-      // Handle appointment update
-      const appointmentUpdates = {
-        title: updates.title,
-        scheduled_time: updates.time,
-        client_name: updates.client,
-        location: updates.location,
-        status: updates.status,
-        amount: updates.amount
+  // Create appointment function
+  const createAppointment = useCallback(async (newAppointment: Omit<CalendarEvent, 'id'>) => {
+    if (!user) return null;
+
+    try {
+      console.log('Creating new appointment:', newAppointment);
+      
+      const year = newAppointment.date.getFullYear();
+      const month = String(newAppointment.date.getMonth() + 1).padStart(2, '0');
+      const day = String(newAppointment.date.getDate()).padStart(2, '0');
+      const dateString = `${year}-${month}-${day}`;
+      
+      const appointmentData = {
+        title: newAppointment.title,
+        scheduled_date: dateString,
+        scheduled_time: newAppointment.time,
+        client_name: newAppointment.client,
+        location: newAppointment.location,
+        status: newAppointment.status,
+        amount: newAppointment.amount,
+        appointment_type: 'personal' as const,
+        user_id: user.id
       };
       
-      await updateAppointment(eventId, appointmentUpdates);
-    }
-  };
+      const { data, error } = await supabase
+        .from('calendar_appointments')
+        .insert(appointmentData)
+        .select()
+        .single();
 
-  const handleDeleteEvent = async (eventId: string) => {
-    // Check if this is a booking or appointment
-    const isBooking = bookingEvents.find(event => event.id === eventId);
-    
-    if (isBooking) {
-      // Handle booking cancellation
-      const booking = bookingEvents.find(event => event.id === eventId);
-      if (booking?.booking_id) {
-        await updateBookingStatus(booking.booking_id, 'cancelled');
-      }
-    } else {
-      // Handle appointment deletion
-      await deleteAppointment(eventId);
+      if (error) throw error;
+
+      console.log('Appointment created successfully:', data);
+      
+      // Refresh data after successful creation
+      await fetchAllCalendarData();
+      
+      return data;
+    } catch (error) {
+      console.error('Error creating appointment:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create appointment');
+      return null;
     }
-  };
+  }, [user?.id, fetchAllCalendarData]);
+
+  // Set up consolidated real-time subscription
+  useEffect(() => {
+    if (!user?.id) {
+      setAllEvents([]);
+      return;
+    }
+
+    // Initial data fetch
+    fetchAllCalendarData();
+
+    // Set up single real-time subscription for all calendar changes
+    const channelName = `unified-calendar-${user.id}-${Date.now()}`;
+    console.log('Setting up unified calendar subscription:', channelName);
+    
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'calendar_appointments',
+          filter: `user_id=eq.${user.id}`
+        },
+        (payload) => {
+          console.log('Calendar appointment change detected:', payload);
+          fetchAllCalendarData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'bookings'
+        },
+        (payload) => {
+          console.log('Booking change detected:', payload);
+          fetchAllCalendarData();
+        }
+      )
+      .subscribe((status) => {
+        console.log('Unified calendar subscription status:', status);
+      });
+
+    return () => {
+      console.log('Cleaning up unified calendar subscription');
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, fetchAllCalendarData]);
 
   return {
     allEvents,
     loading,
-    createAppointment: handleCreateAppointment,
-    updateEvent: handleUpdateEvent,
-    deleteEvent: handleDeleteEvent,
-    updateBookingStatus
+    error,
+    createAppointment,
+    refreshData: fetchAllCalendarData
   };
 };

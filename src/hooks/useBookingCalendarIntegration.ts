@@ -2,7 +2,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
 
 export interface CalendarEvent {
   id: string;
@@ -20,7 +19,6 @@ export interface CalendarEvent {
 
 export const useBookingCalendarIntegration = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const [calendarEvents, setCalendarEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -84,15 +82,10 @@ export const useBookingCalendarIntegration = () => {
 
     } catch (error) {
       console.error('Error fetching bookings for calendar:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les réservations pour le calendrier.",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
-  }, [user, toast]);
+  }, [user?.id]);
 
   const updateBookingStatus = async (bookingId: string, newStatus: string) => {
     try {
@@ -115,49 +108,17 @@ export const useBookingCalendarIntegration = () => {
         )
       );
 
-      toast({
-        title: "Statut mis à jour",
-        description: "Le statut de la réservation a été mis à jour.",
-      });
-
     } catch (error) {
       console.error('Error updating booking status:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le statut.",
-        variant: "destructive",
-      });
     }
   };
 
-  // Set up real-time subscription for booking changes
+  // Simple data fetching - no real-time subscription to avoid conflicts
   useEffect(() => {
-    if (!user) return;
-
-    const channel = supabase
-      .channel('booking-calendar-sync')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'bookings'
-        },
-        () => {
-          // Refresh calendar events when bookings change
-          fetchBookingsAsCalendarEvents();
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [user, fetchBookingsAsCalendarEvents]);
-
-  useEffect(() => {
-    fetchBookingsAsCalendarEvents();
-  }, [fetchBookingsAsCalendarEvents]);
+    if (user?.id) {
+      fetchBookingsAsCalendarEvents();
+    }
+  }, [user?.id, fetchBookingsAsCalendarEvents]);
 
   return {
     calendarEvents,
