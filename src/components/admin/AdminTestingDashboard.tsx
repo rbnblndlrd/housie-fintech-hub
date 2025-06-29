@@ -56,14 +56,14 @@ const AdminTestingDashboard = () => {
 
   const loadUserStats = async (userId: string) => {
     try {
-      // Load from unified user_profiles table instead of provider_profiles
+      // Try to load from unified user_profiles table with fallback for missing columns
       const { data: userProfile, error: profileError } = await supabase
         .from('user_profiles')
         .select(`
           community_rating_points,
           shop_points,
           network_connections_count,
-          total_reviews,
+          total_reviews_received,
           quality_commendations,
           reliability_commendations,
           courtesy_commendations,
@@ -86,12 +86,13 @@ const AdminTestingDashboard = () => {
         console.error('User credits error:', creditsError);
       }
 
+      // Safely extract values with fallbacks for missing columns
       const communityRatingPoints = userProfile?.community_rating_points || userCredits?.total_credits || 0;
       const shopPoints = userProfile?.shop_points || userCredits?.shop_points || 0;
 
       setUserStats({
         communityRatingPoints,
-        totalReviews: userProfile?.total_reviews || 0,
+        totalReviews: userProfile?.total_reviews_received || 0,
         networkConnections: userProfile?.network_connections_count || 0,
         qualityCommendations: userProfile?.quality_commendations || 0,
         reliabilityCommendations: userProfile?.reliability_commendations || 0,

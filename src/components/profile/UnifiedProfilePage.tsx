@@ -41,7 +41,68 @@ const UnifiedProfilePage = () => {
         throw fetchError;
       }
 
-      setProfile(data);
+      // Map the data to match UnifiedUserProfile interface, providing defaults for missing fields
+      const mappedProfile: UnifiedUserProfile = {
+        id: data.id,
+        user_id: data.user_id,
+        username: data.username,
+        full_name: data.full_name,
+        bio: data.bio,
+        profile_image_url: data.profile_image_url,
+        location: data.location,
+        phone: data.phone,
+        website: data.website,
+        company: data.company,
+        profession: data.profession,
+        
+        // Role capabilities (with defaults for missing columns)
+        can_provide_services: data.can_provide_services || false,
+        can_book_services: data.can_book_services !== false,
+        active_role: data.active_role || 'customer',
+        profile_type: data.profile_type || 'individual',
+        
+        // Provider-specific fields (with defaults)
+        business_name: data.business_name,
+        description: data.description,
+        years_experience: data.years_experience || 0,
+        hourly_rate: data.hourly_rate,
+        service_radius_km: data.service_radius_km || 25,
+        verification_level: data.verification_level || 'basic',
+        verified: data.verified || false,
+        background_check_verified: data.background_check_verified || false,
+        professional_license_verified: data.professional_license_verified || false,
+        professional_license_type: data.professional_license_type,
+        insurance_verified: data.insurance_verified || false,
+        cra_compliant: data.cra_compliant || false,
+        rbq_verified: data.rbq_verified || false,
+        ccq_verified: data.ccq_verified || false,
+        rbq_license_number: data.rbq_license_number,
+        ccq_license_number: data.ccq_license_number,
+        
+        // Performance metrics (with defaults)
+        total_bookings: data.total_bookings || 0,
+        total_reviews: data.total_reviews_received || 0,
+        average_rating: data.average_rating || 0,
+        response_time_hours: data.response_time_hours,
+        community_rating_points: data.community_rating_points || 0,
+        shop_points: data.shop_points || 0,
+        quality_commendations: data.quality_commendations || 0,
+        reliability_commendations: data.reliability_commendations || 0,
+        courtesy_commendations: data.courtesy_commendations || 0,
+        achievement_badges: data.achievement_badges || [],
+        network_connections_count: data.network_connections_count || 0,
+        
+        // Privacy settings (with defaults)
+        privacy_level: data.privacy_level || 'public',
+        show_location: data.show_location !== false,
+        show_contact_info: data.show_contact_info !== false,
+        is_verified: data.is_verified || false,
+        
+        created_at: data.created_at,
+        updated_at: data.updated_at
+      };
+
+      setProfile(mappedProfile);
     } catch (error: any) {
       console.error('Error loading profile:', error);
       setError(error.message || 'Failed to load profile');

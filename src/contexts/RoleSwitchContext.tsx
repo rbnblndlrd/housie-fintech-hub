@@ -31,19 +31,22 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!user) return;
 
     try {
+      // Try to get from user_profiles first, fall back to users table
       const { data: profile, error } = await supabase
         .from('user_profiles')
-        .select('active_role, can_provide_services, can_book_services, profile_type')
+        .select('*')
         .eq('user_id', user.id)
         .single();
 
-      if (error) {
+      if (error && error.code !== 'PGRST116') {
         console.error('Error loading user capabilities:', error);
         return;
       }
 
       if (profile) {
-        setCurrentRole(profile.active_role || 'customer');
+        // Use new unified profile system if available
+        const activeRole = profile.active_role || 'customer';
+        setCurrentRole(activeRole);
         
         const roles = ['customer'];
         if (profile.can_provide_services) {
@@ -56,6 +59,22 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
         
         setAvailableRoles(roles);
+      } else {
+        // Fallback to checking users table for legacy support
+        const { data: userData } = await supabase
+          .from('users')
+          .select('can_provide, can_seek')
+          .eq('id', user.id)
+          .single();
+
+        if (userData) {
+          const roles = ['customer'];
+          if (userData.can_provide) {
+            roles.push('provider');
+            setCanSwitchToProvider(true);
+          }
+          setAvailableRoles(roles);
+        }
       }
     } catch (error) {
       console.error('Error in loadUserCapabilities:', error);
