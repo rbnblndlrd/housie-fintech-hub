@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Search, MessageCircle, Phone, Mail, ChevronDown, ChevronRight, MapPin, Zap, Users, DollarSign, Shield, Clock, Star, Bot } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -203,7 +202,8 @@ const Help = () => {
       
       {/* Hero Section */}
       <section className="bg-gradient-to-b from-blue-600 to-purple-700 text-white py-16">
-        <div className="max-w-4xl mx-auto px-4 text-center">
+        {/* Full-width container with minimal padding */}
+        <div className="w-full px-2 text-center">
           <h1 className="text-4xl lg:text-5xl font-bold mb-6">
             HOUSIE Help Center
           </h1>
@@ -227,7 +227,8 @@ const Help = () => {
 
       {/* Quick Contact */}
       <section className="py-8 bg-white border-b">
-        <div className="max-w-4xl mx-auto px-4">
+        {/* Full-width container with minimal padding */}
+        <div className="w-full px-2">
           <div className="grid md:grid-cols-3 gap-4">
             <Card className="hover:shadow-md transition-shadow">
               <CardContent className="p-4 text-center">
@@ -261,7 +262,8 @@ const Help = () => {
 
       {/* Help Articles */}
       <section className="py-12">
-        <div className="max-w-4xl mx-auto px-4">
+        {/* Full-width container with minimal padding */}
+        <div className="w-full px-2">
           <div className="space-y-6">
             {filteredSections.map((section) => (
               <Card key={section.id} className="shadow-sm">
