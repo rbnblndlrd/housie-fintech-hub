@@ -1,53 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Star, Award, MessageCircle, ThumbsUp, ShoppingBag, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Loader2, User } from 'lucide-react';
 import ShopPointsWidget from './ShopPointsWidget';
-
-// Use AdminUser to avoid conflicts with other User types
-interface AdminUser {
-  id: string;
-  full_name: string;
-  email: string;
-}
-
-interface UserStats {
-  communityRatingPoints: number;
-  totalReviews: number;
-  networkConnections: number;
-  qualityCommendations: number;
-  reliabilityCommendations: number;
-  courtesyCommendations: number;
-  shopPoints: number;
-}
-
-interface AdminFunctionResult {
-  success: boolean;
-  error?: string;
-  message?: string;
-  review_id?: string;
-  commendation_id?: string;
-  debug_info?: {
-    step?: string;
-    provider_user_id?: string;
-    provider_profile_id?: string;
-    service_id?: string;
-    customer_id?: string;
-    booking_id?: string;
-    review_id?: string;
-    customer_created?: string;
-    customer_found?: string;
-    commendations_added?: string;
-    sql_state?: string;
-  };
-}
+import OperationResultDisplay from './testing/OperationResultDisplay';
+import UserStatsDisplay from './testing/UserStatsDisplay';
+import CommunityPointsSection from './testing/CommunityPointsSection';
+import TestReviewsSection from './testing/TestReviewsSection';
+import CommendationsSection from './testing/CommendationsSection';
+import { AdminUser, UserStats, AdminFunctionResult } from '@/types/adminTesting';
 
 const AdminTestingDashboard = () => {
   const [users, setUsers] = useState<AdminUser[]>([]);
@@ -58,12 +23,10 @@ const AdminTestingDashboard = () => {
   const [lastResult, setLastResult] = useState<AdminFunctionResult | null>(null);
   const { toast } = useToast();
 
-  // Load users on component mount
   useEffect(() => {
     loadUsers();
   }, []);
 
-  // Load user stats when selected user changes
   useEffect(() => {
     if (selectedUser) {
       loadUserStats(selectedUser.id);
@@ -94,7 +57,6 @@ const AdminTestingDashboard = () => {
 
   const loadUserStats = async (userId: string) => {
     try {
-      // Get provider profile data
       const { data: providerProfile, error: providerError } = await supabase
         .from('provider_profiles')
         .select(`
@@ -113,7 +75,6 @@ const AdminTestingDashboard = () => {
         console.error('Provider profile error:', providerError);
       }
 
-      // Get user credits for customers  
       const { data: userCredits, error: creditsError } = await supabase
         .from('user_credits')
         .select('total_credits, shop_points')
@@ -124,7 +85,6 @@ const AdminTestingDashboard = () => {
         console.error('User credits error:', creditsError);
       }
 
-      // Use provider data if available, otherwise use customer data
       const communityRatingPoints = providerProfile?.community_rating_points || userCredits?.total_credits || 0;
       const shopPoints = providerProfile?.shop_points || userCredits?.shop_points || 0;
 
@@ -174,7 +134,6 @@ const AdminTestingDashboard = () => {
         description: `Added ${points} community points to ${selectedUser.full_name}`,
       });
 
-      // Reload user stats
       await loadUserStats(selectedUser.id);
     } catch (error: any) {
       console.error('❌ Error adding community points:', error);
@@ -211,7 +170,6 @@ const AdminTestingDashboard = () => {
         throw error;
       }
 
-      // Safely cast the result through unknown
       const result = data as unknown as AdminFunctionResult;
       setLastResult(result);
 
@@ -223,7 +181,6 @@ const AdminTestingDashboard = () => {
           description: result.message || `Created ${rating}-star test review for ${selectedUser.full_name}`,
         });
 
-        // Reload user stats
         await loadUserStats(selectedUser.id);
       } else {
         console.error('❌ Test review failed:', result);
@@ -267,7 +224,6 @@ const AdminTestingDashboard = () => {
         throw error;
       }
 
-      // Safely cast the result through unknown
       const result = data as unknown as AdminFunctionResult;
       setLastResult(result);
 
@@ -279,7 +235,6 @@ const AdminTestingDashboard = () => {
           description: result.message || `Added ${type} commendation to ${selectedUser.full_name}`,
         });
 
-        // Reload user stats
         await loadUserStats(selectedUser.id);
       } else {
         console.error('❌ Commendation failed:', result);
@@ -324,54 +279,8 @@ const AdminTestingDashboard = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* Operation Result Display */}
-          {lastResult && (
-            <div className={`rounded-lg p-4 border ${
-              lastResult.success 
-                ? 'bg-green-50 border-green-200' 
-                : 'bg-red-50 border-red-200'
-            }`}>
-              <div className="flex items-start space-x-3">
-                {lastResult.success ? (
-                  <CheckCircle className="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0" />
-                ) : (
-                  <XCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                )}
-                <div className="flex-1">
-                  <h4 className={`font-medium mb-1 ${
-                    lastResult.success ? 'text-green-900' : 'text-red-900'
-                  }`}>
-                    {lastResult.success ? 'Operation Successful' : 'Operation Failed'}
-                  </h4>
-                  <p className={`text-sm mb-2 ${
-                    lastResult.success ? 'text-green-700' : 'text-red-700'
-                  }`}>
-                    {lastResult.success ? lastResult.message : lastResult.error}
-                  </p>
-                  
-                  {/* Debug Information */}
-                  {lastResult.debug_info && (
-                    <details className="mt-2">
-                      <summary className={`text-xs cursor-pointer ${
-                        lastResult.success ? 'text-green-600' : 'text-red-600'
-                      }`}>
-                        Show Debug Info
-                      </summary>
-                      <div className={`text-xs mt-2 p-2 rounded ${
-                        lastResult.success ? 'bg-green-100' : 'bg-red-100'
-                      }`}>
-                        <pre className="whitespace-pre-wrap">
-                          {JSON.stringify(lastResult.debug_info, null, 2)}
-                        </pre>
-                      </div>
-                    </details>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
+          {lastResult && <OperationResultDisplay result={lastResult} />}
 
-          {/* User Selection */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Select User</label>
             <Select
@@ -379,7 +288,7 @@ const AdminTestingDashboard = () => {
               onValueChange={(value) => {
                 const user = users.find(u => u.id === value);
                 setSelectedUser(user || null);
-                setLastResult(null); // Clear result when switching users
+                setLastResult(null);
               }}
             >
               <SelectTrigger>
@@ -399,134 +308,29 @@ const AdminTestingDashboard = () => {
             <>
               <Separator />
               
-              {/* User Stats Display */}
-              {userStats && (
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <div className="text-2xl font-bold text-blue-600">{userStats.communityRatingPoints}</div>
-                    <div className="text-sm text-gray-600">Community Points</div>
-                  </div>
-                  <div className="text-center p-3 bg-purple-50 rounded-lg">
-                    <div className="text-2xl font-bold text-purple-600">{userStats.shopPoints}</div>
-                    <div className="text-sm text-gray-600">Shop Points</div>
-                  </div>
-                  <div className="text-center p-3 bg-green-50 rounded-lg">
-                    <div className="text-2xl font-bold text-green-600">{userStats.totalReviews}</div>
-                    <div className="text-sm text-gray-600">Reviews</div>
-                  </div>
-                  <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                    <div className="text-2xl font-bold text-yellow-600">
-                      {userStats.qualityCommendations + userStats.reliabilityCommendations + userStats.courtesyCommendations}
-                    </div>
-                    <div className="text-sm text-gray-600">Commendations</div>
-                  </div>
-                </div>
-              )}
+              {userStats && <UserStatsDisplay userStats={userStats} />}
 
               <Separator />
 
-              {/* Community Points Controls */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Star className="h-5 w-5" />
-                  Community Points
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    onClick={() => addCommunityPoints(10, "Admin test - 10 points")}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    +10 Points
-                  </Button>
-                  <Button
-                    onClick={() => addCommunityPoints(25, "Admin test - 25 points")}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    +25 Points
-                  </Button>
-                  <Button
-                    onClick={() => addCommunityPoints(50, "Admin test - 50 points")}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    +50 Points
-                  </Button>
-                  <Button
-                    onClick={() => addCommunityPoints(100, "Admin test - 100 points")}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    +100 Points
-                  </Button>
-                </div>
-              </div>
+              <CommunityPointsSection 
+                onAddPoints={addCommunityPoints}
+                disabled={operationLoading}
+              />
 
               <Separator />
 
-              {/* Review Creation Controls */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Test Reviews
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  {[1, 2, 3, 4, 5].map((rating) => (
-                    <Button
-                      key={rating}
-                      onClick={() => createTestReview(rating)}
-                      disabled={operationLoading}
-                      variant="outline"
-                      size="sm"
-                    >
-                      {rating} Star{rating !== 1 ? 's' : ''}
-                    </Button>
-                  ))}
-                </div>
-              </div>
+              <TestReviewsSection 
+                onCreateReview={createTestReview}
+                disabled={operationLoading}
+              />
 
               <Separator />
 
-              {/* Commendation Controls */}
-              <div className="space-y-4">
-                <h3 className="text-lg font-semibold flex items-center gap-2">
-                  <Award className="h-5 w-5" />
-                  Commendations
-                </h3>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    onClick={() => addCommendation('quality')}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Quality
-                  </Button>
-                  <Button
-                    onClick={() => addCommendation('reliability')}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Reliability
-                  </Button>
-                  <Button
-                    onClick={() => addCommendation('courtesy')}
-                    disabled={operationLoading}
-                    variant="outline"
-                    size="sm"
-                  >
-                    Courtesy
-                  </Button>
-                </div>
-              </div>
+              <CommendationsSection 
+                onAddCommendation={addCommendation}
+                disabled={operationLoading}
+              />
 
-              {/* Shop Points Widget */}
               {userStats && (
                 <>
                   <Separator />
