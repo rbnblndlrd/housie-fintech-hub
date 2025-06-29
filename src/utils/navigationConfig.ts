@@ -18,6 +18,7 @@ export const visitorNav: NavigationItem[] = [
 
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
+  { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
@@ -25,6 +26,7 @@ export const customerNav: NavigationItem[] = [
 
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
+  { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }

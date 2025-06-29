@@ -197,9 +197,9 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-              {/* Role Management Section - FIXED: Show based on availableRoles, not canProvideServices */}
+              {/* FIXED: Role Management Section - Show based on availableRoles only */}
               <div className="transition-all duration-300 ease-in-out">
-                {availableRoles.length <= 1 && !canProvideServices ? (
+                {availableRoles.length <= 1 ? (
                   <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
                 ) : (
                   <Card className="border-2 border-gray-200">
