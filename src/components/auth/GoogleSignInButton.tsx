@@ -13,7 +13,7 @@ const GoogleSignInButton: React.FC = () => {
     try {
       setIsLoading(true);
       
-      console.log('🚀 Starting Google OAuth flow with popup configuration...');
+      console.log('🚀 Starting Google OAuth popup flow...');
       
       // Check if popups are blocked
       const testPopup = window.open('', '_blank', 'width=1,height=1');
@@ -35,8 +35,9 @@ const GoogleSignInButton: React.FC = () => {
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
+            hd: '', // Allow any domain
           },
-          skipBrowserRedirect: false,
+          skipBrowserRedirect: true, // Force popup mode
         },
       });
 
@@ -47,13 +48,13 @@ const GoogleSignInButton: React.FC = () => {
         let errorMessage = 'Unable to sign in with Google. Please try again.';
         
         if (error.message.includes('popup')) {
-          errorMessage = 'Popup was blocked. Please allow popups and try again.';
+          errorMessage = 'Popup was blocked or closed. Please allow popups and try again.';
         } else if (error.message.includes('access_denied')) {
           errorMessage = 'Access was denied. Please try signing in again.';
+        } else if (error.message.includes('unauthorized') || error.message.includes('403')) {
+          errorMessage = 'Google OAuth app needs configuration. Please contact support or check if your email is added to test users.';
         } else if (error.message.includes('domain')) {
           errorMessage = 'Domain configuration issue. Please contact support.';
-        } else if (error.message.includes('unauthorized')) {
-          errorMessage = 'Google Sign-In configuration error. Please contact support.';
         }
         
         toast({
@@ -65,21 +66,14 @@ const GoogleSignInButton: React.FC = () => {
         return;
       }
 
-      // OAuth initiated successfully - redirect should happen
-      console.log('✅ Google OAuth initiated successfully, redirecting...');
+      // OAuth popup opened successfully
+      console.log('✅ Google OAuth popup opened successfully');
       
-      // Add a timeout to detect if redirect doesn't happen
-      setTimeout(() => {
-        if (window.location.pathname === '/auth') {
-          console.log('⚠️  Still on auth page after 5 seconds, something may be wrong');
-          toast({
-            title: "Sign-In Taking Long",
-            description: "If nothing happens, please try again or check if popups are blocked.",
-            variant: "default",
-          });
-          setIsLoading(false);
-        }
-      }, 5000);
+      toast({
+        title: "Google Sign-In",
+        description: "Complete the sign-in in the popup window.",
+        variant: "default",
+      });
       
     } catch (error) {
       console.error('💥 Unexpected error during Google Sign-In:', error);

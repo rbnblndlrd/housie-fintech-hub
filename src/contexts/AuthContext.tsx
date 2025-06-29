@@ -23,6 +23,16 @@ export const useAuth = () => {
   return context;
 };
 
+// Cleanup function to clear any conflicting auth state
+const cleanupAuthState = () => {
+  // Remove any stale auth tokens
+  Object.keys(localStorage).forEach((key) => {
+    if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
+      localStorage.removeItem(key);
+    }
+  });
+};
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -51,6 +61,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Handle successful OAuth sign in
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('✅ User signed in successfully via OAuth');
+          // Force page reload for OAuth to ensure clean state
+          if (window.location.pathname === '/auth') {
+            window.location.href = '/';
+          }
         }
       }
     );
@@ -92,6 +106,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     console.log('🔑 signIn called with email:', email);
     try {
+      // Clean up any existing auth state before signing in
+      cleanupAuthState();
+      
       console.log('📡 Calling Supabase signInWithPassword...');
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -113,6 +130,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, fullName?: string) => {
     console.log('📝 signUp called with:', { email, fullName });
     try {
+      // Clean up any existing auth state before signing up
+      cleanupAuthState();
+      
       console.log('📡 Calling Supabase signUp...');
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -204,12 +224,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     console.log('🚪 signOut called');
     try {
+      // Clean up auth state first
+      cleanupAuthState();
+      
       const { error } = await supabase.auth.signOut();
       if (error) {
         console.error('❌ Error signing out:', error);
         throw error;
       }
       console.log('✅ signOut successful');
+      
+      // Force page reload to ensure clean state
+      window.location.href = '/auth';
     } catch (error) {
       console.error('💥 Error in signOut function:', error);
       throw error;
