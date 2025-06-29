@@ -31,7 +31,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!user) return;
 
     try {
-      // Try to get from user_profiles first, fall back to users table
+      // Try to get from user_profiles with new unified system
       const { data: profile, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -44,7 +44,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
 
       if (profile) {
-        // Use new unified profile system if available
+        // Use new unified profile system
         const activeRole = profile.active_role || 'customer';
         setCurrentRole(activeRole);
         

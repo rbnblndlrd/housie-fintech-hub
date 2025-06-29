@@ -56,7 +56,7 @@ const AdminTestingDashboard = () => {
 
   const loadUserStats = async (userId: string) => {
     try {
-      // Try to load from unified user_profiles table with fallback for missing columns
+      // Load from unified user_profiles table first
       const { data: userProfile, error: profileError } = await supabase
         .from('user_profiles')
         .select(`
@@ -76,6 +76,7 @@ const AdminTestingDashboard = () => {
         console.error('User profile error:', profileError);
       }
 
+      // Fallback to user_credits for shop points if needed
       const { data: userCredits, error: creditsError } = await supabase
         .from('user_credits')
         .select('total_credits, shop_points')

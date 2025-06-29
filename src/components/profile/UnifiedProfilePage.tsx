@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +8,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import RoleSwitcher from './RoleSwitcher';
 import CustomerProfileView from './CustomerProfileView';
 import ProviderProfileView from './ProviderProfileView';
-import { Loader2 } from 'lucide-react';
 
 const UnifiedProfilePage = () => {
   const user = useUser();
@@ -82,6 +80,7 @@ const UnifiedProfilePage = () => {
         // Performance metrics (with defaults)
         total_bookings: data.total_bookings || 0,
         total_reviews: data.total_reviews_received || 0,
+        total_reviews_received: data.total_reviews_received || 0,
         average_rating: data.average_rating || 0,
         response_time_hours: data.response_time_hours,
         community_rating_points: data.community_rating_points || 0,
@@ -91,6 +90,7 @@ const UnifiedProfilePage = () => {
         courtesy_commendations: data.courtesy_commendations || 0,
         achievement_badges: data.achievement_badges || [],
         network_connections_count: data.network_connections_count || 0,
+        network_points: data.network_points || 0,
         
         // Privacy settings (with defaults)
         privacy_level: data.privacy_level || 'public',
