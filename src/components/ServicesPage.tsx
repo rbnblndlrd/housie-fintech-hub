@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import ServicesLayout from './ServicesLayout';
+import ServicesPageLayout from './ServicesPageLayout';
 import ServiceBookingWrapper from './ServiceBookingWrapper';
 import { useServices } from '@/hooks/useServices';
 import { Service } from '@/types/service';
@@ -14,13 +14,15 @@ const ServicesPage = () => {
   const [selectedSubcategory, setSelectedSubcategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('montreal');
   const [priceRange, setPriceRange] = useState<[number, number]>([10, 200]);
+  const [distance, setDistance] = useState(25);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   const filteredServicesList = useMemo(() => {
     return services.filter((service: Service) => {
       const matchesSearch = service.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            service.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           service.provider?.business_name?.toLowerCase().includes(searchTerm.toLowerCase());
+                           service.provider?.business_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           service.provider?.user?.full_name?.toLowerCase().includes(searchTerm.toLowerCase());
       
       const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
       const matchesSubcategory = selectedSubcategory === 'all' || service.subcategory === selectedSubcategory;
@@ -30,7 +32,7 @@ const ServicesPage = () => {
 
       return matchesSearch && matchesCategory && matchesSubcategory && matchesLocation && matchesPrice;
     });
-  }, [services, searchTerm, selectedCategory, selectedSubcategory, selectedLocation, priceRange]);
+  }, [services, searchTerm, selectedCategory, selectedSubcategory, selectedLocation, priceRange, distance]);
 
   const handleBookNow = (service: Service) => {
     setSelectedService(service);
@@ -46,8 +48,19 @@ const ServicesPage = () => {
 
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
-    // Reset subcategory when category changes
     setSelectedSubcategory('all');
+  };
+
+  const handleSearch = () => {
+    // Trigger search/filter logic here if needed
+    console.log('Search triggered with filters:', {
+      searchTerm,
+      selectedCategory,
+      selectedSubcategory,
+      selectedLocation,
+      priceRange,
+      distance
+    });
   };
 
   if (selectedService) {
@@ -61,7 +74,7 @@ const ServicesPage = () => {
   }
 
   return (
-    <ServicesLayout
+    <ServicesPageLayout
       services={services}
       filteredServices={filteredServicesList}
       isLoading={isLoading}
@@ -70,12 +83,15 @@ const ServicesPage = () => {
       selectedSubcategory={selectedSubcategory}
       selectedLocation={selectedLocation}
       priceRange={priceRange}
+      distance={distance}
       onSearchChange={setSearchTerm}
       onCategoryChange={handleCategoryChange}
       onSubcategoryChange={setSelectedSubcategory}
       onLocationChange={setSelectedLocation}
       onPriceRangeChange={setPriceRange}
+      onDistanceChange={setDistance}
       onBookNow={handleBookNow}
+      onSearch={handleSearch}
     />
   );
 };

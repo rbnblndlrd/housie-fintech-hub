@@ -12,39 +12,19 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ChevronRight, Check, Circle, Zap, Clock, AlertTriangle, Minus, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
-import { getUserDropdownItems, getProfileMenuItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
+import { getUserDropdownItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
 import NotificationIndicator from '@/components/NotificationIndicator';
+import UserMenuSubmenu from './UserMenuSubmenu';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
-  const { currentRole, switchRole } = useRoleSwitch();
+  const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
   const [providerStatus, setProviderStatus] = useState('Available');
-
-  console.log('👤 UserMenu render:', { user: !!user, currentRole });
-
-  const statusOptions = [
-    { value: 'Available', label: 'Available', icon: Zap, color: 'text-green-600' },
-    { value: 'Busy', label: 'Busy', icon: Clock, color: 'text-yellow-600' },
-    { value: 'Away', label: 'Away', icon: Minus, color: 'text-orange-600' },
-    { value: 'DnD', label: 'Do Not Disturb', icon: AlertTriangle, color: 'text-red-600' }
-  ];
-
-  const currentStatus = statusOptions.find(status => status.value === providerStatus);
-  const StatusIcon = currentStatus?.icon || Zap;
 
   const handleLogout = async () => {
     try {
@@ -59,41 +39,15 @@ const UserMenu = () => {
   const handleStatusChange = (newStatus: string) => {
     setProviderStatus(newStatus);
     console.log('Provider status changed to:', newStatus);
-    // TODO: Save status to database if needed
-  };
-
-  const handleRoleToggle = async () => {
-    const newRole = currentRole === 'provider' ? 'customer' : 'provider';
-    console.log('🔧 Switching role to:', newRole);
-    try {
-      await switchRole(newRole);
-      // Stay on dashboard if currently there, just refresh content
-      if (window.location.pathname === '/dashboard') {
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error('Failed to switch role:', error);
-    }
   };
 
   const handleDropdownAction = (item: NavigationItem) => {
-    console.log('🔧 Dropdown action clicked:', item.label, 'href:', item.href, 'action:', item.action);
-    
     if (item.action === 'logout') {
       handleLogout();
     } else if (item.href) {
       navigate(item.href);
     }
   };
-
-  // Memoize menu items
-  const userDropdownItems = useMemo(() => {
-    return getUserDropdownItems(user, currentRole);
-  }, [user, currentRole]);
-
-  const profileMenuItems = useMemo(() => {
-    return getProfileMenuItems(currentRole);
-  }, [currentRole]);
 
   const analyticsMenuItems = useMemo(() => {
     return getAnalyticsMenuItems();
@@ -108,151 +62,50 @@ const UserMenu = () => {
   return (
     <DropdownMenu key={`dropdown-${currentRole}-${Date.now()}`}>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full hover:bg-gray-800">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata?.profile_image || undefined} alt={user.user_metadata?.full_name || user.email} />
-            <AvatarFallback className="bg-gray-700 text-white">
-              {user.user_metadata?.full_name?.charAt(0)?.toUpperCase() || user.email?.charAt(0)?.toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+        <Button variant="ghost" className="relative h-auto p-2 rounded-lg hover:bg-gray-800">
+          <NotificationIndicator />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
-        <div className="flex items-center justify-between gap-2 p-2">
-          <div className="flex flex-col space-y-1 leading-none">
-            {user.user_metadata?.full_name && (
-              <p className="font-medium">{user.user_metadata.full_name}</p>
-            )}
-            {user.email && (
-              <p className="w-[200px] truncate text-sm text-muted-foreground">
-                {user.email}
-              </p>
-            )}
-          </div>
-          <div className="flex-shrink-0">
-            <NotificationIndicator />
-          </div>
+      <DropdownMenuContent className="w-80" align="end" forceMount>
+        {/* User Info with Submenu */}
+        <div className="p-2">
+          <UserMenuSubmenu
+            providerStatus={providerStatus}
+            onStatusChange={handleStatusChange}
+          />
         </div>
-
-        {/* Provider Status Selector - only show for providers */}
-        {currentRole === 'provider' && (
-          <>
-            <DropdownMenuSeparator />
-            <div className="px-2 py-1">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">Status</span>
-                <div className="flex items-center gap-1">
-                  <StatusIcon className={`h-3 w-3 ${currentStatus?.color}`} />
-                  <span className={`text-xs font-medium ${currentStatus?.color}`}>
-                    {currentStatus?.label}
-                  </span>
-                </div>
-              </div>
-              <Select value={providerStatus} onValueChange={handleStatusChange}>
-                <SelectTrigger className="h-8 w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map((status) => {
-                    const Icon = status.icon;
-                    return (
-                      <SelectItem key={status.value} value={status.value}>
-                        <div className="flex items-center gap-2">
-                          <Icon className={`h-3 w-3 ${status.color}`} />
-                          <span>{status.label}</span>
-                        </div>
-                      </SelectItem>
-                    );
-                  })}
-                </SelectContent>
-              </Select>
-            </div>
-          </>
-        )}
 
         <DropdownMenuSeparator />
         
-        {/* Map - First item in dropdown */}
+        {/* Main Navigation Items */}
         <DropdownMenuItem
           onClick={() => navigate("/emergency")}
           className="cursor-pointer"
         >
-          <span className="mr-2">🗺️</span>
+          <span className="mr-3">🗺️</span>
           <span className="flex-1">Interactive Map</span>
         </DropdownMenuItem>
 
-        {/* Dashboard - Updated to use unified dashboard */}
         <DropdownMenuItem
           onClick={() => navigate("/dashboard")}
           className="cursor-pointer"
         >
-          <span className="mr-2">📊</span>
+          <span className="mr-3">📊</span>
           <span className="flex-1">Dashboard</span>
         </DropdownMenuItem>
 
-        {/* AI Assistant */}
         <DropdownMenuItem
           onClick={() => navigate("/notifications")}
           className="cursor-pointer"
         >
-          <span className="mr-2">🤖</span>
+          <span className="mr-3">🤖</span>
           <span className="flex-1">AI Assistant</span>
         </DropdownMenuItem>
-
-        {/* Profile Submenu */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-2">👤</span>
-            <span>Profile</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {profileMenuItems.map((subItem, subIndex) => {
-              // Handle separators
-              if (subItem.separator) {
-                return <DropdownMenuSeparator key={`separator-${subIndex}`} />;
-              }
-              
-              // Skip settings as it's now moved to main menu
-              if (subItem.label === 'Settings') {
-                return null;
-              }
-              
-              // Skip the old role toggle items since we're replacing them
-              if (subItem.action && (subItem.action === 'toggle-customer' || subItem.action === 'toggle-provider')) {
-                return null;
-              }
-              
-              // Handle regular menu items
-              return (
-                <DropdownMenuItem
-                  key={`${subIndex}-${subItem.label}`}
-                  onClick={() => handleDropdownAction(subItem)}
-                  className="cursor-pointer"
-                >
-                  <span className="mr-2">{subItem.icon}</span>
-                  <span>{subItem.label}</span>
-                </DropdownMenuItem>
-              );
-            })}
-            
-            {/* New single role toggle button */}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={handleRoleToggle}
-              className="cursor-pointer bg-blue-50 text-blue-700 hover:bg-blue-100"
-            >
-              <RefreshCw className="mr-2 h-4 w-4" />
-              <span className="flex-1">
-                Switch to {currentRole === 'provider' ? 'Customer' : 'Provider'}
-              </span>
-            </DropdownMenuItem>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
 
         {/* Analytics Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-2">📊</span>
+            <span className="mr-3">📊</span>
             <span>Analytics</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -269,45 +122,10 @@ const UserMenu = () => {
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 
-        {/* Groups Submenu - New! */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-2">👥</span>
-            <span>Groups</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem
-              onClick={() => navigate("/dashboard")}
-              className="cursor-pointer"
-            >
-              <span className="mr-2">🏠</span>
-              <span>My Groups</span>
-            </DropdownMenuItem>
-            {currentRole === 'provider' && (
-              <DropdownMenuItem
-                onClick={() => navigate("/dashboard")}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">⚒️</span>
-                <span>Provider Crews</span>
-              </DropdownMenuItem>
-            )}
-            {currentRole === 'customer' && (
-              <DropdownMenuItem
-                onClick={() => navigate("/dashboard")}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">🛒</span>
-                <span>Customer Collectives</span>
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-
         {/* Loyalty & Rewards Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-2">🎯</span>
+            <span className="mr-3">🎯</span>
             <span>Loyalty & Rewards</span>
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -331,7 +149,7 @@ const UserMenu = () => {
           onClick={() => navigate("/profile")}
           className="cursor-pointer"
         >
-          <span className="mr-2">⚙️</span>
+          <span className="mr-3">⚙️</span>
           <span className="flex-1">Settings</span>
         </DropdownMenuItem>
 
@@ -340,7 +158,7 @@ const UserMenu = () => {
           onClick={handleLogout}
           className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
         >
-          <span className="mr-2">🚪</span>
+          <span className="mr-3">🚪</span>
           <span className="flex-1">Sign Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
