@@ -16,6 +16,7 @@ import BookingsPage from './pages/BookingsPage';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
 import DesktopAdminDashboard from './desktop/pages/DesktopAdminDashboard';
+import Services from './pages/Services';
 
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import PerformanceDashboard from './pages/PerformanceDashboard';
@@ -31,6 +32,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/services" element={<Services />} />
             <Route path="/desktop-admin" element={<DesktopAdminDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route
