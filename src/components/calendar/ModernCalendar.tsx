@@ -4,22 +4,25 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus } from 'lucide-react';
-import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, isToday } from 'date-fns';
+import { CalendarEvent } from '@/hooks/useUnifiedCalendarIntegration';
 
 interface ModernCalendarProps {
+  events?: CalendarEvent[];
+  loading?: boolean;
   onAddAppointment?: () => void;
   onEditEvent?: (eventId: string) => void;
   compact?: boolean;
 }
 
 const ModernCalendar: React.FC<ModernCalendarProps> = ({ 
+  events = [],
+  loading = false,
   onAddAppointment, 
   onEditEvent, 
   compact = false 
 }) => {
   const [currentDate, setCurrentDate] = useState(new Date());
-  const { allEvents, loading } = useUnifiedCalendarIntegration();
 
   const calendarDays = useMemo(() => {
     const monthStart = startOfMonth(currentDate);
@@ -31,7 +34,7 @@ const ModernCalendar: React.FC<ModernCalendarProps> = ({
   }, [currentDate]);
 
   const getEventsForDay = (date: Date) => {
-    return allEvents.filter(event => isSameDay(event.date, date));
+    return events.filter(event => isSameDay(event.date, date));
   };
 
   const previousMonth = () => {

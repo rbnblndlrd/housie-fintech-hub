@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -21,6 +22,8 @@ export const useUnifiedCalendarIntegration = () => {
   const [allEvents, setAllEvents] = useState<CalendarEvent[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const subscriptionRef = useRef<any>(null);
+  const isSubscribedRef = useRef(false);
 
   // Stable callback to fetch all calendar data
   const fetchAllCalendarData = useCallback(async () => {
@@ -63,7 +66,6 @@ export const useUnifiedCalendarIntegration = () => {
 
       if (customerBookingsError) {
         console.error('Error fetching customer bookings:', customerBookingsError);
-        // Don't throw, just log the error as bookings table might not exist or user might not have bookings
       }
 
       // Fetch provider bookings if user has a provider profile
@@ -161,7 +163,7 @@ export const useUnifiedCalendarIntegration = () => {
     } finally {
       setLoading(false);
     }
-  }, [user?.id]); // Only depend on user.id
+  }, [user?.id]);
 
   // Create appointment function
   const createAppointment = useCallback(async (newAppointment: Omit<CalendarEvent, 'id'>) => {
@@ -208,18 +210,32 @@ export const useUnifiedCalendarIntegration = () => {
     }
   }, [user?.id, fetchAllCalendarData]);
 
-  // Set up consolidated real-time subscription
+  // Cleanup function for subscriptions
+  const cleanupSubscription = useCallback(() => {
+    if (subscriptionRef.current) {
+      console.log('Cleaning up existing calendar subscription');
+      supabase.removeChannel(subscriptionRef.current);
+      subscriptionRef.current = null;
+      isSubscribedRef.current = false;
+    }
+  }, []);
+
+  // Set up real-time subscription
   useEffect(() => {
     if (!user?.id) {
       setAllEvents([]);
+      cleanupSubscription();
       return;
     }
+
+    // Cleanup any existing subscription first
+    cleanupSubscription();
 
     // Initial data fetch
     fetchAllCalendarData();
 
-    // Set up single real-time subscription for all calendar changes
-    const channelName = `unified-calendar-${user.id}-${Date.now()}`;
+    // Set up new subscription with stable channel name
+    const channelName = `unified-calendar-${user.id}`;
     console.log('Setting up unified calendar subscription:', channelName);
     
     const channel = supabase
@@ -251,13 +267,16 @@ export const useUnifiedCalendarIntegration = () => {
       )
       .subscribe((status) => {
         console.log('Unified calendar subscription status:', status);
+        if (status === 'SUBSCRIBED') {
+          isSubscribedRef.current = true;
+        }
       });
 
-    return () => {
-      console.log('Cleaning up unified calendar subscription');
-      supabase.removeChannel(channel);
-    };
-  }, [user?.id, fetchAllCalendarData]);
+    subscriptionRef.current = channel;
+
+    // Cleanup on unmount or user change
+    return cleanupSubscription;
+  }, [user?.id]); // Only depend on user.id, not fetchAllCalendarData
 
   return {
     allEvents,

@@ -122,6 +122,8 @@ const Calendar = () => {
             </div>
           ) : (
             <ModernCalendar
+              events={allEvents}
+              loading={loading}
               onAddAppointment={handleCalendarAddClick}
               onEditEvent={handleEditEvent}
             />
