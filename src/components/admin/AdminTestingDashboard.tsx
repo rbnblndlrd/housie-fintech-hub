@@ -211,7 +211,8 @@ const AdminTestingDashboard = () => {
         throw error;
       }
 
-      const result = data as AdminFunctionResult;
+      // Safely cast the result through unknown
+      const result = data as unknown as AdminFunctionResult;
       setLastResult(result);
 
       if (result.success) {
@@ -266,7 +267,8 @@ const AdminTestingDashboard = () => {
         throw error;
       }
 
-      const result = data as AdminFunctionResult;
+      // Safely cast the result through unknown
+      const result = data as unknown as AdminFunctionResult;
       setLastResult(result);
 
       if (result.success) {
