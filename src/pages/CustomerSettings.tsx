@@ -1,7 +1,8 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useToast } from '@/hooks/use-toast';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
+import { Slider } from "@/components/ui/slider";
 import { 
   ArrowLeft,
   User,
@@ -20,13 +22,15 @@ import {
   MapPin,
   Phone,
   Mail,
-  Save
+  Save,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 const CustomerSettings = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const { toast } = useToast();
 
   // Redirect if role changes to provider
@@ -45,7 +49,11 @@ const CustomerSettings = () => {
     emailNotifications: true,
     pushNotifications: true,
     marketingEmails: false,
-    smsNotifications: true
+    smsNotifications: true,
+    comfortZoneEnabled: true,
+    comfortZoneRadius: [500], // in meters
+    showOnMap: true,
+    publicVisibility: true
   });
 
   const handleSave = () => {
@@ -56,7 +64,7 @@ const CustomerSettings = () => {
     console.log('Saving settings:', settings);
   };
 
-  const handleInputChange = (field: string, value: string | boolean) => {
+  const handleInputChange = (field: string, value: string | boolean | number[]) => {
     setSettings(prev => ({
       ...prev,
       [field]: value
@@ -72,7 +80,7 @@ const CustomerSettings = () => {
           {/* Back Navigation */}
           <div className="mb-6">
             <Button
-              onClick={() => navigate('/customer-dashboard')}
+              onClick={() => navigate('/dashboard')}
               variant="outline"
               className="flex items-center gap-2"
             >
@@ -89,7 +97,7 @@ const CustomerSettings = () => {
               </div>
               <h1 className="text-4xl font-bold text-gray-900">Customer Settings</h1>
             </div>
-            <p className="text-gray-600">Manage your account preferences and settings</p>
+            <p className="text-gray-600">Manage your account preferences and privacy settings</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -153,6 +161,77 @@ const CustomerSettings = () => {
                       onChange={(e) => handleInputChange('bio', e.target.value)}
                       placeholder="Tell us a bit about yourself"
                       rows={3}
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Comfort Zone Settings */}
+              <Card className="fintech-card mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MapPin className="h-5 w-5" />
+                    Comfort Zone & Privacy
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Enable Comfort Zone</h4>
+                      <p className="text-sm text-gray-600">Randomize your exact location on the map for privacy</p>
+                    </div>
+                    <Switch
+                      checked={settings.comfortZoneEnabled}
+                      onCheckedChange={(checked) => handleInputChange('comfortZoneEnabled', checked)}
+                    />
+                  </div>
+
+                  {settings.comfortZoneEnabled && (
+                    <>
+                      <Separator />
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <Label>Privacy Radius</Label>
+                          <span className="text-sm text-gray-600">{settings.comfortZoneRadius[0]}m</span>
+                        </div>
+                        <Slider
+                          value={settings.comfortZoneRadius}
+                          onValueChange={(value) => handleInputChange('comfortZoneRadius', value)}
+                          max={2000}
+                          min={100}
+                          step={50}
+                          className="w-full"
+                        />
+                        <p className="text-xs text-gray-500 mt-1">
+                          Your exact location will be randomized within this radius when shown on public maps
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Show Jobs on Map</h4>
+                      <p className="text-sm text-gray-600">Display your service requests on the public map</p>
+                    </div>
+                    <Switch
+                      checked={settings.showOnMap}
+                      onCheckedChange={(checked) => handleInputChange('showOnMap', checked)}
+                    />
+                  </div>
+                  
+                  <Separator />
+                  
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium">Public Profile Visibility</h4>
+                      <p className="text-sm text-gray-600">Allow other users to view your public profile</p>
+                    </div>
+                    <Switch
+                      checked={settings.publicVisibility}
+                      onCheckedChange={(checked) => handleInputChange('publicVisibility', checked)}
                     />
                   </div>
                 </CardContent>
@@ -230,7 +309,7 @@ const CustomerSettings = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => navigate('/customer-profile')}
+                    onClick={() => navigate('/profile')}
                   >
                     <User className="h-4 w-4 mr-2" />
                     View Public Profile
@@ -239,7 +318,7 @@ const CustomerSettings = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => navigate('/customer-bookings')}
+                    onClick={() => navigate('/dashboard')}
                   >
                     <CreditCard className="h-4 w-4 mr-2" />
                     Payment Methods
@@ -248,7 +327,7 @@ const CustomerSettings = () => {
                   <Button 
                     variant="outline" 
                     className="w-full justify-start"
-                    onClick={() => navigate('/customer-bookings')}
+                    onClick={() => navigate('/dashboard')}
                   >
                     <Shield className="h-4 w-4 mr-2" />
                     Privacy & Security
@@ -260,7 +339,7 @@ const CustomerSettings = () => {
                     onClick={() => navigate('/services')}
                   >
                     <MapPin className="h-4 w-4 mr-2" />
-                    Location Settings
+                    Find Services
                   </Button>
                 </CardContent>
               </Card>

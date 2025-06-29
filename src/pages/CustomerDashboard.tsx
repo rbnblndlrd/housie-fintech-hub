@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -578,9 +579,10 @@ const CustomerDashboard = () => {
                       Settings
                     </Button>
                     
-                    {/* Role Toggle - only show if user has multiple roles */}
+                    {/* Role Toggle - always show if user has multiple roles */}
                     {availableRoles.length > 1 && (
-                      <div className="pt-2">
+                      <div className="pt-4 border-t">
+                        <h4 className="text-sm font-medium text-gray-700 mb-3">Switch Role</h4>
                         <DashboardRoleToggle />
                       </div>
                     )}
