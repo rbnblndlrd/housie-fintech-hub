@@ -28,7 +28,7 @@ const PerformanceDashboard = () => {
     },
     { 
       title: "Completion Rate", 
-      value: `${((data.completedBookings / Math.max(data.totalBookings, 1)) * 100).toFixed(1)}%`, 
+      value: `${data.completionRate.toFixed(1)}%`, 
       change: "+2.1% vs last month",
       icon: Target,
       trend: 'up'

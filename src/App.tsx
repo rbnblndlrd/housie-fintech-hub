@@ -1,14 +1,15 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from './contexts/AuthContext';
 import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
-import ProtectedRoute from './components/ProtectedRoute';
+import RoleProtectedRoute from './components/RoleProtectedRoute';
 import UnifiedDashboard from './pages/UnifiedDashboard';
-import InteractiveMap from './pages/InteractiveMap';
+import InteractiveMapPage from './pages/InteractiveMapPage';
 import Social from './pages/Social';
 import Profile from './pages/Profile';
-import CalendarPage from './pages/CalendarPage';
+import Calendar from './pages/Calendar';
 import KanbanBoard from './pages/KanbanBoard';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
@@ -33,49 +34,49 @@ function App() {
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
+                <RoleProtectedRoute>
                   <UnifiedDashboard />
-                </ProtectedRoute>
+                </RoleProtectedRoute>
               }
             />
             <Route
               path="/interactive-map"
               element={
-                <ProtectedRoute>
-                  <InteractiveMap />
-                </ProtectedRoute>
+                <RoleProtectedRoute>
+                  <InteractiveMapPage />
+                </RoleProtectedRoute>
               }
             />
             <Route
               path="/social"
               element={
-                <ProtectedRoute>
+                <RoleProtectedRoute>
                   <Social />
-                </ProtectedRoute>
+                </RoleProtectedRoute>
               }
             />
             <Route
               path="/profile"
               element={
-                <ProtectedRoute>
+                <RoleProtectedRoute>
                   <Profile />
-                </ProtectedRoute>
+                </RoleProtectedRoute>
               }
             />
             <Route
               path="/calendar"
               element={
-                <ProtectedRoute>
-                  <CalendarPage />
-                </ProtectedRoute>
+                <RoleProtectedRoute>
+                  <Calendar />
+                </RoleProtectedRoute>
               }
             />
             <Route
               path="/kanban"
               element={
-                <ProtectedRoute>
+                <RoleProtectedRoute>
                   <KanbanBoard />
-                </ProtectedRoute>
+                </RoleProtectedRoute>
               }
             />
             <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
