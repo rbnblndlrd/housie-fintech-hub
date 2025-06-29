@@ -19,16 +19,12 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with extended background for seamless transition */}
+      {/* Hero Section with seamless gradient background */}
       <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
-        <div className="relative">
-          <HeroSection />
-          {/* Seamless gradient extension from hero to next section */}
-          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-black/10 pointer-events-none"></div>
-        </div>
+        <HeroSection />
       </ErrorBoundary>
       
-      {/* User Type Selector - clean positioning */}
+      {/* User Type Selector - perfectly blended gradient continuation */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
         <UserTypeSelector 
           onUserTypeSelect={handleUserTypeSelect}
@@ -36,14 +32,16 @@ const Index = () => {
         />
       </ErrorBoundary>
       
-      {/* Demo Section - seamless background flow */}
+      {/* Demo Section - continuing the gradient flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
-        <DemoSection />
+        <div className="bg-gradient-to-b from-slate-500/15 to-transparent">
+          <DemoSection />
+        </div>
       </ErrorBoundary>
 
-      {/* Pricing Section - seamless background flow */}
+      {/* Pricing Section - final gradient fade */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing section loading...</div>}>
-        <div id="pricing-section">
+        <div id="pricing-section" className="bg-gradient-to-b from-transparent to-slate-100/50">
           <PricingSection />
         </div>
       </ErrorBoundary>

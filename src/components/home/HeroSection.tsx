@@ -5,9 +5,9 @@ import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
-    <section className="py-20 px-2 sm:px-4 relative overflow-hidden">
-      {/* Additional dark overlay for text readability */}
-      <div className="absolute inset-0 bg-black/20"></div>
+    <section className="py-20 px-2 sm:px-4 relative overflow-hidden bg-gradient-to-b from-slate-900 via-slate-800 to-slate-700/80">
+      {/* Enhanced gradient overlay for depth and blending */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-transparent"></div>
       
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh]">

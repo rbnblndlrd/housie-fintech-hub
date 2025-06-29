@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -58,9 +59,9 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
   const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <section className="py-16 lg:py-24 px-2 sm:px-4 relative">
-      {/* Seamless background that blends with hero section gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/5 to-transparent"></div>
+    <section className="py-16 lg:py-24 px-2 sm:px-4 relative bg-gradient-to-b from-slate-700/60 via-slate-600/40 to-slate-500/20">
+      {/* Fine-tuned gradient overlay for perfect blending */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/5 to-black/10"></div>
       
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="text-center mb-16 lg:mb-20">
