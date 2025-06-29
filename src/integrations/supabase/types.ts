@@ -2585,7 +2585,7 @@ export type Database = {
     Functions: {
       admin_add_commendation: {
         Args: { p_provider_user_id: string; p_commendation_type: string }
-        Returns: string
+        Returns: Json
       }
       admin_create_test_review: {
         Args: {
@@ -2594,7 +2594,7 @@ export type Database = {
           p_comment?: string
           p_add_commendations?: boolean
         }
-        Returns: string
+        Returns: Json
       }
       award_community_rating_points: {
         Args: { p_user_id: string; p_points: number; p_reason: string }
@@ -2629,14 +2629,6 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
-      emergency_disable_claude: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      enable_claude_access: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }
         Returns: unknown
@@ -2644,10 +2636,6 @@ export type Database = {
       get_current_daily_spend: {
         Args: Record<PropertyKey, never>
         Returns: number
-      }
-      get_daily_claude_stats: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
       }
       get_emergency_status: {
         Args: Record<PropertyKey, never>
