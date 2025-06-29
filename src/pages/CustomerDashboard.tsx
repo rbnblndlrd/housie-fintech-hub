@@ -1,12 +1,13 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useCustomerData } from '@/hooks/useCustomerData';
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
+import DashboardRoleToggle from "@/components/dashboard/DashboardRoleToggle";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -56,6 +57,7 @@ interface Booking {
 const CustomerDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { availableRoles } = useRoleSwitch();
   const { stats, loading, error, refreshData } = useCustomerData(user?.id);
   const { toast } = useToast();
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -575,6 +577,13 @@ const CustomerDashboard = () => {
                       <Settings className="h-4 w-4 mr-2" />
                       Settings
                     </Button>
+                    
+                    {/* Role Toggle - only show if user has multiple roles */}
+                    {availableRoles.length > 1 && (
+                      <div className="pt-2">
+                        <DashboardRoleToggle />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
