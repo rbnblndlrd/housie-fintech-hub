@@ -17,10 +17,11 @@ import {
   TrendingUp, 
   MapPin, 
   Clock,
-  Building2,
   UserCheck,
   Heart,
-  Award
+  Award,
+  UsersIcon,
+  Plus
 } from 'lucide-react';
 import CommunityRatingDisplay from '@/components/provider/CommunityRatingDisplay';
 import ShopPointsWidget from '@/components/admin/ShopPointsWidget';
@@ -42,11 +43,13 @@ const UnifiedDashboard = () => {
     completedBookings: 0
   });
   const [recentBookings, setRecentBookings] = useState([]);
+  const [userGroups, setUserGroups] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user) {
       loadDashboardData();
+      loadUserGroups();
     }
   }, [user, currentRole]);
 
@@ -54,7 +57,7 @@ const UnifiedDashboard = () => {
     try {
       setLoading(true);
       
-      if (currentRole === 'provider' || currentRole === 'commercial') {
+      if (currentRole === 'provider') {
         await loadProviderData();
       } else {
         await loadCustomerData();
@@ -69,6 +72,12 @@ const UnifiedDashboard = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadUserGroups = async () => {
+    // TODO: Load user's groups when groups table is created
+    // This is a placeholder for now
+    setUserGroups([]);
   };
 
   const loadProviderData = async () => {
@@ -197,10 +206,10 @@ const UnifiedDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Favorites</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.favoriteProviders}</p>
+                <p className="text-sm font-medium text-gray-600">Groups</p>
+                <p className="text-2xl font-bold text-gray-900">{userGroups.length}</p>
               </div>
-              <Heart className="h-8 w-8 text-red-600" />
+              <UsersIcon className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -208,9 +217,10 @@ const UnifiedDashboard = () => {
 
       {/* Customer Content Tabs */}
       <Tabs defaultValue="bookings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="bookings">Recent Bookings</TabsTrigger>
-          <TabsTrigger value="favorites">Favorite Providers</TabsTrigger>
+          <TabsTrigger value="groups">My Groups</TabsTrigger>
+          <TabsTrigger value="collectives">Customer Collectives</TabsTrigger>
           <TabsTrigger value="quick-actions">Quick Actions</TabsTrigger>
         </TabsList>
 
@@ -246,13 +256,34 @@ const UnifiedDashboard = () => {
           </Card>
         </TabsContent>
 
-        <TabsContent value="favorites">
+        <TabsContent value="groups">
           <Card className="fintech-card">
             <CardHeader>
-              <CardTitle>Favorite Providers</CardTitle>
+              <CardTitle className="flex items-center justify-between">
+                My Groups
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Group
+                </Button>
+              </CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-gray-500 text-center py-8">No favorite providers yet</p>
+              <p className="text-gray-500 text-center py-8">
+                Groups system coming soon! Join customer collectives to get bulk discounts.
+              </p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="collectives">
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle>Customer Collectives</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-500 text-center py-8">
+                Join collectives to get bulk discounts on services!
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -278,7 +309,7 @@ const UnifiedDashboard = () => {
                 </Button>
                 <Button className="h-20 flex flex-col gap-2" variant="outline">
                   <Users className="h-6 w-6" />
-                  Support
+                  Join Collective
                 </Button>
               </div>
             </CardContent>
@@ -332,10 +363,10 @@ const UnifiedDashboard = () => {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Rating</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.averageRating.toFixed(1)}</p>
+                <p className="text-sm font-medium text-gray-600">Groups</p>
+                <p className="text-2xl font-bold text-gray-900">{userGroups.length}</p>
               </div>
-              <Star className="h-8 w-8 text-yellow-600" />
+              <UsersIcon className="h-8 w-8 text-purple-600" />
             </div>
           </CardContent>
         </Card>
@@ -345,9 +376,9 @@ const UnifiedDashboard = () => {
       <Tabs defaultValue="jobs" className="space-y-6">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="jobs">Job Management</TabsTrigger>
+          <TabsTrigger value="crews">Provider Crews</TabsTrigger>
           <TabsTrigger value="earnings">Earnings</TabsTrigger>
           <TabsTrigger value="community">Community</TabsTrigger>
-          <TabsTrigger value="crew">Crew Coordination</TabsTrigger>
         </TabsList>
 
         <TabsContent value="jobs">
@@ -373,6 +404,25 @@ const UnifiedDashboard = () => {
               ) : (
                 <p className="text-gray-500 text-center py-8">No recent jobs</p>
               )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="crews">
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Provider Crews
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Crew
+                </Button>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-gray-500 text-center py-8">
+                Create crews to tackle big opportunities together! $10/month license to create crews.
+              </p>
             </CardContent>
           </Card>
         </TabsContent>
@@ -409,114 +459,6 @@ const UnifiedDashboard = () => {
         <TabsContent value="community">
           {user && <CommunityRatingDisplay userId={user.id} />}
         </TabsContent>
-
-        <TabsContent value="crew">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Crew Coordination</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">Crew management features coming soon...</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-
-  const renderCommercialView = () => (
-    <div className="space-y-6">
-      {/* Commercial Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Locations</p>
-                <p className="text-2xl font-bold text-gray-900">3</p>
-              </div>
-              <Building2 className="h-8 w-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Team Members</p>
-                <p className="text-2xl font-bold text-gray-900">12</p>
-              </div>
-              <Users className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">${stats.monthlyRevenue * 3}</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Performance</p>
-                <p className="text-2xl font-bold text-gray-900">A+</p>
-              </div>
-              <Award className="h-8 w-8 text-yellow-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Commercial Content Tabs */}
-      <Tabs defaultValue="locations" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="locations">Multi-Location Management</TabsTrigger>
-          <TabsTrigger value="team">Team Oversight</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="locations">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Location Performance</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">Multi-location management features coming soon...</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="team">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Team Overview</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">Team oversight features coming soon...</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="analytics">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Business Analytics</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">Advanced analytics coming soon...</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
     </div>
   );
@@ -547,16 +489,15 @@ const UnifiedDashboard = () => {
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
             <p className="text-gray-600 mt-2">
-              {currentRole === 'customer' && 'Manage your bookings and discover services'}
-              {currentRole === 'provider' && 'Manage your services and track performance'}
-              {currentRole === 'commercial' && 'Oversee your business operations'}
+              {currentRole === 'customer' && 'Manage your bookings and join customer collectives'}
+              {currentRole === 'provider' && 'Manage your services and provider crews'}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Badge variant="secondary" className="capitalize">
               {currentRole}
             </Badge>
-            {shopPointsData && currentRole !== 'customer' && (
+            {shopPointsData && currentRole === 'provider' && (
               <Badge className="bg-purple-100 text-purple-800 border-purple-200">
                 {shopPointsData.shopPoints} Shop Points
               </Badge>
@@ -567,7 +508,6 @@ const UnifiedDashboard = () => {
         {/* Dynamic content based on active role */}
         {currentRole === 'customer' && renderCustomerView()}
         {currentRole === 'provider' && renderProviderView()}
-        {currentRole === 'commercial' && renderCommercialView()}
       </div>
     </div>
   );

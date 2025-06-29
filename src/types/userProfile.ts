@@ -12,13 +12,13 @@ export interface UnifiedUserProfile {
   company?: string;
   profession?: string;
   
-  // Role capabilities - these are the new columns we added
+  // Role capabilities - simplified to customer/provider only
   can_provide_services?: boolean;
   can_book_services?: boolean;
-  active_role?: 'customer' | 'provider' | 'commercial';
-  profile_type?: 'individual' | 'business' | 'commercial';
+  active_role?: 'customer' | 'provider';
+  profile_type?: 'individual' | 'business';
   
-  // Provider-specific fields - these are the new columns we added
+  // Provider-specific fields
   business_name?: string;
   description?: string;
   years_experience?: number;
@@ -36,10 +36,10 @@ export interface UnifiedUserProfile {
   rbq_license_number?: string;
   ccq_license_number?: string;
   
-  // Performance metrics - these are the new columns we added
+  // Performance metrics
   total_bookings?: number;
   total_reviews?: number;
-  total_reviews_received?: number; // This maps to total_reviews in the DB
+  total_reviews_received?: number;
   average_rating?: number;
   response_time_hours?: number;
   community_rating_points?: number;
@@ -62,9 +62,49 @@ export interface UnifiedUserProfile {
 }
 
 export interface RoleSwitchContextType {
-  currentRole: 'customer' | 'provider' | 'commercial';
+  currentRole: 'customer' | 'provider';
   availableRoles: string[];
-  switchRole: (role: 'customer' | 'provider' | 'commercial') => Promise<void>;
+  switchRole: (role: 'customer' | 'provider') => Promise<void>;
   canSwitchToProvider: boolean;
-  canSwitchToCommercial: boolean;
+}
+
+// New Group System Types
+export interface UserGroup {
+  id: string;
+  name: string;
+  type: 'crew' | 'collective';
+  leader_id: string;
+  description?: string;
+  active: boolean;
+  member_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface GroupMembership {
+  id: string;
+  group_id: string;
+  user_id: string;
+  role: 'leader' | 'member';
+  joined_at: string;
+}
+
+export interface GroupOpportunity {
+  id: string;
+  group_id: string;
+  title: string;
+  description: string;
+  budget: number;
+  status: 'open' | 'in_progress' | 'completed';
+  created_by: string;
+  created_at: string;
+}
+
+export interface GroupLicense {
+  id: string;
+  user_id: string;
+  license_type: 'group_creator';
+  active: boolean;
+  expires_at: string;
+  created_at: string;
 }

@@ -269,6 +269,41 @@ const UserMenu = () => {
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 
+        {/* Groups Submenu - New! */}
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="cursor-pointer">
+            <span className="mr-2">👥</span>
+            <span>Groups</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem
+              onClick={() => navigate("/dashboard")}
+              className="cursor-pointer"
+            >
+              <span className="mr-2">🏠</span>
+              <span>My Groups</span>
+            </DropdownMenuItem>
+            {currentRole === 'provider' && (
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard")}
+                className="cursor-pointer"
+              >
+                <span className="mr-2">⚒️</span>
+                <span>Provider Crews</span>
+              </DropdownMenuItem>
+            )}
+            {currentRole === 'customer' && (
+              <DropdownMenuItem
+                onClick={() => navigate("/dashboard")}
+                className="cursor-pointer"
+              >
+                <span className="mr-2">🛒</span>
+                <span>Customer Collectives</span>
+              </DropdownMenuItem>
+            )}
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
         {/* Loyalty & Rewards Submenu */}
         <DropdownMenuSub>
           <DropdownMenuSubTrigger className="cursor-pointer">

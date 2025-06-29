@@ -16,10 +16,9 @@ export const useRoleSwitch = () => {
 
 export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const user = useUser();
-  const [currentRole, setCurrentRole] = useState<'customer' | 'provider' | 'commercial'>('customer');
+  const [currentRole, setCurrentRole] = useState<'customer' | 'provider'>('customer');
   const [availableRoles, setAvailableRoles] = useState<string[]>(['customer']);
   const [canSwitchToProvider, setCanSwitchToProvider] = useState(false);
-  const [canSwitchToCommercial, setCanSwitchToCommercial] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -31,7 +30,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!user) return;
 
     try {
-      // Try to get from user_profiles with new unified system
+      // Try to get from user_profiles with simplified system
       const { data: profile, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -44,18 +43,14 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
 
       if (profile) {
-        // Use new unified profile system with proper type casting
-        const activeRole = (profile.active_role as 'customer' | 'provider' | 'commercial') || 'customer';
+        // Use simplified profile system with only customer/provider
+        const activeRole = (profile.active_role as 'customer' | 'provider') || 'customer';
         setCurrentRole(activeRole);
         
         const roles = ['customer'];
         if (profile.can_provide_services) {
           roles.push('provider');
           setCanSwitchToProvider(true);
-        }
-        if (profile.profile_type === 'commercial') {
-          roles.push('commercial');
-          setCanSwitchToCommercial(true);
         }
         
         setAvailableRoles(roles);
@@ -81,7 +76,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
-  const switchRole = async (newRole: 'customer' | 'provider' | 'commercial') => {
+  const switchRole = async (newRole: 'customer' | 'provider') => {
     if (!user || !availableRoles.includes(newRole)) {
       throw new Error('Cannot switch to this role');
     }
@@ -106,8 +101,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       currentRole,
       availableRoles,
       switchRole,
-      canSwitchToProvider,
-      canSwitchToCommercial
+      canSwitchToProvider
     }}>
       {children}
     </RoleSwitchContext.Provider>

@@ -48,12 +48,9 @@ export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provid
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
 
-  // Dynamic dashboard link based on current role
-  const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
-
   return [
-    { label: "Map", href: "/interactive-map", icon: "🗺️" },
-    { label: "Dashboard", href: dashboardHref, icon: "📊" },
+    { label: "Map", href: "/emergency", icon: "🗺️" },
+    { label: "Dashboard", href: "/dashboard", icon: "📊" },
     { label: "AI Assistant", href: "/notifications", icon: "🤖" },
     { separator: true, label: "", href: "", icon: "" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
@@ -61,20 +58,12 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
 };
 
 export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
-  // Dynamic profile link based on current role
-  const profileHref = currentRole === 'provider' ? '/provider-profile' : '/customer-profile';
-
-  // Dynamic settings link based on current role
-  const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-settings';
-
   return [
-    { label: "Profile", href: profileHref, icon: "👤" },
-    { label: "Settings", href: settingsHref, icon: "⚙️" },
+    { label: "Profile", href: "/profile", icon: "👤" },
+    { label: "Settings", href: "/profile", icon: "⚙️" },
     { label: "Payment Methods", href: "/payment-methods", icon: "💳" },
-    { label: "Verification Status", href: "/provider-profile", icon: "✅" },
-    { separator: true, label: "", href: "", icon: "" },
-    { label: "Switch to Customer", href: "", icon: "👥", action: "toggle-customer", active: currentRole === 'customer' },
-    { label: "Switch to Provider", href: "", icon: "💼", action: "toggle-provider", active: currentRole === 'provider' }
+    { label: "Verification Status", href: "/profile", icon: "✅" },
+    { separator: true, label: "", href: "", icon: "" }
   ];
 };
 
