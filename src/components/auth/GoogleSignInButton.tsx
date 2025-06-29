@@ -13,12 +13,30 @@ const GoogleSignInButton: React.FC = () => {
     try {
       setIsLoading(true);
       
-      console.log('🚀 Starting Google OAuth flow...');
+      console.log('🚀 Starting Google OAuth flow with popup configuration...');
+      
+      // Check if popups are blocked
+      const testPopup = window.open('', '_blank', 'width=1,height=1');
+      if (!testPopup || testPopup.closed) {
+        toast({
+          title: "Popup Blocked",
+          description: "Please allow popups for this site and try again.",
+          variant: "destructive",
+        });
+        setIsLoading(false);
+        return;
+      }
+      testPopup.close();
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'select_account',
+          },
+          skipBrowserRedirect: false,
         },
       });
 
@@ -34,6 +52,8 @@ const GoogleSignInButton: React.FC = () => {
           errorMessage = 'Access was denied. Please try signing in again.';
         } else if (error.message.includes('domain')) {
           errorMessage = 'Domain configuration issue. Please contact support.';
+        } else if (error.message.includes('unauthorized')) {
+          errorMessage = 'Google Sign-In configuration error. Please contact support.';
         }
         
         toast({
@@ -45,8 +65,21 @@ const GoogleSignInButton: React.FC = () => {
         return;
       }
 
-      // OAuth initiated successfully - popup should open
-      console.log('✅ Google OAuth popup should be opening...');
+      // OAuth initiated successfully - redirect should happen
+      console.log('✅ Google OAuth initiated successfully, redirecting...');
+      
+      // Add a timeout to detect if redirect doesn't happen
+      setTimeout(() => {
+        if (window.location.pathname === '/auth') {
+          console.log('⚠️  Still on auth page after 5 seconds, something may be wrong');
+          toast({
+            title: "Sign-In Taking Long",
+            description: "If nothing happens, please try again or check if popups are blocked.",
+            variant: "default",
+          });
+          setIsLoading(false);
+        }
+      }, 5000);
       
     } catch (error) {
       console.error('💥 Unexpected error during Google Sign-In:', error);
@@ -55,7 +88,6 @@ const GoogleSignInButton: React.FC = () => {
         description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -89,7 +121,7 @@ const GoogleSignInButton: React.FC = () => {
           />
         </svg>
       )}
-      {isLoading ? 'Opening Google...' : 'Continue with Google'}
+      {isLoading ? 'Opening Google Sign-In...' : 'Continue with Google'}
     </Button>
   );
 };
