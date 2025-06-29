@@ -137,11 +137,11 @@ const UnifiedHeroSection = ({ onUserTypeSelect, selectedUserType }: UnifiedHeroS
   };
 
   return (
-    <section className="min-h-screen py-20 px-2 sm:px-4 relative overflow-hidden">
+    <section className="min-h-screen w-full py-20 px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-0 relative overflow-hidden">
       {/* Professional matte olive/forest green gradient background */}
       <div className="absolute inset-0 bg-gradient-to-b from-stone-800 via-green-900 to-stone-900"></div>
       
-      <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative space-y-32">
+      <div className="w-full max-w-none 2xl:max-w-[1400px] 2xl:mx-auto relative space-y-32">
         
         {/* Hero Content Section */}
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh]">
