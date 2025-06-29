@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -7,13 +6,37 @@ import UserMenu from '@/components/header/UserMenu';
 import HeaderActions from '@/components/header/HeaderActions';
 import NotificationBell from '@/components/NotificationBell';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { getNavigationItems } from '@/utils/navigationConfig';
+import { Home } from '@heroicons/react/24/outline';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Header = () => {
   const { user } = useAuth();
-  const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
+      
+      navigate('/auth');
+    } catch (error) {
+      console.error('Sign-out error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Get navigation items based on user and current role
   const navigationItems = getNavigationItems(user, currentRole);
@@ -39,7 +62,7 @@ const Header = () => {
 
   return (
     <header 
-      className="bg-gray-900 text-white shadow-lg fixed top-0 left-0 right-0 z-50" 
+      className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
       style={{ 
         position: 'fixed', 
         top: 0, 
@@ -49,42 +72,52 @@ const Header = () => {
         pointerEvents: 'auto'
       }}
     >
-      <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Left side - Logo and Navigation */}
-          <div className="flex items-center space-x-8" style={{ pointerEvents: 'auto' }}>
-            <div 
-              className="flex items-center space-x-2 cursor-pointer" 
-              onClick={handleLogoClick}
-              style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-            >
-              <img 
-                src="/lovable-uploads/bf9b9088-19df-408a-89eb-3638be9d8ccf.png" 
-                alt="HOUSIE" 
-                className="h-8 w-auto" 
-              />
-            </div>
-            <div style={{ pointerEvents: 'auto' }}>
-              <DynamicNavigation items={navigationItems} />
-            </div>
-          </div>
-
-          {/* Right side - Actions, Notifications, and User Menu */}
-          <div className="flex items-center space-x-4" style={{ pointerEvents: 'auto' }}>
-            <HeaderActions />
-            {user ? (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <Link to="/" className="flex items-center space-x-2">
+            <Home className="h-8 w-8 text-blue-600" />
+            <span className="text-xl font-bold text-gray-900">HOUSIE</span>
+          </Link>
+          
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link to="/services" className="text-gray-600 hover:text-gray-900 transition-colors">
+              Services
+            </Link>
+            {user && (
               <>
-                <NotificationBell />
-                <UserMenu />
+                <Link to="/calendar" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Calendar
+                </Link>
+                <Link to="/messages" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Messages
+                </Link>
+                <Link to="/customer-dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
+                  Dashboard
+                </Link>
               </>
+            )}
+          </nav>
+
+          <div className="flex items-center space-x-4">
+            {user ? (
+              <div className="flex items-center space-x-4">
+                <span className="hidden sm:inline text-sm text-gray-600">
+                  Welcome, {user.email?.split('@')[0]}
+                </span>
+                <Button 
+                  onClick={handleSignOut}
+                  variant="outline"
+                  size="sm"
+                >
+                  Sign Out
+                </Button>
+              </div>
             ) : (
-              <Button 
-                onClick={() => navigate('/login')}
-                className="bg-blue-600 hover:bg-blue-700 text-white"
-                style={{ pointerEvents: 'auto', cursor: 'pointer' }}
-              >
-                Sign In
-              </Button>
+              <Link to="/auth">
+                <Button className="fintech-button-primary">
+                  Sign In
+                </Button>
+              </Link>
             )}
           </div>
         </div>

@@ -100,6 +100,15 @@ const Calendar = () => {
         <div className="max-w-7xl mx-auto">
           <CalendarHeader />
           
+          {/* Google Calendar Integration - Only configurable here */}
+          <div className="mb-6">
+            <GoogleCalendarIntegration 
+              onSync={refreshData}
+              onImport={refreshData}
+              onExport={() => console.log('Exporting events...')}
+            />
+          </div>
+          
           <div className="mb-6">
             <AddAppointmentDialog
               selectedDate={selectedDate}
