@@ -45,6 +45,7 @@ function App() {
                     <Route path="/dashboard" element={<UnifiedDashboard />} />
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/emergency" element={<InteractiveMapPage />} />
+                    <Route path="/interactive-map" element={<InteractiveMapPage />} />
                     <Route path="/admin/users" element={<UnifiedDashboard />} />
                     <Route path="/admin/testing" element={<AdminTestingDashboard />} />
                     <Route path="/admin/fraud" element={<AdminDashboard />} />

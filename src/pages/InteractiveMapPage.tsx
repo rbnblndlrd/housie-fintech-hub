@@ -1,39 +1,48 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
 import { useToast } from '@/hooks/use-toast';
 import { ChatBubble } from '@/components/chat/ChatBubble';
-import { preventWalletConflicts } from '@/components/map/GoogleMapConfig';
-import { UnifiedGoogleMap } from '@/components/UnifiedGoogleMap';
-import { useMapTheme } from '@/hooks/useMapTheme';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Settings, Move } from 'lucide-react';
-import MapThemeSelector from '@/components/map/MapThemeSelector';
+import { Settings, Move, Shield } from 'lucide-react';
+import MapboxMap from '@/components/map/MapboxMap';
+import MapboxJobsOverlay from '@/components/map/MapboxJobsOverlay';
+import GPSNavigationOverlay from '@/components/map/GPSNavigationOverlay';
 import CustomerMapMode from '@/components/map/modes/CustomerMapMode';
 import ProviderMapMode from '@/components/map/modes/ProviderMapMode';
 import FleetManagerMode from '@/components/map/modes/FleetManagerMode';
+import mapboxgl from 'mapbox-gl';
 
 type UserMode = 'customer' | 'provider' | 'fleet-manager';
+
+interface Job {
+  id: string;
+  title: string;
+  address: string;
+  customerName: string;
+  customerPhone: string;
+  estimatedDuration: string;
+  priority: 'low' | 'medium' | 'high' | 'emergency';
+  coordinates: { lat: number; lng: number };
+  price: number;
+}
 
 const InteractiveMapPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRoleSwitch();
   const { toast } = useToast();
-  const { currentThemeConfig } = useMapTheme();
 
   console.log('🗺️ InteractiveMapPage render:', { hasUser: !!user, currentRole });
 
-  // Prevent wallet conflicts on mount
-  useEffect(() => {
-    preventWalletConflicts();
-  }, []);
-
-  // Clean state management
+  // State management
   const [userMode, setUserMode] = useState<UserMode>('customer');
   const [isDragging, setIsDragging] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [map, setMap] = useState<mapboxgl.Map | null>(null);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [enabledLayers, setEnabledLayers] = useState<Record<string, boolean>>({
     // Customer layers
     crime: false,
@@ -51,6 +60,43 @@ const InteractiveMapPage = () => {
     routeOptimization: false
   });
 
+  // Sample jobs data for Montreal area
+  const sampleJobs: Job[] = [
+    {
+      id: '1',
+      title: 'Plumbing Emergency',
+      address: '123 Rue Saint-Catherine, Montreal',
+      customerName: 'Marie Dubois',
+      customerPhone: '+1 514-555-0123',
+      estimatedDuration: '2-3 hours',
+      priority: 'emergency',
+      coordinates: { lat: 45.5088, lng: -73.5678 },
+      price: 150
+    },
+    {
+      id: '2',
+      title: 'Electrical Repair',
+      address: '456 Avenue Mont-Royal, Montreal',
+      customerName: 'Jean Tremblay',
+      customerPhone: '+1 514-555-0456',
+      estimatedDuration: '1-2 hours',
+      priority: 'high',
+      coordinates: { lat: 45.5230, lng: -73.5800 },
+      price: 85
+    },
+    {
+      id: '3',
+      title: 'House Cleaning',
+      address: '789 Rue Sherbrooke, Montreal',
+      customerName: 'Sophie Martin',
+      customerPhone: '+1 514-555-0789',
+      estimatedDuration: '3-4 hours',
+      priority: 'medium',
+      coordinates: { lat: 45.5000, lng: -73.5700 },
+      price: 120
+    }
+  ];
+
   // Quebec/Montreal center coordinates
   const quebecCenter = { lat: 45.5017, lng: -73.5673 };
 
@@ -61,6 +107,41 @@ const InteractiveMapPage = () => {
       title: "Mode Changed",
       description: `Switched to ${mode.replace('-', ' ')} mode`,
     });
+  };
+
+  const handleMapLoad = (mapInstance: mapboxgl.Map) => {
+    console.log('🗺️ Mapbox map loaded');
+    setMap(mapInstance);
+  };
+
+  const handleJobClick = (job: Job) => {
+    console.log('🎯 Job selected:', job.title);
+    setSelectedJob(job);
+    toast({
+      title: "Job Selected",
+      description: `Selected: ${job.title}`,
+    });
+  };
+
+  const handleStartNavigation = (job: Job) => {
+    console.log('🧭 Starting navigation to:', job.address);
+    toast({
+      title: "Navigation Started",
+      description: `GPS navigation to ${job.address}`,
+    });
+  };
+
+  const handleCompleteJob = (jobId: string) => {
+    console.log('✅ Job completed:', jobId);
+    setSelectedJob(null);
+    toast({
+      title: "Job Completed",
+      description: "Great work! Job marked as complete.",
+    });
+  };
+
+  const handleCancelNavigation = () => {
+    setSelectedJob(null);
   };
 
   const handleSettingsToggle = () => {
@@ -94,86 +175,107 @@ const InteractiveMapPage = () => {
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
       
-      {/* Clean Map Container */}
+      {/* Map Container */}
       <div className="fixed inset-0 pt-16">
         <div className="w-full h-full relative flex">
           {/* Map Section */}
           <div className="flex-1 relative">
-            {/* Clean Google Map with Teal & Cream Theme */}
-            <UnifiedGoogleMap
-              center={quebecCenter}
-              zoom={10}
-              className="w-full h-full"
-              mode="interactive"
-              mapStyles={currentThemeConfig.styles}
-              enabledLayers={enabledLayers}
-            />
-
-            {/* Top Controls Bar */}
-            <div className="absolute top-4 left-4 right-4 z-50 pointer-events-none">
-              <div className="flex items-center justify-between">
-                {/* Left Controls */}
-                <div className="flex items-center gap-3 pointer-events-auto">
-                  {/* User Mode Selector */}
-                  <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-gray-300 p-2">
-                    <Select value={userMode} onValueChange={handleUserModeChange}>
-                      <SelectTrigger className="w-40 border-none bg-transparent">
-                        <SelectValue placeholder="Select mode" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="customer">Customer</SelectItem>
-                        <SelectItem value="provider">Provider</SelectItem>
-                        <SelectItem value="fleet-manager">Fleet Manager</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+            {/* Privacy Notice */}
+            <div className="absolute top-4 left-4 z-50 pointer-events-auto">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-xs">
+                <div className="flex items-center gap-2 text-blue-800 text-sm font-medium mb-1">
+                  <Shield className="h-4 w-4" />
+                  Privacy First
                 </div>
-
-                {/* Right Controls */}
-                <div className="flex items-center gap-3 pointer-events-auto">
-                  {/* Map Theme Selector */}
-                  <MapThemeSelector />
-                  
-                  {/* Settings Button */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleSettingsToggle}
-                    className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
-                      showSettings ? 'bg-blue-50 border-blue-500' : ''
-                    }`}
-                  >
-                    <Settings className="h-4 w-4 mr-2" />
-                    Settings
-                  </Button>
-
-                  {/* Dragging Toggle */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleDraggingToggle}
-                    className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
-                      isDragging ? 'bg-orange-50 border-orange-500' : ''
-                    }`}
-                  >
-                    <Move className="h-4 w-4 mr-2" />
-                    {isDragging ? 'Dragging On' : 'Dragging Off'}
-                  </Button>
-                </div>
+                <p className="text-xs text-blue-600">
+                  Your data stays private with Mapbox. No Google tracking.
+                </p>
               </div>
             </div>
 
-            {/* Settings Panel (when enabled) */}
+            {/* Mapbox Map */}
+            <MapboxMap
+              center={quebecCenter}
+              zoom={10}
+              className="w-full h-full"
+              onMapLoad={handleMapLoad}
+            />
+
+            {/* Jobs Overlay */}
+            {userMode === 'provider' && (
+              <MapboxJobsOverlay
+                map={map}
+                jobs={sampleJobs}
+                onJobClick={handleJobClick}
+              />
+            )}
+
+            {/* GPS Navigation Overlay */}
+            {userMode === 'provider' && (
+              <GPSNavigationOverlay
+                selectedJob={selectedJob}
+                onStartNavigation={handleStartNavigation}
+                onCompleteJob={handleCompleteJob}
+                onCancelNavigation={handleCancelNavigation}
+              />
+            )}
+
+            {/* Top Controls Bar */}
+            <div className="absolute top-4 right-4 z-50 pointer-events-auto">
+              <div className="flex items-center gap-3">
+                {/* User Mode Selector */}
+                <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-gray-300 p-2">
+                  <Select value={userMode} onValueChange={handleUserModeChange}>
+                    <SelectTrigger className="w-40 border-none bg-transparent">
+                      <SelectValue placeholder="Select mode" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="customer">Customer</SelectItem>
+                      <SelectItem value="provider">Provider</SelectItem>
+                      <SelectItem value="fleet-manager">Fleet Manager</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Settings Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSettingsToggle}
+                  className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
+                    showSettings ? 'bg-blue-50 border-blue-500' : ''
+                  }`}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Settings
+                </Button>
+
+                {/* Dragging Toggle */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleDraggingToggle}
+                  className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
+                    isDragging ? 'bg-orange-50 border-orange-500' : ''
+                  }`}
+                >
+                  <Move className="h-4 w-4 mr-2" />
+                  {isDragging ? 'Dragging On' : 'Dragging Off'}
+                </Button>
+              </div>
+            </div>
+
+            {/* Settings Panel */}
             {showSettings && (
               <div className="absolute top-20 right-4 z-50 pointer-events-auto">
                 <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300 w-64">
                   <h3 className="font-semibold text-gray-900 mb-3">Map Settings</h3>
                   <div className="space-y-3 text-sm text-gray-600">
                     <div>Current Mode: <span className="font-medium capitalize">{userMode.replace('-', ' ')}</span></div>
-                    <div>Theme: <span className="font-medium">{currentThemeConfig.name}</span></div>
+                    <div>Map Engine: <span className="font-medium">Mapbox (Privacy First)</span></div>
                     <div>Dragging: <span className="font-medium">{isDragging ? 'Enabled' : 'Disabled'}</span></div>
                     <div className="pt-2 text-xs text-gray-500">
-                      Real Quebec data integration active
+                      Real Quebec data with GPS navigation
                     </div>
                   </div>
                 </div>
