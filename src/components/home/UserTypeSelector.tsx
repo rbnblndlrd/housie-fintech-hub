@@ -106,7 +106,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
               onClick={() => handleUserTypeSelect(option.id)}
             >
               <CardHeader className="text-center pb-6 relative z-10">
-                <div className="mx-auto mb-6 lg:mb-8 p-6 lg:p-8 fintech-card rounded-3xl w-fit shadow-xl bg-white">
+                <div className="mx-auto mb-6 lg:mb-8 p-6 lg:p-8 fintech-card rounded-3xl w-fit shadow-xl" style={{ backgroundColor: '#faf7f2' }}>
                   {option.icon}
                 </div>
                 <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-black text-black mb-4">
