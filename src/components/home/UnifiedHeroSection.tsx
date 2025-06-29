@@ -141,10 +141,10 @@ const UnifiedHeroSection = ({ onUserTypeSelect, selectedUserType }: UnifiedHeroS
       
       <div className="w-full max-w-none 2xl:max-w-[1400px] 2xl:mx-auto relative space-y-40 lg:space-y-48 xl:space-y-56">
         
-        {/* Hero Content Section with precise backdrop overlay */}
+        {/* Hero Content Section with precise content-area overlay */}
         <div className="relative">
-          {/* Precisely sized backdrop overlay for content area only */}
-          <div className="absolute top-8 bottom-8 left-0 right-0 bg-black/20 backdrop-blur-sm rounded-3xl"></div>
+          {/* Precisely sized backdrop overlay matching content boundaries */}
+          <div className="absolute top-4 bottom-4 left-4 right-4 lg:left-8 lg:right-8 xl:left-12 xl:right-12 2xl:left-0 2xl:right-0 bg-black/20 backdrop-blur-sm rounded-3xl"></div>
           
           <div className="relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh] p-8 lg:p-12">
             {/* Left Side - Hero Mascot/Visual */}
@@ -272,16 +272,16 @@ const UnifiedHeroSection = ({ onUserTypeSelect, selectedUserType }: UnifiedHeroS
               <div className="fintech-card backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 shadow-2xl relative transform hover:scale-105 transition-transform duration-300" style={{ backgroundColor: '#F5F5DC' }}>
                 <div className="absolute -top-6 lg:-top-8 left-1/2 transform -translate-x-1/2">
                   <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-600 to-purple-600 rounded-full flex items-center justify-center text-cream text-xl lg:text-2xl font-black fintech-card shadow-lg">
-                    {selectedOption ? (
-                      <div className="text-white">
-                        {selectedOption.id === 'fleet' && <Truck className="h-6 w-6 lg:h-8 lg:w-8" />}
-                        {selectedOption.id === 'provider' && <Wrench className="h-6 w-6 lg:h-8 lg:w-8" />}
-                        {selectedOption.id === 'customer' && <Search className="h-6 w-6 lg:h-8 lg:w-8" />}
-                      </div>
-                    ) : (
-                      "?"
-                    )}
-                  </div>
+                  {selectedOption ? (
+                    <div className="text-white">
+                      {selectedOption.id === 'fleet' && <Truck className="h-6 w-6 lg:h-8 lg:w-8" />}
+                      {selectedOption.id === 'provider' && <Wrench className="h-6 w-6 lg:h-8 lg:w-8" />}
+                      {selectedOption.id === 'customer' && <Search className="h-6 w-6 lg:h-8 lg:w-8" />}
+                    </div>
+                  ) : (
+                    "?"
+                  )}
+                </div>
                 </div>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black mb-4 pt-4">
                   What brings you here today?
