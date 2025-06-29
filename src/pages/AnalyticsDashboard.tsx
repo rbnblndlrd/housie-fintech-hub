@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useAnalyticsData } from '@/hooks/useAnalyticsData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -22,8 +23,10 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/
 const AnalyticsDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const { data, loading, error, refreshData } = useAnalyticsData(user?.id, currentRole);
+
+  console.log('📊 AnalyticsDashboard render:', { hasUser: !!user, currentRole });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-CA', {
@@ -33,7 +36,7 @@ const AnalyticsDashboard = () => {
   };
 
   const getDashboardPath = () => {
-    return currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
+    return '/dashboard'; // Use unified dashboard
   };
 
   const kpiCards = [
@@ -176,114 +179,50 @@ const AnalyticsDashboard = () => {
             ))}
           </div>
 
-          {/* Charts Section */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {/* Monthly Bookings */}
-            <Card className="fintech-chart-container">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="h-5 w-5 text-blue-600" />
-                  Monthly Bookings Trend
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <Skeleton className="h-80 w-full" />
-                ) : (
-                  <ChartContainer config={chartConfig} className="h-80">
-                    <LineChart data={data.bookingsByMonth}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="month" stroke="#666" />
-                      <YAxis stroke="#666" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Line 
-                        type="monotone" 
-                        dataKey="bookings" 
-                        stroke="#06B6D4" 
-                        strokeWidth={3}
-                        dot={{ fill: '#06B6D4', strokeWidth: 2, r: 4 }}
-                      />
-                    </LineChart>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Revenue by Category */}
-            <Card className="fintech-chart-container">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  💰 Revenue by Category
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <Skeleton className="h-80 w-full" />
-                ) : (
-                  <ChartContainer config={chartConfig} className="h-80">
-                    <BarChart data={data.revenueByCategory}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="category" stroke="#666" />
-                      <YAxis stroke="#666" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Bar dataKey="revenue" fill="#10B981" radius={4} />
-                    </BarChart>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Bottom Section */}
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Monthly Revenue */}
-            <Card className="fintech-chart-container">
-              <CardHeader>
-                <CardTitle>Monthly Revenue Trends</CardTitle>
-              </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <Skeleton className="h-80 w-full" />
-                ) : (
-                  <ChartContainer config={chartConfig} className="h-80">
-                    <BarChart data={data.bookingsByMonth}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="month" stroke="#666" />
-                      <YAxis stroke="#666" />
-                      <ChartTooltip content={<ChartTooltipContent />} />
-                      <Bar dataKey="revenue" fill="#3B82F6" radius={4} />
-                    </BarChart>
-                  </ChartContainer>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Top Services */}
+          {/* Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="fintech-card">
               <CardHeader>
-                <CardTitle>Top Performing Services</CardTitle>
+                <CardTitle>Revenue Trend</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="space-y-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
-                  </div>
-                ) : data.topServices.length > 0 ? (
-                  <div className="space-y-4">
-                    {data.topServices.map((service, index) => (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="font-medium">{service.title}</span>
-                        <div className="text-right">
-                          <p className="font-medium">{formatCurrency(service.revenue)}</p>
-                          <p className="text-sm text-gray-500">{service.count} bookings</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                  <Skeleton className="h-64 w-full" />
                 ) : (
-                  <p className="text-gray-500 text-center py-4">No service data available</p>
+                  <ChartContainer config={chartConfig} className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={data.chartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Line type="monotone" dataKey="revenue" stroke={chartConfig.revenue.color} strokeWidth={2} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle>Booking Volume</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {loading ? (
+                  <Skeleton className="h-64 w-full" />
+                ) : (
+                  <ChartContainer config={chartConfig} className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={data.chartData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar dataKey="bookings" fill={chartConfig.bookings.color} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </ChartContainer>
                 )}
               </CardContent>
             </Card>

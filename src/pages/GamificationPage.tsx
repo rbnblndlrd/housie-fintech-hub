@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import GamificationAnalytics from '@/components/gamification/GamificationAnalytics';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,9 @@ import { GamepadIcon, Trophy, Star, Crown, TrendingUp, BarChart3 } from 'lucide-
 
 const GamificationPage: React.FC = () => {
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
+
+  console.log('🎮 GamificationPage render:', { hasUser: !!user, currentRole });
 
   if (!user) {
     return (

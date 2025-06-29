@@ -19,6 +19,8 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   const [activeTab, setActiveTab] = useState(externalActiveTab || 'messages');
   const [claudeSessionId] = useState(() => crypto.randomUUID());
 
+  console.log('💬 ChatPanel render:', { hasUser: !!user, currentRole, activeTab });
+
   // For now, we'll determine fleet mode based on provider role
   // This can be extended later with additional logic if needed
   const isFleetMode = currentRole === 'provider'; // Assuming providers can access fleet features

@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import Header from "@/components/Header";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRole } from "@/contexts/RoleContext";
+import { useRoleSwitch } from "@/contexts/RoleSwitchContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -16,9 +16,11 @@ const Auth = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { signIn } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  console.log('🔐 Auth page render:', { currentRole });
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,16 +36,18 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
+      console.log('🔐 Attempting sign in...');
       await signIn(email, password);
       toast({
         title: "Connexion réussie",
         description: "Bienvenue sur HOUSIE!",
       });
       
-      // Redirect based on current role
-      const redirectPath = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
-      navigate(redirectPath);
+      // Redirect to unified dashboard
+      console.log('🔐 Sign in successful, redirecting to dashboard');
+      navigate('/dashboard');
     } catch (error: any) {
+      console.error('🔐 Sign in error:', error);
       let errorMessage = "Une erreur s'est produite. Veuillez réessayer.";
       
       if (error.message?.includes('Invalid login credentials')) {

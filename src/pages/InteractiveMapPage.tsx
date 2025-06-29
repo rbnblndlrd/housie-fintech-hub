@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
 import { useToast } from '@/hooks/use-toast';
 import { ChatBubble } from '@/components/chat/ChatBubble';
@@ -19,9 +19,11 @@ type UserMode = 'customer' | 'provider' | 'fleet-manager';
 
 const InteractiveMapPage = () => {
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const { toast } = useToast();
   const { currentThemeConfig } = useMapTheme();
+
+  console.log('🗺️ InteractiveMapPage render:', { hasUser: !!user, currentRole });
 
   // Prevent wallet conflicts on mount
   useEffect(() => {
@@ -53,6 +55,7 @@ const InteractiveMapPage = () => {
   const quebecCenter = { lat: 45.5017, lng: -73.5673 };
 
   const handleUserModeChange = (mode: UserMode) => {
+    console.log('🗺️ User mode changed to:', mode);
     setUserMode(mode);
     toast({
       title: "Mode Changed",

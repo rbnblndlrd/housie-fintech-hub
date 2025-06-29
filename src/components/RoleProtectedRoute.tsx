@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface RoleProtectedRouteProps {
@@ -15,8 +15,10 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
   requiredRole, 
   redirectTo 
 }) => {
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const { user } = useAuth();
+
+  console.log('🛡️ RoleProtectedRoute:', { hasUser: !!user, currentRole, requiredRole });
 
   // If user is not authenticated, let other auth guards handle it
   if (!user) {
@@ -25,7 +27,8 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
 
   // If current role doesn't match required role, redirect
   if (currentRole !== requiredRole) {
-    const defaultRedirect = requiredRole === 'customer' ? '/customer-dashboard' : '/provider-dashboard';
+    const defaultRedirect = '/dashboard'; // Use unified dashboard
+    console.log('🛡️ Role mismatch, redirecting to:', redirectTo || defaultRedirect);
     return <Navigate to={redirectTo || defaultRedirect} replace />;
   }
 
