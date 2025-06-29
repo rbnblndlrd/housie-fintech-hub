@@ -87,20 +87,33 @@
     font-family: 'Inter', sans-serif;
   }
 
-  /* Forest gradient dot pattern background for pages */
+  /* Forest green background with individual gradient dots that look like holes */
   body {
     background: #1B4332;
     background-image: 
-      radial-gradient(circle at 12% 23%, #2D6A4F 0%, transparent 50%),
-      radial-gradient(circle at 87% 8%, #52B788 0%, transparent 50%),
-      radial-gradient(circle at 35% 67%, #95D5B2 0%, transparent 50%),
-      radial-gradient(circle at 73% 42%, #FFD166 0%, transparent 50%),
-      radial-gradient(circle at 19% 89%, #F4A261 0%, transparent 50%),
-      radial-gradient(circle at 67% 91%, #E76F51 0%, transparent 50%),
-      radial-gradient(circle at 91% 56%, #E9C46A 0%, transparent 50%),
-      radial-gradient(circle at 45% 12%, #2A9D8F 0%, transparent 50%),
-      radial-gradient(circle at 8% 45%, #264653 0%, transparent 50%),
-      radial-gradient(circle at 58% 78%, #F77F00 0%, transparent 50%);
+      /* Large prominent orbs */
+      radial-gradient(circle at 15% 25%, #1B4332 0%, #F4A261 30%, #E76F51 60%, transparent 70%),
+      radial-gradient(circle at 85% 15%, #1B4332 0%, #FFD166 25%, #F77F00 50%, transparent 65%),
+      radial-gradient(circle at 25% 75%, #1B4332 0%, #E9C46A 35%, #E76F51 65%, transparent 75%),
+      radial-gradient(circle at 75% 85%, #1B4332 0%, #F4A261 40%, #E76F51 70%, transparent 80%),
+      radial-gradient(circle at 45% 35%, #1B4332 0%, #2A9D8F 20%, #FFD166 45%, #F77F00 65%, transparent 75%),
+      radial-gradient(circle at 65% 55%, #1B4332 0%, #52B788 25%, #E9C46A 50%, #E76F51 70%, transparent 80%),
+      
+      /* Medium depth orbs */
+      radial-gradient(circle at 30% 10%, #1B4332 0%, #95D5B2 30%, #F4A261 55%, transparent 65%),
+      radial-gradient(circle at 90% 40%, #1B4332 0%, #2D6A4F 25%, #FFD166 50%, transparent 60%),
+      radial-gradient(circle at 10% 60%, #1B4332 0%, #52B788 35%, #F77F00 60%, transparent 70%),
+      radial-gradient(circle at 80% 70%, #1B4332 0%, #95D5B2 30%, #E76F51 55%, transparent 65%),
+      radial-gradient(circle at 55% 20%, #1B4332 0%, #2A9D8F 40%, #E9C46A 65%, transparent 75%),
+      radial-gradient(circle at 20% 90%, #1B4332 0%, #264653 20%, #F4A261 45%, transparent 55%),
+      
+      /* Small scattered dots for texture */
+      radial-gradient(circle at 40% 80%, #1B4332 0%, #2D6A4F 40%, #FFD166 70%, transparent 80%),
+      radial-gradient(circle at 70% 30%, #1B4332 0%, #52B788 35%, #F77F00 60%, transparent 70%),
+      radial-gradient(circle at 5% 45%, #1B4332 0%, #95D5B2 45%, #E76F51 75%, transparent 85%),
+      radial-gradient(circle at 95% 65%, #1B4332 0%, #2A9D8F 30%, #E9C46A 55%, transparent 65%),
+      radial-gradient(circle at 35% 5%, #1B4332 0%, #264653 25%, #F4A261 50%, transparent 60%),
+      radial-gradient(circle at 60% 95%, #1B4332 0%, #52B788 40%, #F77F00 70%, transparent 80%);
     background-attachment: fixed;
     min-height: 100vh;
   }

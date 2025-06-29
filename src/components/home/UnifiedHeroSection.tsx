@@ -141,10 +141,10 @@ const UnifiedHeroSection = ({ onUserTypeSelect, selectedUserType }: UnifiedHeroS
       
       <div className="w-full max-w-none 2xl:max-w-[1400px] 2xl:mx-auto relative space-y-40 lg:space-y-48 xl:space-y-56">
         
-        {/* Hero Content Section with subtle backdrop overlay */}
+        {/* Hero Content Section with precise backdrop overlay */}
         <div className="relative">
-          {/* Subtle backdrop overlay for hero content area only */}
-          <div className="absolute inset-0 bg-black/20 backdrop-blur-sm rounded-3xl"></div>
+          {/* Precisely sized backdrop overlay for content area only */}
+          <div className="absolute top-8 bottom-8 left-0 right-0 bg-black/20 backdrop-blur-sm rounded-3xl"></div>
           
           <div className="relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh] p-8 lg:p-12">
             {/* Left Side - Hero Mascot/Visual */}
