@@ -25,7 +25,6 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
   const [appointments, setAppointments] = useState<CalendarEvent[]>([]);
-  const [showAddDialog, setShowAddDialog] = useState(false);
   const { allEvents } = useUnifiedCalendarIntegration();
 
   const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
@@ -34,7 +33,6 @@ const Calendar = () => {
       id: `appointment-${Date.now()}`
     };
     setAppointments(prev => [...prev, appointment]);
-    setShowAddDialog(false);
   };
 
   const handleEditEvent = (eventId: string) => {
@@ -69,30 +67,23 @@ const Calendar = () => {
           <CalendarHeader />
           
           <div className="mb-6">
-            <Button 
-              onClick={() => setShowAddDialog(true)}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+            <AddAppointmentDialog
+              selectedDate={selectedDate}
+              onAddAppointment={handleAddAppointment}
             >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Appointment
-            </Button>
+              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white">
+                <Plus className="h-4 w-4 mr-2" />
+                Add Appointment
+              </Button>
+            </AddAppointmentDialog>
           </div>
           
           <ModernCalendar
-            onAddAppointment={() => setShowAddDialog(true)}
+            onAddAppointment={handleAddAppointment}
             onEditEvent={handleEditEvent}
           />
         </div>
       </div>
-
-      {/* Add Appointment Dialog */}
-      {showAddDialog && (
-        <AddAppointmentDialog
-          selectedDate={selectedDate}
-          onClose={() => setShowAddDialog(false)}
-          onAddAppointment={handleAddAppointment}
-        />
-      )}
 
       {/* Edit Appointment Dialog */}
       {editingEvent && (
