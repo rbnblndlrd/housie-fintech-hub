@@ -22,11 +22,14 @@ interface ServiceFiltersProps {
   selectedSubcategory?: string;
   selectedLocation: string;
   priceRange: [number, number];
+  distance?: number;
   onSearchChange: (value: string) => void;
   onCategoryChange: (value: string) => void;
   onSubcategoryChange?: (value: string) => void;
   onLocationChange: (value: string) => void;
   onPriceRangeChange: (value: [number, number]) => void;
+  onDistanceChange?: (value: number) => void;
+  onSearch?: () => void;
 }
 
 const ServiceFilters: React.FC<ServiceFiltersProps> = ({
@@ -35,11 +38,14 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
   selectedSubcategory = 'all',
   selectedLocation,
   priceRange,
+  distance = 25,
   onSearchChange,
   onCategoryChange,
   onSubcategoryChange,
   onLocationChange,
-  onPriceRangeChange
+  onPriceRangeChange,
+  onDistanceChange,
+  onSearch
 }) => {
   return (
     <div className="fintech-card p-6 mb-8">
@@ -98,7 +104,26 @@ const ServiceFilters: React.FC<ServiceFiltersProps> = ({
           />
         </div>
         
-        <Button className="bg-orange-500 hover:bg-orange-600">
+        {onDistanceChange && (
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
+              Distance: {distance} km
+            </label>
+            <Slider
+              value={[distance]}
+              onValueChange={(value) => onDistanceChange(value[0])}
+              max={100}
+              min={5}
+              step={5}
+              className="w-full"
+            />
+          </div>
+        )}
+        
+        <Button 
+          className="bg-orange-500 hover:bg-orange-600"
+          onClick={onSearch}
+        >
           <Filter className="h-4 w-4 mr-2" />
           Apply Filters
         </Button>
