@@ -189,12 +189,14 @@ export const useCalendarAppointments = () => {
     }
   };
 
-  // Set up real-time subscription for appointment changes
+  // Set up real-time subscription for appointment changes - FIXED: Only subscribe once
   useEffect(() => {
     if (!user) return;
 
+    fetchAppointments();
+
     const channel = supabase
-      .channel('calendar-appointments-sync')
+      .channel(`calendar-appointments-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -204,20 +206,17 @@ export const useCalendarAppointments = () => {
           filter: `user_id=eq.${user.id}`
         },
         () => {
-          // Refresh appointments when changes occur
+          console.log('Calendar appointment change detected, refreshing...');
           fetchAppointments();
         }
       )
       .subscribe();
 
     return () => {
+      console.log('Cleaning up calendar appointments subscription');
       supabase.removeChannel(channel);
     };
-  }, [user, fetchAppointments]);
-
-  useEffect(() => {
-    fetchAppointments();
-  }, [fetchAppointments]);
+  }, [user?.id]); // Changed dependency to user?.id to prevent re-subscription
 
   return {
     appointments,
