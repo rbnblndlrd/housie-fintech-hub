@@ -22,6 +22,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   console.log('🔄 RoleSwitchProvider render:', { 
     hasUser: !!user, 
+    userEmail: user?.email,
     currentRole, 
     availableRoles,
     canSwitchToProvider 
@@ -29,7 +30,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   useEffect(() => {
     if (user) {
-      console.log('🔄 Loading user capabilities for:', user.id);
+      console.log('🔄 Loading user capabilities for:', user.email);
       loadUserCapabilities();
     } else {
       console.log('🔄 No user, resetting to defaults');
@@ -45,7 +46,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     try {
       console.log('🔄 Fetching user profile from database...');
       
-      // Try to get from user_profiles with simplified system
+      // Get user profile data
       const { data: profile, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -73,7 +74,19 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           return;
         }
 
-        console.log('✅ Profile created:', newProfile);
+        // Also create user_role_preferences
+        const { error: roleError } = await supabase
+          .from('user_role_preferences')
+          .insert({
+            user_id: user.id,
+            primary_role: 'customer'
+          });
+
+        if (roleError) {
+          console.error('⚠️ Error creating role preferences:', roleError);
+        }
+
+        console.log('✅ Profile and role preferences created:', newProfile);
         setCurrentRole('customer');
         setAvailableRoles(['customer']);
         setCanSwitchToProvider(false);
@@ -88,15 +101,22 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (profile) {
         console.log('✅ Profile loaded:', { 
           activeRole: profile.active_role,
-          canProvideServices: profile.can_provide_services 
+          canProvideServices: profile.can_provide_services,
+          canBookServices: profile.can_book_services
         });
         
-        // Use simplified profile system with only customer/provider
+        // Validate data consistency
+        if (profile.active_role && !['customer', 'provider'].includes(profile.active_role)) {
+          console.warn('⚠️ Invalid active_role detected:', profile.active_role, 'defaulting to customer');
+          profile.active_role = 'customer';
+        }
+        
+        // Use user_profiles.active_role as the single source of truth
         const activeRole = (profile.active_role as 'customer' | 'provider') || 'customer';
         setCurrentRole(activeRole);
         
-        // FIXED: Always set available roles based on capabilities, not current role
-        const roles = ['customer'];
+        // Build available roles based on capabilities
+        const roles = ['customer']; // Everyone can be a customer
         if (profile.can_provide_services) {
           roles.push('provider');
           setCanSwitchToProvider(true);
@@ -105,7 +125,26 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
         
         setAvailableRoles(roles);
-        console.log('✅ Roles set:', { activeRole, availableRoles: roles, canProvideServices: profile.can_provide_services });
+        
+        console.log('✅ Role context updated:', { 
+          activeRole, 
+          availableRoles: roles, 
+          canProvideServices: profile.can_provide_services 
+        });
+
+        // Ensure role preferences are synchronized (defensive programming)
+        const { error: syncError } = await supabase
+          .from('user_role_preferences')
+          .upsert({
+            user_id: user.id,
+            primary_role: activeRole
+          });
+
+        if (syncError) {
+          console.warn('⚠️ Could not sync role preferences:', syncError);
+        } else {
+          console.log('✅ Role preferences synchronized');
+        }
       }
     } catch (error) {
       console.error('❌ Error in loadUserCapabilities:', error);
@@ -115,18 +154,32 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const switchRole = async (newRole: 'customer' | 'provider') => {
     if (!user || !availableRoles.includes(newRole)) {
       console.error('❌ Cannot switch to role:', newRole, 'Available roles:', availableRoles);
-      throw new Error('Cannot switch to this role');
+      throw new Error(`Cannot switch to role: ${newRole}. Available roles: ${availableRoles.join(', ')}`);
     }
 
     console.log('🔄 Switching role from', currentRole, 'to', newRole);
 
     try {
-      const { error } = await supabase
+      // Update both tables to maintain consistency
+      const { error: profileError } = await supabase
         .from('user_profiles')
         .update({ active_role: newRole })
         .eq('user_id', user.id);
 
-      if (error) throw error;
+      if (profileError) {
+        console.error('❌ Error updating user_profiles:', profileError);
+        throw profileError;
+      }
+
+      const { error: preferencesError } = await supabase
+        .from('user_role_preferences')
+        .update({ primary_role: newRole })
+        .eq('user_id', user.id);
+
+      if (preferencesError) {
+        console.error('❌ Error updating user_role_preferences:', preferencesError);
+        throw preferencesError;
+      }
 
       setCurrentRole(newRole);
       console.log('✅ Role switched successfully to:', newRole, 'Available roles remain:', availableRoles);
