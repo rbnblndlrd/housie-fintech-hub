@@ -13,7 +13,7 @@ const GoogleSignInButton: React.FC = () => {
     try {
       setIsLoading(true);
       
-      console.log('🚀 Starting Google OAuth popup flow...');
+      console.log('🚀 Starting Google OAuth flow...');
       
       // Check if popups are blocked
       const testPopup = window.open('', '_blank', 'width=1,height=1');
@@ -35,9 +35,7 @@ const GoogleSignInButton: React.FC = () => {
           queryParams: {
             access_type: 'offline',
             prompt: 'select_account',
-            hd: '', // Allow any domain
           },
-          skipBrowserRedirect: true, // Force popup mode
         },
       });
 
@@ -63,15 +61,16 @@ const GoogleSignInButton: React.FC = () => {
           variant: "destructive",
         });
         
+        setIsLoading(false);
         return;
       }
 
-      // OAuth popup opened successfully
-      console.log('✅ Google OAuth popup opened successfully');
+      // OAuth flow initiated successfully
+      console.log('✅ Google OAuth flow initiated successfully');
       
       toast({
-        title: "Google Sign-In",
-        description: "Complete the sign-in in the popup window.",
+        title: "Redirecting to Google",
+        description: "Please complete sign-in with Google.",
         variant: "default",
       });
       
@@ -115,7 +114,7 @@ const GoogleSignInButton: React.FC = () => {
           />
         </svg>
       )}
-      {isLoading ? 'Opening Google Sign-In...' : 'Continue with Google'}
+      {isLoading ? 'Redirecting to Google...' : 'Continue with Google'}
     </Button>
   );
 };
