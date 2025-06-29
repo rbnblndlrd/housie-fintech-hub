@@ -9,7 +9,7 @@ import NotificationBell from '@/components/NotificationBell';
 import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { getNavigationItems } from '@/utils/navigationConfig';
-import { Home } from '@heroicons/react/24/outline';
+import { Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
