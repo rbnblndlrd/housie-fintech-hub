@@ -3,16 +3,8 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Star, 
-  MapPin, 
-  DollarSign, 
-  Shield, 
-  Award,
-  Clock,
-  Verified
-} from 'lucide-react';
-import { Service } from "@/types/service";
+import { Star, MapPin, Clock, Shield, Award, CheckCircle } from 'lucide-react';
+import { Service } from '@/types/service';
 
 interface ModernServiceCardProps {
   service: Service;
@@ -22,50 +14,54 @@ interface ModernServiceCardProps {
 
 const ModernServiceCard: React.FC<ModernServiceCardProps> = ({ 
   service, 
-  onBookNow, 
+  onBookNow,
   onHoverProvider 
 }) => {
-  const handleBookNow = () => {
-    // Call the parent handler directly for booking confirmation
-    onBookNow(service);
-  };
-
-  const getVerificationBadge = () => {
-    if (service.provider.verification_level === 'professional_license') {
-      return (
-        <Badge className="bg-purple-100 text-purple-700 border-purple-200">
-          <Award className="h-3 w-3 mr-1" />
-          Premium Verified
-        </Badge>
-      );
-    } else if (service.provider.verification_level === 'background_check') {
-      return (
-        <Badge className="bg-blue-100 text-blue-700 border-blue-200">
-          <Verified className="h-3 w-3 mr-1" />
-          Verified
-        </Badge>
-      );
+  const handleMouseEnter = () => {
+    if (onHoverProvider) {
+      onHoverProvider(service.provider.id);
     }
-    return null;
   };
 
-  const getRequirementsBadges = () => {
+  const handleMouseLeave = () => {
+    if (onHoverProvider) {
+      onHoverProvider(null);
+    }
+  };
+
+  const getVerificationBadges = () => {
     const badges = [];
     
-    if (service.background_check_required) {
+    if (service.provider.verified) {
       badges.push(
-        <Badge key="bg-check" variant="outline" className="text-xs">
-          <Shield className="h-3 w-3 mr-1" />
-          Background Check
+        <Badge key="verified" className="bg-green-100 text-green-800 hover:bg-green-200">
+          <Shield className="w-3 h-3 mr-1" />
+          Vérifié
         </Badge>
       );
     }
     
-    if (service.ccq_rbq_required) {
+    if (service.provider.background_check_verified) {
       badges.push(
-        <Badge key="ccq-rbq" variant="outline" className="text-xs">
-          <Award className="h-3 w-3 mr-1" />
-          Professional License
+        <Badge key="background" className="bg-blue-100 text-blue-800 hover:bg-blue-200">
+          <CheckCircle className="w-3 h-3 mr-1" />
+          Vérification antécédents
+        </Badge>
+      );
+    }
+
+    if (service.provider.ccq_verified) {
+      badges.push(
+        <Badge key="ccq" className="bg-purple-100 text-purple-800 hover:bg-purple-200">
+          CCQ
+        </Badge>
+      );
+    }
+
+    if (service.provider.rbq_verified) {
+      badges.push(
+        <Badge key="rbq" className="bg-orange-100 text-orange-800 hover:bg-orange-200">
+          RBQ
         </Badge>
       );
     }
@@ -75,91 +71,77 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
 
   return (
     <Card 
-      className="fintech-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group"
-      onMouseEnter={() => onHoverProvider?.(service.provider.id)}
-      onMouseLeave={() => onHoverProvider?.(null)}
+      className="fintech-card hover:shadow-lg transition-all duration-300 hover:scale-[1.02] cursor-pointer"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <CardContent className="p-0">
-        <div className="p-6 pb-4">
-          {/* Header with provider info */}
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-lg">
-                {(service.provider.business_name || service.provider.user.full_name).charAt(0)}
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                {(service.provider.business_name || service.provider.user.full_name)
+                  .split(' ')
+                  .map(n => n[0])
+                  .join('')
+                  .slice(0, 2)}
               </div>
               <div>
-                <h3 className="font-bold text-gray-900 text-lg group-hover:text-purple-600 transition-colors">
+                <h3 className="font-semibold text-gray-900 text-lg">
                   {service.provider.business_name || service.provider.user.full_name}
                 </h3>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <MapPin className="h-3 w-3" />
-                  <span>{service.provider.user.city}, {service.provider.user.province}</span>
-                </div>
+                <p className="text-sm text-gray-600">
+                  {service.provider.user.city}, {service.provider.user.province}
+                </p>
               </div>
             </div>
-            <div className="flex flex-col items-end gap-2">
-              {getVerificationBadge()}
-              {service.provider.average_rating && (
-                <div className="flex items-center gap-1">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span className="font-medium text-gray-900">
-                    {service.provider.average_rating.toFixed(1)}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    ({service.provider.total_bookings || 0})
-                  </span>
-                </div>
-              )}
+            
+            <h4 className="font-medium text-gray-800 mb-2">{service.title}</h4>
+            <p className="text-gray-600 text-sm mb-4 line-clamp-2">{service.description}</p>
+            
+            <div className="flex flex-wrap gap-2 mb-4">
+              {getVerificationBadges()}
             </div>
           </div>
-
-          {/* Service details */}
-          <div className="mb-4">
-            <h4 className="font-bold text-xl text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
-              {service.title}
-            </h4>
-            <p className="text-gray-700 leading-relaxed line-clamp-2">
-              {service.description}
-            </p>
-          </div>
-
-          {/* Service badges and requirements */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Badge className="bg-gray-100 text-gray-700 capitalize">
-              {service.category.replace('_', ' ')}
-            </Badge>
-            {service.subcategory && (
-              <Badge variant="outline" className="capitalize">
-                {service.subcategory.replace('_', ' ')}
-              </Badge>
-            )}
-            {getRequirementsBadges()}
-          </div>
-
-          {/* Pricing and booking */}
-          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-1">
-                <DollarSign className="h-5 w-5 text-green-600" />
-                <span className="text-2xl font-bold text-gray-900">
-                  {service.pricing_type === 'hourly' 
-                    ? service.provider.hourly_rate || service.base_price
-                    : service.base_price}
+          
+          <div className="text-right ml-4">
+            <div className="flex items-center gap-1 mb-2">
+              <Star className="w-4 h-4 text-yellow-400 fill-current" />
+              <span className="font-medium text-gray-900">
+                {service.provider.average_rating || 'N/A'}
+              </span>
+              <span className="text-sm text-gray-500">
+                ({service.provider.total_bookings || 0} avis)
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-1 mb-2 text-sm text-gray-600">
+              <MapPin className="w-4 h-4" />
+              <span>Rayon: {service.provider.service_radius_km || 25}km</span>
+            </div>
+            
+            <div className="flex items-center gap-1 mb-4 text-sm text-green-600">
+              <Clock className="w-4 h-4" />
+              <span>Disponible aujourd'hui</span>
+            </div>
+            
+            <div className="mb-4">
+              <p className="text-2xl font-bold text-gray-900">
+                ${service.base_price}
+                <span className="text-sm font-normal text-gray-600">
+                  /{service.pricing_type === 'hourly' ? 'heure' : 'service'}
                 </span>
-                <span className="text-gray-600">
-                  {service.pricing_type === 'hourly' ? '/hr' : ''}
-                </span>
-              </div>
-              <div className="text-sm text-gray-500">
-                + 6% platform fee
-              </div>
+              </p>
             </div>
-
+            
             <Button 
-              onClick={handleBookNow}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl px-6 py-2 font-medium shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
+              onClick={(e) => {
+                e.stopPropagation();
+                onBookNow(service);
+              }}
+              className="w-full fintech-button-primary"
             >
-              Book Now
+              Réserver maintenant
             </Button>
           </div>
         </div>

@@ -16,6 +16,7 @@ const ServicesPage = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([10, 200]);
   const [distance, setDistance] = useState(25);
   const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [hoveredProviderId, setHoveredProviderId] = useState<string | null>(null);
 
   const filteredServicesList = useMemo(() => {
     return services.filter((service: Service) => {
@@ -52,7 +53,6 @@ const ServicesPage = () => {
   };
 
   const handleSearch = () => {
-    // Trigger search/filter logic here if needed
     console.log('Search triggered with filters:', {
       searchTerm,
       selectedCategory,
@@ -61,6 +61,10 @@ const ServicesPage = () => {
       priceRange,
       distance
     });
+  };
+
+  const handleHoverProvider = (providerId: string | null) => {
+    setHoveredProviderId(providerId);
   };
 
   if (selectedService) {
@@ -92,6 +96,8 @@ const ServicesPage = () => {
       onDistanceChange={setDistance}
       onBookNow={handleBookNow}
       onSearch={handleSearch}
+      hoveredProviderId={hoveredProviderId}
+      onHoverProvider={handleHoverProvider}
     />
   );
 };
