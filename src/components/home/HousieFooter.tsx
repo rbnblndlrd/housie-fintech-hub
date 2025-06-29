@@ -75,8 +75,11 @@ const HousieFooter = () => {
               alt="HOUSIE" 
               className="h-8 w-auto mr-3"
               onError={(e) => {
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling.style.display = 'inline';
+                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                if (nextSibling) {
+                  nextSibling.style.display = 'inline';
+                }
               }}
             />
             <span className="hidden text-xl font-bold">HOUSIE</span>
