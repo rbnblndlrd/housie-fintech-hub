@@ -2118,12 +2118,26 @@ export type Database = {
       }
       user_profiles: {
         Row: {
+          achievement_badges: Json | null
+          active_role: string | null
           average_rating: number | null
+          background_check_verified: boolean | null
           bio: string | null
+          business_name: string | null
+          can_book_services: boolean | null
+          can_provide_services: boolean | null
+          ccq_license_number: string | null
+          ccq_verified: boolean | null
+          community_rating_points: number | null
           company: string | null
+          courtesy_commendations: number | null
+          cra_compliant: boolean | null
           created_at: string | null
+          description: string | null
           full_name: string
+          hourly_rate: number | null
           id: string
+          insurance_verified: boolean | null
           is_verified: boolean | null
           location: string | null
           network_connections_count: number | null
@@ -2131,24 +2145,52 @@ export type Database = {
           phone: string | null
           privacy_level: string | null
           profession: string | null
+          professional_license_type: string | null
+          professional_license_verified: boolean | null
           profile_image_url: string | null
+          profile_type: string | null
+          quality_commendations: number | null
+          rbq_license_number: string | null
+          rbq_verified: boolean | null
+          reliability_commendations: number | null
+          response_time_hours: number | null
+          service_radius_km: number | null
+          shop_points: number | null
           show_contact_info: boolean | null
           show_location: boolean | null
           social_facebook: string | null
           social_linkedin: string | null
+          total_bookings: number | null
           total_reviews_received: number | null
           updated_at: string | null
           user_id: string
           username: string
+          verification_level: string | null
+          verified: boolean | null
           website: string | null
+          years_experience: number | null
         }
         Insert: {
+          achievement_badges?: Json | null
+          active_role?: string | null
           average_rating?: number | null
+          background_check_verified?: boolean | null
           bio?: string | null
+          business_name?: string | null
+          can_book_services?: boolean | null
+          can_provide_services?: boolean | null
+          ccq_license_number?: string | null
+          ccq_verified?: boolean | null
+          community_rating_points?: number | null
           company?: string | null
+          courtesy_commendations?: number | null
+          cra_compliant?: boolean | null
           created_at?: string | null
+          description?: string | null
           full_name: string
+          hourly_rate?: number | null
           id?: string
+          insurance_verified?: boolean | null
           is_verified?: boolean | null
           location?: string | null
           network_connections_count?: number | null
@@ -2156,24 +2198,52 @@ export type Database = {
           phone?: string | null
           privacy_level?: string | null
           profession?: string | null
+          professional_license_type?: string | null
+          professional_license_verified?: boolean | null
           profile_image_url?: string | null
+          profile_type?: string | null
+          quality_commendations?: number | null
+          rbq_license_number?: string | null
+          rbq_verified?: boolean | null
+          reliability_commendations?: number | null
+          response_time_hours?: number | null
+          service_radius_km?: number | null
+          shop_points?: number | null
           show_contact_info?: boolean | null
           show_location?: boolean | null
           social_facebook?: string | null
           social_linkedin?: string | null
+          total_bookings?: number | null
           total_reviews_received?: number | null
           updated_at?: string | null
           user_id: string
           username: string
+          verification_level?: string | null
+          verified?: boolean | null
           website?: string | null
+          years_experience?: number | null
         }
         Update: {
+          achievement_badges?: Json | null
+          active_role?: string | null
           average_rating?: number | null
+          background_check_verified?: boolean | null
           bio?: string | null
+          business_name?: string | null
+          can_book_services?: boolean | null
+          can_provide_services?: boolean | null
+          ccq_license_number?: string | null
+          ccq_verified?: boolean | null
+          community_rating_points?: number | null
           company?: string | null
+          courtesy_commendations?: number | null
+          cra_compliant?: boolean | null
           created_at?: string | null
+          description?: string | null
           full_name?: string
+          hourly_rate?: number | null
           id?: string
+          insurance_verified?: boolean | null
           is_verified?: boolean | null
           location?: string | null
           network_connections_count?: number | null
@@ -2181,16 +2251,30 @@ export type Database = {
           phone?: string | null
           privacy_level?: string | null
           profession?: string | null
+          professional_license_type?: string | null
+          professional_license_verified?: boolean | null
           profile_image_url?: string | null
+          profile_type?: string | null
+          quality_commendations?: number | null
+          rbq_license_number?: string | null
+          rbq_verified?: boolean | null
+          reliability_commendations?: number | null
+          response_time_hours?: number | null
+          service_radius_km?: number | null
+          shop_points?: number | null
           show_contact_info?: boolean | null
           show_location?: boolean | null
           social_facebook?: string | null
           social_linkedin?: string | null
+          total_bookings?: number | null
           total_reviews_received?: number | null
           updated_at?: string | null
           user_id?: string
           username?: string
+          verification_level?: string | null
+          verified?: boolean | null
           website?: string | null
+          years_experience?: number | null
         }
         Relationships: []
       }

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -56,7 +57,7 @@ const AdminTestingDashboard = () => {
 
   const loadUserStats = async (userId: string) => {
     try {
-      // Load from unified user_profiles table first
+      // Load from unified user_profiles table
       const { data: userProfile, error: profileError } = await supabase
         .from('user_profiles')
         .select(`
@@ -87,7 +88,7 @@ const AdminTestingDashboard = () => {
         console.error('User credits error:', creditsError);
       }
 
-      // Safely extract values with fallbacks for missing columns
+      // Extract values with fallbacks for missing columns
       const communityRatingPoints = userProfile?.community_rating_points || userCredits?.total_credits || 0;
       const shopPoints = userProfile?.shop_points || userCredits?.shop_points || 0;
 
