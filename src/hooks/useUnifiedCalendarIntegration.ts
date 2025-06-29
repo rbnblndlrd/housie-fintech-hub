@@ -1,3 +1,4 @@
+
 import { useMemo } from 'react';
 import { useBookingCalendarIntegration, CalendarEvent } from '@/hooks/useBookingCalendarIntegration';
 import { useCalendarAppointments } from '@/hooks/useCalendarAppointments';
@@ -14,7 +15,7 @@ export const useUnifiedCalendarIntegration = () => {
 
   // Convert database appointments to CalendarEvent format
   const appointmentEvents: CalendarEvent[] = useMemo(() => {
-    console.log('Converting appointments to events:', appointments);
+    console.log('Converting appointments to events:', appointments.length);
     
     return appointments.map(appointment => {
       // Parse the date string properly - create local date without timezone conversion

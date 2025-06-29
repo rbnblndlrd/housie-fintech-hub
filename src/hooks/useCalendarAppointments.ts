@@ -30,6 +30,7 @@ export const useCalendarAppointments = () => {
 
     setLoading(true);
     try {
+      console.log('Fetching appointments for user:', user.id);
       const { data, error } = await supabase
         .from('calendar_appointments')
         .select('*')
@@ -54,12 +55,13 @@ export const useCalendarAppointments = () => {
         updated_at: item.updated_at
       }));
       
+      console.log('Fetched appointments:', typedAppointments.length);
       setAppointments(typedAppointments);
     } catch (error) {
       console.error('Error fetching appointments:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de charger les rendez-vous.",
+        title: "Error",
+        description: "Unable to load appointments.",
         variant: "destructive",
       });
     } finally {
@@ -71,6 +73,7 @@ export const useCalendarAppointments = () => {
     if (!user) return null;
 
     try {
+      console.log('Creating appointment:', appointmentData);
       const { data, error } = await supabase
         .from('calendar_appointments')
         .insert({
@@ -99,16 +102,16 @@ export const useCalendarAppointments = () => {
 
       setAppointments(prev => [...prev, newAppointment]);
       toast({
-        title: "Succès",
-        description: "Rendez-vous créé avec succès.",
+        title: "Success",
+        description: "Appointment created successfully.",
       });
 
       return newAppointment;
     } catch (error) {
       console.error('Error creating appointment:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de créer le rendez-vous.",
+        title: "Error",
+        description: "Unable to create appointment.",
         variant: "destructive",
       });
       return null;
@@ -117,6 +120,7 @@ export const useCalendarAppointments = () => {
 
   const updateAppointment = async (id: string, updates: Partial<CalendarAppointment>) => {
     try {
+      console.log('Updating appointment:', id, updates);
       const { data, error } = await supabase
         .from('calendar_appointments')
         .update({
@@ -149,16 +153,16 @@ export const useCalendarAppointments = () => {
       );
 
       toast({
-        title: "Succès",
-        description: "Rendez-vous mis à jour.",
+        title: "Success",
+        description: "Appointment updated.",
       });
 
       return updatedAppointment;
     } catch (error) {
       console.error('Error updating appointment:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le rendez-vous.",
+        title: "Error",
+        description: "Unable to update appointment.",
         variant: "destructive",
       });
       return null;
@@ -167,6 +171,7 @@ export const useCalendarAppointments = () => {
 
   const deleteAppointment = async (id: string) => {
     try {
+      console.log('Deleting appointment:', id);
       const { error } = await supabase
         .from('calendar_appointments')
         .delete()
@@ -176,49 +181,67 @@ export const useCalendarAppointments = () => {
 
       setAppointments(prev => prev.filter(app => app.id !== id));
       toast({
-        title: "Succès",
-        description: "Rendez-vous supprimé.",
+        title: "Success",
+        description: "Appointment deleted.",
       });
     } catch (error) {
       console.error('Error deleting appointment:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de supprimer le rendez-vous.",
+        title: "Error",
+        description: "Unable to delete appointment.",
         variant: "destructive",
       });
     }
   };
 
-  // Set up real-time subscription for appointment changes
+  // Set up data fetching and real-time subscription
   useEffect(() => {
-    if (!user?.id) return;
+    if (!user?.id) {
+      setAppointments([]);
+      return;
+    }
 
     // Initial fetch
     fetchAppointments();
 
-    // Set up real-time subscription with unique channel name
-    const channelName = `calendar-appointments-${user.id}-${Date.now()}`;
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'calendar_appointments',
-          filter: `user_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('Calendar appointment change detected:', payload);
-          // Refresh appointments when changes occur
-          fetchAppointments();
-        }
-      )
-      .subscribe();
+    // Set up real-time subscription with proper cleanup
+    let channel: any = null;
+    
+    const setupSubscription = () => {
+      // Generate a unique channel name to avoid conflicts
+      const channelName = `calendar-appointments-${user.id}-${Date.now()}`;
+      console.log('Setting up calendar subscription:', channelName);
+      
+      channel = supabase
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'calendar_appointments',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('Calendar appointment change detected:', payload);
+            // Refresh appointments when changes occur
+            fetchAppointments();
+          }
+        )
+        .subscribe((status) => {
+          console.log('Calendar subscription status:', status);
+        });
+    };
+
+    // Small delay to ensure proper initialization
+    const timeoutId = setTimeout(setupSubscription, 100);
 
     return () => {
       console.log('Cleaning up calendar appointments subscription');
-      supabase.removeChannel(channel);
+      clearTimeout(timeoutId);
+      if (channel) {
+        supabase.removeChannel(channel);
+      }
     };
   }, [user?.id, fetchAppointments]);
 
