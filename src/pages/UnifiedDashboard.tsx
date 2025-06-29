@@ -44,6 +44,9 @@ const UnifiedDashboard = () => {
   const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
   
+  // Quick Actions navigation state
+  const [currentActionIndex, setCurrentActionIndex] = useState(0);
+  
   // Job Analyzer states
   const [analyzerMode, setAnalyzerMode] = useState<'route' | 'details'>('route');
   const [selectedJobIndex, setSelectedJobIndex] = useState(0);
@@ -154,6 +157,18 @@ const UnifiedDashboard = () => {
 
   const currentJob = routeJobs[selectedJobIndex];
 
+  const handleQuickActionNav = (direction: 'prev' | 'next') => {
+    if (direction === 'prev' && currentActionIndex > 0) {
+      setCurrentActionIndex(currentActionIndex - 1);
+    } else if (direction === 'next' && currentActionIndex < quickActions.length - 1) {
+      setCurrentActionIndex(currentActionIndex + 1);
+    }
+  };
+
+  const goToQuickAction = (index: number) => {
+    setCurrentActionIndex(index);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
@@ -199,27 +214,95 @@ const UnifiedDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Actions - Single Row */}
+          {/* Quick Actions - With Navigation */}
           <div className="mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
-            <div className="grid grid-cols-4 gap-4">
-              {quickActions.map((action) => {
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Quick Actions</h2>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickActionNav('prev')}
+                  disabled={currentActionIndex === 0}
+                  className="h-8 w-8 p-0"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <div className="flex gap-1">
+                  {quickActions.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => goToQuickAction(index)}
+                      className={`w-2 h-2 rounded-full transition-colors ${
+                        index === currentActionIndex ? 'bg-blue-600' : 'bg-gray-300'
+                      }`}
+                    />
+                  ))}
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handleQuickActionNav('next')}
+                  disabled={currentActionIndex === quickActions.length - 1}
+                  className="h-8 w-8 p-0"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Current Quick Action Card */}
+            <div className="flex justify-center">
+              <Card 
+                className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group border-2 border-gray-200 hover:border-gray-300 w-80"
+                onClick={quickActions[currentActionIndex].onClick}
+              >
+                <CardContent className="p-6 text-center">
+                  <div className="flex flex-col items-center gap-4">
+                    <div className="p-4 rounded-xl bg-gray-100 group-hover:bg-gray-200 transition-colors">
+                      {React.createElement(quickActions[currentActionIndex].icon, { 
+                        className: "h-8 w-8 text-gray-700" 
+                      })}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 mb-2 text-xl">
+                        {quickActions[currentActionIndex].title}
+                      </h3>
+                      <p className="text-gray-600 text-sm leading-relaxed">
+                        {quickActions[currentActionIndex].description}
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* All Quick Actions Grid (smaller preview) */}
+            <div className="grid grid-cols-4 gap-3 mt-6">
+              {quickActions.map((action, index) => {
                 const IconComponent = action.icon;
+                const isActive = index === currentActionIndex;
                 
                 return (
                   <Card 
                     key={action.id}
-                    className="hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer group border-2 border-gray-200 hover:border-gray-300"
-                    onClick={action.onClick}
+                    className={`hover:shadow-md transition-all duration-200 cursor-pointer group border ${
+                      isActive ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'
+                    }`}
+                    onClick={() => {
+                      setCurrentActionIndex(index);
+                      action.onClick();
+                    }}
                   >
-                    <CardContent className="p-4 text-center">
-                      <div className="flex flex-col items-center gap-3">
-                        <div className="p-3 rounded-xl bg-gray-100 group-hover:bg-gray-200 transition-colors">
-                          <IconComponent className="h-6 w-6 text-gray-700" />
+                    <CardContent className="p-3 text-center">
+                      <div className="flex flex-col items-center gap-2">
+                        <div className={`p-2 rounded-lg transition-colors ${
+                          isActive ? 'bg-blue-200' : 'bg-gray-100 group-hover:bg-gray-200'
+                        }`}>
+                          <IconComponent className="h-4 w-4 text-gray-700" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900 mb-1">{action.title}</h3>
-                          <p className="text-gray-600 text-xs leading-relaxed">{action.description}</p>
+                          <h4 className="font-medium text-gray-900 text-sm">{action.title}</h4>
                         </div>
                       </div>
                     </CardContent>
