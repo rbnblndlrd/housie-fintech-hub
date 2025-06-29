@@ -36,7 +36,15 @@ export const useUnifiedProfile = () => {
         throw fetchError;
       }
 
-      setProfile(data);
+      // Cast the data with proper type assertions
+      const typedProfile: UnifiedUserProfile = {
+        ...data,
+        active_role: (data.active_role as "customer" | "provider" | "commercial") ?? 'customer',
+        profile_type: (data.profile_type as "commercial" | "individual" | "business") ?? 'individual',
+        achievement_badges: (data.achievement_badges as any[]) ?? []
+      };
+
+      setProfile(typedProfile);
     } catch (error: any) {
       console.error('Error loading unified profile:', error);
       setError(error.message || 'Failed to load profile');
@@ -60,8 +68,16 @@ export const useUnifiedProfile = () => {
 
       if (error) throw error;
 
-      setProfile(data);
-      return data;
+      // Cast the returned data with proper type assertions
+      const typedProfile: UnifiedUserProfile = {
+        ...data,
+        active_role: (data.active_role as "customer" | "provider" | "commercial") ?? 'customer',
+        profile_type: (data.profile_type as "commercial" | "individual" | "business") ?? 'individual',
+        achievement_badges: (data.achievement_badges as any[]) ?? []
+      };
+
+      setProfile(typedProfile);
+      return typedProfile;
     } catch (error: any) {
       console.error('Error updating profile:', error);
       throw error;

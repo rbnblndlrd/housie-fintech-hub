@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -54,11 +53,11 @@ const UnifiedProfilePage = () => {
         company: data.company,
         profession: data.profession,
         
-        // Role capabilities (with defaults for missing columns)
+        // Role capabilities (with proper type casting)
         can_provide_services: data.can_provide_services ?? false,
         can_book_services: data.can_book_services ?? true,
-        active_role: data.active_role ?? 'customer',
-        profile_type: data.profile_type ?? 'individual',
+        active_role: (data.active_role as "customer" | "provider" | "commercial") ?? 'customer',
+        profile_type: (data.profile_type as "commercial" | "individual" | "business") ?? 'individual',
         
         // Provider-specific fields (with defaults)
         business_name: data.business_name,
@@ -89,7 +88,7 @@ const UnifiedProfilePage = () => {
         quality_commendations: data.quality_commendations ?? 0,
         reliability_commendations: data.reliability_commendations ?? 0,
         courtesy_commendations: data.courtesy_commendations ?? 0,
-        achievement_badges: data.achievement_badges ?? [],
+        achievement_badges: (data.achievement_badges as any[]) ?? [],
         network_connections_count: data.network_connections_count ?? 0,
         network_points: data.network_points ?? 0,
         

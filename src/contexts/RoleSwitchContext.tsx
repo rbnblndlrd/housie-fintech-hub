@@ -44,8 +44,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
 
       if (profile) {
-        // Use new unified profile system
-        const activeRole = profile.active_role || 'customer';
+        // Use new unified profile system with proper type casting
+        const activeRole = (profile.active_role as 'customer' | 'provider' | 'commercial') || 'customer';
         setCurrentRole(activeRole);
         
         const roles = ['customer'];
