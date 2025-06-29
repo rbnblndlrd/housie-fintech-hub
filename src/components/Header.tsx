@@ -9,7 +9,6 @@ import NotificationBell from '@/components/NotificationBell';
 import { Button } from '@/components/ui/button';
 import { Link, useNavigate } from 'react-router-dom';
 import { getNavigationItems } from '@/utils/navigationConfig';
-import { Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -64,7 +63,7 @@ const Header = () => {
 
   return (
     <header 
-      className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200"
+      className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800"
       style={{ 
         position: 'fixed', 
         top: 0, 
@@ -76,24 +75,33 @@ const Header = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
-            <Home className="h-8 w-8 text-blue-600" />
-            <span className="text-xl font-bold text-gray-900">HOUSIE</span>
+          <Link to="/" className="flex items-center space-x-3">
+            <img 
+              src="/lovable-uploads/white-housie-logo.png" 
+              alt="HOUSIE" 
+              className="h-8 w-auto"
+              onError={(e) => {
+                // Fallback to text if image fails to load
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.nextElementSibling.style.display = 'block';
+              }}
+            />
+            <span className="text-xl font-bold text-white hidden">HOUSIE</span>
           </Link>
           
           <nav className="hidden md:flex items-center space-x-8">
-            <Link to="/services" className="text-gray-600 hover:text-gray-900 transition-colors">
+            <Link to="/services" className="text-gray-300 hover:text-white transition-colors">
               Services
             </Link>
             {user && (
               <>
-                <Link to="/calendar" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <Link to="/calendar" className="text-gray-300 hover:text-white transition-colors">
                   Calendar
                 </Link>
-                <Link to="/messages" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <Link to="/messages" className="text-gray-300 hover:text-white transition-colors">
                   Messages
                 </Link>
-                <Link to="/customer-dashboard" className="text-gray-600 hover:text-gray-900 transition-colors">
+                <Link to="/customer-dashboard" className="text-gray-300 hover:text-white transition-colors">
                   Dashboard
                 </Link>
               </>
@@ -103,20 +111,21 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
-                <span className="hidden sm:inline text-sm text-gray-600">
+                <span className="hidden sm:inline text-sm text-gray-300">
                   Welcome, {user.email?.split('@')[0]}
                 </span>
                 <Button 
                   onClick={handleSignOut}
                   variant="outline"
                   size="sm"
+                  className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
                 >
                   Sign Out
                 </Button>
               </div>
             ) : (
               <Link to="/auth">
-                <Button className="fintech-button-primary">
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                   Sign In
                 </Button>
               </Link>

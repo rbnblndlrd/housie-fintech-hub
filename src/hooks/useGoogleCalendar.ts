@@ -38,6 +38,7 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       console.error('Error checking calendar connection:', error);
       setIsConnected(false);
       setTokenData(null);
+      // Don't show error toast for missing credentials - it's expected
     } finally {
       setIsLoading(false);
     }
@@ -56,30 +57,40 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
     const handleSuccess = async () => {
       try {
         toast({
-          title: "Succès!",
-          description: "Google Calendar connecté avec succès.",
+          title: "Success!",
+          description: "Google Calendar connected successfully.",
         });
         
         await checkConnection();
       } catch (error) {
         console.error('Error after OAuth success:', error);
         toast({
-          title: "Connexion échouée",
-          description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
+          title: "Connection failed",
+          description: "Unable to connect Google Calendar. Please try again.",
           variant: "destructive",
         });
       }
     };
 
     const handleError = (error: string) => {
+      console.error('Google Calendar connection error:', error);
       toast({
-        title: "Connexion échouée",
-        description: "Impossible de connecter Google Calendar. Veuillez réessayer.",
+        title: "Connection failed",
+        description: "Unable to connect Google Calendar. Please try again.",
         variant: "destructive",
       });
     };
 
-    GoogleCalendarAuth.startOAuthFlow(user.id, handleSuccess, handleError);
+    try {
+      GoogleCalendarAuth.startOAuthFlow(user.id, handleSuccess, handleError);
+    } catch (error) {
+      console.error('Error starting OAuth flow:', error);
+      toast({
+        title: "Connection failed",
+        description: "Unable to start Google Calendar connection. Please try again.",
+        variant: "destructive",
+      });
+    }
   }, [user, toast, checkConnection]);
 
   const disconnectCalendar = useCallback(async () => {
@@ -94,14 +105,14 @@ export const useGoogleCalendar = (): UseGoogleCalendarReturn => {
       setTokenData(null);
       
       toast({
-        title: "Déconnecté",
-        description: "Google Calendar a été déconnecté.",
+        title: "Disconnected",
+        description: "Google Calendar has been disconnected.",
       });
     } catch (error) {
       console.error('Error disconnecting calendar:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de déconnecter Google Calendar.",
+        title: "Error",
+        description: "Unable to disconnect Google Calendar.",
         variant: "destructive",
       });
     } finally {
