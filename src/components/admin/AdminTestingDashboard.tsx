@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, User, Star, Award, MessageCircle, ThumbsUp, ShoppingBag } from 'lucide-react';
+import { Loader2, User, Star, Award, MessageCircle, ThumbsUp, ShoppingBag, AlertTriangle } from 'lucide-react';
 import ShopPointsWidget from './ShopPointsWidget';
 
 // Use AdminUser to avoid conflicts with other User types
@@ -33,6 +34,7 @@ const AdminTestingDashboard = () => {
   const [userStats, setUserStats] = useState<UserStats | null>(null);
   const [loading, setLoading] = useState(false);
   const [operationLoading, setOperationLoading] = useState(false);
+  const [lastError, setLastError] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Load users on component mount
@@ -128,15 +130,24 @@ const AdminTestingDashboard = () => {
     if (!selectedUser) return;
 
     setOperationLoading(true);
+    setLastError(null);
+    
     try {
+      console.log('🎯 Adding community points:', { userId: selectedUser.id, points, reason });
+      
       const { error } = await supabase.rpc('award_community_rating_points', {
         p_user_id: selectedUser.id,
         p_points: points,
         p_reason: reason
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Community points error:', error);
+        throw error;
+      }
 
+      console.log('✅ Successfully added community points');
+      
       toast({
         title: "Success",
         description: `Added ${points} community points to ${selectedUser.full_name}`,
@@ -146,9 +157,12 @@ const AdminTestingDashboard = () => {
       await loadUserStats(selectedUser.id);
     } catch (error: any) {
       console.error('❌ Error adding community points:', error);
+      const errorMsg = error.message || "Failed to add community points";
+      setLastError(errorMsg);
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to add community points",
+        description: errorMsg,
         variant: "destructive"
       });
     } finally {
@@ -160,7 +174,11 @@ const AdminTestingDashboard = () => {
     if (!selectedUser) return;
 
     setOperationLoading(true);
+    setLastError(null);
+    
     try {
+      console.log('🎯 Creating test review:', { userId: selectedUser.id, rating });
+      
       const { error } = await supabase.rpc('admin_create_test_review', {
         p_provider_user_id: selectedUser.id,
         p_rating: rating,
@@ -168,8 +186,21 @@ const AdminTestingDashboard = () => {
         p_add_commendations: rating >= 4
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Test review error:', error);
+        
+        // Provide specific error handling
+        if (error.code === '23503') {
+          const errorMsg = "Database constraint violation. The user may not have a proper provider profile or required dependencies are missing.";
+          setLastError(errorMsg);
+          throw new Error(errorMsg);
+        }
+        
+        throw error;
+      }
 
+      console.log('✅ Successfully created test review');
+      
       toast({
         title: "Success",
         description: `Created ${rating}-star test review for ${selectedUser.full_name}`,
@@ -179,9 +210,12 @@ const AdminTestingDashboard = () => {
       await loadUserStats(selectedUser.id);
     } catch (error: any) {
       console.error('❌ Error creating test review:', error);
+      const errorMsg = error.message || "Failed to create test review";
+      setLastError(errorMsg);
+      
       toast({
         title: "Error", 
-        description: error.message || "Failed to create test review",
+        description: errorMsg,
         variant: "destructive"
       });
     } finally {
@@ -193,14 +227,31 @@ const AdminTestingDashboard = () => {
     if (!selectedUser) return;
 
     setOperationLoading(true);
+    setLastError(null);
+    
     try {
+      console.log('🎯 Adding commendation:', { userId: selectedUser.id, type });
+      
       const { error } = await supabase.rpc('admin_add_commendation', {
         p_provider_user_id: selectedUser.id,
         p_commendation_type: type
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Commendation error:', error);
+        
+        // Provide specific error handling
+        if (error.code === '23503') {
+          const errorMsg = "Database constraint violation. The user may not have a proper provider profile or required dependencies are missing.";
+          setLastError(errorMsg);
+          throw new Error(errorMsg);
+        }
+        
+        throw error;
+      }
 
+      console.log('✅ Successfully added commendation');
+      
       toast({
         title: "Success",
         description: `Added ${type} commendation to ${selectedUser.full_name}`,
@@ -210,14 +261,26 @@ const AdminTestingDashboard = () => {
       await loadUserStats(selectedUser.id);
     } catch (error: any) {
       console.error('❌ Error adding commendation:', error);
+      const errorMsg = error.message || "Failed to add commendation";
+      setLastError(errorMsg);
+      
       toast({
         title: "Error",
-        description: error.message || "Failed to add commendation", 
+        description: errorMsg, 
         variant: "destructive"
       });
     } finally {
       setOperationLoading(false);
     }
+  };
+
+  const retryLastOperation = () => {
+    setLastError(null);
+    // You could store the last operation and retry it here
+    toast({
+      title: "Info",
+      description: "Please try the operation again",
+    });
   };
 
   if (loading) {
@@ -240,6 +303,35 @@ const AdminTestingDashboard = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Error Display */}
+          {lastError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div className="flex items-start space-x-3">
+                <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                <div className="flex-1">
+                  <h4 className="font-medium text-red-900 mb-1">Operation Failed</h4>
+                  <p className="text-red-700 text-sm mb-3">{lastError}</p>
+                  <div className="text-xs text-red-600 mb-3">
+                    <p><strong>Possible solutions:</strong></p>
+                    <ul className="list-disc list-inside ml-2 mt-1">
+                      <li>Ensure the user has a provider profile created</li>
+                      <li>Check that all required database dependencies exist</li>
+                      <li>Verify RLS policies allow the operation</li>
+                    </ul>
+                  </div>
+                  <Button 
+                    onClick={retryLastOperation}
+                    variant="outline"
+                    size="sm"
+                    className="border-red-300 text-red-700 hover:bg-red-50"
+                  >
+                    Retry Operation
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* User Selection */}
           <div className="space-y-2">
             <label className="text-sm font-medium">Select User</label>
@@ -248,6 +340,7 @@ const AdminTestingDashboard = () => {
               onValueChange={(value) => {
                 const user = users.find(u => u.id === value);
                 setSelectedUser(user || null);
+                setLastError(null); // Clear error when switching users
               }}
             >
               <SelectTrigger>
