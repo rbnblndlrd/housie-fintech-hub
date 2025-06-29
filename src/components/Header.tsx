@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import DynamicNavigation from '@/components/DynamicNavigation';
 import UserMenu from '@/components/header/UserMenu';
 import HeaderActions from '@/components/header/HeaderActions';
@@ -11,7 +11,7 @@ import { getNavigationItems } from '@/utils/navigationConfig';
 
 const Header = () => {
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
 
   // Get navigation items based on user and current role
@@ -75,7 +75,7 @@ const Header = () => {
               <UserMenu />
             ) : (
               <Button 
-                onClick={() => navigate('/auth')}
+                onClick={() => navigate('/login')}
                 className="bg-blue-600 hover:bg-blue-700 text-white"
                 style={{ pointerEvents: 'auto', cursor: 'pointer' }}
               >

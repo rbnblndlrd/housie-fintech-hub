@@ -20,9 +20,22 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [availableRoles, setAvailableRoles] = useState<string[]>(['customer']);
   const [canSwitchToProvider, setCanSwitchToProvider] = useState(false);
 
+  console.log('🔄 RoleSwitchProvider render:', { 
+    hasUser: !!user, 
+    currentRole, 
+    availableRoles,
+    canSwitchToProvider 
+  });
+
   useEffect(() => {
     if (user) {
+      console.log('🔄 Loading user capabilities for:', user.id);
       loadUserCapabilities();
+    } else {
+      console.log('🔄 No user, resetting to defaults');
+      setCurrentRole('customer');
+      setAvailableRoles(['customer']);
+      setCanSwitchToProvider(false);
     }
   }, [user]);
 
@@ -30,6 +43,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!user) return;
 
     try {
+      console.log('🔄 Fetching user profile from database...');
+      
       // Try to get from user_profiles with simplified system
       const { data: profile, error } = await supabase
         .from('user_profiles')
@@ -38,11 +53,16 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         .single();
 
       if (error && error.code !== 'PGRST116') {
-        console.error('Error loading user capabilities:', error);
+        console.error('❌ Error loading user capabilities:', error);
         return;
       }
 
       if (profile) {
+        console.log('✅ Profile loaded:', { 
+          activeRole: profile.active_role,
+          canProvideServices: profile.can_provide_services 
+        });
+        
         // Use simplified profile system with only customer/provider
         const activeRole = (profile.active_role as 'customer' | 'provider') || 'customer';
         setCurrentRole(activeRole);
@@ -54,7 +74,10 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
         
         setAvailableRoles(roles);
+        console.log('✅ Roles set:', { activeRole, availableRoles: roles });
       } else {
+        console.log('⚠️ No profile found, checking legacy users table...');
+        
         // Fallback to checking users table for legacy support
         const { data: userData } = await supabase
           .from('users')
@@ -63,6 +86,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
           .single();
 
         if (userData) {
+          console.log('✅ Legacy user data:', userData);
           const roles = ['customer'];
           if (userData.can_provide) {
             roles.push('provider');
@@ -72,7 +96,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         }
       }
     } catch (error) {
-      console.error('Error in loadUserCapabilities:', error);
+      console.error('❌ Error in loadUserCapabilities:', error);
     }
   };
 
@@ -80,6 +104,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!user || !availableRoles.includes(newRole)) {
       throw new Error('Cannot switch to this role');
     }
+
+    console.log('🔄 Switching role from', currentRole, 'to', newRole);
 
     try {
       const { error } = await supabase
@@ -90,8 +116,9 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (error) throw error;
 
       setCurrentRole(newRole);
+      console.log('✅ Role switched successfully to:', newRole);
     } catch (error) {
-      console.error('Error switching role:', error);
+      console.error('❌ Error switching role:', error);
       throw error;
     }
   };

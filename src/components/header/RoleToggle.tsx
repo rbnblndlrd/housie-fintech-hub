@@ -2,24 +2,30 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Switch } from '@/components/ui/switch';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 
 const RoleToggle = () => {
-  const { currentRole, toggleRole } = useRole();
+  const { currentRole, switchRole } = useRoleSwitch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleRoleToggle = (checked: boolean) => {
-    console.log('🔧 Role switch toggled to:', checked ? 'provider' : 'customer');
-    toggleRole();
-    
-    // Instantly redirect to the appropriate dashboard
+  console.log('🔧 RoleToggle render:', { currentRole, pathname: location.pathname });
+
+  const handleRoleToggle = async (checked: boolean) => {
     const newRole = checked ? 'provider' : 'customer';
+    console.log('🔧 Role switch toggled to:', newRole);
     
-    // Check if user is currently on a dashboard page
-    if (location.pathname === '/customer-dashboard' || location.pathname === '/provider-dashboard') {
-      const targetDashboard = newRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
-      navigate(targetDashboard);
+    try {
+      await switchRole(newRole);
+      console.log('✅ Role switched successfully to:', newRole);
+      
+      // Redirect to unified dashboard if currently on dashboard
+      if (location.pathname.includes('/dashboard')) {
+        console.log('🔧 Redirecting to unified dashboard');
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.error('❌ Role switch failed:', error);
     }
   };
 

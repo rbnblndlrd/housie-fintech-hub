@@ -10,6 +10,8 @@ import { useState } from 'react';
 const Index = () => {
   const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
 
+  console.log('🏠 Index page rendering...');
+
   const handleUserTypeSelect = (userType: string) => {
     setSelectedUserType(userType);
   };
@@ -57,12 +59,12 @@ class ErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error) {
-    console.warn('Component error caught:', error);
+    console.warn('⚠️ Index page component error caught:', error);
     return { hasError: true };
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.warn('Error boundary caught error:', error, errorInfo);
+    console.warn('⚠️ Index page error boundary caught error:', error, errorInfo);
   }
 
   render() {

@@ -8,7 +8,7 @@ import { Toaster as Sonner } from '@/components/ui/sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
-import { RoleProvider } from '@/contexts/RoleContext';
+import { SubscriptionProvider } from '@/contexts/SubscriptionContext';
 import Index from '@/pages/Index';
 import Services from '@/pages/Services';
 import BookingHistory from '@/pages/BookingHistory';
@@ -23,13 +23,15 @@ import UnifiedProfilePage from '@/components/profile/UnifiedProfilePage';
 const queryClient = new QueryClient();
 
 function App() {
+  console.log('🚀 App component rendering...');
+  
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <SessionContextProvider supabaseClient={supabase}>
           <AuthProvider>
-            <RoleProvider>
-              <RoleSwitchProvider>
+            <RoleSwitchProvider>
+              <SubscriptionProvider>
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
@@ -49,8 +51,8 @@ function App() {
                     <Route path="/profile" element={<UnifiedProfilePage />} />
                   </Routes>
                 </BrowserRouter>
-              </RoleSwitchProvider>
-            </RoleProvider>
+              </SubscriptionProvider>
+            </RoleSwitchProvider>
           </AuthProvider>
         </SessionContextProvider>
       </QueryClientProvider>
