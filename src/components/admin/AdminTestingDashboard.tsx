@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -57,22 +56,24 @@ const AdminTestingDashboard = () => {
 
   const loadUserStats = async (userId: string) => {
     try {
-      const { data: providerProfile, error: providerError } = await supabase
-        .from('provider_profiles')
+      // Load from unified user_profiles table instead of provider_profiles
+      const { data: userProfile, error: profileError } = await supabase
+        .from('user_profiles')
         .select(`
           community_rating_points,
           shop_points,
-          network_connections,
+          network_connections_count,
           total_reviews,
           quality_commendations,
           reliability_commendations,
-          courtesy_commendations
+          courtesy_commendations,
+          total_bookings
         `)
         .eq('user_id', userId)
         .single();
 
-      if (providerError && providerError.code !== 'PGRST116') {
-        console.error('Provider profile error:', providerError);
+      if (profileError && profileError.code !== 'PGRST116') {
+        console.error('User profile error:', profileError);
       }
 
       const { data: userCredits, error: creditsError } = await supabase
@@ -85,16 +86,16 @@ const AdminTestingDashboard = () => {
         console.error('User credits error:', creditsError);
       }
 
-      const communityRatingPoints = providerProfile?.community_rating_points || userCredits?.total_credits || 0;
-      const shopPoints = providerProfile?.shop_points || userCredits?.shop_points || 0;
+      const communityRatingPoints = userProfile?.community_rating_points || userCredits?.total_credits || 0;
+      const shopPoints = userProfile?.shop_points || userCredits?.shop_points || 0;
 
       setUserStats({
         communityRatingPoints,
-        totalReviews: providerProfile?.total_reviews || 0,
-        networkConnections: providerProfile?.network_connections || 0,
-        qualityCommendations: providerProfile?.quality_commendations || 0,
-        reliabilityCommendations: providerProfile?.reliability_commendations || 0,
-        courtesyCommendations: providerProfile?.courtesy_commendations || 0,
+        totalReviews: userProfile?.total_reviews || 0,
+        networkConnections: userProfile?.network_connections_count || 0,
+        qualityCommendations: userProfile?.quality_commendations || 0,
+        reliabilityCommendations: userProfile?.reliability_commendations || 0,
+        courtesyCommendations: userProfile?.courtesy_commendations || 0,
         shopPoints
       });
     } catch (error: any) {
@@ -275,7 +276,7 @@ const AdminTestingDashboard = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
-            Community Rating & Shop Points Testing Dashboard
+            Community Rating & Shop Points Testing Dashboard (Unified Profile System)
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
