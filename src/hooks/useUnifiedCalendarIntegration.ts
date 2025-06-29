@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -68,7 +67,7 @@ export const useUnifiedCalendarIntegration = () => {
       }
 
       // Fetch provider bookings if user has a provider profile
-      let providerBookings = { data: [], error: null };
+      let providerBookingsData = [];
       try {
         const { data: providerProfile } = await supabase
           .from('provider_profiles')
@@ -77,7 +76,7 @@ export const useUnifiedCalendarIntegration = () => {
           .single();
 
         if (providerProfile) {
-          providerBookings = await supabase
+          const { data: providerBookings, error: providerBookingsError } = await supabase
             .from('bookings')
             .select(`
               *,
@@ -89,6 +88,10 @@ export const useUnifiedCalendarIntegration = () => {
               service:service_id (title)
             `)
             .eq('provider_id', providerProfile.id);
+
+          if (!providerBookingsError && providerBookings) {
+            providerBookingsData = providerBookings;
+          }
         }
       } catch (providerError) {
         console.log('No provider profile found or error fetching provider bookings:', providerError);
@@ -120,8 +123,8 @@ export const useUnifiedCalendarIntegration = () => {
 
       // Convert bookings to calendar events
       const allBookingsData = [
-        ...(customerBookings?.data || []),
-        ...(providerBookings.data || [])
+        ...(customerBookings || []),
+        ...providerBookingsData
       ];
 
       const bookingEvents: CalendarEvent[] = allBookingsData.map(booking => ({
