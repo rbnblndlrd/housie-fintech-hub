@@ -32,11 +32,11 @@ const NotificationIndicator = () => {
       variant="ghost" 
       size="icon" 
       onClick={handleClick}
-      className="relative h-8 w-8 hover:bg-gray-100 focus:bg-gray-100"
+      className="relative h-8 w-8 hover:bg-gray-700 focus:bg-gray-700"
     >
-      <Bell className="h-4 w-4 text-gray-700" />
+      <Bell className="h-4 w-4 text-white" />
       {unreadCount > 0 && (
-        <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold border-2 border-white">
+        <div className="absolute -top-1 -right-1 min-w-[18px] h-[18px] bg-red-500 text-white text-xs rounded-full flex items-center justify-center font-bold border-2 border-gray-900">
           {unreadCount > 99 ? '99+' : unreadCount}
         </div>
       )}

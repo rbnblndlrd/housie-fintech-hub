@@ -5,6 +5,7 @@ import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import DynamicNavigation from '@/components/DynamicNavigation';
 import UserMenu from '@/components/header/UserMenu';
 import HeaderActions from '@/components/header/HeaderActions';
+import NotificationBell from '@/components/NotificationBell';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
 import { getNavigationItems } from '@/utils/navigationConfig';
@@ -68,11 +69,14 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Right side - Actions and User Menu */}
+          {/* Right side - Actions, Notifications, and User Menu */}
           <div className="flex items-center space-x-4" style={{ pointerEvents: 'auto' }}>
             <HeaderActions />
             {user ? (
-              <UserMenu />
+              <>
+                <NotificationBell />
+                <UserMenu />
+              </>
             ) : (
               <Button 
                 onClick={() => navigate('/login')}
