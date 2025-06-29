@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
 import ChatPanel from './ChatPanel';
-import { usePopArt } from '@/contexts/PopArtContext';
 import { useLocation } from 'react-router-dom';
 
 interface ChatBubbleProps {
@@ -28,7 +27,6 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>(initialTab);
   const { totalUnreadCount } = useChat();
-  const { triggerPopArt } = usePopArt();
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -192,7 +190,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
             {/* Chat Content */}
             <div className="flex-1 overflow-hidden">
-              <ChatPanel activeTab={activeTab} onPopArtTrigger={triggerPopArt} />
+              <ChatPanel activeTab={activeTab} />
             </div>
           </div>
         )}

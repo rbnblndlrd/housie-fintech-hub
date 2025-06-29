@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, CheckCircle, Eye, FileCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import PopArtMascot from "@/components/PopArtMascot";
 
 const HeroSection = () => {
   return (
@@ -12,12 +11,24 @@ const HeroSection = () => {
       
       <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative">
         <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[70vh]">
-          {/* Left Side - Enhanced Mascot */}
+          {/* Left Side - Hero Mascot/Visual */}
           <div className="relative flex justify-center lg:justify-start order-2 lg:order-1">
             <div className="relative">
-              {/* Mascot with enhanced styling */}
+              {/* Main Hero Visual */}
               <div className="relative transform hover:scale-105 transition-all duration-300">
-                <PopArtMascot className="w-56 h-56 lg:w-72 lg:h-72 xl:w-80 xl:h-80" />
+                <div className="w-56 h-56 lg:w-72 lg:h-72 xl:w-80 xl:h-80 bg-gradient-to-br from-yellow-400 via-orange-400 to-red-500 rounded-3xl flex items-center justify-center shadow-2xl relative overflow-hidden p-1">
+                  <div className="w-full h-full bg-gradient-to-br from-yellow-300 to-orange-400 rounded-2xl flex items-center justify-center p-1">
+                    <img 
+                      src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
+                      alt="HOUSIE Mascot" 
+                      className="w-full h-full rounded-xl object-cover transition-all duration-500"
+                      onError={(e) => {
+                        console.warn('Mascot image failed to load');
+                        e.currentTarget.style.display = 'none';
+                      }}
+                    />
+                  </div>
+                </div>
                 
                 {/* Dynamic animated decorative elements */}
                 <div className="absolute inset-0 -z-10">

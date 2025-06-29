@@ -90,8 +90,7 @@ export const useClaudeChat = () => {
 
   const sendMessage = useCallback(async (
     content: string, 
-    sessionId: string,
-    onPopArtTrigger?: () => void
+    sessionId: string
   ) => {
     if (!user || !content.trim()) return;
 
@@ -236,13 +235,6 @@ export const useClaudeChat = () => {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-
-      // Trigger pop art easter egg if needed
-      if (data.response.toLowerCase().includes('color') || 
-          data.response.toLowerCase().includes('art') ||
-          content.toLowerCase().includes('show me colors')) {
-        onPopArtTrigger?.();
-      }
 
     } catch (error) {
       console.error('Error sending message to Claude:', error);
