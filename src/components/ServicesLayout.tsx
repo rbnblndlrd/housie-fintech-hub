@@ -67,8 +67,10 @@ const ServicesLayout: React.FC<ServicesLayoutProps> = ({
             {/* Services Grid */}
             <div className="lg:col-span-3">
               <ServicesGrid
-                services={filteredServices}
+                services={services}
+                filteredServices={filteredServices}
                 isLoading={isLoading}
+                fallbackServices={[]}
                 onBookNow={onBookNow}
               />
             </div>
