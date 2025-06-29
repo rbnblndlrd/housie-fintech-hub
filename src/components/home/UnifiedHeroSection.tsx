@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, CheckCircle, Eye, FileCheck } from "lucide-react";
 import { Link } from "react-router-dom";
-import UserTypeSelector from './UserTypeSelector';
+import { UserTypeSelector } from './UserTypeSelector';
 
 interface UnifiedHeroSectionProps {
   onUserTypeSelect: (userType: string) => void;
