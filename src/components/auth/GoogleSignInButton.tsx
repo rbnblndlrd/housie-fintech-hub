@@ -13,31 +13,27 @@ const GoogleSignInButton: React.FC = () => {
     try {
       setIsLoading(true);
       
-      // Get the current origin for redirect
-      const currentOrigin = window.location.origin;
+      console.log('🚀 Starting Google OAuth flow...');
       
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${currentOrigin}/`,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          skipBrowserRedirect: false,
+          redirectTo: `${window.location.origin}/`,
         },
       });
 
       if (error) {
-        console.error('Google OAuth error:', error);
+        console.error('❌ Google OAuth error:', error);
         
-        // Provide specific error messages for common issues
+        // Handle specific error types
         let errorMessage = 'Unable to sign in with Google. Please try again.';
         
-        if (error.message.includes('domain') || error.message.includes('redirect')) {
+        if (error.message.includes('popup')) {
+          errorMessage = 'Popup was blocked. Please allow popups and try again.';
+        } else if (error.message.includes('access_denied')) {
+          errorMessage = 'Access was denied. Please try signing in again.';
+        } else if (error.message.includes('domain')) {
           errorMessage = 'Domain configuration issue. Please contact support.';
-        } else if (error.message.includes('unauthorized')) {
-          errorMessage = 'Google Sign-In is not properly configured. Please contact support.';
         }
         
         toast({
@@ -46,14 +42,19 @@ const GoogleSignInButton: React.FC = () => {
           variant: "destructive",
         });
         
-        throw error;
+        return;
       }
 
-      // The redirect will happen automatically if successful
-      console.log('Google OAuth initiated successfully');
+      // OAuth initiated successfully - popup should open
+      console.log('✅ Google OAuth popup should be opening...');
       
     } catch (error) {
-      console.error('Google Sign-In error:', error);
+      console.error('💥 Unexpected error during Google Sign-In:', error);
+      toast({
+        title: "Sign-In Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -88,7 +89,7 @@ const GoogleSignInButton: React.FC = () => {
           />
         </svg>
       )}
-      {isLoading ? 'Connecting...' : 'Continue with Google'}
+      {isLoading ? 'Opening Google...' : 'Continue with Google'}
     </Button>
   );
 };
