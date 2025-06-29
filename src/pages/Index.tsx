@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/home/HeroSection';
@@ -20,22 +19,21 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section - seamless background flow */}
+      {/* Hero Section with extended background for seamless transition */}
       <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
-        <HeroSection />
+        <div className="relative">
+          <HeroSection />
+          {/* Seamless gradient extension from hero to next section */}
+          <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-b from-transparent to-black/10 pointer-events-none"></div>
+        </div>
       </ErrorBoundary>
       
-      {/* Enhanced Gradient Transition - longer and smoother */}
-      <div className="h-48 bg-gradient-to-b from-transparent via-black/5 to-black/15 -mt-32 relative z-10"></div>
-      
-      {/* User Type Selector - seamless background flow */}
+      {/* User Type Selector - clean positioning */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
-        <div className="-mt-32 relative z-20">
-          <UserTypeSelector 
-            onUserTypeSelect={handleUserTypeSelect}
-            selectedUserType={selectedUserType}
-          />
-        </div>
+        <UserTypeSelector 
+          onUserTypeSelect={handleUserTypeSelect}
+          selectedUserType={selectedUserType}
+        />
       </ErrorBoundary>
       
       {/* Demo Section - seamless background flow */}
