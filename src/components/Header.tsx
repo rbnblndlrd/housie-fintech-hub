@@ -77,21 +77,25 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3">
             <img 
-              src="/lovable-uploads/243ecf21-712f-439a-9efc-a299b76af346.png" 
+              src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
               alt="HOUSIE" 
-              className="h-10 w-auto brightness-0 invert"
+              className="h-10 w-auto"
               onError={(e) => {
-                // Fallback to the circular branded logo if the white version fails
-                const target = e.currentTarget as HTMLImageElement;
-                target.src = '/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png';
-                target.className = 'h-10 w-auto';
-                target.onError = () => {
-                  // Final fallback - hide image and show text
-                  target.style.display = 'none';
-                  const nextSibling = target.nextElementSibling as HTMLElement;
-                  if (nextSibling) {
-                    nextSibling.style.display = 'block';
-                  }
+                console.log('🖼️ Primary HOUSIE logo failed, trying fallback...');
+                const target = e.currentTarget;
+                target.src = '/lovable-uploads/243ecf21-712f-439a-9efc-a299b76af346.png';
+                target.onerror = () => {
+                  console.log('🖼️ Fallback logo also failed, using final fallback...');
+                  target.src = '/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png';
+                  target.className = 'h-10 w-auto';
+                  target.onerror = () => {
+                    console.log('🖼️ All logos failed, hiding image and showing text');
+                    target.style.display = 'none';
+                    const nextSibling = target.nextElementSibling as HTMLElement;
+                    if (nextSibling) {
+                      nextSibling.style.display = 'block';
+                    }
+                  };
                 };
               }}
             />
