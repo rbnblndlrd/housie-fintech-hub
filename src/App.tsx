@@ -20,6 +20,7 @@ import InteractiveMapPage from '@/pages/InteractiveMapPage';
 import CompetitiveAdvantage from '@/pages/CompetitiveAdvantage';
 import HelpCenter from '@/pages/HelpCenter';
 import Calendar from '@/pages/Calendar';
+import Social from '@/pages/Social';
 import AdminTestingDashboard from '@/components/admin/AdminTestingDashboard';
 import UnifiedProfilePage from '@/components/profile/UnifiedProfilePage';
 
@@ -52,6 +53,7 @@ function App() {
                     <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
                     <Route path="/help" element={<HelpCenter />} />
                     <Route path="/calendar" element={<Calendar />} />
+                    <Route path="/social" element={<Social />} />
                     <Route path="/admin/users" element={<UnifiedDashboard />} />
                     <Route path="/admin/testing" element={<AdminTestingDashboard />} />
                     <Route path="/admin/fraud" element={<AdminDashboard />} />

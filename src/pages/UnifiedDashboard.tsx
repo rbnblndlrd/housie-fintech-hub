@@ -1,513 +1,238 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import Header from '@/components/Header';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { useNavigate } from 'react-router-dom';
 import { 
-  CalendarDays, 
-  DollarSign, 
-  Star, 
-  Users, 
-  TrendingUp, 
-  MapPin, 
-  Clock,
-  UserCheck,
-  Heart,
-  Award,
-  UsersIcon,
-  Plus
+  Calendar, 
+  Globe, 
+  MessageSquare, 
+  User,
+  Bell,
+  Star,
+  TrendingUp,
+  Shield,
+  MapPin
 } from 'lucide-react';
-import CommunityRatingDisplay from '@/components/provider/CommunityRatingDisplay';
-import ShopPointsWidget from '@/components/admin/ShopPointsWidget';
-import { useShopPoints } from '@/hooks/useShopPoints';
 
 const UnifiedDashboard = () => {
   const { user } = useAuth();
   const { currentRole } = useRoleSwitch();
-  const { toast } = useToast();
-  const { shopPointsData } = useShopPoints();
-  
-  const [stats, setStats] = useState({
-    totalBookings: 0,
-    pendingBookings: 0,
-    monthlyRevenue: 0,
-    averageRating: 0,
-    communityRatingPoints: 0,
-    favoriteProviders: 0,
-    completedBookings: 0
-  });
-  const [recentBookings, setRecentBookings] = useState([]);
-  const [userGroups, setUserGroups] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (user) {
-      loadDashboardData();
-      loadUserGroups();
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
+
+  const quickActions = [
+    {
+      id: 'manager',
+      title: 'Manager',
+      description: 'Calendar, pool management, and client coordination',
+      icon: Calendar,
+      color: 'from-blue-600 to-indigo-600',
+      onClick: () => navigate('/calendar')
+    },
+    {
+      id: 'map',
+      title: 'Interactive Map',
+      description: 'GPS overlay, navigation, and location management',
+      icon: Globe,
+      color: 'from-green-600 to-teal-600',
+      onClick: () => navigate('/interactive-map')
+    },
+    {
+      id: 'network',
+      title: 'Feedback & Social',
+      description: 'Network connections, reviews, and social features',
+      icon: MessageSquare,
+      color: 'from-purple-600 to-pink-600',
+      size: 'large',
+      onClick: () => navigate('/social')
+    },
+    {
+      id: 'profile',
+      title: 'Profile & Settings',
+      description: 'Quick profile updates and important settings',
+      icon: User,
+      color: 'from-orange-600 to-red-600',
+      onClick: () => navigate('/profile')
     }
-  }, [user, currentRole]);
+  ];
 
-  const loadDashboardData = async () => {
-    try {
-      setLoading(true);
+  const notifications = [
+    { type: 'booking', message: 'New booking request from Sarah M.', time: '5 min ago' },
+    { type: 'review', message: 'You received a 5-star review!', time: '1 hour ago' },
+    { type: 'payment', message: 'Payment of $120 received', time: '2 hours ago' }
+  ];
+
+  const stats = {
+    rating: 4.8,
+    connections: 47,
+    achievements: 'Quality Pro',
+    totalJobs: currentRole === 'provider' ? 156 : 23,
+    earnings: currentRole === 'provider' ? '$3,450' : null
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+      <Header />
       
-      if (currentRole === 'provider') {
-        await loadProviderData();
-      } else {
-        await loadCustomerData();
-      }
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load dashboard data",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadUserGroups = async () => {
-    // TODO: Load user's groups when groups table is created
-    // This is a placeholder for now
-    setUserGroups([]);
-  };
-
-  const loadProviderData = async () => {
-    // Get provider profile
-    const { data: profile } = await supabase
-      .from('provider_profiles')
-      .select('*')
-      .eq('user_id', user?.id)
-      .single();
-
-    if (profile) {
-      // Get bookings stats
-      const { data: bookings } = await supabase
-        .from('bookings')
-        .select('*')
-        .eq('provider_id', profile.id);
-
-      const totalBookings = bookings?.length || 0;
-      const pendingBookings = bookings?.filter(b => b.status === 'pending').length || 0;
-      const completedBookings = bookings?.filter(b => b.status === 'completed') || [];
-      const monthlyRevenue = completedBookings.reduce((sum, booking) => sum + (booking.total_amount || 0), 0);
-
-      setStats({
-        totalBookings,
-        pendingBookings,
-        monthlyRevenue,
-        averageRating: profile.average_rating || 0,
-        communityRatingPoints: profile.community_rating_points || 0,
-        favoriteProviders: 0,
-        completedBookings: completedBookings.length
-      });
-
-      // Get recent bookings
-      const { data: recent } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          services:service_id (title),
-          users:customer_id (full_name)
-        `)
-        .eq('provider_id', profile.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      setRecentBookings(recent || []);
-    }
-  };
-
-  const loadCustomerData = async () => {
-    // Get customer bookings
-    const { data: bookings } = await supabase
-      .from('bookings')
-      .select('*')
-      .eq('customer_id', user?.id);
-
-    const totalBookings = bookings?.length || 0;
-    const pendingBookings = bookings?.filter(b => b.status === 'pending').length || 0;
-    const completedBookings = bookings?.filter(b => b.status === 'completed').length || 0;
-
-    setStats({
-      totalBookings,
-      pendingBookings,
-      monthlyRevenue: 0,
-      averageRating: 0,
-      communityRatingPoints: 0,
-      favoriteProviders: 0,
-      completedBookings
-    });
-
-    // Get recent bookings
-    const { data: recent } = await supabase
-      .from('bookings')
-      .select(`
-        *,
-        services:service_id (title),
-        provider_profiles:provider_id (business_name)
-      `)
-      .eq('customer_id', user?.id)
-      .order('created_at', { ascending: false })
-      .limit(5);
-
-    setRecentBookings(recent || []);
-  };
-
-  const renderCustomerView = () => (
-    <div className="space-y-6">
-      {/* Customer Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Welcome Section */}
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
               <div>
-                <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
+                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                  Welcome back, {user.user_metadata?.full_name || user.email?.split('@')[0]}!
+                </h1>
+                <div className="flex items-center gap-3">
+                  <Badge className="bg-blue-100 text-blue-800 border-blue-200">
+                    {currentRole === 'provider' ? 'Service Provider' : 'Customer'}
+                  </Badge>
+                  <div className="flex items-center gap-1 text-sm text-gray-600">
+                    <MapPin className="h-4 w-4" />
+                    Montreal, QC
+                  </div>
+                </div>
               </div>
-              <CalendarDays className="h-8 w-8 text-blue-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Completed</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.completedBookings}</p>
+              
+              {/* Quick Stats */}
+              <div className="flex gap-4">
+                <div className="text-center">
+                  <div className="flex items-center gap-1 text-yellow-500 mb-1">
+                    <Star className="h-4 w-4 fill-current" />
+                    <span className="font-bold">{stats.rating}</span>
+                  </div>
+                  <p className="text-xs text-gray-500">Rating</p>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-gray-900 mb-1">{stats.connections}</div>
+                  <p className="text-xs text-gray-500">Connections</p>
+                </div>
+                <div className="text-center">
+                  <div className="font-bold text-gray-900 mb-1">{stats.totalJobs}</div>
+                  <p className="text-xs text-gray-500">{currentRole === 'provider' ? 'Jobs Done' : 'Bookings'}</p>
+                </div>
               </div>
-              <UserCheck className="h-8 w-8 text-green-600" />
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pendingBookings}</p>
-              </div>
-              <Clock className="h-8 w-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Groups</p>
-                <p className="text-2xl font-bold text-gray-900">{userGroups.length}</p>
-              </div>
-              <UsersIcon className="h-8 w-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Customer Content Tabs */}
-      <Tabs defaultValue="bookings" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="bookings">Recent Bookings</TabsTrigger>
-          <TabsTrigger value="groups">My Groups</TabsTrigger>
-          <TabsTrigger value="collectives">Customer Collectives</TabsTrigger>
-          <TabsTrigger value="quick-actions">Quick Actions</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="bookings">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Recent Bookings</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {recentBookings.length > 0 ? (
-                <div className="space-y-4">
-                  {recentBookings.map((booking: any) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium">{booking.services?.title || 'Service'}</p>
-                        <p className="text-sm text-gray-600">{booking.provider_profiles?.business_name || 'Provider'}</p>
+          {/* Quick Actions */}
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Quick Actions</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {quickActions.map((action) => {
+                const IconComponent = action.icon;
+                const isLarge = action.size === 'large';
+                
+                return (
+                  <Card 
+                    key={action.id}
+                    className={`fintech-card hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group ${
+                      isLarge ? 'md:col-span-2' : ''
+                    }`}
+                    onClick={action.onClick}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-4">
+                        <div className={`p-3 rounded-xl bg-gradient-to-r ${action.color} group-hover:scale-110 transition-transform duration-300`}>
+                          <IconComponent className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="font-bold text-lg text-gray-900 mb-2">{action.title}</h3>
+                          <p className="text-gray-600 text-sm leading-relaxed">{action.description}</p>
+                        </div>
                       </div>
-                      <Badge variant={booking.status === 'completed' ? 'default' : 'secondary'}>
-                        {booking.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-500">No recent bookings</p>
-                  <Button className="mt-4" onClick={() => window.location.href = '/services'}>
-                    Browse Services
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="groups">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                My Groups
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Group
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">
-                Groups system coming soon! Join customer collectives to get bulk discounts.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="collectives">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Customer Collectives</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">
-                Join collectives to get bulk discounts on services!
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="quick-actions">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                <Button className="h-20 flex flex-col gap-2" variant="outline">
-                  <CalendarDays className="h-6 w-6" />
-                  Book Service
-                </Button>
-                <Button className="h-20 flex flex-col gap-2" variant="outline">
-                  <MapPin className="h-6 w-6" />
-                  Find Nearby
-                </Button>
-                <Button className="h-20 flex flex-col gap-2" variant="outline">
-                  <Star className="h-6 w-6" />
-                  Leave Review
-                </Button>
-                <Button className="h-20 flex flex-col gap-2" variant="outline">
-                  <Users className="h-6 w-6" />
-                  Join Collective
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-
-  const renderProviderView = () => (
-    <div className="space-y-6">
-      {/* Provider Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
-              </div>
-              <CalendarDays className="h-8 w-8 text-blue-600" />
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
-          </CardContent>
-        </Card>
+          </div>
 
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Pending</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.pendingBookings}</p>
-              </div>
-              <Users className="h-8 w-8 text-orange-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                <p className="text-2xl font-bold text-gray-900">${stats.monthlyRevenue}</p>
-              </div>
-              <DollarSign className="h-8 w-8 text-green-600" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="fintech-card hover:shadow-lg transition-shadow">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Groups</p>
-                <p className="text-2xl font-bold text-gray-900">{userGroups.length}</p>
-              </div>
-              <UsersIcon className="h-8 w-8 text-purple-600" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Provider Content Tabs */}
-      <Tabs defaultValue="jobs" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="jobs">Job Management</TabsTrigger>
-          <TabsTrigger value="crews">Provider Crews</TabsTrigger>
-          <TabsTrigger value="earnings">Earnings</TabsTrigger>
-          <TabsTrigger value="community">Community</TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="jobs">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle>Recent Jobs</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {recentBookings.length > 0 ? (
-                <div className="space-y-4">
-                  {recentBookings.map((booking: any) => (
-                    <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <p className="font-medium">{booking.services?.title || 'Service'}</p>
-                        <p className="text-sm text-gray-600">{booking.users?.full_name || 'Customer'}</p>
-                      </div>
-                      <Badge variant={booking.status === 'completed' ? 'default' : 'secondary'}>
-                        {booking.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-500 text-center py-8">No recent jobs</p>
-              )}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="crews">
-          <Card className="fintech-card">
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                Provider Crews
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Crew
-                </Button>
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-gray-500 text-center py-8">
-                Create crews to tackle big opportunities together! $10/month license to create crews.
-              </p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="earnings">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="fintech-card">
+          {/* Dashboard Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Recent Notifications */}
+            <Card className="fintech-card lg:col-span-2">
               <CardHeader>
-                <CardTitle>Earnings Overview</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-blue-600" />
+                  Recent Activity
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="flex justify-between">
-                    <span>This Month</span>
-                    <span className="font-bold">${stats.monthlyRevenue}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Completed Jobs</span>
-                    <span>{stats.completedBookings}</span>
-                  </div>
+                  {notifications.map((notification, index) => (
+                    <div key={index} className="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
+                      <div className={`p-2 rounded-full ${
+                        notification.type === 'booking' ? 'bg-blue-100 text-blue-600' :
+                        notification.type === 'review' ? 'bg-yellow-100 text-yellow-600' :
+                        'bg-green-100 text-green-600'
+                      }`}>
+                        {notification.type === 'booking' ? <Calendar className="h-4 w-4" /> :
+                         notification.type === 'review' ? <Star className="h-4 w-4" /> :
+                         <TrendingUp className="h-4 w-4" />}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">{notification.message}</p>
+                        <p className="text-sm text-gray-500">{notification.time}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
 
-            {shopPointsData && (
-              <ShopPointsWidget 
-                communityPoints={shopPointsData.communityPoints}
-                shopPoints={shopPointsData.shopPoints}
-              />
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="community">
-          {user && <CommunityRatingDisplay userId={user.id} />}
-        </TabsContent>
-      </Tabs>
-    </div>
-  );
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
-        <Header />
-        <div className="container mx-auto px-4 py-8 pt-20">
-          <div className="animate-pulse space-y-4">
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-32 bg-gray-200 rounded"></div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-amber-50">
-      <Header />
-      <div className="container mx-auto px-4 py-8 pt-20">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-            <p className="text-gray-600 mt-2">
-              {currentRole === 'customer' && 'Manage your bookings and join customer collectives'}
-              {currentRole === 'provider' && 'Manage your services and provider crews'}
-            </p>
-          </div>
-          <div className="flex items-center gap-2">
-            <Badge variant="secondary" className="capitalize">
-              {currentRole}
-            </Badge>
-            {shopPointsData && currentRole === 'provider' && (
-              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                {shopPointsData.shopPoints} Shop Points
-              </Badge>
-            )}
+            {/* Performance Overview */}
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="h-5 w-5 text-green-600" />
+                  Your Performance
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div className="text-center">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <Star className="h-8 w-8 text-yellow-500 fill-current" />
+                      <span className="text-3xl font-bold text-gray-900">{stats.rating}</span>
+                    </div>
+                    <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+                      {stats.achievements}
+                    </Badge>
+                  </div>
+                  
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">Network Connections</span>
+                      <span className="font-bold text-gray-900">{stats.connections}</span>
+                    </div>
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-sm text-gray-600">
+                        {currentRole === 'provider' ? 'Jobs Completed' : 'Services Booked'}
+                      </span>
+                      <span className="font-bold text-gray-900">{stats.totalJobs}</span>
+                    </div>
+                    {stats.earnings && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-gray-600">Monthly Earnings</span>
+                        <span className="font-bold text-green-600">{stats.earnings}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
-
-        {/* Dynamic content based on active role */}
-        {currentRole === 'customer' && renderCustomerView()}
-        {currentRole === 'provider' && renderProviderView()}
       </div>
     </div>
   );

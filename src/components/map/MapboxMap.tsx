@@ -1,103 +1,77 @@
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+
+// Set the Mapbox access token
+mapboxgl.accessToken = 'pk.eyJ1IjoicmJuYmxuZGxyZCIsImEiOiJjbWNmdGYzN2wwY2RuMmtwd3M3d2hzM3NxIn0.MZfduMhwltc3eC8V5xYgcQ';
 
 interface MapboxMapProps {
   center?: { lat: number; lng: number };
   zoom?: number;
   className?: string;
-  onMapLoad?: (map: mapboxgl.Map) => void;
-  style?: string;
+  markers?: Array<{
+    lat: number;
+    lng: number;
+    title?: string;
+    description?: string;
+  }>;
+  onMapClick?: (lat: number, lng: number) => void;
 }
 
 const MapboxMap: React.FC<MapboxMapProps> = ({
-  center = { lat: 45.5017, lng: -73.5673 }, // Montreal center
-  zoom = 10,
-  className = 'w-full h-full',
-  onMapLoad,
-  style = 'mapbox://styles/mapbox/light-v11'
+  center = { lat: 45.5017, lng: -73.5673 }, // Montreal coordinates
+  zoom = 12,
+  className = "w-full h-full",
+  markers = [],
+  onMapClick
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
-
-  console.log('🗺️ MapboxMap render:', { center, zoom });
 
   useEffect(() => {
-    // Check for Mapbox token from environment or prompt user
-    const token = import.meta.env.VITE_MAPBOX_PUBLIC_TOKEN;
-    if (token) {
-      setMapboxToken(token);
-    } else {
-      // For now, we'll use a demo token - user should add their own
-      console.warn('⚠️ No Mapbox token found. Please add VITE_MAPBOX_PUBLIC_TOKEN to your environment.');
-      // You can get your token from https://mapbox.com/
-      const userToken = prompt('Please enter your Mapbox public token (get it from https://mapbox.com/):');
-      if (userToken) {
-        setMapboxToken(userToken);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!mapContainer.current || !mapboxToken) return;
-
-    // Set access token
-    mapboxgl.accessToken = mapboxToken;
+    if (!mapContainer.current) return;
 
     // Initialize map
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: style,
+      style: 'mapbox://styles/mapbox/light-v11',
       center: [center.lng, center.lat],
       zoom: zoom,
-      attributionControl: false // Remove for cleaner look
     });
 
     // Add navigation controls
-    map.current.addControl(
-      new mapboxgl.NavigationControl({
-        showCompass: true,
-        showZoom: true,
-      }),
-      'top-right'
-    );
+    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    // Custom Quebec/Montreal styling
-    map.current.on('style.load', () => {
-      if (!map.current) return;
+    // Add markers
+    markers.forEach(marker => {
+      if (map.current) {
+        const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(
+          `<div>
+            <h3 class="font-semibold">${marker.title || 'Location'}</h3>
+            ${marker.description ? `<p class="text-sm text-gray-600">${marker.description}</p>` : ''}
+          </div>`
+        );
 
-      // Add custom styling for Quebec region
-      map.current.setPaintProperty('water', 'fill-color', '#2563eb');
-      
-      // Call onMapLoad callback
-      if (onMapLoad) {
-        onMapLoad(map.current);
+        new mapboxgl.Marker()
+          .setLngLat([marker.lng, marker.lat])
+          .setPopup(popup)
+          .addTo(map.current);
       }
     });
+
+    // Handle map clicks
+    if (onMapClick) {
+      map.current.on('click', (e) => {
+        onMapClick(e.lngLat.lat, e.lngLat.lng);
+      });
+    }
 
     // Cleanup
     return () => {
       map.current?.remove();
     };
-  }, [mapboxToken, center.lat, center.lng, zoom, style, onMapLoad]);
-
-  if (!mapboxToken) {
-    return (
-      <div className={`${className} bg-gray-100 flex items-center justify-center`}>
-        <div className="text-center p-6">
-          <div className="text-gray-600 mb-4">🗺️ Privacy-First Mapping</div>
-          <p className="text-sm text-gray-500 mb-4">
-            Using Mapbox for better privacy and GPS capabilities
-          </p>
-          <p className="text-xs text-gray-400">
-            Configure your Mapbox token to get started
-          </p>
-        </div>
-      </div>
-    );
-  }
+  }, [center.lat, center.lng, zoom, markers, onMapClick]);
 
   return <div ref={mapContainer} className={className} />;
 };

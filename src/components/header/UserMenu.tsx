@@ -79,7 +79,7 @@ const UserMenu = () => {
         
         {/* Main Navigation Items */}
         <DropdownMenuItem
-          onClick={() => navigate("/emergency")}
+          onClick={() => navigate("/interactive-map")}
           className="cursor-pointer"
         >
           <span className="mr-3">🗺️</span>
