@@ -58,6 +58,13 @@ const Calendar = () => {
     setEditingEvent(null);
   };
 
+  // Function that matches ModernCalendar's expected signature
+  const handleCalendarAddClick = () => {
+    // This will trigger when ModernCalendar wants to add an appointment
+    // The actual appointment creation is handled by AddAppointmentDialog
+    console.log('Calendar add appointment clicked');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
@@ -79,7 +86,7 @@ const Calendar = () => {
           </div>
           
           <ModernCalendar
-            onAddAppointment={handleAddAppointment}
+            onAddAppointment={handleCalendarAddClick}
             onEditEvent={handleEditEvent}
           />
         </div>
