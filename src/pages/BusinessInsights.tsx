@@ -1,27 +1,21 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useAnalyticsData } from '@/hooks/useAnalyticsData';
 import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  Target, 
-  TrendingUp, 
-  Users, 
-  Star,
-  Lightbulb,
-  AlertCircle
-} from 'lucide-react';
+import { Target, Users, TrendingUp, Star, AlertTriangle } from 'lucide-react';
+import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 
 const BusinessInsights = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const { data, loading, error, refreshData } = useAnalyticsData(user?.id, currentRole);
 
   const formatCurrency = (amount: number) => {
@@ -31,48 +25,32 @@ const BusinessInsights = () => {
     }).format(amount);
   };
 
+  const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
+
   const insights = [
     {
-      type: "growth",
-      title: "Revenue Growth Opportunity",
-      description: `Your monthly growth rate is ${data.monthlyGrowth.toFixed(1)}%. Consider targeting ${data.monthlyGrowth < 10 ? 'higher-value services' : 'new market segments'}.`,
-      priority: data.monthlyGrowth < 5 ? "high" : "medium",
-      icon: <TrendingUp className="h-5 w-5" />
+      title: "Peak Hours",
+      value: "2-4 PM",
+      description: "Highest booking activity",
+      icon: Target
     },
     {
-      type: "efficiency",
-      title: "Booking Efficiency",
-      description: `Average booking value: ${formatCurrency(data.averageBookingValue)}. ${data.averageBookingValue < 100 ? 'Consider bundling services to increase value.' : 'Great job maintaining high booking values!'}`,
-      priority: data.averageBookingValue < 100 ? "medium" : "low",
-      icon: <Target className="h-5 w-5" />
+      title: "Top Service",
+      value: "Home Cleaning",
+      description: "45% of all bookings",
+      icon: Star
     },
     {
-      type: "capacity",
-      title: "Service Capacity",
-      description: `You've completed ${data.totalBookings} bookings. ${data.monthlyBookings < 10 ? 'Focus on marketing to increase monthly bookings.' : 'Consider scaling your service offerings.'}`,
-      priority: data.monthlyBookings < 10 ? "high" : "low",
-      icon: <Users className="h-5 w-5" />
-    }
-  ];
-
-  const recommendations = [
-    {
-      title: "Optimize Peak Hours",
-      description: "Analyze your busiest times and adjust pricing dynamically",
-      impact: "15-25% revenue increase",
-      effort: "Medium"
-    },
-    {
-      title: "Service Bundling",
-      description: "Create package deals for commonly requested services",
-      impact: "20-30% higher booking value",
-      effort: "Low"
+      title: "Growth Rate",
+      value: "+23%",
+      description: "Month-over-month",
+      icon: TrendingUp
     },
     {
       title: "Customer Retention",
-      description: "Implement loyalty programs for repeat customers",
-      impact: "35% increase in repeat bookings",
-      effort: "High"
+      value: "78%",
+      description: "Repeat customers",
+      icon: Users
     }
   ];
 
@@ -85,17 +63,12 @@ const BusinessInsights = () => {
             <Card className="border-red-200">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 text-red-600">
-                  <AlertCircle className="h-5 w-5" />
+                  <AlertTriangle className="h-5 w-5" />
                   <div>
                     <p className="font-medium">Error loading business insights</p>
                     <p className="text-sm text-red-500">{error}</p>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={refreshData}
-                    className="ml-auto"
-                  >
+                  <Button variant="outline" size="sm" onClick={refreshData} className="ml-auto">
                     Retry
                   </Button>
                 </div>
@@ -113,185 +86,124 @@ const BusinessInsights = () => {
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
               <Button
                 onClick={() => navigate('/analytics-dashboard')}
                 variant="outline"
-                className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                className="bg-green-600 text-white hover:bg-green-700 border-green-600"
               >
                 ← Back to Analytics
               </Button>
             </div>
             <div className="flex items-center gap-3 mb-4">
-              <Lightbulb className="h-8 w-8 text-blue-600" />
+              <Target className="h-8 w-8 text-green-600" />
               <h1 className="text-4xl font-bold text-gray-900">Business Insights</h1>
             </div>
-            <p className="text-gray-600">AI-powered insights and recommendations for your business growth</p>
-            
-            {/* Controls */}
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" onClick={refreshData} disabled={loading}>
-                {loading ? 'Refreshing...' : 'Refresh Data'}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/analytics-dashboard')}
-              >
-                📊 Analytics Dashboard
-              </Button>
-            </div>
+            <p className="text-gray-600">Strategic business intelligence and market trends</p>
           </div>
 
-          {/* Key Insights */}
-          <div className="grid lg:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {insights.map((insight, index) => (
               <Card key={index} className="fintech-card">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      {insight.icon}
+                    <div className="p-2 bg-green-50 rounded-lg">
+                      <insight.icon className="h-5 w-5 text-green-600" />
                     </div>
-                    <Badge 
-                      variant={insight.priority === 'high' ? 'destructive' : insight.priority === 'medium' ? 'default' : 'secondary'}
-                    >
-                      {insight.priority} priority
-                    </Badge>
                   </div>
-                  <h3 className="font-semibold text-gray-900 mb-2">{insight.title}</h3>
+                  <h3 className="text-sm text-gray-600 mb-1">{insight.title}</h3>
                   {loading ? (
-                    <Skeleton className="h-16 w-full" />
+                    <Skeleton className="h-8 w-24 mb-2" />
                   ) : (
-                    <p className="text-sm text-gray-600">{insight.description}</p>
+                    <p className="text-2xl font-bold text-gray-900 mb-1">{insight.value}</p>
                   )}
+                  <p className="text-xs text-gray-500">{insight.description}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
-          {/* Recommendations */}
-          <Card className="fintech-card mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Star className="h-5 w-5 text-yellow-500" />
-                Actionable Recommendations
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid lg:grid-cols-3 gap-6">
-                {recommendations.map((rec, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-xl">
-                    <h4 className="font-semibold text-gray-900 mb-2">{rec.title}</h4>
-                    <p className="text-sm text-gray-600 mb-3">{rec.description}</p>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-green-600 font-medium">Impact: {rec.impact}</span>
-                      <span className="text-blue-600 font-medium">Effort: {rec.effort}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Performance Metrics */}
-          <div className="grid lg:grid-cols-2 gap-6">
-            {/* Business Health Score */}
+          <div className="grid lg:grid-cols-2 gap-6 mb-8">
             <Card className="fintech-card">
               <CardHeader>
-                <CardTitle>Business Health Score</CardTitle>
+                <CardTitle>Service Distribution</CardTitle>
               </CardHeader>
               <CardContent>
                 {loading ? (
-                  <div className="space-y-4">
-                    {[...Array(4)].map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
-                  </div>
+                  <Skeleton className="h-64 w-full" />
                 ) : (
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Revenue Growth</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-green-500 h-2 rounded-full" 
-                            style={{ width: `${Math.max(0, Math.min(100, data.monthlyGrowth * 5))}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium">{data.monthlyGrowth.toFixed(1)}%</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Booking Volume</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-blue-500 h-2 rounded-full" 
-                            style={{ width: `${Math.min(100, (data.monthlyBookings / 20) * 100)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium">{data.monthlyBookings}/20</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Average Value</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-purple-500 h-2 rounded-full" 
-                            style={{ width: `${Math.min(100, (data.averageBookingValue / 200) * 100)}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium">{formatCurrency(data.averageBookingValue)}</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Completion Rate</span>
-                      <div className="flex items-center gap-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div 
-                            className="bg-yellow-500 h-2 rounded-full" 
-                            style={{ width: `${data.completionRate}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium">{data.completionRate.toFixed(1)}%</span>
-                      </div>
-                    </div>
-                  </div>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={[
+                          { name: 'Home Cleaning', value: 45, color: COLORS[0] },
+                          { name: 'Plumbing', value: 25, color: COLORS[1] },
+                          { name: 'Electrical', value: 20, color: COLORS[2] },
+                          { name: 'Other', value: 10, color: COLORS[3] }
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        dataKey="value"
+                      >
+                        {[45, 25, 20, 10].map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
                 )}
               </CardContent>
             </Card>
 
-            {/* Market Insights */}
             <Card className="fintech-card">
               <CardHeader>
-                <CardTitle>Market Position</CardTitle>
+                <CardTitle>Customer Satisfaction Trends</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  <Alert>
-                    <Lightbulb className="h-4 w-4" />
-                    <AlertDescription>
-                      Based on your performance data, you're positioned well in the local market. 
-                      Focus on customer retention and service quality to maintain growth.
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="p-4 bg-green-50 rounded-lg">
-                      <p className="text-2xl font-bold text-green-600">{formatCurrency(data.totalRevenue)}</p>
-                      <p className="text-sm text-green-700">Total Revenue</p>
-                    </div>
-                    <div className="p-4 bg-blue-50 rounded-lg">
-                      <p className="text-2xl font-bold text-blue-600">{data.totalBookings}</p>
-                      <p className="text-sm text-blue-700">Total Bookings</p>
-                    </div>
-                  </div>
-                </div>
+                {loading ? (
+                  <Skeleton className="h-64 w-full" />
+                ) : (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <BarChart data={data.bookingsByMonth}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Bar dataKey="completed" fill="#10B981" />
+                    </BarChart>
+                  </ResponsiveContainer>
+                )}
               </CardContent>
             </Card>
           </div>
+
+          <Card className="fintech-card">
+            <CardHeader>
+              <CardTitle>Market Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid md:grid-cols-3 gap-6">
+                <div className="text-center p-6 bg-blue-50 rounded-xl">
+                  <div className="text-3xl font-bold text-blue-600 mb-2">Montreal</div>
+                  <div className="text-sm font-semibold text-gray-700 mb-1">Primary Market</div>
+                  <div className="text-xs text-gray-600">65% of total bookings</div>
+                </div>
+                <div className="text-center p-6 bg-green-50 rounded-xl">
+                  <div className="text-3xl font-bold text-green-600 mb-2">Laval</div>
+                  <div className="text-sm font-semibold text-gray-700 mb-1">Growing Market</div>
+                  <div className="text-xs text-gray-600">25% of total bookings</div>
+                </div>
+                <div className="text-center p-6 bg-purple-50 rounded-xl">
+                  <div className="text-3xl font-bold text-purple-600 mb-2">Other</div>
+                  <div className="text-sm font-semibold text-gray-700 mb-1">Emerging</div>
+                  <div className="text-xs text-gray-600">10% of total bookings</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

@@ -1,71 +1,93 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useUser, useSupabaseClient, SessionContextProvider } from '@supabase/auth-helpers-react';
-import { Toaster } from '@/components/ui/toaster';
-import { Toaster as Sonner } from '@/components/ui/sonner';
-import { supabase } from '@/integrations/supabase/client';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
-import { SubscriptionProvider } from '@/contexts/SubscriptionContext';
-import Index from '@/pages/Index';
-import Services from '@/pages/Services';
-import BookingHistory from '@/pages/BookingHistory';
-import Notifications from '@/pages/Notifications';
-import Auth from '@/pages/Auth';
-import UnifiedDashboard from '@/pages/UnifiedDashboard';
-import AdminDashboard from '@/pages/AdminDashboard';
-import InteractiveMapPage from '@/pages/InteractiveMapPage';
-import CompetitiveAdvantage from '@/pages/CompetitiveAdvantage';
-import HelpCenter from '@/pages/HelpCenter';
-import Calendar from '@/pages/Calendar';
-import Social from '@/pages/Social';
-import AdminTestingDashboard from '@/components/admin/AdminTestingDashboard';
-import UnifiedProfilePage from '@/components/profile/UnifiedProfilePage';
-import Profile from '@/pages/Profile';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { Toaster } from "@/components/ui/toaster";
+import { AuthProvider } from './contexts/AuthContext';
+import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import UnifiedDashboard from './pages/UnifiedDashboard';
+import InteractiveMap from './pages/InteractiveMap';
+import Social from './pages/Social';
+import Profile from './pages/Profile';
+import CalendarPage from './pages/CalendarPage';
+import KanbanBoard from './pages/KanbanBoard';
+import Auth from './pages/Auth';
+import AdminDashboard from './pages/AdminDashboard';
+import DesktopAdminDashboard from './desktop/pages/DesktopAdminDashboard';
 
-const queryClient = new QueryClient();
+import AnalyticsDashboard from './pages/AnalyticsDashboard';
+import PerformanceDashboard from './pages/PerformanceDashboard';
+import BusinessInsights from './pages/BusinessInsights';
+import FinancialAnalytics from './pages/FinancialAnalytics';
+import TaxReports from './pages/TaxReports';
 
 function App() {
-  console.log('🚀 App component rendering...');
-  
   return (
-    <div className="App">
-      <QueryClientProvider client={queryClient}>
-        <SessionContextProvider supabaseClient={supabase}>
-          <AuthProvider>
-            <RoleSwitchProvider>
-              <SubscriptionProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/services" element={<Services />} />
-                    <Route path="/bookings" element={<BookingHistory />} />
-                    <Route path="/messages" element={<Notifications />} />
-                    <Route path="/login" element={<Auth />} />
-                    <Route path="/signup" element={<Auth />} />
-                    <Route path="/dashboard" element={<UnifiedDashboard />} />
-                    <Route path="/admin" element={<AdminDashboard />} />
-                    <Route path="/emergency" element={<InteractiveMapPage />} />
-                    <Route path="/interactive-map" element={<InteractiveMapPage />} />
-                    <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
-                    <Route path="/help" element={<HelpCenter />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                    <Route path="/social" element={<Social />} />
-                    <Route path="/admin/users" element={<UnifiedDashboard />} />
-                    <Route path="/admin/testing" element={<AdminTestingDashboard />} />
-                    <Route path="/admin/fraud" element={<AdminDashboard />} />
-                    <Route path="/profile" element={<Profile />} />
-                  </Routes>
-                </BrowserRouter>
-              </SubscriptionProvider>
-            </RoleSwitchProvider>
-          </AuthProvider>
-        </SessionContextProvider>
-      </QueryClientProvider>
-    </div>
+    <AuthProvider>
+      <RoleSwitchProvider>
+        <Router>
+          <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/desktop-admin" element={<DesktopAdminDashboard />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <UnifiedDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/interactive-map"
+              element={
+                <ProtectedRoute>
+                  <InteractiveMap />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/social"
+              element={
+                <ProtectedRoute>
+                  <Social />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/calendar"
+              element={
+                <ProtectedRoute>
+                  <CalendarPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/kanban"
+              element={
+                <ProtectedRoute>
+                  <KanbanBoard />
+                </ProtectedRoute>
+              }
+            />
+            <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+            <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+            <Route path="/business-insights" element={<BusinessInsights />} />
+            <Route path="/financial-analytics" element={<FinancialAnalytics />} />
+            <Route path="/tax-reports" element={<TaxReports />} />
+          </Routes>
+          <Toaster />
+        </Router>
+      </RoleSwitchProvider>
+    </AuthProvider>
   );
 }
 
