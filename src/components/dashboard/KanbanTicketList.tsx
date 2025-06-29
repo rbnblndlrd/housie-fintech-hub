@@ -1,9 +1,8 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Settings, GripVertical, DragIcon } from 'lucide-react';
+import { Settings, GripVertical, GripHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -174,7 +173,7 @@ const KanbanTicketList = () => {
                   onDragStart={(e) => handleTicketDragStart(e, ticket)}
                 >
                   <div className="flex items-center gap-2">
-                    <DragIcon className="h-3 w-3 text-gray-400" />
+                    <GripHorizontal className="h-3 w-3 text-gray-400" />
                   </div>
                   {visibleColumns.slice(1).map((column) => (
                     <div key={column.id} className="flex items-center">
