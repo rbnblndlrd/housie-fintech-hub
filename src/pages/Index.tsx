@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/home/HeroSection';
@@ -24,12 +25,17 @@ const Index = () => {
         <HeroSection />
       </ErrorBoundary>
       
+      {/* Gradient Transition */}
+      <div className="h-32 bg-gradient-to-b from-transparent to-black/10 -mt-16 relative z-10"></div>
+      
       {/* User Type Selector - seamless background flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
-        <UserTypeSelector 
-          onUserTypeSelect={handleUserTypeSelect}
-          selectedUserType={selectedUserType}
-        />
+        <div className="-mt-16 relative z-20">
+          <UserTypeSelector 
+            onUserTypeSelect={handleUserTypeSelect}
+            selectedUserType={selectedUserType}
+          />
+        </div>
       </ErrorBoundary>
       
       {/* Demo Section - seamless background flow */}
