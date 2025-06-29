@@ -109,7 +109,7 @@
 @layer components {
   /* LIGHT MODE - Warm cream cards with THICK, SOLID, DARK borders */
   .fintech-card {
-    @apply bg-cream-warm dark:bg-secondary shadow-lg border border-black dark:border-gray-700 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+    @apply bg-amber-50 dark:bg-secondary shadow-lg border border-black dark:border-gray-700 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
     background-color: #FFF8F0 !important;
   }
 
