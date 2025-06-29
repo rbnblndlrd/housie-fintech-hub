@@ -87,7 +87,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
               <p className="text-lg sm:text-xl lg:text-2xl text-gray-800 font-medium max-w-4xl mx-auto">
                 Choose your path to get started with HOUSIE
               </p>
-              {/* Pointing arrow - changed to bright yellow */}
+              {/* Pointing arrow - bright yellow */}
               <div className="absolute -bottom-8 lg:-bottom-12 left-1/2 transform -translate-x-1/2 text-4xl lg:text-5xl animate-bounce" style={{ color: '#f5d478' }}>
                 👇
               </div>
