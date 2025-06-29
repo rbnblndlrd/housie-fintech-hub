@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from "@/components/ui/toaster";
@@ -16,6 +17,8 @@ import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
 import DesktopAdminDashboard from './desktop/pages/DesktopAdminDashboard';
 import Services from './pages/Services';
+import CompetitiveAdvantage from './pages/CompetitiveAdvantage';
+import Help from './pages/Help';
 
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import PerformanceDashboard from './pages/PerformanceDashboard';
@@ -32,6 +35,8 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
+            <Route path="/help" element={<Help />} />
             <Route path="/desktop-admin" element={<DesktopAdminDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route
