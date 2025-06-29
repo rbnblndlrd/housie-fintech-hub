@@ -9,12 +9,10 @@ import { useRole } from '@/contexts/RoleContext';
 
 interface ChatPanelProps {
   activeTab?: 'messages' | 'ai' | 'voice';
-  onPopArtTrigger?: () => void;
 }
 
 const ChatPanel: React.FC<ChatPanelProps> = ({ 
-  activeTab: externalActiveTab, 
-  onPopArtTrigger 
+  activeTab: externalActiveTab
 }) => {
   const { user } = useAuth();
   const { currentRole } = useRole();
@@ -46,7 +44,6 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
         {activeTab === 'ai' && (
           <ClaudeConversation 
             sessionId={claudeSessionId}
-            onPopArtTrigger={onPopArtTrigger}
           />
         )}
         {activeTab === 'voice' && <AIVoiceInterface isFleetMode={isFleetMode} />}

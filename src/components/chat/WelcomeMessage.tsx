@@ -17,7 +17,7 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
     "How much does cleaning cost?",
     "Find lawn care services",
     "Home repair estimates",
-    "show me colors"
+    "Business tax deductions"
   ];
 
   return (
@@ -46,9 +46,6 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
               <span>Local AI model loaded - truly intelligent responses!</span>
             </div>
           )}
-          <p className="text-xs text-purple-600 dark:text-purple-400 mt-2 italic">
-            💡 Secret command: try "show me colors" for a groovy surprise! 🎨
-          </p>
         </div>
       </div>
 
@@ -59,7 +56,7 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({
             onClick={() => onSuggestedPrompt(prompt)}
             className="px-3 py-1 text-xs bg-white dark:bg-gray-800 text-purple-600 dark:text-purple-400 border border-purple-200 dark:border-purple-700 rounded-full hover:bg-purple-50 dark:hover:bg-purple-900/50 transition-colors"
           >
-            {prompt === 'show me colors' ? '🎨 ' + prompt : prompt}
+            {prompt}
           </button>
         ))}
       </div>
