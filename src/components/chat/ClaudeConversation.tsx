@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,13 +10,11 @@ import { Badge } from '@/components/ui/badge';
 interface ClaudeConversationProps {
   sessionId: string;
   onBack?: () => void;
-  onPopArtTrigger?: () => void;
 }
 
 const ClaudeConversation: React.FC<ClaudeConversationProps> = ({ 
   sessionId, 
-  onBack, 
-  onPopArtTrigger 
+  onBack
 }) => {
   const { messages, sendMessage, isTyping } = useClaudeChat();
   const [newMessage, setNewMessage] = useState('');
@@ -41,7 +38,7 @@ const ClaudeConversation: React.FC<ClaudeConversationProps> = ({
     setIsSending(true);
 
     try {
-      await sendMessage(messageToSend, sessionId, onPopArtTrigger);
+      await sendMessage(messageToSend, sessionId);
     } catch (error) {
       console.error('Error sending message:', error);
     } finally {
