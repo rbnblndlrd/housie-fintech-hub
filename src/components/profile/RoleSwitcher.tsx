@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useToast } from '@/hooks/use-toast';
-import { User, Briefcase, Building2 } from 'lucide-react';
+import { User, Briefcase } from 'lucide-react';
 
 const RoleSwitcher = () => {
   const { currentRole, availableRoles, switchRole } = useRoleSwitch();
@@ -12,7 +12,7 @@ const RoleSwitcher = () => {
 
   const handleRoleSwitch = async (newRole: string) => {
     try {
-      await switchRole(newRole as 'customer' | 'provider' | 'commercial');
+      await switchRole(newRole as 'customer' | 'provider');
       toast({
         title: "Role Switched",
         description: `Switched to ${newRole} mode successfully`,
@@ -32,8 +32,6 @@ const RoleSwitcher = () => {
         return <User className="h-4 w-4" />;
       case 'provider':
         return <Briefcase className="h-4 w-4" />;
-      case 'commercial':
-        return <Building2 className="h-4 w-4" />;
       default:
         return <User className="h-4 w-4" />;
     }
@@ -45,8 +43,6 @@ const RoleSwitcher = () => {
         return 'Customer';
       case 'provider':
         return 'Service Provider';
-      case 'commercial':
-        return 'Commercial Account';
       default:
         return role;
     }

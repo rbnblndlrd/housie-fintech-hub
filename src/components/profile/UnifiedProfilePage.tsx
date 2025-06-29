@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -56,8 +57,8 @@ const UnifiedProfilePage = () => {
         // Role capabilities (with proper type casting)
         can_provide_services: data.can_provide_services ?? false,
         can_book_services: data.can_book_services ?? true,
-        active_role: (data.active_role as "customer" | "provider" | "commercial") ?? 'customer',
-        profile_type: (data.profile_type as "commercial" | "individual" | "business") ?? 'individual',
+        active_role: (data.active_role as "customer" | "provider") ?? 'customer',
+        profile_type: (data.profile_type as "individual" | "business") ?? 'individual',
         
         // Provider-specific fields (with defaults)
         business_name: data.business_name,
@@ -170,7 +171,6 @@ const UnifiedProfilePage = () => {
 
       {currentRole === 'customer' && <CustomerProfileView profile={profile} />}
       {currentRole === 'provider' && <ProviderProfileView profile={profile} />}
-      {currentRole === 'commercial' && <ProviderProfileView profile={profile} />}
     </div>
   );
 };

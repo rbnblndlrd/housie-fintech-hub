@@ -39,8 +39,8 @@ export const useUnifiedProfile = () => {
       // Cast the data with proper type assertions
       const typedProfile: UnifiedUserProfile = {
         ...data,
-        active_role: (data.active_role as "customer" | "provider" | "commercial") ?? 'customer',
-        profile_type: (data.profile_type as "commercial" | "individual" | "business") ?? 'individual',
+        active_role: (data.active_role as "customer" | "provider") ?? 'customer',
+        profile_type: (data.profile_type as "individual" | "business") ?? 'individual',
         achievement_badges: (data.achievement_badges as any[]) ?? []
       };
 
@@ -71,8 +71,8 @@ export const useUnifiedProfile = () => {
       // Cast the returned data with proper type assertions
       const typedProfile: UnifiedUserProfile = {
         ...data,
-        active_role: (data.active_role as "customer" | "provider" | "commercial") ?? 'customer',
-        profile_type: (data.profile_type as "commercial" | "individual" | "business") ?? 'individual',
+        active_role: (data.active_role as "customer" | "provider") ?? 'customer',
+        profile_type: (data.profile_type as "individual" | "business") ?? 'individual',
         achievement_badges: (data.achievement_badges as any[]) ?? []
       };
 
