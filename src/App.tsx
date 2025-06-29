@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -23,6 +22,7 @@ import Calendar from '@/pages/Calendar';
 import Social from '@/pages/Social';
 import AdminTestingDashboard from '@/components/admin/AdminTestingDashboard';
 import UnifiedProfilePage from '@/components/profile/UnifiedProfilePage';
+import Profile from '@/pages/Profile';
 
 const queryClient = new QueryClient();
 
@@ -57,7 +57,7 @@ function App() {
                     <Route path="/admin/users" element={<UnifiedDashboard />} />
                     <Route path="/admin/testing" element={<AdminTestingDashboard />} />
                     <Route path="/admin/fraud" element={<AdminDashboard />} />
-                    <Route path="/profile" element={<UnifiedProfilePage />} />
+                    <Route path="/profile" element={<Profile />} />
                   </Routes>
                 </BrowserRouter>
               </SubscriptionProvider>
