@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -232,45 +231,10 @@ const UnifiedDashboard = () => {
 
           {/* Top Row Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-            {/* Your Performance Card */}
+            {/* Calendar Preview Card */}
             <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Shield className="h-5 w-5 text-gray-600" />
-                  Your Performance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  <div className="text-center">
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <Star className="h-8 w-8 text-yellow-500 fill-current" />
-                      <span className="text-3xl font-bold text-gray-900">{stats.rating}</span>
-                    </div>
-                    <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                      {stats.achievements}
-                    </Badge>
-                  </div>
-                  
-                  <div className="border-t pt-4 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Network Links</span>
-                      <span className="font-bold text-gray-900">{stats.links}</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">
-                        {currentRole === 'provider' ? 'Jobs Completed' : 'Services Booked'}
-                      </span>
-                      <span className="font-bold text-gray-900">{stats.totalJobs}</span>
-                    </div>
-                    {stats.earnings && (
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Monthly Earnings</span>
-                        <span className="font-bold text-green-600">{stats.earnings}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
+              <CardContent className="p-0">
+                <CalendarPreview />
               </CardContent>
             </Card>
 
@@ -388,11 +352,6 @@ const UnifiedDashboard = () => {
           {/* Bottom Section - Kanban Tickets (Full Width) */}
           <div className="mb-8">
             <KanbanTicketList />
-          </div>
-
-          {/* Calendar Preview (Full Width Bottom) */}
-          <div>
-            <CalendarPreview />
           </div>
         </div>
       </div>
