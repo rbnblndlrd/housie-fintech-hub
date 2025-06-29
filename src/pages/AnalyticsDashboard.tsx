@@ -191,7 +191,7 @@ const AnalyticsDashboard = () => {
                 ) : (
                   <ChartContainer config={chartConfig} className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={data.chartData}>
+                      <LineChart data={data.bookingsByMonth}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
@@ -214,7 +214,7 @@ const AnalyticsDashboard = () => {
                 ) : (
                   <ChartContainer config={chartConfig} className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={data.chartData}>
+                      <BarChart data={data.bookingsByMonth}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="month" />
                         <YAxis />
