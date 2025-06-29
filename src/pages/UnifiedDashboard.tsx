@@ -16,12 +16,10 @@ const UnifiedDashboard = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
         <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-              <div className="h-48 bg-gray-200 rounded"></div>
-            </div>
+        <div className="pt-20 w-full px-2">
+          <div className="animate-pulse space-y-6">
+            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <div className="h-48 bg-gray-200 rounded"></div>
           </div>
         </div>
       </div>
@@ -36,34 +34,32 @@ const UnifiedDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Dashboard Header with Role Toggle */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {currentRole === 'customer' ? 'Welcome back!' : 'Provider Dashboard'}
-              </h1>
-              <p className="text-gray-600">
-                {currentRole === 'customer' 
-                  ? 'Manage your bookings, calendar, and account' 
-                  : 'Manage your services and track performance'
-                }
-              </p>
-            </div>
-            
-            {/* Role Toggle - only show if user has multiple roles */}
-            {availableRoles.length > 1 && <DashboardRoleToggle />}
+      <div className="pt-20 w-full px-2">
+        {/* Dashboard Header with Role Toggle - Full width */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              {currentRole === 'customer' ? 'Welcome back!' : 'Provider Dashboard'}
+            </h1>
+            <p className="text-gray-600">
+              {currentRole === 'customer' 
+                ? 'Manage your bookings, calendar, and account' 
+                : 'Manage your services and track performance'
+              }
+            </p>
           </div>
+          
+          {/* Role Toggle - only show if user has multiple roles */}
+          {availableRoles.length > 1 && <DashboardRoleToggle />}
+        </div>
 
-          {/* Role-Specific Dashboard Content */}
-          <div className="dashboard-content">
-            {currentRole === 'customer' ? (
-              <CustomerDashboardContent />
-            ) : (
-              <ProviderDashboardContent />
-            )}
-          </div>
+        {/* Role-Specific Dashboard Content - Full width */}
+        <div className="dashboard-content w-full">
+          {currentRole === 'customer' ? (
+            <CustomerDashboardContent />
+          ) : (
+            <ProviderDashboardContent />
+          )}
         </div>
       </div>
     </div>

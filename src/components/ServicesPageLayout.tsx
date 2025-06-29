@@ -79,55 +79,54 @@ const ServicesPageLayout: React.FC<ServicesPageLayoutProps> = ({
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          <ServicesHeader />
-          
-          {/* Filters */}
-          <div className="mb-8">
-            <ServiceFilters
-              searchTerm={searchTerm}
-              selectedCategory={selectedCategory}
-              selectedSubcategory={selectedSubcategory}
-              selectedLocation={selectedLocation}
-              priceRange={priceRange}
-              distance={distance}
-              onSearchChange={onSearchChange}
-              onCategoryChange={onCategoryChange}
-              onSubcategoryChange={onSubcategoryChange}
-              onLocationChange={onLocationChange}
-              onPriceRangeChange={onPriceRangeChange}
-              onDistanceChange={onDistanceChange}
-              onSearch={onSearch}
+      {/* Full-width container with minimal padding */}
+      <div className="pt-20 w-full px-2 pb-8">
+        <ServicesHeader />
+        
+        {/* Filters */}
+        <div className="mb-8">
+          <ServiceFilters
+            searchTerm={searchTerm}
+            selectedCategory={selectedCategory}
+            selectedSubcategory={selectedSubcategory}
+            selectedLocation={selectedLocation}
+            priceRange={priceRange}
+            distance={distance}
+            onSearchChange={onSearchChange}
+            onCategoryChange={onCategoryChange}
+            onSubcategoryChange={onSubcategoryChange}
+            onLocationChange={onLocationChange}
+            onPriceRangeChange={onPriceRangeChange}
+            onDistanceChange={onDistanceChange}
+            onSearch={onSearch}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Services List */}
+          <div className="lg:col-span-1">
+            <ServicesGrid
+              services={services}
+              filteredServices={filteredServices}
+              isLoading={isLoading}
+              fallbackServices={[]}
+              onBookNow={onBookNow}
+              onHoverProvider={onHoverProvider}
             />
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Services List */}
-            <div className="lg:col-span-1">
-              <ServicesGrid
-                services={services}
-                filteredServices={filteredServices}
-                isLoading={isLoading}
-                fallbackServices={[]}
-                onBookNow={onBookNow}
-                onHoverProvider={onHoverProvider}
-              />
-            </div>
-
-            {/* Interactive Map */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24">
-                <div className="fintech-card p-4 mb-4">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                    Service Providers Near You
-                  </h3>
-                  <InteractiveServicesMap
-                    providers={mapProviders}
-                    hoveredProviderId={hoveredProviderId}
-                    onProviderSelect={handleProviderSelect}
-                  />
-                </div>
+          {/* Interactive Map */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-24">
+              <div className="fintech-card p-4 mb-4">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  Service Providers Near You
+                </h3>
+                <InteractiveServicesMap
+                  providers={mapProviders}
+                  hoveredProviderId={hoveredProviderId}
+                  onProviderSelect={handleProviderSelect}
+                />
               </div>
             </div>
           </div>

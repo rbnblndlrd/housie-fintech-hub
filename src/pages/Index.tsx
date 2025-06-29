@@ -14,11 +14,11 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen w-full">
       <Header />
       
-      {/* Unified Hero Section - Single seamless section with all content */}
-      <ErrorBoundary fallback={<div className="py-20 text-center text-white">Page temporarily unavailable</div>}>
+      {/* Unified Hero Section - Full width with no outer margins */}
+      <ErrorBoundary fallback={<div className="py-20 text-center text-white w-full">Page temporarily unavailable</div>}>
         <UnifiedHeroSection 
           onUserTypeSelect={handleUserTypeSelect}
           selectedUserType={selectedUserType}

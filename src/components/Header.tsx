@@ -62,9 +62,11 @@ const Header = () => {
         pointerEvents: 'auto'
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Full-width container with minimal padding */}
+      <div className="w-full px-2">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-3">
+          {/* Logo positioned close to left edge */}
+          <Link to="/" className="flex items-center space-x-3 pl-2">
             <img 
               src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
               alt="HOUSIE" 
@@ -108,7 +110,7 @@ const Header = () => {
             )}
           </nav>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-4 pr-2">
             {user ? (
               <div className="flex items-center space-x-4">
                 <NotificationBell />
