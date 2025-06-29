@@ -25,12 +25,12 @@ const Index = () => {
         <HeroSection />
       </ErrorBoundary>
       
-      {/* Gradient Transition */}
-      <div className="h-32 bg-gradient-to-b from-transparent to-black/10 -mt-16 relative z-10"></div>
+      {/* Enhanced Gradient Transition - longer and smoother */}
+      <div className="h-48 bg-gradient-to-b from-transparent via-black/5 to-black/15 -mt-32 relative z-10"></div>
       
       {/* User Type Selector - seamless background flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
-        <div className="-mt-16 relative z-20">
+        <div className="-mt-32 relative z-20">
           <UserTypeSelector 
             onUserTypeSelect={handleUserTypeSelect}
             selectedUserType={selectedUserType}
