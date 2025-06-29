@@ -35,16 +35,11 @@ const Header = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
-      <div className="max-w-6xl mx-auto px-4">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
+      <div className="max-w-full mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          {/* Left: Hamburger Menu */}
-          <div className="flex items-center">
-            <HamburgerMenu />
-          </div>
-          
-          {/* Center-Left: HOUSIE Logo */}
-          <div className="flex-1 flex justify-start ml-8">
+          {/* Left: HOUSIE Logo + Hamburger Menu */}
+          <div className="flex items-center space-x-4">
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
@@ -68,8 +63,9 @@ const Header = () => {
                   };
                 }}
               />
-              <span className="text-2xl font-bold text-black ml-2 hidden">HOUSIE</span>
+              <span className="text-2xl font-bold text-white ml-2 hidden">HOUSIE</span>
             </Link>
+            <HamburgerMenu />
           </div>
 
           {/* Right: Login/Signup or User Menu */}
@@ -79,12 +75,12 @@ const Header = () => {
             ) : (
               <div className="flex items-center space-x-3">
                 <Link to="/auth">
-                  <Button variant="ghost" className="text-black hover:bg-gray-100">
+                  <Button variant="ghost" className="text-white hover:bg-gray-800">
                     Log in
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button className="bg-black text-white hover:bg-gray-800">
+                  <Button className="bg-white text-black hover:bg-gray-200">
                     Sign up
                   </Button>
                 </Link>

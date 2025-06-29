@@ -24,13 +24,13 @@ const HamburgerMenu = () => {
         variant="ghost"
         size="sm"
         onClick={toggleMenu}
-        className="p-2 hover:bg-gray-100"
+        className="p-2 hover:bg-gray-800 text-white"
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
       {isOpen && (
-        <div className="absolute top-16 left-0 w-64 bg-white shadow-lg rounded-lg border z-50">
+        <div className="absolute top-16 left-20 w-64 bg-white shadow-lg rounded-lg border z-50">
           <div className="py-2">
             {menuItems.map((item) => (
               <Link

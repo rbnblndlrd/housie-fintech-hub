@@ -83,29 +83,27 @@ export const PricingSection = () => {
   ];
 
   return (
-    <section className="py-20 px-4 relative">
+    <section className="py-20 px-4 bg-gray-50">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block fintech-card backdrop-blur-sm rounded-xl px-8 py-6 shadow-lg mb-6" style={{ backgroundColor: '#f8f9fa' }}>
-            <Badge className="bg-orange-600 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl border-2 border-black">
-              💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
-            </Badge>
-            <h2 className="text-5xl font-black text-black mb-6">
-              Tarifs <span className="text-orange-600">Transparents</span>
-              <br />Sans Surprise
-            </h2>
-            <p className="text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed">
-              Choisissez le plan qui correspond à vos besoins. 
-              Tous les plans incluent notre garantie de conformité CRA et nos outils fintech.
-            </p>
-          </div>
+          <Badge className="bg-orange-600 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl">
+            💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
+          </Badge>
+          <h2 className="text-4xl font-bold text-black mb-6">
+            Tarifs <span className="text-orange-600">Transparents</span>
+            <br />Sans Surprise
+          </h2>
+          <p className="text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed">
+            Choisissez le plan qui correspond à vos besoins. 
+            Tous les plans incluent notre garantie de conformité CRA et nos outils fintech.
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {plans.map((plan, index) => (
             <Card 
               key={index} 
-              className={`fintech-card backdrop-blur-sm rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
+              className={`backdrop-blur-sm rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
                 plan.popular ? 'ring-4 ring-purple-600 shadow-2xl' : ''
               }`}
               style={{ backgroundColor: plan.bgColor }}
