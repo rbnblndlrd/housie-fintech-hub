@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/home/HeroSection';
@@ -20,33 +19,27 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with error boundary - no bottom padding/margin */}
+      {/* Hero Section - seamless background flow */}
       <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
-        <div className="pb-0">
-          <HeroSection />
-        </div>
+        <HeroSection />
       </ErrorBoundary>
       
-      {/* User Type Selector with error boundary - no top/bottom spacing */}
+      {/* User Type Selector - seamless background flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
-        <div className="-mt-0 pt-0">
-          <UserTypeSelector 
-            onUserTypeSelect={handleUserTypeSelect}
-            selectedUserType={selectedUserType}
-          />
-        </div>
+        <UserTypeSelector 
+          onUserTypeSelect={handleUserTypeSelect}
+          selectedUserType={selectedUserType}
+        />
       </ErrorBoundary>
       
-      {/* Demo Section with error boundary - no top spacing */}
+      {/* Demo Section - seamless background flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
-        <div className="-mt-0 pt-0">
-          <DemoSection />
-        </div>
+        <DemoSection />
       </ErrorBoundary>
 
-      {/* Pricing Section with error boundary - no top spacing */}
+      {/* Pricing Section - seamless background flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing section loading...</div>}>
-        <div id="pricing-section" className="-mt-0 pt-0">
+        <div id="pricing-section">
           <PricingSection />
         </div>
       </ErrorBoundary>

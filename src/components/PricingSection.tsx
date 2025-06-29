@@ -13,7 +13,7 @@ export const PricingSection = () => {
       description: "Parfait pour commencer",
       icon: <Star className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "bg-cream",
+      bgColor: "bg-amber-50",
       buttonColor: "bg-gray-600 hover:bg-gray-700",
       features: [
         "Jusqu'à 3 types de services",
@@ -30,7 +30,7 @@ export const PricingSection = () => {
       description: "Pour les entrepreneurs actifs",
       icon: <Zap className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "bg-cream",
+      bgColor: "bg-amber-50",
       buttonColor: "bg-orange-600 hover:bg-orange-700",
       features: [
         "Jusqu'à 8 types de services",
@@ -48,7 +48,7 @@ export const PricingSection = () => {
       description: "Notre plan le plus populaire",
       icon: <Crown className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "bg-cream",
+      bgColor: "bg-amber-50",
       buttonColor: "bg-purple-600 hover:bg-purple-700",
       popular: true,
       features: [
@@ -68,7 +68,7 @@ export const PricingSection = () => {
       description: "Pour les pros qui veulent tout",
       icon: <Crown className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "bg-cream",
+      bgColor: "bg-amber-50",
       buttonColor: "bg-cyan-600 hover:bg-cyan-700",
       features: [
         "Tout dans Pro +",
@@ -86,8 +86,8 @@ export const PricingSection = () => {
     <section className="py-20 px-4 relative">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block bg-cream/95 backdrop-blur-sm rounded-xl px-8 py-6 border-3 border-black shadow-lg mb-6">
-            <Badge className="bg-orange-600 text-cream px-4 py-2 text-sm font-bold mb-4 rounded-xl border-2 border-black">
+          <div className="inline-block bg-amber-50 backdrop-blur-sm rounded-xl px-8 py-6 border-3 border-black shadow-lg mb-6">
+            <Badge className="bg-orange-600 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl border-2 border-black">
               💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
             </Badge>
             <h2 className="text-5xl font-black text-black mb-6">
@@ -110,13 +110,13 @@ export const PricingSection = () => {
               }`}
             >
               {plan.popular && (
-                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-purple-700 text-cream text-center py-2 text-sm font-bold">
+                <div className="absolute top-0 left-0 right-0 bg-gradient-to-r from-purple-600 to-purple-700 text-white text-center py-2 text-sm font-bold">
                   ⭐ PLUS POPULAIRE
                 </div>
               )}
               
               <CardHeader className={`text-center ${plan.popular ? 'pt-12' : 'pt-6'}`}>
-                <div className="mx-auto mb-4 p-3 bg-cream rounded-2xl w-fit shadow-lg border-2 border-black">
+                <div className="mx-auto mb-4 p-3 bg-amber-50 rounded-2xl w-fit shadow-lg border-2 border-black">
                   {plan.icon}
                 </div>
                 <CardTitle className="text-2xl font-black text-black">
@@ -136,7 +136,7 @@ export const PricingSection = () => {
               </CardHeader>
 
               <CardContent className="p-6">
-                <Button className={`w-full ${plan.buttonColor} text-cream font-bold py-3 rounded-xl mb-6 shadow-lg border-2 border-black`}>
+                <Button className={`w-full ${plan.buttonColor} text-white font-bold py-3 rounded-xl mb-6 shadow-lg border-2 border-black`}>
                   {plan.name === "Gratuit" ? "COMMENCER GRATUIT" : "CHOISIR CE PLAN"}
                 </Button>
 
