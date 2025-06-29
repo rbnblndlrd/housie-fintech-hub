@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Shield, CheckCircle, Eye, FileCheck } from "lucide-react";
+import { ArrowRight, Shield, CheckCircle, Eye, FileCheck, Search, Truck, Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
 import { UserTypeSelector } from './UserTypeSelector';
 import DemoSection from './DemoSection';
@@ -176,12 +176,13 @@ const UnifiedHeroSection: React.FC<UnifiedHeroSectionProps> = ({
   );
 };
 
-// User type options for demo section
+// User type options for demo section - Fixed to include required icon property
 const userTypeOptions = [
   {
     id: "fleet",
     title: "Managing a Fleet?",
     description: "Coordinate multiple service providers and manage operations efficiently",
+    icon: <Truck className="h-12 w-12 text-orange-700" />,
     benefits: ["Team coordination", "Bulk scheduling", "Fleet analytics", "Revenue optimization"],
     demoImage: "/lovable-uploads/analytics-dashboard.png"
   },
@@ -189,6 +190,7 @@ const userTypeOptions = [
     id: "provider",
     title: "Looking for Work?",
     description: "Join our network of verified service providers and grow your business",
+    icon: <Wrench className="h-12 w-12 text-green-700" />,
     benefits: ["Verified leads", "Flexible scheduling", "Payment protection", "Business tools"],
     demoImage: "/lovable-uploads/housiepro.png"
   },
@@ -196,6 +198,7 @@ const userTypeOptions = [
     id: "customer",
     title: "Need a Local Expert?",
     description: "Find trusted, verified professionals for your home and business needs",
+    icon: <Search className="h-12 w-12 text-purple-700" />,
     benefits: ["Verified professionals", "Instant booking", "Secure payments", "Privacy focused"],
     demoImage: "/lovable-uploads/browse-services(broken).png"
   }
