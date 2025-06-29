@@ -95,14 +95,17 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         const activeRole = (profile.active_role as 'customer' | 'provider') || 'customer';
         setCurrentRole(activeRole);
         
+        // FIXED: Always set available roles based on capabilities, not current role
         const roles = ['customer'];
         if (profile.can_provide_services) {
           roles.push('provider');
           setCanSwitchToProvider(true);
+        } else {
+          setCanSwitchToProvider(false);
         }
         
         setAvailableRoles(roles);
-        console.log('✅ Roles set:', { activeRole, availableRoles: roles });
+        console.log('✅ Roles set:', { activeRole, availableRoles: roles, canProvideServices: profile.can_provide_services });
       }
     } catch (error) {
       console.error('❌ Error in loadUserCapabilities:', error);
@@ -111,6 +114,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const switchRole = async (newRole: 'customer' | 'provider') => {
     if (!user || !availableRoles.includes(newRole)) {
+      console.error('❌ Cannot switch to role:', newRole, 'Available roles:', availableRoles);
       throw new Error('Cannot switch to this role');
     }
 
@@ -125,7 +129,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (error) throw error;
 
       setCurrentRole(newRole);
-      console.log('✅ Role switched successfully to:', newRole);
+      console.log('✅ Role switched successfully to:', newRole, 'Available roles remain:', availableRoles);
     } catch (error) {
       console.error('❌ Error switching role:', error);
       throw error;

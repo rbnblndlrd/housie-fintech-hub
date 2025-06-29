@@ -103,21 +103,8 @@ const Profile = () => {
 
   const handleProviderEnabled = async () => {
     setCanProvideServices(true);
-    // Refresh the role context without reloading the page
-    try {
-      const { data } = await supabase
-        .from('user_profiles')
-        .select('can_provide_services, active_role')
-        .eq('user_id', user.id)
-        .single();
-      
-      if (data?.can_provide_services) {
-        // Update the role context by switching to provider
-        await switchRole('provider');
-      }
-    } catch (error) {
-      console.error('Error refreshing role context:', error);
-    }
+    // Refresh the context by reloading capabilities
+    window.location.reload();
   };
 
   const getRoleIcon = (role: string) => {
@@ -210,9 +197,9 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-              {/* Dynamic Role Management Section */}
+              {/* Role Management Section - FIXED: Show based on availableRoles, not canProvideServices */}
               <div className="transition-all duration-300 ease-in-out">
-                {!canProvideServices ? (
+                {availableRoles.length <= 1 && !canProvideServices ? (
                   <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
                 ) : (
                   <Card className="border-2 border-gray-200">
