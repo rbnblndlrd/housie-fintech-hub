@@ -23,14 +23,14 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { ChevronRight, Check, Circle, Zap, Clock, AlertTriangle, Minus, RefreshCw } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { getUserDropdownItems, getProfileMenuItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
 import NotificationIndicator from '@/components/NotificationIndicator';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
-  const { currentRole, setCurrentRole } = useRole();
+  const { currentRole, switchRole } = useRoleSwitch();
   const navigate = useNavigate();
   const [providerStatus, setProviderStatus] = useState('Available');
 
@@ -62,15 +62,17 @@ const UserMenu = () => {
     // TODO: Save status to database if needed
   };
 
-  const handleRoleToggle = () => {
+  const handleRoleToggle = async () => {
     const newRole = currentRole === 'provider' ? 'customer' : 'provider';
     console.log('🔧 Switching role to:', newRole);
-    setCurrentRole(newRole);
-    
-    // Navigate to appropriate dashboard if currently on dashboard
-    if (window.location.pathname.includes('dashboard')) {
-      const targetDashboard = newRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
-      navigate(targetDashboard);
+    try {
+      await switchRole(newRole);
+      // Stay on dashboard if currently there, just refresh content
+      if (window.location.pathname === '/dashboard') {
+        window.location.reload();
+      }
+    } catch (error) {
+      console.error('Failed to switch role:', error);
     }
   };
 
@@ -102,11 +104,6 @@ const UserMenu = () => {
   }, [currentRole]);
 
   if (!user) return null;
-
-  // Dynamic dashboard link based on current role
-  const dashboardHref = currentRole === 'provider' ? '/provider-dashboard' : '/customer-dashboard';
-  // Dynamic settings link based on current role
-  const settingsHref = currentRole === 'provider' ? '/provider-settings' : '/customer-settings';
 
   return (
     <DropdownMenu key={`dropdown-${currentRole}-${Date.now()}`}>
@@ -177,16 +174,16 @@ const UserMenu = () => {
         
         {/* Map - First item in dropdown */}
         <DropdownMenuItem
-          onClick={() => navigate("/interactive-map")}
+          onClick={() => navigate("/emergency")}
           className="cursor-pointer"
         >
           <span className="mr-2">🗺️</span>
           <span className="flex-1">Interactive Map</span>
         </DropdownMenuItem>
 
-        {/* Dashboard */}
+        {/* Dashboard - Updated to use unified dashboard */}
         <DropdownMenuItem
-          onClick={() => navigate(dashboardHref)}
+          onClick={() => navigate("/dashboard")}
           className="cursor-pointer"
         >
           <span className="mr-2">📊</span>
@@ -296,7 +293,7 @@ const UserMenu = () => {
 
         {/* Settings */}
         <DropdownMenuItem
-          onClick={() => navigate(settingsHref)}
+          onClick={() => navigate("/profile")}
           className="cursor-pointer"
         >
           <span className="mr-2">⚙️</span>

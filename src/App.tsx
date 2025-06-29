@@ -6,17 +6,17 @@ import { useUser, useSupabaseClient, SessionContextProvider } from '@supabase/au
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as Sonner } from '@/components/ui/sonner';
 import { supabase } from '@/integrations/supabase/client';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
 import Index from '@/pages/Index';
 import Services from '@/pages/Services';
 import BookingHistory from '@/pages/BookingHistory';
 import Notifications from '@/pages/Notifications';
 import Auth from '@/pages/Auth';
-import ProviderDashboard from '@/pages/ProviderDashboard';
+import UnifiedDashboard from '@/pages/UnifiedDashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
 import InteractiveMapPage from '@/pages/InteractiveMapPage';
-import CustomerDashboard from '@/pages/CustomerDashboard';
 import AdminTestingDashboard from '@/components/admin/AdminTestingDashboard';
-import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
 import UnifiedProfilePage from '@/components/profile/UnifiedProfilePage';
 
 const queryClient = new QueryClient();
@@ -26,28 +26,29 @@ function App() {
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <SessionContextProvider supabaseClient={supabase}>
-          <RoleSwitchProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/services" element={<Services />} />
-                <Route path="/bookings" element={<BookingHistory />} />
-                <Route path="/messages" element={<Notifications />} />
-                <Route path="/login" element={<Auth />} />
-                <Route path="/signup" element={<Auth />} />
-                <Route path="/provider" element={<ProviderDashboard />} />
-                <Route path="/admin" element={<AdminDashboard />} />
-                <Route path="/emergency" element={<InteractiveMapPage />} />
-                <Route path="/calendar" element={<CustomerDashboard />} />
-                <Route path="/admin/users" element={<CustomerDashboard />} />
-                <Route path="/admin/testing" element={<AdminTestingDashboard />} />
-                <Route path="/admin/fraud" element={<AdminDashboard />} />
-                <Route path="/profile" element={<UnifiedProfilePage />} />
-              </Routes>
-            </BrowserRouter>
-          </RoleSwitchProvider>
+          <AuthProvider>
+            <RoleSwitchProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/bookings" element={<BookingHistory />} />
+                  <Route path="/messages" element={<Notifications />} />
+                  <Route path="/login" element={<Auth />} />
+                  <Route path="/signup" element={<Auth />} />
+                  <Route path="/dashboard" element={<UnifiedDashboard />} />
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/emergency" element={<InteractiveMapPage />} />
+                  <Route path="/admin/users" element={<UnifiedDashboard />} />
+                  <Route path="/admin/testing" element={<AdminTestingDashboard />} />
+                  <Route path="/admin/fraud" element={<AdminDashboard />} />
+                  <Route path="/profile" element={<UnifiedProfilePage />} />
+                </Routes>
+              </BrowserRouter>
+            </RoleSwitchProvider>
+          </AuthProvider>
         </SessionContextProvider>
       </QueryClientProvider>
     </div>

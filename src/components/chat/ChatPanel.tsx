@@ -5,7 +5,7 @@ import ClaudeConversation from './ClaudeConversation';
 import AIVoiceInterface from './AIVoiceInterface';
 import CreditsWidget from '@/components/credits/CreditsWidget';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 
 interface ChatPanelProps {
   activeTab?: 'messages' | 'ai' | 'voice';
@@ -15,7 +15,7 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
   activeTab: externalActiveTab
 }) => {
   const { user } = useAuth();
-  const { currentRole } = useRole();
+  const { currentRole } = useRoleSwitch();
   const [activeTab, setActiveTab] = useState(externalActiveTab || 'messages');
   const [claudeSessionId] = useState(() => crypto.randomUUID());
 
