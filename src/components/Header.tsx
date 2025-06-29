@@ -82,8 +82,12 @@ const Header = () => {
               className="h-8 w-auto"
               onError={(e) => {
                 // Fallback to text if image fails to load
-                e.currentTarget.style.display = 'none';
-                e.currentTarget.nextElementSibling.style.display = 'block';
+                const target = e.currentTarget as HTMLImageElement;
+                target.style.display = 'none';
+                const nextSibling = target.nextElementSibling as HTMLElement;
+                if (nextSibling) {
+                  nextSibling.style.display = 'block';
+                }
               }}
             />
             <span className="text-xl font-bold text-white hidden">HOUSIE</span>

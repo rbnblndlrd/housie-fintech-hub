@@ -111,8 +111,6 @@ const Calendar = () => {
         <AddAppointmentDialog
           selectedDate={selectedDate}
           onAddAppointment={handleAddAppointment}
-          open={showAddDialog}
-          onOpenChange={setShowAddDialog}
         />
       )}
 
