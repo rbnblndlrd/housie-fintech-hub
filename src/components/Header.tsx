@@ -77,9 +77,9 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3">
             <img 
-              src="/lovable-uploads/white-housie-logo.png" 
+              src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
               alt="HOUSIE" 
-              className="h-8 w-auto"
+              className="h-10 w-auto"
               onError={(e) => {
                 // Fallback to text if image fails to load
                 const target = e.currentTarget as HTMLImageElement;
