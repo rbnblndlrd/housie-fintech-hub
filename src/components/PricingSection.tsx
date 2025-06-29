@@ -13,7 +13,7 @@ export const PricingSection = () => {
       description: "Parfait pour commencer",
       icon: <Star className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#faf7f2",
+      bgColor: "#f8f9fa",
       buttonColor: "bg-gray-600 hover:bg-gray-700",
       features: [
         "Jusqu'à 3 types de services",
@@ -30,7 +30,7 @@ export const PricingSection = () => {
       description: "Pour les entrepreneurs actifs",
       icon: <Zap className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#faf7f2",
+      bgColor: "#f8f9fa",
       buttonColor: "bg-orange-600 hover:bg-orange-700",
       features: [
         "Jusqu'à 8 types de services",
@@ -48,7 +48,7 @@ export const PricingSection = () => {
       description: "Notre plan le plus populaire",
       icon: <Crown className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#faf7f2",
+      bgColor: "#f8f9fa",
       buttonColor: "bg-purple-600 hover:bg-purple-700",
       popular: true,
       features: [
@@ -68,7 +68,7 @@ export const PricingSection = () => {
       description: "Pour les pros qui veulent tout",
       icon: <Crown className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#faf7f2",
+      bgColor: "#f8f9fa",
       buttonColor: "bg-cyan-600 hover:bg-cyan-700",
       features: [
         "Tout dans Pro +",
@@ -86,7 +86,7 @@ export const PricingSection = () => {
     <section className="py-20 px-4 relative">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <div className="inline-block backdrop-blur-sm rounded-xl px-8 py-6 border-3 border-black shadow-lg mb-6" style={{ backgroundColor: '#faf7f2' }}>
+          <div className="inline-block fintech-card backdrop-blur-sm rounded-xl px-8 py-6 shadow-lg mb-6" style={{ backgroundColor: '#f8f9fa' }}>
             <Badge className="bg-orange-600 text-white px-4 py-2 text-sm font-bold mb-4 rounded-xl border-2 border-black">
               💰 FRAIS RÉDUITS: 6% vs 15-30% ailleurs
             </Badge>
@@ -105,7 +105,7 @@ export const PricingSection = () => {
           {plans.map((plan, index) => (
             <Card 
               key={index} 
-              className={`border-3 border-black rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
+              className={`fintech-card backdrop-blur-sm rounded-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 relative overflow-hidden ${
                 plan.popular ? 'ring-4 ring-purple-600 shadow-2xl' : ''
               }`}
               style={{ backgroundColor: plan.bgColor }}
