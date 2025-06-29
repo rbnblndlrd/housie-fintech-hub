@@ -24,15 +24,10 @@ interface CalendarEvent {
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [editingEvent, setEditingEvent] = useState<CalendarEvent | null>(null);
-  const [appointments, setAppointments] = useState<CalendarEvent[]>([]);
-  const { allEvents } = useUnifiedCalendarIntegration();
+  const { allEvents, createAppointment } = useUnifiedCalendarIntegration();
 
-  const handleAddAppointment = (newAppointment: Omit<CalendarEvent, 'id'>) => {
-    const appointment: CalendarEvent = {
-      ...newAppointment,
-      id: `appointment-${Date.now()}`
-    };
-    setAppointments(prev => [...prev, appointment]);
+  const handleAddAppointment = async (newAppointment: Omit<CalendarEvent, 'id'>) => {
+    await createAppointment(newAppointment);
   };
 
   const handleEditEvent = (eventId: string) => {
@@ -43,14 +38,12 @@ const Calendar = () => {
   };
 
   const handleUpdateAppointment = (updatedAppointment: CalendarEvent) => {
-    setAppointments(prev => 
-      prev.map(apt => apt.id === updatedAppointment.id ? updatedAppointment : apt)
-    );
+    // This will be handled by the unified calendar integration
     setEditingEvent(null);
   };
 
   const handleDeleteAppointment = (appointmentId: string) => {
-    setAppointments(prev => prev.filter(apt => apt.id !== appointmentId));
+    // This will be handled by the unified calendar integration
     setEditingEvent(null);
   };
 
@@ -61,7 +54,6 @@ const Calendar = () => {
   // Function that matches ModernCalendar's expected signature
   const handleCalendarAddClick = () => {
     // This will trigger when ModernCalendar wants to add an appointment
-    // The actual appointment creation is handled by AddAppointmentDialog
     console.log('Calendar add appointment clicked');
   };
 

@@ -21,29 +21,18 @@ export const useRealtimeSubscription = ({
 }: RealtimeSubscriptionOptions) => {
   const channelRef = useRef<any>(null);
   const isSubscribedRef = useRef(false);
-  const optionsRef = useRef<string>('');
 
   useEffect(() => {
     if (!enabled || !onUpdate) return;
 
-    // Create a unique key for these subscription options
-    const currentOptions = `${table}-${event}-${schema}-${filter}-${enabled}`;
-    
-    // Only setup if options have changed
-    if (isSubscribedRef.current && optionsRef.current === currentOptions) {
+    // Prevent multiple subscriptions
+    if (isSubscribedRef.current) {
       return;
     }
 
     console.log(`Setting up real-time subscription for ${schema}.${table}`);
     
-    // Clean up existing channel if any
-    if (channelRef.current) {
-      console.log(`Cleaning up existing subscription for ${table}`);
-      supabase.removeChannel(channelRef.current);
-      channelRef.current = null;
-      isSubscribedRef.current = false;
-    }
-
+    // Create unique channel name to prevent conflicts
     const channelName = `realtime-${table}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     
     const channel = supabase
@@ -65,7 +54,6 @@ export const useRealtimeSubscription = ({
 
     channelRef.current = channel;
     isSubscribedRef.current = true;
-    optionsRef.current = currentOptions;
 
     return () => {
       console.log(`Cleaning up real-time subscription for ${table}`);
@@ -73,10 +61,9 @@ export const useRealtimeSubscription = ({
         supabase.removeChannel(channelRef.current);
         channelRef.current = null;
         isSubscribedRef.current = false;
-        optionsRef.current = '';
       }
     };
-  }, [table, event, schema, filter, enabled]); // Include all dependencies
+  }, [table, event, schema, filter, enabled, onUpdate]);
 
   return {
     isSubscribed: isSubscribedRef.current
