@@ -102,9 +102,22 @@ const Profile = () => {
   };
 
   const handleProviderEnabled = async () => {
+    // Update local state
     setCanProvideServices(true);
-    // Refresh the context by reloading capabilities
-    window.location.reload();
+    
+    // Refresh the role context to pick up the new capabilities
+    // We'll trigger a re-check by calling the context's load function
+    try {
+      // Force reload the role switch context capabilities
+      await checkProviderCapability();
+      
+      // Small delay to ensure database changes propagate
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } catch (error) {
+      console.error('Error refreshing capabilities:', error);
+    }
   };
 
   const getRoleIcon = (role: string) => {
@@ -197,7 +210,7 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-              {/* FIXED: Role Management Section - Show based on availableRoles only */}
+              {/* Role Management Section - Show based on availableRoles only */}
               <div className="transition-all duration-300 ease-in-out">
                 {availableRoles.length <= 1 ? (
                   <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />

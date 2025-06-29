@@ -7,7 +7,6 @@ import Header from '@/components/Header';
 import CustomerDashboard from '@/pages/CustomerDashboard';
 import ProviderDashboard from '@/pages/ProviderDashboard';
 import DashboardRoleToggle from '@/components/dashboard/DashboardRoleToggle';
-import { Card, CardContent } from '@/components/ui/card';
 
 const UnifiedDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -43,11 +42,11 @@ const UnifiedDashboard = () => {
           <div className="flex items-center justify-between mb-8">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {currentRole === 'customer' ? 'My Overview' : 'Provider Dashboard'}
+                {currentRole === 'customer' ? 'Welcome back!' : 'Provider Dashboard'}
               </h1>
               <p className="text-gray-600">
                 {currentRole === 'customer' 
-                  ? 'Your bookings and account overview' 
+                  ? 'Manage your bookings, calendar, and account' 
                   : 'Manage your services and track performance'
                 }
               </p>
@@ -71,59 +70,9 @@ const UnifiedDashboard = () => {
   );
 };
 
-// Simplified Customer Dashboard Content (overview style)
+// Full Customer Dashboard Content (using the complete CustomerDashboard)
 const CustomerDashboardContent = () => {
-  return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">Upcoming Bookings</h3>
-            <p className="text-3xl font-bold text-blue-600">3</p>
-            <p className="text-sm text-gray-600">Next: Tomorrow at 2:00 PM</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">Total Spent</h3>
-            <p className="text-3xl font-bold text-green-600">$450</p>
-            <p className="text-sm text-gray-600">This month</p>
-          </CardContent>
-        </Card>
-        
-        <Card>
-          <CardContent className="p-6">
-            <h3 className="font-semibold text-gray-900 mb-2">Services Used</h3>
-            <p className="text-3xl font-bold text-purple-600">12</p>
-            <p className="text-sm text-gray-600">All time</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <Card>
-        <CardContent className="p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Recent Activity</h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-              <div>
-                <p className="font-medium">House Cleaning</p>
-                <p className="text-sm text-gray-600">Completed yesterday</p>
-              </div>
-              <span className="text-green-600 font-medium">$85</span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded">
-              <div>
-                <p className="font-medium">Plumbing Repair</p>
-                <p className="text-sm text-gray-600">Scheduled for tomorrow</p>
-              </div>
-              <span className="text-blue-600 font-medium">$120</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+  return <CustomerDashboard />;
 };
 
 // Full Provider Dashboard Content (detailed view)
