@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
@@ -10,6 +10,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
+import ProviderOnboarding from '@/components/profile/ProviderOnboarding';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   User, 
   Briefcase, 
@@ -26,6 +28,34 @@ const Profile = () => {
   const { currentRole, availableRoles, switchRole } = useRoleSwitch();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [canProvideServices, setCanProvideServices] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (user) {
+      checkProviderCapability();
+    }
+  }, [user]);
+
+  const checkProviderCapability = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_profiles')
+        .select('can_provide_services')
+        .eq('user_id', user.id)
+        .single();
+
+      if (error) throw error;
+      
+      setCanProvideServices(data?.can_provide_services || false);
+    } catch (error) {
+      console.error('Error checking provider capability:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (!user) {
     navigate('/login');
@@ -46,6 +76,12 @@ const Profile = () => {
         variant: "destructive",
       });
     }
+  };
+
+  const handleProviderEnabled = () => {
+    setCanProvideServices(true);
+    // Refresh the page to update role context
+    window.location.reload();
   };
 
   const getRoleIcon = (role: string) => {
@@ -76,6 +112,22 @@ const Profile = () => {
 
   const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="animate-pulse space-y-6">
+              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+              <div className="h-48 bg-gray-200 rounded"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
@@ -89,8 +141,8 @@ const Profile = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Profile Overview */}
-            <div className="lg:col-span-2">
-              <Card className="border-2 border-gray-200 mb-6">
+            <div className="lg:col-span-2 space-y-6">
+              <Card className="border-2 border-gray-200">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-3">
                     <Avatar className="h-16 w-16">
@@ -122,59 +174,63 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-              {/* Role Management */}
-              <Card className="border-2 border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Crown className="h-5 w-5 text-purple-600" />
-                    Role Management
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-700 mb-2 block">
-                        Current Role
-                      </label>
-                      <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-base px-3 py-1">
-                        {getRoleIcon(currentRole)}
-                        <span className="ml-2">{getRoleLabel(currentRole)}</span>
-                      </Badge>
-                    </div>
-
-                    {availableRoles.length > 1 && (
+              {/* Provider Onboarding or Role Management */}
+              {!canProvideServices ? (
+                <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
+              ) : (
+                <Card className="border-2 border-gray-200">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Crown className="h-5 w-5 text-purple-600" />
+                      Role Management
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
                       <div>
                         <label className="text-sm font-medium text-gray-700 mb-2 block">
-                          Switch Role
+                          Current Role
                         </label>
-                        <Select value={currentRole} onValueChange={handleRoleSwitch}>
-                          <SelectTrigger className="w-full">
-                            <SelectValue>
-                              <div className="flex items-center gap-2">
-                                {getRoleIcon(currentRole)}
-                                {getRoleLabel(currentRole)}
-                              </div>
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {availableRoles.map((role) => (
-                              <SelectItem key={role} value={role}>
-                                <div className="flex items-center gap-2">
-                                  {getRoleIcon(role)}
-                                  {getRoleLabel(role)}
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <p className="text-xs text-gray-500 mt-1">
-                          Switch between customer and provider modes
-                        </p>
+                        <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-base px-3 py-1">
+                          {getRoleIcon(currentRole)}
+                          <span className="ml-2">{getRoleLabel(currentRole)}</span>
+                        </Badge>
                       </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+
+                      {availableRoles.length > 1 && (
+                        <div>
+                          <label className="text-sm font-medium text-gray-700 mb-2 block">
+                            Switch Role
+                          </label>
+                          <Select value={currentRole} onValueChange={handleRoleSwitch}>
+                            <SelectTrigger className="w-full">
+                              <SelectValue>
+                                <div className="flex items-center gap-2">
+                                  {getRoleIcon(currentRole)}
+                                  {getRoleLabel(currentRole)}
+                                </div>
+                              </SelectValue>
+                            </SelectTrigger>
+                            <SelectContent>
+                              {availableRoles.map((role) => (
+                                <SelectItem key={role} value={role}>
+                                  <div className="flex items-center gap-2">
+                                    {getRoleIcon(role)}
+                                    {getRoleLabel(role)}
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-gray-500 mt-1">
+                            Switch between customer and provider modes
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div>
 
             {/* Quick Actions */}
@@ -229,8 +285,10 @@ const Profile = () => {
                       <Badge className="bg-blue-100 text-blue-800">85%</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Network Links</span>
-                      <Badge className="bg-purple-100 text-purple-800">47</Badge>
+                      <span className="text-sm text-gray-600">Provider Mode</span>
+                      <Badge className={canProvideServices ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                        {canProvideServices ? "✓ Enabled" : "Disabled"}
+                      </Badge>
                     </div>
                   </div>
                 </CardContent>

@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { AuthProvider } from './contexts/AuthContext';
 import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import RoleProtectedRoute from './components/RoleProtectedRoute';
+import Index from './pages/Index';
 import UnifiedDashboard from './pages/UnifiedDashboard';
 import InteractiveMapPage from './pages/InteractiveMapPage';
 import Social from './pages/Social';
@@ -28,8 +29,8 @@ function App() {
       <RoleSwitchProvider>
         <Router>
           <Routes>
+            <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/desktop-admin" element={<DesktopAdminDashboard />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route
