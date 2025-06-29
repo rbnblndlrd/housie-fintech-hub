@@ -33,7 +33,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log('🔧 Setting up auth state listener...');
     
-    // Set up auth state listener
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('🔄 Auth state changed:', event, {
@@ -43,13 +43,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           userMetadata: session?.user?.user_metadata,
           appMetadata: session?.user?.app_metadata
         });
+        
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
+        
+        // Handle successful OAuth sign in
+        if (event === 'SIGNED_IN' && session?.user) {
+          console.log('✅ User signed in successfully via OAuth');
+        }
       }
     );
 
-    // Get initial session
+    // THEN get initial session
     const getInitialSession = async () => {
       console.log('🔍 Getting initial session...');
       try {
@@ -112,7 +118,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         email,
         password,
         options: {
-          emailRedirectTo: window.location.origin + '/welcome',
+          emailRedirectTo: `${window.location.origin}/`,
           data: {
             full_name: fullName
           }
