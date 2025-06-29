@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import Header from "@/components/Header";
 import GoogleCalendarIntegration from "@/components/GoogleCalendarIntegration";
 import DashboardRoleToggle from "@/components/dashboard/DashboardRoleToggle";
+import RoleToggleSwitch from "@/components/dashboard/RoleToggleSwitch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -579,13 +579,11 @@ const CustomerDashboard = () => {
                       Settings
                     </Button>
                     
-                    {/* Role Toggle - always show if user has multiple roles */}
-                    {availableRoles.length > 1 && (
-                      <div className="pt-4 border-t">
-                        <h4 className="text-sm font-medium text-gray-700 mb-3">Switch Role</h4>
-                        <DashboardRoleToggle />
-                      </div>
-                    )}
+                    {/* Role Toggle Switch */}
+                    <div className="pt-4 border-t">
+                      <h4 className="text-sm font-medium text-gray-700 mb-3">Switch Role</h4>
+                      <RoleToggleSwitch />
+                    </div>
                   </CardContent>
                 </Card>
 
