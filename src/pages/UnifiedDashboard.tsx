@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
+import CalendarPreview from '@/components/calendar/CalendarPreview';
+import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +20,6 @@ import {
   MapPin,
   Clock,
   DollarSign,
-  Award,
   Target,
   ArrowRight,
   ArrowLeft,
@@ -120,8 +121,13 @@ const UnifiedDashboard = () => {
 
   const handleJobDrop = (e: React.DragEvent) => {
     e.preventDefault();
-    // Handle job drop logic here
-    console.log('Job dropped for route planning');
+    try {
+      const jobData = JSON.parse(e.dataTransfer.getData('application/json'));
+      console.log('Job dropped for route planning:', jobData);
+      // Add job to route logic here
+    } catch (error) {
+      console.error('Error handling job drop:', error);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -224,8 +230,8 @@ const UnifiedDashboard = () => {
             </div>
           </div>
 
-          {/* Performance Cards Grid with Fintech Styling */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Top Row Cards */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             {/* Your Performance Card */}
             <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
               <CardHeader>
@@ -377,80 +383,16 @@ const UnifiedDashboard = () => {
                 )}
               </CardContent>
             </Card>
+          </div>
 
-            {/* Provider/Customer Specific Card */}
-            {currentRole === 'provider' ? (
-              <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <DollarSign className="h-5 w-5 text-gray-600" />
-                    Earnings Overview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="text-center">
-                      <div className="text-3xl font-bold text-green-600 mb-1">{stats.earnings}</div>
-                      <div className="text-sm text-gray-600">This Month</div>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Completed Jobs</span>
-                        <span className="font-medium">12</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Pending Payments</span>
-                        <span className="font-medium text-orange-600">$240</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-gray-600">Next Payout</span>
-                        <span className="font-medium">Jan 15</span>
-                      </div>
-                    </div>
-                    
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t">
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <Clock className="h-6 w-6 text-blue-600 mx-auto mb-1" />
-                        <div className="font-bold text-blue-900">{stats.responseTime}</div>
-                        <div className="text-xs text-blue-700">Avg Response</div>
-                      </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <Target className="h-6 w-6 text-green-600 mx-auto mb-1" />
-                        <div className="font-bold text-green-900">{stats.completionRate}</div>
-                        <div className="text-xs text-green-700">Completion Rate</div>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingUp className="h-5 w-5 text-gray-600" />
-                    Service Activity
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="text-center p-3 bg-blue-50 rounded-lg">
-                        <div className="font-bold text-blue-900">5</div>
-                        <div className="text-xs text-blue-700">Active Bookings</div>
-                      </div>
-                      <div className="text-center p-3 bg-green-50 rounded-lg">
-                        <div className="font-bold text-green-900">18</div>
-                        <div className="text-xs text-green-700">Completed</div>
-                      </div>
-                    </div>
-                    <div className="text-center p-3 bg-purple-50 rounded-lg">
-                      <div className="font-bold text-purple-900">$1,250</div>
-                      <div className="text-xs text-purple-700">Total Spent</div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+          {/* Bottom Section - Kanban Tickets (Full Width) */}
+          <div className="mb-8">
+            <KanbanTicketList />
+          </div>
+
+          {/* Calendar Preview (Full Width Bottom) */}
+          <div>
+            <CalendarPreview />
           </div>
         </div>
       </div>
