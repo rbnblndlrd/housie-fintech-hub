@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
+import { UnifiedMapboxMap } from "@/components/UnifiedMapboxMap";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, MapPin, Clock } from 'lucide-react';
@@ -47,7 +47,7 @@ const InteractiveServicesMap: React.FC<InteractiveServicesMapProps> = ({
 
   return (
     <div className="relative h-96 w-full">
-      <UnifiedGoogleMap
+      <UnifiedMapboxMap
         center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={12}
         className="w-full h-full"
