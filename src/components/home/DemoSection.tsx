@@ -54,7 +54,7 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Demo Screenshot */}
-          <div className="fintech-card backdrop-blur-sm p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300 shadow-2xl" style={{ backgroundColor: '#F5F5DC' }}>
+          <div className="fintech-card backdrop-blur-sm p-6 lg:p-8 transform hover:scale-105 transition-transform duration-300 shadow-2xl" style={{ backgroundColor: '#f8f9fa' }}>
             <img 
               src={demoContent.demoImage} 
               alt={`${demoContent.title} Demo`}
@@ -64,7 +64,7 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
 
           {/* Demo Benefits */}
           <div className="space-y-8">
-            <div className="fintech-card backdrop-blur-sm p-8 lg:p-10 shadow-2xl" style={{ backgroundColor: '#F5F5DC' }}>
+            <div className="fintech-card backdrop-blur-sm p-8 lg:p-10 shadow-2xl" style={{ backgroundColor: '#f8f9fa' }}>
               <h3 className="text-2xl lg:text-3xl font-black text-black mb-6 lg:mb-8 flex items-center gap-3">
                 <Star className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
                 {selectedOption 
@@ -75,7 +75,7 @@ const DemoSection = ({ selectedOption }: DemoSectionProps) => {
               
               <div className="space-y-4 lg:space-y-6">
                 {demoContent.benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-start gap-4 lg:gap-6 p-4 lg:p-6 rounded-2xl border-2 border-black hover:shadow-lg transition-shadow duration-200" style={{ backgroundColor: '#F5F5DC' }}>
+                  <div key={index} className="flex items-start gap-4 lg:gap-6 p-4 lg:p-6 rounded-2xl border-2 border-black hover:shadow-lg transition-shadow duration-200" style={{ backgroundColor: '#faf7f2' }}>
                     <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 mt-1 flex-shrink-0" />
                     <div>
                       <h4 className="font-black text-black text-base lg:text-lg mb-2">{benefit}</h4>

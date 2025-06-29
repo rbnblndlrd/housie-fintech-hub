@@ -102,7 +102,7 @@ export const UserTypeSelector = ({ onUserTypeSelect, selectedUserType }: UserTyp
               className={`fintech-card cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-3 backdrop-blur-sm rounded-2xl p-6 lg:p-8 relative overflow-hidden ${
                 selectedUserType === option.id ? 'ring-4 ring-orange-600 shadow-2xl scale-105' : 'hover:scale-105'
               }`}
-              style={{ backgroundColor: '#F5F5DC' }}
+              style={{ backgroundColor: '#f8f9fa' }}
               onClick={() => handleUserTypeSelect(option.id)}
             >
               <CardHeader className="text-center pb-6 relative z-10">
