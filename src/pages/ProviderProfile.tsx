@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
@@ -5,11 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import { User, Edit, Phone, Mail, Image } from 'lucide-react';
+import { User, AlertTriangle } from 'lucide-react';
 import Header from '@/components/Header';
 import ProfileNavigation from '@/components/ProfileNavigation';
 import BusinessInfoSection from '@/components/provider/BusinessInfoSection';
@@ -53,6 +51,7 @@ const ProviderProfile = () => {
   const [saving, setSaving] = useState(false);
   const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [profileCreationError, setProfileCreationError] = useState<string | null>(null);
 
   // Redirect if role changes to customer
   useEffect(() => {
@@ -70,6 +69,8 @@ const ProviderProfile = () => {
 
   const fetchProviderProfile = async () => {
     try {
+      console.log('🔍 Fetching provider profile for user:', user?.id);
+      
       const { data, error } = await supabase
         .from('provider_profiles')
         .select('*')
@@ -77,15 +78,22 @@ const ProviderProfile = () => {
         .single();
 
       if (error && error.code !== 'PGRST116') {
+        console.error('❌ Error fetching provider profile:', error);
         throw error;
       }
 
-      setProviderProfile(data);
-    } catch (error) {
-      console.error('Error fetching provider profile:', error);
+      if (data) {
+        console.log('✅ Provider profile found:', data.business_name || 'Unnamed');
+        setProviderProfile(data);
+      } else {
+        console.log('ℹ️ No provider profile found for user');
+        setProviderProfile(null);
+      }
+    } catch (error: any) {
+      console.error('❌ Error in fetchProviderProfile:', error);
       toast({
         title: "Error",
-        description: "Failed to load provider profile",
+        description: "Failed to load provider profile: " + error.message,
         variant: "destructive",
       });
     }
@@ -99,13 +107,17 @@ const ProviderProfile = () => {
         .eq('id', user?.id)
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Error fetching user profile:', error);
+        throw error;
+      }
+      
       setUserProfile(data);
-    } catch (error) {
-      console.error('Error fetching user profile:', error);
+    } catch (error: any) {
+      console.error('❌ Error in fetchUserProfile:', error);
       toast({
         title: "Error",
-        description: "Failed to load user profile",
+        description: "Failed to load user profile: " + error.message,
         variant: "destructive",
       });
     } finally {
@@ -114,41 +126,103 @@ const ProviderProfile = () => {
   };
 
   const createProviderProfile = async () => {
+    if (!user?.id) {
+      toast({
+        title: "Error",
+        description: "User not authenticated",
+        variant: "destructive",
+      });
+      return;
+    }
+
     try {
       setSaving(true);
+      setProfileCreationError(null);
+      
+      console.log('🔄 Creating provider profile for user:', user.id);
+      
+      const profileData = {
+        user_id: user.id,
+        business_name: '',
+        description: '',
+        years_experience: 0,
+        hourly_rate: 0,
+        service_radius_km: 25,
+        cra_compliant: false,
+        verified: false,
+        insurance_verified: false,
+      };
+
+      console.log('📤 Inserting provider profile with data:', profileData);
+
       const { data, error } = await supabase
         .from('provider_profiles')
-        .insert({
-          user_id: user?.id,
-          business_name: '',
-          description: '',
-          years_experience: 0,
-          hourly_rate: 0,
-          service_radius_km: 10,
-          cra_compliant: false,
-          verified: false,
-          insurance_verified: false,
-        })
+        .insert(profileData)
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('❌ Provider profile creation failed:', {
+          error: error,
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        
+        // Provide specific error messages
+        let errorMessage = "Failed to create provider profile";
+        if (error.code === '23505') {
+          errorMessage = "A provider profile already exists for this user";
+        } else if (error.code === '42501') {
+          errorMessage = "Permission denied. Please try logging out and back in";
+        } else if (error.message) {
+          errorMessage = error.message;
+        }
+        
+        setProfileCreationError(errorMessage);
+        throw new Error(errorMessage);
+      }
 
+      if (!data) {
+        const msg = "Provider profile creation returned no data";
+        console.error('❌', msg);
+        setProfileCreationError(msg);
+        throw new Error(msg);
+      }
+
+      console.log('✅ Provider profile created successfully:', data);
       setProviderProfile(data);
+      
       toast({
         title: "Success",
-        description: "Provider profile created successfully",
+        description: "Provider profile created successfully! You can now complete your business information.",
       });
-    } catch (error) {
-      console.error('Error creating provider profile:', error);
+
+      // Refresh the profile to ensure we have the latest data
+      setTimeout(() => {
+        fetchProviderProfile();
+      }, 1000);
+
+    } catch (error: any) {
+      console.error('❌ Error in createProviderProfile:', error);
+      
+      const errorMsg = error.message || "An unexpected error occurred";
+      setProfileCreationError(errorMsg);
+      
       toast({
         title: "Error",
-        description: "Failed to create provider profile",
+        description: errorMsg,
         variant: "destructive",
       });
     } finally {
       setSaving(false);
     }
+  };
+
+  const retryProfileCreation = () => {
+    setProfileCreationError(null);
+    createProviderProfile();
   };
 
   if (loading) {
@@ -181,7 +255,28 @@ const ProviderProfile = () => {
                   Create your provider profile to start offering services on HOUSIE
                 </CardDescription>
               </CardHeader>
-              <CardContent className="text-center">
+              <CardContent className="text-center space-y-4">
+                {profileCreationError && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-left">
+                    <div className="flex items-start space-x-3">
+                      <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+                      <div>
+                        <h4 className="font-medium text-red-900 mb-1">Profile Creation Failed</h4>
+                        <p className="text-red-700 text-sm mb-3">{profileCreationError}</p>
+                        <Button 
+                          onClick={retryProfileCreation}
+                          disabled={saving}
+                          variant="outline"
+                          size="sm"
+                          className="border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          {saving ? 'Retrying...' : 'Try Again'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <Button 
                   onClick={createProviderProfile}
                   disabled={saving}
@@ -189,6 +284,10 @@ const ProviderProfile = () => {
                 >
                   {saving ? 'Creating Profile...' : 'Create Provider Profile'}
                 </Button>
+                
+                <div className="text-xs text-gray-500 mt-4">
+                  <p>Having trouble? Make sure you're logged in and try refreshing the page.</p>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -214,15 +313,15 @@ const ProviderProfile = () => {
           <Card className="fintech-card">
             <CardHeader className="flex flex-row items-center space-y-0 pb-4">
               <div className="flex items-center space-x-4">
-                <Avatar className="h-16 w-16">
-                  <AvatarImage src={userProfile?.profile_image} />
-                  <AvatarFallback className="bg-gray-100 text-gray-700">
+                <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-lg">
+                  {providerProfile.business_name ? 
+                    providerProfile.business_name.split(' ').map(n => n[0]).join('').slice(0, 2) : 
                     <User className="h-8 w-8" />
-                  </AvatarFallback>
-                </Avatar>
+                  }
+                </div>
                 <div>
                   <CardTitle className="text-xl text-gray-900">
-                    {providerProfile.business_name || userProfile?.full_name}
+                    {providerProfile.business_name || userProfile?.full_name || 'New Provider'}
                   </CardTitle>
                   <CardDescription className="text-gray-600">
                     {providerProfile.verified ? '✅ Verified Provider' : '⏳ Pending Verification'}
