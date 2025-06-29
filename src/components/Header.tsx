@@ -50,17 +50,6 @@ const Header = () => {
     hasNavigateFunction: typeof navigate === 'function'
   });
 
-  const handleLogoClick = () => {
-    console.log('🏠 Logo clicked, navigating to home');
-    try {
-      navigate('/');
-      console.log('✅ Logo navigation successful');
-    } catch (error) {
-      console.error('❌ Logo navigation failed:', error);
-      window.location.href = '/';
-    }
-  };
-
   return (
     <header 
       className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800"
@@ -106,35 +95,24 @@ const Header = () => {
             <Link to="/services" className="text-gray-300 hover:text-white transition-colors">
               Services
             </Link>
+            <Link to="/competitive-advantage" className="text-gray-300 hover:text-white transition-colors">
+              Us vs Them
+            </Link>
+            <Link to="/help" className="text-gray-300 hover:text-white transition-colors">
+              Help Center
+            </Link>
             {user && (
-              <>
-                <Link to="/calendar" className="text-gray-300 hover:text-white transition-colors">
-                  Calendar
-                </Link>
-                <Link to="/messages" className="text-gray-300 hover:text-white transition-colors">
-                  Messages
-                </Link>
-                <Link to="/customer-dashboard" className="text-gray-300 hover:text-white transition-colors">
-                  Dashboard
-                </Link>
-              </>
+              <Link to="/dashboard" className="text-gray-300 hover:text-white transition-colors">
+                Dashboard
+              </Link>
             )}
           </nav>
 
           <div className="flex items-center space-x-4">
             {user ? (
               <div className="flex items-center space-x-4">
-                <span className="hidden sm:inline text-sm text-gray-300">
-                  Welcome, {user.email?.split('@')[0]}
-                </span>
-                <Button 
-                  onClick={handleSignOut}
-                  variant="outline"
-                  size="sm"
-                  className="border-gray-600 text-gray-300 hover:bg-gray-800 hover:text-white"
-                >
-                  Sign Out
-                </Button>
+                <NotificationBell />
+                <UserMenu />
               </div>
             ) : (
               <Link to="/auth">
