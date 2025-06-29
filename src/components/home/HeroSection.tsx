@@ -61,11 +61,11 @@ const HeroSection = () => {
               </div>
 
               {/* Enhanced Speech Bubble */}
-              <div className="absolute -top-16 lg:-top-20 -right-4 lg:-right-16 bg-amber-50 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-xs lg:max-w-sm">
+              <div className="absolute -top-16 lg:-top-20 -right-4 lg:-right-16 backdrop-blur-sm rounded-2xl px-6 py-4 shadow-2xl border-2 border-black transform rotate-2 hover:rotate-0 transition-transform duration-300 max-w-xs lg:max-w-sm" style={{ backgroundColor: '#faf7f2' }}>
                 <div className="text-lg lg:text-xl font-black text-black">
                   Need a local expert? 🔍
                 </div>
-                <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-amber-50"></div>
+                <div className="absolute top-full left-8 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent" style={{ borderTopColor: '#faf7f2' }}></div>
               </div>
             </div>
           </div>
@@ -87,34 +87,34 @@ const HeroSection = () => {
               </div>
               
               {/* Enhanced Value Props Card with Cream Background */}
-              <div className="bg-amber-50 backdrop-blur-sm p-6 lg:p-8 rounded-2xl border-2 border-black shadow-2xl hover:shadow-3xl transition-all duration-300">
+              <div className="backdrop-blur-sm p-6 lg:p-8 rounded-2xl border-2 border-black shadow-2xl hover:shadow-3xl transition-all duration-300" style={{ backgroundColor: '#faf7f2' }}>
                 <h2 className="text-xl lg:text-2xl font-black text-black mb-6 flex items-center gap-3">
                   <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-orange-600" />
                   Why Choose HOUSIE?
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-amber-50 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl border-2 border-black" style={{ backgroundColor: '#faf7f2' }}>
                     <Shield className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">Escrow Protection</span>
                       <span className="text-xs lg:text-sm text-gray-800">Your money is safe</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-amber-50 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl border-2 border-black" style={{ backgroundColor: '#faf7f2' }}>
                     <CheckCircle className="h-6 w-6 lg:h-8 lg:w-8 text-blue-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">Verified Providers</span>
                       <span className="text-xs lg:text-sm text-gray-800">Background checked</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-amber-50 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl border-2 border-black" style={{ backgroundColor: '#faf7f2' }}>
                     <Eye className="h-6 w-6 lg:h-8 lg:w-8 text-purple-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">Privacy Focused</span>
                       <span className="text-xs lg:text-sm text-gray-800">Your data protected</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 bg-amber-50 rounded-xl border-2 border-black">
+                  <div className="flex items-center gap-3 lg:gap-4 p-3 lg:p-4 rounded-xl border-2 border-black" style={{ backgroundColor: '#faf7f2' }}>
                     <FileCheck className="h-6 w-6 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
                     <div>
                       <span className="font-bold text-black block text-sm lg:text-base">2025 Compliant</span>
