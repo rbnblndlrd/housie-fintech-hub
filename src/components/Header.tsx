@@ -77,17 +77,22 @@ const Header = () => {
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-3">
             <img 
-              src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
+              src="/lovable-uploads/243ecf21-712f-439a-9efc-a299b76af346.png" 
               alt="HOUSIE" 
-              className="h-10 w-auto"
+              className="h-10 w-auto brightness-0 invert"
               onError={(e) => {
-                // Fallback to text if image fails to load
+                // Fallback to the circular branded logo if the white version fails
                 const target = e.currentTarget as HTMLImageElement;
-                target.style.display = 'none';
-                const nextSibling = target.nextElementSibling as HTMLElement;
-                if (nextSibling) {
-                  nextSibling.style.display = 'block';
-                }
+                target.src = '/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png';
+                target.className = 'h-10 w-auto';
+                target.onError = () => {
+                  // Final fallback - hide image and show text
+                  target.style.display = 'none';
+                  const nextSibling = target.nextElementSibling as HTMLElement;
+                  if (nextSibling) {
+                    nextSibling.style.display = 'block';
+                  }
+                };
               }}
             />
             <span className="text-xl font-bold text-white hidden">HOUSIE</span>
