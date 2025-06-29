@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -14,6 +15,7 @@ import { supabase } from '@/integrations/supabase/client';
 
 const Header = () => {
   const { user } = useAuth();
+  const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
   const { toast } = useToast();
 

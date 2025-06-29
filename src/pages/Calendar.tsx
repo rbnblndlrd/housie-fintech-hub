@@ -5,22 +5,11 @@ import CalendarHeader from '@/components/calendar/CalendarHeader';
 import ModernCalendar from '@/components/calendar/ModernCalendar';
 import AddAppointmentDialog from '@/components/AddAppointmentDialog';
 import EditAppointmentDialog from '@/components/EditAppointmentDialog';
-import { useUnifiedCalendarIntegration } from '@/hooks/useUnifiedCalendarIntegration';
+import GoogleCalendarIntegration from '@/components/GoogleCalendarIntegration';
+import { useUnifiedCalendarIntegration, CalendarEvent } from '@/hooks/useUnifiedCalendarIntegration';
 import { Button } from '@/components/ui/button';
 import { Plus, AlertCircle, RefreshCw } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-
-interface CalendarEvent {
-  id: string;
-  title: string;
-  date: Date;
-  time: string;
-  client: string;
-  location: string;
-  status: 'confirmed' | 'pending' | 'completed';
-  amount: number;
-  source: 'housie' | 'google';
-}
 
 const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
