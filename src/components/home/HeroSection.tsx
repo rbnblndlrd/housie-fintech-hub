@@ -1,10 +1,11 @@
+
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, CheckCircle, Eye, FileCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const HeroSection = () => {
   return (
-    <section className="pt-20 pb-20 px-2 sm:px-4 relative overflow-hidden">
+    <section className="pt-20 pb-0 px-2 sm:px-4 relative overflow-hidden">
       {/* Additional dark overlay for text readability */}
       <div className="absolute inset-0 bg-black/20"></div>
       

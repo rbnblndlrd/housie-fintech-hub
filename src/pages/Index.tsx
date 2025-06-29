@@ -20,27 +20,33 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with error boundary */}
+      {/* Hero Section with error boundary - no bottom padding/margin */}
       <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
-        <HeroSection />
+        <div className="pb-0">
+          <HeroSection />
+        </div>
       </ErrorBoundary>
       
-      {/* User Type Selector with error boundary */}
+      {/* User Type Selector with error boundary - no top/bottom spacing */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
-        <UserTypeSelector 
-          onUserTypeSelect={handleUserTypeSelect}
-          selectedUserType={selectedUserType}
-        />
+        <div className="-mt-0 pt-0">
+          <UserTypeSelector 
+            onUserTypeSelect={handleUserTypeSelect}
+            selectedUserType={selectedUserType}
+          />
+        </div>
       </ErrorBoundary>
       
-      {/* Demo Section with error boundary */}
+      {/* Demo Section with error boundary - no top spacing */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
-        <DemoSection />
+        <div className="-mt-0 pt-0">
+          <DemoSection />
+        </div>
       </ErrorBoundary>
 
-      {/* Pricing Section with error boundary and proper ID for scroll */}
+      {/* Pricing Section with error boundary - no top spacing */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing section loading...</div>}>
-        <div id="pricing-section">
+        <div id="pricing-section" className="-mt-0 pt-0">
           <PricingSection />
         </div>
       </ErrorBoundary>
