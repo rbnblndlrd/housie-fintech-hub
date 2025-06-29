@@ -17,6 +17,9 @@ import Auth from '@/pages/Auth';
 import UnifiedDashboard from '@/pages/UnifiedDashboard';
 import AdminDashboard from '@/pages/AdminDashboard';
 import InteractiveMapPage from '@/pages/InteractiveMapPage';
+import CompetitiveAdvantage from '@/pages/CompetitiveAdvantage';
+import HelpCenter from '@/pages/HelpCenter';
+import Calendar from '@/pages/Calendar';
 import AdminTestingDashboard from '@/components/admin/AdminTestingDashboard';
 import UnifiedProfilePage from '@/components/profile/UnifiedProfilePage';
 
@@ -46,6 +49,9 @@ function App() {
                     <Route path="/admin" element={<AdminDashboard />} />
                     <Route path="/emergency" element={<InteractiveMapPage />} />
                     <Route path="/interactive-map" element={<InteractiveMapPage />} />
+                    <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
+                    <Route path="/help" element={<HelpCenter />} />
+                    <Route path="/calendar" element={<Calendar />} />
                     <Route path="/admin/users" element={<UnifiedDashboard />} />
                     <Route path="/admin/testing" element={<AdminTestingDashboard />} />
                     <Route path="/admin/fraud" element={<AdminDashboard />} />
