@@ -18,8 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
-import { getUserDropdownItems, getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
-import { getLoyaltyMenuItems } from '@/components/gamification/LoyaltyMenuItems';
+import { getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { ChevronDown, User } from 'lucide-react';
 
 const UserMenu = () => {
@@ -54,10 +53,6 @@ const UserMenu = () => {
   const analyticsMenuItems = useMemo(() => {
     return getAnalyticsMenuItems();
   }, []);
-
-  const loyaltyMenuItems = useMemo(() => {
-    return getLoyaltyMenuItems(currentRole);
-  }, [currentRole]);
 
   const statusOptions = [
     { value: 'Available', label: 'Available', color: 'bg-green-500' },
@@ -137,27 +132,11 @@ const UserMenu = () => {
         
         {/* Main Navigation Items */}
         <DropdownMenuItem
-          onClick={() => navigate("/interactive-map")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">🗺️</span>
-          <span className="flex-1">Interactive Map</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
           onClick={() => navigate("/dashboard")}
           className="cursor-pointer"
         >
           <span className="mr-3">📊</span>
           <span className="flex-1">Dashboard</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => navigate("/notifications")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">🤖</span>
-          <span className="flex-1">AI Assistant</span>
         </DropdownMenuItem>
 
         {/* Analytics Submenu */}
@@ -168,26 +147,6 @@ const UserMenu = () => {
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
             {analyticsMenuItems.map((subItem, subIndex) => (
-              <DropdownMenuItem
-                key={`${subIndex}-${subItem.label}`}
-                onClick={() => handleDropdownAction(subItem)}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">{subItem.icon}</span>
-                <span>{subItem.label}</span>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
-
-        {/* Loyalty & Rewards Submenu */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-3">🎯</span>
-            <span>Loyalty & Rewards</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {loyaltyMenuItems.map((subItem, subIndex) => (
               <DropdownMenuItem
                 key={`${subIndex}-${subItem.label}`}
                 onClick={() => handleDropdownAction(subItem)}

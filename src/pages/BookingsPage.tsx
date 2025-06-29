@@ -5,6 +5,7 @@ import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
 import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
 import CalendarPreview from '@/components/calendar/CalendarPreview';
+import { ChatBubble } from '@/components/chat/ChatBubble';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Calendar, Clock, MapPin, CheckCircle } from 'lucide-react';
@@ -183,6 +184,9 @@ const BookingsPage = () => {
           )}
         </div>
       </div>
+
+      {/* Add Chat Bubble */}
+      <ChatBubble />
     </div>
   );
 };

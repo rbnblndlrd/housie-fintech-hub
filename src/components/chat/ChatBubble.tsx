@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
+import { useAuth } from '@/contexts/AuthContext';
 import ChatPanel from './ChatPanel';
 import { useLocation } from 'react-router-dom';
 
@@ -17,11 +18,21 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   defaultTab,
   showMicIcon 
 }) => {
+  const { user } = useAuth();
   const location = useLocation();
   const isInteractiveMap = location.pathname === '/interactive-map';
   
-  // Use props or detect page to set defaults
-  const initialTab = defaultTab || (isInteractiveMap ? 'voice' : 'messages');
+  // Determine user's subscription tier and access levels
+  const userTier = user?.user_metadata?.subscription_tier || 'free';
+  const isAuthenticated = !!user;
+  const hasVoiceAccess = isAuthenticated && userTier !== 'free';
+  const hasMessagesAccess = isAuthenticated;
+  
+  // Use props or detect page to set defaults, but ensure user has access
+  let initialTab = defaultTab || (isInteractiveMap ? 'voice' : 'ai');
+  if (initialTab === 'voice' && !hasVoiceAccess) initialTab = 'ai';
+  if (initialTab === 'messages' && !hasMessagesAccess) initialTab = 'ai';
+  
   const useMicIcon = showMicIcon !== undefined ? showMicIcon : isInteractiveMap;
   
   const [isOpen, setIsOpen] = useState(false);
@@ -34,11 +45,17 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     setActiveTab(initialTab);
   };
 
+  const handleTabChange = (tab: 'messages' | 'ai' | 'voice') => {
+    // Validate access before switching
+    if (tab === 'voice' && !hasVoiceAccess) return;
+    if (tab === 'messages' && !hasMessagesAccess) return;
+    setActiveTab(tab);
+  };
+
   return (
     <>
-      {/* Clean Floating Chat Button - Changed to bright yellow */}
-      <div className="fixed bottom-6 left-6 z-50">
-        {!isOpen ? (
+      {!isOpen ? (
+        <div className="fixed bottom-6 left-6 z-50">
           <Button
             onClick={handleOpen}
             className={cn(
@@ -53,7 +70,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             ) : (
               <MessageCircle className="h-6 w-6 text-black" />
             )}
-            {totalUnreadCount > 0 && !useMicIcon && (
+            {totalUnreadCount > 0 && !useMicIcon && hasMessagesAccess && (
               <Badge
                 variant="destructive"
                 className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs font-bold"
@@ -62,7 +79,9 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
               </Badge>
             )}
           </Button>
-        ) : (
+        </div>
+      ) : (
+        <div className="fixed bottom-6 left-6 z-50">
           <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
             <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
@@ -79,28 +98,30 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
               </Button>
             </div>
 
-            {/* Clean Tab Navigation - Reordered for interactive map */}
+            {/* Clean Tab Navigation */}
             <div className="bg-yellow-50 border-b-2 border-yellow-300">
               <div className="flex">
                 {isInteractiveMap ? (
-                  // Voice tab first for interactive map
+                  // Voice tab first for interactive map (if user has access)
                   <>
+                    {hasVoiceAccess && (
+                      <button
+                        onClick={() => handleTabChange('voice')}
+                        className={cn(
+                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                          activeTab === 'voice'
+                            ? "text-green-600 bg-yellow-100"
+                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                        )}
+                      >
+                        🗣️ Voice
+                        {activeTab === 'voice' && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
+                        )}
+                      </button>
+                    )}
                     <button
-                      onClick={() => setActiveTab('voice')}
-                      className={cn(
-                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                        activeTab === 'voice'
-                          ? "text-green-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                      )}
-                    >
-                      🗣️ Voice
-                      {activeTab === 'voice' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('ai')}
+                      onClick={() => handleTabChange('ai')}
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'ai'
@@ -113,50 +134,54 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                         <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
                       )}
                     </button>
-                    <button
-                      onClick={() => setActiveTab('messages')}
-                      className={cn(
-                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                        activeTab === 'messages'
-                          ? "text-blue-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                      )}
-                    >
-                      Chat
-                      {totalUnreadCount > 0 && (
-                        <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
-                          {totalUnreadCount}
-                        </Badge>
-                      )}
-                      {activeTab === 'messages' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-                      )}
-                    </button>
+                    {hasMessagesAccess && (
+                      <button
+                        onClick={() => handleTabChange('messages')}
+                        className={cn(
+                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                          activeTab === 'messages'
+                            ? "text-blue-600 bg-yellow-100"
+                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                        )}
+                      >
+                        Chat
+                        {totalUnreadCount > 0 && (
+                          <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
+                            {totalUnreadCount}
+                          </Badge>
+                        )}
+                        {activeTab === 'messages' && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                        )}
+                      </button>
+                    )}
                   </>
                 ) : (
                   // Default order for other pages
                   <>
+                    {hasMessagesAccess && (
+                      <button
+                        onClick={() => handleTabChange('messages')}
+                        className={cn(
+                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                          activeTab === 'messages'
+                            ? "text-blue-600 bg-yellow-100"
+                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                        )}
+                      >
+                        Chat
+                        {totalUnreadCount > 0 && (
+                          <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
+                            {totalUnreadCount}
+                          </Badge>
+                        )}
+                        {activeTab === 'messages' && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                        )}
+                      </button>
+                    )}
                     <button
-                      onClick={() => setActiveTab('messages')}
-                      className={cn(
-                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                        activeTab === 'messages'
-                          ? "text-blue-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                      )}
-                    >
-                      Chat
-                      {totalUnreadCount > 0 && (
-                        <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
-                          {totalUnreadCount}
-                        </Badge>
-                      )}
-                      {activeTab === 'messages' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-                      )}
-                    </button>
-                    <button
-                      onClick={() => setActiveTab('ai')}
+                      onClick={() => handleTabChange('ai')}
                       className={cn(
                         "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                         activeTab === 'ai'
@@ -169,20 +194,22 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                         <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
                       )}
                     </button>
-                    <button
-                      onClick={() => setActiveTab('voice')}
-                      className={cn(
-                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                        activeTab === 'voice'
-                          ? "text-green-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                      )}
-                    >
-                      🗣️ Voice
-                      {activeTab === 'voice' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
-                      )}
-                    </button>
+                    {hasVoiceAccess && (
+                      <button
+                        onClick={() => handleTabChange('voice')}
+                        className={cn(
+                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                          activeTab === 'voice'
+                            ? "text-green-600 bg-yellow-100"
+                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                        )}
+                      >
+                        🗣️ Voice
+                        {activeTab === 'voice' && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
+                        )}
+                      </button>
+                    )}
                   </>
                 )}
               </div>
@@ -193,11 +220,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
               <ChatPanel activeTab={activeTab} />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Minimal Side Indicators - Also moved to left side */}
-      {!isOpen && totalUnreadCount > 0 && !useMicIcon && (
+      {/* Minimal Side Indicators */}
+      {!isOpen && totalUnreadCount > 0 && !useMicIcon && hasMessagesAccess && (
         <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-40">
           <div className="w-1 h-8 bg-red-500 rounded-l-full shadow-lg animate-pulse" />
         </div>

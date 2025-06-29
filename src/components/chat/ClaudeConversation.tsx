@@ -1,172 +1,221 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Loader2, Sparkles } from 'lucide-react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useClaudeChat } from '@/hooks/useClaudeChat';
-import { Badge } from '@/components/ui/badge';
+import { Send, Bot, User, Loader2 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+
+interface Message {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
 
 interface ClaudeConversationProps {
   sessionId: string;
-  onBack?: () => void;
+  useWebLLM?: boolean;
 }
 
 const ClaudeConversation: React.FC<ClaudeConversationProps> = ({ 
-  sessionId, 
-  onBack
+  sessionId,
+  useWebLLM = false 
 }) => {
-  const { messages, sendMessage, isTyping } = useClaudeChat();
-  const [newMessage, setNewMessage] = useState('');
-  const [isSending, setIsSending] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [inputValue, setInputValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newMessage.trim() || isSending) return;
+  const sendMessage = async () => {
+    if (!inputValue.trim() || isLoading) return;
 
-    const messageToSend = newMessage.trim();
-    setNewMessage('');
-    setIsSending(true);
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      role: 'user',
+      content: inputValue.trim(),
+      timestamp: new Date()
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputValue('');
+    setIsLoading(true);
 
     try {
-      await sendMessage(messageToSend, sessionId);
+      let response;
+      
+      if (useWebLLM) {
+        // Use WebLLM for free users
+        response = await supabase.functions.invoke('webllm-chat', {
+          body: {
+            message: userMessage.content,
+            sessionId,
+            userId: user?.id
+          }
+        });
+      } else {
+        // Use Claude for starter+ users
+        response = await supabase.functions.invoke('claude-chat', {
+          body: {
+            message: userMessage.content,
+            sessionId,
+            userId: user?.id
+          }
+        });
+      }
+
+      if (response.error) {
+        throw new Error(response.error.message || 'Failed to get response');
+      }
+
+      const assistantMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: response.data?.message || 'Sorry, I encountered an error.',
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error('Error sending message:', error);
+      
+      // Fallback message
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: useWebLLM 
+          ? 'Sorry, I\'m having trouble connecting. Please try again later.'
+          : 'I\'m having trouble connecting to my AI service. Please try again.',
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, errorMessage]);
     } finally {
-      setIsSending(false);
+      setIsLoading(false);
     }
   };
 
-  const formatTime = (timestamp: string) => {
-    return new Date(timestamp).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    });
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   return (
-    <div className="h-full flex flex-col">
-      {/* AI Status Bar */}
-      <div className="p-3 border-b border-gray-100 dark:border-gray-800 bg-purple-50 dark:bg-purple-950/20">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-purple-600 rounded-full flex items-center justify-center">
-            <Sparkles className="h-3 w-3 text-white" />
-          </div>
-          <span className="text-sm font-medium text-purple-700 dark:text-purple-300">HOUSIE AI</span>
-          <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
-            Claude 4
-          </Badge>
-        </div>
-      </div>
-
+    <div className="flex flex-col h-full">
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4">
+      <ScrollArea ref={scrollAreaRef} className="flex-1 p-4">
         <div className="space-y-4">
           {messages.length === 0 && (
-            <div className="text-center py-8">
-              <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Bot className="h-6 w-6 text-purple-600" />
-              </div>
-              <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-1">AI Assistant Ready</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Ask me anything about home services!</p>
+            <div className="text-center text-gray-500 py-8">
+              <Bot className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+              <p className="text-sm">
+                {useWebLLM 
+                  ? "Hi! I'm your AI assistant running locally. How can I help you today?"
+                  : "Hi! I'm Claude, your AI assistant. How can I help you today?"
+                }
+              </p>
             </div>
           )}
-
+          
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`flex gap-3 ${
-                message.message_type === 'user' ? 'justify-end' : 'justify-start'
-              }`}
+              className={`flex gap-3 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
-              {message.message_type === 'assistant' && (
-                <Avatar className="w-7 h-7 mt-1">
-                  <AvatarFallback className="bg-purple-600 text-white text-xs">
-                    <Bot className="h-3 w-3" />
+              {message.role === 'assistant' && (
+                <Avatar className="w-8 h-8 bg-purple-100">
+                  <AvatarFallback>
+                    <Bot className="h-4 w-4 text-purple-600" />
                   </AvatarFallback>
                 </Avatar>
               )}
               
               <div
-                className={`max-w-[75%] rounded-lg px-3 py-2 ${
-                  message.message_type === 'user'
+                className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
+                  message.role === 'user'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-700'
+                    : 'bg-gray-100 text-gray-900'
                 }`}
               >
-                <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                <p className="whitespace-pre-wrap">{message.content}</p>
                 <p className="text-xs opacity-70 mt-1">
-                  {formatTime(message.created_at)}
+                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 </p>
               </div>
-
-              {message.message_type === 'user' && (
-                <Avatar className="w-7 h-7 mt-1">
-                  <AvatarFallback className="bg-blue-600 text-white text-xs">
-                    <User className="h-3 w-3" />
+              
+              {message.role === 'user' && (
+                <Avatar className="w-8 h-8 bg-blue-100">
+                  <AvatarFallback>
+                    <User className="h-4 w-4 text-blue-600" />
                   </AvatarFallback>
                 </Avatar>
               )}
             </div>
           ))}
-
-          {isTyping && (
+          
+          {isLoading && (
             <div className="flex gap-3 justify-start">
-              <Avatar className="w-7 h-7 mt-1">
-                <AvatarFallback className="bg-purple-600 text-white text-xs">
-                  <Bot className="h-3 w-3" />
+              <Avatar className="w-8 h-8 bg-purple-100">
+                <AvatarFallback>
+                  <Bot className="h-4 w-4 text-purple-600" />
                 </AvatarFallback>
               </Avatar>
-              <div className="bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2">
-                <div className="flex items-center gap-2">
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
-                    AI is thinking...
-                  </span>
-                </div>
+              <div className="bg-gray-100 rounded-lg px-3 py-2">
+                <Loader2 className="h-4 w-4 animate-spin text-gray-600" />
               </div>
             </div>
           )}
         </div>
-        <div ref={messagesEndRef} />
       </ScrollArea>
 
       {/* Input */}
-      <div className="p-4 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-850">
-        <form onSubmit={handleSendMessage} className="flex gap-2">
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex gap-2">
           <Input
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            placeholder="Ask HOUSIE AI anything..."
-            disabled={isSending || isTyping}
-            className="flex-1 border-gray-300 dark:border-gray-600 focus:border-purple-500 dark:focus:border-purple-400"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            onKeyPress={handleKeyPress}
+            placeholder={useWebLLM ? "Ask me anything..." : "Message Claude..."}
+            disabled={isLoading}
+            className="flex-1"
           />
-          <Button 
-            type="submit" 
-            disabled={!newMessage.trim() || isSending || isTyping}
-            className="bg-purple-600 hover:bg-purple-700 text-white"
+          <Button
+            onClick={sendMessage}
+            disabled={!inputValue.trim() || isLoading}
+            size="sm"
+            className="px-3"
           >
-            {isSending ? (
+            {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Send className="h-4 w-4" />
             )}
           </Button>
-        </form>
-        
-        <div className="mt-2 text-xs text-gray-500 dark:text-gray-400 text-center">
-          💡 Try: "cleaning costs", "tax questions", or "show me colors"
         </div>
+        
+        {useWebLLM && (
+          <p className="text-xs text-gray-500 mt-2 text-center">
+            Using local AI • Upgrade for Claude access
+          </p>
+        )}
       </div>
     </div>
   );

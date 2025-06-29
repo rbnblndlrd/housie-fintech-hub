@@ -1,10 +1,11 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
 import CalendarPreview from '@/components/calendar/CalendarPreview';
 import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
+import HiddenLoyaltySection from '@/components/dashboard/HiddenLoyaltySection';
+import { ChatBubble } from '@/components/chat/ChatBubble';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -514,6 +515,12 @@ const UnifiedDashboard = () => {
           )}
         </div>
       </div>
+
+      {/* Add Hidden Loyalty Section */}
+      <HiddenLoyaltySection />
+      
+      {/* Add Chat Bubble */}
+      <ChatBubble />
     </div>
   );
 };
