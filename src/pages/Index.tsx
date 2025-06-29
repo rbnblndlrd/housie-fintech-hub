@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Header from '@/components/Header';
 import HeroSection from '@/components/home/HeroSection';
@@ -19,12 +20,12 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with seamless gradient background */}
+      {/* Hero Section with forest green background */}
       <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
         <HeroSection />
       </ErrorBoundary>
       
-      {/* User Type Selector - perfectly blended gradient continuation */}
+      {/* User Type Selector - blended with forest green continuation */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
         <UserTypeSelector 
           onUserTypeSelect={handleUserTypeSelect}
@@ -34,7 +35,7 @@ const Index = () => {
       
       {/* Demo Section - continuing the gradient flow */}
       <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
-        <div className="bg-gradient-to-b from-slate-500/15 to-transparent">
+        <div className="bg-gradient-to-b from-green-500/15 to-transparent">
           <DemoSection />
         </div>
       </ErrorBoundary>
