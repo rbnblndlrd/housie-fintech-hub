@@ -86,12 +86,13 @@ const Calendar = () => {
       </div>
 
       {/* Add Appointment Dialog */}
-      <AddAppointmentDialog
-        selectedDate={selectedDate}
-        open={showAddDialog}
-        onClose={() => setShowAddDialog(false)}
-        onAddAppointment={handleAddAppointment}
-      />
+      {showAddDialog && (
+        <AddAppointmentDialog
+          selectedDate={selectedDate}
+          onClose={() => setShowAddDialog(false)}
+          onAddAppointment={handleAddAppointment}
+        />
+      )}
 
       {/* Edit Appointment Dialog */}
       {editingEvent && (

@@ -109,11 +109,6 @@ const InteractiveMapPage = () => {
     });
   };
 
-  const handleMapLoad = (mapInstance: mapboxgl.Map) => {
-    console.log('🗺️ Mapbox map loaded');
-    setMap(mapInstance);
-  };
-
   const handleJobClick = (job: Job) => {
     console.log('🎯 Job selected:', job.title);
     setSelectedJob(job);
@@ -198,7 +193,6 @@ const InteractiveMapPage = () => {
               center={quebecCenter}
               zoom={10}
               className="w-full h-full"
-              onMapLoad={handleMapLoad}
             />
 
             {/* Jobs Overlay */}
