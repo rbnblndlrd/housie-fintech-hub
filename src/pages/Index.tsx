@@ -1,10 +1,7 @@
 
 import React from 'react';
 import Header from '@/components/Header';
-import HeroSection from '@/components/home/HeroSection';
-import { UserTypeSelector } from '@/components/home/UserTypeSelector';
-import DemoSection from '@/components/home/DemoSection';
-import { PricingSection } from '@/components/PricingSection';
+import UnifiedHeroSection from '@/components/home/UnifiedHeroSection';
 import { useState } from 'react';
 
 const Index = () => {
@@ -20,31 +17,12 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       
-      {/* Hero Section with forest green background */}
-      <ErrorBoundary fallback={<div className="py-20 text-center text-white">Hero section temporarily unavailable</div>}>
-        <HeroSection />
-      </ErrorBoundary>
-      
-      {/* User Type Selector - blended with forest green continuation */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">User selection loading...</div>}>
-        <UserTypeSelector 
+      {/* Unified Hero Section - Single seamless section with all content */}
+      <ErrorBoundary fallback={<div className="py-20 text-center text-white">Page temporarily unavailable</div>}>
+        <UnifiedHeroSection 
           onUserTypeSelect={handleUserTypeSelect}
           selectedUserType={selectedUserType}
         />
-      </ErrorBoundary>
-      
-      {/* Demo Section - continuing the gradient flow */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Demo section loading...</div>}>
-        <div className="bg-gradient-to-b from-green-500/15 to-transparent">
-          <DemoSection />
-        </div>
-      </ErrorBoundary>
-
-      {/* Pricing Section - final gradient fade */}
-      <ErrorBoundary fallback={<div className="py-12 text-center text-white">Pricing section loading...</div>}>
-        <div id="pricing-section" className="bg-gradient-to-b from-transparent to-slate-100/50">
-          <PricingSection />
-        </div>
       </ErrorBoundary>
     </div>
   );
