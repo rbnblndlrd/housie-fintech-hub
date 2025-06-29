@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -24,7 +25,8 @@ import {
   ArrowLeft,
   ChevronLeft,
   ChevronRight,
-  Phone
+  Phone,
+  CheckCircle
 } from 'lucide-react';
 
 interface Job {
@@ -82,11 +84,11 @@ const UnifiedDashboard = () => {
 
   const quickActions = [
     {
-      id: 'manager',
-      title: 'Manager',
-      description: 'Calendar & client coordination',
+      id: 'bookings',
+      title: currentRole === 'provider' ? 'Job Management' : 'My Bookings',
+      description: currentRole === 'provider' ? 'Kanban board & job tracking' : 'View upcoming appointments',
       icon: Calendar,
-      onClick: () => navigate('/calendar')
+      onClick: () => navigate('/bookings')
     },
     {
       id: 'map',
@@ -119,6 +121,34 @@ const UnifiedDashboard = () => {
     earnings: currentRole === 'provider' ? '$3,450' : null,
     responseTime: currentRole === 'provider' ? '2 hours' : null,
     completionRate: currentRole === 'provider' ? '98%' : null
+  };
+
+  // Sample upcoming bookings for customers
+  const upcomingBookings = [
+    {
+      id: '1',
+      serviceName: 'Home Cleaning',
+      date: '2024-01-15',
+      time: '10:00 AM',
+      provider: 'CleanPro Services',
+      status: 'confirmed'
+    },
+    {
+      id: '2',
+      serviceName: 'Plumbing Repair',
+      date: '2024-01-18',
+      time: '2:00 PM',
+      provider: 'Montreal Plumbers',
+      status: 'pending'
+    }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'confirmed': return 'bg-green-100 text-green-800';
+      case 'pending': return 'bg-yellow-100 text-yellow-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
   };
 
   const handleJobDrop = (e: React.DragEvent) => {
@@ -321,121 +351,167 @@ const UnifiedDashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Job Analyzer Card */}
-            <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <TrendingUp className="h-5 w-5 text-gray-600" />
-                  {analyzerMode === 'route' ? 'Job Analyzer - Route Planning' : 'Job Details'}
-                </CardTitle>
-                {analyzerMode === 'route' ? (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={switchToDetailsMode}
-                    disabled={routeJobs.length === 0}
-                    className="h-8 w-8 p-0"
-                  >
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={switchToRouteMode}
-                    className="h-8 w-8 p-0"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                )}
-              </CardHeader>
-              <CardContent>
-                {analyzerMode === 'route' ? (
-                  <div className="space-y-4">
-                    <div 
-                      className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors"
-                      onDrop={handleJobDrop}
-                      onDragOver={handleDragOver}
+            {/* Role-specific content */}
+            {currentRole === 'provider' ? (
+              // Provider: Job Analyzer Card
+              <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <TrendingUp className="h-5 w-5 text-gray-600" />
+                    {analyzerMode === 'route' ? 'Job Analyzer - Route Planning' : 'Job Details'}
+                  </CardTitle>
+                  {analyzerMode === 'route' ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={switchToDetailsMode}
+                      disabled={routeJobs.length === 0}
+                      className="h-8 w-8 p-0"
                     >
-                      <p className="text-gray-600 font-medium">Drop jobs here to add to GPS route</p>
-                    </div>
-                    
-                    {routeJobs.length > 0 && (
-                      <div className="space-y-2">
-                        <h4 className="font-medium text-gray-900">Current Route:</h4>
-                        {routeJobs.map((job, index) => (
-                          <div key={job.id} className="flex justify-between items-center p-2 bg-blue-50 rounded">
-                            <span className="text-sm font-medium">{index + 1}. {job.customerName}</span>
-                            <span className="text-xs text-gray-600">{job.estimatedTravelTime}</span>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  currentJob && (
+                      <ArrowRight className="h-4 w-4" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={switchToRouteMode}
+                      className="h-8 w-8 p-0"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  {analyzerMode === 'route' ? (
                     <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => navigateJob('prev')}
-                          disabled={selectedJobIndex === 0}
-                          className="h-8 w-8 p-0"
-                        >
-                          <ChevronLeft className="h-4 w-4" />
-                        </Button>
-                        <span className="text-sm text-gray-600">
-                          {selectedJobIndex + 1} of {routeJobs.length}
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => navigateJob('next')}
-                          disabled={selectedJobIndex === routeJobs.length - 1}
-                          className="h-8 w-8 p-0"
-                        >
-                          <ChevronRight className="h-4 w-4" />
-                        </Button>
+                      <div 
+                        className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center bg-gray-50 hover:bg-gray-100 transition-colors"
+                        onDrop={handleJobDrop}
+                        onDragOver={handleDragOver}
+                      >
+                        <p className="text-gray-600 font-medium">Drop jobs here to add to GPS route</p>
                       </div>
                       
-                      <div className="space-y-3">
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-1">Customer</h4>
-                          <p className="text-sm text-gray-700">{currentJob.customerName}</p>
-                          <a 
-                            href={`tel:${currentJob.customerPhone}`}
-                            className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+                      {routeJobs.length > 0 && (
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-gray-900">Current Route:</h4>
+                          {routeJobs.map((job, index) => (
+                            <div key={job.id} className="flex justify-between items-center p-2 bg-blue-50 rounded">
+                              <span className="text-sm font-medium">{index + 1}. {job.customerName}</span>
+                              <span className="text-xs text-gray-600">{job.estimatedTravelTime}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    currentJob && (
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => navigateJob('prev')}
+                            disabled={selectedJobIndex === 0}
+                            className="h-8 w-8 p-0"
                           >
-                            <Phone className="h-3 w-3" />
-                            {currentJob.customerPhone}
-                          </a>
+                            <ChevronLeft className="h-4 w-4" />
+                          </Button>
+                          <span className="text-sm text-gray-600">
+                            {selectedJobIndex + 1} of {routeJobs.length}
+                          </span>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => navigateJob('next')}
+                            disabled={selectedJobIndex === routeJobs.length - 1}
+                            className="h-8 w-8 p-0"
+                          >
+                            <ChevronRight className="h-4 w-4" />
+                          </Button>
                         </div>
                         
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-1">Service Details</h4>
-                          <p className="text-sm text-gray-700">{currentJob.serviceAddress}</p>
-                          <p className="text-sm text-gray-600">{currentJob.serviceTime}</p>
+                        <div className="space-y-3">
+                          <div>
+                            <h4 className="font-medium text-gray-900 mb-1">Customer</h4>
+                            <p className="text-sm text-gray-700">{currentJob.customerName}</p>
+                            <a 
+                              href={`tel:${currentJob.customerPhone}`}
+                              className="flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+                            >
+                              <Phone className="h-3 w-3" />
+                              {currentJob.customerPhone}
+                            </a>
+                          </div>
+                          
+                          <div>
+                            <h4 className="font-medium text-gray-900 mb-1">Service Details</h4>
+                            <p className="text-sm text-gray-700">{currentJob.serviceAddress}</p>
+                            <p className="text-sm text-gray-600">{currentJob.serviceTime}</p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="font-medium text-gray-900 mb-1">Notes</h4>
+                            <p className="text-xs text-gray-600 mb-1"><strong>Personal:</strong> {currentJob.personalNotes}</p>
+                            <p className="text-xs text-gray-600 mb-1"><strong>Customer:</strong> {currentJob.customerNotes}</p>
+                            <p className="text-xs text-gray-600"><strong>Special:</strong> {currentJob.specialInstructions}</p>
+                          </div>
                         </div>
-                        
-                        <div>
-                          <h4 className="font-medium text-gray-900 mb-1">Notes</h4>
-                          <p className="text-xs text-gray-600 mb-1"><strong>Personal:</strong> {currentJob.personalNotes}</p>
-                          <p className="text-xs text-gray-600 mb-1"><strong>Customer:</strong> {currentJob.customerNotes}</p>
-                          <p className="text-xs text-gray-600"><strong>Special:</strong> {currentJob.specialInstructions}</p>
+                      </div>
+                    )
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              // Customer: Upcoming Bookings Card
+              <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <CheckCircle className="h-5 w-5 text-green-600" />
+                    Upcoming Bookings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  {upcomingBookings.map((booking) => (
+                    <div key={booking.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-medium text-gray-900">{booking.serviceName}</h4>
+                        <Badge className={getStatusColor(booking.status)}>
+                          {booking.status}
+                        </Badge>
+                      </div>
+                      
+                      <div className="space-y-1 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-3 w-3" />
+                          {booking.date} at {booking.time}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="h-3 w-3" />
+                          {booking.provider}
                         </div>
                       </div>
                     </div>
-                  )
-                )}
-              </CardContent>
-            </Card>
+                  ))}
+                  
+                  <Button 
+                    variant="outline" 
+                    className="w-full mt-4"
+                    onClick={() => navigate('/bookings')}
+                  >
+                    View All Bookings
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
-          {/* Bottom Section - Kanban Tickets (Full Width) */}
-          <div className="mb-8">
-            <KanbanTicketList />
-          </div>
+          {/* Bottom Section - Provider only gets Kanban Tickets */}
+          {currentRole === 'provider' && (
+            <div className="mb-8">
+              <KanbanTicketList />
+            </div>
+          )}
         </div>
       </div>
     </div>

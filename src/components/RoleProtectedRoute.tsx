@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 
 interface RoleProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole: 'customer' | 'provider';
+  requiredRole?: 'customer' | 'provider';
   redirectTo?: string;
 }
 
@@ -22,6 +22,11 @@ const RoleProtectedRoute: React.FC<RoleProtectedRouteProps> = ({
 
   // If user is not authenticated, let other auth guards handle it
   if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
+
+  // If no specific role is required, allow access to any authenticated user
+  if (!requiredRole) {
     return <>{children}</>;
   }
 

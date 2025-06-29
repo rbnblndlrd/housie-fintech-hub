@@ -11,6 +11,7 @@ import Social from './pages/Social';
 import Profile from './pages/Profile';
 import Calendar from './pages/Calendar';
 import KanbanBoard from './pages/KanbanBoard';
+import BookingsPage from './pages/BookingsPage';
 import Auth from './pages/Auth';
 import AdminDashboard from './pages/AdminDashboard';
 import DesktopAdminDashboard from './desktop/pages/DesktopAdminDashboard';
@@ -76,6 +77,14 @@ function App() {
               element={
                 <RoleProtectedRoute>
                   <KanbanBoard />
+                </RoleProtectedRoute>
+              }
+            />
+            <Route
+              path="/bookings"
+              element={
+                <RoleProtectedRoute>
+                  <BookingsPage />
                 </RoleProtectedRoute>
               }
             />
