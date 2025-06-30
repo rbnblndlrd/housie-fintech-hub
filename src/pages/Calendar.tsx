@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate, useNavigate } from 'react-router-dom';
@@ -107,15 +106,26 @@ const Calendar = () => {
               </div>
             </div>
             
-            <div className="flex items-center gap-2">
-              <Button variant="outline" onClick={prevMonth}>
-                <ChevronLeft className="h-4 w-4" />
-              </Button>
-              <div className="text-white bg-black/20 backdrop-blur-sm rounded-md px-4 py-2 font-medium min-w-[150px] text-center">
-                {format(currentDate, 'MMMM yyyy')}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Button variant="outline" onClick={prevMonth}>
+                  <ChevronLeft className="h-4 w-4" />
+                </Button>
+                <div className="text-white bg-black/20 backdrop-blur-sm rounded-md px-4 py-2 font-medium min-w-[150px] text-center">
+                  {format(currentDate, 'MMMM yyyy')}
+                </div>
+                <Button variant="outline" onClick={nextMonth}>
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
               </div>
-              <Button variant="outline" onClick={nextMonth}>
-                <ChevronRight className="h-4 w-4" />
+              
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/dashboard')}
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
+              >
+                <Home className="h-4 w-4" />
+                Dashboard Home
               </Button>
             </div>
           </div>

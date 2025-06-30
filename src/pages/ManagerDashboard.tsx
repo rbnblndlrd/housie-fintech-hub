@@ -1,10 +1,9 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Home } from 'lucide-react';
 
 const ManagerDashboard = () => {
   const { user } = useAuth();
@@ -34,6 +33,15 @@ const ManagerDashboard = () => {
                 <p className="text-white/90 drop-shadow-lg">Operations management and oversight</p>
               </div>
             </div>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/dashboard')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Dashboard Home
+            </Button>
           </div>
 
           {/* Simple Clean Interface */}
