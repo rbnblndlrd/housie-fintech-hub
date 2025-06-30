@@ -6,6 +6,8 @@ import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
 import Profile from '@/pages/Profile';
+import ProfileSettings from '@/pages/ProfileSettings';
+import SubscriptionManagement from '@/pages/SubscriptionManagement';
 import UnifiedDashboard from '@/pages/UnifiedDashboard';
 import ManagerDashboard from "@/pages/ManagerDashboard";
 import KanbanBoard from "@/pages/KanbanBoard";
@@ -31,6 +33,8 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/profile-settings" element={<ProfileSettings />} />
+            <Route path="/subscription-management" element={<SubscriptionManagement />} />
             <Route path="/dashboard" element={<UnifiedDashboard />} />
             <Route path="/customer-dashboard" element={<CustomerDashboard />} />
 
