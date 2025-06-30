@@ -15,8 +15,7 @@ import {
   Users,
   Calendar,
   AlertCircle,
-  ArrowLeft,
-  Home
+  ArrowLeft
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -111,7 +110,7 @@ const AnalyticsDashboard = () => {
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center mb-6">
             <div className="flex items-center gap-4">
               <Button 
                 variant="ghost" 
@@ -129,15 +128,6 @@ const AnalyticsDashboard = () => {
                 <p className="text-white/90 drop-shadow-lg">Comprehensive analytics and business insights</p>
               </div>
             </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/dashboard')}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <Home className="h-4 w-4" />
-              Dashboard Home
-            </Button>
           </div>
           
           {/* Sub-navigation */}

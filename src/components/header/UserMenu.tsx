@@ -18,14 +18,26 @@ import { Badge } from '@/components/ui/badge';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
+import { useSubscriptionData } from '@/hooks/useSubscriptionData';
 import { getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
-import { ChevronDown, User } from 'lucide-react';
+import { 
+  ChevronDown, 
+  User, 
+  CheckCircle, 
+  Clock, 
+  AlertTriangle, 
+  Minus,
+  Crown,
+  Star,
+  Zap,
+  Shield
+} from 'lucide-react';
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
   const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
-  const [providerStatus, setProviderStatus] = useState('Available');
+  const { subscriptionData, openSubscriptionPortal } = useSubscriptionData();
 
   const handleLogout = async () => {
     try {
@@ -35,11 +47,6 @@ const UserMenu = () => {
     } catch (error) {
       console.error('Error signing out:', error);
     }
-  };
-
-  const handleStatusChange = (newStatus: string) => {
-    setProviderStatus(newStatus);
-    console.log('Provider status changed to:', newStatus);
   };
 
   const handleDropdownAction = (item: NavigationItem) => {
@@ -54,14 +61,35 @@ const UserMenu = () => {
     return getAnalyticsMenuItems();
   }, []);
 
-  const statusOptions = [
-    { value: 'Available', label: 'Available', color: 'bg-green-500' },
-    { value: 'Busy', label: 'Busy', color: 'bg-red-500' },
-    { value: 'Away', label: 'Away', color: 'bg-yellow-500' },
-    { value: 'Do Not Disturb', label: 'Do Not Disturb', color: 'bg-gray-500' }
-  ];
+  const getSubscriptionIcon = (tier: string) => {
+    switch (tier.toLowerCase()) {
+      case 'premium':
+        return <Crown className="h-4 w-4 text-yellow-600" />;
+      case 'pro':
+        return <Star className="h-4 w-4 text-purple-600" />;
+      case 'starter':
+        return <Zap className="h-4 w-4 text-blue-600" />;
+      case 'admin':
+        return <Shield className="h-4 w-4 text-red-600" />;
+      default:
+        return null;
+    }
+  };
 
-  const currentStatus = statusOptions.find(s => s.value === providerStatus);
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'Available':
+        return <CheckCircle className="h-3 w-3 text-green-500" />;
+      case 'Busy':
+        return <Minus className="h-3 w-3 text-red-500" />;
+      case 'Away':
+        return <Clock className="h-3 w-3 text-yellow-500" />;
+      case 'Do Not Disturb':
+        return <AlertTriangle className="h-3 w-3 text-gray-500" />;
+      default:
+        return <CheckCircle className="h-3 w-3 text-green-500" />;
+    }
+  };
 
   if (!user) return null;
 
@@ -84,8 +112,8 @@ const UserMenu = () => {
           <div className="hidden md:flex flex-col items-start">
             <span className="text-sm font-medium text-white">{userName}</span>
             <div className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full ${currentStatus?.color}`}></div>
-              <span className="text-xs text-gray-300">{providerStatus}</span>
+              {getStatusIcon('Available')}
+              <span className="text-xs text-gray-300">Available • Verified</span>
             </div>
           </div>
           <ChevronDown className="h-4 w-4 text-gray-300" />
@@ -111,24 +139,20 @@ const UserMenu = () => {
           </div>
         </div>
 
-        {/* Status Selection (for providers) */}
-        {currentRole === 'provider' && (
-          <>
-            <DropdownMenuLabel>Status</DropdownMenuLabel>
-            {statusOptions.map((status) => (
-              <DropdownMenuItem
-                key={status.value}
-                onClick={() => handleStatusChange(status.value)}
-                className="cursor-pointer"
-              >
-                <div className={`w-3 h-3 rounded-full ${status.color} mr-3`}></div>
-                <span className="flex-1">{status.label}</span>
-                {providerStatus === status.value && <span className="text-blue-600">✓</span>}
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-          </>
-        )}
+        {/* Subscription Section */}
+        <DropdownMenuLabel>Subscription & Status</DropdownMenuLabel>
+        <DropdownMenuItem
+          onClick={openSubscriptionPortal}
+          className="cursor-pointer flex items-center justify-between"
+        >
+          <div className="flex items-center gap-2">
+            {getSubscriptionIcon(subscriptionData.subscription_tier)}
+            <span className="capitalize">{subscriptionData.subscription_tier} Plan</span>
+          </div>
+          <span className="text-xs text-blue-600">Manage →</span>
+        </DropdownMenuItem>
+        
+        <DropdownMenuSeparator />
         
         {/* Main Navigation Items */}
         <DropdownMenuItem
