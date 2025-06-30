@@ -141,133 +141,137 @@ const ProviderDashboard = () => {
       <div className="container mx-auto px-4 py-8 pt-20">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Provider Dashboard</h1>
-            <p className="text-gray-600 mt-2">Manage your services and track your performance</p>
+            <h1 className="text-3xl font-bold text-white text-shadow-lg">Provider Dashboard</h1>
+            <p className="text-white/90 text-shadow mt-2">Manage your services and track your performance</p>
           </div>
           <div className="flex items-center gap-2">
-            <Badge variant="secondary">Provider</Badge>
+            <Badge variant="secondary" className="bg-white/20 text-white border-white/30">Provider</Badge>
             {shopPointsData && (
-              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
+              <Badge className="bg-purple-500/80 text-white border-purple-300/50">
                 {shopPointsData.shopPoints} Shop Points
               </Badge>
             )}
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards with semi-transparent olive green background */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card className="fintech-card hover:shadow-lg transition-shadow">
+          <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Bookings</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.totalBookings}</p>
+                  <p className="text-sm font-medium text-white">Total Bookings</p>
+                  <p className="text-2xl font-bold text-white">{stats.totalBookings}</p>
                 </div>
-                <CalendarDays className="h-8 w-8 text-blue-600" />
+                <CalendarDays className="h-8 w-8 text-blue-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="fintech-card hover:shadow-lg transition-shadow">
+          <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Pending</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.pendingBookings}</p>
+                  <p className="text-sm font-medium text-white">Pending</p>
+                  <p className="text-2xl font-bold text-white">{stats.pendingBookings}</p>
                 </div>
-                <Users className="h-8 w-8 text-orange-600" />
+                <Users className="h-8 w-8 text-orange-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="fintech-card hover:shadow-lg transition-shadow">
+          <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Monthly Revenue</p>
-                  <p className="text-2xl font-bold text-gray-900">${stats.monthlyRevenue}</p>
+                  <p className="text-sm font-medium text-white">Monthly Revenue</p>
+                  <p className="text-2xl font-bold text-white">${stats.monthlyRevenue}</p>
                 </div>
-                <DollarSign className="h-8 w-8 text-green-600" />
+                <DollarSign className="h-8 w-8 text-green-200" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="fintech-card hover:shadow-lg transition-shadow">
+          <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Rating</p>
-                  <p className="text-2xl font-bold text-gray-900">{stats.averageRating.toFixed(1)}</p>
+                  <p className="text-sm font-medium text-white">Rating</p>
+                  <p className="text-2xl font-bold text-white">{stats.averageRating.toFixed(1)}</p>
                 </div>
-                <Star className="h-8 w-8 text-yellow-600" />
+                <Star className="h-8 w-8 text-yellow-200" />
               </div>
             </CardContent>
           </Card>
         </div>
 
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="bookings">Bookings</TabsTrigger>
-            <TabsTrigger value="community">Community</TabsTrigger>
-            <TabsTrigger value="testing">Testing</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 bg-black/20 backdrop-blur-sm">
+            <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Overview</TabsTrigger>
+            <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Bookings</TabsTrigger>
+            <TabsTrigger value="community" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Community</TabsTrigger>
+            <TabsTrigger value="testing" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Testing</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="fintech-card">
+              <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
                 <CardHeader>
-                  <CardTitle>Recent Bookings</CardTitle>
+                  <CardTitle className="text-white">Recent Bookings</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {recentBookings.length > 0 ? (
                     <div className="space-y-4">
                       {recentBookings.map((booking: any) => (
-                        <div key={booking.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div key={booking.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg backdrop-blur-sm">
                           <div>
-                            <p className="font-medium">{booking.services?.title || 'Service'}</p>
-                            <p className="text-sm text-gray-600">{booking.users?.full_name || 'Customer'}</p>
+                            <p className="font-medium text-white">{booking.services?.title || 'Service'}</p>
+                            <p className="text-sm text-white/80">{booking.users?.full_name || 'Customer'}</p>
                           </div>
-                          <Badge variant={booking.status === 'completed' ? 'default' : 'secondary'}>
+                          <Badge variant={booking.status === 'completed' ? 'default' : 'secondary'} className="bg-white/20 text-white border-white/30">
                             {booking.status}
                           </Badge>
                         </div>
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500 text-center py-8">No recent bookings</p>
+                    <p className="text-white/80 text-center py-8">No recent bookings</p>
                   )}
                 </CardContent>
               </Card>
 
               {shopPointsData && (
-                <ShopPointsWidget 
-                  communityPoints={shopPointsData.communityPoints}
-                  shopPoints={shopPointsData.shopPoints}
-                />
+                <div className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm rounded-lg">
+                  <ShopPointsWidget 
+                    communityPoints={shopPointsData.communityPoints}
+                    shopPoints={shopPointsData.shopPoints}
+                  />
+                </div>
               )}
             </div>
           </TabsContent>
 
           <TabsContent value="bookings" className="space-y-6">
-            <Card className="fintech-card">
+            <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle>All Bookings</CardTitle>
+                <CardTitle className="text-white">All Bookings</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-500 text-center py-8">Booking management coming soon...</p>
+                <p className="text-white/80 text-center py-8">Booking management coming soon...</p>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="community" className="space-y-6">
-            {user && <CommunityRatingDisplay userId={user.id} />}
+            <div className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm rounded-lg p-6">
+              {user && <CommunityRatingDisplay userId={user.id} />}
+            </div>
           </TabsContent>
 
           <TabsContent value="testing" className="space-y-6">
-            <Card className="fintech-card">
+            <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2 text-white">
                   <TrendingUp className="h-5 w-5" />
                   Testing Tools
                 </CardTitle>
@@ -275,27 +279,27 @@ const ProviderDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="p-4 bg-blue-50 rounded-lg">
-                      <h4 className="font-medium text-blue-900 mb-2">Community Points</h4>
-                      <p className="text-sm text-blue-700 mb-3">Current: {stats.communityRatingPoints} points</p>
-                      <Button onClick={awardTestPoints} className="w-full">
+                    <div className="p-4 bg-blue-500/20 rounded-lg backdrop-blur-sm border border-white/20">
+                      <h4 className="font-medium text-white mb-2">Community Points</h4>
+                      <p className="text-sm text-white/80 mb-3">Current: {stats.communityRatingPoints} points</p>
+                      <Button onClick={awardTestPoints} className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30">
                         +10 Test Points
                       </Button>
                     </div>
                     
                     {shopPointsData && (
-                      <div className="p-4 bg-purple-50 rounded-lg">
-                        <h4 className="font-medium text-purple-900 mb-2">Shop Points</h4>
-                        <p className="text-sm text-purple-700 mb-1">Current: {shopPointsData.shopPoints} points</p>
-                        <p className="text-xs text-purple-600 mb-3">Tier: {shopPointsData.tier} ({shopPointsData.conversionRate}x)</p>
-                        <div className="text-xs text-purple-600">
+                      <div className="p-4 bg-purple-500/20 rounded-lg backdrop-blur-sm border border-white/20">
+                        <h4 className="font-medium text-white mb-2">Shop Points</h4>
+                        <p className="text-sm text-white/80 mb-1">Current: {shopPointsData.shopPoints} points</p>
+                        <p className="text-xs text-white/70 mb-3">Tier: {shopPointsData.tier} ({shopPointsData.conversionRate}x)</p>
+                        <div className="text-xs text-white/70">
                           Auto-calculated from community points
                         </div>
                       </div>
                     )}
                   </div>
                   
-                  <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                  <div className="text-sm text-white/80 bg-white/10 p-3 rounded backdrop-blur-sm">
                     <strong>Note:</strong> Shop points are automatically calculated from community points using a tiered system.
                     The more community points you earn, the better your conversion rate becomes!
                   </div>
