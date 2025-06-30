@@ -37,14 +37,14 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="max-w-full mx-auto">
-        <div className="flex justify-between items-center h-12">
-          {/* Left: HOUSIE Logo + Hamburger Menu closer to left edge */}
-          <div className="flex items-center space-x-4 ml-0 pl-1">
+        <div className="flex justify-between items-center h-10">
+          {/* Left: HOUSIE Logo + Hamburger Menu - moved closer to edge */}
+          <div className="flex items-center space-x-2 ml-1">
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
                 alt="HOUSIE" 
-                className="h-8 w-auto"
+                className="h-6 w-auto"
                 onError={(e) => {
                   console.log('🖼️ Primary HOUSIE logo failed, trying fallback...');
                   const target = e.currentTarget;
@@ -63,24 +63,24 @@ const Header = () => {
                   };
                 }}
               />
-              <span className="text-xl font-bold text-white ml-2 hidden">HOUSIE</span>
+              <span className="text-lg font-bold text-white ml-1 hidden">HOUSIE</span>
             </Link>
             <HamburgerMenu />
           </div>
 
-          {/* Right: Login/Signup or User Menu closer to right edge */}
-          <div className="flex items-center space-x-3 mr-0 pr-1">
+          {/* Right: Login/Signup or User Menu - moved closer to edge */}
+          <div className="flex items-center space-x-2 mr-1">
             {user ? (
               <UserMenu />
             ) : (
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-2">
                 <Link to="/auth">
-                  <Button variant="ghost" className="text-white hover:bg-gray-800">
+                  <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
                     Log in
                   </Button>
                 </Link>
                 <Link to="/auth">
-                  <Button className="bg-white text-black hover:bg-gray-200">
+                  <Button size="sm" className="bg-white text-black hover:bg-gray-200">
                     Sign up
                   </Button>
                 </Link>

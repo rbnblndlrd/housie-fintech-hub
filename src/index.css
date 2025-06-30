@@ -119,6 +119,11 @@
     background-color: rgba(107, 142, 35, 0.8);
   }
 
+  /* Additional dark green transparent option */
+  .bg-dark-green-transparent {
+    background-color: rgba(34, 139, 34, 0.8);
+  }
+
   /* LIGHT MODE - Warm cream cards with THICK, SOLID, DARK borders */
   .fintech-card {
     @apply bg-amber-50 dark:bg-secondary shadow-lg border border-black dark:border-gray-700 rounded-2xl hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
