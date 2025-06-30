@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleSwitch } from "@/contexts/RoleSwitchContext";
@@ -224,11 +223,11 @@ const UnifiedDashboard = () => {
                 <Button
                   variant="outline"
                   onClick={() => switchRole(currentRole === 'provider' ? 'customer' : 'provider')}
-                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
                 >
                   Switch to {currentRole === 'provider' ? 'Customer' : 'Provider'}
                 </Button>
-                <Badge className="bg-blue-500/80 text-white">
+                <Badge className="bg-blue-500/20 text-white border-blue-300/30">
                   {currentRole === 'provider' ? 'Provider Mode' : 'Customer Mode'}
                 </Badge>
               </div>
@@ -236,160 +235,152 @@ const UnifiedDashboard = () => {
 
             {/* Quick Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white text-shadow">
+                      <p className="text-sm font-medium text-white/90 text-shadow">
                         {currentRole === 'provider' ? 'Total Bookings' : 'Services Booked'}
                       </p>
                       <p className="text-2xl font-bold text-white text-shadow-lg">
                         {dashboardData?.stats?.totalBookings || '0'}
                       </p>
                     </div>
-                    <Calendar className="h-8 w-8 text-white/80 drop-shadow-md" />
+                    <Calendar className="h-8 w-8 text-white/70 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white text-shadow">
+                      <p className="text-sm font-medium text-white/90 text-shadow">
                         {currentRole === 'provider' ? 'Active Jobs' : 'Pending Requests'}
                       </p>
                       <p className="text-2xl font-bold text-white text-shadow-lg">
                         {dashboardData?.stats?.activeJobs || '0'}
                       </p>
                     </div>
-                    <Zap className="h-8 w-8 text-white/80 drop-shadow-md" />
+                    <Zap className="h-8 w-8 text-white/70 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white text-shadow">
+                      <p className="text-sm font-medium text-white/90 text-shadow">
                         {currentRole === 'provider' ? 'Monthly Revenue' : 'Total Spent'}
                       </p>
                       <p className="text-2xl font-bold text-white text-shadow-lg">
                         ${dashboardData?.stats?.monthlyRevenue || '0'}
                       </p>
                     </div>
-                    <DollarSign className="h-8 w-8 text-white/80 drop-shadow-md" />
+                    <DollarSign className="h-8 w-8 text-white/70 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white text-shadow">Rating</p>
+                      <p className="text-sm font-medium text-white/90 text-shadow">Rating</p>
                       <p className="text-2xl font-bold text-white text-shadow-lg">
                         {dashboardData?.stats?.rating || '0'}
                       </p>
                     </div>
-                    <Star className="h-8 w-8 text-white/80 drop-shadow-md" />
+                    <Star className="h-8 w-8 text-white/70 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Main Content Tabs */}
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-3 bg-black/20 backdrop-blur-sm">
-                <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                  Overview
-                </TabsTrigger>
-                <TabsTrigger value="services" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                  {currentRole === 'provider' ? 'My Services' : 'Browse Services'}
-                </TabsTrigger>
-                <TabsTrigger value="activity" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">
-                  Activity
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
-                    <CardHeader>
-                      <CardTitle className="text-white text-shadow">Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {dashboardData?.recentActivity?.map((activity: any) => (
-                          <div key={activity.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                            <div className="flex items-center gap-3">
-                              <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-                              <div>
-                                <p className="font-medium text-white text-shadow">{activity.title}</p>
-                                <p className="text-sm text-white/80 text-shadow">{activity.time}</p>
-                              </div>
+            {/* Main Content - Two Column Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+              {/* Recent Activity */}
+              <div className="lg:col-span-2">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Recent Activity</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      {dashboardData?.recentActivity?.map((activity: any) => (
+                        <div key={activity.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
+                          <div className="flex items-center gap-3">
+                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                            <div>
+                              <p className="font-medium text-white text-shadow">{activity.title}</p>
+                              <p className="text-sm text-white/70 text-shadow">{activity.time}</p>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </Card>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
 
-                  <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
-                    <CardHeader>
-                      <CardTitle className="text-white text-shadow">Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-2 gap-3">
-                        <Link to="/bookings">
-                          <Button className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30">
-                            <Calendar className="h-4 w-4 mr-2" />
-                            Bookings
-                          </Button>
-                        </Link>
-                        <Link to="/manager">
-                          <Button className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30">
-                            <Users className="h-4 w-4 mr-2" />
-                            Manager Hub
-                          </Button>
-                        </Link>
-                        <Link to="/analytics-dashboard">
-                          <Button className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30">
-                            <TrendingUp className="h-4 w-4 mr-2" />
-                            Analytics
-                          </Button>
-                        </Link>
-                        <Link to="/admin">
-                          <Button className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30">
-                            <Zap className="h-4 w-4 mr-2" />
-                            Admin
-                          </Button>
-                        </Link>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
+              {/* Quick Actions */}
+              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-white text-shadow">Quick Actions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 gap-3">
+                    <Link to="/bookings">
+                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                        <Calendar className="h-4 w-4 mr-2" />
+                        Bookings
+                      </Button>
+                    </Link>
+                    <Link to="/manager">
+                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                        <Users className="h-4 w-4 mr-2" />
+                        Manager Hub
+                      </Button>
+                    </Link>
+                    <Link to="/analytics-dashboard">
+                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                        <TrendingUp className="h-4 w-4 mr-2" />
+                        Analytics
+                      </Button>
+                    </Link>
+                    <Link to="/admin">
+                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                        <Zap className="h-4 w-4 mr-2" />
+                        Admin
+                      </Button>
+                    </Link>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-              <TabsContent value="services" className="space-y-4">
-                {currentRole === 'customer' && (
-                  <div className="flex gap-4 mb-4">
-                    <div className="relative flex-1">
+            {/* Services Section */}
+            {currentRole === 'customer' && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-2xl font-bold text-white text-shadow-lg">Browse Services</h2>
+                  <div className="flex gap-4">
+                    <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
                       <Input
                         placeholder="Search services..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="pl-10 bg-white/20 border-white/30 text-white placeholder:text-white/60 backdrop-blur-sm"
+                        className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-sm"
                       />
                     </div>
-                    <Button variant="outline" className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm">
+                    <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm">
                       <Filter className="h-4 w-4 mr-2" />
                       Filter
                     </Button>
                   </div>
-                )}
+                </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {services.map((service) => (
@@ -400,19 +391,8 @@ const UnifiedDashboard = () => {
                     />
                   ))}
                 </div>
-              </TabsContent>
-
-              <TabsContent value="activity" className="space-y-4">
-                <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
-                  <CardHeader>
-                    <CardTitle className="text-white text-shadow">Activity Feed</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-white/80 text-center py-8 text-shadow">Activity feed coming soon...</p>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+              </div>
+            )}
           </div>
         </div>
       </div>

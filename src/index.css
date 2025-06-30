@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
@@ -114,14 +115,11 @@
 }
 
 @layer components {
-  /* Semi-transparent olive green background for video visibility */
-  .bg-olive-green-transparent {
-    background-color: rgba(107, 142, 35, 0.8);
-  }
-
-  /* Additional dark green transparent option */
-  .bg-dark-green-transparent {
-    background-color: rgba(34, 139, 34, 0.8);
+  /* REMOVED the vomit green olive-green-transparent class entirely */
+  
+  /* Additional elegant dark transparent option */
+  .bg-elegant-dark-transparent {
+    background-color: rgba(30, 41, 59, 0.6); /* slate-800 with transparency */
   }
 
   /* LIGHT MODE - Warm cream cards with THICK, SOLID, DARK borders */
