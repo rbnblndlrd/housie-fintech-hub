@@ -1,15 +1,11 @@
 
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
-
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
 
   const menuItems = [
     { label: 'Services', href: '/services' },
@@ -19,24 +15,24 @@ const HamburgerMenu = () => {
   ];
 
   return (
-    <>
+    <div className="relative">
       <Button
         variant="ghost"
         size="sm"
-        onClick={toggleMenu}
-        className="p-2 hover:bg-gray-800 text-white"
+        onClick={() => setIsOpen(!isOpen)}
+        className="p-2 text-white hover:bg-gray-800"
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </Button>
 
       {isOpen && (
-        <div className="absolute top-16 left-20 w-64 bg-white shadow-lg rounded-lg border z-50">
+        <div className="absolute top-12 left-0 w-64 bg-black/95 backdrop-blur-sm shadow-lg rounded-lg border border-gray-800 z-50">
           <div className="py-2">
             {menuItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className="block px-4 py-3 text-gray-700 hover:bg-gray-50 transition-colors"
+                className="block px-4 py-3 text-white hover:bg-gray-800 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
                 {item.label}
@@ -45,7 +41,7 @@ const HamburgerMenu = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
