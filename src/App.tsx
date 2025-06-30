@@ -14,6 +14,10 @@ import KanbanBoard from "@/pages/KanbanBoard";
 import GPSJobAnalyzer from "@/pages/GPSJobAnalyzer";
 import Calendar from "@/pages/Calendar";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import PerformanceDashboard from "@/pages/PerformanceDashboard";
+import BusinessInsights from "@/pages/BusinessInsights";
+import TaxReports from "@/pages/TaxReports";
+import FinancialAnalytics from "@/pages/FinancialAnalytics";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import Social from "@/pages/Social";
 import Services from "@/pages/Services";
@@ -48,6 +52,10 @@ function App() {
               {/* Analytics Routes */}
               <Route path="/analytics" element={<AnalyticsDashboard />} />
               <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+              <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+              <Route path="/business-insights" element={<BusinessInsights />} />
+              <Route path="/tax-reports" element={<TaxReports />} />
+              <Route path="/financial-analytics" element={<FinancialAnalytics />} />
               
               {/* Calendar Route */}
               <Route path="/calendar" element={<Calendar />} />

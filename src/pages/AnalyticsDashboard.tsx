@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useAnalyticsData } from '@/hooks/useAnalyticsData';
-import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +14,9 @@ import {
   DollarSign, 
   Users,
   Calendar,
-  AlertCircle
+  AlertCircle,
+  ArrowLeft,
+  Home
 } from 'lucide-react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -77,11 +78,10 @@ const AnalyticsDashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
+      <div className="min-h-screen">
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
-            <Card className="border-red-200">
+            <Card className="border-red-200 bg-white/95 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 text-red-600">
                   <AlertCircle className="h-5 w-5" />
@@ -107,55 +107,78 @@ const AnalyticsDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
+    <div className="min-h-screen">
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <BarChart3 className="h-8 w-8 text-blue-600" />
-              <h1 className="text-4xl font-bold text-gray-900">Analytics Dashboard</h1>
+          {/* Header with Navigation */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/dashboard')}
+                className="text-white hover:bg-white/10 flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Dashboard
+              </Button>
+              <div>
+                <h1 className="text-4xl font-bold text-white drop-shadow-lg flex items-center gap-3">
+                  <BarChart3 className="h-8 w-8 text-white" />
+                  Analytics Dashboard
+                </h1>
+                <p className="text-white/90 drop-shadow-lg">Comprehensive analytics and business insights</p>
+              </div>
             </div>
-            <p className="text-gray-600">Comprehensive analytics and business insights</p>
             
-            {/* Sub-navigation */}
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" onClick={refreshData} disabled={loading}>
-                {loading ? 'Refreshing...' : 'Refresh Data'}
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/performance-dashboard')}
-              >
-                📊 Performance
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/business-insights')}
-              >
-                🎯 Business Insights
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/tax-reports')}
-              >
-                📋 Tax Reports
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate(getDashboardPath())}
-              >
-                🏠 Main Dashboard
-              </Button>
-            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/dashboard')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Dashboard Home
+            </Button>
+          </div>
+          
+          {/* Sub-navigation */}
+          <div className="flex gap-3 mb-8">
+            <Button variant="outline" onClick={refreshData} disabled={loading} className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              {loading ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/performance-dashboard')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              📊 Performance
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/business-insights')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              🎯 Business Insights
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/tax-reports')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              📋 Tax Reports
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/financial-analytics')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+            >
+              💰 Financial Analytics
+            </Button>
           </div>
 
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {kpiCards.map((card, index) => (
-              <Card key={index} className="fintech-card">
+              <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-4">
                     <div className="p-2 bg-blue-50 rounded-lg">
@@ -181,7 +204,7 @@ const AnalyticsDashboard = () => {
 
           {/* Charts */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle>Revenue Trend</CardTitle>
               </CardHeader>
@@ -204,7 +227,7 @@ const AnalyticsDashboard = () => {
               </CardContent>
             </Card>
 
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle>Booking Volume</CardTitle>
               </CardHeader>

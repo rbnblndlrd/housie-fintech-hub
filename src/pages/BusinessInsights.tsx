@@ -4,12 +4,11 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useAnalyticsData } from '@/hooks/useAnalyticsData';
-import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Target, Users, TrendingUp, Star, AlertTriangle } from 'lucide-react';
+import { Target, Users, TrendingUp, Star, AlertTriangle, ArrowLeft, Home } from 'lucide-react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts';
 
 const BusinessInsights = () => {
@@ -56,11 +55,10 @@ const BusinessInsights = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
+      <div className="min-h-screen">
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
-            <Card className="border-red-200">
+            <Card className="border-red-200 bg-white/95 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 text-red-600">
                   <AlertTriangle className="h-5 w-5" />
@@ -81,31 +79,42 @@ const BusinessInsights = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
+    <div className="min-h-screen">
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Button
+          {/* Header with Navigation */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
                 onClick={() => navigate('/analytics-dashboard')}
-                variant="outline"
-                className="bg-green-600 text-white hover:bg-green-700 border-green-600"
+                className="text-white hover:bg-white/10 flex items-center gap-2"
               >
-                ← Back to Analytics
+                <ArrowLeft className="h-4 w-4" />
+                Analytics
               </Button>
+              <div>
+                <h1 className="text-4xl font-bold text-white drop-shadow-lg flex items-center gap-3">
+                  <Target className="h-8 w-8 text-white" />
+                  Business Insights
+                </h1>
+                <p className="text-white/90 drop-shadow-lg">Strategic business intelligence and market trends</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3 mb-4">
-              <Target className="h-8 w-8 text-green-600" />
-              <h1 className="text-4xl font-bold text-gray-900">Business Insights</h1>
-            </div>
-            <p className="text-gray-600">Strategic business intelligence and market trends</p>
+            
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/analytics-dashboard')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Analytics Home
+            </Button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {insights.map((insight, index) => (
-              <Card key={index} className="fintech-card">
+              <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-2 bg-green-50 rounded-lg">
@@ -125,7 +134,7 @@ const BusinessInsights = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle>Service Distribution</CardTitle>
               </CardHeader>
@@ -158,7 +167,7 @@ const BusinessInsights = () => {
               </CardContent>
             </Card>
 
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle>Customer Satisfaction Trends</CardTitle>
               </CardHeader>
@@ -180,7 +189,7 @@ const BusinessInsights = () => {
             </Card>
           </div>
 
-          <Card className="fintech-card">
+          <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle>Market Analysis</CardTitle>
             </CardHeader>

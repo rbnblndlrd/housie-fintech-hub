@@ -1,9 +1,9 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRole } from '@/contexts/RoleContext';
 import { useTaxData } from '@/hooks/useTaxData';
-import Header from "@/components/Header";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +15,9 @@ import {
   DollarSign, 
   TrendingUp,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  ArrowLeft,
+  Home
 } from 'lucide-react';
 
 const TaxReports = () => {
@@ -77,11 +79,10 @@ const TaxReports = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
+      <div className="min-h-screen">
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
-            <Card className="border-red-200">
+            <Card className="border-red-200 bg-white/95 backdrop-blur-sm">
               <CardContent className="p-6">
                 <div className="flex items-center gap-3 text-red-600">
                   <AlertTriangle className="h-5 w-5" />
@@ -107,40 +108,50 @@ const TaxReports = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
+    <div className="min-h-screen">
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Button
+          {/* Header with Navigation */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
                 onClick={() => navigate('/analytics-dashboard')}
-                variant="outline"
-                className="bg-purple-600 text-white hover:bg-purple-700 border-purple-600"
+                className="text-white hover:bg-white/10 flex items-center gap-2"
               >
-                ← Back to Analytics
+                <ArrowLeft className="h-4 w-4" />
+                Analytics
               </Button>
+              <div>
+                <h1 className="text-4xl font-bold text-white drop-shadow-lg flex items-center gap-3">
+                  <FileText className="h-8 w-8 text-white" />
+                  Tax Reports & Compliance
+                </h1>
+                <p className="text-white/90 drop-shadow-lg">Tax compliance dashboard and official documents</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3 mb-4">
-              <FileText className="h-8 w-8 text-blue-600" />
-              <h1 className="text-4xl font-bold text-gray-900">Tax Reports & Compliance</h1>
-            </div>
-            <p className="text-gray-600">Tax compliance dashboard and official documents</p>
             
-            {/* Controls */}
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" onClick={refreshTaxData} disabled={loading}>
-                {loading ? 'Refreshing...' : 'Refresh Data'}
-              </Button>
-              <Button variant="outline">📊 Export Report</Button>
-            </div>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/analytics-dashboard')}
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
+            >
+              <Home className="h-4 w-4" />
+              Analytics Home
+            </Button>
+          </div>
+          
+          {/* Controls */}
+          <div className="flex gap-3 mb-6">
+            <Button variant="outline" onClick={refreshTaxData} disabled={loading} className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              {loading ? 'Refreshing...' : 'Refresh Data'}
+            </Button>
+            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">📊 Export Report</Button>
           </div>
 
           {/* Compliance Alert */}
           {taxData.complianceRequired && (
-            <Alert className="mb-6 border-orange-200 bg-orange-50">
+            <Alert className="mb-6 border-orange-200 bg-orange-50/95 backdrop-blur-sm">
               <AlertTriangle className="h-4 w-4 text-orange-600" />
               <AlertDescription className="text-orange-800">
                 <strong>Compliance Status:</strong> Reporting required ({formatCurrency(taxData.totalEarnings)} income or {taxData.totalTransactions} transactions). Tax documentation is mandatory.
@@ -151,7 +162,7 @@ const TaxReports = () => {
           {/* Tax Summary Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
             {taxSummary.map((item, index) => (
-              <Card key={index} className="fintech-card">
+              <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-4">
                     <div className="p-2 bg-blue-50 rounded-lg">
@@ -173,7 +184,7 @@ const TaxReports = () => {
           {/* Main Content Grid */}
           <div className="grid lg:grid-cols-2 gap-6 mb-8">
             {/* Quarterly Breakdown */}
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   📊 Quarterly Income Breakdown
@@ -208,7 +219,7 @@ const TaxReports = () => {
             </Card>
 
             {/* Tax Documents */}
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   📋 Tax Documents & Compliance
@@ -222,7 +233,7 @@ const TaxReports = () => {
                         <h4 className="font-semibold text-gray-900">{doc.name}</h4>
                         <p className="text-sm text-gray-600">{doc.description}</p>
                       </div>
-                      <Button size="sm" className="fintech-button-primary">
+                      <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
                         <Download className="h-4 w-4 mr-1" />
                         {doc.action}
                       </Button>
@@ -248,7 +259,7 @@ const TaxReports = () => {
           </div>
 
           {/* Compliance Status */}
-          <Card className="fintech-card">
+          <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
             <CardHeader>
               <CardTitle>Compliance Status</CardTitle>
             </CardHeader>
