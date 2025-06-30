@@ -46,12 +46,19 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     try {
       console.log('🔄 Fetching user profile from database...');
       
-      // Get user profile data
+      // Get user profile data with detailed logging
       const { data: profile, error } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
         .single();
+
+      console.log('🔍 Database query result:', { 
+        profile, 
+        error, 
+        user_id: user.id,
+        error_code: error?.code 
+      });
 
       if (error && error.code === 'PGRST116') {
         // Profile doesn't exist, create it
@@ -99,10 +106,12 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       }
 
       if (profile) {
-        console.log('✅ Profile loaded:', { 
+        console.log('✅ Profile loaded successfully:', { 
           activeRole: profile.active_role,
           canProvideServices: profile.can_provide_services,
-          canBookServices: profile.can_book_services
+          canBookServices: profile.can_book_services,
+          profileId: profile.id,
+          fullProfile: profile
         });
         
         // Validate data consistency
@@ -113,37 +122,53 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         
         // Use user_profiles.active_role as the single source of truth
         const activeRole = (profile.active_role as 'customer' | 'provider') || 'customer';
+        console.log('🎯 Setting current role to:', activeRole);
         setCurrentRole(activeRole);
         
         // Build available roles based on capabilities
         const roles = ['customer']; // Everyone can be a customer
-        if (profile.can_provide_services) {
+        
+        // Check if user can provide services
+        const hasProviderCapability = Boolean(profile.can_provide_services);
+        console.log('🔍 Provider capability check:', {
+          can_provide_services: profile.can_provide_services,
+          hasProviderCapability,
+          typeof_can_provide_services: typeof profile.can_provide_services
+        });
+        
+        if (hasProviderCapability) {
           roles.push('provider');
           setCanSwitchToProvider(true);
+          console.log('✅ User has provider capabilities - adding provider role');
         } else {
           setCanSwitchToProvider(false);
+          console.log('⚠️ User does not have provider capabilities');
         }
+        
+        console.log('🎯 Final roles configuration:', {
+          availableRoles: roles,
+          canSwitchToProvider: hasProviderCapability,
+          activeRole
+        });
         
         setAvailableRoles(roles);
         
-        console.log('✅ Role context updated:', { 
-          activeRole, 
-          availableRoles: roles, 
-          canProvideServices: profile.can_provide_services 
-        });
-
         // Ensure role preferences are synchronized (defensive programming)
-        const { error: syncError } = await supabase
-          .from('user_role_preferences')
-          .upsert({
-            user_id: user.id,
-            primary_role: activeRole
-          });
+        try {
+          const { error: syncError } = await supabase
+            .from('user_role_preferences')
+            .upsert({
+              user_id: user.id,
+              primary_role: activeRole
+            });
 
-        if (syncError) {
-          console.warn('⚠️ Could not sync role preferences:', syncError);
-        } else {
-          console.log('✅ Role preferences synchronized');
+          if (syncError) {
+            console.warn('⚠️ Could not sync role preferences:', syncError);
+          } else {
+            console.log('✅ Role preferences synchronized');
+          }
+        } catch (syncErr) {
+          console.warn('⚠️ Error syncing role preferences:', syncErr);
         }
       }
     } catch (error) {
