@@ -97,17 +97,12 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       // Build available roles - Always start with customer
       const roles = ['customer'];
       
-      // Check provider capabilities with multiple validation approaches
-      const hasProviderCapability = profile.can_provide_services === true || 
-                                   profile.can_provide_services === 'true' ||
-                                   String(profile.can_provide_services).toLowerCase() === 'true';
+      // Check provider capabilities with proper type handling
+      const hasProviderCapability = checkProviderCapability(profile.can_provide_services);
       
       console.log('🔍 PROVIDER CAPABILITY CHECK:', {
         rawValue: profile.can_provide_services,
         valueType: typeof profile.can_provide_services,
-        strictBooleanCheck: profile.can_provide_services === true,
-        stringBooleanCheck: profile.can_provide_services === 'true',
-        lowerCaseStringCheck: String(profile.can_provide_services).toLowerCase() === 'true',
         finalResult: hasProviderCapability
       });
       
@@ -141,6 +136,18 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const checkProviderCapability = (canProvideServices: any): boolean => {
+    // Handle different types of truthy values
+    if (typeof canProvideServices === 'boolean') {
+      return canProvideServices;
+    }
+    if (typeof canProvideServices === 'string') {
+      return canProvideServices.toLowerCase() === 'true';
+    }
+    // Handle null, undefined, or other falsy values
+    return false;
   };
 
   const createDefaultProfile = async () => {
