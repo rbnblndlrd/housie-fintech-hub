@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, ArrowRight } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -18,7 +18,7 @@ const HousieEatsHeader = () => {
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-gray-800">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Left Side - Menu + Logo */}
@@ -29,7 +29,7 @@ const HousieEatsHeader = () => {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="p-2 text-white hover:bg-gray-800"
             >
-              <Menu className="h-5 w-5" />
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
             <Link to="/" className="flex items-center">
               <img 
@@ -44,19 +44,15 @@ const HousieEatsHeader = () => {
             </Link>
           </div>
 
-          {/* Right Side - Navigation Buttons */}
+          {/* Right Side - Auth Buttons */}
           <div className="flex items-center space-x-3">
-            <Link to="/interactive-map">
-              <Button variant="ghost" className="hidden md:flex items-center space-x-1 text-white hover:bg-gray-800">
-                <span>Around me</span>
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            
             {user ? (
               <div className="flex items-center space-x-2">
                 <Link to="/dashboard">
                   <Button variant="ghost" className="text-white hover:bg-gray-800">Dashboard</Button>
+                </Link>
+                <Link to="/profile">
+                  <Button variant="ghost" className="text-white hover:bg-gray-800">Profile</Button>
                 </Link>
               </div>
             ) : (
@@ -79,13 +75,13 @@ const HousieEatsHeader = () => {
 
       {/* Mobile Menu Dropdown */}
       {isMenuOpen && (
-        <div className="absolute top-16 left-20 w-64 bg-black shadow-lg rounded-lg border border-gray-800 z-50 md:hidden">
+        <div className="absolute top-16 left-4 w-64 bg-black/95 backdrop-blur-sm shadow-lg rounded-lg border border-gray-800 z-50">
           <div className="py-2">
             {menuItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
-                className="block px-4 py-3 text-white hover:bg-gray-800"
+                className="block px-4 py-3 text-white hover:bg-gray-800 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {item.label}

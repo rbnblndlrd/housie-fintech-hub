@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -13,10 +12,10 @@ import {
   User, 
   Navigation, 
   Target,
-  AlertTriangle,
   CheckCircle,
   ArrowRight,
-  Zap
+  Zap,
+  ArrowLeft
 } from 'lucide-react';
 
 interface JobLocation {
@@ -139,7 +138,6 @@ const GPSJobAnalyzer = () => {
     if (optimizedRoute.length === 0) return;
     
     console.log('Dispatching optimized route:', optimizedRoute);
-    // Here you would dispatch the route to the assigned workers
     alert('Route dispatched successfully!');
   };
 
@@ -156,48 +154,48 @@ const GPSJobAnalyzer = () => {
   const highPriorityCount = selectedJobs.filter(job => job.priority === 'high').length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
+    <div className="min-h-screen">
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
+          {/* Header with Navigation */}
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">GPS Job Analyzer</h1>
-              <p className="text-gray-600">Route optimization and job dispatching</p>
-            </div>
             <div className="flex items-center gap-4">
-              <Button variant="outline" onClick={() => navigate('/manager')}>
-                Back to Manager
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/dashboard')}
+                className="text-white hover:bg-white/10 flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Dashboard
               </Button>
-              <Button variant="outline" onClick={() => navigate('/kanban')}>
-                Back to Kanban
-              </Button>
+              <div>
+                <h1 className="text-3xl font-bold text-white drop-shadow-lg">GPS Route Optimizer</h1>
+                <p className="text-white/90 drop-shadow-lg">Optimize routes for maximum efficiency</p>
+              </div>
             </div>
           </div>
 
           {/* Summary Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-blue-600">{selectedJobs.length}</div>
                 <div className="text-sm text-gray-600">Selected Jobs</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-purple-600">{Math.round(totalDuration / 60)}h</div>
                 <div className="text-sm text-gray-600">Total Duration</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-red-600">{highPriorityCount}</div>
                 <div className="text-sm text-gray-600">High Priority</div>
               </CardContent>
             </Card>
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardContent className="p-4 text-center">
                 <div className="text-2xl font-bold text-green-600">{optimizedRoute.length}</div>
                 <div className="text-sm text-gray-600">Route Stops</div>
@@ -207,7 +205,7 @@ const GPSJobAnalyzer = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Available Jobs */}
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-blue-500" />
@@ -258,7 +256,7 @@ const GPSJobAnalyzer = () => {
             </Card>
 
             {/* Route Optimization */}
-            <Card>
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Route className="h-5 w-5 text-green-500" />

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -10,7 +11,6 @@ import {
   Calendar, 
   Kanban, 
   Map, 
-  BarChart3, 
   Clock, 
   CheckCircle, 
   AlertCircle, 
@@ -19,7 +19,9 @@ import {
   Target,
   Activity,
   DollarSign,
-  Star
+  Star,
+  User,
+  Settings
 } from 'lucide-react';
 
 const UnifiedDashboard = () => {
@@ -109,7 +111,7 @@ const UnifiedDashboard = () => {
                 className="h-20 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white flex flex-col items-center justify-center gap-2"
               >
                 <Kanban className="h-6 w-6" />
-                <span className="text-sm font-medium">Kanban Board</span>
+                <span className="text-sm font-medium">Tickets</span>
               </Button>
               
               <Button
@@ -117,15 +119,15 @@ const UnifiedDashboard = () => {
                 className="h-20 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white flex flex-col items-center justify-center gap-2"
               >
                 <Map className="h-6 w-6" />
-                <span className="text-sm font-medium">GPS Analyzer</span>
+                <span className="text-sm font-medium">GPS Routes</span>
               </Button>
               
               <Button
-                onClick={() => navigate('/analytics')}
+                onClick={() => navigate('/profile')}
                 className="h-20 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white flex flex-col items-center justify-center gap-2"
               >
-                <BarChart3 className="h-6 w-6" />
-                <span className="text-sm font-medium">Analytics</span>
+                <Settings className="h-6 w-6" />
+                <span className="text-sm font-medium">Profile</span>
               </Button>
             </div>
           )}
@@ -181,7 +183,7 @@ const UnifiedDashboard = () => {
                     className="w-full mt-4" 
                     variant="outline"
                   >
-                    Open Full Kanban Board
+                    Open Full Ticket System
                   </Button>
                 </CardContent>
               </Card>
@@ -297,7 +299,7 @@ const UnifiedDashboard = () => {
                       className="w-full" 
                       variant="outline"
                     >
-                      Open GPS Analyzer
+                      Open GPS Routes
                     </Button>
                   </div>
                 </CardContent>

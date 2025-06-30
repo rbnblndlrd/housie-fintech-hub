@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -16,8 +15,8 @@ import {
   User, 
   AlertTriangle,
   CheckCircle,
-  ArrowRight,
-  MoreVertical
+  ArrowLeft,
+  Home
 } from 'lucide-react';
 
 interface Ticket {
@@ -38,14 +37,15 @@ const KanbanBoard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [draggedTicket, setDraggedTicket] = useState<Ticket | null>(null);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [priorityFilter, setPriorityFilter] = useState('all');
 
   if (!user) {
     navigate('/auth');
     return null;
   }
 
-  const [tickets, setTickets] = useState<Ticket[]>([
+  const [tickets] = useState<Ticket[]>([
     {
       id: '1',
       title: 'Emergency Plumbing Repair',
@@ -97,19 +97,44 @@ const KanbanBoard = () => {
       status: 'done',
       tags: ['renovation', 'consultation'],
       createdAt: '2024-01-12'
+    },
+    {
+      id: '5',
+      title: 'Bathroom Plumbing Fix',
+      description: 'Leaky faucet and running toilet repair',
+      priority: 'medium',
+      assignee: 'Marc Dubois',
+      client: 'Robert Chen',
+      location: 'NDG',
+      estimatedDuration: 75,
+      status: 'todo',
+      tags: ['plumbing', 'bathroom'],
+      createdAt: '2024-01-11'
+    },
+    {
+      id: '6',
+      title: 'Air Conditioning Service',
+      description: 'Annual AC maintenance and filter replacement',
+      priority: 'low',
+      assignee: 'Sophie Lavoie',
+      client: 'Linda Martinez',
+      location: 'Outremont',
+      estimatedDuration: 60,
+      status: 'in-progress',
+      tags: ['hvac', 'maintenance'],
+      createdAt: '2024-01-10'
     }
   ]);
 
-  const columns = [
-    { id: 'todo', title: 'To Do', color: 'bg-gray-100' },
-    { id: 'in-progress', title: 'In Progress', color: 'bg-blue-100' },
-    { id: 'review', title: 'Review', color: 'bg-yellow-100' },
-    { id: 'done', title: 'Done', color: 'bg-green-100' }
-  ];
-
-  const getTicketsByStatus = (status: string) => {
-    return tickets.filter(ticket => ticket.status === status);
-  };
+  const filteredTickets = tickets.filter(ticket => {
+    const matchesSearch = ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         ticket.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         ticket.assignee.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
+    const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
+    
+    return matchesSearch && matchesStatus && matchesPriority;
+  });
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -120,169 +145,157 @@ const KanbanBoard = () => {
     }
   };
 
-  const handleDragStart = (ticket: Ticket) => {
-    setDraggedTicket(ticket);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent, newStatus: string) => {
-    e.preventDefault();
-    if (draggedTicket) {
-      setTickets(prev => prev.map(ticket => 
-        ticket.id === draggedTicket.id 
-          ? { ...ticket, status: newStatus as Ticket['status'] }
-          : ticket
-      ));
-      setDraggedTicket(null);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'todo': return 'bg-gray-100 text-gray-800';
+      case 'in-progress': return 'bg-blue-100 text-blue-800';
+      case 'review': return 'bg-purple-100 text-purple-800';
+      case 'done': return 'bg-green-100 text-green-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   };
 
-  const handleSendToGPS = (ticket: Ticket) => {
-    console.log('Sending ticket to GPS Job Analyzer:', ticket);
-    // Navigate to GPS analyzer with ticket data
-    navigate('/gps-job-analyzer', { state: { ticket } });
-  };
-
-  const filteredTickets = tickets.filter(ticket =>
-    ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ticket.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ticket.assignee.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
+    <div className="min-h-screen">
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header */}
+          {/* Header with Navigation */}
           <div className="flex items-center justify-between mb-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Kanban Board</h1>
-              <p className="text-gray-600">Manage tickets and assignments</p>
-            </div>
             <div className="flex items-center gap-4">
-              <Button onClick={() => navigate('/manager')}>
-                Back to Manager
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/dashboard')}
+                className="text-white hover:bg-white/10 flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Dashboard
               </Button>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                New Ticket
-              </Button>
+              <div>
+                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Ticket System</h1>
+                <p className="text-white/90 drop-shadow-lg">Manage and organize your service tickets</p>
+              </div>
             </div>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              New Ticket
+            </Button>
           </div>
 
-          {/* Search and Filter */}
-          <div className="flex items-center gap-4 mb-6">
-            <div className="relative flex-1 max-w-md">
+          {/* Filters and Search */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
               <Input
                 placeholder="Search tickets..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 bg-white/90 backdrop-blur-sm"
               />
             </div>
-            <Button variant="outline">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
+            
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="todo">To Do</option>
+              <option value="in-progress">In Progress</option>
+              <option value="review">Review</option>
+              <option value="done">Done</option>
+            </select>
+            
+            <select
+              value={priorityFilter}
+              onChange={(e) => setPriorityFilter(e.target.value)}
+              className="px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Priority</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+            
+            <div className="text-white bg-black/20 backdrop-blur-sm rounded-md px-3 py-2 text-center">
+              {filteredTickets.length} tickets found
+            </div>
           </div>
 
-          {/* Kanban Columns */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {columns.map((column) => (
-              <div
-                key={column.id}
-                className={`${column.color} rounded-lg p-4 min-h-[600px]`}
-                onDragOver={handleDragOver}
-                onDrop={(e) => handleDrop(e, column.id)}
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-gray-900">{column.title}</h3>
-                  <Badge variant="secondary">
-                    {getTicketsByStatus(column.id).length}
-                  </Badge>
-                </div>
-
-                <div className="space-y-3">
-                  {getTicketsByStatus(column.id).map((ticket) => (
-                    <Card
-                      key={ticket.id}
-                      className="cursor-move hover:shadow-md transition-shadow"
-                      draggable
-                      onDragStart={() => handleDragStart(ticket)}
-                    >
-                      <CardHeader className="pb-2">
-                        <div className="flex items-start justify-between">
-                          <CardTitle className="text-sm font-medium line-clamp-2">
-                            {ticket.title}
-                          </CardTitle>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100"
-                          >
-                            <MoreVertical className="h-3 w-3" />
-                          </Button>
-                        </div>
-                        <Badge className={`text-xs ${getPriorityColor(ticket.priority)}`}>
+          {/* Ticket List */}
+          <div className="space-y-4">
+            {filteredTickets.map((ticket) => (
+              <Card key={ticket.id} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-lg font-semibold text-gray-900">{ticket.title}</h3>
+                        <Badge className={`${getPriorityColor(ticket.priority)} text-xs`}>
                           {ticket.priority}
                         </Badge>
-                      </CardHeader>
+                        <Badge className={`${getStatusColor(ticket.status)} text-xs`}>
+                          {ticket.status.replace('-', ' ')}
+                        </Badge>
+                      </div>
                       
-                      <CardContent className="pt-0 space-y-2">
-                        <p className="text-xs text-gray-600 line-clamp-2">
-                          {ticket.description}
-                        </p>
-                        
-                        <div className="space-y-1 text-xs text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <User className="h-3 w-3" />
-                            <span>{ticket.assignee}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-3 w-3" />
-                            <span>{ticket.location}</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            <span>{ticket.estimatedDuration}min</span>
-                          </div>
+                      <p className="text-gray-600 mb-3">{ticket.description}</p>
+                      
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-gray-400" />
+                          <span><strong>Assignee:</strong> {ticket.assignee}</span>
                         </div>
-
-                        <div className="flex flex-wrap gap-1 mt-2">
-                          {ticket.tags.map((tag) => (
-                            <Badge key={tag} variant="outline" className="text-xs">
-                              {tag}
-                            </Badge>
-                          ))}
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4 text-gray-400" />
+                          <span><strong>Client:</strong> {ticket.client}</span>
                         </div>
-
-                        <div className="flex items-center justify-between pt-2">
-                          <span className="text-xs text-gray-500">
-                            Client: {ticket.client}
-                          </span>
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="h-6 px-2 text-xs"
-                            onClick={() => handleSendToGPS(ticket)}
-                          >
-                            <MapPin className="h-3 w-3 mr-1" />
-                            GPS
-                          </Button>
+                        <div className="flex items-center gap-2">
+                          <MapPin className="h-4 w-4 text-gray-400" />
+                          <span><strong>Location:</strong> {ticket.location}</span>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-gray-400" />
+                          <span><strong>Duration:</strong> {ticket.estimatedDuration}min</span>
+                        </div>
+                      </div>
+                      
+                      <div className="flex flex-wrap gap-2 mt-3">
+                        {ticket.tags.map((tag) => (
+                          <Badge key={tag} variant="outline" className="text-xs">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col gap-2 ml-4">
+                      <Button size="sm" variant="outline">
+                        Edit
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="ghost"
+                        onClick={() => navigate('/gps-job-analyzer', { state: { ticket } })}
+                      >
+                        <MapPin className="h-4 w-4 mr-1" />
+                        GPS
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
+          
+          {filteredTickets.length === 0 && (
+            <Card className="bg-white/95 backdrop-blur-sm">
+              <CardContent className="p-12 text-center">
+                <AlertTriangle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets found</h3>
+                <p className="text-gray-600">Try adjusting your search or filters to find what you're looking for.</p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>
