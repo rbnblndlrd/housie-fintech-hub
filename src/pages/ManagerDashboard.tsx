@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -50,6 +50,14 @@ const ManagerDashboard = () => {
   const [draggedTicket, setDraggedTicket] = useState<Ticket | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [organizedJobs, setOrganizedJobs] = useState<Ticket[]>([]);
+
+  // Add body class for manager dashboard to control background
+  useEffect(() => {
+    document.body.classList.add('manager-dashboard');
+    return () => {
+      document.body.classList.remove('manager-dashboard');
+    };
+  }, []);
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -264,7 +272,7 @@ const ManagerDashboard = () => {
               </Card>
             </div>
 
-            {/* Main Content Tabs - Enhanced readability */}
+            {/* Main Content Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
               <TabsList className="grid w-full grid-cols-3 bg-black/20 backdrop-blur-sm p-2 rounded-xl border border-white/20">
                 <TabsTrigger 
@@ -293,24 +301,24 @@ const ManagerDashboard = () => {
               {/* Job Management Tab */}
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  {/* Ticket Pool - Enhanced readability */}
-                  <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
+                  {/* Ticket Pool - Solid background for readability */}
+                  <Card className="bg-gray-100/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
                     <CardHeader className="pb-4">
-                      <CardTitle className="flex items-center justify-between text-white">
+                      <CardTitle className="flex items-center justify-between text-gray-900">
                         <div className="flex items-center gap-2">
-                          <div className="h-2 w-2 bg-blue-400 rounded-full drop-shadow-sm"></div>
-                          <span className="drop-shadow-md text-shadow">Ticket Pool</span>
+                          <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
+                          <span>Ticket Pool</span>
                         </div>
-                        <Badge variant="secondary" className="bg-white/30 text-white border-white/20 drop-shadow-md">{availableTickets.length}</Badge>
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">{availableTickets.length}</Badge>
                       </CardTitle>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 drop-shadow-md">
-                          <Filter className="h-3 w-3 drop-shadow-sm" />
-                          <span className="drop-shadow-sm">Filter</span>
+                        <Button variant="outline" size="sm" className="gap-2 bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+                          <Filter className="h-3 w-3" />
+                          <span>Filter</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 drop-shadow-md">
-                          <Search className="h-3 w-3 drop-shadow-sm" />
-                          <span className="drop-shadow-sm">Search</span>
+                        <Button variant="outline" size="sm" className="gap-2 bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+                          <Search className="h-3 w-3" />
+                          <span>Search</span>
                         </Button>
                       </div>
                     </CardHeader>
@@ -324,9 +332,9 @@ const ManagerDashboard = () => {
                         />
                       ))}
                       {availableTickets.length === 0 && (
-                        <div className="text-center py-8 text-white/80">
-                          <div className="text-4xl mb-2 drop-shadow-md">✨</div>
-                          <p className="text-sm drop-shadow-md text-shadow">All tickets organized!</p>
+                        <div className="text-center py-8 text-gray-600">
+                          <div className="text-4xl mb-2">✨</div>
+                          <p className="text-sm">All tickets organized!</p>
                         </div>
                       )}
                     </CardContent>
@@ -345,8 +353,8 @@ const ManagerDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Incoming Requests */}
-                <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
+                {/* Incoming Requests - Solid background for readability */}
+                <Card className="bg-gray-100/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
                   <CardContent className="p-6">
                     <IncomingJobRequests />
                   </CardContent>

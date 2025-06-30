@@ -31,56 +31,64 @@ const DraggableTicket: React.FC<DraggableTicketProps> = ({
 }) => {
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-500/30 text-red-200 border-red-400/50 backdrop-blur-sm drop-shadow-md';
-      case 'medium': return 'bg-yellow-500/30 text-yellow-200 border-yellow-400/50 backdrop-blur-sm drop-shadow-md';
-      case 'low': return 'bg-green-500/30 text-green-200 border-green-400/50 backdrop-blur-sm drop-shadow-md';
-      default: return 'bg-gray-500/30 text-gray-200 border-gray-400/50 backdrop-blur-sm drop-shadow-md';
+      case 'high': return 'bg-red-100 text-red-800 border-red-200';
+      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'low': return 'bg-green-100 text-green-800 border-green-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
+  };
+
+  const getPriorityBorderColor = (priority: string) => {
+    switch (priority) {
+      case 'high': return 'border-l-red-500';
+      case 'medium': return 'border-l-yellow-500';
+      case 'low': return 'border-l-green-500';
+      default: return 'border-l-gray-500';
     }
   };
 
   return (
     <Card 
-      className={`bg-black/20 backdrop-blur-sm hover:bg-black/30 transition-all cursor-move border-l-4 text-white ${
-        ticket.priority === 'high' ? 'border-l-red-400' : 
-        ticket.priority === 'medium' ? 'border-l-yellow-400' : 'border-l-green-400'
-      } ${isDragging ? 'opacity-50 rotate-2' : ''} border-white/20 shadow-lg drop-shadow-lg`}
+      className={`bg-white/95 backdrop-blur-sm hover:bg-white border-l-4 text-gray-900 ${getPriorityBorderColor(ticket.priority)} ${
+        isDragging ? 'opacity-50 rotate-2' : ''
+      } border-gray-300 shadow-lg hover:shadow-xl transition-all cursor-move`}
       draggable
       onDragStart={(e) => onDragStart(e, ticket)}
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h4 className="font-semibold text-white text-sm drop-shadow-md text-shadow">{ticket.title}</h4>
+          <h4 className="font-semibold text-gray-900 text-sm">{ticket.title}</h4>
           <Badge className={`${getPriorityColor(ticket.priority)} text-xs`}>
-            <span className="drop-shadow-sm">{ticket.priority}</span>
+            {ticket.priority}
           </Badge>
         </div>
         
-        <p className="text-xs text-white/80 mb-3 line-clamp-2 drop-shadow-md">{ticket.description}</p>
+        <p className="text-xs text-gray-600 mb-3 line-clamp-2">{ticket.description}</p>
         
-        <div className="space-y-1 text-xs text-white/80">
+        <div className="space-y-1 text-xs text-gray-600">
           <div className="flex items-center gap-1">
-            <User className="h-3 w-3 drop-shadow-sm" />
-            <span className="drop-shadow-sm">{ticket.client}</span>
+            <User className="h-3 w-3" />
+            <span>{ticket.client}</span>
           </div>
           <div className="flex items-center gap-1">
-            <MapPin className="h-3 w-3 drop-shadow-sm" />
-            <span className="drop-shadow-sm">{ticket.location}</span>
+            <MapPin className="h-3 w-3" />
+            <span>{ticket.location}</span>
           </div>
           <div className="flex items-center gap-1">
-            <Clock className="h-3 w-3 drop-shadow-sm" />
-            <span className="drop-shadow-sm">{ticket.estimatedDuration}min</span>
+            <Clock className="h-3 w-3" />
+            <span>{ticket.estimatedDuration}min</span>
           </div>
         </div>
         
         <div className="flex flex-wrap gap-1 mt-2">
           {ticket.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs bg-white/20 text-white/90 border-white/30 backdrop-blur-sm drop-shadow-md">
-              <span className="drop-shadow-sm">{tag}</span>
+            <Badge key={tag} variant="outline" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
+              {tag}
             </Badge>
           ))}
           {ticket.tags.length > 2 && (
-            <Badge variant="outline" className="text-xs bg-white/20 text-white/90 border-white/30 backdrop-blur-sm drop-shadow-md">
-              <span className="drop-shadow-sm">+{ticket.tags.length - 2}</span>
+            <Badge variant="outline" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
+              +{ticket.tags.length - 2}
             </Badge>
           )}
         </div>

@@ -87,8 +87,8 @@
     font-family: 'Inter', sans-serif;
   }
 
-  /* Professional forest green background with subtle accent dots */
-  body {
+  /* Only apply the complex background pattern to non-manager dashboard pages */
+  body:not(.manager-dashboard) {
     background: #1B4332;
     background-image: 
       /* Large subtle accent orbs - mostly forest green with gentle warm edges */
@@ -113,6 +113,12 @@
       radial-gradient(circle at 35% 5%, #1B4332 0%, #264653 80%, #F4A261 95%, transparent 98%),
       radial-gradient(circle at 60% 95%, #1B4332 0%, #52B788 70%, #E9C46A 90%, transparent 95%);
     background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  /* Manager dashboard gets a cleaner background that doesn't interfere with video */
+  body.manager-dashboard {
+    background: transparent;
     min-height: 100vh;
   }
 

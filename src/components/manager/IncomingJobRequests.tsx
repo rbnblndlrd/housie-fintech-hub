@@ -82,14 +82,14 @@ const IncomingJobRequests: React.FC = () => {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-900">Incoming Job Requests</h3>
-        <Badge variant="outline" className="bg-blue-100 text-blue-800">
+        <Badge variant="outline" className="bg-blue-100 text-blue-800 border-blue-200">
           {incomingRequests.length} pending
         </Badge>
       </div>
       
       <div className="space-y-3 max-h-80 overflow-y-auto">
         {incomingRequests.map((request) => (
-          <Card key={request.id} className="border-l-4 border-l-blue-500">
+          <Card key={request.id} className="border-l-4 border-l-blue-500 bg-white/95 backdrop-blur-sm shadow-sm">
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-3">
                 <div className="flex-1">
