@@ -1,185 +1,119 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
-import { useAnalyticsData } from '@/hooks/useAnalyticsData';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
-import { Activity, TrendingUp, Clock, Target, AlertTriangle, ArrowLeft, Home } from 'lucide-react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, AreaChart, Area } from 'recharts';
+import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { 
+  Zap, 
+  Clock, 
+  CheckCircle, 
+  AlertTriangle,
+  TrendingUp,
+  Activity
+} from 'lucide-react';
 
 const PerformanceDashboard = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { currentRole } = useRoleSwitch();
-  const { data, loading, error, refreshData } = useAnalyticsData(user?.id, currentRole);
-
   const performanceMetrics = [
-    { 
-      title: "Response Time", 
-      value: "2.3s", 
-      change: "-0.5s vs last week",
+    {
+      title: "Response Time",
+      value: "230ms",
+      status: "good",
       icon: Clock,
-      trend: 'up'
+      color: "from-green-600 to-emerald-600"
     },
-    { 
-      title: "Completion Rate", 
-      value: `${data.completionRate.toFixed(1)}%`, 
-      change: "+2.1% vs last month",
-      icon: Target,
-      trend: 'up'
+    {
+      title: "Uptime",
+      value: "99.9%",
+      status: "excellent",
+      icon: CheckCircle,
+      color: "from-blue-600 to-cyan-600"
     },
-    { 
-      title: "Customer Rating", 
-      value: "4.8/5", 
-      change: "+0.2 vs last month",
-      icon: TrendingUp,
-      trend: 'up'
+    {
+      title: "Error Rate",
+      value: "0.1%",
+      status: "good",
+      icon: AlertTriangle,
+      color: "from-yellow-600 to-orange-600"
     },
-    { 
-      title: "Efficiency Score", 
-      value: "87%", 
-      change: "+5% vs last week",
+    {
+      title: "Throughput",
+      value: "1.2k/min",
+      status: "good",
       icon: Activity,
-      trend: 'up'
+      color: "from-purple-600 to-violet-600"
     }
   ];
 
-  if (error) {
-    return (
-      <div className="min-h-screen">
-        <div className="pt-14 px-2 pb-4">
-          <div className="max-w-none mx-2">
-            <Card className="border-red-200 bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3 text-red-600">
-                  <AlertTriangle className="h-5 w-5" />
-                  <div>
-                    <p className="font-medium">Error loading performance data</p>
-                    <p className="text-sm text-red-500">{error}</p>
-                  </div>
-                  <Button variant="outline" size="sm" onClick={refreshData} className="ml-auto">
-                    Retry
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen">
-      <div className="pt-14 px-2 pb-4">
-        <div className="max-w-none mx-2">
-          {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/analytics-dashboard')}
-                className="text-white hover:bg-white/10 flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Analytics
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg flex items-center gap-3">
-                  <Activity className="h-7 w-7 text-white" />
-                  Performance Dashboard
-                </h1>
-                <p className="text-white/90 drop-shadow-lg">Real-time performance metrics and operational insights</p>
-              </div>
+    <>
+      <VideoBackground />
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+                Performance Dashboard
+              </h1>
+              <p className="text-white/90 text-shadow">
+                Monitor system performance and reliability metrics
+              </p>
             </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/analytics-dashboard')}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <Home className="h-4 w-4" />
-              Analytics Home
-            </Button>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            {performanceMetrics.map((metric, index) => (
-              <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-                <CardContent className="p-4">
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <metric.icon className="h-5 w-5 text-blue-600" />
+            {/* Performance Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {performanceMetrics.map((metric, index) => (
+                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-white/90 mb-1">{metric.title}</p>
+                        <p className="text-3xl font-black text-white text-shadow-lg">{metric.value}</p>
+                        <p className="text-sm text-green-400 mt-1 capitalize">{metric.status}</p>
+                      </div>
+                      <div className={`w-12 h-12 bg-gradient-to-r ${metric.color} rounded-xl flex items-center justify-center`}>
+                        <metric.icon className="h-6 w-6 text-white" />
+                      </div>
                     </div>
-                    <Badge variant={metric.trend === 'up' ? 'default' : 'secondary'}>
-                      {metric.change}
-                    </Badge>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+
+            {/* Performance Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-white text-shadow flex items-center gap-2">
+                    <Zap className="h-5 w-5" />
+                    System Performance
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 flex items-center justify-center">
+                    <p className="text-white/70">Performance charts will be displayed here</p>
                   </div>
-                  <h3 className="text-sm text-gray-600 mb-1">{metric.title}</h3>
-                  {loading ? (
-                    <Skeleton className="h-8 w-24" />
-                  ) : (
-                    <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
-                  )}
                 </CardContent>
               </Card>
-            ))}
-          </div>
 
-          <div className="grid lg:grid-cols-2 gap-4">
-            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle>Performance Trend</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                {loading ? (
-                  <Skeleton className="h-64 w-full" />
-                ) : (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <AreaChart data={data.bookingsByMonth}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="month" />
-                      <YAxis />
-                      <Area type="monotone" dataKey="bookings" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.3} />
-                    </AreaChart>
-                  </ResponsiveContainer>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <CardTitle>Efficiency Metrics</CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Task Completion</span>
-                    <span className="text-sm text-gray-600">95%</span>
+              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <CardHeader>
+                  <CardTitle className="text-white text-shadow flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5" />
+                    Performance Trends
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 flex items-center justify-center">
+                    <p className="text-white/70">Trend analysis will be displayed here</p>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">On-time Delivery</span>
-                    <span className="text-sm text-gray-600">92%</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Quality Score</span>
-                    <span className="text-sm text-gray-600">4.8/5</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm font-medium">Resource Utilization</span>
-                    <span className="text-sm text-gray-600">87%</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

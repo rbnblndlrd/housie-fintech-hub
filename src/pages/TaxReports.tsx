@@ -1,293 +1,171 @@
 
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
-import { useTaxData } from '@/hooks/useTaxData';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Skeleton } from "@/components/ui/skeleton";
+import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { 
   FileText, 
   Download, 
-  DollarSign, 
-  TrendingUp,
-  AlertTriangle,
-  CheckCircle,
-  ArrowLeft,
-  Home
+  Calendar, 
+  DollarSign,
+  Receipt,
+  Calculator
 } from 'lucide-react';
 
 const TaxReports = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth();
-  const { currentRole } = useRole();
-  const { taxData, loading, error, refreshTaxData } = useTaxData(user?.id);
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-CA', {
-      style: 'currency',
-      currency: 'CAD'
-    }).format(amount);
-  };
-
   const taxSummary = [
-    { 
-      label: "Total Earnings", 
-      value: formatCurrency(taxData.totalEarnings), 
-      description: "Current tax year" 
+    {
+      title: "Total Revenue",
+      value: "$124,350",
+      period: "2024 YTD",
+      icon: DollarSign,
+      color: "from-green-600 to-emerald-600"
     },
-    { 
-      label: "Business Expenses", 
-      value: formatCurrency(taxData.businessExpenses), 
-      description: "Tax deductible" 
+    {
+      title: "Deductible Expenses",
+      value: "$18,420",
+      period: "2024 YTD",
+      icon: Receipt,
+      color: "from-blue-600 to-cyan-600"
     },
-    { 
-      label: "Net Income", 
-      value: formatCurrency(taxData.netIncome), 
-      description: "After expenses" 
-    },
-    { 
-      label: "Estimated Tax", 
-      value: formatCurrency(taxData.estimatedTax), 
-      description: "15% rate estimate" 
+    {
+      title: "Net Income",
+      value: "$105,930",
+      period: "2024 YTD",
+      icon: Calculator,
+      color: "from-purple-600 to-violet-600"
     }
   ];
 
-  const complianceMetrics = [
-    { 
-      label: formatCurrency(taxData.totalEarnings), 
-      description: "Annual Income", 
-      subtext: `Threshold: $2,600 ${taxData.totalEarnings >= 2600 ? '✅' : '❌'}`,
-      status: taxData.totalEarnings >= 2600 ? "compliant" : "below-threshold"
+  const availableReports = [
+    {
+      title: "Annual Tax Summary",
+      description: "Complete tax summary for the year",
+      period: "2024",
+      format: "PDF"
     },
-    { 
-      label: taxData.totalTransactions.toString(), 
-      description: "Total Transactions", 
-      subtext: `Threshold: 30 service ${taxData.totalTransactions >= 30 ? '✅' : '❌'}`,
-      status: taxData.totalTransactions >= 30 ? "compliant" : "below-threshold"
+    {
+      title: "Quarterly Report Q4",
+      description: "Fourth quarter earnings report",
+      period: "Q4 2024",
+      format: "PDF"
     },
-    { 
-      label: taxData.complianceRequired ? "Required" : "Not Required", 
-      description: "CRA Reporting", 
-      subtext: "Last updated: " + new Date().toISOString().split('T')[0],
-      status: taxData.complianceRequired ? "action-needed" : "compliant"
+    {
+      title: "Monthly Breakdown",
+      description: "Detailed monthly income and expenses",
+      period: "December 2024",
+      format: "Excel"
     }
   ];
-
-  if (error) {
-    return (
-      <div className="min-h-screen">
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
-            <Card className="border-red-200 bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3 text-red-600">
-                  <AlertTriangle className="h-5 w-5" />
-                  <div>
-                    <p className="font-medium">Error loading tax data</p>
-                    <p className="text-sm text-red-500">{error}</p>
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={refreshTaxData}
-                    className="ml-auto"
-                  >
-                    Retry
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen">
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/analytics-dashboard')}
-                className="text-white hover:bg-white/10 flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Analytics
-              </Button>
-              <div>
-                <h1 className="text-4xl font-bold text-white drop-shadow-lg flex items-center gap-3">
-                  <FileText className="h-8 w-8 text-white" />
-                  Tax Reports & Compliance
-                </h1>
-                <p className="text-white/90 drop-shadow-lg">Tax compliance dashboard and official documents</p>
-              </div>
+    <>
+      <VideoBackground />
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+                Tax Reports
+              </h1>
+              <p className="text-white/90 text-shadow">
+                Generate and download tax reports for your business
+              </p>
             </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/analytics-dashboard')}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <Home className="h-4 w-4" />
-              Analytics Home
-            </Button>
-          </div>
-          
-          {/* Controls */}
-          <div className="flex gap-3 mb-6">
-            <Button variant="outline" onClick={refreshTaxData} disabled={loading} className="bg-white/10 border-white/20 text-white hover:bg-white/20">
-              {loading ? 'Refreshing...' : 'Refresh Data'}
-            </Button>
-            <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">📊 Export Report</Button>
-          </div>
 
-          {/* Compliance Alert */}
-          {taxData.complianceRequired && (
-            <Alert className="mb-6 border-orange-200 bg-orange-50/95 backdrop-blur-sm">
-              <AlertTriangle className="h-4 w-4 text-orange-600" />
-              <AlertDescription className="text-orange-800">
-                <strong>Compliance Status:</strong> Reporting required ({formatCurrency(taxData.totalEarnings)} income or {taxData.totalTransactions} transactions). Tax documentation is mandatory.
-              </AlertDescription>
-            </Alert>
-          )}
-
-          {/* Tax Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {taxSummary.map((item, index) => (
-              <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="p-2 bg-blue-50 rounded-lg">
-                      <DollarSign className="h-5 w-5 text-blue-600" />
+            {/* Tax Summary */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {taxSummary.map((item, index) => (
+                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardContent className="p-6">
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-white/90 mb-1">{item.title}</p>
+                        <p className="text-3xl font-black text-white text-shadow-lg">{item.value}</p>
+                        <p className="text-sm text-white/70 mt-1">{item.period}</p>
+                      </div>
+                      <div className={`w-12 h-12 bg-gradient-to-r ${item.color} rounded-xl flex items-center justify-center`}>
+                        <item.icon className="h-6 w-6 text-white" />
+                      </div>
                     </div>
-                  </div>
-                  <h3 className="text-sm text-gray-600 mb-1">{item.label}</h3>
-                  {loading ? (
-                    <Skeleton className="h-8 w-24 mb-2" />
-                  ) : (
-                    <p className="text-2xl font-bold text-gray-900 mb-1">{item.value}</p>
-                  )}
-                  <p className="text-xs text-gray-500">{item.description}</p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
 
-          {/* Main Content Grid */}
-          <div className="grid lg:grid-cols-2 gap-6 mb-8">
-            {/* Quarterly Breakdown */}
-            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
+            {/* Available Reports */}
+            <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl mb-6">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  📊 Quarterly Income Breakdown
+                <CardTitle className="text-white text-shadow flex items-center gap-2">
+                  <FileText className="h-5 w-5" />
+                  Available Reports
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                {loading ? (
-                  <div className="space-y-4">
-                    {[...Array(4)].map((_, i) => (
-                      <Skeleton key={i} className="h-8 w-full" />
-                    ))}
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-4 gap-4 text-sm font-semibold text-gray-600 border-b pb-2">
-                      <span>Quarter</span>
-                      <span>Gross</span>
-                      <span>Net</span>
-                      <span>Transactions</span>
+              <CardContent className="space-y-4">
+                {availableReports.map((report, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-white/5 rounded-lg">
+                    <div className="flex-1">
+                      <h3 className="text-white font-medium">{report.title}</h3>
+                      <p className="text-white/70 text-sm">{report.description}</p>
+                      <p className="text-white/60 text-xs mt-1">{report.period} • {report.format}</p>
                     </div>
-                    {taxData.quarterlyData.map((quarter, index) => (
-                      <div key={index} className="grid grid-cols-4 gap-4 text-sm">
-                        <span className="font-medium">{quarter.quarter}</span>
-                        <span>{formatCurrency(quarter.gross)}</span>
-                        <span>{formatCurrency(quarter.net)}</span>
-                        <span>{quarter.transactions}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Tax Documents */}
-            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  📋 Tax Documents & Compliance
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {taxData.documents.map((doc, index) => (
-                    <div key={index} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
-                      <div>
-                        <h4 className="font-semibold text-gray-900">{doc.name}</h4>
-                        <p className="text-sm text-gray-600">{doc.description}</p>
-                      </div>
-                      <Button size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
-                        <Download className="h-4 w-4 mr-1" />
-                        {doc.action}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-                
-                <div className="mt-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">Recent Documents</h4>
-                  {loading ? (
-                    <Skeleton className="h-6 w-32" />
-                  ) : (
-                    taxData.recentDocuments.map((doc, index) => (
-                      <div key={index} className="flex justify-between items-center text-sm">
-                        <span>{doc.name}</span>
-                        <span className="text-gray-500">{doc.date}</span>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Compliance Status */}
-          <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle>Compliance Status</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-3 gap-6">
-                {complianceMetrics.map((metric, index) => (
-                  <div key={index} className="text-center p-6 bg-gray-50 rounded-xl">
-                    {loading ? (
-                      <Skeleton className="h-8 w-16 mx-auto mb-2" />
-                    ) : (
-                      <div className="text-3xl font-bold text-gray-900 mb-2">{metric.label}</div>
-                    )}
-                    <div className="text-sm font-semibold text-gray-700 mb-1">{metric.description}</div>
-                    <div className={`text-xs ${
-                      metric.status === 'compliant' || metric.status === 'below-threshold' 
-                        ? 'text-green-600' 
-                        : 'text-orange-600'
-                    }`}>
-                      {metric.subtext}
-                    </div>
+                    <Button className="bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
                   </div>
                 ))}
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Generate Custom Report */}
+            <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <CardHeader>
+                <CardTitle className="text-white text-shadow flex items-center gap-2">
+                  <Calculator className="h-5 w-5" />
+                  Generate Custom Report
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div>
+                    <label className="block text-white/90 text-sm font-medium mb-2">Report Type</label>
+                    <select className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white backdrop-blur-sm">
+                      <option>Income Statement</option>
+                      <option>Expense Report</option>
+                      <option>Tax Summary</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-white/90 text-sm font-medium mb-2">Date Range</label>
+                    <select className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white backdrop-blur-sm">
+                      <option>Last Quarter</option>
+                      <option>Last 6 Months</option>
+                      <option>Year to Date</option>
+                      <option>Custom Range</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-white/90 text-sm font-medium mb-2">Format</label>
+                    <select className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white backdrop-blur-sm">
+                      <option>PDF</option>
+                      <option>Excel</option>
+                      <option>CSV</option>
+                    </select>
+                  </div>
+                </div>
+                <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Generate Report
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

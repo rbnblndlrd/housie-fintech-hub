@@ -47,9 +47,9 @@ const ServicesPage = () => {
   }, [setVerified]);
 
   return (
-    <>
+    <div className="relative min-h-screen">
       <VideoBackground />
-      <div className="relative z-10 min-h-screen">
+      <div className="relative z-10">
         <Header />
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
@@ -82,7 +82,7 @@ const ServicesPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
