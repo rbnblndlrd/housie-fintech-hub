@@ -63,13 +63,13 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-gray-900">Smart Job Organizer</h3>
+        <h3 className="text-lg font-semibold text-white">Smart Job Organizer</h3>
         <div className="flex items-center gap-2">
-          <Badge className="bg-purple-100 text-purple-800">
+          <Badge className="bg-purple-100/20 text-white border-white/30">
             <Brain className="h-3 w-3 mr-1" />
             AI-Powered
           </Badge>
-          <Button size="sm" variant="outline" onClick={handleAutoOptimize}>
+          <Button size="sm" variant="outline" onClick={handleAutoOptimize} className="bg-white/10 border-white/30 text-white hover:bg-white/20">
             <Zap className="h-4 w-4 mr-1" />
             Auto-Optimize
           </Button>
@@ -77,27 +77,27 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
       </div>
 
       {/* Smart Insights Panel */}
-      <div className="grid grid-cols-3 gap-3 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border">
+      <div className="grid grid-cols-3 gap-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/30">
         <div className="text-center">
-          <div className="flex items-center justify-center gap-1 text-sm font-medium text-gray-700">
-            <Route className="h-4 w-4 text-blue-600" />
+          <div className="flex items-center justify-center gap-1 text-sm font-medium text-white/90">
+            <Route className="h-4 w-4 text-blue-400" />
             Efficiency
           </div>
-          <div className="text-xl font-bold text-blue-600">{efficiencyScore.toFixed(0)}%</div>
+          <div className="text-xl font-bold text-blue-400">{efficiencyScore.toFixed(0)}%</div>
         </div>
         <div className="text-center">
-          <div className="flex items-center justify-center gap-1 text-sm font-medium text-gray-700">
-            <Clock className="h-4 w-4 text-green-600" />
+          <div className="flex items-center justify-center gap-1 text-sm font-medium text-white/90">
+            <Clock className="h-4 w-4 text-green-400" />
             Total Time
           </div>
-          <div className="text-xl font-bold text-green-600">{Math.floor(totalDuration / 60)}h {totalDuration % 60}m</div>
+          <div className="text-xl font-bold text-green-400">{Math.floor(totalDuration / 60)}h {totalDuration % 60}m</div>
         </div>
         <div className="text-center">
-          <div className="flex items-center justify-center gap-1 text-sm font-medium text-gray-700">
-            <TrendingUp className="h-4 w-4 text-orange-600" />
+          <div className="flex items-center justify-center gap-1 text-sm font-medium text-white/90">
+            <TrendingUp className="h-4 w-4 text-orange-400" />
             Revenue
           </div>
-          <div className="text-xl font-bold text-orange-600">${(organizedJobs.length * 180).toFixed(0)}</div>
+          <div className="text-xl font-bold text-orange-400">${(organizedJobs.length * 180).toFixed(0)}</div>
         </div>
       </div>
 
@@ -105,19 +105,19 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
       <div 
         className={`min-h-96 border-2 border-dashed rounded-lg p-4 transition-colors ${
           isDragOver 
-            ? 'border-blue-500 bg-blue-50' 
+            ? 'border-blue-400 bg-blue-500/10' 
             : organizedJobs.length > 0 
-              ? 'border-gray-200 bg-gray-50' 
-              : 'border-gray-300 bg-gray-100'
+              ? 'border-white/30 bg-white/5' 
+              : 'border-white/40 bg-white/10'
         }`}
         onDrop={onDrop}
         onDragOver={onDragOver}
       >
         {organizedJobs.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-gray-500">
+          <div className="flex flex-col items-center justify-center h-full text-white/70">
             <div className="text-4xl mb-4">🤖</div>
             <p className="text-sm text-center mb-2">Drop tickets here for AI-powered route optimization</p>
-            <Button size="sm" variant="ghost" onClick={handleLearnPatterns}>
+            <Button size="sm" variant="ghost" onClick={handleLearnPatterns} className="text-white/70 hover:text-white hover:bg-white/10">
               <Brain className="h-4 w-4 mr-1" />
               Learn from my patterns
             </Button>
@@ -125,11 +125,11 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
         ) : (
           <div className="space-y-3">
             <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-gray-700">
+              <span className="text-sm font-medium text-white/90">
                 Optimized Route ({organizedJobs.length} jobs)
               </span>
               <div className="flex gap-2">
-                <Button size="sm" variant="ghost" onClick={handleAutoOptimize}>
+                <Button size="sm" variant="ghost" onClick={handleAutoOptimize} className="text-white/70 hover:text-white hover:bg-white/10">
                   <Zap className="h-3 w-3 mr-1" />
                   Re-optimize
                 </Button>
@@ -137,12 +137,12 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
             </div>
             
             {organizedJobs.map((job, index) => (
-              <div key={job.id} className="flex items-center gap-2 p-3 bg-white rounded-lg border shadow-sm">
+              <div key={job.id} className="flex items-center gap-2 p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 shadow-sm">
                 <div className="flex flex-col gap-1">
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-6 w-6 p-0"
+                    className="h-6 w-6 p-0 text-white/70 hover:text-white hover:bg-white/10"
                     onClick={() => onReorderJob(job.id, 'up')}
                     disabled={index === 0}
                   >
@@ -151,7 +151,7 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    className="h-6 w-6 p-0"
+                    className="h-6 w-6 p-0 text-white/70 hover:text-white hover:bg-white/10"
                     onClick={() => onReorderJob(job.id, 'down')}
                     disabled={index === organizedJobs.length - 1}
                   >
@@ -159,13 +159,13 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
                   </Button>
                 </div>
                 
-                <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full text-sm font-medium text-blue-600">
+                <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-blue-500/30 to-purple-500/30 rounded-full text-sm font-medium text-white border border-white/30">
                   {index + 1}
                 </div>
                 
                 <div className="flex-1">
-                  <h4 className="font-medium text-sm text-gray-900">{job.title}</h4>
-                  <div className="flex items-center gap-3 text-xs text-gray-500 mt-1">
+                  <h4 className="font-medium text-sm text-white">{job.title}</h4>
+                  <div className="flex items-center gap-3 text-xs text-white/70 mt-1">
                     <div className="flex items-center gap-1">
                       <User className="h-3 w-3" />
                       <span>{job.client}</span>
@@ -182,7 +182,7 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
                 </div>
                 
                 {index < organizedJobs.length - 1 && (
-                  <div className="text-xs text-gray-400 px-2">
+                  <div className="text-xs text-white/40 px-2">
                     <Route className="h-3 w-3" />
                   </div>
                 )}
@@ -190,7 +190,7 @@ const EnhancedJobOrganizer: React.FC<EnhancedJobOrganizerProps> = ({
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="h-8 w-8 p-0 text-red-500 hover:text-red-700 hover:bg-red-50"
+                  className="h-8 w-8 p-0 text-red-400 hover:text-red-300 hover:bg-red-500/10"
                   onClick={() => onRemoveJob(job.id)}
                 >
                   <X className="h-4 w-4" />

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Navigate } from 'react-router-dom';
@@ -212,52 +213,52 @@ const ManagerDashboard = () => {
               </div>
             </div>
 
-            {/* Quick Stats Cards - Reduced blur */}
+            {/* Quick Stats Cards - No colors, transparent */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <Card className="bg-gradient-to-br from-blue-500/80 to-blue-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
+              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-blue-100 text-sm">Active Jobs</p>
+                      <p className="text-white/70 text-sm">Active Jobs</p>
                       <p className="text-2xl font-bold">{organizedJobs.length}</p>
                     </div>
-                    <Zap className="h-8 w-8 text-blue-200" />
+                    <Zap className="h-8 w-8 text-white/70" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-green-500/80 to-green-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
+              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-green-100 text-sm">Crew Online</p>
+                      <p className="text-white/70 text-sm">Crew Online</p>
                       <p className="text-2xl font-bold">3</p>
                     </div>
-                    <Users className="h-8 w-8 text-green-200" />
+                    <Users className="h-8 w-8 text-white/70" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-purple-500/80 to-purple-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
+              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-100 text-sm">Revenue Today</p>
+                      <p className="text-white/70 text-sm">Revenue Today</p>
                       <p className="text-2xl font-bold">$2,450</p>
                     </div>
-                    <TrendingUp className="h-8 w-8 text-purple-200" />
+                    <TrendingUp className="h-8 w-8 text-white/70" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-orange-500/80 to-orange-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
+              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-orange-100 text-sm">Efficiency</p>
+                      <p className="text-white/70 text-sm">Efficiency</p>
                       <p className="text-2xl font-bold">94%</p>
                     </div>
-                    <BarChart3 className="h-8 w-8 text-orange-200" />
+                    <BarChart3 className="h-8 w-8 text-white/70" />
                   </div>
                 </CardContent>
               </Card>
@@ -293,7 +294,7 @@ const ManagerDashboard = () => {
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                   {/* Ticket Pool - Reduced blur */}
-                  <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
+                  <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
                     <CardHeader className="pb-4">
                       <CardTitle className="flex items-center justify-between text-white">
                         <div className="flex items-center gap-2">
@@ -345,7 +346,7 @@ const ManagerDashboard = () => {
                 </div>
                 
                 {/* Incoming Requests - Reduced blur */}
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
+                <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <IncomingJobRequests />
                   </CardContent>
@@ -354,7 +355,7 @@ const ManagerDashboard = () => {
 
               {/* Crew Hub Tab - Reduced blur */}
               <TabsContent value="crew">
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
+                <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <EnhancedCrewHub />
                   </CardContent>
@@ -363,7 +364,7 @@ const ManagerDashboard = () => {
 
               {/* Insights Tab - Reduced blur */}
               <TabsContent value="insights">
-                <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
+                <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <InsightsPerformance />
                   </CardContent>
