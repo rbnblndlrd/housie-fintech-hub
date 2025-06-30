@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
@@ -113,6 +114,19 @@
       radial-gradient(circle at 60% 95%, #1B4332 0%, #52B788 70%, #E9C46A 90%, transparent 95%);
     background-attachment: fixed;
     min-height: 100vh;
+  }
+
+  /* Text shadow utilities for better readability */
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9);
+  }
+  
+  .text-shadow-xl {
+    text-shadow: 4px 4px 8px rgba(0, 0, 0, 1);
   }
 }
 

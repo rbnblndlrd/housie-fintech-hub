@@ -185,132 +185,132 @@ const ManagerDashboard = () => {
                 <Button 
                   variant="ghost" 
                   onClick={() => navigate('/dashboard')}
-                  className="text-white hover:bg-white/20 flex items-center gap-2"
+                  className="text-white hover:bg-white/20 flex items-center gap-2 drop-shadow-lg"
                 >
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
+                  <ArrowLeft className="h-4 w-4 drop-shadow-md" />
+                  <span className="drop-shadow-md">Back</span>
                 </Button>
                 <div>
-                  <h1 className="text-4xl font-bold text-white drop-shadow-lg">
+                  <h1 className="text-4xl font-bold text-white drop-shadow-lg text-shadow-lg">
                     Manager Hub
                   </h1>
-                  <p className="text-white/90 mt-1 drop-shadow">Streamline your operations with intelligent automation</p>
+                  <p className="text-white/90 mt-1 drop-shadow-md text-shadow">Streamline your operations with intelligent automation</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="sm" className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  <Bell className="h-4 w-4" />
-                  <Badge variant="destructive" className="h-5 w-5 p-0 text-xs">3</Badge>
+                <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm drop-shadow-lg">
+                  <Bell className="h-4 w-4 drop-shadow-sm" />
+                  <Badge variant="destructive" className="h-5 w-5 p-0 text-xs drop-shadow-sm">3</Badge>
                 </Button>
-                <Button variant="outline" size="sm" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
-                  <Settings className="h-4 w-4" />
+                <Button variant="outline" size="sm" className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm drop-shadow-lg">
+                  <Settings className="h-4 w-4 drop-shadow-sm" />
                 </Button>
-                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Quick Action
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 drop-shadow-lg">
+                  <Plus className="h-4 w-4 mr-2 drop-shadow-sm" />
+                  <span className="drop-shadow-sm">Quick Action</span>
                 </Button>
               </div>
             </div>
 
-            {/* Quick Stats Cards - No colors, transparent */}
+            {/* Quick Stats Cards - Enhanced readability */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
+              <Card className="bg-black/20 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-white/70 text-sm">Active Jobs</p>
-                      <p className="text-2xl font-bold">{organizedJobs.length}</p>
+                      <p className="text-white/90 text-sm drop-shadow-md font-medium">Active Jobs</p>
+                      <p className="text-2xl font-bold drop-shadow-lg text-shadow-lg">{organizedJobs.length}</p>
                     </div>
-                    <Zap className="h-8 w-8 text-white/70" />
+                    <Zap className="h-8 w-8 text-white/80 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
+              <Card className="bg-black/20 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-white/70 text-sm">Crew Online</p>
-                      <p className="text-2xl font-bold">3</p>
+                      <p className="text-white/90 text-sm drop-shadow-md font-medium">Crew Online</p>
+                      <p className="text-2xl font-bold drop-shadow-lg text-shadow-lg">3</p>
                     </div>
-                    <Users className="h-8 w-8 text-white/70" />
+                    <Users className="h-8 w-8 text-white/80 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
+              <Card className="bg-black/20 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-white/70 text-sm">Revenue Today</p>
-                      <p className="text-2xl font-bold">$2,450</p>
+                      <p className="text-white/90 text-sm drop-shadow-md font-medium">Revenue Today</p>
+                      <p className="text-2xl font-bold drop-shadow-lg text-shadow-lg">$2,450</p>
                     </div>
-                    <TrendingUp className="h-8 w-8 text-white/70" />
+                    <TrendingUp className="h-8 w-8 text-white/80 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
               
-              <Card className="bg-white/10 backdrop-blur-sm text-white border-white/20 shadow-xl">
+              <Card className="bg-black/20 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-white/70 text-sm">Efficiency</p>
-                      <p className="text-2xl font-bold">94%</p>
+                      <p className="text-white/90 text-sm drop-shadow-md font-medium">Efficiency</p>
+                      <p className="text-2xl font-bold drop-shadow-lg text-shadow-lg">94%</p>
                     </div>
-                    <BarChart3 className="h-8 w-8 text-white/70" />
+                    <BarChart3 className="h-8 w-8 text-white/80 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Main Content Tabs - Reduced blur */}
+            {/* Main Content Tabs - Enhanced readability */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-              <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm p-2 rounded-xl border border-white/20">
+              <TabsList className="grid w-full grid-cols-3 bg-black/20 backdrop-blur-sm p-2 rounded-xl border border-white/20">
                 <TabsTrigger 
                   value="overview" 
-                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white"
+                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white drop-shadow-md"
                 >
-                  <Zap className="h-4 w-4" />
-                  Job Management
+                  <Zap className="h-4 w-4 drop-shadow-sm" />
+                  <span className="drop-shadow-sm">Job Management</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="crew" 
-                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white drop-shadow-md"
                 >
-                  <Users className="h-4 w-4" />
-                  Crew Hub
+                  <Users className="h-4 w-4 drop-shadow-sm" />
+                  <span className="drop-shadow-sm">Crew Hub</span>
                 </TabsTrigger>
                 <TabsTrigger 
                   value="insights" 
-                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white"
+                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white drop-shadow-md"
                 >
-                  <BarChart3 className="h-4 w-4" />
-                  Insights
+                  <BarChart3 className="h-4 w-4 drop-shadow-sm" />
+                  <span className="drop-shadow-sm">Insights</span>
                 </TabsTrigger>
               </TabsList>
 
               {/* Job Management Tab */}
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  {/* Ticket Pool - Reduced blur */}
-                  <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
+                  {/* Ticket Pool - Enhanced readability */}
+                  <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
                     <CardHeader className="pb-4">
                       <CardTitle className="flex items-center justify-between text-white">
                         <div className="flex items-center gap-2">
-                          <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
-                          Ticket Pool
+                          <div className="h-2 w-2 bg-blue-400 rounded-full drop-shadow-sm"></div>
+                          <span className="drop-shadow-md text-shadow">Ticket Pool</span>
                         </div>
-                        <Badge variant="secondary" className="bg-white/20 text-white">{availableTickets.length}</Badge>
+                        <Badge variant="secondary" className="bg-white/30 text-white border-white/20 drop-shadow-md">{availableTickets.length}</Badge>
                       </CardTitle>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20">
-                          <Filter className="h-3 w-3" />
-                          Filter
+                        <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 drop-shadow-md">
+                          <Filter className="h-3 w-3 drop-shadow-sm" />
+                          <span className="drop-shadow-sm">Filter</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20">
-                          <Search className="h-3 w-3" />
-                          Search
+                        <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 drop-shadow-md">
+                          <Search className="h-3 w-3 drop-shadow-sm" />
+                          <span className="drop-shadow-sm">Search</span>
                         </Button>
                       </div>
                     </CardHeader>
@@ -324,9 +324,9 @@ const ManagerDashboard = () => {
                         />
                       ))}
                       {availableTickets.length === 0 && (
-                        <div className="text-center py-8 text-white/70">
-                          <div className="text-4xl mb-2">✨</div>
-                          <p className="text-sm">All tickets organized!</p>
+                        <div className="text-center py-8 text-white/80">
+                          <div className="text-4xl mb-2 drop-shadow-md">✨</div>
+                          <p className="text-sm drop-shadow-md text-shadow">All tickets organized!</p>
                         </div>
                       )}
                     </CardContent>
@@ -345,26 +345,26 @@ const ManagerDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Incoming Requests - Reduced blur */}
-                <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
+                {/* Incoming Requests */}
+                <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <IncomingJobRequests />
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              {/* Crew Hub Tab - Reduced blur */}
+              {/* Crew Hub Tab */}
               <TabsContent value="crew">
-                <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
+                <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <EnhancedCrewHub />
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              {/* Insights Tab - Reduced blur */}
+              {/* Insights Tab */}
               <TabsContent value="insights">
-                <Card className="bg-white/5 backdrop-blur-sm border-white/20 shadow-xl">
+                <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <InsightsPerformance />
                   </CardContent>
