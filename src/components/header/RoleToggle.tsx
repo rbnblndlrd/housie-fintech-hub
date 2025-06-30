@@ -5,7 +5,7 @@ import { Switch } from '@/components/ui/switch';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 
 const RoleToggle = () => {
-  const { currentRole, switchRole, availableRoles, canSwitchToProvider } = useRoleSwitch();
+  const { currentRole, switchRole, availableRoles, canSwitchToProvider, isLoading } = useRoleSwitch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,18 +13,22 @@ const RoleToggle = () => {
     currentRole, 
     availableRoles,
     canSwitchToProvider,
+    isLoading,
     pathname: location.pathname 
   });
 
-  // Only show toggle if user can actually switch to provider
-  const canToggle = availableRoles.includes('provider');
+  // Don't render while loading or if provider mode is not available
+  if (isLoading || !canSwitchToProvider) {
+    console.log('🔧 RoleToggle hidden - loading or provider mode not available');
+    return null;
+  }
 
   const handleRoleToggle = async (checked: boolean) => {
     const newRole = checked ? 'provider' : 'customer';
     console.log('🔧 Role switch toggled to:', newRole);
     
-    if (!canToggle && newRole === 'provider') {
-      console.error('❌ Cannot switch to provider - not available in roles:', availableRoles);
+    if (!availableRoles.includes(newRole)) {
+      console.error('❌ Cannot switch to role - not available in roles:', availableRoles);
       return;
     }
     
@@ -41,12 +45,6 @@ const RoleToggle = () => {
       console.error('❌ Role switch failed:', error);
     }
   };
-
-  // Don't render if provider mode is not available
-  if (!canToggle) {
-    console.log('🔧 RoleToggle hidden - provider mode not available');
-    return null;
-  }
 
   return (
     <div className="flex items-center gap-2 px-3 py-1 bg-gray-800 rounded-lg">

@@ -12,16 +12,16 @@ import ProviderProfileView from './ProviderProfileView';
 
 const UnifiedProfilePage = () => {
   const user = useUser();
-  const { currentRole } = useRoleSwitch();
+  const { currentRole, isLoading: roleLoading } = useRoleSwitch();
   const [profile, setProfile] = useState<UnifiedUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (user) {
+    if (user && !roleLoading) {
       loadProfile();
     }
-  }, [user, currentRole]);
+  }, [user, roleLoading]);
 
   const loadProfile = async () => {
     if (!user) return;
@@ -112,7 +112,8 @@ const UnifiedProfilePage = () => {
     }
   };
 
-  if (loading) {
+  // Show loading state while role context is loading
+  if (roleLoading || loading) {
     return (
       <div className="container mx-auto px-4 py-8 space-y-6">
         <div className="flex justify-between items-center">

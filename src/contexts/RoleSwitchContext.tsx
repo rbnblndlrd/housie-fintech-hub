@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,13 +19,15 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [currentRole, setCurrentRole] = useState<'customer' | 'provider'>('customer');
   const [availableRoles, setAvailableRoles] = useState<string[]>(['customer']);
   const [canSwitchToProvider, setCanSwitchToProvider] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   console.log('🔄 RoleSwitchProvider render:', { 
     hasUser: !!user, 
     userEmail: user?.email,
     currentRole, 
     availableRoles,
-    canSwitchToProvider 
+    canSwitchToProvider,
+    isLoading
   });
 
   useEffect(() => {
@@ -36,16 +39,17 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCurrentRole('customer');
       setAvailableRoles(['customer']);
       setCanSwitchToProvider(false);
+      setIsLoading(false);
     }
   }, [user]);
 
   const loadUserCapabilities = async () => {
     if (!user) return;
 
+    setIsLoading(true);
     try {
       console.log('🔄 Fetching user profile from database...');
       
-      // Clear any potential cache and force fresh data
       const { data: profile, error } = await supabase
         .from('user_profiles')
         .select('*')
@@ -85,21 +89,25 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         typeOfCanProvideServices: typeof profile.can_provide_services
       });
       
-      // Validate and set active role
+      // Validate and set active role with fallback
       const activeRole = validateRole(profile.active_role) || 'customer';
       console.log('🎯 Setting current role to:', activeRole);
       setCurrentRole(activeRole);
       
-      // Build available roles - CRITICAL FIX: Always check current database state
-      const roles = ['customer']; // Everyone can be a customer
+      // Build available roles - Always start with customer
+      const roles = ['customer'];
       
-      // Direct boolean check for provider capabilities
-      const hasProviderCapability = profile.can_provide_services === true;
+      // Check provider capabilities with multiple validation approaches
+      const hasProviderCapability = profile.can_provide_services === true || 
+                                   profile.can_provide_services === 'true' ||
+                                   String(profile.can_provide_services).toLowerCase() === 'true';
       
       console.log('🔍 PROVIDER CAPABILITY CHECK:', {
         rawValue: profile.can_provide_services,
         valueType: typeof profile.can_provide_services,
-        directBooleanCheck: profile.can_provide_services === true,
+        strictBooleanCheck: profile.can_provide_services === true,
+        stringBooleanCheck: profile.can_provide_services === 'true',
+        lowerCaseStringCheck: String(profile.can_provide_services).toLowerCase() === 'true',
         finalResult: hasProviderCapability
       });
       
@@ -119,7 +127,6 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         roleCount: roles.length
       });
       
-      // CRITICAL: Update available roles state
       setAvailableRoles(roles);
       
       // Synchronize role preferences
@@ -131,6 +138,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCurrentRole('customer');
       setAvailableRoles(['customer']);
       setCanSwitchToProvider(false);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -174,6 +183,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCanSwitchToProvider(false);
     } catch (error) {
       console.error('❌ Error creating default profile:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -206,7 +217,11 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   };
 
   const switchRole = async (newRole: 'customer' | 'provider') => {
-    if (!user || !availableRoles.includes(newRole)) {
+    if (!user) {
+      throw new Error('No user authenticated');
+    }
+
+    if (!availableRoles.includes(newRole)) {
       console.error('❌ Cannot switch to role:', newRole, 'Available roles:', availableRoles);
       throw new Error(`Cannot switch to role: ${newRole}. Available roles: ${availableRoles.join(', ')}`);
     }
@@ -243,7 +258,6 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
-  // IMPROVED: Force refresh function with better logging
   const forceRefresh = async () => {
     console.log('🔄 FORCE REFRESH: Reloading user capabilities...');
     try {
@@ -260,7 +274,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     availableRoles,
     switchRole,
     canSwitchToProvider,
-    forceRefresh
+    forceRefresh,
+    isLoading
   };
 
   return (

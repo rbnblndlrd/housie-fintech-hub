@@ -65,7 +65,8 @@ export interface RoleSwitchContextType {
   availableRoles: string[];
   switchRole: (role: 'customer' | 'provider') => Promise<void>;
   canSwitchToProvider: boolean;
-  forceRefresh?: () => Promise<void>; // Add the missing forceRefresh function
+  forceRefresh?: () => Promise<void>;
+  isLoading?: boolean;
 }
 
 // New Group System Types
