@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Navigate } from 'react-router-dom';
@@ -213,9 +212,9 @@ const ManagerDashboard = () => {
               </div>
             </div>
 
-            {/* Quick Stats Cards */}
+            {/* Quick Stats Cards - Reduced blur */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-              <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-xl">
+              <Card className="bg-gradient-to-br from-blue-500/80 to-blue-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -227,7 +226,7 @@ const ManagerDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-xl">
+              <Card className="bg-gradient-to-br from-green-500/80 to-green-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -239,7 +238,7 @@ const ManagerDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-xl">
+              <Card className="bg-gradient-to-br from-purple-500/80 to-purple-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -251,7 +250,7 @@ const ManagerDashboard = () => {
                 </CardContent>
               </Card>
               
-              <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-xl">
+              <Card className="bg-gradient-to-br from-orange-500/80 to-orange-600/80 text-white border-0 shadow-xl backdrop-blur-sm">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -264,7 +263,7 @@ const ManagerDashboard = () => {
               </Card>
             </div>
 
-            {/* Main Content Tabs */}
+            {/* Main Content Tabs - Reduced blur */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
               <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm p-2 rounded-xl border border-white/20">
                 <TabsTrigger 
@@ -293,8 +292,8 @@ const ManagerDashboard = () => {
               {/* Job Management Tab */}
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  {/* Ticket Pool */}
-                  <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                  {/* Ticket Pool - Reduced blur */}
+                  <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
                     <CardHeader className="pb-4">
                       <CardTitle className="flex items-center justify-between text-white">
                         <div className="flex items-center gap-2">
@@ -345,26 +344,26 @@ const ManagerDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Incoming Requests */}
-                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                {/* Incoming Requests - Reduced blur */}
+                <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <IncomingJobRequests />
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              {/* Crew Hub Tab */}
+              {/* Crew Hub Tab - Reduced blur */}
               <TabsContent value="crew">
-                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <EnhancedCrewHub />
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              {/* Insights Tab */}
+              {/* Insights Tab - Reduced blur */}
               <TabsContent value="insights">
-                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                <Card className="bg-white/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
                     <InsightsPerformance />
                   </CardContent>
