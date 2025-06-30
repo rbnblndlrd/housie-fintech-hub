@@ -10,7 +10,7 @@ const VideoBackground = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    console.log('VideoBackground: Initializing video');
+    console.log('VideoBackground: Initializing video for homepage');
 
     const handleCanPlay = () => {
       console.log('VideoBackground: Video can play - loading complete');
@@ -40,6 +40,8 @@ const VideoBackground = () => {
     };
   }, []);
 
+  console.log('VideoBackground: Rendering with states:', { videoError, isLoading });
+
   return (
     <div className="fixed inset-0 w-full h-full z-0">
       {!videoError ? (
@@ -63,14 +65,14 @@ const VideoBackground = () => {
           </video>
           
           {isLoading && (
-            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-300 via-amber-400 to-red-400 flex items-center justify-center">
+            <div className="absolute inset-0 w-full h-full bg-black flex items-center justify-center">
               <div className="text-white text-lg font-medium">Loading video background...</div>
             </div>
           )}
         </>
       ) : (
-        // Fallback background when video fails
-        <div className="w-full h-full bg-gradient-to-br from-orange-300 via-amber-400 to-red-400 flex items-center justify-center">
+        // Fallback background when video fails - use black instead of orange
+        <div className="w-full h-full bg-black flex items-center justify-center">
           <div className="text-white text-sm opacity-75">Video background unavailable</div>
         </div>
       )}
