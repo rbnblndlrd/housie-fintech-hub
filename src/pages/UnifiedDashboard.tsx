@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleSwitch } from "@/contexts/RoleSwitchContext";
@@ -21,11 +22,12 @@ import {
   Bell
 } from "lucide-react";
 import Header from "@/components/Header";
-import ServiceCard from "@/components/home/ServiceCard";
+import ModernServiceCard from "@/components/ModernServiceCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import VideoBackground from "@/components/common/VideoBackground";
+import { Service } from "@/types/service";
 
 const UnifiedDashboard = () => {
   const { user } = useAuth();
@@ -70,33 +72,107 @@ const UnifiedDashboard = () => {
     }
   };
 
-  const services = [
+  const handleBookNow = (service: Service) => {
+    toast({
+      title: "Booking Service",
+      description: `Initiating booking for ${service.title}`,
+    });
+    // In a real app, this would navigate to booking flow
+  };
+
+  const services: Service[] = [
     {
-      id: 1,
+      id: "1",
       title: "Home Cleaning",
       description: "Professional cleaning services for your home",
-      price: 80,
-      rating: 4.8,
-      image: "/lovable-uploads/cleaning-service.jpg",
-      category: "cleaning"
+      base_price: 80,
+      pricing_type: "hourly",
+      category: "cleaning",
+      subcategory: "residential",
+      active: true,
+      background_check_required: false,
+      ccq_rbq_required: false,
+      risk_category: "low",
+      provider: {
+        id: "1",
+        business_name: "Clean Home Services",
+        hourly_rate: 80,
+        service_radius_km: 25,
+        average_rating: 4.8,
+        total_bookings: 150,
+        verified: true,
+        verification_level: "basic",
+        background_check_verified: true,
+        ccq_verified: false,
+        rbq_verified: false,
+        user: {
+          full_name: "Sarah Johnson",
+          city: "Montreal",
+          province: "QC"
+        }
+      }
     },
     {
-      id: 2,
+      id: "2",
       title: "Plumbing Repair",
       description: "Expert plumbing services and repairs",
-      price: 120,
-      rating: 4.9,
-      image: "/lovable-uploads/plumbing-service.jpg",
-      category: "plumbing"
+      base_price: 120,
+      pricing_type: "hourly",
+      category: "plumbing",
+      subcategory: "repair",
+      active: true,
+      background_check_required: true,
+      ccq_rbq_required: true,
+      risk_category: "medium",
+      provider: {
+        id: "2",
+        business_name: "Pro Plumbing Solutions",
+        hourly_rate: 120,
+        service_radius_km: 30,
+        average_rating: 4.9,
+        total_bookings: 200,
+        verified: true,
+        verification_level: "professional_license",
+        background_check_verified: true,
+        ccq_verified: true,
+        rbq_verified: true,
+        user: {
+          full_name: "Mike Thompson",
+          city: "Montreal",
+          province: "QC"
+        }
+      }
     },
     {
-      id: 3,
+      id: "3",
       title: "Electrical Work",
       description: "Safe and reliable electrical services",
-      price: 150,
-      rating: 4.7,
-      image: "/lovable-uploads/electrical-service.jpg",
-      category: "electrical"
+      base_price: 150,
+      pricing_type: "hourly",
+      category: "electrical",
+      subcategory: "installation",
+      active: true,
+      background_check_required: true,
+      ccq_rbq_required: true,
+      risk_category: "high",
+      provider: {
+        id: "3",
+        business_name: "ElectricPro Montreal",
+        hourly_rate: 150,
+        service_radius_km: 20,
+        average_rating: 4.7,
+        total_bookings: 180,
+        verified: true,
+        verification_level: "professional_license",
+        background_check_verified: true,
+        ccq_verified: true,
+        rbq_verified: true,
+        user: {
+          full_name: "David Wilson",
+          city: "Montreal",
+          province: "QC"
+        }
+      }
     }
   ];
 
@@ -317,7 +393,11 @@ const UnifiedDashboard = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {services.map((service) => (
-                    <ServiceCard key={service.id} service={service} />
+                    <ModernServiceCard 
+                      key={service.id} 
+                      service={service} 
+                      onBookNow={handleBookNow}
+                    />
                   ))}
                 </div>
               </TabsContent>
