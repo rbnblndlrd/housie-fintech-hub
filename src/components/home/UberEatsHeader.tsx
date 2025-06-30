@@ -32,8 +32,8 @@ const UberEatsHeader = () => {
 
   return (
     <div className="relative">
-      {/* Header Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+      {/* Header Navigation - Black Background */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center h-16">
             {/* Left Side - Menu + Logo */}
@@ -42,7 +42,7 @@ const UberEatsHeader = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2"
+                className="p-2 text-white hover:bg-gray-800"
               >
                 <Menu className="h-5 w-5" />
               </Button>
@@ -62,7 +62,7 @@ const UberEatsHeader = () => {
             {/* Right Side - Navigation Buttons */}
             <div className="flex items-center space-x-3">
               <Link to="/interactive-map">
-                <Button variant="ghost" className="hidden md:flex items-center space-x-1">
+                <Button variant="ghost" className="hidden md:flex items-center space-x-1 text-white hover:bg-gray-800">
                   <span>Around me</span>
                   <ArrowRight className="h-4 w-4" />
                 </Button>
@@ -71,18 +71,18 @@ const UberEatsHeader = () => {
               {user ? (
                 <div className="flex items-center space-x-2">
                   <Link to="/dashboard">
-                    <Button variant="ghost">Dashboard</Button>
+                    <Button variant="ghost" className="text-white hover:bg-gray-800">Dashboard</Button>
                   </Link>
                 </div>
               ) : (
                 <div className="flex items-center space-x-3">
                   <Link to="/auth">
-                    <Button variant="ghost">
+                    <Button variant="ghost" className="text-white hover:bg-gray-800">
                       Log in
                     </Button>
                   </Link>
                   <Link to="/auth">
-                    <Button className="bg-black text-white hover:bg-gray-800">
+                    <Button className="bg-white text-black hover:bg-gray-200">
                       Sign up
                     </Button>
                   </Link>
@@ -94,25 +94,25 @@ const UberEatsHeader = () => {
 
         {/* Mobile Menu Dropdown */}
         {isMenuOpen && (
-          <div className="absolute top-16 left-4 w-64 bg-white shadow-lg rounded-lg border z-50 md:hidden">
+          <div className="absolute top-16 left-4 w-64 bg-black shadow-lg rounded-lg border border-gray-800 z-50 md:hidden">
             <div className="py-2">
               <Link
                 to="/services"
-                className="block px-4 py-3 text-gray-700 hover:bg-gray-50"
+                className="block px-4 py-3 text-white hover:bg-gray-800"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Services
               </Link>
               <Link
                 to="/interactive-map"
-                className="block px-4 py-3 text-gray-700 hover:bg-gray-50"
+                className="block px-4 py-3 text-white hover:bg-gray-800"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Around me
               </Link>
               <Link
                 to="/help"
-                className="block px-4 py-3 text-gray-700 hover:bg-gray-50"
+                className="block px-4 py-3 text-white hover:bg-gray-800"
                 onClick={() => setIsMenuOpen(false)}
               >
                 Help
@@ -122,33 +122,24 @@ const UberEatsHeader = () => {
         )}
       </header>
 
-      {/* Hero Section with Animated Background */}
-      <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16" style={{ backgroundColor: '#F4A261' }}>
-        {/* Animated Autumn Neighborhood Background */}
+      {/* Hero Section with Video Background */}
+      <div className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
+        {/* Video Background */}
         <div className="absolute inset-0 w-full h-full">
-          <div className="relative w-full h-full bg-gradient-to-br from-orange-300 via-amber-400 to-red-400">
-            {/* Animated Elements */}
-            <div className="absolute inset-0 overflow-hidden">
-              {/* Floating Leaves Animation */}
-              <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-red-500 rounded-full opacity-70 animate-pulse" 
-                   style={{ animationDelay: '0s', animationDuration: '3s' }}></div>
-              <div className="absolute top-1/3 right-1/3 w-3 h-3 bg-orange-600 rounded-full opacity-60 animate-pulse"
-                   style={{ animationDelay: '1s', animationDuration: '4s' }}></div>
-              <div className="absolute bottom-1/3 left-1/2 w-5 h-5 bg-yellow-500 rounded-full opacity-50 animate-pulse"
-                   style={{ animationDelay: '2s', animationDuration: '5s' }}></div>
-              
-              {/* Geometric Shapes representing houses */}
-              <div className="absolute bottom-1/4 left-1/6 w-16 h-16 bg-amber-600 opacity-30 transform rotate-45 animate-pulse"
-                   style={{ animationDelay: '0.5s' }}></div>
-              <div className="absolute bottom-1/4 right-1/4 w-12 h-12 bg-orange-700 opacity-40 rounded-lg animate-pulse"
-                   style={{ animationDelay: '1.5s' }}></div>
-              <div className="absolute bottom-1/5 center w-20 h-8 bg-red-600 opacity-25 rounded-full animate-pulse"
-                   style={{ animationDelay: '2.5s' }}></div>
-            </div>
-            
-            {/* Overlay for text readability */}
-            <div className="absolute inset-0 bg-black/20"></div>
-          </div>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            style={{ filter: 'brightness(0.8)' }}
+          >
+            <source src="/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4" type="video/mp4" />
+            {/* Fallback background */}
+            <div className="w-full h-full bg-gradient-to-br from-orange-300 via-amber-400 to-red-400"></div>
+          </video>
+          {/* Overlay for text readability */}
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
         {/* Main Content */}
