@@ -1,10 +1,13 @@
 
 import React, { useState } from 'react';
-import Header from '@/components/Header';
+import { useAuth } from '@/contexts/AuthContext';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import VideoBackground from '@/components/common/VideoBackground';
+import { ArrowLeft } from 'lucide-react';
 import { 
   Bell, 
   Star, 
@@ -17,7 +20,13 @@ import {
 } from 'lucide-react';
 
 const Social = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeGroup, setActiveGroup] = useState('notes');
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const notifications = [
     { type: 'review', message: 'New 5-star review from Client A', time: '2 min ago', priority: 'high' },
@@ -57,23 +66,31 @@ const Social = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
+    <div className="min-h-screen">
+      <VideoBackground />
       
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 mb-4 flex items-center justify-center gap-3">
-              📢 Feedback & Social
-            </h1>
-            <p className="text-xl text-gray-600">
-              Stay connected with your network and track your performance
-            </p>
+          {/* Header with Navigation */}
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-4">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/dashboard')}
+                className="text-white hover:bg-white/10 flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Dashboard
+              </Button>
+              <div>
+                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Feedback & Social</h1>
+                <p className="text-white/90 drop-shadow-lg">Stay connected with your network and track your performance</p>
+              </div>
+            </div>
           </div>
 
           {/* Latest Notifications */}
-          <Card className="fintech-card mb-8">
+          <Card className="bg-white/95 backdrop-blur-sm mb-8">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Bell className="h-5 w-5 text-blue-600" />
@@ -109,7 +126,7 @@ const Social = () => {
             {/* Feedback Section */}
             <div className="space-y-6">
               {/* Feedback Stats */}
-              <Card className="fintech-card">
+              <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Star className="h-5 w-5 text-yellow-600" />
@@ -144,7 +161,7 @@ const Social = () => {
               </Card>
 
               {/* Recent Reviews */}
-              <Card className="fintech-card">
+              <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle>Recent Reviews</CardTitle>
                 </CardHeader>
@@ -170,7 +187,7 @@ const Social = () => {
             </div>
 
             {/* Social/Groups Section */}
-            <Card className="fintech-card">
+            <Card className="bg-white/95 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Users className="h-5 w-5 text-blue-600" />

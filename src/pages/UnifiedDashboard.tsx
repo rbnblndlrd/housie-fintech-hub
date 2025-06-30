@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DashboardRoleToggle from '@/components/dashboard/DashboardRoleToggle';
+import VideoBackground from '@/components/common/VideoBackground';
 import { 
   Calendar, 
   Kanban, 
@@ -21,7 +22,8 @@ import {
   DollarSign,
   Star,
   User,
-  Settings
+  Settings,
+  MessageSquare
 } from 'lucide-react';
 
 const UnifiedDashboard = () => {
@@ -32,6 +34,7 @@ const UnifiedDashboard = () => {
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen">
+        <VideoBackground />
         <div className="pt-20 w-full px-4">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
@@ -76,6 +79,8 @@ const UnifiedDashboard = () => {
 
   return (
     <div className="min-h-screen">
+      <VideoBackground />
+      
       <div className="pt-20 w-full px-4 pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Dashboard Header with Role Toggle */}
@@ -95,7 +100,44 @@ const UnifiedDashboard = () => {
             {availableRoles.length > 1 && <DashboardRoleToggle />}
           </div>
 
-          {/* Quick Actions for Provider */}
+          {/* Quick Actions - Customer Mode */}
+          {currentRole === 'customer' && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+              <Button
+                onClick={() => navigate('/services')}
+                className="h-20 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white flex flex-col items-center justify-center gap-2"
+              >
+                <Activity className="h-6 w-6" />
+                <span className="text-sm font-medium">Book Service</span>
+              </Button>
+              
+              <Button
+                onClick={() => navigate('/calendar')}
+                className="h-20 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white flex flex-col items-center justify-center gap-2"
+              >
+                <Calendar className="h-6 w-6" />
+                <span className="text-sm font-medium">Calendar</span>
+              </Button>
+              
+              <Button
+                onClick={() => navigate('/social')}
+                className="h-20 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white flex flex-col items-center justify-center gap-2"
+              >
+                <MessageSquare className="h-6 w-6" />
+                <span className="text-sm font-medium">Feedback & Social</span>
+              </Button>
+              
+              <Button
+                onClick={() => navigate('/profile')}
+                className="h-20 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white flex flex-col items-center justify-center gap-2"
+              >
+                <Settings className="h-6 w-6" />
+                <span className="text-sm font-medium">Profile</span>
+              </Button>
+            </div>
+          )}
+
+          {/* Quick Actions - Provider Mode */}
           {currentRole === 'provider' && (
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
               <Button
@@ -115,11 +157,11 @@ const UnifiedDashboard = () => {
               </Button>
               
               <Button
-                onClick={() => navigate('/gps-job-analyzer')}
+                onClick={() => navigate('/social')}
                 className="h-20 bg-gradient-to-r from-green-500 to-teal-500 hover:from-green-600 hover:to-teal-600 text-white flex flex-col items-center justify-center gap-2"
               >
-                <Map className="h-6 w-6" />
-                <span className="text-sm font-medium">GPS Routes</span>
+                <MessageSquare className="h-6 w-6" />
+                <span className="text-sm font-medium">Feedback & Social</span>
               </Button>
               
               <Button
@@ -183,19 +225,19 @@ const UnifiedDashboard = () => {
                     className="w-full mt-4" 
                     variant="outline"
                   >
-                    Open Full Ticket System
+                    {currentRole === 'provider' ? 'Open Full Ticket System' : 'View All Bookings'}
                   </Button>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Performance Metrics - Left of GPS */}
+            {/* Performance Metrics - Right side */}
             <div className="col-span-12 lg:col-span-4">
               <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-purple-500" />
-                    Performance Metrics
+                    {currentRole === 'provider' ? 'Performance Metrics' : 'Account Overview'}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -203,19 +245,29 @@ const UnifiedDashboard = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center p-3 bg-blue-50 rounded-lg">
                         <div className="text-2xl font-bold text-blue-600">{performanceMetrics.todayJobs}</div>
-                        <div className="text-xs text-gray-600">Today's Jobs</div>
+                        <div className="text-xs text-gray-600">
+                          {currentRole === 'provider' ? "Today's Jobs" : 'Total Bookings'}
+                        </div>
                       </div>
                       <div className="text-center p-3 bg-green-50 rounded-lg">
                         <div className="text-2xl font-bold text-green-600">{performanceMetrics.completedJobs}</div>
                         <div className="text-xs text-gray-600">Completed</div>
                       </div>
                       <div className="text-center p-3 bg-purple-50 rounded-lg">
-                        <div className="text-lg font-bold text-purple-600">${performanceMetrics.todayRevenue}</div>
-                        <div className="text-xs text-gray-600">Revenue</div>
+                        <div className="text-lg font-bold text-purple-600">
+                          ${currentRole === 'provider' ? performanceMetrics.todayRevenue : '1,250'}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          {currentRole === 'provider' ? 'Revenue' : 'Total Spent'}
+                        </div>
                       </div>
                       <div className="text-center p-3 bg-yellow-50 rounded-lg">
-                        <div className="text-lg font-bold text-yellow-600">{performanceMetrics.avgResponseTime}</div>
-                        <div className="text-xs text-gray-600">Avg Response</div>
+                        <div className="text-lg font-bold text-yellow-600">
+                          {currentRole === 'provider' ? performanceMetrics.avgResponseTime : '4.9'}
+                        </div>
+                        <div className="text-xs text-gray-600">
+                          {currentRole === 'provider' ? 'Avg Response' : 'Your Rating'}
+                        </div>
                       </div>
                     </div>
                     <div className="text-center pt-2 border-t">
@@ -269,38 +321,56 @@ const UnifiedDashboard = () => {
               </Card>
             </div>
 
-            {/* Small GPS Job Analyzer - Right side */}
+            {/* Quick Actions Widget */}
             <div className="col-span-12 lg:col-span-4">
               <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Map className="h-5 w-5 text-green-500" />
-                    Route Optimization
+                    <Target className="h-5 w-5 text-green-500" />
+                    Quick Actions
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="text-center py-4">
-                      <Target className="h-8 w-8 mx-auto text-gray-400 mb-2" />
-                      <p className="text-sm text-gray-600">Optimize routes for maximum efficiency</p>
-                    </div>
-                    <div className="grid grid-cols-2 gap-2 text-sm">
-                      <div className="text-center p-2 bg-blue-50 rounded">
-                        <div className="font-medium">3</div>
-                        <div className="text-gray-600">Pending</div>
-                      </div>
-                      <div className="text-center p-2 bg-green-50 rounded">
-                        <div className="font-medium">25km</div>
-                        <div className="text-gray-600">Today</div>
-                      </div>
-                    </div>
-                    <Button 
-                      onClick={() => navigate('/gps-job-analyzer')}
-                      className="w-full" 
-                      variant="outline"
-                    >
-                      Open GPS Routes
-                    </Button>
+                  <div className="space-y-3">
+                    {currentRole === 'provider' ? (
+                      <>
+                        <Button 
+                          onClick={() => navigate('/gps-job-analyzer')}
+                          className="w-full" 
+                          variant="outline"
+                        >
+                          <Map className="h-4 w-4 mr-2" />
+                          Route Optimizer
+                        </Button>
+                        <Button 
+                          onClick={() => navigate('/social')}
+                          className="w-full" 
+                          variant="outline"
+                        >
+                          <MessageSquare className="h-4 w-4 mr-2" />
+                          Feedback & Social
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Button 
+                          onClick={() => navigate('/services')}
+                          className="w-full" 
+                          variant="outline"
+                        >
+                          <Activity className="h-4 w-4 mr-2" />
+                          Book New Service
+                        </Button>
+                        <Button 
+                          onClick={() => navigate('/social')}
+                          className="w-full" 
+                          variant="outline"
+                        >
+                          <MessageSquare className="h-4 w-4 mr-2" />
+                          Feedback & Social
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
