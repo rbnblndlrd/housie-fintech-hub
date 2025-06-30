@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -24,61 +25,10 @@ import {
 
 const Profile = () => {
   const { user } = useAuth();
-  const { currentRole, availableRoles, switchRole } = useRoleSwitch();
+  const { currentRole, availableRoles, switchRole, canSwitchToProvider, forceRefresh } = useRoleSwitch();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [canProvideServices, setCanProvideServices] = useState(false);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (user) {
-      checkProviderCapability();
-    }
-  }, [user]);
-
-  const checkProviderCapability = async () => {
-    if (!user) return;
-
-    try {
-      const { data, error } = await supabase
-        .from('user_profiles')
-        .select('can_provide_services')
-        .eq('user_id', user.id)
-        .single();
-
-      if (error) {
-        // If profile doesn't exist, create it
-        if (error.code === 'PGRST116') {
-          const { error: insertError } = await supabase
-            .from('user_profiles')
-            .insert({
-              user_id: user.id,
-              username: user.email?.split('@')[0] || 'user',
-              full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-              active_role: 'customer',
-              can_provide_services: false,
-              can_book_services: true
-            });
-          
-          if (insertError) throw insertError;
-          setCanProvideServices(false);
-        } else {
-          throw error;
-        }
-      } else {
-        setCanProvideServices(data?.can_provide_services || false);
-      }
-    } catch (error) {
-      console.error('Error checking provider capability:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load profile data. Please refresh the page.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [loading, setLoading] = useState(false);
 
   if (!user) {
     navigate('/auth');
@@ -102,21 +52,31 @@ const Profile = () => {
   };
 
   const handleProviderEnabled = async () => {
-    // Update local state
-    setCanProvideServices(true);
-    
-    // Refresh the role context to pick up the new capabilities
-    // We'll trigger a re-check by calling the context's load function
+    setLoading(true);
     try {
-      // Force reload the role switch context capabilities
-      await checkProviderCapability();
+      // The ProviderOnboarding component already updates the database
+      // Now we just need to refresh the context to pick up the changes
+      console.log('🔄 Provider enabled, refreshing role context...');
       
-      // Small delay to ensure database changes propagate
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
+      if (forceRefresh) {
+        await forceRefresh();
+        console.log('✅ Role context refreshed successfully');
+      }
+      
+      toast({
+        title: "Provider Mode Enabled!",
+        description: "You can now switch between customer and provider roles.",
+      });
+      
     } catch (error) {
-      console.error('Error refreshing capabilities:', error);
+      console.error('Error refreshing role context:', error);
+      toast({
+        title: "Warning",
+        description: "Provider mode enabled but please refresh the page to see role toggle.",
+        variant: "default",
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -147,22 +107,6 @@ const Profile = () => {
     : user.email?.charAt(0).toUpperCase() || 'U';
 
   const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="animate-pulse space-y-6">
-              <div className="h-8 bg-gray-200 rounded w-1/3"></div>
-              <div className="h-48 bg-gray-200 rounded"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
@@ -210,9 +154,9 @@ const Profile = () => {
                 </CardContent>
               </Card>
 
-              {/* Role Management Section - Show based on availableRoles only */}
+              {/* Role Management Section */}
               <div className="transition-all duration-300 ease-in-out">
-                {availableRoles.length <= 1 ? (
+                {!canSwitchToProvider ? (
                   <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
                 ) : (
                   <Card className="border-2 border-gray-200">
@@ -324,8 +268,8 @@ const Profile = () => {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-gray-600">Provider Mode</span>
-                      <Badge className={canProvideServices ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
-                        {canProvideServices ? "✓ Enabled" : "Disabled"}
+                      <Badge className={canSwitchToProvider ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
+                        {canSwitchToProvider ? "✓ Enabled" : "Disabled"}
                       </Badge>
                     </div>
                   </div>
