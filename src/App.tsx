@@ -11,6 +11,9 @@ import UnifiedDashboard from '@/pages/UnifiedDashboard';
 import ManagerDashboard from "@/pages/ManagerDashboard";
 import KanbanBoard from "@/pages/KanbanBoard";
 import GPSJobAnalyzer from "@/pages/GPSJobAnalyzer";
+import Calendar from "@/pages/Calendar";
+import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import CustomerDashboard from "@/pages/CustomerDashboard";
 
 function App() {
   return (
@@ -23,11 +26,19 @@ function App() {
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/dashboard" element={<UnifiedDashboard />} />
+            <Route path="/customer-dashboard" element={<CustomerDashboard />} />
 
             {/* Manager System Routes */}
             <Route path="/manager" element={<ManagerDashboard />} />
             <Route path="/kanban" element={<KanbanBoard />} />
             <Route path="/gps-job-analyzer" element={<GPSJobAnalyzer />} />
+            
+            {/* Analytics Routes */}
+            <Route path="/analytics" element={<AnalyticsDashboard />} />
+            <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+            
+            {/* Calendar Route */}
+            <Route path="/calendar" element={<Calendar />} />
           </Routes>
         </Router>
       </RoleSwitchProvider>

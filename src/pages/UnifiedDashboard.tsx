@@ -19,7 +19,9 @@ import {
   Users, 
   TrendingUp,
   Target,
-  Activity
+  Activity,
+  DollarSign,
+  Star
 } from 'lucide-react';
 
 const UnifiedDashboard = () => {
@@ -49,20 +51,28 @@ const UnifiedDashboard = () => {
   const todaySchedule = [
     { id: 1, client: 'Marie Dubois', service: 'Plumbing Repair', time: '10:30 AM', priority: 'high' },
     { id: 2, client: 'Jean Martin', service: 'HVAC Maintenance', time: '2:00 PM', priority: 'medium' },
-    { id: 3, client: 'Sophie Tremblay', service: 'Electrical Check', time: '4:30 PM', priority: 'low' }
+    { id: 3, client: 'Sophie Tremblay', service: 'Electrical Check', time: '4:30 PM', priority: 'low' },
+    { id: 4, client: 'Pierre Gagnon', service: 'Kitchen Repair', time: '6:00 PM', priority: 'medium' },
+    { id: 5, client: 'Claire Dubois', service: 'Bathroom Fix', time: '8:30 PM', priority: 'high' }
   ];
 
   const activeTickets = [
-    { id: 1, title: 'Emergency Plumbing - Downtown', status: 'in-progress', assignee: 'Marc D.', priority: 'high' },
-    { id: 2, title: 'HVAC Service - Westmount', status: 'pending', assignee: 'Sophie T.', priority: 'medium' },
-    { id: 3, title: 'Electrical Repair - Plateau', status: 'scheduled', assignee: 'Pierre G.', priority: 'medium' }
+    { id: 1, title: 'Emergency Plumbing - Downtown', status: 'in-progress', assignee: 'Marc D.', priority: 'high', location: 'Montreal' },
+    { id: 2, title: 'HVAC Service - Westmount', status: 'pending', assignee: 'Sophie T.', priority: 'medium', location: 'Westmount' },
+    { id: 3, title: 'Electrical Repair - Plateau', status: 'scheduled', assignee: 'Pierre G.', priority: 'medium', location: 'Plateau' },
+    { id: 4, title: 'Kitchen Renovation - Verdun', status: 'in-progress', assignee: 'Luc B.', priority: 'low', location: 'Verdun' },
+    { id: 5, title: 'Bathroom Plumbing - NDG', status: 'pending', assignee: 'Marc D.', priority: 'high', location: 'NDG' },
+    { id: 6, title: 'Heating System - Outremont', status: 'review', assignee: 'Sophie T.', priority: 'medium', location: 'Outremont' }
   ];
 
-  const quickStats = {
+  const performanceMetrics = {
     todayJobs: 12,
     completedJobs: 8,
     pendingJobs: 4,
-    todayRevenue: 2450
+    todayRevenue: 2450,
+    avgResponseTime: '23 min',
+    customerRating: 4.8,
+    activeTeamMembers: 6
   };
 
   return (
@@ -125,101 +135,43 @@ const UnifiedDashboard = () => {
             </div>
           )}
 
-          {/* Quick Stats for Provider */}
-          {currentRole === 'provider' && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-blue-600">{quickStats.todayJobs}</div>
-                  <div className="text-sm text-gray-600">Today's Jobs</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-green-600">{quickStats.completedJobs}</div>
-                  <div className="text-sm text-gray-600">Completed</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-orange-600">{quickStats.pendingJobs}</div>
-                  <div className="text-sm text-gray-600">Pending</div>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="p-4 text-center">
-                  <div className="text-2xl font-bold text-purple-600">${quickStats.todayRevenue}</div>
-                  <div className="text-sm text-gray-600">Revenue</div>
-                </CardContent>
-              </Card>
-            </div>
-          )}
-
-          {/* Main Dashboard Content Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Calendar Preview */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5 text-orange-500" />
-                  {currentRole === 'provider' ? "Today's Schedule" : "Upcoming Bookings"}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {todaySchedule.map((appointment) => (
-                    <div key={appointment.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium text-gray-900">{appointment.client}</div>
-                        <div className="text-sm text-gray-600">{appointment.service}</div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-medium text-gray-900">{appointment.time}</div>
-                        <Badge 
-                          className={
-                            appointment.priority === 'high' ? 'bg-red-100 text-red-800' :
-                            appointment.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
-                            'bg-green-100 text-green-800'
-                          }
-                        >
-                          {appointment.priority}
-                        </Badge>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <Button 
-                  onClick={() => navigate('/calendar')}
-                  className="w-full mt-4" 
-                  variant="outline"
-                >
-                  View Full Calendar
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Kanban Preview for Provider */}
-            {currentRole === 'provider' && (
+          {/* Main Dashboard Layout - Asymmetric Grid */}
+          <div className="grid grid-cols-12 gap-6">
+            {/* Big Ticket List - Spans most of the width */}
+            <div className="col-span-12 lg:col-span-8">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Kanban className="h-5 w-5 text-blue-500" />
-                    Active Tickets
+                    {currentRole === 'provider' ? 'Active Tickets & Jobs' : 'My Bookings'}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
+                  <div className="space-y-3 max-h-96 overflow-y-auto">
                     {activeTickets.map((ticket) => (
-                      <div key={ticket.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div>
+                      <div key={ticket.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                        <div className="flex-1">
                           <div className="font-medium text-gray-900">{ticket.title}</div>
-                          <div className="text-sm text-gray-600">Assigned to: {ticket.assignee}</div>
+                          <div className="text-sm text-gray-600 flex items-center gap-4 mt-1">
+                            <span>Assigned to: {ticket.assignee}</span>
+                            <span>📍 {ticket.location}</span>
+                          </div>
                         </div>
-                        <div className="text-right">
+                        <div className="text-right flex items-center gap-3">
+                          <Badge 
+                            className={
+                              ticket.priority === 'high' ? 'bg-red-100 text-red-800' :
+                              ticket.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-green-100 text-green-800'
+                            }
+                          >
+                            {ticket.priority}
+                          </Badge>
                           <Badge 
                             className={
                               ticket.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
                               ticket.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                              ticket.status === 'review' ? 'bg-purple-100 text-purple-800' :
                               'bg-green-100 text-green-800'
                             }
                           >
@@ -234,78 +186,95 @@ const UnifiedDashboard = () => {
                     className="w-full mt-4" 
                     variant="outline"
                   >
-                    Open Kanban Board
+                    Open Full Kanban Board
                   </Button>
                 </CardContent>
               </Card>
-            )}
+            </div>
 
-            {/* Customer Services Card */}
-            {currentRole === 'customer' && (
+            {/* Performance Metrics - Left of GPS */}
+            <div className="col-span-12 lg:col-span-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-green-500" />
-                    Find Services
+                    <TrendingUp className="h-5 w-5 text-purple-500" />
+                    Performance Metrics
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <p className="text-gray-600">Browse and book home services from trusted professionals.</p>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Button variant="outline" size="sm">🔧 Plumbing</Button>
-                      <Button variant="outline" size="sm">⚡ Electrical</Button>
-                      <Button variant="outline" size="sm">🌡️ HVAC</Button>
-                      <Button variant="outline" size="sm">🏠 General</Button>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-3 bg-blue-50 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-600">{performanceMetrics.todayJobs}</div>
+                        <div className="text-xs text-gray-600">Today's Jobs</div>
+                      </div>
+                      <div className="text-center p-3 bg-green-50 rounded-lg">
+                        <div className="text-2xl font-bold text-green-600">{performanceMetrics.completedJobs}</div>
+                        <div className="text-xs text-gray-600">Completed</div>
+                      </div>
+                      <div className="text-center p-3 bg-purple-50 rounded-lg">
+                        <div className="text-lg font-bold text-purple-600">${performanceMetrics.todayRevenue}</div>
+                        <div className="text-xs text-gray-600">Revenue</div>
+                      </div>
+                      <div className="text-center p-3 bg-yellow-50 rounded-lg">
+                        <div className="text-lg font-bold text-yellow-600">{performanceMetrics.avgResponseTime}</div>
+                        <div className="text-xs text-gray-600">Avg Response</div>
+                      </div>
                     </div>
-                    <Button 
-                      onClick={() => navigate('/services')}
-                      className="w-full"
-                    >
-                      Browse All Services
-                    </Button>
+                    <div className="text-center pt-2 border-t">
+                      <div className="flex items-center justify-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        <span className="font-bold text-lg">{performanceMetrics.customerRating}</span>
+                        <span className="text-sm text-gray-600">Rating</span>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
-            )}
+            </div>
 
-            {/* Analytics Preview for Provider */}
-            {currentRole === 'provider' && (
+            {/* Wide Calendar Preview - Spans 2/3 of width */}
+            <div className="col-span-12 lg:col-span-8">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-purple-500" />
-                    Performance Overview
+                    <Calendar className="h-5 w-5 text-orange-500" />
+                    {currentRole === 'provider' ? "Today's Schedule" : "Upcoming Bookings"}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">This Week</span>
-                      <span className="font-medium">47 jobs</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Avg Response</span>
-                      <span className="font-medium">23 min</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Rating</span>
-                      <span className="font-medium">4.8 ⭐</span>
-                    </div>
-                    <Button 
-                      onClick={() => navigate('/analytics')}
-                      className="w-full" 
-                      variant="outline"
-                    >
-                      View Full Analytics
-                    </Button>
+                  <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+                    {todaySchedule.map((appointment) => (
+                      <div key={appointment.id} className="p-3 bg-gray-50 rounded-lg border">
+                        <div className="font-medium text-sm text-gray-900">{appointment.time}</div>
+                        <div className="text-xs text-gray-600 mt-1">{appointment.client}</div>
+                        <div className="text-xs text-gray-500 mt-1">{appointment.service}</div>
+                        <Badge 
+                          size="sm"
+                          className={`mt-2 text-xs ${
+                            appointment.priority === 'high' ? 'bg-red-100 text-red-800' :
+                            appointment.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-green-100 text-green-800'
+                          }`}
+                        >
+                          {appointment.priority}
+                        </Badge>
+                      </div>
+                    ))}
                   </div>
+                  <Button 
+                    onClick={() => navigate('/calendar')}
+                    className="w-full mt-4" 
+                    variant="outline"
+                  >
+                    View Full Calendar
+                  </Button>
                 </CardContent>
               </Card>
-            )}
+            </div>
 
-            {/* GPS/Route Preview for Provider */}
-            {currentRole === 'provider' && (
+            {/* Small GPS Job Analyzer - Right side */}
+            <div className="col-span-12 lg:col-span-4">
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -339,7 +308,7 @@ const UnifiedDashboard = () => {
                   </div>
                 </CardContent>
               </Card>
-            )}
+            </div>
           </div>
         </div>
       </div>
