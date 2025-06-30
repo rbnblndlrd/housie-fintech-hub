@@ -18,7 +18,8 @@ import {
   Zap,
   Heart,
   MessageSquare,
-  Bell
+  Bell,
+  Clock
 } from "lucide-react";
 import Header from "@/components/Header";
 import ModernServiceCard from "@/components/ModernServiceCard";
@@ -181,8 +182,8 @@ const UnifiedDashboard = () => {
         <VideoBackground />
         <div className="relative z-10 min-h-screen">
           <Header />
-          <div className="pt-12 px-2 pb-4">
-            <div className="max-w-none mx-2">
+          <div className="pt-16 px-4 pb-8">
+            <div className="max-w-7xl mx-auto">
               <div className="animate-pulse space-y-4">
                 <div className="h-8 bg-white/20 rounded w-1/3"></div>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -203,15 +204,15 @@ const UnifiedDashboard = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-12 px-2 pb-4">
-          <div className="max-w-none mx-2">
+        <div className="pt-16 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
             {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-white text-shadow-lg">
-                  {currentRole === 'provider' ? 'Provider Dashboard' : 'Customer Dashboard'}
+                <h1 className="text-4xl font-bold text-white text-shadow-lg">
+                  {currentRole === 'provider' ? 'Provider Dashboard' : 'Welcome back!'}
                 </h1>
-                <p className="text-white/90 text-shadow mt-1">
+                <p className="text-white/90 text-shadow mt-2">
                   {currentRole === 'provider' 
                     ? 'Manage your services and track performance'
                     : 'Find and book services in your area'
@@ -233,16 +234,16 @@ const UnifiedDashboard = () => {
               </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-white/90 text-shadow">
                         {currentRole === 'provider' ? 'Total Bookings' : 'Services Booked'}
                       </p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold text-white text-shadow-lg">
                         {dashboardData?.stats?.totalBookings || '0'}
                       </p>
                     </div>
@@ -252,29 +253,29 @@ const UnifiedDashboard = () => {
               </Card>
 
               <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-white/90 text-shadow">
                         {currentRole === 'provider' ? 'Active Jobs' : 'Pending Requests'}
                       </p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold text-white text-shadow-lg">
                         {dashboardData?.stats?.activeJobs || '0'}
                       </p>
                     </div>
-                    <Zap className="h-8 w-8 text-white/70 drop-shadow-md" />
+                    <Clock className="h-8 w-8 text-white/70 drop-shadow-md" />
                   </div>
                 </CardContent>
               </Card>
 
               <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-white/90 text-shadow">
                         {currentRole === 'provider' ? 'Monthly Revenue' : 'Total Spent'}
                       </p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold text-white text-shadow-lg">
                         ${dashboardData?.stats?.monthlyRevenue || '0'}
                       </p>
                     </div>
@@ -284,11 +285,11 @@ const UnifiedDashboard = () => {
               </Card>
 
               <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
+                <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium text-white/90 text-shadow">Rating</p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold text-white text-shadow-lg">
                         {dashboardData?.stats?.rating || '0'}
                       </p>
                     </div>
@@ -299,7 +300,7 @@ const UnifiedDashboard = () => {
             </div>
 
             {/* Main Content - Two Column Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
               {/* Recent Activity */}
               <div className="lg:col-span-2">
                 <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
@@ -307,11 +308,11 @@ const UnifiedDashboard = () => {
                     <CardTitle className="text-white text-shadow">Recent Activity</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3">
+                    <div className="space-y-4">
                       {dashboardData?.recentActivity?.map((activity: any) => (
-                        <div key={activity.id} className="flex items-center justify-between p-3 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
-                          <div className="flex items-center gap-3">
-                            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                        <div key={activity.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
+                          <div className="flex items-center gap-4">
+                            <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
                             <div>
                               <p className="font-medium text-white text-shadow">{activity.title}</p>
                               <p className="text-sm text-white/70 text-shadow">{activity.time}</p>
@@ -330,7 +331,7 @@ const UnifiedDashboard = () => {
                   <CardTitle className="text-white text-shadow">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 gap-3">
+                  <div className="grid grid-cols-1 gap-4">
                     <Link to="/bookings">
                       <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
                         <Calendar className="h-4 w-4 mr-2" />
@@ -349,10 +350,10 @@ const UnifiedDashboard = () => {
                         Analytics
                       </Button>
                     </Link>
-                    <Link to="/admin">
+                    <Link to="/services">
                       <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
-                        <Zap className="h-4 w-4 mr-2" />
-                        Admin
+                        <MapPin className="h-4 w-4 mr-2" />
+                        Browse Services
                       </Button>
                     </Link>
                   </div>
@@ -360,11 +361,11 @@ const UnifiedDashboard = () => {
               </Card>
             </div>
 
-            {/* Services Section */}
+            {/* Services Section for Customers */}
             {currentRole === 'customer' && (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold text-white text-shadow-lg">Browse Services</h2>
+                  <h2 className="text-3xl font-bold text-white text-shadow-lg">Browse Services</h2>
                   <div className="flex gap-4">
                     <div className="relative">
                       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
@@ -382,7 +383,7 @@ const UnifiedDashboard = () => {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {services.map((service) => (
                     <ModernServiceCard 
                       key={service.id} 
