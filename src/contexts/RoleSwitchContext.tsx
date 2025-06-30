@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -92,16 +91,16 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       console.log('🎯 Setting current role to:', activeRole);
       setCurrentRole(activeRole);
       
-      // Build available roles with simplified boolean detection
+      // Build available roles with SIMPLIFIED boolean detection
       const roles = ['customer']; // Everyone can be a customer
       
-      // SIMPLIFIED BOOLEAN CHECK - Direct comparison only
+      // SIMPLIFIED: Direct boolean check only
       const hasProviderCapability = profile.can_provide_services === true;
       
-      console.log('🔍 Provider capability check:', {
+      console.log('🔍 SIMPLIFIED Provider capability check:', {
         rawValue: profile.can_provide_services,
         valueType: typeof profile.can_provide_services,
-        directCheck: profile.can_provide_services === true,
+        directBooleanCheck: profile.can_provide_services === true,
         finalResult: hasProviderCapability
       });
       
