@@ -84,14 +84,14 @@ const HeroSearchSection = () => {
         </p>
       </div>
 
-      {/* Bottom Banner */}
+      {/* Bottom Banner - Changed to Forest Green */}
       {showBanner && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-amber-600 to-orange-600 text-white px-4 py-3 shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-r from-green-700 to-green-800 text-white px-4 py-3 shadow-lg">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center space-x-3">
               {/* Certn Logo Placeholder */}
               <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                <span className="text-xs font-bold text-amber-700">C</span>
+                <span className="text-xs font-bold text-green-700">C</span>
               </div>
               <span className="font-semibold text-sm md:text-base">
                 Free background check with annual premium!
@@ -101,7 +101,7 @@ const HeroSearchSection = () => {
               variant="ghost"
               size="sm"
               onClick={() => setShowBanner(false)}
-              className="p-1 hover:bg-amber-700/20 text-white"
+              className="p-1 hover:bg-green-800/20 text-white"
             >
               <X className="h-4 w-4" />
             </Button>

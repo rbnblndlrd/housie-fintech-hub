@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -163,9 +164,9 @@ const ProviderDashboard = () => {
               </div>
             </div>
 
-            {/* Stats Cards with semi-transparent olive green background */}
+            {/* Stats Cards with slate background */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -177,7 +178,7 @@ const ProviderDashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -189,7 +190,7 @@ const ProviderDashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -201,7 +202,7 @@ const ProviderDashboard = () => {
                 </CardContent>
               </Card>
 
-              <Card className="bg-olive-green-transparent hover:shadow-lg transition-shadow border-2 border-white/20 backdrop-blur-sm">
+              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
@@ -224,7 +225,7 @@ const ProviderDashboard = () => {
 
               <TabsContent value="overview" className="space-y-4">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
+                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
                     <CardHeader>
                       <CardTitle className="text-white text-shadow">Recent Bookings</CardTitle>
                     </CardHeader>
@@ -250,7 +251,7 @@ const ProviderDashboard = () => {
                   </Card>
 
                   {shopPointsData && (
-                    <div className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm rounded-lg">
+                    <div className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl rounded-lg">
                       <ShopPointsWidget 
                         communityPoints={shopPointsData.communityPoints}
                         shopPoints={shopPointsData.shopPoints}
@@ -261,7 +262,7 @@ const ProviderDashboard = () => {
               </TabsContent>
 
               <TabsContent value="bookings" className="space-y-4">
-                <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
                   <CardHeader>
                     <CardTitle className="text-white text-shadow">All Bookings</CardTitle>
                   </CardHeader>
@@ -272,13 +273,13 @@ const ProviderDashboard = () => {
               </TabsContent>
 
               <TabsContent value="community" className="space-y-4">
-                <div className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm rounded-lg p-6">
+                <div className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl rounded-lg p-6">
                   {user && <CommunityRatingDisplay userId={user.id} />}
                 </div>
               </TabsContent>
 
               <TabsContent value="testing" className="space-y-4">
-                <Card className="bg-olive-green-transparent border-2 border-white/20 backdrop-blur-sm">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2 text-white text-shadow">
                       <TrendingUp className="h-5 w-5" />

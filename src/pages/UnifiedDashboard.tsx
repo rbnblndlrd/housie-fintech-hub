@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Search, 
   Filter, 
@@ -15,11 +14,10 @@ import {
   DollarSign, 
   Users, 
   TrendingUp,
-  Zap,
-  Heart,
-  MessageSquare,
-  Bell,
-  Clock
+  Clock,
+  Navigation,
+  Route,
+  Zap
 } from "lucide-react";
 import Header from "@/components/Header";
 import ModernServiceCard from "@/components/ModernServiceCard";
@@ -52,12 +50,18 @@ const UnifiedDashboard = () => {
           totalBookings: 12,
           activeJobs: 3,
           monthlyRevenue: 2450,
-          rating: 4.8
+          rating: 4.8,
+          optimizedRoutes: 8,
+          timesSaved: 45
         },
         recentActivity: [
           { id: 1, type: 'booking', title: 'New plumbing request', time: '2 hours ago' },
           { id: 2, type: 'message', title: 'Message from client', time: '4 hours ago' },
           { id: 3, type: 'payment', title: 'Payment received', time: '1 day ago' }
+        ],
+        emergencyJobs: [
+          { id: 1, title: 'Emergency leak repair', location: 'Downtown', urgency: 'high' },
+          { id: 2, title: 'Power outage fix', location: 'Westmount', urgency: 'medium' }
         ]
       });
     } catch (error) {
@@ -77,7 +81,6 @@ const UnifiedDashboard = () => {
       title: "Booking Service",
       description: `Initiating booking for ${service.title}`,
     });
-    // In a real app, this would navigate to booking flow
   };
 
   const services: Service[] = [
@@ -298,6 +301,70 @@ const UnifiedDashboard = () => {
                 </CardContent>
               </Card>
             </div>
+
+            {/* GPS Job Analyzer Preview - Only for Providers */}
+            {currentRole === 'provider' && (
+              <div className="mb-8">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-white text-shadow">
+                      <Navigation className="h-5 w-5" />
+                      GPS Job Analyzer
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white text-shadow-lg">
+                          {dashboardData?.stats?.optimizedRoutes || '0'}
+                        </div>
+                        <div className="text-white/80 text-sm text-shadow">Optimized Routes</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white text-shadow-lg">
+                          {dashboardData?.stats?.timesSaved || '0'} min
+                        </div>
+                        <div className="text-white/80 text-sm text-shadow">Time Saved Today</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-white text-shadow-lg">
+                          {dashboardData?.emergencyJobs?.length || '0'}
+                        </div>
+                        <div className="text-white/80 text-sm text-shadow">Emergency Jobs</div>
+                      </div>
+                    </div>
+                    
+                    {dashboardData?.emergencyJobs && dashboardData.emergencyJobs.length > 0 && (
+                      <div className="space-y-2 mb-4">
+                        <h4 className="text-white font-medium text-shadow">Pending Emergency Jobs:</h4>
+                        {dashboardData.emergencyJobs.map((job: any) => (
+                          <div key={job.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
+                            <div>
+                              <p className="text-white text-shadow">{job.title}</p>
+                              <p className="text-white/70 text-sm text-shadow">{job.location}</p>
+                            </div>
+                            <Badge 
+                              className={`${
+                                job.urgency === 'high' ? 'bg-red-500/80' : 'bg-yellow-500/80'
+                              } text-white`}
+                            >
+                              {job.urgency}
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    
+                    <Link to="/gps-job-analyzer">
+                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                        <Route className="h-4 w-4 mr-2" />
+                        Open Full Job Analyzer
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
 
             {/* Main Content - Two Column Layout */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">

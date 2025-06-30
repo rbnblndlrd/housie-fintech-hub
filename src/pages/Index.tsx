@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Header from '@/components/Header';
 import HeroSearchSection from '@/components/home/HeroSearchSection';
 import OnboardingCards from '@/components/home/OnboardingCards';
 import { PricingSection } from '@/components/PricingSection';
@@ -13,6 +14,9 @@ const Index = () => {
     <>
       {/* Video Background */}
       <VideoBackground />
+      
+      {/* Header */}
+      <Header />
       
       {/* Main Content */}
       <div className="relative z-10 min-h-screen w-full">

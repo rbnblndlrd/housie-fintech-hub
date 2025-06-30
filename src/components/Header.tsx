@@ -37,14 +37,14 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="max-w-full mx-auto">
-        <div className="flex justify-between items-center h-10">
-          {/* Left: HOUSIE Logo + Hamburger Menu - moved closer to edge */}
-          <div className="flex items-center space-x-2 ml-1">
+        <div className="flex justify-between items-center h-14">
+          {/* Left: HOUSIE Logo + Hamburger Menu - moved further from edge */}
+          <div className="flex items-center space-x-2 ml-4">
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
                 alt="HOUSIE" 
-                className="h-6 w-auto"
+                className="h-8 w-auto"
                 onError={(e) => {
                   console.log('🖼️ Primary HOUSIE logo failed, trying fallback...');
                   const target = e.currentTarget;
@@ -68,8 +68,8 @@ const Header = () => {
             <HamburgerMenu />
           </div>
 
-          {/* Right: Login/Signup or User Menu - moved closer to edge */}
-          <div className="flex items-center space-x-2 mr-1">
+          {/* Right: Login/Signup or User Menu - moved further from edge */}
+          <div className="flex items-center space-x-2 mr-4">
             {user ? (
               <UserMenu />
             ) : (
