@@ -36,10 +36,10 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
-      <div className="max-w-full mx-auto px-4">
+      <div className="max-w-full mx-auto">
         <div className="flex justify-between items-center h-16">
-          {/* Left: HOUSIE Logo + Hamburger Menu closer to left edge */}
-          <div className="flex items-center space-x-4 ml-2">
+          {/* Left: HOUSIE Logo + Hamburger Menu at left edge */}
+          <div className="flex items-center space-x-4 ml-1 pl-2">
             <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
@@ -68,8 +68,8 @@ const Header = () => {
             <HamburgerMenu />
           </div>
 
-          {/* Right: Login/Signup or User Menu closer to right edge */}
-          <div className="flex items-center space-x-3 mr-2">
+          {/* Right: Login/Signup or User Menu at right edge */}
+          <div className="flex items-center space-x-3 mr-1 pr-2">
             {user ? (
               <UserMenu />
             ) : (

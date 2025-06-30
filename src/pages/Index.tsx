@@ -4,24 +4,31 @@ import HeroSearchSection from '@/components/home/HeroSearchSection';
 import OnboardingCards from '@/components/home/OnboardingCards';
 import { PricingSection } from '@/components/PricingSection';
 import HousieFooter from '@/components/home/HousieFooter';
+import VideoBackground from '@/components/common/VideoBackground';
 
 const Index = () => {
-  console.log('🏠 Index page rendering with HousieEats header and video background...');
+  console.log('🏠 Index page rendering with video background...');
 
   return (
-    <div className="min-h-screen w-full">
-      {/* Hero Search Section with Video Background */}
-      <HeroSearchSection />
+    <>
+      {/* Video Background */}
+      <VideoBackground />
       
-      {/* Onboarding Cards Section */}
-      <OnboardingCards />
-      
-      {/* Pricing Section */}
-      <PricingSection />
-      
-      {/* Footer */}
-      <HousieFooter />
-    </div>
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen w-full">
+        {/* Hero Search Section */}
+        <HeroSearchSection />
+        
+        {/* Onboarding Cards Section */}
+        <OnboardingCards />
+        
+        {/* Pricing Section */}
+        <PricingSection />
+        
+        {/* Footer */}
+        <HousieFooter />
+      </div>
+    </>
   );
 };
 
