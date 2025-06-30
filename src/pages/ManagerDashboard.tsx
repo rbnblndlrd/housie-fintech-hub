@@ -53,8 +53,10 @@ const ManagerDashboard = () => {
 
   // Add body class for manager dashboard to control background
   useEffect(() => {
+    console.log('ManagerDashboard: Adding manager-dashboard class to body');
     document.body.classList.add('manager-dashboard');
     return () => {
+      console.log('ManagerDashboard: Removing manager-dashboard class from body');
       document.body.classList.remove('manager-dashboard');
     };
   }, []);
@@ -221,7 +223,7 @@ const ManagerDashboard = () => {
               </div>
             </div>
 
-            {/* Quick Stats Cards - Enhanced readability */}
+            {/* Quick Stats Cards - Glass morphism for decorative elements */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
               <Card className="bg-black/20 backdrop-blur-sm text-white border-white/20 shadow-xl">
                 <CardContent className="p-4">
@@ -302,7 +304,7 @@ const ManagerDashboard = () => {
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
                   {/* Ticket Pool - Solid background for readability */}
-                  <Card className="bg-gray-100/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
+                  <Card className="bg-white/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
                     <CardHeader className="pb-4">
                       <CardTitle className="flex items-center justify-between text-gray-900">
                         <div className="flex items-center gap-2">
@@ -354,14 +356,14 @@ const ManagerDashboard = () => {
                 </div>
                 
                 {/* Incoming Requests - Solid background for readability */}
-                <Card className="bg-gray-100/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
+                <Card className="bg-white/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
                   <CardContent className="p-6">
                     <IncomingJobRequests />
                   </CardContent>
                 </Card>
               </TabsContent>
 
-              {/* Crew Hub Tab */}
+              {/* Crew Hub Tab - Glass morphism for less text-heavy content */}
               <TabsContent value="crew">
                 <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
@@ -370,7 +372,7 @@ const ManagerDashboard = () => {
                 </Card>
               </TabsContent>
 
-              {/* Insights Tab */}
+              {/* Insights Tab - Glass morphism for charts and metrics */}
               <TabsContent value="insights">
                 <Card className="bg-black/10 backdrop-blur-sm border-white/20 shadow-xl">
                   <CardContent className="p-6">
