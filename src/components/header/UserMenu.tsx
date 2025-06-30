@@ -30,7 +30,8 @@ import {
   Crown,
   Star,
   Zap,
-  Shield
+  Shield,
+  UserCheck
 } from 'lucide-react';
 
 const UserMenu = () => {
@@ -38,6 +39,7 @@ const UserMenu = () => {
   const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
   const { subscriptionData, openSubscriptionPortal } = useSubscriptionData();
+  const [currentStatus, setCurrentStatus] = useState('Available');
 
   const handleLogout = async () => {
     try {
@@ -55,6 +57,12 @@ const UserMenu = () => {
     } else if (item.href) {
       navigate(item.href);
     }
+  };
+
+  const handleStatusChange = (status: string) => {
+    setCurrentStatus(status);
+    // Here you would typically save the status to your backend
+    console.log('Status changed to:', status);
   };
 
   const analyticsMenuItems = useMemo(() => {
@@ -112,8 +120,9 @@ const UserMenu = () => {
           <div className="hidden md:flex flex-col items-start">
             <span className="text-sm font-medium text-white">{userName}</span>
             <div className="flex items-center gap-1">
-              {getStatusIcon('Available')}
-              <span className="text-xs text-gray-300">Available • Verified</span>
+              {getStatusIcon(currentStatus)}
+              <UserCheck className="h-3 w-3 text-blue-400" />
+              <span className="text-xs text-gray-300">{currentStatus} • Verified</span>
             </div>
           </div>
           <ChevronDown className="h-4 w-4 text-gray-300" />
@@ -151,6 +160,47 @@ const UserMenu = () => {
           </div>
           <span className="text-xs text-blue-600">Manage →</span>
         </DropdownMenuItem>
+
+        {/* Status Management */}
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="cursor-pointer">
+            <div className="flex items-center gap-2">
+              {getStatusIcon(currentStatus)}
+              <UserCheck className="h-4 w-4 text-blue-600" />
+              <span>{currentStatus} • Verified</span>
+            </div>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            <DropdownMenuItem
+              onClick={() => handleStatusChange('Available')}
+              className="cursor-pointer"
+            >
+              <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
+              <span>Available</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusChange('Busy')}
+              className="cursor-pointer"
+            >
+              <Minus className="h-4 w-4 text-red-500 mr-2" />
+              <span>Busy</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusChange('Away')}
+              className="cursor-pointer"
+            >
+              <Clock className="h-4 w-4 text-yellow-500 mr-2" />
+              <span>Away</span>
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              onClick={() => handleStatusChange('Do Not Disturb')}
+              className="cursor-pointer"
+            >
+              <AlertTriangle className="h-4 w-4 text-gray-500 mr-2" />
+              <span>Do Not Disturb</span>
+            </DropdownMenuItem>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
         
         <DropdownMenuSeparator />
         
