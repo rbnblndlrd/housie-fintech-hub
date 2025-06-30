@@ -1,7 +1,6 @@
 
 import React from 'react';
-import Header from '@/components/Header';
-import UberEatsStyleHero from '@/components/home/UberEatsStyleHero';
+import UberEatsHeader from '@/components/home/UberEatsHeader';
 import OnboardingCards from '@/components/home/OnboardingCards';
 import { PricingSection } from '@/components/PricingSection';
 import HousieFooter from '@/components/home/HousieFooter';
@@ -11,10 +10,8 @@ const Index = () => {
 
   return (
     <div className="min-h-screen w-full">
-      <Header />
-      
-      {/* Hero Section */}
-      <UberEatsStyleHero />
+      {/* UberEats Style Header with Hero */}
+      <UberEatsHeader />
       
       {/* Onboarding Cards Section */}
       <OnboardingCards />
