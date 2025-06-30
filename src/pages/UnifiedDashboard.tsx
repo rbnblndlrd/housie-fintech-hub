@@ -250,7 +250,6 @@ const UnifiedDashboard = () => {
                         <div className="text-xs text-gray-600 mt-1">{appointment.client}</div>
                         <div className="text-xs text-gray-500 mt-1">{appointment.service}</div>
                         <Badge 
-                          size="sm"
                           className={`mt-2 text-xs ${
                             appointment.priority === 'high' ? 'bg-red-100 text-red-800' :
                             appointment.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
