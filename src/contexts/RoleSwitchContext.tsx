@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useUser } from '@supabase/auth-helpers-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -95,21 +94,24 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       // Build available roles with enhanced boolean detection
       const roles = ['customer']; // Everyone can be a customer
       
+      // Fix the boolean comparison issue - convert to boolean properly
+      const canProvideServicesValue = profile.can_provide_services;
+      
       // Multiple ways to check provider capability for robustness
       const providerCapabilityChecks = {
-        direct: profile.can_provide_services,
-        boolean: Boolean(profile.can_provide_services),
-        explicit: profile.can_provide_services === true,
-        stringTrue: profile.can_provide_services === 'true',
-        notFalse: profile.can_provide_services !== false && profile.can_provide_services !== null
+        direct: canProvideServicesValue,
+        boolean: Boolean(canProvideServicesValue),
+        explicit: canProvideServicesValue === true,
+        // Remove the string comparison that was causing the error
+        notFalse: canProvideServicesValue !== false && canProvideServicesValue !== null
       };
       
       console.log('🔍 Provider capability analysis:', providerCapabilityChecks);
       
-      // Determine if user has provider capabilities
-      const hasProviderCapability = providerCapabilityChecks.boolean && 
-                                   providerCapabilityChecks.direct !== false &&
-                                   providerCapabilityChecks.direct !== null;
+      // Determine if user has provider capabilities - fix the comparison logic
+      const hasProviderCapability = Boolean(canProvideServicesValue) && 
+                                   canProvideServicesValue !== false &&
+                                   canProvideServicesValue !== null;
       
       console.log('🎯 Final provider capability decision:', hasProviderCapability);
       
@@ -263,7 +265,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     availableRoles,
     switchRole,
     canSwitchToProvider,
-    forceRefresh // Temporary debugging helper
+    forceRefresh // Now properly typed
   };
 
   return (

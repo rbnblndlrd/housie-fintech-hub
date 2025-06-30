@@ -1,4 +1,3 @@
-
 export interface UnifiedUserProfile {
   id: string;
   user_id: string;
@@ -66,6 +65,7 @@ export interface RoleSwitchContextType {
   availableRoles: string[];
   switchRole: (role: 'customer' | 'provider') => Promise<void>;
   canSwitchToProvider: boolean;
+  forceRefresh?: () => Promise<void>; // Add the missing forceRefresh function
 }
 
 // New Group System Types
