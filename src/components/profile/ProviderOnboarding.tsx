@@ -15,6 +15,7 @@ interface ProviderOnboardingProps {
 
 const ProviderOnboarding: React.FC<ProviderOnboardingProps> = ({ onProviderEnabled }) => {
   const { user } = useAuth();
+  const { forceRefresh } = useRoleSwitch();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
@@ -33,6 +34,14 @@ const ProviderOnboarding: React.FC<ProviderOnboardingProps> = ({ onProviderEnabl
         .eq('user_id', user.id);
 
       if (error) throw error;
+
+      console.log('✅ Provider mode enabled in database, refreshing context...');
+      
+      // Force refresh the role context to pick up the new capabilities
+      if (forceRefresh) {
+        await forceRefresh();
+        console.log('✅ Context refreshed successfully');
+      }
 
       toast({
         title: "Provider Mode Enabled!",

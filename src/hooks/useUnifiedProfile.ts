@@ -112,7 +112,9 @@ export const useUnifiedProfile = () => {
         network_connections_count: 0
       };
 
-      return await updateProfile(updates);
+      const result = await updateProfile(updates);
+      console.log('✅ Provider mode enabled via useUnifiedProfile');
+      return result;
     } catch (error) {
       console.error('Error enabling provider mode:', error);
       throw error;

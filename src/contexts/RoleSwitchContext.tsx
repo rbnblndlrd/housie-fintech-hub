@@ -50,7 +50,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
-        .maybeSingle(); // Use maybeSingle instead of single to handle null gracefully
+        .maybeSingle();
 
       console.log('🔍 Raw database response:', { 
         profile, 
@@ -63,7 +63,6 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (error) {
         console.error('❌ Database error:', error);
         if (error.code === 'PGRST116') {
-          // Profile doesn't exist, create it
           console.log('⚠️ No profile found, creating default profile...');
           await createDefaultProfile();
           return;
@@ -91,13 +90,13 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       console.log('🎯 Setting current role to:', activeRole);
       setCurrentRole(activeRole);
       
-      // Build available roles with SIMPLIFIED boolean detection
+      // Build available roles - CRITICAL FIX: Always check current database state
       const roles = ['customer']; // Everyone can be a customer
       
-      // SIMPLIFIED: Direct boolean check only
+      // Direct boolean check for provider capabilities
       const hasProviderCapability = profile.can_provide_services === true;
       
-      console.log('🔍 SIMPLIFIED Provider capability check:', {
+      console.log('🔍 PROVIDER CAPABILITY CHECK:', {
         rawValue: profile.can_provide_services,
         valueType: typeof profile.can_provide_services,
         directBooleanCheck: profile.can_provide_services === true,
@@ -107,18 +106,20 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       if (hasProviderCapability) {
         roles.push('provider');
         setCanSwitchToProvider(true);
-        console.log('✅ User has provider capabilities - adding provider role');
+        console.log('✅ PROVIDER MODE AVAILABLE - adding provider role');
       } else {
         setCanSwitchToProvider(false);
-        console.log('⚠️ User does not have provider capabilities');
+        console.log('⚠️ Provider mode NOT available');
       }
       
-      console.log('🎯 Final roles configuration:', {
+      console.log('🎯 FINAL ROLES CONFIGURATION:', {
         availableRoles: roles,
         canSwitchToProvider: hasProviderCapability,
-        activeRole
+        activeRole,
+        roleCount: roles.length
       });
       
+      // CRITICAL: Update available roles state
       setAvailableRoles(roles);
       
       // Synchronize role preferences
@@ -242,10 +243,16 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
-  // Force refresh function for debugging
+  // IMPROVED: Force refresh function with better logging
   const forceRefresh = async () => {
-    console.log('🔄 Force refreshing user capabilities...');
-    await loadUserCapabilities();
+    console.log('🔄 FORCE REFRESH: Reloading user capabilities...');
+    try {
+      await loadUserCapabilities();
+      console.log('✅ FORCE REFRESH: Complete');
+    } catch (error) {
+      console.error('❌ FORCE REFRESH: Failed', error);
+      throw error;
+    }
   };
 
   const contextValue = {
