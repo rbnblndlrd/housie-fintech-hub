@@ -1,7 +1,6 @@
 
 import { useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useRealtimeSubscription } from './useRealtimeSubscription';
 
 interface RealtimeSystemOptions {
   tables: string[];
@@ -16,6 +15,7 @@ export const useRealtimeSystem = ({
 }: RealtimeSystemOptions) => {
   const subscriptionsRef = useRef<Set<string>>(new Set());
   const isInitializedRef = useRef(false);
+  const channelsRef = useRef<any[]>([]);
 
   const handleChange = useCallback((table: string) => (payload: any) => {
     console.log(`Real-time system: ${table} changed`, payload);
@@ -27,13 +27,42 @@ export const useRealtimeSystem = ({
 
     console.log('🔄 Initializing realtime system for tables:', tables);
     
+    // Clean up any existing channels first
+    channelsRef.current.forEach(channel => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (error) {
+        console.warn('⚠️ Error removing existing channel:', error);
+      }
+    });
+    channelsRef.current = [];
+    
     // Set up subscriptions for all tables
     tables.forEach(table => {
-      const subscriptionKey = `${table}-${enabled}-${Date.now()}`;
+      const subscriptionKey = `${table}-${Date.now()}`;
       
       if (!subscriptionsRef.current.has(subscriptionKey)) {
         subscriptionsRef.current.add(subscriptionKey);
         console.log(`🔄 Setting up subscription for table: ${table}`);
+        
+        try {
+          const channel = supabase
+            .channel(`realtime-system-${subscriptionKey}`)
+            .on(
+              'postgres_changes' as any,
+              {
+                event: '*',
+                schema: 'public',
+                table
+              },
+              handleChange(table)
+            )
+            .subscribe();
+            
+          channelsRef.current.push(channel);
+        } catch (error) {
+          console.error(`❌ Failed to setup subscription for ${table}:`, error);
+        }
       }
     });
 
@@ -47,10 +76,21 @@ export const useRealtimeSystem = ({
     return () => {
       console.log('🧹 Cleaning up realtime system');
       clearInterval(healthCheck);
+      
+      // Clean up all channels
+      channelsRef.current.forEach(channel => {
+        try {
+          supabase.removeChannel(channel);
+        } catch (error) {
+          console.warn('⚠️ Error removing channel during cleanup:', error);
+        }
+      });
+      channelsRef.current = [];
+      
       subscriptionsRef.current.clear();
       isInitializedRef.current = false;
     };
-  }, [enabled, tables.join(',')]); // Depend on tables as string to avoid array reference issues
+  }, [enabled, tables.join(','), handleChange]); // Depend on tables as string to avoid array reference issues
 
   return {
     isActive: enabled,

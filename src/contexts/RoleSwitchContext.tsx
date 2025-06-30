@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { RoleSwitchContextType } from '@/types/userProfile';
@@ -20,6 +20,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [availableRoles, setAvailableRoles] = useState<string[]>(['customer']);
   const [canSwitchToProvider, setCanSwitchToProvider] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const loadingRef = useRef(false);
+  const isInitializedRef = useRef(false);
 
   console.log('🔄 RoleSwitchProvider render:', { 
     hasUser: !!user, 
@@ -28,10 +30,16 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     currentRole, 
     availableRoles,
     canSwitchToProvider,
-    isLoading
+    isLoading,
+    loadingInProgress: loadingRef.current
   });
 
   useEffect(() => {
+    // Prevent multiple initializations
+    if (isInitializedRef.current && !authLoading) {
+      return;
+    }
+
     // Wait for AuthProvider to finish loading before proceeding
     if (authLoading) {
       console.log('🔄 Waiting for AuthProvider to finish loading...');
@@ -40,23 +48,36 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
     if (user) {
       console.log('🔄 Loading user capabilities for:', user.email);
+      isInitializedRef.current = true;
       loadUserCapabilities();
     } else {
       console.log('🔄 No user, resetting to defaults');
-      setCurrentRole('customer');
-      setAvailableRoles(['customer']);
-      setCanSwitchToProvider(false);
-      setIsLoading(false);
+      resetToDefaults();
+      isInitializedRef.current = false;
     }
   }, [user, authLoading]);
 
+  const resetToDefaults = () => {
+    setCurrentRole('customer');
+    setAvailableRoles(['customer']);
+    setCanSwitchToProvider(false);
+    setIsLoading(false);
+    loadingRef.current = false;
+  };
+
   const loadUserCapabilities = async () => {
-    if (!user || authLoading) {
-      console.log('🔄 Skipping loadUserCapabilities - no user or auth still loading');
+    if (!user || authLoading || loadingRef.current) {
+      console.log('🔄 Skipping loadUserCapabilities - conditions not met:', {
+        hasUser: !!user,
+        authLoading,
+        alreadyLoading: loadingRef.current
+      });
       return;
     }
 
+    loadingRef.current = true;
     setIsLoading(true);
+    
     try {
       console.log('🔄 Fetching user profile from database...');
       
@@ -66,22 +87,33 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         .eq('user_id', user.id)
         .maybeSingle();
 
-      console.log('🔍 Raw database response:', { 
+      console.log('🔍 Database query result:', { 
         profile, 
         error, 
         user_id: user.id,
         error_code: error?.code,
-        error_message: error?.message
+        error_message: error?.message,
+        error_details: error?.details
       });
 
       if (error) {
-        console.error('❌ Database error:', error);
+        console.error('❌ Database error details:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint
+        });
+        
         if (error.code === 'PGRST116') {
           console.log('⚠️ No profile found, creating default profile...');
           await createDefaultProfile();
           return;
         }
-        throw error;
+        
+        // Don't reset everything for database errors - try to continue
+        console.warn('⚠️ Database error, but continuing with defaults');
+        resetToDefaults();
+        return;
       }
 
       if (!profile) {
@@ -138,13 +170,20 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       await syncRolePreferences(activeRole);
       
     } catch (error) {
-      console.error('❌ Error in loadUserCapabilities:', error);
-      // Set safe defaults on error
-      setCurrentRole('customer');
-      setAvailableRoles(['customer']);
-      setCanSwitchToProvider(false);
+      console.error('❌ CRITICAL ERROR in loadUserCapabilities:', {
+        error,
+        message: error instanceof Error ? error.message : 'Unknown error',
+        stack: error instanceof Error ? error.stack : undefined,
+        user_id: user?.id,
+        user_email: user?.email
+      });
+      
+      // Don't completely fail - set safe defaults but log the error
+      console.warn('⚠️ Setting safe defaults due to error');
+      resetToDefaults();
     } finally {
       setIsLoading(false);
+      loadingRef.current = false;
     }
   };
 
@@ -164,6 +203,8 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     if (!user) return;
 
     try {
+      console.log('🔧 Creating default profile for user:', user.id);
+      
       const { data: newProfile, error: insertError } = await supabase
         .from('user_profiles')
         .insert({
@@ -179,6 +220,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
       if (insertError) {
         console.error('❌ Error creating profile:', insertError);
+        resetToDefaults();
         return;
       }
 
@@ -200,8 +242,10 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCanSwitchToProvider(false);
     } catch (error) {
       console.error('❌ Error creating default profile:', error);
+      resetToDefaults();
     } finally {
       setIsLoading(false);
+      loadingRef.current = false;
     }
   };
 
@@ -282,12 +326,14 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const forceRefresh = async () => {
     console.log('🔄 FORCE REFRESH: Reloading user capabilities...');
-    if (authLoading) {
-      console.log('⚠️ Cannot refresh while auth is loading');
-      throw new Error('Authentication is still loading. Please wait.');
+    if (authLoading || loadingRef.current) {
+      console.log('⚠️ Cannot refresh while auth or loading is in progress');
+      throw new Error('Cannot refresh while loading. Please wait.');
     }
     
     try {
+      // Reset initialization flag to allow refresh
+      isInitializedRef.current = false;
       await loadUserCapabilities();
       console.log('✅ FORCE REFRESH: Complete');
     } catch (error) {
