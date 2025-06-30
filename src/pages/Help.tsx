@@ -1,322 +1,216 @@
-import React, { useState } from 'react';
-import { Search, MessageCircle, Phone, Mail, ChevronDown, ChevronRight, MapPin, Zap, Users, DollarSign, Shield, Clock, Star, Bot } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import Header from '@/components/Header';
-import { ChatAssistant } from '@/components/ChatAssistant';
+import { Button } from '@/components/ui/button';
+import { useNavigate } from 'react-router-dom';
+import { 
+  MessageCircle, 
+  Phone, 
+  Mail, 
+  BookOpen, 
+  Search,
+  Clock,
+  MapPin,
+  CreditCard,
+  Shield,
+  Users
+} from 'lucide-react';
 
 const Help = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [openSections, setOpenSections] = useState<string[]>(['getting-started']);
+  const navigate = useNavigate();
 
-  const toggleSection = (sectionId: string) => {
-    setOpenSections(prev => 
-      prev.includes(sectionId) 
-        ? prev.filter(id => id !== sectionId)
-        : [...prev, sectionId]
-    );
-  };
-
-  const helpSections = [
+  const helpCategories = [
     {
-      id: 'getting-started',
-      title: '🚀 Getting Started',
-      description: 'Your first steps with HOUSIE',
-      icon: <Star className="h-5 w-5" />,
-      items: [
-        {
-          question: 'How do I create my HOUSIE account?',
-          answer: 'Click "Sign In" in the top right, then choose "Sign Up" to create your account. You can sign up as a customer or service provider, and switch roles anytime from your profile menu.'
-        },
-        {
-          question: 'How do I switch between Customer and Provider roles?',
-          answer: 'Click your profile avatar, then select "Switch to Customer" or "Switch to Provider" from the dropdown menu. Your dashboard and available features will update automatically.'
-        },
-        {
-          question: 'How do I make my first booking?',
-          answer: 'Go to "Find Services", browse or search for what you need, select a provider, choose your date and time, then confirm your booking. Payment is held in escrow until service completion.'
-        }
-      ]
+      icon: <BookOpen className="h-8 w-8 text-blue-600" />,
+      title: "Getting Started",
+      description: "Learn the basics of using HOUSIE",
+      topics: ["Creating an account", "Booking your first service", "Provider verification"]
     },
     {
-      id: 'interactive-map',
-      title: '🗺️ Interactive Map Guide',
-      description: 'Master the powerful map features',
-      icon: <MapPin className="h-5 w-5" />,
-      items: [
-        {
-          question: 'What are Heat Zones and how do they work?',
-          answer: 'Heat Zones show service demand and pricing in different areas of Montreal. Red zones indicate high demand with premium rates, while blue zones show lower demand with standard rates. This helps both customers find services and providers optimize their routes.'
-        },
-        {
-          question: 'How do I use the Emergency Jobs overlay?',
-          answer: 'Emergency jobs appear as red markers on the map with lightning bolt icons. These are urgent requests with premium rates ($150-200/hour). Click the marker to see details and accept the job instantly.'
-        },
-        {
-          question: 'What is Fleet Mode on the map?',
-          answer: 'Fleet Mode allows business owners to coordinate multiple service providers. You can see all your team members, assign jobs, track routes, and manage operations from a single interface.'
-        },
-        {
-          question: 'How do I enable Location Analytics?',
-          answer: 'Location Analytics automatically shows market insights for your current area, including demand levels, average rates, competition density, and opportunity scores. This data helps you make informed business decisions.'
-        }
-      ]
+      icon: <Search className="h-8 w-8 text-green-600" />,
+      title: "Finding Services",
+      description: "How to search and book services",
+      topics: ["Service categories", "Location-based search", "Provider ratings"]
     },
     {
-      id: 'ai-assistant',
-      title: '🤖 AI Assistant Help',
-      description: 'Get the most from your AI helper',
-      icon: <Bot className="h-5 w-5" />,
-      items: [
-        {
-          question: 'How do I access the AI Assistant?',
-          answer: 'The AI Assistant is available through the chat bubble in the bottom right corner, or from your user menu under "AI Assistant". It provides personalized insights and automates routine tasks.'
-        },
-        {
-          question: 'What can the AI Assistant help me with?',
-          answer: 'The AI can help with booking management, route optimization, market insights, expense tracking, tax compliance questions, scheduling conflicts, and business analytics. Just ask in natural language!'
-        },
-        {
-          question: 'How does voice control work?',
-          answer: 'Click the microphone icon in the AI chat to enable voice commands. You can say things like "Show me today\'s bookings" or "Find plumbing jobs near me" and the AI will respond with actions and information.'
-        },
-        {
-          question: 'Can the AI help with tax and compliance?',
-          answer: 'Yes! The AI can categorize expenses, generate CRA-compliant reports, track deductible items, remind you of filing deadlines, and answer basic tax questions for Canadian service providers.'
-        }
-      ]
+      icon: <CreditCard className="h-8 w-8 text-purple-600" />,
+      title: "Payments & Billing",
+      description: "Payment methods and billing information",
+      topics: ["Payment options", "Invoice management", "Quebec tax compliance"]
     },
     {
-      id: 'fleet-management',
-      title: '🚛 Fleet Management',
-      description: 'Coordinate your team effectively',
-      icon: <Users className="h-5 w-5" />,
-      items: [
-        {
-          question: 'How do I set up my fleet?',
-          answer: 'Go to your Provider Dashboard, click "Fleet Management", then "Add Team Member". Send invitations via email and your team members will appear on your fleet map once they accept.'
-        },
-        {
-          question: 'How do I assign jobs to my team?',
-          answer: 'From the Interactive Map in Fleet Mode, click on any job marker and select "Assign to Team Member". You can also use bulk assignment features to distribute multiple jobs efficiently.'
-        },
-        {
-          question: 'Can I track my team\'s routes and progress?',
-          answer: 'Yes! Fleet Mode shows real-time locations, current job status, estimated completion times, and route optimization suggestions for all team members.'
-        },
-        {
-          question: 'How does revenue sharing work for fleets?',
-          answer: 'Set up revenue splits in Fleet Settings. You can choose percentage-based splits, flat fees, or custom arrangements. All payments are automatically distributed according to your settings.'
-        }
-      ]
+      icon: <Shield className="h-8 w-8 text-red-600" />,
+      title: "Safety & Privacy",
+      description: "Your security and privacy protection",
+      topics: ["Privacy-first mapping", "Data protection", "Safety measures"]
     },
     {
-      id: 'fintech-features',
-      title: '💰 Fintech Features',
-      description: 'Financial tools and payment security',
-      icon: <DollarSign className="h-5 w-5" />,
-      items: [
-        {
-          question: 'How does Escrow Protection work?',
-          answer: 'When customers book services, payment is held securely in escrow until the job is completed to satisfaction. This protects both parties and ensures fair transactions.'
-        },
-        {
-          question: 'What is the Credit System?',
-          answer: 'HOUSIE Credits are used for premium features, urgent bookings, and enhanced visibility. Purchase credits through your dashboard or earn them through excellent service ratings.'
-        },
-        {
-          question: 'How do I track expenses for tax purposes?',
-          answer: 'Use the built-in expense tracker in your dashboard. Categorize expenses, upload receipts, and generate CRA-compliant reports. The AI can help categorize transactions automatically.'
-        },
-        {
-          question: 'What are Group Bookings?',
-          answer: 'Group Bookings allow multiple customers to share service costs (like moving services or event setup). Create a group booking and invite others to split the payment automatically.'
-        }
-      ]
+      icon: <Users className="h-8 w-8 text-indigo-600" />,
+      title: "For Providers",
+      description: "Information for service providers",
+      topics: ["RBQ/CCQ verification", "Setting up services", "Managing bookings"]
     },
     {
-      id: 'booking-payments',
-      title: '💳 Bookings & Payments',
-      description: 'Secure transactions and booking management',
-      icon: <Shield className="h-5 w-5" />,
-      items: [
-        {
-          question: 'What payment methods are accepted?',
-          answer: 'We accept all major credit cards, debit cards, and e-transfers. All transactions are processed securely with end-to-end encryption and fraud detection.'
-        },
-        {
-          question: 'How do I modify or cancel a booking?',
-          answer: 'Go to "My Bookings" in your dashboard, find the booking, and click "Modify" or "Cancel". Cancellation policies vary by service provider and timing.'
-        },
-        {
-          question: 'What if I\'m not satisfied with the service?',
-          answer: 'Contact us through the platform immediately. We offer dispute resolution, service guarantees, and refund protection. Your payment stays in escrow until issues are resolved.'
-        },
-        {
-          question: 'How do I leave reviews and ratings?',
-          answer: 'After service completion, you\'ll receive a prompt to rate and review. Honest reviews help maintain service quality and help other users make informed decisions.'
-        }
-      ]
-    },
-    {
-      id: 'troubleshooting',
-      title: '🔧 Troubleshooting',
-      description: 'Common issues and solutions',
-      icon: <Zap className="h-5 w-5" />,
-      items: [
-        {
-          question: 'The map isn\'t loading properly',
-          answer: 'Try refreshing the page, check your internet connection, and ensure location services are enabled. If issues persist, try clearing your browser cache or contact support.'
-        },
-        {
-          question: 'I can\'t see available services in my area',
-          answer: 'Expand your search radius, check if you\'re in a supported service area, or try different service categories. Some specialized services may have limited availability.'
-        },
-        {
-          question: 'Payment or booking errors',
-          answer: 'Verify your payment information, check for sufficient funds, and ensure all required fields are completed. Contact support if payment processing continues to fail.'
-        },
-        {
-          question: 'Account or login issues',
-          answer: 'Try password reset, check your email for verification links, and ensure you\'re using the correct login method. Contact support if you can\'t access your account.'
-        }
-      ]
+      icon: <MapPin className="h-8 w-8 text-orange-600" />,
+      title: "Location Services",
+      description: "GPS tracking and location features",
+      topics: ["Real-time tracking", "Route optimization", "Emergency services"]
     }
   ];
 
-  const filteredSections = helpSections.map(section => ({
-    ...section,
-    items: section.items.filter(item => 
-      searchQuery === '' || 
-      item.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.answer.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  })).filter(section => section.items.length > 0);
+  const contactOptions = [
+    {
+      icon: <MessageCircle className="h-6 w-6" />,
+      title: "Live Chat",
+      description: "Get instant help from our support team",
+      availability: "24/7 Available",
+      action: "Start Chat"
+    },
+    {
+      icon: <Phone className="h-6 w-6" />,
+      title: "Phone Support",
+      description: "Speak directly with a support representative",
+      availability: "Mon-Fri 8AM-8PM EST",
+      action: "Call Now"
+    },
+    {
+      icon: <Mail className="h-6 w-6" />,
+      title: "Email Support",
+      description: "Send us detailed questions or feedback",
+      availability: "Response within 24 hours",
+      action: "Send Email"
+    }
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Header />
-      
-      {/* Hero Section */}
-      <section className="bg-gradient-to-b from-blue-600 to-purple-700 text-white py-16">
-        {/* Full-width container with minimal padding */}
-        <div className="w-full px-2 text-center">
-          <h1 className="text-4xl lg:text-5xl font-bold mb-6">
-            HOUSIE Help Center
-          </h1>
-          <p className="text-xl mb-8 opacity-90">
-            Everything you need to know about using HOUSIE's powerful features
-          </p>
-          
-          {/* Search Bar */}
-          <div className="max-w-2xl mx-auto relative">
-            <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-            <Input
-              type="text"
-              placeholder="Search help articles..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-12 py-3 text-lg bg-white/10 backdrop-blur-sm border-white/20 text-white placeholder-white/70"
-            />
+    <div className="min-h-screen">
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-12">
+            <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-4">
+              How Can We Help You?
+            </h1>
+            <p className="text-xl text-white/90 drop-shadow-lg max-w-3xl mx-auto">
+              Find answers to common questions, learn about features, or get in touch with our support team.
+            </p>
           </div>
-        </div>
-      </section>
 
-      {/* Quick Contact */}
-      <section className="py-8 bg-white border-b">
-        {/* Full-width container with minimal padding */}
-        <div className="w-full px-2">
-          <div className="grid md:grid-cols-3 gap-4">
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4 text-center">
-                <MessageCircle className="h-8 w-8 mx-auto mb-2 text-blue-600" />
-                <h3 className="font-semibold mb-1">Live Chat</h3>
-                <p className="text-sm text-gray-600">Get instant help</p>
-                <Badge variant="secondary" className="mt-2">Available 24/7</Badge>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4 text-center">
-                <Mail className="h-8 w-8 mx-auto mb-2 text-green-600" />
-                <h3 className="font-semibold mb-1">Email Support</h3>
-                <p className="text-sm text-gray-600">help@housie.ca</p>
-                <Badge variant="secondary" className="mt-2">Response in 2h</Badge>
-              </CardContent>
-            </Card>
-            
-            <Card className="hover:shadow-md transition-shadow">
-              <CardContent className="p-4 text-center">
-                <Phone className="h-8 w-8 mx-auto mb-2 text-purple-600" />
-                <h3 className="font-semibold mb-1">Phone Support</h3>
-                <p className="text-sm text-gray-600">1-800-HOUSIE</p>
-                <Badge variant="secondary" className="mt-2">Mon-Fri 9-6</Badge>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Help Articles */}
-      <section className="py-12">
-        {/* Full-width container with minimal padding */}
-        <div className="w-full px-2">
-          <div className="space-y-6">
-            {filteredSections.map((section) => (
-              <Card key={section.id} className="shadow-sm">
-                <Collapsible 
-                  open={openSections.includes(section.id)}
-                  onOpenChange={() => toggleSection(section.id)}
-                >
-                  <CollapsibleTrigger asChild>
-                    <CardHeader className="cursor-pointer hover:bg-gray-50 transition-colors">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          {section.icon}
-                          <div>
-                            <CardTitle className="text-lg">{section.title}</CardTitle>
-                            <CardDescription>{section.description}</CardDescription>
-                          </div>
-                        </div>
-                        {openSections.includes(section.id) ? 
-                          <ChevronDown className="h-5 w-5" /> : 
-                          <ChevronRight className="h-5 w-5" />
-                        }
-                      </div>
-                    </CardHeader>
-                  </CollapsibleTrigger>
-                  
-                  <CollapsibleContent>
-                    <CardContent className="pt-0">
-                      <div className="space-y-4">
-                        {section.items.map((item, index) => (
-                          <div key={index} className="border-l-4 border-blue-200 pl-4 py-2">
-                            <h4 className="font-medium text-gray-900 mb-2">{item.question}</h4>
-                            <p className="text-gray-700 leading-relaxed">{item.answer}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </CardContent>
-                  </CollapsibleContent>
-                </Collapsible>
+          {/* Quick Actions */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {contactOptions.map((option, index) => (
+              <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+                      {option.icon}
+                    </div>
+                    <div>
+                      <CardTitle className="text-lg">{option.title}</CardTitle>
+                      <Badge variant="outline" className="mt-1">
+                        <Clock className="h-3 w-3 mr-1" />
+                        {option.availability}
+                      </Badge>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 mb-4">{option.description}</p>
+                  <Button className="w-full">
+                    {option.action}
+                  </Button>
+                </CardContent>
               </Card>
             ))}
           </div>
 
-          {filteredSections.length === 0 && searchQuery && (
-            <div className="text-center py-12">
-              <Search className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
-              <p className="text-gray-600">Try different keywords or browse all sections above</p>
+          {/* Help Categories */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-white drop-shadow-lg mb-8 text-center">
+              Browse Help Topics
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {helpCategories.map((category, index) => (
+                <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="p-2 bg-gray-50 rounded-xl">
+                        {category.icon}
+                      </div>
+                      <CardTitle className="text-lg">{category.title}</CardTitle>
+                    </div>
+                    <p className="text-gray-600">{category.description}</p>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2">
+                      {category.topics.map((topic, topicIndex) => (
+                        <div key={topicIndex} className="flex items-center text-sm text-gray-700 hover:text-blue-600 cursor-pointer">
+                          <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
+                          {topic}
+                        </div>
+                      ))}
+                    </div>
+                    <Button variant="outline" className="w-full mt-4">
+                      View All Articles
+                    </Button>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-          )}
-        </div>
-      </section>
+          </div>
 
-      <ChatAssistant />
+          {/* FAQ Section */}
+          <Card className="bg-white/95 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-2xl text-center">Frequently Asked Questions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div className="border-b border-gray-200 pb-4">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">
+                    How does HOUSIE protect my privacy?
+                  </h3>
+                  <p className="text-gray-600">
+                    We use Mapbox instead of Google Maps to ensure your location data stays private. 
+                    We also implement strict data protection measures and never share your personal information.
+                  </p>
+                </div>
+
+                <div className="border-b border-gray-200 pb-4">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">
+                    Are all service providers verified?
+                  </h3>
+                  <p className="text-gray-600">
+                    Yes! All our service providers are verified through RBQ (Régie du bâtiment du Québec) 
+                    and CCQ (Commission de la construction du Québec) when applicable.
+                  </p>
+                </div>
+
+                <div className="border-b border-gray-200 pb-4">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">
+                    How do I track my service provider?
+                  </h3>
+                  <p className="text-gray-600">
+                    Once your service is confirmed, you'll receive real-time GPS tracking of your provider's 
+                    location and estimated arrival time through our privacy-first mapping system.
+                  </p>
+                </div>
+
+                <div className="pb-4">
+                  <h3 className="font-semibold text-lg text-gray-900 mb-2">
+                    What payment methods do you accept?
+                  </h3>
+                  <p className="text-gray-600">
+                    We accept all major credit cards, debit cards, and digital payments. 
+                    All transactions are Quebec tax compliant with automatic GST/QST calculation.
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 };

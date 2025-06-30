@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import UserMenu from '@/components/header/UserMenu';
 
 const HousieEatsHeader = () => {
   const { user } = useAuth();
@@ -44,16 +45,14 @@ const HousieEatsHeader = () => {
             </Link>
           </div>
 
-          {/* Right Side - Auth Buttons */}
+          {/* Right Side - Auth Buttons or User Menu */}
           <div className="flex items-center space-x-3">
             {user ? (
               <div className="flex items-center space-x-2">
                 <Link to="/dashboard">
                   <Button variant="ghost" className="text-white hover:bg-gray-800">Dashboard</Button>
                 </Link>
-                <Link to="/profile">
-                  <Button variant="ghost" className="text-white hover:bg-gray-800">Profile</Button>
-                </Link>
+                <UserMenu />
               </div>
             ) : (
               <div className="flex items-center space-x-3">

@@ -16,6 +16,9 @@ import Calendar from "@/pages/Calendar";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import CustomerDashboard from "@/pages/CustomerDashboard";
 import Social from "@/pages/Social";
+import Services from "@/pages/Services";
+import Help from "@/pages/Help";
+import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
 
 function App() {
   return (
@@ -51,6 +54,11 @@ function App() {
               
               {/* Social Route */}
               <Route path="/social" element={<Social />} />
+
+              {/* Public Pages */}
+              <Route path="/services" element={<Services />} />
+              <Route path="/help" element={<Help />} />
+              <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
             </Routes>
           </div>
         </Router>
