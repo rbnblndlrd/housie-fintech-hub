@@ -61,12 +61,12 @@ const BookingsPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
       <Header />
       
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <Calendar className="h-8 w-8 text-blue-600" />
-              <h1 className="text-4xl font-bold text-gray-900">
+      <div className="pt-14 px-2 pb-4">
+        <div className="max-w-none mx-2">
+          <div className="mb-6">
+            <div className="flex items-center gap-3 mb-3">
+              <Calendar className="h-7 w-7 text-blue-600" />
+              <h1 className="text-3xl font-bold text-gray-900">
                 {currentRole === 'provider' ? 'Job Management' : 'My Bookings'}
               </h1>
             </div>
@@ -79,10 +79,10 @@ const BookingsPage = () => {
 
           {currentRole === 'provider' ? (
             // Provider View - Full Kanban Board
-            <div className="space-y-8">
+            <div className="space-y-6">
               <KanbanTicketList />
               
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card className="fintech-card">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-lg flex items-center gap-2">
@@ -90,7 +90,7 @@ const BookingsPage = () => {
                       New Requests
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4">
                     <div className="text-2xl font-bold text-blue-600 mb-1">3</div>
                     <p className="text-sm text-gray-600">Pending acceptance</p>
                   </CardContent>
@@ -103,7 +103,7 @@ const BookingsPage = () => {
                       Today's Jobs
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4">
                     <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
                     <p className="text-sm text-gray-600">Scheduled for today</p>
                   </CardContent>
@@ -116,7 +116,7 @@ const BookingsPage = () => {
                       In Progress
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4">
                     <div className="text-2xl font-bold text-purple-600 mb-1">1</div>
                     <p className="text-sm text-gray-600">Currently working</p>
                   </CardContent>
@@ -129,7 +129,7 @@ const BookingsPage = () => {
                       Completed
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="p-4">
                     <div className="text-2xl font-bold text-green-600 mb-1">8</div>
                     <p className="text-sm text-gray-600">This week</p>
                   </CardContent>
@@ -138,17 +138,17 @@ const BookingsPage = () => {
             </div>
           ) : (
             // Customer View - Simple Bookings List with Calendar
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg">
-                <CardHeader>
+                <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5" />
                     Upcoming Bookings
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 p-4">
                   {upcomingBookings.map((booking) => (
-                    <div key={booking.id} className="border rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                    <div key={booking.id} className="border rounded-lg p-3 hover:bg-gray-50 transition-colors">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-semibold text-gray-900">{booking.serviceName}</h3>
                         <Badge className={getStatusColor(booking.status)}>
@@ -156,7 +156,7 @@ const BookingsPage = () => {
                         </Badge>
                       </div>
                       
-                      <div className="space-y-2 text-sm text-gray-600">
+                      <div className="space-y-1 text-sm text-gray-600">
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4" />
                           {booking.date} at {booking.time}

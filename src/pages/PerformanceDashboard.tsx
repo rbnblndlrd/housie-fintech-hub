@@ -51,10 +51,10 @@ const PerformanceDashboard = () => {
   if (error) {
     return (
       <div className="min-h-screen">
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
+        <div className="pt-14 px-2 pb-4">
+          <div className="max-w-none mx-2">
             <Card className="border-red-200 bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-6">
+              <CardContent className="p-4">
                 <div className="flex items-center gap-3 text-red-600">
                   <AlertTriangle className="h-5 w-5" />
                   <div>
@@ -75,10 +75,10 @@ const PerformanceDashboard = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
+      <div className="pt-14 px-2 pb-4">
+        <div className="max-w-none mx-2">
           {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-4">
               <Button 
                 variant="ghost" 
@@ -89,8 +89,8 @@ const PerformanceDashboard = () => {
                 Analytics
               </Button>
               <div>
-                <h1 className="text-4xl font-bold text-white drop-shadow-lg flex items-center gap-3">
-                  <Activity className="h-8 w-8 text-white" />
+                <h1 className="text-3xl font-bold text-white drop-shadow-lg flex items-center gap-3">
+                  <Activity className="h-7 w-7 text-white" />
                   Performance Dashboard
                 </h1>
                 <p className="text-white/90 drop-shadow-lg">Real-time performance metrics and operational insights</p>
@@ -107,11 +107,11 @@ const PerformanceDashboard = () => {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
             {performanceMetrics.map((metric, index) => (
               <Card key={index} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between mb-3">
                     <div className="p-2 bg-blue-50 rounded-lg">
                       <metric.icon className="h-5 w-5 text-blue-600" />
                     </div>
@@ -130,12 +130,12 @@ const PerformanceDashboard = () => {
             ))}
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-4">
             <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle>Performance Trend</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4">
                 {loading ? (
                   <Skeleton className="h-64 w-full" />
                 ) : (
@@ -152,11 +152,11 @@ const PerformanceDashboard = () => {
             </Card>
 
             <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-              <CardHeader>
+              <CardHeader className="pb-3">
                 <CardTitle>Efficiency Metrics</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="p-4">
+                <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="text-sm font-medium">Task Completion</span>
                     <span className="text-sm text-gray-600">95%</span>

@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -96,10 +97,10 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 py-8">
-          <div className="space-y-6">
+        <div className="max-w-none mx-2 px-2 py-4">
+          <div className="space-y-4">
             <Skeleton className="h-8 w-64" />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               {[...Array(4)].map((_, i) => (
                 <Skeleton key={i} className="h-32" />
               ))}
@@ -119,9 +120,9 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 py-8">
+        <div className="max-w-none mx-2 px-2 py-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4">
               <div className="text-center">
                 <h2 className="text-2xl font-bold text-destructive mb-2">Access Denied</h2>
                 <p className="text-muted-foreground">
@@ -139,9 +140,9 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="container mx-auto px-4 py-8">
+        <div className="max-w-none mx-2 px-2 py-4">
           <Card className="border-red-200 bg-red-50">
-            <CardContent className="pt-6">
+            <CardContent className="pt-4">
               <div className="text-center">
                 <AlertTriangle className="h-8 w-8 text-red-600 mx-auto mb-4" />
                 <h2 className="text-2xl font-bold text-red-600 mb-2">Dashboard Error</h2>
@@ -166,8 +167,8 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
+      <div className="max-w-none mx-2 px-2 pt-14 pb-4">
+        <div className="mb-6">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
@@ -182,7 +183,7 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        <Tabs defaultValue="dashboard" className="space-y-6">
+        <Tabs defaultValue="dashboard" className="space-y-4">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
             <TabsTrigger value="testing">Testing</TabsTrigger>
@@ -191,8 +192,8 @@ const AdminDashboard = () => {
             <TabsTrigger value="dev-tools">Dev Tools</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="dashboard" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="dashboard" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <ErrorBoundary>
                 <OverviewSection />
               </ErrorBoundary>
@@ -200,7 +201,7 @@ const AdminDashboard = () => {
                 <LiveUsersSection />
               </ErrorBoundary>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <ErrorBoundary>
                 <UserManagementSection />
               </ErrorBoundary>
@@ -210,14 +211,14 @@ const AdminDashboard = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="testing" className="space-y-6">
+          <TabsContent value="testing" className="space-y-4">
             <ErrorBoundary>
               <AdminTestingDashboard />
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="analytics" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <TabsContent value="analytics" className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <ErrorBoundary>
                 <BookingAnalyticsSection />
               </ErrorBoundary>
@@ -233,13 +234,13 @@ const AdminDashboard = () => {
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="emergency" className="space-y-6">
+          <TabsContent value="emergency" className="space-y-4">
             <ErrorBoundary>
               <EmergencyControlsSection />
             </ErrorBoundary>
           </TabsContent>
 
-          <TabsContent value="dev-tools" className="space-y-6">
+          <TabsContent value="dev-tools" className="space-y-4">
             <ErrorBoundary>
               <DevelopmentToolsSection />
             </ErrorBoundary>
