@@ -21,6 +21,7 @@ import {
   Clock,
   TrendingUp
 } from 'lucide-react';
+import VideoBackground from '@/components/common/VideoBackground';
 import DraggableTicket from '@/components/manager/DraggableTicket';
 import EnhancedJobOrganizer from '@/components/manager/EnhancedJobOrganizer';
 import IncomingJobRequests from '@/components/manager/IncomingJobRequests';
@@ -170,204 +171,210 @@ const ManagerDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Modern Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/dashboard')}
-                className="text-slate-700 hover:bg-white/50 flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back
-              </Button>
-              <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-                  Manager Hub
-                </h1>
-                <p className="text-slate-600 mt-1">Streamline your operations with intelligent automation</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Bell className="h-4 w-4" />
-                <Badge variant="destructive" className="h-5 w-5 p-0 text-xs">3</Badge>
-              </Button>
-              <Button variant="outline" size="sm">
-                <Settings className="h-4 w-4" />
-              </Button>
-              <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-                <Plus className="h-4 w-4 mr-2" />
-                Quick Action
-              </Button>
-            </div>
-          </div>
-
-          {/* Quick Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-            <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-blue-100 text-sm">Active Jobs</p>
-                    <p className="text-2xl font-bold">{organizedJobs.length}</p>
-                  </div>
-                  <Zap className="h-8 w-8 text-blue-200" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-green-100 text-sm">Crew Online</p>
-                    <p className="text-2xl font-bold">3</p>
-                  </div>
-                  <Users className="h-8 w-8 text-green-200" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-purple-100 text-sm">Revenue Today</p>
-                    <p className="text-2xl font-bold">$2,450</p>
-                  </div>
-                  <TrendingUp className="h-8 w-8 text-purple-200" />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-orange-100 text-sm">Efficiency</p>
-                    <p className="text-2xl font-bold">94%</p>
-                  </div>
-                  <BarChart3 className="h-8 w-8 text-orange-200" />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Main Content Tabs */}
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3 bg-white/70 backdrop-blur-sm p-2 rounded-xl border">
-              <TabsTrigger 
-                value="overview" 
-                className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white"
-              >
-                <Zap className="h-4 w-4" />
-                Job Management
-              </TabsTrigger>
-              <TabsTrigger 
-                value="crew" 
-                className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
-              >
-                <Users className="h-4 w-4" />
-                Crew Hub
-              </TabsTrigger>
-              <TabsTrigger 
-                value="insights" 
-                className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white"
-              >
-                <BarChart3 className="h-4 w-4" />
-                Insights
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Job Management Tab */}
-            <TabsContent value="overview" className="space-y-6">
-              <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                {/* Ticket Pool */}
-                <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-                  <CardHeader className="pb-4">
-                    <CardTitle className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
-                        Ticket Pool
-                      </div>
-                      <Badge variant="secondary">{availableTickets.length}</Badge>
-                    </CardTitle>
-                    <div className="flex gap-2">
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Filter className="h-3 w-3" />
-                        Filter
-                      </Button>
-                      <Button variant="outline" size="sm" className="gap-2">
-                        <Search className="h-3 w-3" />
-                        Search
-                      </Button>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-3 max-h-96 overflow-y-auto">
-                    {availableTickets.map((ticket) => (
-                      <DraggableTicket 
-                        key={ticket.id}
-                        ticket={ticket}
-                        onDragStart={handleDragStart}
-                        isDragging={draggedTicket?.id === ticket.id}
-                      />
-                    ))}
-                    {availableTickets.length === 0 && (
-                      <div className="text-center py-8 text-slate-500">
-                        <div className="text-4xl mb-2">✨</div>
-                        <p className="text-sm">All tickets organized!</p>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                {/* Smart Job Organizer */}
-                <div className="xl:col-span-2" onDragLeave={handleDragLeave}>
-                  <EnhancedJobOrganizer 
-                    organizedJobs={organizedJobs}
-                    onDrop={handleDrop}
-                    onDragOver={handleDragOver}
-                    onRemoveJob={handleRemoveJob}
-                    onReorderJob={handleReorderJob}
-                    isDragOver={isDragOver}
-                  />
+    <>
+      {/* Video Background */}
+      <VideoBackground />
+      
+      {/* Main Content */}
+      <div className="relative z-10 min-h-screen">
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Modern Header */}
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/dashboard')}
+                  className="text-white hover:bg-white/20 flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back
+                </Button>
+                <div>
+                  <h1 className="text-4xl font-bold text-white drop-shadow-lg">
+                    Manager Hub
+                  </h1>
+                  <p className="text-white/90 mt-1 drop-shadow">Streamline your operations with intelligent automation</p>
                 </div>
               </div>
               
-              {/* Incoming Requests */}
-              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-                <CardContent className="p-6">
-                  <IncomingJobRequests />
-                </CardContent>
-              </Card>
-            </TabsContent>
+              <div className="flex items-center gap-3">
+                <Button variant="outline" size="sm" className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20">
+                  <Bell className="h-4 w-4" />
+                  <Badge variant="destructive" className="h-5 w-5 p-0 text-xs">3</Badge>
+                </Button>
+                <Button variant="outline" size="sm" className="bg-white/10 border-white/30 text-white hover:bg-white/20">
+                  <Settings className="h-4 w-4" />
+                </Button>
+                <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Quick Action
+                </Button>
+              </div>
+            </div>
 
-            {/* Crew Hub Tab */}
-            <TabsContent value="crew">
-              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-                <CardContent className="p-6">
-                  <EnhancedCrewHub />
+            {/* Quick Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+              <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0 shadow-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-blue-100 text-sm">Active Jobs</p>
+                      <p className="text-2xl font-bold">{organizedJobs.length}</p>
+                    </div>
+                    <Zap className="h-8 w-8 text-blue-200" />
+                  </div>
                 </CardContent>
               </Card>
-            </TabsContent>
+              
+              <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-100 text-sm">Crew Online</p>
+                      <p className="text-2xl font-bold">3</p>
+                    </div>
+                    <Users className="h-8 w-8 text-green-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0 shadow-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-purple-100 text-sm">Revenue Today</p>
+                      <p className="text-2xl font-bold">$2,450</p>
+                    </div>
+                    <TrendingUp className="h-8 w-8 text-purple-200" />
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-xl">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-orange-100 text-sm">Efficiency</p>
+                      <p className="text-2xl font-bold">94%</p>
+                    </div>
+                    <BarChart3 className="h-8 w-8 text-orange-200" />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
-            {/* Insights Tab */}
-            <TabsContent value="insights">
-              <Card className="bg-white/80 backdrop-blur-sm border-0 shadow-xl">
-                <CardContent className="p-6">
-                  <InsightsPerformance />
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
+            {/* Main Content Tabs */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+              <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm p-2 rounded-xl border border-white/20">
+                <TabsTrigger 
+                  value="overview" 
+                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white"
+                >
+                  <Zap className="h-4 w-4" />
+                  Job Management
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="crew" 
+                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-blue-500 data-[state=active]:text-white"
+                >
+                  <Users className="h-4 w-4" />
+                  Crew Hub
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="insights" 
+                  className="flex items-center gap-2 text-white data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white"
+                >
+                  <BarChart3 className="h-4 w-4" />
+                  Insights
+                </TabsTrigger>
+              </TabsList>
+
+              {/* Job Management Tab */}
+              <TabsContent value="overview" className="space-y-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  {/* Ticket Pool */}
+                  <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                    <CardHeader className="pb-4">
+                      <CardTitle className="flex items-center justify-between text-white">
+                        <div className="flex items-center gap-2">
+                          <div className="h-2 w-2 bg-blue-400 rounded-full"></div>
+                          Ticket Pool
+                        </div>
+                        <Badge variant="secondary" className="bg-white/20 text-white">{availableTickets.length}</Badge>
+                      </CardTitle>
+                      <div className="flex gap-2">
+                        <Button variant="outline" size="sm" className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20">
+                          <Filter className="h-3 w-3" />
+                          Filter
+                        </Button>
+                        <Button variant="outline" size="sm" className="gap-2 bg-white/10 border-white/30 text-white hover:bg-white/20">
+                          <Search className="h-3 w-3" />
+                          Search
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent className="space-y-3 max-h-96 overflow-y-auto">
+                      {availableTickets.map((ticket) => (
+                        <DraggableTicket 
+                          key={ticket.id}
+                          ticket={ticket}
+                          onDragStart={handleDragStart}
+                          isDragging={draggedTicket?.id === ticket.id}
+                        />
+                      ))}
+                      {availableTickets.length === 0 && (
+                        <div className="text-center py-8 text-white/70">
+                          <div className="text-4xl mb-2">✨</div>
+                          <p className="text-sm">All tickets organized!</p>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+
+                  {/* Smart Job Organizer */}
+                  <div className="xl:col-span-2" onDragLeave={handleDragLeave}>
+                    <EnhancedJobOrganizer 
+                      organizedJobs={organizedJobs}
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      onRemoveJob={handleRemoveJob}
+                      onReorderJob={handleReorderJob}
+                      isDragOver={isDragOver}
+                    />
+                  </div>
+                </div>
+                
+                {/* Incoming Requests */}
+                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                  <CardContent className="p-6">
+                    <IncomingJobRequests />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Crew Hub Tab */}
+              <TabsContent value="crew">
+                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                  <CardContent className="p-6">
+                    <EnhancedCrewHub />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Insights Tab */}
+              <TabsContent value="insights">
+                <Card className="bg-white/10 backdrop-blur-md border-white/20 shadow-xl">
+                  <CardContent className="p-6">
+                    <InsightsPerformance />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
