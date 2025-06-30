@@ -49,23 +49,23 @@ const DraggableTicket: React.FC<DraggableTicketProps> = ({
 
   return (
     <Card 
-      className={`bg-white/95 backdrop-blur-sm hover:bg-white border-l-4 text-gray-900 ${getPriorityBorderColor(ticket.priority)} ${
+      className={`bg-black/40 backdrop-blur-md hover:bg-black/50 border-l-4 text-white ${getPriorityBorderColor(ticket.priority)} ${
         isDragging ? 'opacity-50 rotate-2' : ''
-      } border-gray-300 shadow-lg hover:shadow-xl transition-all cursor-move`}
+      } border-white/30 shadow-lg hover:shadow-xl transition-all cursor-move`}
       draggable
       onDragStart={(e) => onDragStart(e, ticket)}
     >
       <CardContent className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h4 className="font-semibold text-gray-900 text-sm">{ticket.title}</h4>
+          <h4 className="font-semibold text-white text-sm">{ticket.title}</h4>
           <Badge className={`${getPriorityColor(ticket.priority)} text-xs`}>
             {ticket.priority}
           </Badge>
         </div>
         
-        <p className="text-xs text-gray-600 mb-3 line-clamp-2">{ticket.description}</p>
+        <p className="text-xs text-white/80 mb-3 line-clamp-2">{ticket.description}</p>
         
-        <div className="space-y-1 text-xs text-gray-600">
+        <div className="space-y-1 text-xs text-white/70">
           <div className="flex items-center gap-1">
             <User className="h-3 w-3" />
             <span>{ticket.client}</span>
@@ -82,12 +82,12 @@ const DraggableTicket: React.FC<DraggableTicketProps> = ({
         
         <div className="flex flex-wrap gap-1 mt-2">
           {ticket.tags.slice(0, 2).map((tag) => (
-            <Badge key={tag} variant="outline" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
+            <Badge key={tag} variant="outline" className="text-xs bg-white/20 text-white/90 border-white/30">
               {tag}
             </Badge>
           ))}
           {ticket.tags.length > 2 && (
-            <Badge variant="outline" className="text-xs bg-gray-100 text-gray-700 border-gray-300">
+            <Badge variant="outline" className="text-xs bg-white/20 text-white/90 border-white/30">
               +{ticket.tags.length - 2}
             </Badge>
           )}

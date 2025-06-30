@@ -303,10 +303,10 @@ const ManagerDashboard = () => {
               {/* Job Management Tab */}
               <TabsContent value="overview" className="space-y-6">
                 <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  {/* Ticket Pool - Solid background for readability */}
-                  <Card className="bg-white/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
+                  {/* Ticket Pool - Semi-transparent for readability */}
+                  <Card className="bg-gray-900/50 backdrop-blur-lg border-white/20 shadow-xl text-white">
                     <CardHeader className="pb-4">
-                      <CardTitle className="flex items-center justify-between text-gray-900">
+                      <CardTitle className="flex items-center justify-between text-white">
                         <div className="flex items-center gap-2">
                           <div className="h-2 w-2 bg-blue-500 rounded-full"></div>
                           <span>Ticket Pool</span>
@@ -314,11 +314,11 @@ const ManagerDashboard = () => {
                         <Badge variant="secondary" className="bg-blue-100 text-blue-800 border-blue-200">{availableTickets.length}</Badge>
                       </CardTitle>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm" className="gap-2 bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+                        <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm">
                           <Filter className="h-3 w-3" />
                           <span>Filter</span>
                         </Button>
-                        <Button variant="outline" size="sm" className="gap-2 bg-white border-gray-300 text-gray-700 hover:bg-gray-50">
+                        <Button variant="outline" size="sm" className="gap-2 bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm">
                           <Search className="h-3 w-3" />
                           <span>Search</span>
                         </Button>
@@ -334,7 +334,7 @@ const ManagerDashboard = () => {
                         />
                       ))}
                       {availableTickets.length === 0 && (
-                        <div className="text-center py-8 text-gray-600">
+                        <div className="text-center py-8 text-white/80">
                           <div className="text-4xl mb-2">✨</div>
                           <p className="text-sm">All tickets organized!</p>
                         </div>
@@ -355,8 +355,8 @@ const ManagerDashboard = () => {
                   </div>
                 </div>
                 
-                {/* Incoming Requests - Solid background for readability */}
-                <Card className="bg-white/95 backdrop-blur-sm border-gray-300/50 shadow-xl">
+                {/* Incoming Requests - Semi-transparent for readability */}
+                <Card className="bg-gray-900/50 backdrop-blur-lg border-white/20 shadow-xl text-white">
                   <CardContent className="p-6">
                     <IncomingJobRequests />
                   </CardContent>
