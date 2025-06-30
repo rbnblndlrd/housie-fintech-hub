@@ -13,7 +13,7 @@ export const PricingSection = () => {
       description: "Parfait pour commencer",
       icon: <Star className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#f8f9fa",
+      bgColor: "#faf7f2",
       buttonColor: "bg-gray-600 hover:bg-gray-700",
       features: [
         "Jusqu'à 3 types de services",
@@ -30,7 +30,7 @@ export const PricingSection = () => {
       description: "Pour les entrepreneurs actifs",
       icon: <Zap className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#f8f9fa",
+      bgColor: "#faf7f2",
       buttonColor: "bg-orange-600 hover:bg-orange-700",
       features: [
         "Jusqu'à 8 types de services",
@@ -48,7 +48,7 @@ export const PricingSection = () => {
       description: "Notre plan le plus populaire",
       icon: <Crown className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#f8f9fa",
+      bgColor: "#faf7f2",
       buttonColor: "bg-purple-600 hover:bg-purple-700",
       popular: true,
       features: [
@@ -68,7 +68,7 @@ export const PricingSection = () => {
       description: "Pour les pros qui veulent tout",
       icon: <Crown className="h-6 w-6" />,
       color: "border-black",
-      bgColor: "#f8f9fa",
+      bgColor: "#faf7f2",
       buttonColor: "bg-cyan-600 hover:bg-cyan-700",
       features: [
         "Tout dans Pro +",
@@ -93,7 +93,7 @@ export const PricingSection = () => {
             Tarifs <span className="text-orange-600">Transparents</span>
             <br />Sans Surprise
           </h2>
-          <p className="text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-800 max-w-3xl mx-auto leading-relaxed font-medium">
             Choisissez le plan qui correspond à vos besoins. 
             Tous les plans incluent notre garantie de conformité CRA et nos outils fintech.
           </p>
@@ -121,13 +121,13 @@ export const PricingSection = () => {
                 <CardTitle className="text-2xl font-black text-black">
                   {plan.name}
                 </CardTitle>
-                <CardDescription className="text-gray-800 font-medium">
+                <CardDescription className="text-gray-800 font-bold text-base">
                   {plan.description}
                 </CardDescription>
                 <div className="py-4">
                   <div className="text-4xl font-black text-black">
                     ${plan.price}
-                    <span className="text-lg font-normal text-gray-800">
+                    <span className="text-lg font-bold text-gray-700">
                       {plan.period}
                     </span>
                   </div>
@@ -143,7 +143,7 @@ export const PricingSection = () => {
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start gap-3">
                       <Check className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-                      <span className="text-black text-sm leading-relaxed">
+                      <span className="text-gray-800 text-sm leading-relaxed font-medium">
                         {feature}
                       </span>
                     </li>
