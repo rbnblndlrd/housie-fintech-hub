@@ -1,9 +1,10 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
 import Header from '@/components/Header';
-import Home from '@/pages/Home';
+import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
 import Profile from '@/pages/Profile';
 import UnifiedDashboard from '@/pages/UnifiedDashboard';
@@ -18,7 +19,7 @@ function App() {
         <Router>
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/dashboard" element={<UnifiedDashboard />} />
