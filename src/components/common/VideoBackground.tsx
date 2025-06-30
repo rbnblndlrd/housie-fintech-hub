@@ -8,6 +8,7 @@ interface VideoState {
   networkState: number;
   readyState: number;
   currentSrc: string;
+  isHardRefresh: boolean;
 }
 
 const VideoBackground = () => {
@@ -17,20 +18,32 @@ const VideoBackground = () => {
     retryCount: 0,
     networkState: 0,
     readyState: 0,
-    currentSrc: ''
+    currentSrc: '',
+    isHardRefresh: false
   });
   
   const videoRef = useRef<HTMLVideoElement>(null);
   const retryTimeoutRef = useRef<NodeJS.Timeout>();
+  const loadingTimeoutRef = useRef<NodeJS.Timeout>();
   
-  const MAX_RETRIES = 3;
-  const RETRY_DELAYS = [1000, 2000, 4000]; // Exponential backoff
-  const LOADING_TIMEOUT = 10000; // 10 seconds max loading time
+  const MAX_RETRIES = 5; // Increased for hard refresh scenarios
+  const RETRY_DELAYS = [500, 1000, 2000, 4000, 8000]; // More aggressive retry timing
+  const LOADING_TIMEOUT = 15000; // Longer timeout for hard refresh
 
   // Video sources in order of preference
   const videoSources = [
     { src: '/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4', type: 'video/mp4' }
   ];
+
+  // Detect hard refresh
+  const detectHardRefresh = useCallback(() => {
+    const navigationEntries = performance.getEntriesByType('navigation');
+    if (navigationEntries.length > 0) {
+      const navigationEntry = navigationEntries[0] as PerformanceNavigationTiming;
+      return navigationEntry.type === 'reload';
+    }
+    return false;
+  }, []);
 
   const resetVideoState = useCallback(() => {
     setVideoState(prev => ({
@@ -54,22 +67,11 @@ const VideoBackground = () => {
       currentSrc: video.currentSrc,
       error_code: video.error?.code,
       error_message: video.error?.message,
-      retryCount: videoState.retryCount
+      retryCount: videoState.retryCount,
+      isHardRefresh: videoState.isHardRefresh
     };
     
     console.error('VideoBackground: Detailed error info:', errorInfo);
-
-    // Network state meanings:
-    // 0 = NETWORK_EMPTY, 1 = NETWORK_IDLE, 2 = NETWORK_LOADING, 3 = NETWORK_NO_SOURCE
-    if (video.networkState === 3) {
-      console.error('VideoBackground: Video source not found or network error');
-    }
-
-    // Ready state meanings:
-    // 0 = HAVE_NOTHING, 1 = HAVE_METADATA, 2 = HAVE_CURRENT_DATA, 3 = HAVE_FUTURE_DATA, 4 = HAVE_ENOUGH_DATA
-    if (video.readyState === 0) {
-      console.error('VideoBackground: Video has no data');
-    }
 
     setVideoState(prev => ({
       ...prev,
@@ -79,88 +81,117 @@ const VideoBackground = () => {
       readyState: video.readyState,
       currentSrc: video.currentSrc
     }));
-  }, [videoState.retryCount]);
+  }, [videoState.retryCount, videoState.isHardRefresh]);
 
   const attemptVideoLoad = useCallback(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    console.log(`VideoBackground: Attempting to load video (attempt ${videoState.retryCount + 1}/${MAX_RETRIES + 1})`);
+    const isHardRefresh = detectHardRefresh();
+    const currentRetry = videoState.retryCount;
     
-    resetVideoState();
+    console.log(`VideoBackground: Attempting to load video (attempt ${currentRetry + 1}/${MAX_RETRIES + 1}) - Hard refresh: ${isHardRefresh}`);
     
-    // Clear existing source and reload
-    video.src = '';
-    video.load();
+    setVideoState(prev => ({
+      ...prev,
+      isLoading: true,
+      hasError: false,
+      networkState: 0,
+      readyState: 0,
+      isHardRefresh
+    }));
+
+    // Clear any existing timeouts
+    if (loadingTimeoutRef.current) {
+      clearTimeout(loadingTimeoutRef.current);
+    }
     
-    // Set new source
-    video.src = videoSources[0].src;
-    video.load();
-
-    // Set loading timeout
-    const loadingTimeout = setTimeout(() => {
-      console.error('VideoBackground: Loading timeout exceeded');
-      handleVideoError(new Error('Loading timeout'), 'timeout');
-    }, LOADING_TIMEOUT);
-
-    const clearLoadingTimeout = () => {
-      clearTimeout(loadingTimeout);
-    };
-
-    // Success handler
-    const handleSuccess = () => {
-      console.log('VideoBackground: Video loaded successfully');
-      clearLoadingTimeout();
-      setVideoState(prev => ({
-        ...prev,
-        isLoading: false,
-        hasError: false,
-        networkState: video.networkState,
-        readyState: video.readyState,
-        currentSrc: video.currentSrc
-      }));
-    };
-
-    // Error handler with retry logic
-    const handleError = (e: Event) => {
-      clearLoadingTimeout();
+    // For hard refresh, add a small delay to let the page settle
+    const loadDelay = isHardRefresh ? 200 : 0;
+    
+    setTimeout(() => {
+      // Clear existing source and reload
+      video.src = '';
+      video.load();
       
-      if (videoState.retryCount < MAX_RETRIES) {
-        const nextRetryCount = videoState.retryCount + 1;
-        const delay = RETRY_DELAYS[nextRetryCount - 1] || RETRY_DELAYS[RETRY_DELAYS.length - 1];
-        
-        console.log(`VideoBackground: Retrying in ${delay}ms (attempt ${nextRetryCount}/${MAX_RETRIES})`);
-        
-        setVideoState(prev => ({ ...prev, retryCount: nextRetryCount }));
-        
-        retryTimeoutRef.current = setTimeout(() => {
-          attemptVideoLoad();
-        }, delay);
-      } else {
-        console.error('VideoBackground: Max retries exceeded, giving up');
-        handleVideoError(e, 'max_retries_exceeded');
-      }
-    };
+      // Set new source
+      video.src = videoSources[0].src;
+      video.preload = 'auto';
+      video.load();
 
-    // Add event listeners
-    video.addEventListener('loadeddata', handleSuccess);
-    video.addEventListener('canplay', handleSuccess);
-    video.addEventListener('canplaythrough', handleSuccess);
-    video.addEventListener('error', handleError);
-    video.addEventListener('abort', handleError);
-    video.addEventListener('stalled', handleError);
+      // Set loading timeout (longer for hard refresh)
+      const timeout = isHardRefresh ? LOADING_TIMEOUT + 5000 : LOADING_TIMEOUT;
+      loadingTimeoutRef.current = setTimeout(() => {
+        console.error(`VideoBackground: Loading timeout exceeded (${timeout}ms)`);
+        handleVideoError(new Error('Loading timeout'), 'timeout');
+      }, timeout);
 
-    // Cleanup function
-    return () => {
-      clearLoadingTimeout();
-      video.removeEventListener('loadeddata', handleSuccess);
-      video.removeEventListener('canplay', handleSuccess);
-      video.removeEventListener('canplaythrough', handleSuccess);
-      video.removeEventListener('error', handleError);
-      video.removeEventListener('abort', handleError);
-      video.removeEventListener('stalled', handleError);
-    };
-  }, [videoState.retryCount, resetVideoState, handleVideoError]);
+      const clearLoadingTimeout = () => {
+        if (loadingTimeoutRef.current) {
+          clearTimeout(loadingTimeoutRef.current);
+        }
+      };
+
+      // Success handler
+      const handleSuccess = () => {
+        console.log('VideoBackground: Video loaded successfully');
+        clearLoadingTimeout();
+        setVideoState(prev => ({
+          ...prev,
+          isLoading: false,
+          hasError: false,
+          networkState: video.networkState,
+          readyState: video.readyState,
+          currentSrc: video.currentSrc
+        }));
+      };
+
+      // Error handler with enhanced retry logic
+      const handleError = (e: Event) => {
+        clearLoadingTimeout();
+        
+        if (currentRetry < MAX_RETRIES) {
+          const nextRetryCount = currentRetry + 1;
+          const delay = RETRY_DELAYS[nextRetryCount - 1] || RETRY_DELAYS[RETRY_DELAYS.length - 1];
+          
+          // Add extra delay for hard refresh scenarios
+          const finalDelay = isHardRefresh ? delay + 500 : delay;
+          
+          console.log(`VideoBackground: Retrying in ${finalDelay}ms (attempt ${nextRetryCount}/${MAX_RETRIES}) - Hard refresh: ${isHardRefresh}`);
+          
+          setVideoState(prev => ({ ...prev, retryCount: nextRetryCount }));
+          
+          retryTimeoutRef.current = setTimeout(() => {
+            attemptVideoLoad();
+          }, finalDelay);
+        } else {
+          console.error('VideoBackground: Max retries exceeded, giving up');
+          handleVideoError(e, 'max_retries_exceeded');
+        }
+      };
+
+      // Add comprehensive event listeners
+      video.addEventListener('loadeddata', handleSuccess, { once: true });
+      video.addEventListener('canplay', handleSuccess, { once: true });
+      video.addEventListener('canplaythrough', handleSuccess, { once: true });
+      video.addEventListener('loadedmetadata', handleSuccess, { once: true });
+      video.addEventListener('error', handleError, { once: true });
+      video.addEventListener('abort', handleError, { once: true });
+      video.addEventListener('stalled', handleError, { once: true });
+
+      // Cleanup function
+      return () => {
+        clearLoadingTimeout();
+        video.removeEventListener('loadeddata', handleSuccess);
+        video.removeEventListener('canplay', handleSuccess);
+        video.removeEventListener('canplaythrough', handleSuccess);
+        video.removeEventListener('loadedmetadata', handleSuccess);
+        video.removeEventListener('error', handleError);
+        video.removeEventListener('abort', handleError);
+        video.removeEventListener('stalled', handleError);
+      };
+    }, loadDelay);
+  }, [videoState.retryCount, detectHardRefresh, handleVideoError]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -168,35 +199,41 @@ const VideoBackground = () => {
 
     console.log('VideoBackground: Initializing video component');
 
-    // Check if video file exists first
-    const checkVideoExists = async () => {
-      try {
-        const response = await fetch(videoSources[0].src, { method: 'HEAD' });
-        if (!response.ok) {
-          throw new Error(`Video file not found: ${response.status} ${response.statusText}`);
-        }
-        console.log('VideoBackground: Video file exists, proceeding with load');
-        attemptVideoLoad();
-      } catch (error) {
-        console.error('VideoBackground: Video file check failed:', error);
-        handleVideoError(error, 'file_not_found');
+    // Wait for DOM to be fully loaded
+    const initializeVideo = () => {
+      // Check network connection before attempting load
+      if (navigator.onLine === false) {
+        console.warn('VideoBackground: No network connection detected');
+        setTimeout(initializeVideo, 1000);
+        return;
       }
+
+      attemptVideoLoad();
     };
 
-    checkVideoExists();
+    // Use requestAnimationFrame to ensure DOM is ready
+    requestAnimationFrame(() => {
+      setTimeout(initializeVideo, 100);
+    });
 
     return () => {
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current);
       }
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
     };
-  }, [attemptVideoLoad, handleVideoError]);
+  }, [attemptVideoLoad]);
 
   // Cleanup on unmount
   useEffect(() => {
     return () => {
       if (retryTimeoutRef.current) {
         clearTimeout(retryTimeoutRef.current);
+      }
+      if (loadingTimeoutRef.current) {
+        clearTimeout(loadingTimeoutRef.current);
       }
     };
   }, []);
@@ -232,6 +269,7 @@ const VideoBackground = () => {
                 {videoState.retryCount > 0 && (
                   <div className="text-white/70 text-sm">
                     Attempt {videoState.retryCount + 1} of {MAX_RETRIES + 1}
+                    {videoState.isHardRefresh && <span className="ml-2">(Hard refresh detected)</span>}
                   </div>
                 )}
               </div>
@@ -248,6 +286,7 @@ const VideoBackground = () => {
               Retries: {videoState.retryCount}/{MAX_RETRIES} | 
               Network: {videoState.networkState} | 
               Ready: {videoState.readyState}
+              {videoState.isHardRefresh && <span className="ml-2">| Hard refresh: Yes</span>}
             </div>
           </div>
         </div>
