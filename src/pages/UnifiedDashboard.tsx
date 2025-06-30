@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -7,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import DashboardRoleToggle from '@/components/dashboard/DashboardRoleToggle';
-import VideoBackground from '@/components/common/VideoBackground';
 import { 
   Calendar, 
   Kanban, 
@@ -34,7 +32,6 @@ const UnifiedDashboard = () => {
   if (authLoading || roleLoading) {
     return (
       <div className="min-h-screen">
-        <VideoBackground />
         <div className="pt-20 w-full px-4">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
@@ -79,8 +76,6 @@ const UnifiedDashboard = () => {
 
   return (
     <div className="min-h-screen">
-      <VideoBackground />
-      
       <div className="pt-20 w-full px-4 pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Dashboard Header with Role Toggle */}

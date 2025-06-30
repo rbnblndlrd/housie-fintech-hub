@@ -15,6 +15,7 @@ import GPSJobAnalyzer from "@/pages/GPSJobAnalyzer";
 import Calendar from "@/pages/Calendar";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import CustomerDashboard from "@/pages/CustomerDashboard";
+import Social from "@/pages/Social";
 
 function App() {
   return (
@@ -47,6 +48,9 @@ function App() {
               
               {/* Calendar Route */}
               <Route path="/calendar" element={<Calendar />} />
+              
+              {/* Social Route */}
+              <Route path="/social" element={<Social />} />
             </Routes>
           </div>
         </Router>
