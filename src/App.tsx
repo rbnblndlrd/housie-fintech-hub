@@ -23,6 +23,7 @@ import Social from "@/pages/Social";
 import Services from "@/pages/Services";
 import Help from "@/pages/Help";
 import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
+import BookingsPage from "@/pages/BookingsPage";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/manager" element={<ManagerDashboard />} />
             <Route path="/kanban" element={<KanbanBoard />} />
             <Route path="/gps-job-analyzer" element={<GPSJobAnalyzer />} />
+            <Route path="/bookings" element={<BookingsPage />} />
             
             {/* Analytics Routes */}
             <Route path="/analytics" element={<AnalyticsDashboard />} />

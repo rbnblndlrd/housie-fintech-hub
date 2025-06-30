@@ -1,293 +1,242 @@
-import React, { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { Navigate, useNavigate } from 'react-router-dom';
+
+import React from 'react';
+import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import VideoBackground from '@/components/common/VideoBackground';
-import { ArrowLeft, Home } from 'lucide-react';
 import { 
-  Bell, 
-  Star, 
+  Heart, 
+  MessageCircle, 
+  Share2, 
   Users, 
-  MessageSquare, 
-  StickyNote,
-  Award,
-  TrendingUp,
-  User
+  MapPin, 
+  Star,
+  Calendar,
+  Camera,
+  Plus
 } from 'lucide-react';
 
 const Social = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const [activeGroup, setActiveGroup] = useState('notes');
-
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  const notifications = [
-    { type: 'review', message: 'New 5-star review from Client A', time: '2 min ago', priority: 'high' },
-    { type: 'message', message: 'Message from crew member John', time: '15 min ago', priority: 'medium' },
-    { type: 'achievement', message: 'Achievement unlocked: Quality Streak!', time: '1 hour ago', priority: 'high' }
+  const posts = [
+    {
+      id: 1,
+      user: {
+        name: "Marie Dubois",
+        avatar: "",
+        role: "Professional Cleaner",
+        location: "Montreal, QC"
+      },
+      content: "Just finished a deep clean for a lovely family in Westmount! Their home is sparkling ✨",
+      image: "",
+      likes: 24,
+      comments: 8,
+      shares: 3,
+      timestamp: "2 hours ago",
+      tags: ["cleaning", "residential"]
+    },
+    {
+      id: 2,
+      user: {
+        name: "Jean Martin",
+        avatar: "",
+        role: "Handyman",
+        location: "Laval, QC"
+      },
+      content: "Completed a kitchen renovation today. The before and after is incredible! 🔨",
+      image: "",
+      likes: 42,
+      comments: 15,
+      shares: 7,
+      timestamp: "4 hours ago",
+      tags: ["renovation", "kitchen"]
+    },
+    {
+      id: 3,
+      user: {
+        name: "Sophie Chen",
+        avatar: "",
+        role: "Electrician",
+        location: "Toronto, ON"
+      },
+      content: "Safety first! Just installed new electrical panels for a growing family. Always happy to help keep homes safe! ⚡",
+      image: "",
+      likes: 31,
+      comments: 12,
+      shares: 5,
+      timestamp: "6 hours ago",
+      tags: ["electrical", "safety"]
+    }
   ];
 
-  const feedbackStats = {
-    rating: 4.8,
-    connections: 47,
-    commendations: 23,
-    achievement: '5 Stars Streak'
-  };
-
-  const recentReviews = [
-    { client: 'Sarah M.', rating: 5, comment: 'Excellent service, very professional!', date: '2 days ago' },
-    { client: 'Mike R.', rating: 5, comment: 'Quick response and great quality work.', date: '1 week ago' }
+  const trendingTopics = [
+    { tag: "cleaning", count: 156 },
+    { tag: "renovation", count: 89 },
+    { tag: "plumbing", count: 67 },
+    { tag: "electrical", count: 54 },
+    { tag: "gardening", count: 43 }
   ];
-
-  const groups = {
-    notes: [
-      { id: 1, title: 'Client preferences', content: 'Remember Sarah prefers morning appointments', date: '2 days ago' },
-      { id: 2, title: 'Route optimization', content: 'Best route through downtown area on Tuesdays', date: '1 week ago' }
-    ],
-    messages: [
-      { id: 1, from: 'John D.', preview: 'Can we reschedule tomorrow\'s job?', time: '5 min ago', unread: true },
-      { id: 2, from: 'Emma K.', preview: 'Thanks for the great service!', time: '2 hours ago', unread: false }
-    ],
-    crews: [
-      { id: 1, name: 'Downtown Cleaners', members: 8, activity: 'Active discussion about new client protocols', time: '1 hour ago' },
-      { id: 2, name: 'Weekend Warriors', members: 12, activity: 'Planning this weekend\'s schedule', time: '3 hours ago' }
-    ],
-    collectives: [
-      { id: 1, name: 'Montreal Service Pros', members: 45, activity: 'Sharing tips about winter equipment', time: '2 hours ago' },
-      { id: 2, name: 'Quality First Network', members: 23, activity: 'New member introductions', time: '5 hours ago' }
-    ]
-  };
 
   return (
-    <div className="min-h-screen">
+    <>
       <VideoBackground />
-      
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/dashboard')}
-                className="text-white hover:bg-white/10 flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Dashboard
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Feedback & Social</h1>
-                <p className="text-white/90 drop-shadow-lg">Stay connected with your network and track your performance</p>
-              </div>
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+                Community Hub
+              </h1>
+              <p className="text-white/90 text-shadow">
+                Connect with other service providers and share your experiences
+              </p>
             </div>
-            
-            <Button 
-              variant="outline" 
-              onClick={() => navigate('/dashboard')}
-              className="bg-white/10 border-white/20 text-white hover:bg-white/20 flex items-center gap-2"
-            >
-              <Home className="h-4 w-4" />
-              Dashboard Home
-            </Button>
-          </div>
 
-          {/* Latest Notifications */}
-          <Card className="bg-white/95 backdrop-blur-sm mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Bell className="h-5 w-5 text-blue-600" />
-                Latest Notifications
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {notifications.map((notification, index) => (
-                  <div key={index} className={`flex items-center gap-4 p-3 rounded-lg ${
-                    notification.priority === 'high' ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'
-                  }`}>
-                    <div className={`p-2 rounded-full ${
-                      notification.type === 'review' ? 'bg-yellow-100 text-yellow-600' :
-                      notification.type === 'message' ? 'bg-blue-100 text-blue-600' :
-                      'bg-purple-100 text-purple-600'
-                    }`}>
-                      {notification.type === 'review' ? <Star className="h-4 w-4" /> :
-                       notification.type === 'message' ? <MessageSquare className="h-4 w-4" /> :
-                       <Award className="h-4 w-4" />}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Main Feed */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Create Post */}
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Avatar>
+                        <AvatarFallback className="bg-blue-500 text-white">U</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 bg-slate-700/50 rounded-full px-4 py-2 text-white/70 cursor-pointer hover:bg-slate-700/70 transition-colors">
+                        What's happening in your work today?
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-900">{notification.message}</p>
-                      <p className="text-sm text-gray-500">{notification.time}</p>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
+                          <Camera className="h-4 w-4 mr-2" />
+                          Photo
+                        </Button>
+                        <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
+                          <MapPin className="h-4 w-4 mr-2" />
+                          Location
+                        </Button>
+                      </div>
+                      <Button className="bg-blue-600 hover:bg-blue-700">
+                        Post
+                      </Button>
                     </div>
-                  </div>
+                  </CardContent>
+                </Card>
+
+                {/* Posts Feed */}
+                {posts.map((post) => (
+                  <Card key={post.id} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-3 mb-4">
+                        <Avatar>
+                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                            {post.user.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold text-white">{post.user.name}</h3>
+                            <Badge variant="outline" className="text-xs text-white/70 border-white/30">
+                              {post.user.role}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-white/60">
+                            <MapPin className="h-3 w-3" />
+                            {post.user.location}
+                            <span>•</span>
+                            <span>{post.timestamp}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="text-white mb-4">{post.content}</p>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {post.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-xs bg-blue-500/20 text-blue-300">
+                            #{tag}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-600/30">
+                        <div className="flex items-center gap-6">
+                          <Button variant="ghost" size="sm" className="text-white/70 hover:text-red-400">
+                            <Heart className="h-4 w-4 mr-2" />
+                            {post.likes}
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-white/70 hover:text-blue-400">
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            {post.comments}
+                          </Button>
+                          <Button variant="ghost" size="sm" className="text-white/70 hover:text-green-400">
+                            <Share2 className="h-4 w-4 mr-2" />
+                            {post.shares}
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
-            </CardContent>
-          </Card>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* Feedback Section */}
-            <div className="space-y-6">
-              {/* Feedback Stats */}
-              <Card className="bg-white/95 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Star className="h-5 w-5 text-yellow-600" />
-                    Feedback Overview
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="text-center">
-                      <div className="flex items-center justify-center gap-1 text-yellow-500 mb-2">
-                        <Star className="h-6 w-6 fill-current" />
-                        <span className="text-2xl font-bold">{feedbackStats.rating}</span>
-                      </div>
-                      <p className="text-sm text-gray-600">Average Rating</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600 mb-2">{feedbackStats.connections}</div>
-                      <p className="text-sm text-gray-600">Network Connections</p>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600 mb-2">{feedbackStats.commendations}</div>
-                      <p className="text-sm text-gray-600">Commendations</p>
-                    </div>
-                    <div className="text-center">
-                      <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                        {feedbackStats.achievement}
-                      </Badge>
-                      <p className="text-sm text-gray-600 mt-1">Latest Achievement</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Recent Reviews */}
-              <Card className="bg-white/95 backdrop-blur-sm">
-                <CardHeader>
-                  <CardTitle>Recent Reviews</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4 max-h-64 overflow-y-auto">
-                    {recentReviews.map((review, index) => (
-                      <div key={index} className="p-3 bg-gray-50 rounded-lg">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="font-medium text-gray-900">{review.client}</span>
-                          <div className="flex items-center gap-1">
-                            {[...Array(review.rating)].map((_, i) => (
-                              <Star key={i} className="h-4 w-4 text-yellow-500 fill-current" />
-                            ))}
-                          </div>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-1">{review.comment}</p>
-                        <p className="text-xs text-gray-500">{review.date}</p>
+              {/* Sidebar */}
+              <div className="space-y-6">
+                {/* Trending Topics */}
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Trending Topics</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {trendingTopics.map((topic) => (
+                      <div key={topic.tag} className="flex items-center justify-between">
+                        <span className="text-blue-300 cursor-pointer hover:text-blue-200">
+                          #{topic.tag}
+                        </span>
+                        <span className="text-white/60 text-sm">{topic.count} posts</span>
                       </div>
                     ))}
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+
+                {/* Quick Stats */}
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Community Stats</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4 text-blue-400" />
+                        <span className="text-white/90">Active Providers</span>
+                      </div>
+                      <span className="text-white font-semibold">1,247</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4 text-yellow-400" />
+                        <span className="text-white/90">Jobs Completed</span>
+                      </div>
+                      <span className="text-white font-semibold">8,392</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4 text-green-400" />
+                        <span className="text-white/90">This Month</span>
+                      </div>
+                      <span className="text-white font-semibold">456</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
-
-            {/* Social/Groups Section */}
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Users className="h-5 w-5 text-blue-600" />
-                  Groups
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Tabs value={activeGroup} onValueChange={setActiveGroup}>
-                  <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-4">
-                    <TabsTrigger value="notes" className="text-xs">Notes</TabsTrigger>
-                    <TabsTrigger value="messages" className="text-xs">Messages</TabsTrigger>
-                    <TabsTrigger value="crews" className="text-xs">Crews</TabsTrigger>
-                    <TabsTrigger value="collectives" className="text-xs">Collectives</TabsTrigger>
-                  </TabsList>
-                  
-                  <TabsContent value="notes" className="space-y-3">
-                    {groups.notes.map((note) => (
-                      <div key={note.id} className="p-3 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <div className="flex items-start gap-2">
-                          <StickyNote className="h-4 w-4 text-yellow-600 mt-1" />
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{note.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{note.content}</p>
-                            <p className="text-xs text-gray-500 mt-2">{note.date}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </TabsContent>
-                  
-                  <TabsContent value="messages" className="space-y-3">
-                    {groups.messages.map((message) => (
-                      <div key={message.id} className={`p-3 rounded-lg border ${
-                        message.unread ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
-                      }`}>
-                        <div className="flex items-start gap-2">
-                          <MessageSquare className="h-4 w-4 text-blue-600 mt-1" />
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <h4 className="font-medium text-gray-900">{message.from}</h4>
-                              {message.unread && <div className="w-2 h-2 bg-blue-600 rounded-full"></div>}
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{message.preview}</p>
-                            <p className="text-xs text-gray-500 mt-2">{message.time}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </TabsContent>
-                  
-                  <TabsContent value="crews" className="space-y-3">
-                    {groups.crews.map((crew) => (
-                      <div key={crew.id} className="p-3 bg-green-50 rounded-lg border border-green-200">
-                        <div className="flex items-start gap-2">
-                          <Users className="h-4 w-4 text-green-600 mt-1" />
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <h4 className="font-medium text-gray-900">{crew.name}</h4>
-                              <Badge variant="outline" className="text-xs">{crew.members} members</Badge>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{crew.activity}</p>
-                            <p className="text-xs text-gray-500 mt-2">{crew.time}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </TabsContent>
-                  
-                  <TabsContent value="collectives" className="space-y-3">
-                    {groups.collectives.map((collective) => (
-                      <div key={collective.id} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                        <div className="flex items-start gap-2">
-                          <TrendingUp className="h-4 w-4 text-purple-600 mt-1" />
-                          <div className="flex-1">
-                            <div className="flex items-center justify-between">
-                              <h4 className="font-medium text-gray-900">{collective.name}</h4>
-                              <Badge variant="outline" className="text-xs">{collective.members} members</Badge>
-                            </div>
-                            <p className="text-sm text-gray-600 mt-1">{collective.activity}</p>
-                            <p className="text-xs text-gray-500 mt-2">{collective.time}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </TabsContent>
-                </Tabs>
-              </CardContent>
-            </Card>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

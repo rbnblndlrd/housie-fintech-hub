@@ -1,304 +1,212 @@
 
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
+import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { useNavigate } from 'react-router-dom';
 import { 
   Plus, 
   Search, 
   Filter, 
-  MapPin, 
-  Clock, 
-  User, 
-  AlertTriangle,
-  CheckCircle,
   ArrowLeft,
-  Home
+  Kanban,
+  List,
+  Grid
 } from 'lucide-react';
-
-interface Ticket {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'low' | 'medium' | 'high';
-  assignee: string;
-  client: string;
-  location: string;
-  estimatedDuration: number;
-  status: 'todo' | 'in-progress' | 'review' | 'done';
-  tags: string[];
-  createdAt: string;
-}
 
 const KanbanBoard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
-  const [priorityFilter, setPriorityFilter] = useState('all');
+  const [viewMode, setViewMode] = useState<'list' | 'kanban' | 'grid'>('list');
 
   if (!user) {
     navigate('/auth');
     return null;
   }
 
-  const [tickets] = useState<Ticket[]>([
-    {
-      id: '1',
-      title: 'Emergency Plumbing Repair',
-      description: 'Burst pipe in basement - urgent repair needed',
-      priority: 'high',
-      assignee: 'Marc Dubois',
-      client: 'Marie Tremblay',
-      location: 'Downtown Montreal',
-      estimatedDuration: 120,
-      status: 'todo',
-      tags: ['plumbing', 'emergency'],
-      createdAt: '2024-01-15'
-    },
-    {
-      id: '2',
-      title: 'HVAC Maintenance',
-      description: 'Regular maintenance check for heating system',
-      priority: 'medium',
-      assignee: 'Sophie Lavoie',
-      client: 'Jean Martin',
-      location: 'Westmount',
-      estimatedDuration: 90,
-      status: 'in-progress',
-      tags: ['hvac', 'maintenance'],
-      createdAt: '2024-01-14'
-    },
-    {
-      id: '3',
-      title: 'Electrical Safety Check',
-      description: 'Inspect electrical panel and wiring',
-      priority: 'medium',
-      assignee: 'Pierre Gagnon',
-      client: 'Claire Dubois',
-      location: 'Plateau Mont-Royal',
-      estimatedDuration: 60,
-      status: 'review',
-      tags: ['electrical', 'inspection'],
-      createdAt: '2024-01-13'
-    },
-    {
-      id: '4',
-      title: 'Kitchen Renovation Consultation',
-      description: 'Initial consultation for kitchen renovation project',
-      priority: 'low',
-      assignee: 'Luc Bouchard',
-      client: 'Nathalie Roy',
-      location: 'Verdun',
-      estimatedDuration: 45,
-      status: 'done',
-      tags: ['renovation', 'consultation'],
-      createdAt: '2024-01-12'
-    },
-    {
-      id: '5',
-      title: 'Bathroom Plumbing Fix',
-      description: 'Leaky faucet and running toilet repair',
-      priority: 'medium',
-      assignee: 'Marc Dubois',
-      client: 'Robert Chen',
-      location: 'NDG',
-      estimatedDuration: 75,
-      status: 'todo',
-      tags: ['plumbing', 'bathroom'],
-      createdAt: '2024-01-11'
-    },
-    {
-      id: '6',
-      title: 'Air Conditioning Service',
-      description: 'Annual AC maintenance and filter replacement',
-      priority: 'low',
-      assignee: 'Sophie Lavoie',
-      client: 'Linda Martinez',
-      location: 'Outremont',
-      estimatedDuration: 60,
-      status: 'in-progress',
-      tags: ['hvac', 'maintenance'],
-      createdAt: '2024-01-10'
-    }
-  ]);
-
-  const filteredTickets = tickets.filter(ticket => {
-    const matchesSearch = ticket.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ticket.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         ticket.assignee.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
-    const matchesPriority = priorityFilter === 'all' || ticket.priority === priorityFilter;
-    
-    return matchesSearch && matchesStatus && matchesPriority;
-  });
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'todo': return 'bg-gray-100 text-gray-800';
-      case 'in-progress': return 'bg-blue-100 text-blue-800';
-      case 'review': return 'bg-purple-100 text-purple-800';
-      case 'done': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+  const stats = [
+    { label: 'New Requests', value: 8, color: 'bg-blue-500' },
+    { label: 'In Progress', value: 12, color: 'bg-yellow-500' },
+    { label: 'Completed Today', value: 6, color: 'bg-green-500' },
+    { label: 'Total Revenue', value: '$2,450', color: 'bg-purple-500' }
+  ];
 
   return (
-    <div className="min-h-screen">
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/dashboard')}
-                className="text-white hover:bg-white/10 flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Dashboard
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Ticket System</h1>
-                <p className="text-white/90 drop-shadow-lg">Manage and organize your service tickets</p>
+    <>
+      <VideoBackground />
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-7xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/dashboard')}
+                  className="text-white hover:bg-white/10 flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Dashboard
+                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold text-white text-shadow-lg">Service Ticket Management</h1>
+                  <p className="text-white/90 text-shadow">Organize and track your service requests</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Ticket
+                </Button>
               </div>
             </div>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              New Ticket
-            </Button>
-          </div>
 
-          {/* Filters and Search */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-              <Input
-                placeholder="Search tickets..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white/90 backdrop-blur-sm"
-              />
+            {/* Stats Overview */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              {stats.map((stat, index) => (
+                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm text-white/70">{stat.label}</p>
+                        <p className="text-2xl font-bold text-white">{stat.value}</p>
+                      </div>
+                      <div className={`w-3 h-12 ${stat.color} rounded-full`}></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
             </div>
-            
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Status</option>
-              <option value="todo">To Do</option>
-              <option value="in-progress">In Progress</option>
-              <option value="review">Review</option>
-              <option value="done">Done</option>
-            </select>
-            
-            <select
-              value={priorityFilter}
-              onChange={(e) => setPriorityFilter(e.target.value)}
-              className="px-3 py-2 bg-white/90 backdrop-blur-sm border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Priority</option>
-              <option value="high">High</option>
-              <option value="medium">Medium</option>
-              <option value="low">Low</option>
-            </select>
-            
-            <div className="text-white bg-black/20 backdrop-blur-sm rounded-md px-3 py-2 text-center">
-              {filteredTickets.length} tickets found
-            </div>
-          </div>
 
-          {/* Ticket List */}
-          <div className="space-y-4">
-            {filteredTickets.map((ticket) => (
-              <Card key={ticket.id} className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{ticket.title}</h3>
-                        <Badge className={`${getPriorityColor(ticket.priority)} text-xs`}>
-                          {ticket.priority}
-                        </Badge>
-                        <Badge className={`${getStatusColor(ticket.status)} text-xs`}>
-                          {ticket.status.replace('-', ' ')}
-                        </Badge>
-                      </div>
-                      
-                      <p className="text-gray-600 mb-3">{ticket.description}</p>
-                      
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-gray-400" />
-                          <span><strong>Assignee:</strong> {ticket.assignee}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <User className="h-4 w-4 text-gray-400" />
-                          <span><strong>Client:</strong> {ticket.client}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <MapPin className="h-4 w-4 text-gray-400" />
-                          <span><strong>Location:</strong> {ticket.location}</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Clock className="h-4 w-4 text-gray-400" />
-                          <span><strong>Duration:</strong> {ticket.estimatedDuration}min</span>
-                        </div>
-                      </div>
-                      
-                      <div className="flex flex-wrap gap-2 mt-3">
-                        {ticket.tags.map((tag) => (
-                          <Badge key={tag} variant="outline" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
+            {/* Search and View Controls */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 h-4 w-4" />
+                  <Input
+                    placeholder="Search tickets..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-sm w-80"
+                  />
+                </div>
+                
+                <Button variant="outline" className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+                  <Filter className="h-4 w-4 mr-2" />
+                  Filters
+                </Button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Button
+                  variant={viewMode === 'list' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('list')}
+                  className={viewMode === 'list' ? '' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}
+                >
+                  <List className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'kanban' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('kanban')}
+                  className={viewMode === 'kanban' ? '' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}
+                >
+                  <Kanban className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant={viewMode === 'grid' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setViewMode('grid')}
+                  className={viewMode === 'grid' ? '' : 'bg-white/10 border-white/20 text-white hover:bg-white/20'}
+                >
+                  <Grid className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Main Content - Autotask Style Ticket List */}
+            <div className="space-y-6">
+              <KanbanTicketList />
+              
+              {/* Additional Quick Actions */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow text-lg">Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <Button className="w-full justify-start bg-blue-600 hover:bg-blue-700">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Create New Ticket
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start text-white border-white/20 hover:bg-white/10">
+                      <Filter className="h-4 w-4 mr-2" />
+                      Advanced Filters
+                    </Button>
+                    <Button variant="outline" className="w-full justify-start text-white border-white/20 hover:bg-white/10">
+                      <Search className="h-4 w-4 mr-2" />
+                      Bulk Operations
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow text-lg">Priority Distribution</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-red-100 text-red-800">High</Badge>
+                      <span className="text-white">3 tickets</span>
                     </div>
-                    
-                    <div className="flex flex-col gap-2 ml-4">
-                      <Button size="sm" variant="outline">
-                        Edit
-                      </Button>
-                      <Button 
-                        size="sm" 
-                        variant="ghost"
-                        onClick={() => navigate('/gps-job-analyzer', { state: { ticket } })}
-                      >
-                        <MapPin className="h-4 w-4 mr-1" />
-                        GPS
-                      </Button>
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-yellow-100 text-yellow-800">Medium</Badge>
+                      <span className="text-white">8 tickets</span>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                    <div className="flex items-center justify-between">
+                      <Badge className="bg-green-100 text-green-800">Low</Badge>
+                      <span className="text-white">4 tickets</span>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow text-lg">Recent Activity</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-2">
+                    <div className="text-sm text-white/90">
+                      <p className="font-medium">Plumbing ticket completed</p>
+                      <p className="text-white/70">2 minutes ago</p>
+                    </div>
+                    <div className="text-sm text-white/90">
+                      <p className="font-medium">New electrical request</p>
+                      <p className="text-white/70">15 minutes ago</p>
+                    </div>
+                    <div className="text-sm text-white/90">
+                      <p className="font-medium">HVAC maintenance scheduled</p>
+                      <p className="text-white/70">1 hour ago</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
-          
-          {filteredTickets.length === 0 && (
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-12 text-center">
-                <AlertTriangle className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No tickets found</h3>
-                <p className="text-gray-600">Try adjusting your search or filters to find what you're looking for.</p>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

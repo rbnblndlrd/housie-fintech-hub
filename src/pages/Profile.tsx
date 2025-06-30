@@ -1,285 +1,196 @@
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
+import { Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/hooks/use-toast';
-import { useNavigate } from 'react-router-dom';
-import ProviderOnboarding from '@/components/profile/ProviderOnboarding';
-import { supabase } from '@/integrations/supabase/client';
 import { 
   User, 
-  Briefcase, 
   Mail, 
+  Phone, 
   MapPin, 
-  Star,
+  Star, 
+  Calendar,
   Settings,
   Shield,
-  Crown
+  Award
 } from 'lucide-react';
 
 const Profile = () => {
   const { user } = useAuth();
-  const { currentRole, availableRoles, switchRole, canSwitchToProvider, forceRefresh } = useRoleSwitch();
-  const { toast } = useToast();
-  const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
 
   if (!user) {
-    navigate('/auth');
-    return null;
+    return <Navigate to="/auth" replace />;
   }
 
-  const handleRoleSwitch = async (newRole: string) => {
-    try {
-      await switchRole(newRole as 'customer' | 'provider');
-      toast({
-        title: "Role Switched",
-        description: `Switched to ${newRole} mode successfully`,
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to switch role",
-        variant: "destructive",
-      });
-    }
+  const userProfile = {
+    name: user.user_metadata?.full_name || 'User',
+    email: user.email || '',
+    phone: '+1 (555) 123-4567',
+    location: 'Montreal, QC',
+    joinDate: 'January 2024',
+    rating: 4.8,
+    completedJobs: 127,
+    isVerified: true,
+    specialties: ['Plumbing', 'Electrical', 'General Repairs']
   };
-
-  const handleProviderEnabled = async () => {
-    setLoading(true);
-    try {
-      // The ProviderOnboarding component already updates the database
-      // Now we just need to refresh the context to pick up the changes
-      console.log('🔄 Provider enabled, refreshing role context...');
-      
-      if (forceRefresh) {
-        await forceRefresh();
-        console.log('✅ Role context refreshed successfully');
-      }
-      
-      toast({
-        title: "Provider Mode Enabled!",
-        description: "You can now switch between customer and provider roles.",
-      });
-      
-    } catch (error) {
-      console.error('Error refreshing role context:', error);
-      toast({
-        title: "Warning",
-        description: "Provider mode enabled but please refresh the page to see role toggle.",
-        variant: "default",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getRoleIcon = (role: string) => {
-    switch (role) {
-      case 'customer':
-        return <User className="h-4 w-4" />;
-      case 'provider':
-        return <Briefcase className="h-4 w-4" />;
-      default:
-        return <User className="h-4 w-4" />;
-    }
-  };
-
-  const getRoleLabel = (role: string) => {
-    switch (role) {
-      case 'customer':
-        return 'Customer';
-      case 'provider':
-        return 'Service Provider';
-      default:
-        return role;
-    }
-  };
-
-  const userInitials = user.user_metadata?.full_name 
-    ? user.user_metadata.full_name.split(' ').map((n: string) => n[0]).join('').toUpperCase()
-    : user.email?.charAt(0).toUpperCase() || 'U';
-
-  const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">My Profile</h1>
-            <p className="text-gray-600">Manage your account settings and preferences</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Profile Overview */}
-            <div className="lg:col-span-2 space-y-6">
-              <Card className="border-2 border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-3">
-                    <Avatar className="h-16 w-16">
-                      <AvatarImage src={user.user_metadata?.avatar_url} />
-                      <AvatarFallback className="bg-blue-600 text-white text-xl font-bold">
-                        {userInitials}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h2 className="text-2xl font-bold text-gray-900">{userName}</h2>
-                      <div className="flex items-center gap-2 mt-1">
-                        <Mail className="h-4 w-4 text-gray-500" />
-                        <span className="text-gray-600">{user.email}</span>
-                      </div>
-                    </div>
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <MapPin className="h-4 w-4" />
-                      <span>Montreal, QC</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-gray-600">
-                      <Star className="h-4 w-4 text-yellow-500" />
-                      <span>4.8 Rating</span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Role Management Section */}
-              <div className="transition-all duration-300 ease-in-out">
-                {!canSwitchToProvider ? (
-                  <ProviderOnboarding onProviderEnabled={handleProviderEnabled} />
-                ) : (
-                  <Card className="border-2 border-gray-200">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Crown className="h-5 w-5 text-purple-600" />
-                        Role Management
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        <div>
-                          <label className="text-sm font-medium text-gray-700 mb-2 block">
-                            Current Role
-                          </label>
-                          <Badge className="bg-blue-100 text-blue-800 border-blue-200 text-base px-3 py-1">
-                            {getRoleIcon(currentRole)}
-                            <span className="ml-2">{getRoleLabel(currentRole)}</span>
-                          </Badge>
-                        </div>
-
-                        {availableRoles.length > 1 && (
-                          <div>
-                            <label className="text-sm font-medium text-gray-700 mb-2 block">
-                              Switch Role
-                            </label>
-                            <Select value={currentRole} onValueChange={handleRoleSwitch}>
-                              <SelectTrigger className="w-full">
-                                <SelectValue>
-                                  <div className="flex items-center gap-2">
-                                    {getRoleIcon(currentRole)}
-                                    {getRoleLabel(currentRole)}
-                                  </div>
-                                </SelectValue>
-                              </SelectTrigger>
-                              <SelectContent>
-                                {availableRoles.map((role) => (
-                                  <SelectItem key={role} value={role}>
-                                    <div className="flex items-center gap-2">
-                                      {getRoleIcon(role)}
-                                      {getRoleLabel(role)}
-                                    </div>
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                            <p className="text-xs text-gray-500 mt-1">
-                              Switch between customer and provider modes
-                            </p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
-              </div>
+    <>
+      <VideoBackground />
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+                My Profile
+              </h1>
+              <p className="text-white/90 text-shadow">
+                Manage your account information and preferences
+              </p>
             </div>
 
-            {/* Quick Actions */}
-            <div className="space-y-6">
-              <Card className="border-2 border-gray-200">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-gray-600" />
-                    Quick Actions
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => navigate('/dashboard')}
-                  >
-                    <User className="h-4 w-4 mr-2" />
-                    View Dashboard
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => navigate('/calendar')}
-                  >
-                    <Shield className="h-4 w-4 mr-2" />
-                    Manage Calendar
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="w-full justify-start"
-                    onClick={() => navigate('/social')}
-                  >
-                    <Star className="h-4 w-4 mr-2" />
-                    Network & Reviews
-                  </Button>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Profile Overview */}
+              <div className="lg:col-span-1">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardContent className="p-6 text-center">
+                    <Avatar className="w-24 h-24 mx-auto mb-4">
+                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-2xl">
+                        {userProfile.name.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <div className="mb-4">
+                      <h2 className="text-xl font-bold text-white mb-1">{userProfile.name}</h2>
+                      {userProfile.isVerified && (
+                        <Badge className="bg-green-100 text-green-800 mb-2">
+                          <Shield className="h-3 w-3 mr-1" />
+                          Verified Provider
+                        </Badge>
+                      )}
+                    </div>
 
-              <Card className="border-2 border-gray-200">
-                <CardHeader>
-                  <CardTitle>Account Status</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Email Verified</span>
-                      <Badge className="bg-green-100 text-green-800">✓ Verified</Badge>
+                    <div className="space-y-2 text-sm text-white/90">
+                      <div className="flex items-center justify-center gap-2">
+                        <Mail className="h-4 w-4" />
+                        <span>{userProfile.email}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <Phone className="h-4 w-4" />
+                        <span>{userProfile.phone}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <MapPin className="h-4 w-4" />
+                        <span>{userProfile.location}</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>Member since {userProfile.joinDate}</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Profile Complete</span>
-                      <Badge className="bg-blue-100 text-blue-800">85%</Badge>
+
+                    <Button className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white border-white/20">
+                      <Settings className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Profile Details */}
+              <div className="lg:col-span-2 space-y-6">
+                {/* Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                    <CardContent className="p-4 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <Star className="h-6 w-6 text-yellow-400" />
+                      </div>
+                      <div className="text-2xl font-bold text-white">{userProfile.rating}</div>
+                      <div className="text-sm text-white/70">Average Rating</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                    <CardContent className="p-4 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <Award className="h-6 w-6 text-green-400" />
+                      </div>
+                      <div className="text-2xl font-bold text-white">{userProfile.completedJobs}</div>
+                      <div className="text-sm text-white/70">Jobs Completed</div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                    <CardContent className="p-4 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <User className="h-6 w-6 text-blue-400" />
+                      </div>
+                      <div className="text-2xl font-bold text-white">98%</div>
+                      <div className="text-sm text-white/70">Response Rate</div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Specialties */}
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Specialties</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {userProfile.specialties.map((specialty) => (
+                        <Badge key={specialty} variant="secondary" className="bg-blue-500/20 text-blue-300">
+                          {specialty}
+                        </Badge>
+                      ))}
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Provider Mode</span>
-                      <Badge className={canSwitchToProvider ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
-                        {canSwitchToProvider ? "✓ Enabled" : "Disabled"}
-                      </Badge>
+                  </CardContent>
+                </Card>
+
+                {/* Recent Activity */}
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Recent Activity</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <div>
+                          <h4 className="text-white font-medium">Plumbing Repair Completed</h4>
+                          <p className="text-white/70 text-sm">Downtown Montreal • 2 days ago</p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-800">Completed</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <div>
+                          <h4 className="text-white font-medium">Electrical Installation</h4>
+                          <p className="text-white/70 text-sm">Westmount • 1 week ago</p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-800">Completed</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <div>
+                          <h4 className="text-white font-medium">Kitchen Renovation</h4>
+                          <p className="text-white/70 text-sm">Plateau • 2 weeks ago</p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-800">Completed</Badge>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

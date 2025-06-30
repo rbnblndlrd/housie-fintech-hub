@@ -1,353 +1,200 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { 
   MapPin, 
-  Route, 
+  Navigation, 
   Clock, 
   User, 
-  Navigation, 
-  Target,
-  CheckCircle,
-  ArrowRight,
-  Zap,
-  ArrowLeft
+  Phone,
+  ArrowLeft,
+  Route,
+  Calculator,
+  Fuel
 } from 'lucide-react';
-
-interface JobLocation {
-  id: string;
-  title: string;
-  address: string;
-  lat: number;
-  lng: number;
-  priority: 'low' | 'medium' | 'high';
-  estimatedDuration: number;
-  assignee: string;
-  client: string;
-  status: 'pending' | 'assigned' | 'in-route' | 'completed';
-}
 
 const GPSJobAnalyzer = () => {
   const { user } = useAuth();
-  const location = useLocation();
   const navigate = useNavigate();
-  const [selectedJobs, setSelectedJobs] = useState<JobLocation[]>([]);
-  const [optimizedRoute, setOptimizedRoute] = useState<JobLocation[]>([]);
-  const [isOptimizing, setIsOptimizing] = useState(false);
-
-  // Get ticket from navigation state if available
-  const incomingTicket = location.state?.ticket;
-
-  const [availableJobs] = useState<JobLocation[]>([
-    {
-      id: '1',
-      title: 'Emergency Plumbing Repair',
-      address: '123 Rue Sainte-Catherine, Montreal',
-      lat: 45.5017,
-      lng: -73.5673,
-      priority: 'high',
-      estimatedDuration: 120,
-      assignee: 'Marc Dubois',
-      client: 'Marie Tremblay',
-      status: 'pending'
-    },
-    {
-      id: '2',
-      title: 'HVAC Maintenance',
-      address: '456 Rue Sherbrooke, Westmount',
-      lat: 45.4848,
-      lng: -73.5915,
-      priority: 'medium',
-      estimatedDuration: 90,
-      assignee: 'Sophie Lavoie',
-      client: 'Jean Martin',
-      status: 'pending'
-    },
-    {
-      id: '3',
-      title: 'Electrical Safety Check',
-      address: '789 Rue Mont-Royal, Plateau',
-      lat: 45.5276,
-      lng: -73.5946,
-      priority: 'medium',
-      estimatedDuration: 60,
-      assignee: 'Pierre Gagnon',
-      client: 'Claire Dubois',
-      status: 'pending'
-    },
-    {
-      id: '4',
-      title: 'Kitchen Renovation Consultation',
-      address: '321 Rue Wellington, Verdun',
-      lat: 45.4580,
-      lng: -73.5673,
-      priority: 'low',
-      estimatedDuration: 45,
-      assignee: 'Luc Bouchard',
-      client: 'Nathalie Roy',
-      status: 'pending'
-    }
-  ]);
-
-  useEffect(() => {
-    // If a ticket was passed from Kanban, auto-select it
-    if (incomingTicket) {
-      const matchingJob = availableJobs.find(job => job.title === incomingTicket.title);
-      if (matchingJob && !selectedJobs.find(job => job.id === matchingJob.id)) {
-        setSelectedJobs(prev => [...prev, matchingJob]);
-      }
-    }
-  }, [incomingTicket, availableJobs]);
+  const location = useLocation();
+  const ticket = location.state?.ticket;
 
   if (!user) {
     navigate('/auth');
     return null;
   }
 
-  const handleJobSelect = (job: JobLocation) => {
-    if (selectedJobs.find(selected => selected.id === job.id)) {
-      setSelectedJobs(prev => prev.filter(selected => selected.id !== job.id));
-    } else {
-      setSelectedJobs(prev => [...prev, job]);
-    }
+  const jobDetails = ticket || {
+    id: '1',
+    title: 'Emergency Plumbing Repair',
+    client: 'Marie Tremblay',
+    location: 'Downtown Montreal',
+    estimatedDuration: 120,
+    priority: 'high'
   };
 
-  const handleOptimizeRoute = async () => {
-    if (selectedJobs.length < 2) return;
-    
-    setIsOptimizing(true);
-    // Simulate route optimization
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Simple optimization: sort by priority then by distance approximation
-    const optimized = [...selectedJobs].sort((a, b) => {
-      if (a.priority === 'high' && b.priority !== 'high') return -1;
-      if (b.priority === 'high' && a.priority !== 'high') return 1;
-      return a.lat - b.lat; // Simple distance approximation
-    });
-    
-    setOptimizedRoute(optimized);
-    setIsOptimizing(false);
+  const routeAnalysis = {
+    distance: '12.5 km',
+    estimatedTime: '18 mins',
+    fuelCost: '$3.45',
+    optimalRoute: 'Via Rue Saint-Catherine',
+    trafficCondition: 'Light',
+    alternativeRoutes: 2
   };
-
-  const handleDispatchRoute = () => {
-    if (optimizedRoute.length === 0) return;
-    
-    console.log('Dispatching optimized route:', optimizedRoute);
-    alert('Route dispatched successfully!');
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const totalDuration = selectedJobs.reduce((total, job) => total + job.estimatedDuration, 0);
-  const highPriorityCount = selectedJobs.filter(job => job.priority === 'high').length;
 
   return (
-    <div className="min-h-screen">
-      <div className="pt-20 px-4 pb-8">
-        <div className="max-w-7xl mx-auto">
-          {/* Header with Navigation */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <Button 
-                variant="ghost" 
-                onClick={() => navigate('/dashboard')}
-                className="text-white hover:bg-white/10 flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Dashboard
-              </Button>
-              <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">GPS Route Optimizer</h1>
-                <p className="text-white/90 drop-shadow-lg">Optimize routes for maximum efficiency</p>
+    <>
+      <VideoBackground />
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-20 px-4 pb-8">
+          <div className="max-w-6xl mx-auto">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center gap-4">
+                <Button 
+                  variant="ghost" 
+                  onClick={() => navigate('/kanban')}
+                  className="text-white hover:bg-white/10 flex items-center gap-2"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  Back to Tickets
+                </Button>
+                <div>
+                  <h1 className="text-3xl font-bold text-white text-shadow-lg">GPS Job Analyzer</h1>
+                  <p className="text-white/90 text-shadow">Route optimization and job analysis</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Job Details */}
+              <div className="lg:col-span-1 space-y-6">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Job Details</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-white mb-2">{jobDetails.title}</h3>
+                      <Badge className={`${
+                        jobDetails.priority === 'high' ? 'bg-red-100 text-red-800' : 
+                        jobDetails.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {jobDetails.priority} priority
+                      </Badge>
+                    </div>
+                    
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-white/90">
+                        <User className="h-4 w-4" />
+                        <span>Client: {jobDetails.client}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/90">
+                        <MapPin className="h-4 w-4" />
+                        <span>Location: {jobDetails.location}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-white/90">
+                        <Clock className="h-4 w-4" />
+                        <span>Duration: {jobDetails.estimatedDuration} minutes</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4 space-y-2">
+                      <Button className="w-full bg-green-600 hover:bg-green-700">
+                        <Phone className="h-4 w-4 mr-2" />
+                        Call Client
+                      </Button>
+                      <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
+                        <Navigation className="h-4 w-4 mr-2" />
+                        Start Navigation
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Route Analysis */}
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow">Route Analysis</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-blue-400">{routeAnalysis.distance}</div>
+                        <div className="text-sm text-white/70">Distance</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-2xl font-bold text-green-400">{routeAnalysis.estimatedTime}</div>
+                        <div className="text-sm text-white/70">ETA</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-white/90">Fuel Cost</span>
+                        <span className="text-white font-semibold">{routeAnalysis.fuelCost}</span>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-white/90">Traffic</span>
+                        <Badge className="bg-green-100 text-green-800">{routeAnalysis.trafficCondition}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-white/90">Alt. Routes</span>
+                        <span className="text-white font-semibold">{routeAnalysis.alternativeRoutes}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <p className="text-sm text-white/70 mb-2">Recommended Route:</p>
+                      <p className="text-white font-medium">{routeAnalysis.optimalRoute}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Map Placeholder */}
+              <div className="lg:col-span-2">
+                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl h-[600px]">
+                  <CardHeader>
+                    <CardTitle className="text-white text-shadow flex items-center gap-2">
+                      <Route className="h-5 w-5" />
+                      Interactive Map
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-full flex items-center justify-center">
+                    <div className="text-center">
+                      <MapPin className="h-16 w-16 text-white/50 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold text-white mb-2">GPS Map Integration</h3>
+                      <p className="text-white/70 mb-4">
+                        Interactive map with real-time traffic and route optimization
+                      </p>
+                      <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+                        <div className="bg-white/10 rounded-lg p-3">
+                          <Calculator className="h-6 w-6 text-blue-400 mx-auto mb-2" />
+                          <div className="text-sm text-white/90">Route Optimization</div>
+                        </div>
+                        <div className="bg-white/10 rounded-lg p-3">
+                          <Fuel className="h-6 w-6 text-green-400 mx-auto mb-2" />
+                          <div className="text-sm text-white/90">Cost Analysis</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
-
-          {/* Summary Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-blue-600">{selectedJobs.length}</div>
-                <div className="text-sm text-gray-600">Selected Jobs</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-purple-600">{Math.round(totalDuration / 60)}h</div>
-                <div className="text-sm text-gray-600">Total Duration</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-red-600">{highPriorityCount}</div>
-                <div className="text-sm text-gray-600">High Priority</div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-4 text-center">
-                <div className="text-2xl font-bold text-green-600">{optimizedRoute.length}</div>
-                <div className="text-sm text-gray-600">Route Stops</div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Available Jobs */}
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="h-5 w-5 text-blue-500" />
-                  Available Jobs
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {availableJobs.map((job) => (
-                    <div
-                      key={job.id}
-                      className={`p-4 border rounded-lg cursor-pointer transition-all ${
-                        selectedJobs.find(selected => selected.id === job.id)
-                          ? 'border-blue-500 bg-blue-50'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                      onClick={() => handleJobSelect(job)}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-medium text-gray-900">{job.title}</h4>
-                        <Badge className={`${getPriorityColor(job.priority)} text-xs`}>
-                          {job.priority}
-                        </Badge>
-                      </div>
-                      
-                      <div className="space-y-1 text-sm text-gray-600">
-                        <div className="flex items-center gap-1">
-                          <MapPin className="h-3 w-3" />
-                          <span>{job.address}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <User className="h-3 w-3" />
-                          <span>{job.assignee}</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          <span>{job.estimatedDuration}min</span>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-2 text-xs text-gray-500">
-                        Client: {job.client}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Route Optimization */}
-            <Card className="bg-white/95 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Route className="h-5 w-5 text-green-500" />
-                  Route Optimization
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {selectedJobs.length === 0 ? (
-                  <div className="text-center py-8">
-                    <Navigation className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                    <p className="text-gray-600">Select jobs to optimize route</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {/* Selected Jobs */}
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-3">Selected Jobs ({selectedJobs.length})</h4>
-                      <div className="space-y-2 max-h-48 overflow-y-auto">
-                        {selectedJobs.map((job, index) => (
-                          <div key={job.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                            <span className="text-sm font-medium text-gray-600">#{index + 1}</span>
-                            <div className="flex-1">
-                              <div className="text-sm font-medium">{job.title}</div>
-                              <div className="text-xs text-gray-600">{job.assignee}</div>
-                            </div>
-                            <Badge className={`${getPriorityColor(job.priority)} text-xs`}>
-                              {job.priority}
-                            </Badge>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Optimization Controls */}
-                    <div className="border-t pt-4">
-                      <Button
-                        onClick={handleOptimizeRoute}
-                        disabled={selectedJobs.length < 2 || isOptimizing}
-                        className="w-full mb-3"
-                      >
-                        {isOptimizing ? (
-                          <div className="flex items-center gap-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                            Optimizing Route...
-                          </div>
-                        ) : (
-                          <>
-                            <Route className="h-4 w-4 mr-2" />
-                            Optimize Route
-                          </>
-                        )}
-                      </Button>
-
-                      {optimizedRoute.length > 0 && (
-                        <div className="space-y-3">
-                          <h4 className="font-medium text-gray-900 flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4 text-green-500" />
-                            Optimized Route
-                          </h4>
-                          <div className="space-y-2">
-                            {optimizedRoute.map((job, index) => (
-                              <div key={job.id} className="flex items-center gap-2 p-2 bg-green-50 rounded border-green-200 border">
-                                <span className="bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                                  {index + 1}
-                                </span>
-                                <div className="flex-1">
-                                  <div className="text-sm font-medium">{job.title}</div>
-                                  <div className="text-xs text-gray-600">{job.estimatedDuration}min</div>
-                                </div>
-                                <ArrowRight className="h-3 w-3 text-gray-400" />
-                              </div>
-                            ))}
-                          </div>
-                          <Button
-                            onClick={handleDispatchRoute}
-                            className="w-full bg-green-600 hover:bg-green-700"
-                          >
-                            <Zap className="h-4 w-4 mr-2" />
-                            Dispatch Route
-                          </Button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
