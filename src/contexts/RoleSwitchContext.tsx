@@ -1,6 +1,6 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { RoleSwitchContextType } from '@/types/userProfile';
 
@@ -15,7 +15,7 @@ export const useRoleSwitch = () => {
 };
 
 export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const user = useUser();
+  const { user, loading: authLoading } = useAuth();
   const [currentRole, setCurrentRole] = useState<'customer' | 'provider'>('customer');
   const [availableRoles, setAvailableRoles] = useState<string[]>(['customer']);
   const [canSwitchToProvider, setCanSwitchToProvider] = useState(false);
@@ -24,6 +24,7 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   console.log('🔄 RoleSwitchProvider render:', { 
     hasUser: !!user, 
     userEmail: user?.email,
+    authLoading,
     currentRole, 
     availableRoles,
     canSwitchToProvider,
@@ -31,6 +32,12 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   });
 
   useEffect(() => {
+    // Wait for AuthProvider to finish loading before proceeding
+    if (authLoading) {
+      console.log('🔄 Waiting for AuthProvider to finish loading...');
+      return;
+    }
+
     if (user) {
       console.log('🔄 Loading user capabilities for:', user.email);
       loadUserCapabilities();
@@ -41,10 +48,13 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       setCanSwitchToProvider(false);
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, authLoading]);
 
   const loadUserCapabilities = async () => {
-    if (!user) return;
+    if (!user || authLoading) {
+      console.log('🔄 Skipping loadUserCapabilities - no user or auth still loading');
+      return;
+    }
 
     setIsLoading(true);
     try {
@@ -228,6 +238,11 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
       throw new Error('No user authenticated');
     }
 
+    if (authLoading) {
+      console.log('⚠️ Cannot switch role while auth is loading');
+      throw new Error('Authentication is still loading. Please wait.');
+    }
+
     if (!availableRoles.includes(newRole)) {
       console.error('❌ Cannot switch to role:', newRole, 'Available roles:', availableRoles);
       throw new Error(`Cannot switch to role: ${newRole}. Available roles: ${availableRoles.join(', ')}`);
@@ -267,6 +282,11 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
   const forceRefresh = async () => {
     console.log('🔄 FORCE REFRESH: Reloading user capabilities...');
+    if (authLoading) {
+      console.log('⚠️ Cannot refresh while auth is loading');
+      throw new Error('Authentication is still loading. Please wait.');
+    }
+    
     try {
       await loadUserCapabilities();
       console.log('✅ FORCE REFRESH: Complete');
@@ -276,13 +296,14 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
     }
   };
 
+  // Show loading state while AuthProvider is loading
   const contextValue = {
     currentRole,
     availableRoles,
     switchRole,
     canSwitchToProvider,
     forceRefresh,
-    isLoading
+    isLoading: isLoading || authLoading
   };
 
   return (

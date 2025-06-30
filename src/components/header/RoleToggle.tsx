@@ -3,13 +3,17 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Switch } from '@/components/ui/switch';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 const RoleToggle = () => {
+  const { user, loading: authLoading } = useAuth();
   const { currentRole, switchRole, availableRoles, canSwitchToProvider, isLoading } = useRoleSwitch();
   const navigate = useNavigate();
   const location = useLocation();
 
   console.log('🔧 RoleToggle render:', { 
+    hasUser: !!user,
+    authLoading,
     currentRole, 
     availableRoles,
     canSwitchToProvider,
@@ -18,7 +22,7 @@ const RoleToggle = () => {
   });
 
   // Don't render while loading or if provider mode is not available
-  if (isLoading || !canSwitchToProvider) {
+  if (authLoading || isLoading || !canSwitchToProvider || !user) {
     console.log('🔧 RoleToggle hidden - loading or provider mode not available');
     return null;
   }

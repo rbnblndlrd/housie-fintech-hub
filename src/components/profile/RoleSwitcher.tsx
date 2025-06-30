@@ -3,14 +3,23 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { User, Briefcase, AlertCircle } from 'lucide-react';
+import { User, Briefcase, AlertCircle, Loader2 } from 'lucide-react';
 
 const RoleSwitcher = () => {
-  const { currentRole, availableRoles, switchRole, canSwitchToProvider } = useRoleSwitch();
+  const { user, loading: authLoading } = useAuth();
+  const { currentRole, availableRoles, switchRole, canSwitchToProvider, isLoading } = useRoleSwitch();
   const { toast } = useToast();
 
-  console.log('🔧 RoleSwitcher render:', { currentRole, availableRoles, canSwitchToProvider });
+  console.log('🔧 RoleSwitcher render:', { 
+    hasUser: !!user,
+    authLoading,
+    currentRole, 
+    availableRoles, 
+    canSwitchToProvider,
+    isLoading
+  });
 
   const handleRoleSwitch = async (newRole: string) => {
     console.log('🔧 Attempting to switch to role:', newRole);
@@ -51,6 +60,16 @@ const RoleSwitcher = () => {
         return role;
     }
   };
+
+  // Show loading state
+  if (authLoading || isLoading) {
+    return (
+      <div className="flex items-center gap-2 text-sm text-gray-500">
+        <Loader2 className="h-4 w-4 animate-spin" />
+        <span>Loading roles...</span>
+      </div>
+    );
+  }
 
   // Show debug info if only customer role is available but should have provider
   const showDebugInfo = availableRoles.length === 1 && availableRoles[0] === 'customer';
