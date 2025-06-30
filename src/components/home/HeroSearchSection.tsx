@@ -84,7 +84,7 @@ const HeroSearchSection = () => {
         </p>
       </div>
 
-      {/* Bottom Banner - Updated with Certn logo and new color */}
+      {/* Bottom Banner - Updated with actual Certn logo */}
       {showBanner && (
         <div 
           className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg"
@@ -92,9 +92,9 @@ const HeroSearchSection = () => {
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              {/* Actual Certn Logo */}
+              {/* Actual Certn Logo from public directory */}
               <img 
-                src="/lovable-uploads/174def8f-b56f-422f-8c88-3a4a00278fd1.png" 
+                src="/CERTN.png" 
                 alt="Certn" 
                 className="h-8 w-auto"
               />
