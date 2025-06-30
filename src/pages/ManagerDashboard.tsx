@@ -2,13 +2,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate, Navigate } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronRight } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import DraggableTicket from '@/components/manager/DraggableTicket';
-import JobOrganizer from '@/components/manager/JobOrganizer';
-import RecentFeedback from '@/components/manager/RecentFeedback';
-import CrewOverviewHub from '@/components/manager/CrewOverviewHub';
+import EnhancedJobOrganizer from '@/components/manager/EnhancedJobOrganizer';
+import IncomingJobRequests from '@/components/manager/IncomingJobRequests';
+import EnhancedCrewHub from '@/components/manager/EnhancedCrewHub';
+import InsightsPerformance from '@/components/manager/InsightsPerformance';
 
 interface Ticket {
   id: string;
@@ -28,10 +29,13 @@ const ManagerDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   
+  const [section1Open, setSection1Open] = useState(true);
+  const [section2Open, setSection2Open] = useState(false);
+  const [section3Open, setSection3Open] = useState(false);
+  
   const [draggedTicket, setDraggedTicket] = useState<Ticket | null>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [organizedJobs, setOrganizedJobs] = useState<Ticket[]>([]);
-  const [isCrewMinimized, setIsCrewMinimized] = useState(false);
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -156,7 +160,7 @@ const ManagerDashboard = () => {
     <div className="min-h-screen">
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
-          {/* Header with Navigation */}
+          {/* Header */}
           <div className="flex items-center mb-6">
             <div className="flex items-center gap-4">
               <Button 
@@ -168,113 +172,129 @@ const ManagerDashboard = () => {
                 Dashboard
               </Button>
               <div>
-                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Manager</h1>
-                <p className="text-white/90 drop-shadow-lg">Operations management and oversight</p>
+                <h1 className="text-3xl font-bold text-white drop-shadow-lg">Manager Command Center</h1>
+                <p className="text-white/90 drop-shadow-lg">Complete operational control and automation</p>
               </div>
             </div>
           </div>
 
-          {/* Dynamic Grid Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Ticket Management - Large Box */}
-            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow lg:row-span-2">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span>🎫</span>
-                  Ticket Management
-                </CardTitle>
-                <p className="text-sm text-gray-600">
-                  {availableTickets.length} available tickets • Drag to organize
-                </p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3 max-h-96 overflow-y-auto">
-                  {availableTickets.map((ticket) => (
-                    <DraggableTicket 
-                      key={ticket.id}
-                      ticket={ticket}
-                      onDragStart={handleDragStart}
-                      isDragging={draggedTicket?.id === ticket.id}
-                    />
-                  ))}
-                  {availableTickets.length === 0 && (
-                    <div className="text-center py-8 text-gray-500">
-                      <div className="text-4xl mb-2">✅</div>
-                      <p>All tickets have been organized!</p>
+          {/* Section 1: Job Management & Automation Hub */}
+          <Collapsible open={section1Open} onOpenChange={setSection1Open} className="mb-6">
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-between p-6 h-auto bg-white/95 backdrop-blur-sm hover:bg-white/90 transition-colors border rounded-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">🎯</span>
+                  <div className="text-left">
+                    <h2 className="text-xl font-bold text-gray-900">Job Management & Automation Hub</h2>
+                    <p className="text-gray-600">Smart ticket management, routing, and incoming requests</p>
+                  </div>
+                </div>
+                {section1Open ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4">
+              <div className="bg-white/95 backdrop-blur-sm rounded-lg border p-6">
+                <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  {/* Ticket Management */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                      🎫 Ticket Management
+                      <span className="text-sm font-normal text-gray-600">
+                        ({availableTickets.length} available)
+                      </span>
+                    </h3>
+                    <div className="space-y-3 max-h-96 overflow-y-auto">
+                      {availableTickets.map((ticket) => (
+                        <DraggableTicket 
+                          key={ticket.id}
+                          ticket={ticket}
+                          onDragStart={handleDragStart}
+                          isDragging={draggedTicket?.id === ticket.id}
+                        />
+                      ))}
+                      {availableTickets.length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                          <div className="text-4xl mb-2">✅</div>
+                          <p>All tickets organized!</p>
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
-                <div className="mt-4 pt-3 border-t">
-                  <Button 
-                    onClick={() => navigate('/kanban')}
-                    className="w-full"
-                    variant="outline"
+                  </div>
+
+                  {/* Enhanced Job Organizer */}
+                  <div 
+                    className="xl:col-span-2"
+                    onDragLeave={handleDragLeave}
                   >
-                    View Full Ticket System
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Job Organizer - Large Box */}
-            <div 
-              className="lg:row-span-2"
-              onDragLeave={handleDragLeave}
-            >
-              <JobOrganizer 
-                organizedJobs={organizedJobs}
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onRemoveJob={handleRemoveJob}
-                onReorderJob={handleReorderJob}
-                isDragOver={isDragOver}
-              />
-            </div>
-
-            {/* Calendar - Medium Box */}
-            <Card className="bg-white/95 backdrop-blur-sm hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <span>📅</span>
-                  Calendar
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">Schedule and appointment management</p>
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Today's Jobs</span>
-                    <span className="font-semibold text-blue-600">3</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>This Week</span>
-                    <span className="font-semibold text-green-600">12</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span>Upcoming</span>
-                    <span className="font-semibold text-orange-600">8</span>
+                    <EnhancedJobOrganizer 
+                      organizedJobs={organizedJobs}
+                      onDrop={handleDrop}
+                      onDragOver={handleDragOver}
+                      onRemoveJob={handleRemoveJob}
+                      onReorderJob={handleReorderJob}
+                      isDragOver={isDragOver}
+                    />
                   </div>
                 </div>
-                <Button 
-                  onClick={() => navigate('/calendar')}
-                  className="w-full"
-                >
-                  View Calendar
-                </Button>
-              </CardContent>
-            </Card>
+                
+                {/* Incoming Job Requests */}
+                <div className="mt-8 border-t pt-6">
+                  <IncomingJobRequests />
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-            {/* Recent Feedback - Medium Box */}
-            <RecentFeedback />
+          {/* Section 2: Crew Management Hub */}
+          <Collapsible open={section2Open} onOpenChange={setSection2Open} className="mb-6">
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-between p-6 h-auto bg-white/95 backdrop-blur-sm hover:bg-white/90 transition-colors border rounded-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">👥</span>
+                  <div className="text-left">
+                    <h2 className="text-xl font-bold text-gray-900">Crew Management Hub</h2>
+                    <p className="text-gray-600">Team coordination, job board, and communication</p>
+                  </div>
+                </div>
+                {section2Open ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4">
+              <div className="bg-white/95 backdrop-blur-sm rounded-lg border p-6">
+                <EnhancedCrewHub />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
 
-            {/* Crew Overview Hub - Can span multiple columns when expanded */}
-            <div className={isCrewMinimized ? 'lg:col-span-1' : 'lg:col-span-3'}>
-              <CrewOverviewHub 
-                isMinimized={isCrewMinimized}
-                onToggleMinimize={() => setIsCrewMinimized(!isCrewMinimized)}
-              />
-            </div>
-          </div>
+          {/* Section 3: Insights & Performance */}
+          <Collapsible open={section3Open} onOpenChange={setSection3Open} className="mb-6">
+            <CollapsibleTrigger asChild>
+              <Button
+                variant="ghost"
+                className="w-full justify-between p-6 h-auto bg-white/95 backdrop-blur-sm hover:bg-white/90 transition-colors border rounded-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl">📊</span>
+                  <div className="text-left">
+                    <h2 className="text-xl font-bold text-gray-900">Insights & Performance</h2>
+                    <p className="text-gray-600">Feedback, calendar preview, and achievement progress</p>
+                  </div>
+                </div>
+                {section3Open ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-4">
+              <div className="bg-white/95 backdrop-blur-sm rounded-lg border p-6">
+                <InsightsPerformance />
+              </div>
+            </CollapsibleContent>
+          </Collapsible>
         </div>
       </div>
     </div>
