@@ -31,8 +31,8 @@ const ServicesPage = () => {
     if (verifiedOnly && !service.provider?.verified) return false;
     if (filters.category !== 'all' && service.category !== filters.category) return false;
     if (filters.subcategory !== 'all' && service.subcategory !== filters.subcategory) return false;
-    if (filters.location !== 'all' && service.location?.toLowerCase() !== filters.location) return false;
-    if (service.hourlyRate < priceRange[0] || service.hourlyRate > priceRange[1]) return false;
+    if (filters.location !== 'all' && service.provider?.user?.city?.toLowerCase() !== filters.location) return false;
+    if (service.provider?.hourly_rate && (service.provider.hourly_rate < priceRange[0] || service.provider.hourly_rate > priceRange[1])) return false;
     return true;
   }) || [];
 
