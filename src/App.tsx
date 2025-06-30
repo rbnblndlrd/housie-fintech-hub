@@ -3,7 +3,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
-import Header from '@/components/Header';
+import VideoBackground from '@/components/common/VideoBackground';
+import HousieEatsHeader from '@/components/header/HousieEatsHeader';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
 import Profile from '@/pages/Profile';
@@ -20,26 +21,34 @@ function App() {
     <AuthProvider>
       <RoleSwitchProvider>
         <Router>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/auth" element={<Auth />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/dashboard" element={<UnifiedDashboard />} />
-            <Route path="/customer-dashboard" element={<CustomerDashboard />} />
+          {/* Global Video Background */}
+          <VideoBackground />
+          
+          {/* Global HousieEats Header */}
+          <HousieEatsHeader />
+          
+          {/* Main Content with proper z-index to appear over video */}
+          <div className="relative z-10">
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/dashboard" element={<UnifiedDashboard />} />
+              <Route path="/customer-dashboard" element={<CustomerDashboard />} />
 
-            {/* Manager System Routes */}
-            <Route path="/manager" element={<ManagerDashboard />} />
-            <Route path="/kanban" element={<KanbanBoard />} />
-            <Route path="/gps-job-analyzer" element={<GPSJobAnalyzer />} />
-            
-            {/* Analytics Routes */}
-            <Route path="/analytics" element={<AnalyticsDashboard />} />
-            <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
-            
-            {/* Calendar Route */}
-            <Route path="/calendar" element={<Calendar />} />
-          </Routes>
+              {/* Manager System Routes */}
+              <Route path="/manager" element={<ManagerDashboard />} />
+              <Route path="/kanban" element={<KanbanBoard />} />
+              <Route path="/gps-job-analyzer" element={<GPSJobAnalyzer />} />
+              
+              {/* Analytics Routes */}
+              <Route path="/analytics" element={<AnalyticsDashboard />} />
+              <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+              
+              {/* Calendar Route */}
+              <Route path="/calendar" element={<Calendar />} />
+            </Routes>
+          </div>
         </Router>
       </RoleSwitchProvider>
     </AuthProvider>

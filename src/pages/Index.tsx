@@ -1,17 +1,17 @@
 
 import React from 'react';
-import UberEatsHeader from '@/components/home/UberEatsHeader';
+import HeroSearchSection from '@/components/home/HeroSearchSection';
 import OnboardingCards from '@/components/home/OnboardingCards';
 import { PricingSection } from '@/components/PricingSection';
 import HousieFooter from '@/components/home/HousieFooter';
 
 const Index = () => {
-  console.log('🏠 Index page rendering with UberEats-style layout...');
+  console.log('🏠 Index page rendering with HousieEats header and video background...');
 
   return (
     <div className="min-h-screen w-full">
-      {/* UberEats Style Header with Hero */}
-      <UberEatsHeader />
+      {/* Hero Search Section with Video Background */}
+      <HeroSearchSection />
       
       {/* Onboarding Cards Section */}
       <OnboardingCards />

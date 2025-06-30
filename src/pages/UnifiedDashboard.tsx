@@ -1,9 +1,7 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { Navigate, useNavigate } from 'react-router-dom';
-import Header from '@/components/Header';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -31,8 +29,7 @@ const UnifiedDashboard = () => {
 
   if (authLoading || roleLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
+      <div className="min-h-screen">
         <div className="pt-20 w-full px-4">
           <div className="animate-pulse space-y-6">
             <div className="h-8 bg-gray-200 rounded w-1/3"></div>
@@ -76,18 +73,16 @@ const UnifiedDashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      
+    <div className="min-h-screen">
       <div className="pt-20 w-full px-4 pb-8">
         <div className="max-w-7xl mx-auto">
           {/* Dashboard Header with Role Toggle */}
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">
                 {currentRole === 'customer' ? 'Welcome back!' : 'Provider Dashboard'}
               </h1>
-              <p className="text-gray-600">
+              <p className="text-white/90 drop-shadow-lg">
                 {currentRole === 'customer' 
                   ? 'Manage your bookings, calendar, and account' 
                   : 'Command center - manage operations and track performance'
@@ -139,7 +134,7 @@ const UnifiedDashboard = () => {
           <div className="grid grid-cols-12 gap-6">
             {/* Big Ticket List - Spans most of the width */}
             <div className="col-span-12 lg:col-span-8">
-              <Card>
+              <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Kanban className="h-5 w-5 text-blue-500" />
@@ -194,7 +189,7 @@ const UnifiedDashboard = () => {
 
             {/* Performance Metrics - Left of GPS */}
             <div className="col-span-12 lg:col-span-4">
-              <Card>
+              <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-purple-500" />
@@ -235,7 +230,7 @@ const UnifiedDashboard = () => {
 
             {/* Wide Calendar Preview - Spans 2/3 of width */}
             <div className="col-span-12 lg:col-span-8">
-              <Card>
+              <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Calendar className="h-5 w-5 text-orange-500" />
@@ -274,7 +269,7 @@ const UnifiedDashboard = () => {
 
             {/* Small GPS Job Analyzer - Right side */}
             <div className="col-span-12 lg:col-span-4">
-              <Card>
+              <Card className="bg-white/95 backdrop-blur-sm">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Map className="h-5 w-5 text-green-500" />
