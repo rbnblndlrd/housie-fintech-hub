@@ -39,8 +39,8 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="max-w-full mx-auto">
-        <div className="flex justify-between items-center h-16 px-8">
-          {/* Left: HOUSIE Logo + Hamburger Menu with more spacing */}
+        <div className="flex items-center h-16 px-8">
+          {/* Left: HOUSIE Logo + Hamburger Menu */}
           <div className="flex items-center space-x-4 ml-4">
             <Link to="/" className="flex items-center">
               <img 
@@ -70,19 +70,19 @@ const Header = () => {
             <HamburgerMenu />
           </div>
 
-          {/* Center: Dashboard (when user is authenticated) with more spacing from right */}
-          <div className="flex items-center mr-8">
-            {user && (
+          {/* Dashboard positioned towards center-left */}
+          {user && (
+            <div className="flex items-center ml-16">
               <Link to="/dashboard">
                 <Button variant="ghost" className="text-white hover:bg-gray-800 px-4 py-2">
                   <AutoTranslate>Dashboard</AutoTranslate>
                 </Button>
               </Link>
-            )}
-          </div>
+            </div>
+          )}
 
-          {/* Right: User Menu/Auth + Language Toggle */}
-          <div className="flex items-center space-x-3 mr-4">
+          {/* Right: User Menu/Auth + Language Toggle - pushed to the right */}
+          <div className="flex items-center space-x-3 ml-auto mr-4">
             {user ? (
               <div className="flex items-center space-x-2">
                 <UserMenu />
