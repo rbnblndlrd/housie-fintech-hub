@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
@@ -139,40 +140,80 @@
 }
 
 @layer components {
-  /* UPDATED FINTECH CARDS - Now with thinner borders */
+  /* UPDATED FINTECH CARDS - Now with premium hover animations */
   .fintech-card {
-    @apply rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+    @apply rounded-2xl cursor-pointer;
     background-color: #F8F6F0 !important; /* Warm beige background */
     border: 2px solid #000000 !important; /* Thinner black border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .fintech-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .fintech-card-secondary {
-    @apply backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200;
+    @apply backdrop-blur-sm rounded-xl cursor-pointer;
     background-color: #FEFCF7 !important; /* Off-white background */
     border: 2px solid #000000 !important; /* Thinner black border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .fintech-card-secondary:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .fintech-gradient-card {
-    @apply rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm;
+    @apply rounded-2xl backdrop-blur-sm cursor-pointer;
     background-color: #F8F6F0 !important; /* Warm beige background */
     border: 2px solid #000000 !important; /* Thinner black border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .fintech-gradient-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .fintech-metric-card {
-    @apply backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-200;
+    @apply backdrop-blur-sm rounded-xl cursor-pointer;
     background-color: #FEFCF7 !important; /* Off-white background */
     border: 2px solid #000000 !important; /* Thinner black border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .fintech-metric-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .fintech-chart-container {
-    @apply backdrop-blur-sm rounded-2xl shadow-lg transition-all duration-200;
+    @apply backdrop-blur-sm rounded-2xl cursor-pointer;
     background-color: #F8F6F0 !important; /* Warm beige background */
     border: 2px solid #000000 !important; /* Thinner black border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .fintech-chart-container:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   /* Winchester Green backgrounds remain the same thickness for headers */
@@ -231,19 +272,33 @@
     background-size: 100px 100px;
   }
 
-  /* Updated Cream Badge Components - Now with thinner borders */
+  /* Updated Cream Badge Components - Now with thinner borders and hover effects */
   .cream-badge {
-    @apply text-gray-800 rounded-full px-3 py-1 text-xs font-semibold shadow-sm hover:bg-stone-200 transition-all duration-200;
+    @apply text-gray-800 rounded-full px-3 py-1 text-xs font-semibold shadow-sm hover:bg-stone-200 transition-all duration-200 cursor-pointer;
     background-color: #F8F6F0 !important; /* Warm beige background */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+  }
+
+  .cream-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   }
 
   .cream-pill {
-    @apply text-gray-800 rounded-full min-w-[20px] h-5 px-2 text-xs font-bold shadow-sm flex items-center justify-center transition-all duration-200;
+    @apply text-gray-800 rounded-full min-w-[20px] h-5 px-2 text-xs font-bold shadow-sm flex items-center justify-center transition-all duration-200 cursor-pointer;
     background-color: #F8F6F0 !important; /* Warm beige background */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #000000 !important; /* Black text for readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+  }
+
+  .cream-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   }
 
   .cream-notification-dot {
@@ -286,23 +341,47 @@
     @apply bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 bg-clip-text text-transparent;
   }
 
-  /* DARK MODE - Updated with thinner borders */
+  /* DARK MODE - Updated with thinner borders and hover effects */
   .dark .fintech-card-secondary {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #ffffff !important; /* White text for dark mode readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .dark .fintech-card-secondary:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .dark .fintech-metric-card {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #ffffff !important; /* White text for dark mode readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .dark .fintech-metric-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .dark .fintech-chart-container {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #ffffff !important; /* White text for dark mode readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-out;
+    transform: translateY(0);
+  }
+
+  .dark .fintech-chart-container:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
   .dark .fintech-input {
@@ -321,17 +400,33 @@
     color: #ffffff !important; /* White text for dark mode readability */
   }
 
-  /* Dark mode cream theme with thinner borders */
+  /* Dark mode cream theme with thinner borders and hover effects */
   .dark .cream-badge {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #ffffff !important; /* White text for dark mode readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    transition: all 0.3s ease-out;
+  }
+
+  .dark .cream-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   }
 
   .dark .cream-pill {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Thinner border */
     color: #ffffff !important; /* White text for dark mode readability */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    transition: all 0.3s ease-out;
+  }
+
+  .dark .cream-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
   }
 
   .dark .cream-notification-dot {
