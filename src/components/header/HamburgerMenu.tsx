@@ -11,7 +11,6 @@ const HamburgerMenu = () => {
     { label: 'Services', href: '/services' },
     { label: 'Us vs Them', href: '/competitive-advantage' },
     { label: 'Help Center', href: '/help' },
-    { label: 'Dashboard', href: '/dashboard' },
   ];
 
   return (

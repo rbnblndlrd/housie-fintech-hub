@@ -7,6 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import HamburgerMenu from './header/HamburgerMenu';
 import UserMenu from './header/UserMenu';
+import LanguageToggle from './LanguageToggle';
 
 const Header = () => {
   const { user } = useAuth();
@@ -37,10 +38,10 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="max-w-full mx-auto">
-        <div className="flex justify-between items-center h-16">
-          {/* Left: HOUSIE Logo + Hamburger Menu - moved logo +3.5 inches toward center total */}
-          <div className="flex items-center space-x-2 ml-4">
-            <Link to="/" className="flex items-center pl-60">
+        <div className="flex justify-between items-center h-16 px-4">
+          {/* Left: HOUSIE Logo + Hamburger Menu */}
+          <div className="flex items-center space-x-4">
+            <Link to="/" className="flex items-center">
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
                 alt="HOUSIE" 
@@ -68,12 +69,26 @@ const Header = () => {
             <HamburgerMenu />
           </div>
 
-          {/* Right: Login/Signup or User Menu - moved +2 inches toward center total */}
-          <div className="flex items-center space-x-2 mr-4 pr-36">
+          {/* Center: Dashboard (when user is authenticated) */}
+          <div className="flex items-center">
+            {user && (
+              <Link to="/dashboard">
+                <Button variant="ghost" className="text-white hover:bg-gray-800 px-4 py-2">
+                  Dashboard
+                </Button>
+              </Link>
+            )}
+          </div>
+
+          {/* Right: User Menu/Auth + Language Toggle */}
+          <div className="flex items-center space-x-3">
             {user ? (
-              <UserMenu />
-            ) : (
               <div className="flex items-center space-x-2">
+                <UserMenu />
+                <LanguageToggle />
+              </div>
+            ) : (
+              <div className="flex items-center space-x-3">
                 <Link to="/auth">
                   <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
                     Log in
@@ -84,6 +99,7 @@ const Header = () => {
                     Sign up
                   </Button>
                 </Link>
+                <LanguageToggle />
               </div>
             )}
           </div>
