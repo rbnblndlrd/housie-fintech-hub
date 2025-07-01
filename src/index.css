@@ -1,6 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
 @tailwind components;  
 @tailwind utilities;
@@ -40,6 +40,12 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 10.6% 64.9%;
+    
+    /* Autumn theme colors */
+    --autumn-cream: #FDF6E3;
+    --autumn-amber: #D4A574;
+    --autumn-forest-green: #1B4332;
+    --autumn-warm-shadow: rgba(212, 165, 116, 0.15);
   }
 
   .dark {
@@ -75,6 +81,12 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 10.6% 64.9%;
+    
+    /* Dark mode autumn colors */
+    --autumn-cream: #2A2520;
+    --autumn-amber: #B8935C;
+    --autumn-forest-green: #4A7C59;
+    --autumn-warm-shadow: rgba(184, 147, 92, 0.2);
   }
 }
 
@@ -84,9 +96,10 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', 'Poppins', sans-serif;
     margin: 0 !important;
     padding: 0 !important;
+    line-height: 1.6;
   }
 
   /* Remove the complex orange background pattern entirely */
@@ -125,6 +138,14 @@
     max-width: none !important;
   }
 
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--autumn-forest-green);
+  }
+
   /* Text shadow utilities for better readability */
   .text-shadow {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -140,120 +161,205 @@
 }
 
 @layer components {
-  /* Winchester Green with transparency and prominent black borders */
+  /* NEW AUTUMN THEME COMPONENTS */
+  .autumn-card {
+    background-color: var(--autumn-cream) !important;
+    border: 3px solid var(--autumn-amber) !important;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px var(--autumn-warm-shadow), 0 2px 4px -1px var(--autumn-warm-shadow);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .autumn-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px -5px var(--autumn-warm-shadow), 0 4px 6px -2px var(--autumn-warm-shadow);
+  }
+
+  .autumn-card-secondary {
+    background-color: var(--autumn-cream) !important;
+    border: 2px solid var(--autumn-amber) !important;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px -1px var(--autumn-warm-shadow);
+    padding: 1rem;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .autumn-card-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px -2px var(--autumn-warm-shadow);
+  }
+
+  .autumn-title {
+    color: var(--autumn-forest-green) !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 0.75rem;
+  }
+
+  .autumn-subtitle {
+    color: var(--autumn-forest-green) !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+  }
+
+  .autumn-text {
+    color: #374151;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .autumn-button-primary {
+    background: linear-gradient(135deg, var(--autumn-amber) 0%, #B8935C 100%);
+    border: 2px solid var(--autumn-forest-green);
+    color: var(--autumn-forest-green);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px var(--autumn-warm-shadow);
+    transition: all 0.2s ease;
+  }
+
+  .autumn-button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px -2px var(--autumn-warm-shadow);
+    background: linear-gradient(135deg, #B8935C 0%, var(--autumn-amber) 100%);
+  }
+
+  .autumn-button-secondary {
+    background-color: transparent;
+    border: 2px solid var(--autumn-amber);
+    color: var(--autumn-forest-green);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+
+  .autumn-button-secondary:hover {
+    background-color: var(--autumn-amber);
+    color: white;
+  }
+
+  .autumn-input {
+    background-color: var(--autumn-cream);
+    border: 2px solid var(--autumn-amber);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s ease;
+    color: var(--autumn-forest-green);
+  }
+
+  .autumn-input:focus {
+    outline: none;
+    border-color: var(--autumn-forest-green);
+    box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
+  }
+
+  .autumn-badge {
+    background-color: var(--autumn-amber);
+    color: var(--autumn-forest-green);
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: 1px solid var(--autumn-forest-green);
+  }
+
+  /* DEPRECATED - keeping for backwards compatibility but updating colors */
   .fintech-card {
-    @apply rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
-    background-color: rgba(129, 164, 136, 0.85) !important; /* Winchester Green #81a488 with transparency */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-card;
   }
 
   .fintech-card-secondary {
-    @apply backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 3px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-card-secondary;
   }
 
   .fintech-gradient-card {
-    @apply rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm;
-    background-color: rgba(129, 164, 136, 0.85) !important; /* Winchester Green with transparency */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-card;
   }
 
   .fintech-metric-card {
-    @apply backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 3px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-card-secondary;
   }
 
   .fintech-chart-container {
-    @apply backdrop-blur-sm rounded-2xl shadow-lg transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.85) !important; /* Winchester Green with transparency */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-card;
   }
 
   .fintech-button-primary {
-    @apply text-white rounded-xl px-6 py-3 font-semibold shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200;
-    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-    border: 2px solid #000000 !important; /* Black border for buttons */
-  }
-
-  .fintech-button-primary:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+    @apply autumn-button-primary;
   }
 
   .fintech-button-secondary {
-    @apply hover:bg-white text-gray-800 rounded-xl px-6 py-3 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 3px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-button-secondary;
   }
 
   .fintech-input {
-    @apply backdrop-blur-sm rounded-xl shadow-lg focus:shadow-xl transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.7) !important; /* Winchester Green with transparency */
-    border: 3px solid #000000 !important; /* Prominent black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-input;
   }
 
-  .fintech-input::placeholder {
-    color: rgba(0, 0, 0, 0.6) !important; /* Dark placeholder text */
-  }
-
-  .fintech-grid-pattern {
-    background-image: 
-      radial-gradient(circle at 25px 25px, rgba(255,255,255,0.3) 2px, transparent 0),
-      radial-gradient(circle at 75px 75px, rgba(255,255,255,0.2) 2px, transparent 0);
-    background-size: 100px 100px;
-  }
-
-  /* Winchester Green Theme Components */
+  /* Winchester Green Theme Components - Updated for autumn */
   .cream-badge {
-    @apply text-gray-800 rounded-full px-3 py-1 text-xs font-semibold shadow-sm hover:bg-stone-200 transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
-    color: #000000 !important; /* Black text for readability */
+    @apply autumn-badge;
   }
 
   .cream-pill {
-    @apply text-gray-800 rounded-full min-w-[20px] h-5 px-2 text-xs font-bold shadow-sm flex items-center justify-center transition-all duration-200;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
-    color: #000000 !important; /* Black text for readability */
+    background-color: var(--autumn-amber);
+    color: var(--autumn-forest-green);
+    border: 1px solid var(--autumn-forest-green);
+    border-radius: 9999px;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
   }
 
   .cream-notification-dot {
-    @apply w-3 h-3 rounded-full shadow-sm;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--autumn-amber);
+    border: 2px solid var(--autumn-forest-green);
   }
 
   .cream-status-success {
-    @apply text-green-700;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
+    @apply autumn-badge;
+    background-color: #10B981;
+    color: white;
   }
 
   .cream-status-warning {
-    @apply text-orange-700;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
+    @apply autumn-badge;
+    background-color: #F59E0B;
+    color: white;
   }
 
   .cream-status-error {
-    @apply text-red-700;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
+    @apply autumn-badge;
+    background-color: #EF4444;
+    color: white;
   }
 
   .cream-status-info {
-    @apply text-blue-700;
-    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
-    border: 2px solid #000000 !important; /* Black border */
+    @apply autumn-badge;
+    background-color: #3B82F6;
+    color: white;
   }
 
   /* Hover lift animation */
@@ -264,59 +370,6 @@
   /* Text gradients */
   .housie-text-gradient {
     @apply bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 bg-clip-text text-transparent;
-  }
-
-  /* DARK MODE - Dark backgrounds with Winchester Green and black borders */
-  .dark .fintech-card-secondary {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  .dark .fintech-metric-card {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  .dark .fintech-chart-container {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  .dark .fintech-input {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  .dark .fintech-input::placeholder {
-    color: rgba(255, 255, 255, 0.7) !important; /* Light placeholder text for dark mode */
-  }
-
-  .dark .fintech-button-secondary {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 4px solid #000000 !important; /* Prominent black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  /* Dark mode Winchester Green theme */
-  .dark .cream-badge {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 2px solid #000000 !important; /* Black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  .dark .cream-pill {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 2px solid #000000 !important; /* Black border */
-    color: #ffffff !important; /* White text for dark mode readability */
-  }
-
-  .dark .cream-notification-dot {
-    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
-    border: 2px solid #000000 !important; /* Black border */
   }
 
   /* FULL WIDTH UTILITIES */
@@ -344,29 +397,33 @@
   }
 }
 
-/* Service Categories - Transform to theme-appropriate cards with Winchester Green */
+/* Service Categories - Transform to theme-appropriate cards */
 .service-category-card {
-  @apply fintech-card p-6 text-center;
+  @apply autumn-card;
+  text-align: center;
 }
 
 /* Navigation and header elements */
 .nav-card {
-  @apply fintech-card-secondary;
+  @apply autumn-card-secondary;
 }
 
 /* Form containers */
 .form-container {
-  @apply fintech-card p-8;
+  @apply autumn-card;
+  padding: 2rem;
 }
 
 /* Stats and metric cards */
 .stats-card {
-  @apply fintech-metric-card p-6;
+  @apply autumn-card-secondary;
+  padding: 1.5rem;
 }
 
 /* Chart containers */
 .chart-card {
-  @apply fintech-chart-container p-6;
+  @apply autumn-card;
+  padding: 1.5rem;
 }
 
 /* Custom scrollbar */
@@ -380,5 +437,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300/70 rounded-full hover:bg-gray-400/70 transition-colors;
+  background-color: var(--autumn-amber);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--autumn-forest-green);
 }
