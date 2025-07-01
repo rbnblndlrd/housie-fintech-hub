@@ -61,10 +61,10 @@ const FinancialAnalytics = () => {
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+              <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
                 Financial Analytics
               </h1>
-              <p className="text-white/90 text-shadow">
+              <p className="text-white/90 drop-shadow-md">
                 Comprehensive financial analysis and revenue insights
               </p>
             </div>
@@ -72,13 +72,13 @@ const FinancialAnalytics = () => {
             {/* Financial Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {financialMetrics.map((metric, index) => (
-                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card key={index} className="fintech-metric-card">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-white/90 mb-1">{metric.title}</p>
-                        <p className="text-3xl font-black text-white text-shadow-lg">{metric.value}</p>
-                        <p className="text-sm text-green-400 mt-1 flex items-center">
+                        <p className="text-sm font-medium opacity-80 mb-1">{metric.title}</p>
+                        <p className="text-3xl font-bold">{metric.value}</p>
+                        <p className="text-sm text-green-600 mt-1 flex items-center">
                           <ArrowUpRight className="h-3 w-3 mr-1" />
                           {metric.change}
                         </p>
@@ -94,24 +94,24 @@ const FinancialAnalytics = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {/* Revenue Chart */}
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-chart-container">
                 <CardHeader>
-                  <CardTitle className="text-white text-shadow flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5" />
                     Revenue Trends
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-64 flex items-center justify-center">
-                    <p className="text-white/70">Revenue trend chart will be displayed here</p>
+                    <p className="opacity-70">Revenue trend chart will be displayed here</p>
                   </div>
                 </CardContent>
               </Card>
 
               {/* Revenue Breakdown */}
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-chart-container">
                 <CardHeader>
-                  <CardTitle className="text-white text-shadow flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <PieChart className="h-5 w-5" />
                     Revenue Streams
                   </CardTitle>
@@ -121,10 +121,10 @@ const FinancialAnalytics = () => {
                     <div key={index} className="flex items-center justify-between">
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-white font-medium">{stream.category}</span>
-                          <span className="text-white/70">{stream.amount}</span>
+                          <span className="font-medium">{stream.category}</span>
+                          <span className="opacity-70">{stream.amount}</span>
                         </div>
-                        <div className="w-full bg-white/20 rounded-full h-2">
+                        <div className="w-full bg-gray-200/30 rounded-full h-2">
                           <div 
                             className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full" 
                             style={{ width: `${stream.percentage}%` }}
@@ -138,9 +138,9 @@ const FinancialAnalytics = () => {
             </div>
 
             {/* Financial Forecasting */}
-            <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+            <Card className="fintech-card">
               <CardHeader>
-                <CardTitle className="text-white text-shadow flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
                   Financial Forecasting
                 </CardTitle>
@@ -148,19 +148,19 @@ const FinancialAnalytics = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
-                    <h3 className="text-white font-medium mb-2">Next Month Projection</h3>
-                    <p className="text-2xl font-bold text-green-400">$52,800</p>
-                    <p className="text-white/70 text-sm">+16.7% growth expected</p>
+                    <h3 className="font-medium mb-2">Next Month Projection</h3>
+                    <p className="text-2xl font-bold text-green-600">$52,800</p>
+                    <p className="opacity-70 text-sm">+16.7% growth expected</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-white font-medium mb-2">Quarterly Target</h3>
-                    <p className="text-2xl font-bold text-blue-400">$150,000</p>
-                    <p className="text-white/70 text-sm">87% progress to goal</p>
+                    <h3 className="font-medium mb-2">Quarterly Target</h3>
+                    <p className="text-2xl font-bold text-blue-600">$150,000</p>
+                    <p className="opacity-70 text-sm">87% progress to goal</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="text-white font-medium mb-2">Annual Forecast</h3>
-                    <p className="text-2xl font-bold text-purple-400">$600,000</p>
-                    <p className="text-white/70 text-sm">Based on current trends</p>
+                    <h3 className="font-medium mb-2">Annual Forecast</h3>
+                    <p className="text-2xl font-bold text-purple-600">$600,000</p>
+                    <p className="opacity-70 text-sm">Based on current trends</p>
                   </div>
                 </div>
               </CardContent>

@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
@@ -140,7 +139,7 @@
 }
 
 @layer components {
-  /* ENHANCED FINTECH CARDS - Strongest specificity with comprehensive text overrides */
+  /* ENHANCED FINTECH CARDS - ULTIMATE TEXT CONTROL */
   .fintech-card {
     @apply rounded-2xl cursor-pointer;
     background-color: #F5F2E8 !important; /* Warm cream background */
@@ -156,31 +155,37 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* ULTRA-SPECIFIC FINTECH CARD TEXT OVERRIDES - These will override ALL Tailwind utilities */
+  /* ULTIMATE FINTECH CARD TEXT OVERRIDES - MAXIMUM SPECIFICITY */
   .fintech-card,
-  .fintech-card *,
-  .fintech-card h1,
-  .fintech-card h2,
-  .fintech-card h3,
-  .fintech-card h4,
-  .fintech-card h5,
-  .fintech-card h6,
-  .fintech-card p,
-  .fintech-card span,
-  .fintech-card div,
-  .fintech-card label,
-  .fintech-card li,
-  .fintech-card td,
-  .fintech-card th,
-  .fintech-card a,
-  .fintech-card button:not([class*="bg-gradient"]) {
+  .fintech-card *:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card h1:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card h2:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card h3:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card h4:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card h5:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card h6:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card p:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card span:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card div:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card label:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card li:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card td:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card th:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card a:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card button:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white.text-shadow:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]) {
     color: #1F1F1F !important; /* Force dark text on ALL elements */
     text-shadow: none !important; /* Remove any text shadows */
   }
 
   /* Exception: Keep white text on gradient backgrounds */
   .fintech-card .bg-gradient-to-r *,
-  .fintech-card [class*="bg-gradient"] * {
+  .fintech-card [class*="bg-gradient"] *,
+  .fintech-card [style*="background: linear-gradient"] *,
+  .fintech-card [style*="background-image: linear-gradient"] * {
     color: #ffffff !important;
   }
 
@@ -199,24 +204,28 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* ULTRA-SPECIFIC FINTECH CARD SECONDARY TEXT OVERRIDES */
+  /* ULTIMATE FINTECH CARD SECONDARY TEXT OVERRIDES */
   .fintech-card-secondary,
-  .fintech-card-secondary *,
-  .fintech-card-secondary h1,
-  .fintech-card-secondary h2,
-  .fintech-card-secondary h3,
-  .fintech-card-secondary h4,
-  .fintech-card-secondary h5,
-  .fintech-card-secondary h6,
-  .fintech-card-secondary p,
-  .fintech-card-secondary span,
-  .fintech-card-secondary div,
-  .fintech-card-secondary label,
-  .fintech-card-secondary li,
-  .fintech-card-secondary td,
-  .fintech-card-secondary th,
-  .fintech-card-secondary a,
-  .fintech-card-secondary button:not([class*="bg-gradient"]) {
+  .fintech-card-secondary *:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary h1:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary h2:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary h3:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary h4:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary h5:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary h6:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary p:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary span:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary div:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary label:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary li:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary td:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary th:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary a:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary button:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white.text-shadow:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]) {
     color: #1F1F1F !important; /* Force dark text on ALL elements */
     text-shadow: none !important; /* Remove any text shadows */
   }
@@ -236,24 +245,28 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* ULTRA-SPECIFIC FINTECH GRADIENT CARD TEXT OVERRIDES */
+  /* ULTIMATE FINTECH GRADIENT CARD TEXT OVERRIDES */
   .fintech-gradient-card,
-  .fintech-gradient-card *,
-  .fintech-gradient-card h1,
-  .fintech-gradient-card h2,
-  .fintech-gradient-card h3,
-  .fintech-gradient-card h4,
-  .fintech-gradient-card h5,
-  .fintech-gradient-card h6,
-  .fintech-gradient-card p,
-  .fintech-gradient-card span,
-  .fintech-gradient-card div,
-  .fintech-gradient-card label,
-  .fintech-gradient-card li,
-  .fintech-gradient-card td,
-  .fintech-gradient-card th,
-  .fintech-gradient-card a,
-  .fintech-gradient-card button:not([class*="bg-gradient"]) {
+  .fintech-gradient-card *:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card h1:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card h2:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card h3:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card h4:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card h5:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card h6:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card p:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card span:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card div:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card label:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card li:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card td:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card th:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card a:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card button:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white.text-shadow:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]) {
     color: #1F1F1F !important; /* Force dark text on ALL elements */
     text-shadow: none !important; /* Remove any text shadows */
   }
@@ -273,31 +286,37 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* ULTRA-SPECIFIC FINTECH METRIC CARD TEXT OVERRIDES */
+  /* ULTIMATE FINTECH METRIC CARD TEXT OVERRIDES */
   .fintech-metric-card,
-  .fintech-metric-card *,
-  .fintech-metric-card h1,
-  .fintech-metric-card h2,
-  .fintech-metric-card h3,
-  .fintech-metric-card h4,
-  .fintech-metric-card h5,
-  .fintech-metric-card h6,
-  .fintech-metric-card p,
-  .fintech-metric-card span,
-  .fintech-metric-card div,
-  .fintech-metric-card label,
-  .fintech-metric-card li,
-  .fintech-metric-card td,
-  .fintech-metric-card th,
-  .fintech-metric-card a,
-  .fintech-metric-card button:not([class*="bg-gradient"]) {
+  .fintech-metric-card *:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card h1:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card h2:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card h3:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card h4:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card h5:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card h6:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card p:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card span:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card div:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card label:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card li:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card td:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card th:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card a:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card button:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white.text-shadow:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]) {
     color: #1F1F1F !important; /* Force dark text on ALL elements */
     text-shadow: none !important; /* Remove any text shadows */
   }
 
   /* Exception: Keep white text on gradient backgrounds in metric cards */
   .fintech-metric-card .bg-gradient-to-r *,
-  .fintech-metric-card [class*="bg-gradient"] * {
+  .fintech-metric-card [class*="bg-gradient"] *,
+  .fintech-metric-card [style*="background: linear-gradient"] *,
+  .fintech-metric-card [style*="background-image: linear-gradient"] * {
     color: #ffffff !important;
   }
 
@@ -316,24 +335,28 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* ULTRA-SPECIFIC FINTECH CHART CONTAINER TEXT OVERRIDES */
+  /* ULTIMATE FINTECH CHART CONTAINER TEXT OVERRIDES */
   .fintech-chart-container,
-  .fintech-chart-container *,
-  .fintech-chart-container h1,
-  .fintech-chart-container h2,
-  .fintech-chart-container h3,
-  .fintech-chart-container h4,
-  .fintech-chart-container h5,
-  .fintech-chart-container h6,
-  .fintech-chart-container p,
-  .fintech-chart-container span,
-  .fintech-chart-container div,
-  .fintech-chart-container label,
-  .fintech-chart-container li,
-  .fintech-chart-container td,
-  .fintech-chart-container th,
-  .fintech-chart-container a,
-  .fintech-chart-container button:not([class*="bg-gradient"]) {
+  .fintech-chart-container *:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container h1:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container h2:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container h3:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container h4:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container h5:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container h6:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container p:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container span:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container div:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container label:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container li:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container td:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container th:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container a:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container button:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white.text-shadow:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]) {
     color: #1F1F1F !important; /* Force dark text on ALL elements */
     text-shadow: none !important; /* Remove any text shadows */
   }
@@ -613,13 +636,13 @@
     margin-right: 0 !important;
   }
 
-  /* FUTURE-PROOF ANTI-WHITE-TEXT RULES */
-  /* Override any Tailwind text-white classes within fintech contexts */
-  .fintech-card .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
-  .fintech-card-secondary .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
-  .fintech-metric-card .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
-  .fintech-chart-container .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
-  .fintech-gradient-card .text-white:not([class*="bg-gradient"]):not([class*="bg-"]) {
+  /* MASTER OVERRIDE RULES - HIGHEST SPECIFICITY FOR FINTECH CARDS */
+  /* These rules will override ANY Tailwind utility class within fintech contexts */
+  .fintech-card .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white:not([class*="bg-gradient"]):not([style*="background"]) {
     color: #1F1F1F !important;
     text-shadow: none !important;
   }
@@ -641,6 +664,30 @@
   .fintech-gradient-card .text-shadow-lg,
   .fintech-gradient-card .text-shadow-xl {
     text-shadow: none !important;
+  }
+
+  /* Override any opacity-based text colors within fintech contexts */
+  .fintech-card .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white\/80:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card .text-white\/60:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white\/80:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-card-secondary .text-white\/60:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white\/80:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-metric-card .text-white\/60:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white\/80:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-chart-container .text-white\/60:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white\/90:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white\/80:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white\/70:not([class*="bg-gradient"]):not([style*="background"]),
+  .fintech-gradient-card .text-white\/60:not([class*="bg-gradient"]):not([style*="background"]) {
+    color: rgba(31, 31, 31, 0.8) !important;
   }
 }
 

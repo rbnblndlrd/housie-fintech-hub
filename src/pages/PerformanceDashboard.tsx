@@ -52,10 +52,10 @@ const PerformanceDashboard = () => {
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+              <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
                 Performance Dashboard
               </h1>
-              <p className="text-white/90 text-shadow">
+              <p className="text-white/90 drop-shadow-md">
                 Monitor system performance and reliability metrics
               </p>
             </div>
@@ -63,13 +63,13 @@ const PerformanceDashboard = () => {
             {/* Performance Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {performanceMetrics.map((metric, index) => (
-                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card key={index} className="fintech-metric-card">
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <p className="text-sm font-medium text-white/90 mb-1">{metric.title}</p>
-                        <p className="text-3xl font-black text-white text-shadow-lg">{metric.value}</p>
-                        <p className="text-sm text-green-400 mt-1 capitalize">{metric.status}</p>
+                        <p className="text-sm font-medium opacity-80 mb-1">{metric.title}</p>
+                        <p className="text-3xl font-bold">{metric.value}</p>
+                        <p className="text-sm text-green-600 mt-1 capitalize">{metric.status}</p>
                       </div>
                       <div className={`w-12 h-12 bg-gradient-to-r ${metric.color} rounded-xl flex items-center justify-center`}>
                         <metric.icon className="h-6 w-6 text-white" />
@@ -82,30 +82,30 @@ const PerformanceDashboard = () => {
 
             {/* Performance Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-chart-container">
                 <CardHeader>
-                  <CardTitle className="text-white text-shadow flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <Zap className="h-5 w-5" />
                     System Performance
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-64 flex items-center justify-center">
-                    <p className="text-white/70">Performance charts will be displayed here</p>
+                    <p className="opacity-70">Performance charts will be displayed here</p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-chart-container">
                 <CardHeader>
-                  <CardTitle className="text-white text-shadow flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5" />
                     Performance Trends
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-64 flex items-center justify-center">
-                    <p className="text-white/70">Trend analysis will be displayed here</p>
+                    <p className="opacity-70">Trend analysis will be displayed here</p>
                   </div>
                 </CardContent>
               </Card>
