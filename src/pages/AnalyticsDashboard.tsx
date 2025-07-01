@@ -4,47 +4,38 @@ import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { 
-  BarChart3, 
   TrendingUp, 
   Users, 
-  DollarSign,
+  DollarSign, 
   Calendar,
   MapPin,
+  Clock,
   Star,
-  Clock
+  Activity,
+  Eye,
+  Download
 } from 'lucide-react';
 
 const AnalyticsDashboard = () => {
-  const analyticsCards = [
-    {
-      title: "Total Revenue",
-      value: "$124,350",
-      change: "+12.5%",
-      icon: DollarSign,
-      color: "from-green-600 to-emerald-600"
-    },
-    {
-      title: "Active Users",
-      value: "8,493",
-      change: "+8.2%",
-      icon: Users,
-      color: "from-blue-600 to-cyan-600"
-    },
-    {
-      title: "Bookings",
-      value: "2,847",
-      change: "+15.3%",
-      icon: Calendar,
-      color: "from-purple-600 to-violet-600"
-    },
-    {
-      title: "Avg Rating",
-      value: "4.8",
-      change: "+0.2",
-      icon: Star,
-      color: "from-yellow-600 to-orange-600"
-    }
+  // Sample data for charts
+  const revenueData = [
+    { month: 'Jan', revenue: 45000, bookings: 320 },
+    { month: 'Feb', revenue: 52000, bookings: 380 },
+    { month: 'Mar', revenue: 48000, bookings: 350 },
+    { month: 'Apr', revenue: 61000, bookings: 420 },
+    { month: 'May', revenue: 55000, bookings: 390 },
+    { month: 'Jun', revenue: 67000, bookings: 450 },
+  ];
+
+  const categoryData = [
+    { name: 'Cleaning', value: 35, color: '#8B5CF6' },
+    { name: 'Handyman', value: 25, color: '#06B6D4' },
+    { name: 'Plumbing', value: 20, color: '#10B981' },
+    { name: 'Electrical', value: 12, color: '#F59E0B' },
+    { name: 'Other', value: 8, color: '#EF4444' },
   ];
 
   return (
@@ -59,60 +50,197 @@ const AnalyticsDashboard = () => {
                 Analytics Dashboard
               </h1>
               <p className="text-white/90 text-shadow">
-                Monitor your platform performance and key metrics
+                Comprehensive insights into your business performance
               </p>
             </div>
 
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {analyticsCards.map((card, index) => (
-                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <p className="text-sm font-medium text-white/90 mb-1">{card.title}</p>
-                        <p className="text-3xl font-black text-white text-shadow-lg">{card.value}</p>
-                        <p className="text-sm text-green-400 mt-1">{card.change}</p>
-                      </div>
-                      <div className={`w-12 h-12 bg-gradient-to-r ${card.color} rounded-xl flex items-center justify-center`}>
-                        <card.icon className="h-6 w-6 text-white" />
-                      </div>
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              <Card className="fintech-metric-card">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80 mb-1">Total Revenue</p>
+                      <p className="text-3xl font-bold">$328K</p>
+                      <p className="text-sm text-green-600 font-semibold mt-1">+12.5%</p>
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            {/* Main Analytics Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-white text-shadow flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5" />
-                    Revenue Analytics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center">
-                    <p className="text-white/70">Revenue chart will be displayed here</p>
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-emerald-600 rounded-xl flex items-center justify-center">
+                      <DollarSign className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardHeader>
-                  <CardTitle className="text-white text-shadow flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Growth Metrics
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-64 flex items-center justify-center">
-                    <p className="text-white/70">Growth chart will be displayed here</p>
+              <Card className="fintech-metric-card">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80 mb-1">Total Bookings</p>
+                      <p className="text-3xl font-bold">2,310</p>
+                      <p className="text-sm text-blue-600 font-semibold mt-1">+8.2%</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                      <Calendar className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="fintech-metric-card">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80 mb-1">Active Users</p>
+                      <p className="text-3xl font-bold">1,847</p>
+                      <p className="text-sm text-purple-600 font-semibold mt-1">+15.3%</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+                      <Users className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="fintech-metric-card">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium opacity-80 mb-1">Avg Rating</p>
+                      <p className="text-3xl font-bold">4.8</p>
+                      <p className="text-sm text-yellow-600 font-semibold mt-1">+0.2</p>
+                    </div>
+                    <div className="w-12 h-12 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl flex items-center justify-center">
+                      <Star className="h-6 w-6 text-white" />
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              {/* Revenue Chart */}
+              <Card className="fintech-chart-container">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <TrendingUp className="h-5 w-5" />
+                      Revenue Trends
+                    </CardTitle>
+                    <Button variant="outline" size="sm">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <AreaChart data={revenueData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Area 
+                        type="monotone" 
+                        dataKey="revenue" 
+                        stroke="#8B5CF6" 
+                        fill="url(#colorRevenue)" 
+                      />
+                      <defs>
+                        <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
+                          <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0.05}/>
+                        </linearGradient>
+                      </defs>
+                    </AreaChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+
+              {/* Service Categories */}
+              <Card className="fintech-chart-container">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5" />
+                    Service Categories
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={categoryData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={120}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {categoryData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="mt-4 space-y-2">
+                    {categoryData.map((item, index) => (
+                      <div key={index} className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <div 
+                            className="w-3 h-3 rounded-full" 
+                            style={{ backgroundColor: item.color }}
+                          />
+                          <span className="text-sm">{item.name}</span>
+                        </div>
+                        <span className="text-sm font-medium">{item.value}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Performance Insights */}
+            <Card className="fintech-card">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="h-5 w-5" />
+                  Performance Insights
+                  <Badge variant="secondary">Live</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-blue-500" />
+                      <span className="text-sm font-medium">Peak Hours</span>
+                    </div>
+                    <p className="text-2xl font-bold">2-6 PM</p>
+                    <p className="text-sm opacity-70">Highest booking activity</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-green-500" />
+                      <span className="text-sm font-medium">Top Location</span>
+                    </div>
+                    <p className="text-2xl font-bold">Downtown</p>
+                    <p className="text-sm opacity-70">40% of all bookings</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Star className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm font-medium">Customer Satisfaction</span>
+                    </div>
+                    <p className="text-2xl font-bold">96%</p>
+                    <p className="text-sm opacity-70">Above industry average</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>

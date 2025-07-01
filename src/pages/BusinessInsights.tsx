@@ -65,71 +65,71 @@ const BusinessInsights = () => {
             {/* Key Insights */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {insights.map((insight, index) => (
-                <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card key={index} className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2">
                       <div className={`w-8 h-8 bg-gradient-to-r ${insight.color} rounded-lg flex items-center justify-center`}>
                         <insight.icon className="h-4 w-4 text-white" />
                       </div>
                       {insight.title}
                       <span className={`ml-auto px-2 py-1 text-xs rounded ${
-                        insight.impact === 'High' ? 'bg-red-500/20 text-red-300' : 'bg-yellow-500/20 text-yellow-300'
+                        insight.impact === 'High' ? 'bg-red-500/20 text-red-600' : 'bg-yellow-500/20 text-yellow-600'
                       }`}>
                         {insight.impact} Impact
                       </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-white/90">{insight.insight}</p>
+                    <p>{insight.insight}</p>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
             {/* AI Recommendations */}
-            <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl mb-6">
+            <Card className="fintech-card mb-6">
               <CardHeader>
-                <CardTitle className="text-white text-shadow flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <Brain className="h-5 w-5" />
                   AI Recommendations
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-start gap-4">
-                  <Lightbulb className="h-5 w-5 text-yellow-400 mt-1" />
+                  <Lightbulb className="h-5 w-5 text-yellow-500 mt-1" />
                   <div>
-                    <h3 className="text-white font-medium">Optimize Pricing Strategy</h3>
-                    <p className="text-white/70 text-sm">Consider dynamic pricing during peak hours (2-6 PM) to maximize revenue</p>
+                    <h3 className="font-medium">Optimize Pricing Strategy</h3>
+                    <p className="text-sm opacity-80">Consider dynamic pricing during peak hours (2-6 PM) to maximize revenue</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Lightbulb className="h-5 w-5 text-yellow-400 mt-1" />
+                  <Lightbulb className="h-5 w-5 text-yellow-500 mt-1" />
                   <div>
-                    <h3 className="text-white font-medium">Expand in High-Demand Areas</h3>
-                    <p className="text-white/70 text-sm">Focus marketing efforts on downtown and suburban areas for better ROI</p>
+                    <h3 className="font-medium">Expand in High-Demand Areas</h3>
+                    <p className="text-sm opacity-80">Focus marketing efforts on downtown and suburban areas for better ROI</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <Lightbulb className="h-5 w-5 text-yellow-400 mt-1" />
+                  <Lightbulb className="h-5 w-5 text-yellow-500 mt-1" />
                   <div>
-                    <h3 className="text-white font-medium">Enhance Quality Control</h3>
-                    <p className="text-white/70 text-sm">Implement quality assurance programs to maintain high ratings and customer retention</p>
+                    <h3 className="font-medium">Enhance Quality Control</h3>
+                    <p className="text-sm opacity-80">Implement quality assurance programs to maintain high ratings and customer retention</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Market Analysis */}
-            <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+            <Card className="fintech-card">
               <CardHeader>
-                <CardTitle className="text-white text-shadow flex items-center gap-2">
+                <CardTitle className="flex items-center gap-2">
                   <TrendingUp className="h-5 w-5" />
                   Market Analysis
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-64 flex items-center justify-center">
-                  <p className="text-white/70">Market analysis charts will be displayed here</p>
+                  <p className="opacity-70">Market analysis charts will be displayed here</p>
                 </div>
               </CardContent>
             </Card>

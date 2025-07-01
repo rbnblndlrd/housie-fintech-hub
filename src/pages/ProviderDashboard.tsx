@@ -1,327 +1,345 @@
-
-import React, { useState, useEffect } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Badge } from "@/components/ui/badge";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import Header from "@/components/Header";
-import { CalendarDays, DollarSign, Star, Users, TrendingUp } from "lucide-react";
-import CommunityRatingDisplay from "@/components/provider/CommunityRatingDisplay";
-import ShopPointsWidget from "@/components/admin/ShopPointsWidget";
-import { useShopPoints } from "@/hooks/useShopPoints";
-import VideoBackground from "@/components/common/VideoBackground";
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Header from '@/components/Header';
+import { 
+  Calendar, 
+  DollarSign, 
+  Star, 
+  Users, 
+  Clock, 
+  TrendingUp,
+  MapPin,
+  Phone,
+  Mail,
+  CheckCircle,
+  AlertCircle,
+  Eye
+} from 'lucide-react';
 
 const ProviderDashboard = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const { shopPointsData } = useShopPoints();
-  
-  const [stats, setStats] = useState({
-    totalBookings: 0,
-    pendingBookings: 0,
-    monthlyRevenue: 0,
-    averageRating: 0,
-    communityRatingPoints: 0
-  });
-  const [recentBookings, setRecentBookings] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('overview');
 
-  useEffect(() => {
-    if (user) {
-      loadDashboardData();
-    }
-  }, [user]);
-
-  const loadDashboardData = async () => {
-    try {
-      setLoading(true);
-      
-      // Get provider profile
-      const { data: profile } = await supabase
-        .from('provider_profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (profile) {
-        // Get bookings stats
-        const { data: bookings } = await supabase
-          .from('bookings')
-          .select('*')
-          .eq('provider_id', profile.id);
-
-        const totalBookings = bookings?.length || 0;
-        const pendingBookings = bookings?.filter(b => b.status === 'pending').length || 0;
-        const completedBookings = bookings?.filter(b => b.status === 'completed') || [];
-        const monthlyRevenue = completedBookings.reduce((sum, booking) => sum + (booking.total_amount || 0), 0);
-
-        setStats({
-          totalBookings,
-          pendingBookings,
-          monthlyRevenue,
-          averageRating: profile.average_rating || 0,
-          communityRatingPoints: profile.community_rating_points || 0
-        });
-
-        // Get recent bookings
-        const { data: recent } = await supabase
-          .from('bookings')
-          .select(`
-            *,
-            services:service_id (title),
-            users:customer_id (full_name)
-          `)
-          .eq('provider_id', profile.id)
-          .order('created_at', { ascending: false })
-          .limit(5);
-
-        setRecentBookings(recent || []);
-      }
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load dashboard data",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  // Sample data
+  const stats = {
+    totalEarnings: 12450.50,
+    completedJobs: 147,
+    averageRating: 4.8,
+    totalReviews: 134,
+    upcomingBookings: 8
   };
 
-  const awardTestPoints = async () => {
-    if (!user) return;
-    
-    try {
-      const { error } = await supabase.rpc('award_community_rating_points', {
-        p_user_id: user.id,
-        p_points: 10,
-        p_reason: 'Test points from dashboard'
-      });
-
-      if (error) throw error;
-      
-      toast({
-        title: "Success",
-        description: "Awarded 10 community rating points!",
-      });
-      
-      loadDashboardData();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
+  const recentBookings = [
+    {
+      id: 1,
+      service: "House Cleaning",
+      client: "Sarah Johnson",
+      date: "2024-01-15",
+      time: "10:00 AM",
+      location: "Downtown Montreal",
+      status: "confirmed",
+      amount: 120
+    },
+    {
+      id: 2,
+      service: "Plumbing Repair",
+      client: "John Smith",
+      date: "2024-01-18",
+      time: "02:00 PM",
+      location: "Westmount",
+      status: "pending",
+      amount: 85
+    },
+    {
+      id: 3,
+      service: "Electrical Installation",
+      client: "Emily Clark",
+      date: "2024-01-22",
+      time: "11:30 AM",
+      location: "Plateau",
+      status: "confirmed",
+      amount: 150
+    },
+    {
+      id: 4,
+      service: "Landscaping",
+      client: "Michael Davis",
+      date: "2024-01-25",
+      time: "09:00 AM",
+      location: "Outremont",
+      status: "completed",
+      amount: 200
+    },
+    {
+      id: 5,
+      service: "Pet Grooming",
+      client: "Linda Wilson",
+      date: "2024-01-29",
+      time: "03:45 PM",
+      location: "Hampstead",
+      status: "confirmed",
+      amount: 60
     }
-  };
+  ];
 
-  if (loading) {
-    return (
-      <>
-        <VideoBackground />
-        <div className="relative z-10 min-h-screen">
-          <Header />
-          <div className="pt-12 px-2 pb-4">
-            <div className="max-w-none mx-2">
-              <div className="animate-pulse space-y-4">
-                <div className="h-8 bg-white/20 rounded w-1/3"></div>
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  {[...Array(4)].map((_, i) => (
-                    <div key={i} className="h-32 bg-white/20 rounded"></div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+  const earnings = [
+    { month: 'Jan', amount: 2340 },
+    { month: 'Feb', amount: 2180 },
+    { month: 'Mar', amount: 2650 },
+    { month: 'Apr', amount: 2890 },
+    { month: 'May', amount: 2420 },
+    { month: 'Jun', amount: 2780 },
+  ];
 
   return (
-    <>
-      <VideoBackground />
-      <div className="relative z-10 min-h-screen">
-        <Header />
-        <div className="pt-12 px-2 pb-4">
-          <div className="max-w-none mx-2">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-3xl font-bold text-white text-shadow-lg">Provider Dashboard</h1>
-                <p className="text-white/90 text-shadow mt-2">Manage your services and track your performance</p>
-              </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="bg-white/20 text-white border-white/30">Provider</Badge>
-                {shopPointsData && (
-                  <Badge className="bg-purple-500/80 text-white border-purple-300/50">
-                    {shopPointsData.shopPoints} Shop Points
-                  </Badge>
-                )}
-              </div>
-            </div>
+    <div className="min-h-screen bg-black">
+      <Header />
+      <div className="pt-20 px-4 pb-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+              Provider Dashboard
+            </h1>
+            <p className="text-white/90 text-shadow">
+              Welcome back! Here's your performance overview
+            </p>
+          </div>
 
-            {/* Stats Cards with slate background */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-white text-shadow">Total Bookings</p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">{stats.totalBookings}</p>
-                    </div>
-                    <CalendarDays className="h-8 w-8 text-white/80 drop-shadow-md" />
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+            <Card className="fintech-metric-card">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium opacity-80 mb-1">Total Earnings</p>
+                    <p className="text-2xl font-bold">${stats.totalEarnings.toLocaleString()}</p>
+                    <p className="text-sm text-green-600 font-semibold mt-1">+15.2%</p>
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-white text-shadow">Pending</p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">{stats.pendingBookings}</p>
-                    </div>
-                    <Users className="h-8 w-8 text-white/80 drop-shadow-md" />
+                  <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
+                    <DollarSign className="h-5 w-5 text-white" />
                   </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-white text-shadow">Monthly Revenue</p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">${stats.monthlyRevenue}</p>
-                    </div>
-                    <DollarSign className="h-8 w-8 text-white/80 drop-shadow-md" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
-                <CardContent className="p-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-white text-shadow">Rating</p>
-                      <p className="text-2xl font-bold text-white text-shadow-lg">{stats.averageRating.toFixed(1)}</p>
-                    </div>
-                    <Star className="h-8 w-8 text-white/80 drop-shadow-md" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Tabs defaultValue="overview" className="space-y-4">
-              <TabsList className="grid w-full grid-cols-4 bg-black/20 backdrop-blur-sm">
-                <TabsTrigger value="overview" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Overview</TabsTrigger>
-                <TabsTrigger value="bookings" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Bookings</TabsTrigger>
-                <TabsTrigger value="community" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Community</TabsTrigger>
-                <TabsTrigger value="testing" className="text-white data-[state=active]:bg-white/20 data-[state=active]:text-white">Testing</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
-                    <CardHeader>
-                      <CardTitle className="text-white text-shadow">Recent Bookings</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      {recentBookings.length > 0 ? (
-                        <div className="space-y-3">
-                          {recentBookings.map((booking: any) => (
-                            <div key={booking.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg backdrop-blur-sm">
-                              <div>
-                                <p className="font-medium text-white text-shadow">{booking.services?.title || 'Service'}</p>
-                                <p className="text-sm text-white/80 text-shadow">{booking.users?.full_name || 'Customer'}</p>
-                              </div>
-                              <Badge variant={booking.status === 'completed' ? 'default' : 'secondary'} className="bg-white/20 text-white border-white/30">
-                                {booking.status}
-                              </Badge>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="text-white/80 text-center py-8 text-shadow">No recent bookings</p>
-                      )}
-                    </CardContent>
-                  </Card>
-
-                  {shopPointsData && (
-                    <div className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl rounded-lg">
-                      <ShopPointsWidget 
-                        communityPoints={shopPointsData.communityPoints}
-                        shopPoints={shopPointsData.shopPoints}
-                      />
-                    </div>
-                  )}
                 </div>
-              </TabsContent>
+              </CardContent>
+            </Card>
 
-              <TabsContent value="bookings" className="space-y-4">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
-                  <CardHeader>
-                    <CardTitle className="text-white text-shadow">All Bookings</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-white/80 text-center py-8 text-shadow">Booking management coming soon...</p>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="community" className="space-y-4">
-                <div className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl rounded-lg p-6">
-                  {user && <CommunityRatingDisplay userId={user.id} />}
+            <Card className="fintech-metric-card">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium opacity-80 mb-1">Completed Jobs</p>
+                    <p className="text-2xl font-bold">{stats.completedJobs}</p>
+                    <p className="text-sm text-blue-600 font-semibold mt-1">+8.7%</p>
+                  </div>
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
+                    <CheckCircle className="h-5 w-5 text-white" />
+                  </div>
                 </div>
-              </TabsContent>
+              </CardContent>
+            </Card>
 
-              <TabsContent value="testing" className="space-y-4">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+            <Card className="fintech-metric-card">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium opacity-80 mb-1">Average Rating</p>
+                    <p className="text-2xl font-bold">{stats.averageRating}</p>
+                    <p className="text-sm text-yellow-600 font-semibold mt-1">{stats.totalReviews} reviews</p>
+                  </div>
+                  <div className="w-10 h-10 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg flex items-center justify-center">
+                    <Star className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="fintech-metric-card">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium opacity-80 mb-1">Upcoming</p>
+                    <p className="text-2xl font-bold">{stats.upcomingBookings}</p>
+                    <p className="text-sm text-purple-600 font-semibold mt-1">This week</p>
+                  </div>
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
+                    <Calendar className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="fintech-metric-card">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium opacity-80 mb-1">Response Rate</p>
+                    <p className="text-2xl font-bold">94%</p>
+                    <p className="text-sm text-green-600 font-semibold mt-1">Excellent</p>
+                  </div>
+                  <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-lg flex items-center justify-center">
+                    <TrendingUp className="h-5 w-5 text-white" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Main Content Tabs */}
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <TabsList className="fintech-card p-1">
+              <TabsTrigger value="overview">Overview</TabsTrigger>
+              <TabsTrigger value="bookings">Bookings</TabsTrigger>
+              <TabsTrigger value="earnings">Earnings</TabsTrigger>
+              <TabsTrigger value="reviews">Reviews</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Recent Bookings */}
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white text-shadow">
-                      <TrendingUp className="h-5 w-5" />
-                      Testing Tools
+                    <CardTitle className="flex items-center gap-2">
+                      <Calendar className="h-5 w-5" />
+                      Recent Bookings
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="p-4 bg-blue-500/20 rounded-lg backdrop-blur-sm border border-white/20">
-                          <h4 className="font-medium text-white mb-2 text-shadow">Community Points</h4>
-                          <p className="text-sm text-white/80 mb-3 text-shadow">Current: {stats.communityRatingPoints} points</p>
-                          <Button onClick={awardTestPoints} className="w-full bg-white/20 hover:bg-white/30 text-white border-white/30">
-                            +10 Test Points
-                          </Button>
-                        </div>
-                        
-                        {shopPointsData && (
-                          <div className="p-4 bg-purple-500/20 rounded-lg backdrop-blur-sm border border-white/20">
-                            <h4 className="font-medium text-white mb-2 text-shadow">Shop Points</h4>
-                            <p className="text-sm text-white/80 mb-1 text-shadow">Current: {shopPointsData.shopPoints} points</p>
-                            <p className="text-xs text-white/70 mb-3 text-shadow">Tier: {shopPointsData.tier} ({shopPointsData.conversionRate}x)</p>
-                            <div className="text-xs text-white/70 text-shadow">
-                              Auto-calculated from community points
+                      {recentBookings.slice(0, 3).map((booking) => (
+                        <div key={booking.id} className="flex items-center justify-between p-4 fintech-card-secondary rounded-lg">
+                          <div className="flex-1">
+                            <h4 className="font-medium">{booking.service}</h4>
+                            <p className="text-sm opacity-70">{booking.client}</p>
+                            <div className="flex items-center gap-4 mt-2 text-sm">
+                              <span className="flex items-center gap-1">
+                                <Calendar className="h-3 w-3" />
+                                {booking.date}
+                              </span>
+                              <span className="flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {booking.time}
+                              </span>
                             </div>
                           </div>
-                        )}
-                      </div>
-                      
-                      <div className="text-sm text-white/80 bg-white/10 p-3 rounded backdrop-blur-sm text-shadow">
-                        <strong>Note:</strong> Shop points are automatically calculated from community points using a tiered system.
-                        The more community points you earn, the better your conversion rate becomes!
-                      </div>
+                          <div className="text-right">
+                            <Badge 
+                              variant={booking.status === 'confirmed' ? 'default' : 'secondary'}
+                              className="mb-2"
+                            >
+                              {booking.status}
+                            </Badge>
+                            <p className="font-semibold">${booking.amount}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
+                    <Button variant="outline" className="w-full mt-4">
+                      <Eye className="h-4 w-4 mr-2" />
+                      View All Bookings
+                    </Button>
                   </CardContent>
                 </Card>
-              </TabsContent>
-            </Tabs>
-          </div>
+
+                {/* Quick Actions */}
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle>Quick Actions</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <Button className="w-full justify-start" variant="outline">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Update Availability
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Users className="h-4 w-4 mr-2" />
+                      View Profile
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <DollarSign className="h-4 w-4 mr-2" />
+                      Payout Settings
+                    </Button>
+                    <Button className="w-full justify-start" variant="outline">
+                      <Star className="h-4 w-4 mr-2" />
+                      Service Gallery
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            <TabsContent value="bookings">
+              <Card className="fintech-card">
+                <CardHeader>
+                  <CardTitle>All Bookings</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {recentBookings.map((booking) => (
+                      <div key={booking.id} className="flex items-center justify-between p-4 fintech-card-secondary rounded-lg">
+                        <div className="flex-1">
+                          <h4 className="font-medium">{booking.service}</h4>
+                          <p className="text-sm opacity-70">{booking.client}</p>
+                          <div className="flex items-center gap-4 mt-2 text-sm">
+                            <span className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3" />
+                              {booking.date}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {booking.time}
+                            </span>
+                            <span className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              {booking.location}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <Badge 
+                            variant={booking.status === 'confirmed' ? 'default' : 'secondary'}
+                            className="mb-2"
+                          >
+                            {booking.status}
+                          </Badge>
+                          <p className="font-semibold">${booking.amount}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="earnings">
+              <Card className="fintech-chart-container">
+                <CardHeader>
+                  <CardTitle>Earnings Overview</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 flex items-center justify-center">
+                    <p className="opacity-70">Earnings chart will be displayed here</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="reviews">
+              <Card className="fintech-card">
+                <CardHeader>
+                  <CardTitle>Customer Reviews</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <p className="opacity-70">Reviews and ratings will be displayed here</p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
