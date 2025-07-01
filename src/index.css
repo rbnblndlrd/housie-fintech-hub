@@ -140,7 +140,7 @@
 }
 
 @layer components {
-  /* UPDATED FINTECH CARDS - Now with warm cream background and dark text */
+  /* ENHANCED FINTECH CARDS - Strongest specificity with comprehensive text overrides */
   .fintech-card {
     @apply rounded-2xl cursor-pointer;
     background-color: #F5F2E8 !important; /* Warm cream background */
@@ -156,24 +156,32 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* Force ALL text elements inside fintech cards to use dark colors */
-  .fintech-card * {
-    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
-  }
-
+  /* ULTRA-SPECIFIC FINTECH CARD TEXT OVERRIDES - These will override ALL Tailwind utilities */
+  .fintech-card,
+  .fintech-card *,
   .fintech-card h1,
   .fintech-card h2,
   .fintech-card h3,
   .fintech-card h4,
   .fintech-card h5,
-  .fintech-card h6 {
-    color: #1F1F1F !important; /* Dark charcoal for all headings */
-  }
-
+  .fintech-card h6,
   .fintech-card p,
   .fintech-card span,
-  .fintech-card div {
-    color: #1F1F1F !important; /* Dark charcoal for all text elements */
+  .fintech-card div,
+  .fintech-card label,
+  .fintech-card li,
+  .fintech-card td,
+  .fintech-card th,
+  .fintech-card a,
+  .fintech-card button:not([class*="bg-gradient"]) {
+    color: #1F1F1F !important; /* Force dark text on ALL elements */
+    text-shadow: none !important; /* Remove any text shadows */
+  }
+
+  /* Exception: Keep white text on gradient backgrounds */
+  .fintech-card .bg-gradient-to-r *,
+  .fintech-card [class*="bg-gradient"] * {
+    color: #ffffff !important;
   }
 
   .fintech-card-secondary {
@@ -191,24 +199,26 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* Force ALL text elements inside fintech-card-secondary to use dark colors */
-  .fintech-card-secondary * {
-    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
-  }
-
+  /* ULTRA-SPECIFIC FINTECH CARD SECONDARY TEXT OVERRIDES */
+  .fintech-card-secondary,
+  .fintech-card-secondary *,
   .fintech-card-secondary h1,
   .fintech-card-secondary h2,
   .fintech-card-secondary h3,
   .fintech-card-secondary h4,
   .fintech-card-secondary h5,
-  .fintech-card-secondary h6 {
-    color: #1F1F1F !important; /* Dark charcoal for all headings */
-  }
-
+  .fintech-card-secondary h6,
   .fintech-card-secondary p,
   .fintech-card-secondary span,
-  .fintech-card-secondary div {
-    color: #1F1F1F !important; /* Dark charcoal for all text elements */
+  .fintech-card-secondary div,
+  .fintech-card-secondary label,
+  .fintech-card-secondary li,
+  .fintech-card-secondary td,
+  .fintech-card-secondary th,
+  .fintech-card-secondary a,
+  .fintech-card-secondary button:not([class*="bg-gradient"]) {
+    color: #1F1F1F !important; /* Force dark text on ALL elements */
+    text-shadow: none !important; /* Remove any text shadows */
   }
 
   .fintech-gradient-card {
@@ -226,9 +236,26 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* Force ALL text elements inside fintech-gradient-card to use dark colors */
-  .fintech-gradient-card * {
-    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  /* ULTRA-SPECIFIC FINTECH GRADIENT CARD TEXT OVERRIDES */
+  .fintech-gradient-card,
+  .fintech-gradient-card *,
+  .fintech-gradient-card h1,
+  .fintech-gradient-card h2,
+  .fintech-gradient-card h3,
+  .fintech-gradient-card h4,
+  .fintech-gradient-card h5,
+  .fintech-gradient-card h6,
+  .fintech-gradient-card p,
+  .fintech-gradient-card span,
+  .fintech-gradient-card div,
+  .fintech-gradient-card label,
+  .fintech-gradient-card li,
+  .fintech-gradient-card td,
+  .fintech-gradient-card th,
+  .fintech-gradient-card a,
+  .fintech-gradient-card button:not([class*="bg-gradient"]) {
+    color: #1F1F1F !important; /* Force dark text on ALL elements */
+    text-shadow: none !important; /* Remove any text shadows */
   }
 
   .fintech-metric-card {
@@ -246,9 +273,32 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* Force ALL text elements inside fintech-metric-card to use dark colors */
-  .fintech-metric-card * {
-    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  /* ULTRA-SPECIFIC FINTECH METRIC CARD TEXT OVERRIDES */
+  .fintech-metric-card,
+  .fintech-metric-card *,
+  .fintech-metric-card h1,
+  .fintech-metric-card h2,
+  .fintech-metric-card h3,
+  .fintech-metric-card h4,
+  .fintech-metric-card h5,
+  .fintech-metric-card h6,
+  .fintech-metric-card p,
+  .fintech-metric-card span,
+  .fintech-metric-card div,
+  .fintech-metric-card label,
+  .fintech-metric-card li,
+  .fintech-metric-card td,
+  .fintech-metric-card th,
+  .fintech-metric-card a,
+  .fintech-metric-card button:not([class*="bg-gradient"]) {
+    color: #1F1F1F !important; /* Force dark text on ALL elements */
+    text-shadow: none !important; /* Remove any text shadows */
+  }
+
+  /* Exception: Keep white text on gradient backgrounds in metric cards */
+  .fintech-metric-card .bg-gradient-to-r *,
+  .fintech-metric-card [class*="bg-gradient"] * {
+    color: #ffffff !important;
   }
 
   .fintech-chart-container {
@@ -266,9 +316,26 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
-  /* Force ALL text elements inside fintech-chart-container to use dark colors */
-  .fintech-chart-container * {
-    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  /* ULTRA-SPECIFIC FINTECH CHART CONTAINER TEXT OVERRIDES */
+  .fintech-chart-container,
+  .fintech-chart-container *,
+  .fintech-chart-container h1,
+  .fintech-chart-container h2,
+  .fintech-chart-container h3,
+  .fintech-chart-container h4,
+  .fintech-chart-container h5,
+  .fintech-chart-container h6,
+  .fintech-chart-container p,
+  .fintech-chart-container span,
+  .fintech-chart-container div,
+  .fintech-chart-container label,
+  .fintech-chart-container li,
+  .fintech-chart-container td,
+  .fintech-chart-container th,
+  .fintech-chart-container a,
+  .fintech-chart-container button:not([class*="bg-gradient"]) {
+    color: #1F1F1F !important; /* Force dark text on ALL elements */
+    text-shadow: none !important; /* Remove any text shadows */
   }
 
   /* Winchester Green backgrounds remain the same thickness for headers */
@@ -544,6 +611,36 @@
     max-width: none !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
+  }
+
+  /* FUTURE-PROOF ANTI-WHITE-TEXT RULES */
+  /* Override any Tailwind text-white classes within fintech contexts */
+  .fintech-card .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
+  .fintech-card-secondary .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
+  .fintech-metric-card .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
+  .fintech-chart-container .text-white:not([class*="bg-gradient"]):not([class*="bg-"]),
+  .fintech-gradient-card .text-white:not([class*="bg-gradient"]):not([class*="bg-"]) {
+    color: #1F1F1F !important;
+    text-shadow: none !important;
+  }
+
+  /* Override text-shadow classes within fintech contexts */
+  .fintech-card .text-shadow,
+  .fintech-card .text-shadow-lg,
+  .fintech-card .text-shadow-xl,
+  .fintech-card-secondary .text-shadow,
+  .fintech-card-secondary .text-shadow-lg,
+  .fintech-card-secondary .text-shadow-xl,
+  .fintech-metric-card .text-shadow,
+  .fintech-metric-card .text-shadow-lg,
+  .fintech-metric-card .text-shadow-xl,
+  .fintech-chart-container .text-shadow,
+  .fintech-chart-container .text-shadow-lg,
+  .fintech-chart-container .text-shadow-xl,
+  .fintech-gradient-card .text-shadow,
+  .fintech-gradient-card .text-shadow-lg,
+  .fintech-gradient-card .text-shadow-xl {
+    text-shadow: none !important;
   }
 }
 

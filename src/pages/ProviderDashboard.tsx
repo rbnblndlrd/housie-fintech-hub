@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -99,10 +100,10 @@ const ProviderDashboard = () => {
       <div className="pt-20 px-4 pb-8">
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+            <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
               Provider Dashboard
             </h1>
-            <p className="text-white/90 text-shadow">
+            <p className="text-white/90 drop-shadow-md">
               Welcome back! Here's your performance overview
             </p>
           </div>
