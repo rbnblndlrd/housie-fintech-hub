@@ -41,9 +41,9 @@ export const useServices = () => {
         console.log('Using fallback services due to query error');
         setServices(fallbackServices.map(service => ({
           ...service,
-          background_check_required: service.category === 'wellness' || service.category === 'care_pets',
+          background_check_required: service.category === 'personal_wellness' || service.category === 'pet_care',
           ccq_rbq_required: service.category === 'construction',
-          risk_category: service.category === 'wellness' || service.category === 'care_pets' ? 'high' : 'low',
+          risk_category: service.category === 'personal_wellness' || service.category === 'pet_care' ? 'high' : 'low',
           provider: {
             ...service.provider,
             verification_level: 'basic' as const,

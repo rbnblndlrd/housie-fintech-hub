@@ -17,8 +17,14 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
   onBookNow,
   onHoverProvider 
 }) => {
+  // Guard against null provider
+  if (!service.provider) {
+    console.warn('Service missing provider data:', service);
+    return null;
+  }
+
   const handleMouseEnter = () => {
-    if (onHoverProvider) {
+    if (onHoverProvider && service.provider) {
       onHoverProvider(service.provider.id);
     }
   };
@@ -32,7 +38,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
   const getVerificationBadges = () => {
     const badges = [];
     
-    if (service.provider.verified) {
+    if (service.provider?.verified) {
       badges.push(
         <Badge key="verified" className="bg-green-100 text-green-800 hover:bg-green-200">
           <Shield className="w-3 h-3 mr-1" />
@@ -41,7 +47,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
       );
     }
     
-    if (service.provider.background_check_verified) {
+    if (service.provider?.background_check_verified) {
       badges.push(
         <Badge key="background" className="bg-blue-100 text-blue-800 hover:bg-blue-200">
           <CheckCircle className="w-3 h-3 mr-1" />
@@ -50,7 +56,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
       );
     }
 
-    if (service.provider.ccq_verified) {
+    if (service.provider?.ccq_verified) {
       badges.push(
         <Badge key="ccq" className="bg-purple-100 text-purple-800 hover:bg-purple-200">
           CCQ
@@ -58,7 +64,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
       );
     }
 
-    if (service.provider.rbq_verified) {
+    if (service.provider?.rbq_verified) {
       badges.push(
         <Badge key="rbq" className="bg-orange-100 text-orange-800 hover:bg-orange-200">
           RBQ
@@ -68,6 +74,11 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
 
     return badges;
   };
+
+  const providerName = service.provider.business_name || service.provider.user?.full_name || 'Provider';
+  const providerLocation = service.provider.user ? 
+    `${service.provider.user.city || 'Unknown City'}, ${service.provider.user.province || 'QC'}` : 
+    'Location not available';
 
   return (
     <Card 
@@ -80,7 +91,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
-                {(service.provider.business_name || service.provider.user.full_name)
+                {providerName
                   .split(' ')
                   .map(n => n[0])
                   .join('')
@@ -88,10 +99,10 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 text-lg">
-                  {service.provider.business_name || service.provider.user.full_name}
+                  {providerName}
                 </h3>
                 <p className="text-sm text-gray-600">
-                  {service.provider.user.city}, {service.provider.user.province}
+                  {providerLocation}
                 </p>
               </div>
             </div>
@@ -127,7 +138,7 @@ const ModernServiceCard: React.FC<ModernServiceCardProps> = ({
             
             <div className="mb-4">
               <p className="text-2xl font-bold text-gray-900">
-                ${service.base_price}
+                ${service.base_price || 0}
                 <span className="text-sm font-normal text-gray-600">
                   /{service.pricing_type === 'hourly' ? 'heure' : 'service'}
                 </span>

@@ -21,10 +21,11 @@ const ModernServicesGrid: React.FC<ModernServicesGridProps> = ({
   onHoverProvider,
   verifiedOnly
 }) => {
-  // Apply verified filter if needed
-  const displayServices = verifiedOnly 
+  // Apply verified filter if needed and filter out services with null providers
+  const displayServices = (verifiedOnly 
     ? filteredServices.filter(service => service.provider?.verified)
-    : filteredServices;
+    : filteredServices
+  ).filter(service => service.provider !== null);
 
   if (isLoading) {
     return (
