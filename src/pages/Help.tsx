@@ -121,34 +121,34 @@ const Help = () => {
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8">
-              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-4">
+              <h1 className="text-4xl font-bold text-white mb-4">
                 How can we help you?
               </h1>
-              <p className="text-white/90 text-shadow text-lg mb-6">
+              <p className="text-white/90 text-lg mb-6">
                 Find answers to common questions or get in touch with our support team
               </p>
               
               {/* Search Bar */}
               <div className="relative max-w-2xl mx-auto">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/60 h-5 w-5" />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                 <Input
                   placeholder="Search for help topics..."
-                  className="pl-12 bg-white/10 border-white/20 text-white placeholder:text-white/60 backdrop-blur-sm h-12 text-lg"
+                  className="fintech-input pl-12 h-12 text-lg"
                 />
               </div>
             </div>
 
             <Tabs defaultValue="faq" className="space-y-6">
-              <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto bg-white/10 backdrop-blur-md">
-                <TabsTrigger value="faq" className="text-white data-[state=active]:bg-white/20">
+              <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto">
+                <TabsTrigger value="faq">
                   <HelpCircle className="h-4 w-4 mr-2" />
                   FAQ
                 </TabsTrigger>
-                <TabsTrigger value="contact" className="text-white data-[state=active]:bg-white/20">
+                <TabsTrigger value="contact">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Contact Us
                 </TabsTrigger>
-                <TabsTrigger value="guides" className="text-white data-[state=active]:bg-white/20">
+                <TabsTrigger value="guides">
                   <BookOpen className="h-4 w-4 mr-2" />
                   Guides
                 </TabsTrigger>
@@ -156,18 +156,18 @@ const Help = () => {
 
               <TabsContent value="faq" className="space-y-6">
                 {faqItems.map((category, categoryIndex) => (
-                  <Card key={categoryIndex} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <Card key={categoryIndex} className="fintech-card">
                     <CardHeader>
-                      <CardTitle className="text-white text-shadow flex items-center gap-2">
+                      <CardTitle className="flex items-center gap-2">
                         <category.icon className="h-5 w-5" />
                         {category.category}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {category.questions.map((item, index) => (
-                        <div key={index} className="border-b border-white/20 last:border-b-0 pb-4 last:pb-0">
-                          <h3 className="text-white font-medium mb-2">{item.q}</h3>
-                          <p className="text-white/80 text-sm leading-relaxed">{item.a}</p>
+                        <div key={index} className="border-b border-gray-200 last:border-b-0 pb-4 last:pb-0">
+                          <h3 className="font-medium mb-2">{item.q}</h3>
+                          <p className="text-sm opacity-80 leading-relaxed">{item.a}</p>
                         </div>
                       ))}
                     </CardContent>
@@ -178,9 +178,9 @@ const Help = () => {
               <TabsContent value="contact" className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {contactOptions.map((option, index) => (
-                    <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl hover:scale-105 transition-transform duration-200">
+                    <Card key={index} className="fintech-card hover:scale-105 transition-transform duration-200">
                       <CardHeader>
-                        <CardTitle className="text-white text-shadow flex items-center gap-3">
+                        <CardTitle className="flex items-center gap-3">
                           <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
                             <option.icon className="h-6 w-6 text-white" />
                           </div>
@@ -188,7 +188,7 @@ const Help = () => {
                             <div className="flex items-center gap-2">
                               {option.title}
                               {option.available && (
-                                <Badge className="bg-green-500/20 text-green-300 border-green-400/30 text-xs">
+                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
                                   Available
                                 </Badge>
                               )}
@@ -197,8 +197,8 @@ const Help = () => {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-white/80 mb-4">{option.description}</p>
-                        <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                        <p className="opacity-80 mb-4">{option.description}</p>
+                        <Button className="fintech-button-primary w-full">
                           {option.action}
                         </Button>
                       </CardContent>
@@ -206,26 +206,26 @@ const Help = () => {
                   ))}
                 </div>
 
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Support Hours</CardTitle>
+                    <CardTitle>Support Hours</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="text-center">
-                        <Clock className="h-8 w-8 text-blue-400 mx-auto mb-2" />
-                        <h3 className="text-white font-medium">Live Chat</h3>
-                        <p className="text-white/70 text-sm">24/7 Available</p>
+                        <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                        <h3 className="font-medium">Live Chat</h3>
+                        <p className="text-sm opacity-70">24/7 Available</p>
                       </div>
                       <div className="text-center">
-                        <Phone className="h-8 w-8 text-green-400 mx-auto mb-2" />
-                        <h3 className="text-white font-medium">Phone Support</h3>
-                        <p className="text-white/70 text-sm">Mon-Fri: 8AM-8PM EST</p>
+                        <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                        <h3 className="font-medium">Phone Support</h3>
+                        <p className="text-sm opacity-70">Mon-Fri: 8AM-8PM EST</p>
                       </div>
                       <div className="text-center">
-                        <Mail className="h-8 w-8 text-purple-400 mx-auto mb-2" />
-                        <h3 className="text-white font-medium">Email Support</h3>
-                        <p className="text-white/70 text-sm">Response within 24h</p>
+                        <Mail className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                        <h3 className="font-medium">Email Support</h3>
+                        <p className="text-sm opacity-70">Response within 24h</p>
                       </div>
                     </div>
                   </CardContent>
@@ -278,24 +278,24 @@ const Help = () => {
                       popular: false
                     }
                   ].map((guide, index) => (
-                    <Card key={index} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl hover:scale-105 transition-transform duration-200">
+                    <Card key={index} className="fintech-card hover:scale-105 transition-transform duration-200">
                       <CardHeader>
                         <div className="flex items-start justify-between">
-                          <guide.icon className="h-8 w-8 text-blue-400" />
+                          <guide.icon className="h-8 w-8 text-blue-600" />
                           {guide.popular && (
-                            <Badge className="bg-yellow-500/20 text-yellow-300 border-yellow-400/30">
+                            <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
                               <Star className="h-3 w-3 mr-1" />
                               Popular
                             </Badge>
                           )}
                         </div>
-                        <CardTitle className="text-white text-shadow">{guide.title}</CardTitle>
+                        <CardTitle>{guide.title}</CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-white/80 mb-4">{guide.description}</p>
+                        <p className="opacity-80 mb-4">{guide.description}</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-white/60 text-sm">{guide.readTime}</span>
-                          <Button size="sm" className="bg-white/10 hover:bg-white/20 text-white border-white/20">
+                          <span className="text-sm opacity-60">{guide.readTime}</span>
+                          <Button size="sm" className="fintech-button-secondary">
                             Read Guide
                           </Button>
                         </div>
