@@ -88,7 +88,7 @@ const HeroSearchSection = () => {
         {/* Fixed Banner - Sticks to bottom of screen */}
         {showBanner && (
           <div 
-            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg certn-banner-coupon"
+            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 certn-banner-coupon"
             style={{ backgroundColor: '#d4f3b7' }}
           >
             <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -123,7 +123,7 @@ const HeroSearchSection = () => {
             background-position: 0px 0px;
           }
           100% {
-            background-position: 24px 0px;
+            background-position: 20px 0px;
           }
         }
 
@@ -132,41 +132,42 @@ const HeroSearchSection = () => {
           will-change: transform;
           border-radius: 8px;
           overflow: hidden;
+          box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         }
 
         .certn-banner-coupon::before {
           content: '';
           position: absolute;
-          top: -3px;
+          top: -4px;
           left: 0;
           right: 0;
-          height: 6px;
+          height: 8px;
           background: repeating-linear-gradient(
             to right,
-            #ffffff 0px,
-            #ffffff 6px,
-            transparent 6px,
-            transparent 12px
+            #2d3748 0px,
+            #2d3748 8px,
+            transparent 8px,
+            transparent 16px
           );
-          animation: chainsawMove 1.2s linear infinite;
+          animation: chainsawMove 1s linear infinite;
           border-radius: 4px 4px 0 0;
         }
 
         .certn-banner-coupon::after {
           content: '';
           position: absolute;
-          bottom: -3px;
+          bottom: -4px;
           left: 0;
           right: 0;
-          height: 6px;
+          height: 8px;
           background: repeating-linear-gradient(
             to right,
-            #ffffff 0px,
-            #ffffff 6px,
-            transparent 6px,
-            transparent 12px
+            #2d3748 0px,
+            #2d3748 8px,
+            transparent 8px,
+            transparent 16px
           );
-          animation: chainsawMove 1.2s linear infinite;
+          animation: chainsawMove 1s linear infinite;
           border-radius: 0 0 4px 4px;
         }
 
