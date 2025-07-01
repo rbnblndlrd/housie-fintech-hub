@@ -1,5 +1,8 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from '@/components/ui/toaster';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { RoleSwitchProvider } from '@/contexts/RoleSwitchContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
@@ -24,10 +27,6 @@ import Services from "@/pages/Services";
 import Help from "@/pages/Help";
 import CompetitiveAdvantage from "@/pages/CompetitiveAdvantage";
 import BookingsPage from "@/pages/BookingsPage";
-import { QueryClientProvider } from "@tanstack/react-query";
-import { CredentialsProvider } from "./contexts/CredentialsContext";
-import { SupabaseAuthProvider } from "./contexts/SupabaseAuthContext";
-import Home from "./pages/Home";
 import Welcome from "./pages/Welcome";
 import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
@@ -38,33 +37,31 @@ const queryClient = new QueryClient();
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <CredentialsProvider>
-        <SupabaseAuthProvider>
-          <AuthProvider>
-            <RoleSwitchProvider>
-              <BrowserRouter>
-                <div className="min-h-screen bg-background">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/welcome" element={<Welcome />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/services" element={<Services />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/analytics" element={<Analytics />} />
-                    <Route path="/unified-dashboard" element={<UnifiedDashboard />} />
-                    <Route path="/manager" element={<ManagerDashboard />} />
-                    <Route path="/financial-analytics" element={<FinancialAnalytics />} />
-                    <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
-                    <Route path="/settings/customer" element={<CustomerSettings />} />
-                    <Route path="/gps-job-analyzer" element={<GPSJobAnalyzer />} />
-                  </Routes>
-                  <Toaster />
-                </div>
-              </BrowserRouter>
-            </RoleSwitchProvider>
-          </AuthProvider>
-        </SupabaseAuthProvider>
-      </CredentialsProvider>
+      <AuthProvider>
+        <RoleSwitchProvider>
+          <LanguageProvider>
+            <Router>
+              <div className="min-h-screen bg-background">
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/welcome" element={<Welcome />} />
+                  <Route path="/auth" element={<Auth />} />
+                  <Route path="/services" element={<Services />} />
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/analytics" element={<Analytics />} />
+                  <Route path="/unified-dashboard" element={<UnifiedDashboard />} />
+                  <Route path="/manager" element={<ManagerDashboard />} />
+                  <Route path="/financial-analytics" element={<FinancialAnalytics />} />
+                  <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                  <Route path="/settings/customer" element={<CustomerSettings />} />
+                  <Route path="/gps-job-analyzer" element={<GPSJobAnalyzer />} />
+                </Routes>
+                <Toaster />
+              </div>
+            </Router>
+          </LanguageProvider>
+        </RoleSwitchProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
