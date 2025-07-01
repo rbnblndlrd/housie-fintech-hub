@@ -70,21 +70,15 @@ const Header = () => {
             <HamburgerMenu />
           </div>
 
-          {/* Dashboard positioned towards center-left */}
-          {user && (
-            <div className="flex items-center ml-16">
-              <Link to="/dashboard">
-                <Button variant="ghost" className="text-white hover:bg-gray-800 px-4 py-2">
-                  <AutoTranslate>Dashboard</AutoTranslate>
-                </Button>
-              </Link>
-            </div>
-          )}
-
-          {/* Right: User Menu/Auth + Language Toggle - pushed to the right */}
+          {/* Right: Dashboard + User Menu/Auth + Language Toggle - pushed to the right */}
           <div className="flex items-center space-x-3 ml-auto mr-4">
             {user ? (
               <div className="flex items-center space-x-2">
+                <Link to="/dashboard">
+                  <Button variant="ghost" className="text-white hover:bg-gray-800 px-4 py-2">
+                    <AutoTranslate>Dashboard</AutoTranslate>
+                  </Button>
+                </Link>
                 <UserMenu />
                 <LanguageToggle />
               </div>
