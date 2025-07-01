@@ -1,231 +1,155 @@
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Truck, Wrench, Search, ChevronDown, Users, Shield, Star, Clock, CreditCard, Award, MapPin, CheckCircle } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Search, Truck, Wrench, ArrowRight, CheckCircle, Star } from "lucide-react";
+import { Link } from "react-router-dom";
+import { UserTypeSelector } from "./UserTypeSelector";
+import DemoSection from "./DemoSection";
+
+interface UserTypeOption {
+  id: string;
+  title: string;
+  description: string;
+  icon: JSX.Element;
+  benefits: string[];
+  demoImage: string;
+}
 
 const OnboardingCards = () => {
-  const [selectedCard, setSelectedCard] = useState<string | null>(null);
+  const [selectedUserType, setSelectedUserType] = useState<string | null>(null);
 
-  const cards = [
+  const userTypeOptions: UserTypeOption[] = [
     {
-      id: 'crew',
-      title: 'Managing a Crew?',
-      description: 'Create a business account and coordinate multiple service providers efficiently',
-      image: '/lovable-uploads/analytics-dashboard.png',
-      icon: <Truck className="h-12 w-12 text-orange-600" />,
-      href: '/services?type=fleet',
-      features: ['Team coordination', 'Crew scheduling', 'Revenue splitting', 'Fleet analytics']
+      id: "fleet",
+      title: "Managing a Fleet?",
+      description: "Coordinate multiple service providers and manage operations efficiently",
+      icon: <Truck className="h-12 w-12 text-orange-700" />,
+      benefits: ["Team coordination", "Bulk scheduling", "Fleet analytics", "Revenue optimization"],
+      demoImage: "/lovable-uploads/analytics-dashboard.png"
     },
     {
-      id: 'provider',
-      title: 'Looking for Work?',
-      description: 'Sign up to provide services and join our network of verified professionals',
-      image: '/lovable-uploads/housiepro.png',
-      icon: <Wrench className="h-12 w-12 text-green-600" />,
-      href: '/services?type=provider',
-      features: ['Verified leads', 'Flexible scheduling', 'Payment protection', 'Business tools']
+      id: "provider",
+      title: "Looking for Work?",
+      description: "Join our network of verified service providers and grow your business",
+      icon: <Wrench className="h-12 w-12 text-green-700" />,
+      benefits: ["Verified leads", "Flexible scheduling", "Payment protection", "Business tools"],
+      demoImage: "/lovable-uploads/housiepro.png"
     },
     {
-      id: 'customer',
-      title: 'Looking for Services?',
-      description: 'Find trusted professionals for your home and business needs',
-      image: '/lovable-uploads/browse-services(broken).png',
-      icon: <Search className="h-12 w-12 text-purple-600" />,
-      href: '/services?type=customer',
-      features: ['Verified professionals', 'Instant booking', 'Secure payments', 'Privacy focused']
+      id: "customer",
+      title: "Need a Local Expert?",
+      description: "Find trusted, verified professionals for your home and business needs",
+      icon: <Search className="h-12 w-12 text-purple-700" />,
+      benefits: ["Verified professionals", "Instant booking", "Secure payments", "Privacy focused"],
+      demoImage: "/lovable-uploads/browse-services(broken).png"
     }
   ];
 
-  const detailedContent = {
-    crew: [
-      {
-        title: 'Team Coordination',
-        icon: <Users className="h-8 w-8 text-orange-600" />,
-        description: 'Manage your crew members, assign tasks, and track performance in real-time'
-      },
-      {
-        title: 'Crew Licenses',
-        icon: <Award className="h-8 w-8 text-orange-600" />,
-        description: 'Verify and manage all crew member certifications and licenses'
-      },
-      {
-        title: 'Revenue Splitting',
-        icon: <CreditCard className="h-8 w-8 text-orange-600" />,
-        description: 'Automatically split payments based on your crew structure and agreements'
-      },
-      {
-        title: 'Fleet Analytics',
-        icon: <MapPin className="h-8 w-8 text-orange-600" />,
-        description: 'Track crew locations, optimize routes, and analyze performance metrics'
-      }
-    ],
-    provider: [
-      {
-        title: 'Join Crews',
-        icon: <Users className="h-8 w-8 text-green-600" />,
-        description: 'Connect with established crews and work as part of a professional team'
-      },
-      {
-        title: 'Individual Jobs',
-        icon: <Wrench className="h-8 w-8 text-green-600" />,
-        description: 'Find and book individual service opportunities that match your skills'
-      },
-      {
-        title: 'Build Reputation',
-        icon: <Star className="h-8 w-8 text-green-600" />,
-        description: 'Earn reviews and ratings to build your professional reputation'
-      },
-      {
-        title: 'Professional Tools',
-        icon: <CheckCircle className="h-8 w-8 text-green-600" />,
-        description: 'Access scheduling, invoicing, and business management tools'
-      }
-    ],
-    customer: [
-      {
-        title: 'Find Providers',
-        icon: <Search className="h-8 w-8 text-purple-600" />,
-        description: 'Browse verified professionals in your area with transparent pricing'
-      },
-      {
-        title: 'Escrow Protection',
-        icon: <Shield className="h-8 w-8 text-purple-600" />,
-        description: 'Your payment is secured until the job is completed to your satisfaction'
-      },
-      {
-        title: 'Verified Professionals',
-        icon: <CheckCircle className="h-8 w-8 text-purple-600" />,
-        description: 'All service providers are background checked and verified'
-      },
-      {
-        title: 'Real-time Updates',
-        icon: <Clock className="h-8 w-8 text-purple-600" />,
-        description: 'Get live updates on job progress and provider location'
-      }
-    ]
+  const handleUserTypeSelect = (userType: string) => {
+    setSelectedUserType(userType);
   };
 
-  const handleCardClick = (cardId: string) => {
-    setSelectedCard(selectedCard === cardId ? null : cardId);
-  };
+  const selectedOption = userTypeOptions.find(option => option.id === selectedUserType);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-16">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-gray-900 mb-4">Choose Your Path</h2>
-        <p className="text-lg text-gray-600">Get started with HOUSIE based on your needs</p>
-      </div>
+    <div className="py-16 lg:py-24 px-2 sm:px-4 relative">
+      {/* Background overlay for better text visibility */}
+      <div className="absolute inset-0 bg-black/20"></div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {cards.map((card) => (
-          <Card 
-            key={card.id} 
-            className={`relative overflow-hidden hover:shadow-lg transition-all duration-300 h-full cursor-pointer transform hover:scale-105 ${
-              selectedCard === card.id ? 'ring-4 ring-orange-600 shadow-xl' : ''
-            }`}
-            style={{ backgroundColor: '#faf7f2' }}
-            onClick={() => handleCardClick(card.id)}
-          >
-            <div className="aspect-video relative">
-              <img
-                src={card.image}
-                alt={card.title}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.currentTarget as HTMLImageElement).style.display = 'none';
-                  const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                  if (nextSibling) {
-                    nextSibling.style.display = 'flex';
-                  }
-                }}
-              />
-              <div className="hidden w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 items-center justify-center">
-                {card.icon}
+      <div className="max-w-[95vw] lg:max-w-[90vw] xl:max-w-[85vw] mx-auto relative z-10">
+        {/* Header Section */}
+        <div className="text-center mb-16 lg:mb-20">
+          <div className="inline-block relative">
+            <div className="fintech-card backdrop-blur-sm rounded-3xl px-8 lg:px-10 py-6 lg:py-8 shadow-2xl relative transform hover:scale-105 transition-transform duration-300">
+              <div className="absolute -top-6 lg:-top-8 left-1/2 transform -translate-x-1/2">
+                <div className="w-12 h-12 lg:w-16 lg:h-16 bg-gradient-to-br from-orange-600 to-purple-600 rounded-full flex items-center justify-center text-cream text-xl lg:text-2xl font-black fintech-card shadow-lg">
+                  {selectedOption ? (
+                    <div className="text-white">
+                      {selectedOption.id === 'fleet' && <Truck className="h-6 w-6 lg:h-8 lg:w-8" />}
+                      {selectedOption.id === 'provider' && <Wrench className="h-6 w-6 lg:h-8 lg:w-8" />}
+                      {selectedOption.id === 'customer' && <Search className="h-6 w-6 lg:h-8 lg:w-8" />}
+                    </div>
+                  ) : (
+                    "?"
+                  )}
+                </div>
+              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-black mb-4 pt-4">
+                What brings you here today?
+              </h2>
+              <p className="text-lg sm:text-xl lg:text-2xl text-gray-800 font-medium max-w-4xl mx-auto">
+                Choose your path to get started with HOUSIE
+              </p>
+              <div className="absolute -bottom-8 lg:-bottom-12 left-1/2 transform -translate-x-1/2 text-4xl lg:text-5xl animate-bounce" style={{ color: '#f5d478' }}>
+                👇
               </div>
             </div>
-            
-            <CardHeader className="pb-2">
-              <CardTitle className="text-xl font-bold text-black flex items-center gap-3">
-                <div>
-                  {card.icon}
-                </div>
-                {card.title}
-                <ChevronDown 
-                  className={`h-5 w-5 text-gray-600 ml-auto transition-transform duration-300 ${
-                    selectedCard === card.id ? 'rotate-180' : ''
-                  }`}
-                />
-              </CardTitle>
-              <p className="text-gray-700 text-sm font-medium">
-                {card.description}
-              </p>
-            </CardHeader>
-            
-            <CardContent className="flex-1 flex flex-col">
-              <ul className="space-y-2 mb-6 flex-1">
-                {card.features.map((feature, index) => (
-                  <li key={index} className="text-sm text-gray-700 font-medium flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 bg-orange-600 rounded-full"></div>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              
-              <Link to={card.href} className="mt-auto">
-                <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold">
-                  Get started
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Dynamic detailed content */}
-      {selectedCard && (
-        <div className="mt-12 animate-fade-in">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
-              {selectedCard === 'crew' && 'Crew Management Features'}
-              {selectedCard === 'provider' && 'Provider Opportunities'}
-              {selectedCard === 'customer' && 'Customer Benefits'}
-            </h3>
-            <p className="text-gray-600">
-              {selectedCard === 'crew' && 'Everything you need to manage your crew efficiently'}
-              {selectedCard === 'provider' && 'Tools and opportunities to grow your business'}
-              {selectedCard === 'customer' && 'Safe, secure, and reliable service booking'}
-            </p>
           </div>
+        </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {detailedContent[selectedCard as keyof typeof detailedContent].map((item, index) => (
+        {/* User Type Selection Cards */}
+        {!selectedUserType && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 mt-16">
+            {userTypeOptions.map((option) => (
               <Card 
-                key={index} 
-                className="p-6 hover:shadow-lg transition-all duration-300 transform hover:scale-105"
-                style={{ backgroundColor: '#faf7f2' }}
+                key={option.id}
+                className="fintech-card cursor-pointer transition-all duration-300 hover:shadow-2xl hover:-translate-y-3 backdrop-blur-sm rounded-2xl p-6 lg:p-8 relative overflow-hidden hover:scale-105"
+                onClick={() => handleUserTypeSelect(option.id)}
               >
-                <div className="text-center">
-                  <div className="mb-4 flex justify-center">
-                    {item.icon}
+                <CardHeader className="text-center pb-6 relative z-10">
+                  <div className="mx-auto mb-6 lg:mb-8 p-6 lg:p-8 fintech-card rounded-3xl w-fit shadow-xl">
+                    {option.icon}
                   </div>
-                  <h4 className="text-lg font-bold text-black mb-3">{item.title}</h4>
-                  <p className="text-sm text-gray-700 font-medium leading-relaxed">{item.description}</p>
-                </div>
+                  <CardTitle className="text-xl sm:text-2xl lg:text-3xl font-black text-black mb-4">
+                    {option.title}
+                  </CardTitle>
+                  <CardDescription className="text-gray-800 text-base sm:text-lg lg:text-xl font-medium leading-relaxed">
+                    {option.description}
+                  </CardDescription>
+                </CardHeader>
+
+                <CardContent className="relative z-10">
+                  <ul className="space-y-3 lg:space-y-4 mb-6 lg:mb-8">
+                    {option.benefits.map((benefit, index) => (
+                      <li key={index} className="flex items-center gap-3 lg:gap-4">
+                        <CheckCircle className="h-5 w-5 lg:h-6 lg:w-6 text-green-600 flex-shrink-0" />
+                        <span className="text-black font-medium text-sm lg:text-base">{benefit}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <Link to="/services">
+                    <Button className="w-full bg-gradient-to-r from-orange-600 to-purple-600 hover:from-orange-700 hover:to-purple-700 text-cream font-bold py-3 lg:py-4 rounded-2xl text-base lg:text-lg shadow-lg transform hover:scale-105 transition-all duration-200 fintech-card">
+                      Choose This Path
+                      <ArrowRight className="h-4 w-4 lg:h-5 lg:w-5 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
               </Card>
             ))}
           </div>
+        )}
 
-          <div className="text-center mt-8">
-            <Link to={cards.find(c => c.id === selectedCard)?.href || '/services'}>
-              <Button className="bg-orange-600 hover:bg-orange-700 text-white font-bold px-8 py-3 text-lg">
-                Start Your Journey
+        {/* Demo Section */}
+        {selectedUserType && (
+          <DemoSection selectedOption={selectedOption} />
+        )}
+
+        {/* Skip Option */}
+        <div className="text-center mt-16">
+          <div className="fintech-card backdrop-blur-sm px-6 py-4 rounded-xl shadow-lg inline-block">
+            <p className="text-black mb-4 font-medium">
+              You can always customize your profile later
+            </p>
+            <Link to="/services">
+              <Button variant="ghost" className="text-black hover:text-gray-700 font-semibold">
+                Skip this step →
               </Button>
             </Link>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 };

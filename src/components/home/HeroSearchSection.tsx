@@ -29,7 +29,7 @@ const HeroSearchSection = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center pt-16">
       {/* Certn Info - Top Right Corner */}
-      <div className="absolute top-24 right-6 z-20 flex items-center space-x-2 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg border border-gray-200">
+      <div className="absolute top-24 right-6 z-20 flex items-center space-x-2 fintech-card backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
         <img 
           src="/CERTN.png" 
           alt="Certn" 
@@ -47,7 +47,7 @@ const HeroSearchSection = () => {
         </h1>
         
         {/* Search Bar - Exact UberEats Style */}
-        <div className="bg-white rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
+        <div className="fintech-card rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
           {/* Location Input */}
           <div className="flex-1 relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -58,7 +58,7 @@ const HeroSearchSection = () => {
               placeholder="Enter delivery address"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="pl-10 border-none shadow-none text-lg h-12 focus:ring-0"
+              className="pl-10 border-none shadow-none text-lg h-12 focus:ring-0 bg-transparent"
             />
           </div>
 
@@ -81,7 +81,7 @@ const HeroSearchSection = () => {
           {/* Search Button */}
           <Button
             onClick={handleSearch}
-            className="bg-black text-white hover:bg-gray-800 px-8 h-12 text-lg rounded-lg"
+            className="bg-black text-white hover:bg-gray-800 px-8 h-12 text-lg rounded-lg border-2 border-black"
           >
             Search here
           </Button>
