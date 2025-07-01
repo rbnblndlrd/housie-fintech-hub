@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import GoogleSignInButton from '@/components/auth/GoogleSignInButton';
-import VideoBackground from '@/components/common/VideoBackground';
+import ContainedVideoBackground from '@/components/common/ContainedVideoBackground';
 import { Loader2, Mail, Lock } from 'lucide-react';
 
 const Auth = () => {
@@ -99,8 +99,8 @@ const Auth = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left side - Video Background */}
-      <div className="w-1/2 relative overflow-hidden">
-        <VideoBackground />
+      <div className="w-1/2 relative">
+        <ContainedVideoBackground />
         <div className="absolute inset-0 bg-black/20 z-10"></div>
         <div className="absolute inset-0 z-20 flex items-center justify-center">
           <div className="text-center text-white">
