@@ -149,7 +149,7 @@ const Calendar = () => {
                 {/* Calendar Header */}
                 <div className="grid grid-cols-7 gap-2 mb-4">
                   {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                    <div key={day} className="p-3 text-center font-medium bg-gray-100 rounded border-b">
+                    <div key={day} className="fintech-inner-box p-3 text-center font-medium">
                       {day}
                     </div>
                   ))}
@@ -165,11 +165,11 @@ const Calendar = () => {
                     return (
                       <div
                         key={day.toISOString()}
-                        className={`min-h-[140px] p-3 border rounded-lg transition-colors ${
+                        className={`fintech-inner-box min-h-[140px] p-3 transition-colors ${
                           isCurrentMonth 
-                            ? 'bg-white/90 hover:bg-white' 
-                            : 'bg-gray-50 hover:bg-gray-100'
-                        } ${isToday ? 'ring-2 ring-blue-400' : 'border-gray-200'}`}
+                            ? 'hover:bg-white' 
+                            : 'opacity-50'
+                        } ${isToday ? 'ring-2 ring-blue-400' : ''}`}
                       >
                         <div className={`text-sm font-medium mb-2 ${
                           isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
@@ -208,7 +208,7 @@ const Calendar = () => {
                     .filter(event => isSameDay(event.date, new Date()))
                     .sort((a, b) => a.date.getTime() - b.date.getTime())
                     .map((event) => (
-                      <div key={event.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
+                      <div key={event.id} className="fintech-inner-box flex items-center justify-between p-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-1">
                             <span className="font-medium text-lg">{format(event.date, 'HH:mm')}</span>
@@ -226,10 +226,10 @@ const Calendar = () => {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" className="border-gray-300 hover:bg-gray-100">
+                          <Button size="sm" className="fintech-inner-button">
                             Edit
                           </Button>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                          <Button size="sm" className="fintech-button-primary">
                             Complete
                           </Button>
                         </div>

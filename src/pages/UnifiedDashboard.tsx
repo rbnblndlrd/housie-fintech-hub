@@ -339,7 +339,7 @@ const UnifiedDashboard = () => {
                       <div className="space-y-2 mb-4">
                         <h4 className="font-medium">Pending Emergency Jobs:</h4>
                         {dashboardData.emergencyJobs.map((job: any) => (
-                          <div key={job.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div key={job.id} className="fintech-inner-box flex items-center justify-between p-3">
                             <div>
                               <p className="font-medium">{job.title}</p>
                               <p className="text-sm opacity-70">{job.location}</p>
@@ -378,7 +378,7 @@ const UnifiedDashboard = () => {
                   <CardContent>
                     <div className="space-y-4">
                       {dashboardData?.recentActivity?.map((activity: any) => (
-                        <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                        <div key={activity.id} className="fintech-inner-box flex items-center justify-between p-4">
                           <div className="flex items-center gap-4">
                             <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                             <div>
@@ -401,26 +401,26 @@ const UnifiedDashboard = () => {
                 <CardContent>
                   <div className="grid grid-cols-1 gap-4">
                     <Link to="/bookings">
-                      <Button className="fintech-button-secondary w-full">
-                        <Calendar className="h-4 w-4 mr-2" />
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
                         Bookings
                       </Button>
                     </Link>
                     <Link to="/manager">
-                      <Button className="fintech-button-secondary w-full">
-                        <Users className="h-4 w-4 mr-2" />
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Users className="h-4 w-4" />
                         Manager Hub
                       </Button>
                     </Link>
                     <Link to="/analytics-dashboard">
-                      <Button className="fintech-button-secondary w-full">
-                        <TrendingUp className="h-4 w-4 mr-2" />
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <TrendingUp className="h-4 w-4" />
                         Analytics
                       </Button>
                     </Link>
                     <Link to="/services">
-                      <Button className="fintech-button-secondary w-full">
-                        <MapPin className="h-4 w-4 mr-2" />
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <MapPin className="h-4 w-4" />
                         Browse Services
                       </Button>
                     </Link>
