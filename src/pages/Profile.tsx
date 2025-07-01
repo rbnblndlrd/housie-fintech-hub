@@ -58,7 +58,7 @@ const Profile = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Profile Overview */}
               <div className="lg:col-span-1">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardContent className="p-6 text-center">
                     <Avatar className="w-24 h-24 mx-auto mb-4">
                       <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-2xl">
@@ -67,7 +67,7 @@ const Profile = () => {
                     </Avatar>
                     
                     <div className="mb-4">
-                      <h2 className="text-xl font-bold text-white mb-1">{userProfile.name}</h2>
+                      <h2 className="text-xl font-bold mb-1">{userProfile.name}</h2>
                       {userProfile.isVerified && (
                         <Badge className="bg-green-100 text-green-800 mb-2">
                           <Shield className="h-3 w-3 mr-1" />
@@ -76,7 +76,7 @@ const Profile = () => {
                       )}
                     </div>
 
-                    <div className="space-y-2 text-sm text-white/90">
+                    <div className="space-y-2 text-sm">
                       <div className="flex items-center justify-center gap-2">
                         <Mail className="h-4 w-4" />
                         <span>{userProfile.email}</span>
@@ -95,7 +95,7 @@ const Profile = () => {
                       </div>
                     </div>
 
-                    <Button className="w-full mt-4 bg-white/10 hover:bg-white/20 text-white border-white/20">
+                    <Button className="w-full mt-4 fintech-button-secondary">
                       <Settings className="h-4 w-4 mr-2" />
                       Edit Profile
                     </Button>
@@ -107,46 +107,46 @@ const Profile = () => {
               <div className="lg:col-span-2 space-y-6">
                 {/* Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <Card className="fintech-metric-card">
                     <CardContent className="p-4 text-center">
                       <div className="flex items-center justify-center mb-2">
-                        <Star className="h-6 w-6 text-yellow-400" />
+                        <Star className="h-6 w-6 text-yellow-500" />
                       </div>
-                      <div className="text-2xl font-bold text-white">{userProfile.rating}</div>
-                      <div className="text-sm text-white/70">Average Rating</div>
+                      <div className="text-2xl font-bold">{userProfile.rating}</div>
+                      <div className="text-sm opacity-70">Average Rating</div>
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <Card className="fintech-metric-card">
                     <CardContent className="p-4 text-center">
                       <div className="flex items-center justify-center mb-2">
-                        <Award className="h-6 w-6 text-green-400" />
+                        <Award className="h-6 w-6 text-green-500" />
                       </div>
-                      <div className="text-2xl font-bold text-white">{userProfile.completedJobs}</div>
-                      <div className="text-sm text-white/70">Jobs Completed</div>
+                      <div className="text-2xl font-bold">{userProfile.completedJobs}</div>
+                      <div className="text-sm opacity-70">Jobs Completed</div>
                     </CardContent>
                   </Card>
 
-                  <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <Card className="fintech-metric-card">
                     <CardContent className="p-4 text-center">
                       <div className="flex items-center justify-center mb-2">
-                        <User className="h-6 w-6 text-blue-400" />
+                        <User className="h-6 w-6 text-blue-500" />
                       </div>
-                      <div className="text-2xl font-bold text-white">98%</div>
-                      <div className="text-sm text-white/70">Response Rate</div>
+                      <div className="text-2xl font-bold">98%</div>
+                      <div className="text-sm opacity-70">Response Rate</div>
                     </CardContent>
                   </Card>
                 </div>
 
                 {/* Specialties */}
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Specialties</CardTitle>
+                    <CardTitle>Specialties</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex flex-wrap gap-2">
                       {userProfile.specialties.map((specialty) => (
-                        <Badge key={specialty} variant="secondary" className="bg-blue-500/20 text-blue-300">
+                        <Badge key={specialty} variant="secondary" className="bg-blue-500/20 text-blue-800">
                           {specialty}
                         </Badge>
                       ))}
@@ -155,30 +155,30 @@ const Profile = () => {
                 </Card>
 
                 {/* Recent Activity */}
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Recent Activity</CardTitle>
+                    <CardTitle>Recent Activity</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                      <div className="fintech-inner-box flex items-center justify-between p-3">
                         <div>
-                          <h4 className="text-white font-medium">Plumbing Repair Completed</h4>
-                          <p className="text-white/70 text-sm">Downtown Montreal • 2 days ago</p>
+                          <h4 className="font-medium">Plumbing Repair Completed</h4>
+                          <p className="text-sm opacity-70">Downtown Montreal • 2 days ago</p>
                         </div>
                         <Badge className="bg-green-100 text-green-800">Completed</Badge>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                      <div className="fintech-inner-box flex items-center justify-between p-3">
                         <div>
-                          <h4 className="text-white font-medium">Electrical Installation</h4>
-                          <p className="text-white/70 text-sm">Westmount • 1 week ago</p>
+                          <h4 className="font-medium">Electrical Installation</h4>
+                          <p className="text-sm opacity-70">Westmount • 1 week ago</p>
                         </div>
                         <Badge className="bg-green-100 text-green-800">Completed</Badge>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                      <div className="fintech-inner-box flex items-center justify-between p-3">
                         <div>
-                          <h4 className="text-white font-medium">Kitchen Renovation</h4>
-                          <p className="text-white/70 text-sm">Plateau • 2 weeks ago</p>
+                          <h4 className="font-medium">Kitchen Renovation</h4>
+                          <p className="text-sm opacity-70">Plateau • 2 weeks ago</p>
                         </div>
                         <Badge className="bg-green-100 text-green-800">Completed</Badge>
                       </div>

@@ -21,6 +21,7 @@ export const customerNav: NavigationItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Manager", href: "/manager", icon: "⚙️" },
+  { label: "Social", href: "/social", icon: "👥" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];
@@ -30,6 +31,7 @@ export const providerNav: NavigationItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Manager", href: "/manager", icon: "⚙️" },
+  { label: "Social", href: "/social", icon: "👥" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];
@@ -68,6 +70,7 @@ export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'cust
     { label: "Settings", href: "/profile", icon: "⚙️" },
     { label: "Payment Methods", href: "/payment-methods", icon: "💳" },
     { label: "Verification Status", href: "/profile", icon: "✅" },
+    { label: "Manage", href: "/subscription-management", icon: "⚙️" },
     { separator: true, label: "", href: "", icon: "" }
   ];
 };

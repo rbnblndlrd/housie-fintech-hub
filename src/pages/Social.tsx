@@ -98,28 +98,28 @@ const Social = () => {
               {/* Main Feed */}
               <div className="lg:col-span-3 space-y-6">
                 {/* Create Post */}
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardContent className="p-4">
                     <div className="flex items-center gap-3 mb-4">
                       <Avatar>
                         <AvatarFallback className="bg-blue-500 text-white">U</AvatarFallback>
                       </Avatar>
-                      <div className="flex-1 bg-slate-700/50 rounded-full px-4 py-2 text-white/70 cursor-pointer hover:bg-slate-700/70 transition-colors">
+                      <div className="flex-1 fintech-inner-box px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors">
                         What's happening in your work today?
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
+                        <Button variant="ghost" size="sm" className="fintech-inner-button">
                           <Camera className="h-4 w-4 mr-2" />
                           Photo
                         </Button>
-                        <Button variant="ghost" size="sm" className="text-white/70 hover:text-white">
+                        <Button variant="ghost" size="sm" className="fintech-inner-button">
                           <MapPin className="h-4 w-4 mr-2" />
                           Location
                         </Button>
                       </div>
-                      <Button className="bg-blue-600 hover:bg-blue-700">
+                      <Button className="fintech-button-primary">
                         Post
                       </Button>
                     </div>
@@ -128,7 +128,7 @@ const Social = () => {
 
                 {/* Posts Feed */}
                 {posts.map((post) => (
-                  <Card key={post.id} className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                  <Card key={post.id} className="fintech-card">
                     <CardContent className="p-6">
                       <div className="flex items-start gap-3 mb-4">
                         <Avatar>
@@ -138,12 +138,12 @@ const Social = () => {
                         </Avatar>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <h3 className="font-semibold text-white">{post.user.name}</h3>
-                            <Badge variant="outline" className="text-xs text-white/70 border-white/30">
+                            <h3 className="font-semibold">{post.user.name}</h3>
+                            <Badge variant="outline" className="text-xs">
                               {post.user.role}
                             </Badge>
                           </div>
-                          <div className="flex items-center gap-2 text-sm text-white/60">
+                          <div className="flex items-center gap-2 text-sm opacity-60">
                             <MapPin className="h-3 w-3" />
                             {post.user.location}
                             <span>•</span>
@@ -152,27 +152,27 @@ const Social = () => {
                         </div>
                       </div>
 
-                      <p className="text-white mb-4">{post.content}</p>
+                      <p className="mb-4">{post.content}</p>
 
                       <div className="flex flex-wrap gap-2 mb-4">
                         {post.tags.map((tag) => (
-                          <Badge key={tag} variant="secondary" className="text-xs bg-blue-500/20 text-blue-300">
+                          <Badge key={tag} variant="secondary" className="text-xs bg-blue-500/20 text-blue-800">
                             #{tag}
                           </Badge>
                         ))}
                       </div>
 
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-600/30">
+                      <div className="flex items-center justify-between pt-4 border-t">
                         <div className="flex items-center gap-6">
-                          <Button variant="ghost" size="sm" className="text-white/70 hover:text-red-400">
+                          <Button variant="ghost" size="sm" className="fintech-inner-button hover:text-red-500">
                             <Heart className="h-4 w-4 mr-2" />
                             {post.likes}
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-white/70 hover:text-blue-400">
+                          <Button variant="ghost" size="sm" className="fintech-inner-button hover:text-blue-500">
                             <MessageCircle className="h-4 w-4 mr-2" />
                             {post.comments}
                           </Button>
-                          <Button variant="ghost" size="sm" className="text-white/70 hover:text-green-400">
+                          <Button variant="ghost" size="sm" className="fintech-inner-button hover:text-green-500">
                             <Share2 className="h-4 w-4 mr-2" />
                             {post.shares}
                           </Button>
@@ -186,48 +186,48 @@ const Social = () => {
               {/* Sidebar */}
               <div className="space-y-6">
                 {/* Trending Topics */}
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Trending Topics</CardTitle>
+                    <CardTitle>Trending Topics</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
                     {trendingTopics.map((topic) => (
                       <div key={topic.tag} className="flex items-center justify-between">
-                        <span className="text-blue-300 cursor-pointer hover:text-blue-200">
+                        <span className="text-blue-600 cursor-pointer hover:text-blue-800">
                           #{topic.tag}
                         </span>
-                        <span className="text-white/60 text-sm">{topic.count} posts</span>
+                        <span className="text-sm opacity-60">{topic.count} posts</span>
                       </div>
                     ))}
                   </CardContent>
                 </Card>
 
                 {/* Quick Stats */}
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Community Stats</CardTitle>
+                    <CardTitle>Community Stats</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4 text-blue-400" />
-                        <span className="text-white/90">Active Providers</span>
+                        <Users className="h-4 w-4" />
+                        <span>Active Providers</span>
                       </div>
-                      <span className="text-white font-semibold">1,247</span>
+                      <span className="font-semibold">1,247</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Star className="h-4 w-4 text-yellow-400" />
-                        <span className="text-white/90">Jobs Completed</span>
+                        <Star className="h-4 w-4" />
+                        <span>Jobs Completed</span>
                       </div>
-                      <span className="text-white font-semibold">8,392</span>
+                      <span className="font-semibold">8,392</span>
                     </div>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-green-400" />
-                        <span className="text-white/90">This Month</span>
+                        <Calendar className="h-4 w-4" />
+                        <span>This Month</span>
                       </div>
-                      <span className="text-white font-semibold">456</span>
+                      <span className="font-semibold">456</span>
                     </div>
                   </CardContent>
                 </Card>

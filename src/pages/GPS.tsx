@@ -19,7 +19,7 @@ import {
   Fuel
 } from 'lucide-react';
 
-const GPSJobAnalyzer = () => {
+const GPS = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -76,13 +76,13 @@ const GPSJobAnalyzer = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               {/* Job Details */}
               <div className="lg:col-span-1 space-y-6">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Job Details</CardTitle>
+                    <CardTitle>Job Details</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <h3 className="text-lg font-semibold text-white mb-2">{jobDetails.title}</h3>
+                      <h3 className="text-lg font-semibold mb-2">{jobDetails.title}</h3>
                       <Badge className={`${
                         jobDetails.priority === 'high' ? 'bg-red-100 text-red-800' : 
                         jobDetails.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' : 
@@ -93,26 +93,26 @@ const GPSJobAnalyzer = () => {
                     </div>
                     
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-white/90">
+                      <div className="flex items-center gap-2">
                         <User className="h-4 w-4" />
                         <span>Client: {jobDetails.client}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-white/90">
+                      <div className="flex items-center gap-2">
                         <MapPin className="h-4 w-4" />
                         <span>Location: {jobDetails.location}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-white/90">
+                      <div className="flex items-center gap-2">
                         <Clock className="h-4 w-4" />
                         <span>Duration: {jobDetails.estimatedDuration} minutes</span>
                       </div>
                     </div>
 
                     <div className="pt-4 space-y-2">
-                      <Button className="w-full bg-green-600 hover:bg-green-700">
+                      <Button className="w-full fintech-button-primary">
                         <Phone className="h-4 w-4 mr-2" />
                         Call Client
                       </Button>
-                      <Button variant="outline" className="w-full text-white border-white/20 hover:bg-white/10">
+                      <Button className="w-full fintech-button-secondary">
                         <Navigation className="h-4 w-4 mr-2" />
                         Start Navigation
                       </Button>
@@ -121,40 +121,40 @@ const GPSJobAnalyzer = () => {
                 </Card>
 
                 {/* Route Analysis */}
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Route Analysis</CardTitle>
+                    <CardTitle>Route Analysis</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-blue-400">{routeAnalysis.distance}</div>
-                        <div className="text-sm text-white/70">Distance</div>
+                        <div className="text-2xl font-bold text-blue-600">{routeAnalysis.distance}</div>
+                        <div className="text-sm opacity-70">Distance</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-green-400">{routeAnalysis.estimatedTime}</div>
-                        <div className="text-sm text-white/70">ETA</div>
+                        <div className="text-2xl font-bold text-green-600">{routeAnalysis.estimatedTime}</div>
+                        <div className="text-sm opacity-70">ETA</div>
                       </div>
                     </div>
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-white/90">Fuel Cost</span>
-                        <span className="text-white font-semibold">{routeAnalysis.fuelCost}</span>
+                        <span>Fuel Cost</span>
+                        <span className="font-semibold">{routeAnalysis.fuelCost}</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-white/90">Traffic</span>
+                        <span>Traffic</span>
                         <Badge className="bg-green-100 text-green-800">{routeAnalysis.trafficCondition}</Badge>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-white/90">Alt. Routes</span>
-                        <span className="text-white font-semibold">{routeAnalysis.alternativeRoutes}</span>
+                        <span>Alt. Routes</span>
+                        <span className="font-semibold">{routeAnalysis.alternativeRoutes}</span>
                       </div>
                     </div>
 
                     <div className="pt-4">
-                      <p className="text-sm text-white/70 mb-2">Recommended Route:</p>
-                      <p className="text-white font-medium">{routeAnalysis.optimalRoute}</p>
+                      <p className="text-sm opacity-70 mb-2">Recommended Route:</p>
+                      <p className="font-medium">{routeAnalysis.optimalRoute}</p>
                     </div>
                   </CardContent>
                 </Card>
@@ -162,28 +162,28 @@ const GPSJobAnalyzer = () => {
 
               {/* Map Placeholder */}
               <div className="lg:col-span-2">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl h-[600px]">
+                <Card className="fintech-chart-container h-[600px]">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow flex items-center gap-2">
+                    <CardTitle className="flex items-center gap-2">
                       <Route className="h-5 w-5" />
                       Interactive Map
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="h-full flex items-center justify-center">
                     <div className="text-center">
-                      <MapPin className="h-16 w-16 text-white/50 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold text-white mb-2">GPS Map Integration</h3>
-                      <p className="text-white/70 mb-4">
+                      <MapPin className="h-16 w-16 opacity-50 mx-auto mb-4" />
+                      <h3 className="text-xl font-semibold mb-2">GPS Map Integration</h3>
+                      <p className="opacity-70 mb-4">
                         Interactive map with real-time traffic and route optimization
                       </p>
                       <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                        <div className="bg-white/10 rounded-lg p-3">
-                          <Calculator className="h-6 w-6 text-blue-400 mx-auto mb-2" />
-                          <div className="text-sm text-white/90">Route Optimization</div>
+                        <div className="fintech-inner-box p-3">
+                          <Calculator className="h-6 w-6 text-blue-600 mx-auto mb-2" />
+                          <div className="text-sm">Route Optimization</div>
                         </div>
-                        <div className="bg-white/10 rounded-lg p-3">
-                          <Fuel className="h-6 w-6 text-green-400 mx-auto mb-2" />
-                          <div className="text-sm text-white/90">Cost Analysis</div>
+                        <div className="fintech-inner-box p-3">
+                          <Fuel className="h-6 w-6 text-green-600 mx-auto mb-2" />
+                          <div className="text-sm">Cost Analysis</div>
                         </div>
                       </div>
                     </div>
@@ -198,4 +198,4 @@ const GPSJobAnalyzer = () => {
   );
 };
 
-export default GPSJobAnalyzer;
+export default GPS;

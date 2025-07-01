@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -36,6 +35,10 @@ const KanbanBoard = () => {
     { label: 'Completed Today', value: 6, color: 'bg-green-500' },
     { label: 'Total Revenue', value: '$2,450', color: 'bg-purple-500' }
   ];
+
+  const handleAnalyzeJob = (ticket: Ticket) => {
+    navigate('/gps', { state: { ticket } });
+  };
 
   return (
     <>
