@@ -123,7 +123,7 @@ const HeroSearchSection = () => {
             background-position: 0px 0px;
           }
           100% {
-            background-position: 32px 0px;
+            background-position: 24px 0px;
           }
         }
 
@@ -137,36 +137,36 @@ const HeroSearchSection = () => {
         .certn-banner-coupon::before {
           content: '';
           position: absolute;
-          top: -2px;
+          top: -3px;
           left: 0;
           right: 0;
-          height: 4px;
+          height: 6px;
           background: repeating-linear-gradient(
             to right,
-            transparent 0px,
-            transparent 8px,
-            #d4f3b7 8px,
-            #d4f3b7 16px
+            #ffffff 0px,
+            #ffffff 6px,
+            transparent 6px,
+            transparent 12px
           );
-          animation: chainsawMove 0.8s linear infinite;
+          animation: chainsawMove 1.2s linear infinite;
           border-radius: 4px 4px 0 0;
         }
 
         .certn-banner-coupon::after {
           content: '';
           position: absolute;
-          bottom: -2px;
+          bottom: -3px;
           left: 0;
           right: 0;
-          height: 4px;
+          height: 6px;
           background: repeating-linear-gradient(
             to right,
-            transparent 0px,
-            transparent 8px,
-            #d4f3b7 8px,
-            #d4f3b7 16px
+            #ffffff 0px,
+            #ffffff 6px,
+            transparent 6px,
+            transparent 12px
           );
-          animation: chainsawMove 0.8s linear infinite;
+          animation: chainsawMove 1.2s linear infinite;
           border-radius: 0 0 4px 4px;
         }
 
