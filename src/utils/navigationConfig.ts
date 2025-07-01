@@ -20,6 +20,7 @@ export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
+  { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Manager", href: "/manager", icon: "⚙️" },
   { label: "Social", href: "/social", icon: "👥" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
@@ -30,6 +31,7 @@ export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
+  { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Manager", href: "/manager", icon: "⚙️" },
   { label: "Social", href: "/social", icon: "👥" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
@@ -57,9 +59,11 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   return [
     { label: "Map", href: "/emergency", icon: "🗺️" },
     { label: "Dashboard", href: "/dashboard", icon: "📊" },
+    { label: "Calendar", href: "/calendar", icon: "📅" },
     { label: "Manager", href: "/manager", icon: "⚙️" },
     { label: "AI Assistant", href: "/notifications", icon: "🤖" },
     { separator: true, label: "", href: "", icon: "" },
+    { label: "Manage", href: "/subscription-management", icon: "⚙️" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
   ];
 };
