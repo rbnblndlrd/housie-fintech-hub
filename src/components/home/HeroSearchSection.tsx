@@ -88,10 +88,10 @@ const HeroSearchSection = () => {
         {/* Fixed Banner - Sticks to bottom of screen */}
         {showBanner && (
           <div 
-            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 certn-banner-coupon"
+            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 certn-banner-coupon"
             style={{ backgroundColor: '#d4f3b7' }}
           >
-            <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
               <div className="flex items-center space-x-3">
                 {/* Actual Certn Logo from public directory */}
                 <img 
@@ -130,17 +130,15 @@ const HeroSearchSection = () => {
         .certn-banner-coupon {
           transform-origin: center center;
           will-change: transform;
-          border-radius: 8px;
-          overflow: hidden;
-          box-shadow: 0 4px 15px -3px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          position: relative;
         }
 
         .certn-banner-coupon::before {
           content: '';
           position: absolute;
           top: -4px;
-          left: 0;
-          right: 0;
+          left: -4px;
+          right: -4px;
           height: 8px;
           background: repeating-linear-gradient(
             to right,
@@ -150,15 +148,14 @@ const HeroSearchSection = () => {
             transparent 16px
           );
           animation: chainsawMove 1s linear infinite;
-          border-radius: 4px 4px 0 0;
         }
 
         .certn-banner-coupon::after {
           content: '';
           position: absolute;
           bottom: -4px;
-          left: 0;
-          right: 0;
+          left: -4px;
+          right: -4px;
           height: 8px;
           background: repeating-linear-gradient(
             to right,
@@ -168,7 +165,19 @@ const HeroSearchSection = () => {
             transparent 16px
           );
           animation: chainsawMove 1s linear infinite;
-          border-radius: 0 0 4px 4px;
+        }
+
+        /* Left and Right vertical edges */
+        .certn-banner-coupon::before {
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          background-clip: padding-box;
+        }
+
+        .certn-banner-coupon::after {
+          border-left: 4px solid transparent;
+          border-right: 4px solid transparent;
+          background-clip: padding-box;
         }
 
         /* Hover interaction - pause chainsaw */
@@ -180,7 +189,6 @@ const HeroSearchSection = () => {
         .certn-banner-coupon:hover {
           transform: translateY(-2px) scale(1.02);
           transition: transform 0.2s ease;
-          box-shadow: 0 8px 25px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         /* Ensure smooth performance */
