@@ -85,13 +85,13 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Fixed Banner - Sticks to bottom of screen */}
+        {/* Fixed Banner - Full width with chainsaw edges */}
         {showBanner && (
           <div 
             className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 certn-banner-coupon"
             style={{ backgroundColor: '#d4f3b7' }}
           >
-            <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+            <div className="w-full flex items-center justify-between px-4 py-3">
               <div className="flex items-center space-x-3">
                 {/* Actual Certn Logo from public directory */}
                 <img 
@@ -116,7 +116,7 @@ const HeroSearchSection = () => {
         )}
       </div>
 
-      {/* Chainsaw Moving Contour Animation Styles */}
+      {/* Chainsaw Animation Styles */}
       <style>{`
         @keyframes chainsawMove {
           0% {
@@ -127,18 +127,31 @@ const HeroSearchSection = () => {
           }
         }
 
+        @keyframes chainsawMoveVertical {
+          0% {
+            background-position: 0px 0px;
+          }
+          100% {
+            background-position: 0px 20px;
+          }
+        }
+
         .certn-banner-coupon {
           transform-origin: center center;
           will-change: transform;
           position: relative;
+          margin: 0;
+          border: none;
+          box-shadow: none;
         }
 
+        /* Top horizontal chainsaw edge */
         .certn-banner-coupon::before {
           content: '';
           position: absolute;
           top: -4px;
-          left: -4px;
-          right: -4px;
+          left: 0;
+          right: 0;
           height: 8px;
           background: repeating-linear-gradient(
             to right,
@@ -148,14 +161,16 @@ const HeroSearchSection = () => {
             transparent 16px
           );
           animation: chainsawMove 1s linear infinite;
+          z-index: 1;
         }
 
+        /* Bottom horizontal chainsaw edge */
         .certn-banner-coupon::after {
           content: '';
           position: absolute;
           bottom: -4px;
-          left: -4px;
-          right: -4px;
+          left: 0;
+          right: 0;
           height: 8px;
           background: repeating-linear-gradient(
             to right,
@@ -165,19 +180,102 @@ const HeroSearchSection = () => {
             transparent 16px
           );
           animation: chainsawMove 1s linear infinite;
+          z-index: 1;
         }
 
-        /* Left and Right vertical edges */
-        .certn-banner-coupon::before {
+        /* Create pseudo-elements for vertical edges using a wrapper approach */
+        .certn-banner-coupon {
           border-left: 4px solid transparent;
           border-right: 4px solid transparent;
           background-clip: padding-box;
+          position: relative;
         }
 
-        .certn-banner-coupon::after {
-          border-left: 4px solid transparent;
-          border-right: 4px solid transparent;
-          background-clip: padding-box;
+        /* Left vertical chainsaw edge */
+        .certn-banner-coupon:before {
+          background-image: 
+            repeating-linear-gradient(
+              to right,
+              #2d3748 0px,
+              #2d3748 8px,
+              transparent 8px,
+              transparent 16px
+            ),
+            repeating-linear-gradient(
+              to bottom,
+              #2d3748 0px,
+              #2d3748 8px,
+              transparent 8px,
+              transparent 16px
+            );
+          background-position: 0 0, -4px 0;
+          background-size: 100% 8px, 8px 100%;
+          background-repeat: repeat-x, repeat-y;
+        }
+
+        .certn-banner-coupon:after {
+          background-image: 
+            repeating-linear-gradient(
+              to right,
+              #2d3748 0px,
+              #2d3748 8px,
+              transparent 8px,
+              transparent 16px
+            ),
+            repeating-linear-gradient(
+              to bottom,
+              #2d3748 0px,
+              #2d3748 8px,
+              transparent 8px,
+              transparent 16px
+            );
+          background-position: 0 0, calc(100% + 4px) 0;
+          background-size: 100% 8px, 8px 100%;
+          background-repeat: repeat-x, repeat-y;
+        }
+
+        /* Add left and right vertical edges with separate pseudo-elements */
+        .certn-banner-coupon {
+          position: relative;
+        }
+
+        .certn-banner-coupon:before {
+          left: -4px;
+          width: calc(100% + 8px);
+        }
+
+        .certn-banner-coupon:after {
+          left: -4px;
+          width: calc(100% + 8px);
+        }
+
+        /* Use box-shadow to create vertical chainsaw edges */
+        .certn-banner-coupon {
+          box-shadow: 
+            /* Left vertical edge */
+            -4px 0 0 0 transparent,
+            -4px 8px 0 0 #2d3748,
+            -4px 16px 0 0 transparent,
+            -4px 24px 0 0 #2d3748,
+            -4px 32px 0 0 transparent,
+            -4px 40px 0 0 #2d3748,
+            -4px 48px 0 0 transparent,
+            -4px 56px 0 0 #2d3748,
+            -4px 64px 0 0 transparent,
+            -4px 72px 0 0 #2d3748,
+            -4px 80px 0 0 transparent,
+            /* Right vertical edge */
+            calc(100vw) 0 0 0 transparent,
+            calc(100vw) 8px 0 0 #2d3748,
+            calc(100vw) 16px 0 0 transparent,
+            calc(100vw) 24px 0 0 #2d3748,
+            calc(100vw) 32px 0 0 transparent,
+            calc(100vw) 40px 0 0 #2d3748,
+            calc(100vw) 48px 0 0 transparent,
+            calc(100vw) 56px 0 0 #2d3748,
+            calc(100vw) 64px 0 0 transparent,
+            calc(100vw) 72px 0 0 #2d3748,
+            calc(100vw) 80px 0 0 transparent;
         }
 
         /* Hover interaction - pause chainsaw */
