@@ -22,7 +22,7 @@ const categories = [
 const CategoryFilter: React.FC<CategoryFilterProps> = ({ value, onChange, className = "" }) => {
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className={className}>
+      <SelectTrigger className={`${className} bg-white`}>
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
             <span className="text-xs">
@@ -32,9 +32,9 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ value, onChange, classN
           <SelectValue placeholder="All Categories" />
         </div>
       </SelectTrigger>
-      <SelectContent className="fintech-card border-4 border-black shadow-xl">
+      <SelectContent className="fintech-card border-4 border-black shadow-xl bg-white z-50">
         {categories.map((category) => (
-          <SelectItem key={category.id} value={category.id}>
+          <SelectItem key={category.id} value={category.id} className="hover:bg-gray-100">
             <div className="flex items-center gap-2">
               <span className="text-lg">{category.icon}</span>
               <span>{category.name}</span>

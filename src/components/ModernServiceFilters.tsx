@@ -8,7 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import CategoryFilter from '@/components/filters/CategoryFilter';
 import SubcategoryFilter from '@/components/filters/SubcategoryFilter';
-import { Search, MapPin, DollarSign, Shield, Star, Filter, RotateCcw } from 'lucide-react';
+import { Search, MapPin, DollarSign, Shield, Filter, RotateCcw } from 'lucide-react';
 
 interface ModernServiceFiltersProps {
   searchTerm: string;
@@ -115,7 +115,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
             <select
               value={selectedLocation}
               onChange={(e) => onLocationChange(e.target.value)}
-              className="w-full p-3 border-2 border-black rounded-md fintech-input"
+              className="w-full p-3 border-2 border-black rounded-md fintech-input bg-white"
             >
               <option value="all">All Locations</option>
               <option value="montreal">Montreal</option>
@@ -135,7 +135,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
             <select
               value={selectedTime}
               onChange={(e) => onTimeChange(e.target.value)}
-              className="w-full p-3 border-2 border-black rounded-md fintech-input"
+              className="w-full p-3 border-2 border-black rounded-md fintech-input bg-white"
             >
               <option value="Any time">Any time</option>
               <option value="Today">Today</option>

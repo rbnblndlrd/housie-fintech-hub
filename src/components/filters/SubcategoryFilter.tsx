@@ -39,6 +39,7 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
     const fetchSubcategories = async () => {
       if (category === 'all') {
         setSubcategories([]);
+        onChange('all');
         return;
       }
 
@@ -65,7 +66,7 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
     };
 
     fetchSubcategories();
-  }, [category]);
+  }, [category, onChange]);
 
   const getRiskBadgeColor = (risk: string) => {
     switch (risk) {
@@ -78,7 +79,7 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
 
   return (
     <Select value={value} onValueChange={onChange} disabled={isLoading || category === 'all'}>
-      <SelectTrigger className={`${className} ${category === 'all' ? 'opacity-50' : ''}`}>
+      <SelectTrigger className={`${className} ${category === 'all' ? 'opacity-50' : ''} bg-white`}>
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
             <span className="text-xs">🏷️</span>
@@ -90,33 +91,33 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
           } />
         </div>
       </SelectTrigger>
-      <SelectContent className="fintech-card border-4 border-black shadow-xl">
-        <SelectItem value="all">All Subcategories</SelectItem>
+      <SelectContent className="fintech-card border-4 border-black shadow-xl bg-white z-50 max-h-96 overflow-y-auto">
+        <SelectItem value="all" className="hover:bg-gray-100">All Subcategories</SelectItem>
         {subcategories.map((subcategory) => (
-          <SelectItem key={subcategory.id} value={subcategory.subcategory_id}>
+          <SelectItem key={subcategory.id} value={subcategory.subcategory_id} className="hover:bg-gray-100 p-3">
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center gap-2">
                 <span className="text-lg">{subcategory.icon}</span>
                 <span className="flex-1">{subcategory.subcategory}</span>
               </div>
               <div className="flex gap-1 ml-2">
-                <Badge variant="outline" className={getRiskBadgeColor(subcategory.risk_category)}>
+                <Badge variant="outline" className={`text-xs ${getRiskBadgeColor(subcategory.risk_category)}`}>
                   {subcategory.risk_category}
                 </Badge>
                 {subcategory.background_check_required && (
-                  <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300">
+                  <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300 text-xs">
                     <Shield className="h-3 w-3 mr-1" />
                     BC
                   </Badge>
                 )}
                 {subcategory.professional_license_required && (
-                  <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-300">
+                  <Badge variant="outline" className="bg-blue-100 text-blue-700 border-blue-300 text-xs">
                     <Briefcase className="h-3 w-3 mr-1" />
                     {subcategory.professional_license_type?.toUpperCase()}
                   </Badge>
                 )}
                 {subcategory.ccq_rbq_required && (
-                  <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300">
+                  <Badge variant="outline" className="bg-orange-100 text-orange-700 border-orange-300 text-xs">
                     <Award className="h-3 w-3 mr-1" />
                     CCQ/RBQ
                   </Badge>
