@@ -116,56 +116,22 @@ const HeroSearchSection = () => {
         )}
       </div>
 
-      {/* Floating Coupon Animation Styles */}
+      {/* Chainsaw Moving Contour Animation Styles */}
       <style>{`
-        @keyframes floatCoupon {
+        @keyframes chainsawMove {
           0% {
-            transform: translateY(0px) rotate(0deg);
-          }
-          25% {
-            transform: translateY(-3px) rotate(0.7deg);
-          }
-          50% {
-            transform: translateY(-5px) rotate(1deg);
-          }
-          75% {
-            transform: translateY(-3px) rotate(-0.7deg);
+            background-position: 0px 0px;
           }
           100% {
-            transform: translateY(0px) rotate(0deg);
-          }
-        }
-
-        @keyframes couponBob {
-          0% {
-            transform: translateX(0px) rotate(0deg);
-          }
-          16.67% {
-            transform: translateX(1px) rotate(-0.5deg);
-          }
-          33.33% {
-            transform: translateX(2px) rotate(-1deg);
-          }
-          50% {
-            transform: translateX(1px) rotate(-0.5deg);
-          }
-          66.67% {
-            transform: translateX(-1px) rotate(0.5deg);
-          }
-          83.33% {
-            transform: translateX(-2px) rotate(1deg);
-          }
-          100% {
-            transform: translateX(0px) rotate(0deg);
+            background-position: 32px 0px;
           }
         }
 
         .certn-banner-coupon {
-          animation: floatCoupon 4s ease-in-out infinite;
           transform-origin: center center;
           will-change: transform;
-          /* Perforated edge styling */
           border-radius: 8px;
+          overflow: hidden;
         }
 
         .certn-banner-coupon::before {
@@ -182,6 +148,7 @@ const HeroSearchSection = () => {
             #d4f3b7 8px,
             #d4f3b7 16px
           );
+          animation: chainsawMove 0.8s linear infinite;
           border-radius: 4px 4px 0 0;
         }
 
@@ -199,18 +166,17 @@ const HeroSearchSection = () => {
             #d4f3b7 8px,
             #d4f3b7 16px
           );
+          animation: chainsawMove 0.8s linear infinite;
           border-radius: 0 0 4px 4px;
         }
 
-        /* Add subtle secondary animation */
-        .certn-banner-coupon {
-          animation: floatCoupon 4s ease-in-out infinite,
-                     couponBob 4s ease-in-out infinite;
+        /* Hover interaction - pause chainsaw */
+        .certn-banner-coupon:hover::before,
+        .certn-banner-coupon:hover::after {
+          animation-play-state: paused;
         }
 
-        /* Hover interaction */
         .certn-banner-coupon:hover {
-          animation-play-state: paused;
           transform: translateY(-2px) scale(1.02);
           transition: transform 0.2s ease;
           box-shadow: 0 8px 25px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
