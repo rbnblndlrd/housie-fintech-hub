@@ -85,10 +85,10 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Bottom Banner - Updated with Wind Flag Animation */}
+        {/* Bottom Banner - Updated with Floating Coupon Animation */}
         {showBanner && (
           <div 
-            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg certn-banner-flag"
+            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg certn-banner-coupon"
             style={{ backgroundColor: '#d4f3b7' }}
           >
             <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -116,83 +116,109 @@ const HeroSearchSection = () => {
         )}
       </div>
 
-      {/* Wind Flag Animation Styles */}
+      {/* Floating Coupon Animation Styles */}
       <style>{`
-        @keyframes windFlag {
+        @keyframes floatCoupon {
           0% {
-            transform: translateX(0px) rotate(0deg);
+            transform: translateY(0px) rotate(0deg);
           }
           25% {
-            transform: translateX(2px) rotate(0.5deg);
+            transform: translateY(-3px) rotate(0.7deg);
           }
           50% {
-            transform: translateX(4px) rotate(1deg);
+            transform: translateY(-5px) rotate(1deg);
           }
           75% {
-            transform: translateX(2px) rotate(-0.5deg);
+            transform: translateY(-3px) rotate(-0.7deg);
+          }
+          100% {
+            transform: translateY(0px) rotate(0deg);
+          }
+        }
+
+        @keyframes couponBob {
+          0% {
+            transform: translateX(0px) rotate(0deg);
+          }
+          16.67% {
+            transform: translateX(1px) rotate(-0.5deg);
+          }
+          33.33% {
+            transform: translateX(2px) rotate(-1deg);
+          }
+          50% {
+            transform: translateX(1px) rotate(-0.5deg);
+          }
+          66.67% {
+            transform: translateX(-1px) rotate(0.5deg);
+          }
+          83.33% {
+            transform: translateX(-2px) rotate(1deg);
           }
           100% {
             transform: translateX(0px) rotate(0deg);
           }
         }
 
-        @keyframes windWave {
-          0% {
-            transform: scaleX(1) rotate(0deg);
-          }
-          16.67% {
-            transform: scaleX(1.005) rotate(0.8deg);
-          }
-          33.33% {
-            transform: scaleX(1.01) rotate(1.5deg);
-          }
-          50% {
-            transform: scaleX(1.008) rotate(2deg);
-          }
-          66.67% {
-            transform: scaleX(1.003) rotate(1deg);
-          }
-          83.33% {
-            transform: scaleX(1.001) rotate(-0.5deg);
-          }
-          100% {
-            transform: scaleX(1) rotate(0deg);
-          }
-        }
-
-        .certn-banner-flag {
-          animation: windFlag 3s ease-in-out infinite;
-          transform-origin: left center;
+        .certn-banner-coupon {
+          animation: floatCoupon 4s ease-in-out infinite;
+          transform-origin: center center;
           will-change: transform;
+          /* Perforated edge styling */
+          position: relative;
+          border-radius: 8px;
         }
 
-        .certn-banner-flag::before {
+        .certn-banner-coupon::before {
           content: '';
           position: absolute;
-          top: 0;
+          top: -2px;
           left: 0;
           right: 0;
-          bottom: 0;
-          background: inherit;
-          animation: windWave 3s ease-in-out infinite;
-          transform-origin: left center;
-          z-index: -1;
-          opacity: 0.6;
+          height: 4px;
+          background: repeating-linear-gradient(
+            to right,
+            transparent 0px,
+            transparent 8px,
+            #d4f3b7 8px,
+            #d4f3b7 16px
+          );
+          border-radius: 4px 4px 0 0;
         }
 
-        /* Add subtle shadow animation for depth */
-        .certn-banner-flag {
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-          transition: box-shadow 0.3s ease;
+        .certn-banner-coupon::after {
+          content: '';
+          position: absolute;
+          bottom: -2px;
+          left: 0;
+          right: 0;
+          height: 4px;
+          background: repeating-linear-gradient(
+            to right,
+            transparent 0px,
+            transparent 8px,
+            #d4f3b7 8px,
+            #d4f3b7 16px
+          );
+          border-radius: 0 0 4px 4px;
         }
 
-        .certn-banner-flag:hover {
+        /* Add subtle secondary animation */
+        .certn-banner-coupon {
+          animation: floatCoupon 4s ease-in-out infinite,
+                     couponBob 4s ease-in-out infinite;
+        }
+
+        /* Hover interaction */
+        .certn-banner-coupon:hover {
           animation-play-state: paused;
-          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          transform: translateY(-2px) scale(1.02);
+          transition: transform 0.2s ease;
+          box-shadow: 0 8px 25px -3px rgba(0, 0, 0, 0.15), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         /* Ensure smooth performance */
-        .certn-banner-flag * {
+        .certn-banner-coupon * {
           backface-visibility: hidden;
           perspective: 1000px;
         }
