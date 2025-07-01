@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -38,7 +39,7 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="max-w-full mx-auto">
-        <div className="flex justify-between items-center h-16 px-4">
+        <div className="flex justify-between items-center h-16 px-6">
           {/* Left: HOUSIE Logo + Hamburger Menu */}
           <div className="flex items-center space-x-4">
             <Link to="/" className="flex items-center">
