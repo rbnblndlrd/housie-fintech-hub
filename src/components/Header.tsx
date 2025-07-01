@@ -69,7 +69,7 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Hamburger Menu - Locked at 200px from left edge */}
+          {/* Hamburger Menu - Locked at 280px from left edge */}
           <div className="housie-hamburger-position">
             <HamburgerMenu />
           </div>
@@ -133,16 +133,18 @@ const Header = () => {
           transform: translateY(-50%) !important;
           display: flex !important;
           align-items: center !important;
+          z-index: 52 !important;
         }
         
-        /* Hamburger Menu - Locked at exactly 200px from left */
+        /* Hamburger Menu - Locked at exactly 280px from left */
         .housie-hamburger-position {
           position: absolute !important;
-          left: 200px !important;
+          left: 280px !important;
           top: 50% !important;
           transform: translateY(-50%) !important;
           display: flex !important;
           align-items: center !important;
+          z-index: 51 !important;
         }
         
         /* Right Group - Locked at exactly 96px from right */
@@ -153,6 +155,7 @@ const Header = () => {
           transform: translateY(-50%) !important;
           display: flex !important;
           align-items: center !important;
+          z-index: 51 !important;
         }
         
         /* Override any future margin/padding changes that might affect this header */
