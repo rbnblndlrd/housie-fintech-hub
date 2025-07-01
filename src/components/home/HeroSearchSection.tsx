@@ -85,7 +85,7 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Bottom Banner - Updated with Floating Coupon Animation */}
+        {/* Bottom Banner - Back to original position */}
         {showBanner && (
           <div 
             className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg certn-banner-coupon"
