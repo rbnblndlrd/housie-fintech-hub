@@ -8,12 +8,6 @@ schemas = ["public", "graphql_public"]
 extra_search_path = ["public", "extensions"]
 max_rows = 1000
 
-[functions.create-payment]
-verify_jwt = true
-
-[functions.stripe-webhook]
-verify_jwt = false
-
 [db]
 port = 54322
 shadow_port = 54320
@@ -29,45 +23,193 @@ max_client_conn = 100
 [realtime]
 enabled = true
 ip_version = "ipv4"
-tenants = [
-  { name = "realtime-dev", db_name = "postgres", db_host = "localhost", db_port = 54322, jwt_secret = "", max_connections = 200, max_channels_per_client = 100, max_joins_per_second = 500, max_events_per_second = 100, postgres_changes_listen = "all", log_level = "info" }
-]
+port = 54323
+max_header_length = 4096
 
 [studio]
 enabled = true
 port = 54323
 api_url = "http://127.0.0.1:54321"
+openai_api_key = "env(OPENAI_API_KEY)"
 
 [inbucket]
 enabled = true
 port = 54324
-smtp_port = 54325
-pop3_port = 54326
+pop3_port = 54325
+smtp_port = 54326
 
 [storage]
 enabled = true
+port = 54321
 file_size_limit = "50MiB"
-buckets = []
+image_transformation = { enabled = true }
 
 [auth]
 enabled = true
-additional_redirect_urls = ["http://localhost:5173/auth/**"]
+port = 54321
+site_url = "http://127.0.0.1:3000"
+additional_redirect_urls = ["https://127.0.0.1:3000"]
 jwt_expiry = 3600
-refresh_token_rotation_enabled = true
-security_update_password_require_reauthentication = true
+enable_signup = true
+enable_email_confirmations = false
+enable_email_autoconfirm = false
+enable_phone_confirmations = false
+enable_phone_autoconfirm = false
 
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
+template = { invite = "", confirmation = "", recovery = "", magic_link = "", email_change = "" }
 
 [auth.sms]
 enable_signup = false
 enable_confirmations = false
-template = "Your code is {{ .Code }}"
+template = ""
+
+[auth.external.apple]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.azure]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.bitbucket]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.discord]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.facebook]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.figma]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.github]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.gitlab]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.google]
+enabled = true
+client_id = "env(GOOGLE_CLIENT_ID)"
+secret = "env(GOOGLE_CLIENT_SECRET)"
+redirect_uri = ""
+skip_nonce_check = false
+
+[auth.external.keycloak]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.linkedin]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.notion]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.twitch]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.twitter]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.slack]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.spotify]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.workos]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
+
+[auth.external.zoom]
+enabled = false
+client_id = ""
+secret = ""
+redirect_uri = ""
+url = ""
 
 [edge_runtime]
 enabled = true
 ip_version = "ipv4"
-policy = "per_worker"
+port = 54321
 inspector_port = 8083
+
+[analytics]
+enabled = false
+port = 54327
+vector_port = 54328
+backend = "postgres"
+
+[functions.google-translate]
+verify_jwt = false
+
+[functions.google-calendar-events]
+verify_jwt = true
+
+[functions.google-calendar-auth]
+verify_jwt = false

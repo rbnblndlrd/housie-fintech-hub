@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import AutoTranslate from '@/components/AutoTranslate';
 
 const HamburgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,7 +35,7 @@ const HamburgerMenu = () => {
                 className="block px-4 py-2.5 text-white hover:bg-gray-800 transition-colors"
                 onClick={() => setIsOpen(false)}
               >
-                {item.label}
+                <AutoTranslate>{item.label}</AutoTranslate>
               </Link>
             ))}
           </div>

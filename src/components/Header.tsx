@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
@@ -8,6 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import HamburgerMenu from './header/HamburgerMenu';
 import UserMenu from './header/UserMenu';
 import LanguageToggle from './LanguageToggle';
+import AutoTranslate from './AutoTranslate';
 
 const Header = () => {
   const { user } = useAuth();
@@ -74,7 +74,7 @@ const Header = () => {
             {user && (
               <Link to="/dashboard">
                 <Button variant="ghost" className="text-white hover:bg-gray-800 px-4 py-2">
-                  Dashboard
+                  <AutoTranslate>Dashboard</AutoTranslate>
                 </Button>
               </Link>
             )}
@@ -91,12 +91,12 @@ const Header = () => {
               <div className="flex items-center space-x-3">
                 <Link to="/auth">
                   <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
-                    Log in
+                    <AutoTranslate>Log in</AutoTranslate>
                   </Button>
                 </Link>
                 <Link to="/auth">
                   <Button size="sm" className="bg-white text-black hover:bg-gray-200">
-                    Sign up
+                    <AutoTranslate>Sign up</AutoTranslate>
                   </Button>
                 </Link>
                 <LanguageToggle />

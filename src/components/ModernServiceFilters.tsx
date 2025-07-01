@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent } from '@/components/ui/card';
 import CategoryFilter from '@/components/filters/CategoryFilter';
 import SubcategoryFilter from '@/components/filters/SubcategoryFilter';
+import AutoTranslate from '@/components/AutoTranslate';
 import { Search, MapPin, DollarSign, Shield, Filter, RotateCcw } from 'lucide-react';
 
 interface ModernServiceFiltersProps {
@@ -83,7 +84,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              Category
+              <AutoTranslate>Category</AutoTranslate>
             </label>
             <CategoryFilter
               value={selectedCategory}
@@ -96,7 +97,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <Filter className="h-4 w-4" />
-              Subcategory
+              <AutoTranslate>Subcategory</AutoTranslate>
             </label>
             <SubcategoryFilter
               category={selectedCategory}
@@ -110,14 +111,14 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           <div className="space-y-2">
             <label className="text-sm font-medium flex items-center gap-2">
               <MapPin className="h-4 w-4" />
-              Location
+              <AutoTranslate>Location</AutoTranslate>
             </label>
             <select
               value={selectedLocation}
               onChange={(e) => onLocationChange(e.target.value)}
               className="w-full p-3 border-2 border-black rounded-md fintech-input bg-white"
             >
-              <option value="all">All Locations</option>
+              <option value="all"><AutoTranslate>All Locations</AutoTranslate></option>
               <option value="montreal">Montreal</option>
               <option value="laval">Laval</option>
               <option value="longueuil">Longueuil</option>
@@ -131,18 +132,18 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
 
           {/* Time Filter */}
           <div className="space-y-2">
-            <label className="text-sm font-medium">Availability</label>
+            <label className="text-sm font-medium"><AutoTranslate>Availability</AutoTranslate></label>
             <select
               value={selectedTime}
               onChange={(e) => onTimeChange(e.target.value)}
               className="w-full p-3 border-2 border-black rounded-md fintech-input bg-white"
             >
-              <option value="Any time">Any time</option>
-              <option value="Today">Today</option>
-              <option value="Tomorrow">Tomorrow</option>
-              <option value="This week">This week</option>
-              <option value="Next week">Next week</option>
-              <option value="This month">This month</option>
+              <option value="Any time"><AutoTranslate>Any time</AutoTranslate></option>
+              <option value="Today"><AutoTranslate>Today</AutoTranslate></option>
+              <option value="Tomorrow"><AutoTranslate>Tomorrow</AutoTranslate></option>
+              <option value="This week"><AutoTranslate>This week</AutoTranslate></option>
+              <option value="Next week"><AutoTranslate>Next week</AutoTranslate></option>
+              <option value="This month"><AutoTranslate>This month</AutoTranslate></option>
             </select>
           </div>
         </div>
@@ -151,7 +152,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
         <div className="mb-6">
           <label className="text-sm font-medium flex items-center gap-2 mb-3">
             <DollarSign className="h-4 w-4" />
-            Price Range: ${priceRange[0]} - ${priceRange[1]} CAD/hour
+            <AutoTranslate>Price Range</AutoTranslate>: ${priceRange[0]} - ${priceRange[1]} CAD/hour
           </label>
           <Slider
             value={priceRange}
@@ -168,8 +169,8 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           <div className="flex items-center space-x-3">
             <Shield className="h-5 w-5 text-green-600" />
             <div>
-              <label className="text-sm font-medium">Verified Providers Only</label>
-              <p className="text-xs text-gray-500">Show only background-checked providers</p>
+              <label className="text-sm font-medium"><AutoTranslate>Verified Providers Only</AutoTranslate></label>
+              <p className="text-xs text-gray-500"><AutoTranslate>Show only background-checked providers</AutoTranslate></p>
             </div>
           </div>
           <Switch
@@ -183,7 +184,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           <div className="flex items-center gap-2">
             {activeFiltersCount > 0 && (
               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                {activeFiltersCount} filter{activeFiltersCount !== 1 ? 's' : ''} active
+                {activeFiltersCount} <AutoTranslate>filter{activeFiltersCount !== 1 ? 's' : ''} active</AutoTranslate>
               </Badge>
             )}
           </div>
@@ -195,7 +196,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
               className="flex items-center gap-2"
             >
               <RotateCcw className="h-4 w-4" />
-              Reset Filters
+              <AutoTranslate>Reset Filters</AutoTranslate>
             </Button>
           )}
         </div>

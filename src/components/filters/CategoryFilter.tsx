@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import AutoTranslate from '@/components/AutoTranslate';
 
 interface CategoryFilterProps {
   value: string;
@@ -37,7 +38,7 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({ value, onChange, classN
           <SelectItem key={category.id} value={category.id} className="hover:bg-gray-100">
             <div className="flex items-center gap-2">
               <span className="text-lg">{category.icon}</span>
-              <span>{category.name}</span>
+              <AutoTranslate>{category.name}</AutoTranslate>
             </div>
           </SelectItem>
         ))}
