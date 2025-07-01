@@ -40,11 +40,6 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-gray-800">
       <div className="max-w-full mx-auto">
         <div className="flex items-center h-16 px-8">
-          {/* Left: Hamburger Menu */}
-          <div className="flex items-center space-x-4">
-            <HamburgerMenu />
-          </div>
-
           {/* Center-Left: HOUSIE Logo positioned towards center */}
           <div className="flex items-center pl-32">
             <Link to="/" className="flex items-center">
@@ -72,6 +67,11 @@ const Header = () => {
               />
               <span className="text-lg font-bold text-white ml-1 hidden">HOUSIE</span>
             </Link>
+          </div>
+
+          {/* Center: Hamburger Menu positioned to the right of the logo */}
+          <div className="flex items-center ml-4">
+            <HamburgerMenu />
           </div>
 
           {/* Right: Dashboard + User Menu/Auth + Language Toggle - pushed to the right */}
