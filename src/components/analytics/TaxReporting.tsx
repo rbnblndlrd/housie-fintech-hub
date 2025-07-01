@@ -1,174 +1,180 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calculator, FileText, Download, Calendar, DollarSign, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { 
+  FileText, 
+  Calculator, 
+  Download, 
+  Calendar,
+  DollarSign,
+  Receipt,
+  TrendingUp,
+  AlertCircle
+} from 'lucide-react';
 
 const TaxReporting = () => {
-  const taxSummary = {
-    totalRevenue: 147650,
-    deductibleExpenses: 32400,
-    taxableIncome: 115250,
-    estimatedTax: 23050,
-    quarterlySavings: 5762.50
+  const taxData = [
+    { period: 'Q4 2023', revenue: '$89,450', tax: '$13,417', status: 'Filed', date: '2024-01-15' },
+    { period: 'Q3 2023', revenue: '$76,230', tax: '$11,435', status: 'Filed', date: '2023-10-15' },
+    { period: 'Q2 2023', revenue: '$82,180', tax: '$12,327', status: 'Filed', date: '2023-07-15' },
+    { period: 'Q1 2024', revenue: '$94,720', tax: '$14,208', status: 'Pending', date: '2024-04-15' }
+  ];
+
+  const deductions = [
+    { category: 'Vehicle Expenses', amount: '$4,250', percentage: '45%' },
+    { category: 'Equipment & Tools', amount: '$2,180', percentage: '23%' },
+    { category: 'Insurance', amount: '$1,680', percentage: '18%' },
+    { category: 'Office Supplies', amount: '$890', percentage: '10%' },
+    { category: 'Professional Services', amount: '$420', percentage: '4%' }
+  ];
+
+  const upcomingDeadlines = [
+    { task: 'Q1 2024 Filing', date: 'April 30, 2024', status: 'urgent' },
+    { task: 'Annual Tax Return', date: 'June 15, 2024', status: 'upcoming' },
+    { task: 'GST/HST Return', date: 'May 31, 2024', status: 'upcoming' }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Filed': return 'bg-green-100 text-green-800 border-green-200';
+      case 'Pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'Overdue': return 'bg-red-100 text-red-800 border-red-200';
+      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+    }
   };
 
-  const expenseCategories = [
-    { category: 'Vehicle & Fuel', amount: 12400, percentage: 38, deductible: 100 },
-    { category: 'Equipment & Tools', amount: 8600, percentage: 27, deductible: 100 },
-    { category: 'Insurance', amount: 4800, percentage: 15, deductible: 100 },
-    { category: 'Marketing', amount: 3200, percentage: 10, deductible: 80 },
-    { category: 'Training & Certification', amount: 2100, percentage: 6, deductible: 100 },
-    { category: 'Office Supplies', amount: 1300, percentage: 4, deductible: 90 }
-  ];
-
-  const quarterlyBreakdown = [
-    { quarter: 'Q1 2024', revenue: 35200, expenses: 7800, taxSaved: 5490 },
-    { quarter: 'Q2 2024', revenue: 38900, expenses: 8600, taxSaved: 6070 },
-    { quarter: 'Q3 2024', revenue: 41200, expenses: 9200, taxSaved: 6400 },
-    { quarter: 'Q4 2024', revenue: 32350, expenses: 6800, taxSaved: 5090 }
-  ];
+  const getDeadlineColor = (status: string) => {
+    switch (status) {
+      case 'urgent': return 'bg-red-50 border-red-300';
+      case 'upcoming': return 'bg-yellow-50 border-yellow-300';
+      default: return 'bg-gray-50 border-gray-300';
+    }
+  };
 
   return (
-    <Card className="autumn-card-fintech-xl">
-      <CardHeader className="pb-6">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-3xl font-black text-gray-900 flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-xl flex items-center justify-center">
-              <Calculator className="h-6 w-6 text-white" />
-            </div>
-            Tax Reporting & Planning
-          </CardTitle>
-          <div className="flex items-center gap-3">
-            <Badge className="bg-red-100 text-red-800 px-4 py-2 text-lg font-bold border-2 border-red-200">
-              2024 Tax Year
-            </Badge>
-            <Button className="bg-gradient-to-r from-red-600 to-red-800 text-white px-6 py-3 text-lg font-bold">
-              <Download className="h-5 w-5 mr-2" />
-              Export Report
-            </Button>
+    <Card className="banking-card">
+      <CardHeader>
+        <CardTitle className="banking-title flex items-center gap-3">
+          <div className="w-10 h-10 bg-gradient-to-br from-green-600 to-green-800 rounded-xl flex items-center justify-center">
+            <Calculator className="h-5 w-5 text-white" />
           </div>
-        </div>
+          Tax Reporting & Compliance
+        </CardTitle>
       </CardHeader>
-      <CardContent className="p-8">
-        {/* Tax Summary Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-          <div className="p-6 bg-green-50 rounded-xl border-4 border-green-200 text-center">
-            <DollarSign className="h-8 w-8 text-green-600 mx-auto mb-3" />
-            <div className="text-2xl font-black text-green-800">
-              ${taxSummary.totalRevenue.toLocaleString()}
-            </div>
-            <div className="text-green-600 font-bold">Total Revenue</div>
-          </div>
+      <CardContent className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           
-          <div className="p-6 bg-blue-50 rounded-xl border-4 border-blue-200 text-center">
-            <FileText className="h-8 w-8 text-blue-600 mx-auto mb-3" />
-            <div className="text-2xl font-black text-blue-800">
-              ${taxSummary.deductibleExpenses.toLocaleString()}
+          {/* Tax Filing History */}
+          <div className="lg:col-span-2">
+            <h3 className="banking-subtitle text-lg mb-4">Filing History</h3>
+            <div className="space-y-3">
+              {taxData.map((filing, index) => (
+                <div key={index} className="flex items-center gap-4 p-4 bg-white/70 rounded-xl border-2 border-gray-200">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <h4 className="banking-title text-sm">{filing.period}</h4>
+                      <Badge className={`${getStatusColor(filing.status)} text-xs`}>
+                        {filing.status}
+                      </Badge>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div className="flex items-center gap-2">
+                        <DollarSign className="h-3 w-3 text-green-600" />
+                        <span className="banking-text">Revenue: {filing.revenue}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Calculator className="h-3 w-3 text-blue-600" />
+                        <span className="banking-text">Tax: {filing.tax}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Calendar className="h-3 w-3 text-gray-600" />
+                      <span className="banking-text text-xs">Filed: {filing.date}</span>
+                    </div>
+                  </div>
+                  <Button size="sm" className="banking-button-secondary">
+                    <Download className="h-3 w-3 mr-1" />
+                    PDF
+                  </Button>
+                </div>
+              ))}
             </div>
-            <div className="text-blue-600 font-bold">Deductibles</div>
           </div>
-          
-          <div className="p-6 bg-purple-50 rounded-xl border-4 border-purple-200 text-center">
-            <TrendingUp className="h-8 w-8 text-purple-600 mx-auto mb-3" />
-            <div className="text-2xl font-black text-purple-800">
-              ${taxSummary.taxableIncome.toLocaleString()}
+
+          {/* Upcoming Deadlines */}
+          <div>
+            <h3 className="banking-subtitle text-lg mb-4">Upcoming Deadlines</h3>
+            <div className="space-y-3">
+              {upcomingDeadlines.map((deadline, index) => (
+                <div key={index} className={`p-4 rounded-xl border-2 ${getDeadlineColor(deadline.status)}`}>
+                  <div className="flex items-start gap-2">
+                    {deadline.status === 'urgent' && <AlertCircle className="h-4 w-4 text-red-600 mt-1" />}
+                    <div className="flex-1">
+                      <h4 className="banking-title text-sm mb-1">{deadline.task}</h4>
+                      <p className="banking-text text-xs">{deadline.date}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="text-purple-600 font-bold">Taxable Income</div>
-          </div>
-          
-          <div className="p-6 bg-red-50 rounded-xl border-4 border-red-200 text-center">
-            <AlertTriangle className="h-8 w-8 text-red-600 mx-auto mb-3" />
-            <div className="text-2xl font-black text-red-800">
-              ${taxSummary.estimatedTax.toLocaleString()}
-            </div>
-            <div className="text-red-600 font-bold">Est. Tax Owed</div>
-          </div>
-          
-          <div className="p-6 bg-yellow-50 rounded-xl border-4 border-yellow-200 text-center">
-            <Calendar className="h-8 w-8 text-yellow-600 mx-auto mb-3" />
-            <div className="text-2xl font-black text-yellow-800">
-              ${taxSummary.quarterlySavings.toLocaleString()}
-            </div>
-            <div className="text-yellow-600 font-bold">Quarterly Payment</div>
           </div>
         </div>
 
-        {/* Expense Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="space-y-4">
-            <h3 className="text-2xl font-black text-gray-900 mb-4">Deductible Expenses</h3>
-            {expenseCategories.map((expense, index) => (
-              <div key={index} className="p-4 bg-white rounded-xl border-3 border-amber-200 shadow-md">
-                <div className="flex justify-between items-center mb-3">
-                  <span className="font-black text-gray-900 text-lg">{expense.category}</span>
-                  <div className="flex items-center gap-2">
-                    <Badge className="bg-amber-100 text-amber-800 border-amber-200">
-                      {expense.deductible}% deductible
-                    </Badge>
-                    <span className="text-gray-900 font-black text-lg">
-                      ${expense.amount.toLocaleString()}
-                    </span>
+        {/* Deductions Breakdown */}
+        <div className="mt-8">
+          <h3 className="banking-subtitle text-lg mb-4">Tax Deductions Breakdown</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-3">
+              {deductions.map((deduction, index) => (
+                <div key={index} className="flex items-center gap-4">
+                  <div className="flex-1">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="banking-text font-semibold text-sm">{deduction.category}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="banking-text text-sm">{deduction.amount}</span>
+                        <Badge className="banking-badge text-xs">{deduction.percentage}</Badge>
+                      </div>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2 border border-gray-300">
+                      <div 
+                        className="bg-gradient-to-r from-green-500 to-green-600 h-full rounded-full transition-all duration-500" 
+                        style={{ width: deduction.percentage }}
+                      ></div>
+                    </div>
                   </div>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-3">
-                  <div 
-                    className="bg-gradient-to-r from-amber-500 to-amber-700 h-3 rounded-full transition-all duration-700"
-                    style={{ width: `${expense.percentage}%` }}
-                  ></div>
-                </div>
-                <div className="text-right text-sm text-gray-600 mt-1">
-                  {expense.percentage}% of total expenses
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Quarterly Breakdown */}
-          <div className="space-y-4">
-            <h3 className="text-2xl font-black text-gray-900 mb-4">Quarterly Summary</h3>
-            {quarterlyBreakdown.map((quarter, index) => (
-              <div key={index} className="p-6 bg-gradient-to-r from-indigo-50 to-indigo-100 rounded-xl border-4 border-indigo-200">
-                <div className="flex justify-between items-center mb-4">
-                  <h4 className="font-black text-indigo-900 text-xl">{quarter.quarter}</h4>
-                  <Badge className="bg-indigo-500 text-white px-3 py-1 text-sm font-bold">
-                    ${quarter.taxSaved.toLocaleString()} saved
-                  </Badge>
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <div className="text-indigo-600 font-bold mb-1">Revenue</div>
-                    <div className="text-indigo-900 font-black text-lg">
-                      ${quarter.revenue.toLocaleString()}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-indigo-600 font-bold mb-1">Expenses</div>
-                    <div className="text-indigo-900 font-black text-lg">
-                      ${quarter.expenses.toLocaleString()}
-                    </div>
-                  </div>
+            <div className="p-6 bg-green-50 rounded-xl border-2 border-green-200">
+              <div className="text-center">
+                <Receipt className="h-12 w-12 text-green-600 mx-auto mb-3" />
+                <h4 className="banking-title text-lg mb-2">Total Deductions</h4>
+                <p className="text-3xl font-black text-green-700 mb-2">$9,420</p>
+                <div className="flex items-center justify-center gap-1">
+                  <TrendingUp className="h-4 w-4 text-green-600" />
+                  <span className="text-green-600 font-bold text-sm">+12% vs last year</span>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl border-4 border-amber-200">
-          <Button className="bg-gradient-to-r from-green-600 to-green-800 text-white font-bold py-4 text-lg">
-            <FileText className="h-5 w-5 mr-2" />
-            Generate T4A Forms
+        <div className="mt-8 flex flex-wrap gap-4">
+          <Button className="banking-button-primary">
+            <FileText className="h-4 w-4 mr-2" />
+            Generate Tax Report
           </Button>
-          <Button className="bg-gradient-to-r from-blue-600 to-blue-800 text-white font-bold py-4 text-lg">
-            <Calculator className="h-5 w-5 mr-2" />
-            Calculate HST/GST
+          <Button className="banking-button-secondary">
+            <Calculator className="h-4 w-4 mr-2" />
+            Tax Calculator
           </Button>
-          <Button className="bg-gradient-to-r from-purple-600 to-purple-800 text-white font-bold py-4 text-lg">
-            <Download className="h-5 w-5 mr-2" />
-            Export to CRA
+          <Button className="banking-button-secondary">
+            <Download className="h-4 w-4 mr-2" />
+            Export All Records
           </Button>
         </div>
       </CardContent>

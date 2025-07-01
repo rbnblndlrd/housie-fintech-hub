@@ -3,16 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Clock, 
-  MapPin, 
-  User, 
-  AlertTriangle, 
-  Star,
-  Filter,
-  Search,
-  RefreshCw
-} from 'lucide-react';
+import { Clock, User, MapPin, Phone, Wrench } from 'lucide-react';
 
 interface DragTicketListProps {
   onDragStart: (ticket: any) => void;
@@ -24,57 +15,46 @@ const DragTicketList = ({ onDragStart, draggedTicket }: DragTicketListProps) => 
     {
       id: 1,
       title: 'Emergency Plumbing Repair',
-      client: 'Sarah Johnson',
+      client: 'Marie Tremblay',
       location: 'Downtown Montreal',
+      time: '09:00 AM',
       priority: 'high',
-      estimatedTime: '2 hours',
-      category: 'Plumbing',
-      description: 'Burst pipe in basement needs immediate attention',
-      status: 'urgent'
+      service: 'Plumbing',
+      estimatedDuration: 120,
+      status: 'new'
     },
     {
       id: 2,
       title: 'HVAC System Maintenance',
-      client: 'Mike Chen',
+      client: 'Jean Dupont',
       location: 'Westmount',
+      time: '11:30 AM',
       priority: 'medium',
-      estimatedTime: '1.5 hours',
-      category: 'HVAC',
-      description: 'Regular maintenance check and filter replacement',
-      status: 'scheduled'
+      service: 'HVAC',
+      estimatedDuration: 90,
+      status: 'assigned'
     },
     {
       id: 3,
-      title: 'Electrical Panel Inspection',
-      client: 'Lisa Martin',
-      location: 'NDG',
-      priority: 'medium',
-      estimatedTime: '1 hour',
-      category: 'Electrical',
-      description: 'Safety inspection and code compliance check',
-      status: 'pending'
-    },
-    {
-      id: 4,
-      title: 'Deep House Cleaning',
-      client: 'Robert Wilson',
-      location: 'Plateau',
+      title: 'Electrical Panel Upgrade',
+      client: 'Sophie Martin',
+      location: 'Plateau Mont-Royal',
+      time: '02:00 PM',
       priority: 'low',
-      estimatedTime: '3 hours',
-      category: 'Cleaning',
-      description: 'Post-renovation cleaning service',
+      service: 'Electrical',
+      estimatedDuration: 180,
       status: 'scheduled'
     },
     {
-      id: 5,
-      title: 'Kitchen Renovation Consult',
-      client: 'Emma Davis',
-      location: 'Outremont',
-      priority: 'low',
-      estimatedTime: '45 minutes',
-      category: 'Renovation',
-      description: 'Initial consultation for kitchen renovation project',
-      status: 'pending'
+      id: 4,
+      title: 'Kitchen Renovation',
+      client: 'Robert Wilson',
+      location: 'NDG',
+      time: '10:00 AM',
+      priority: 'medium',
+      service: 'Renovation',
+      estimatedDuration: 240,
+      status: 'new'
     }
   ];
 
@@ -87,117 +67,93 @@ const DragTicketList = ({ onDragStart, draggedTicket }: DragTicketListProps) => 
     }
   };
 
-  const getStatusIcon = (status: string) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case 'urgent': return <AlertTriangle className="h-4 w-4 text-red-600 animate-pulse" />;
-      case 'scheduled': return <Clock className="h-4 w-4 text-blue-600" />;
-      case 'pending': return <RefreshCw className="h-4 w-4 text-yellow-600" />;
-      default: return <Clock className="h-4 w-4 text-gray-600" />;
+      case 'new': return 'bg-blue-500';
+      case 'assigned': return 'bg-purple-500';
+      case 'scheduled': return 'bg-orange-500';
+      case 'in-progress': return 'bg-yellow-500';
+      case 'completed': return 'bg-green-500';
+      default: return 'bg-gray-500';
     }
   };
 
   const handleDragStart = (e: React.DragEvent, ticket: any) => {
+    e.dataTransfer.setData('text/plain', '');
     onDragStart(ticket);
-    e.dataTransfer.effectAllowed = 'move';
   };
 
   return (
-    <Card className="autumn-card-fintech-xl">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="text-2xl font-black text-gray-900 flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center">
-              <Star className="h-5 w-5 text-white" />
-            </div>
-            Job Ticket Queue
-          </CardTitle>
-          <div className="flex items-center gap-3">
-            <Badge className="bg-indigo-100 text-indigo-800 px-4 py-2 text-lg font-bold border-2 border-indigo-200">
-              {tickets.length} Active
-            </Badge>
-            <Button variant="outline" size="sm" className="border-2 border-gray-300">
-              <Filter className="h-4 w-4 mr-2" />
-              Filter
-            </Button>
-            <Button variant="outline" size="sm" className="border-2 border-gray-300">
-              <Search className="h-4 w-4 mr-2" />
-              Search
-            </Button>
+    <Card className="banking-card">
+      <CardHeader>
+        <CardTitle className="banking-title flex items-center gap-3">
+          <div className="w-8 h-8 bg-gradient-to-br from-indigo-600 to-indigo-800 rounded-xl flex items-center justify-center">
+            <Wrench className="h-4 w-4 text-white" />
           </div>
-        </div>
+          Job Ticket Queue
+          <Badge className="banking-badge ml-auto">
+            {tickets.length} Active
+          </Badge>
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {tickets.map((ticket) => (
             <div
               key={ticket.id}
               draggable
               onDragStart={(e) => handleDragStart(e, ticket)}
               className={`
-                p-6 bg-white rounded-xl border-4 border-amber-200 shadow-lg hover:shadow-xl 
-                cursor-move transition-all duration-200 hover:scale-105 hover:border-amber-400
-                ${draggedTicket?.id === ticket.id ? 'opacity-50 scale-95' : ''}
+                p-4 bg-white/70 rounded-xl border-3 border-gray-300 
+                hover:border-gray-400 transition-all duration-200 cursor-move
+                ${draggedTicket?.id === ticket.id ? 'opacity-50 scale-95' : 'hover:shadow-lg'}
               `}
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center gap-2">
-                  {getStatusIcon(ticket.status)}
-                  <Badge className={`${getPriorityColor(ticket.priority)} font-bold text-sm border-2`}>
-                    {ticket.priority}
-                  </Badge>
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1">
+                  <h4 className="banking-title text-lg mb-1">{ticket.title}</h4>
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className={`${getPriorityColor(ticket.priority)} text-xs`}>
+                      {ticket.priority}
+                    </Badge>
+                    <div className={`w-3 h-3 rounded-full ${getStatusColor(ticket.status)}`}></div>
+                    <span className="text-xs banking-text capitalize">{ticket.status}</span>
+                  </div>
                 </div>
-                <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-300">
-                  {ticket.category}
-                </Badge>
               </div>
-
-              <h4 className="font-black text-gray-900 text-lg mb-2 line-clamp-2">
-                {ticket.title}
-              </h4>
-              
-              <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-                {ticket.description}
-              </p>
 
               <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2 text-sm">
-                  <User className="h-4 w-4 text-gray-600" />
-                  <span className="font-bold text-gray-900">{ticket.client}</span>
+                <div className="flex items-center gap-2 banking-text text-sm">
+                  <User className="h-4 w-4" />
+                  <span>{ticket.client}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="h-4 w-4 text-gray-600" />
-                  <span className="text-gray-700">{ticket.location}</span>
+                <div className="flex items-center gap-2 banking-text text-sm">
+                  <MapPin className="h-4 w-4" />
+                  <span>{ticket.location}</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <Clock className="h-4 w-4 text-gray-600" />
-                  <span className="text-gray-700">{ticket.estimatedTime}</span>
+                <div className="flex items-center gap-2 banking-text text-sm">
+                  <Clock className="h-4 w-4" />
+                  <span>{ticket.time} • {ticket.estimatedDuration} min</span>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center">
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="border-2 border-gray-300 hover:border-gray-400"
-                >
-                  View Details
+              <div className="flex items-center gap-2">
+                <Button size="sm" className="banking-button-secondary flex-1 text-xs">
+                  <Phone className="h-3 w-3 mr-1" />
+                  Call
                 </Button>
-                <div className="text-right">
-                  <div className="text-xs text-gray-500">Drag to optimize</div>
-                  <div className="text-xs text-gray-400">ID: #{ticket.id}</div>
-                </div>
+                <Button size="sm" className="banking-button-primary flex-1 text-xs">
+                  Assign
+                </Button>
               </div>
             </div>
           ))}
         </div>
-        
-        <div className="mt-8 p-6 bg-gradient-to-r from-amber-50 to-amber-100 rounded-xl border-4 border-amber-200">
-          <div className="text-center">
-            <h4 className="font-black text-amber-800 text-lg mb-2">💡 Pro Tip</h4>
-            <p className="text-amber-700">
-              Drag tickets to the AI Optimizer above for automatic route planning and crew assignment!
-            </p>
-          </div>
+
+        <div className="mt-6 p-4 bg-blue-50 rounded-xl border-3 border-blue-200">
+          <p className="banking-text text-sm text-center">
+            <strong>💡 Tip:</strong> Drag tickets to the AI Job Optimizer above for intelligent scheduling and route optimization
+          </p>
         </div>
       </CardContent>
     </Card>

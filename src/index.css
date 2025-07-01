@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 @tailwind base;
@@ -40,11 +41,12 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 10.6% 64.9%;
     
-    /* Autumn theme colors */
-    --autumn-cream: #FDF6E3;
-    --autumn-amber: #D4A574;
-    --autumn-forest-green: #1B4332;
-    --autumn-warm-shadow: rgba(212, 165, 116, 0.15);
+    /* Banking Parchment theme colors */
+    --banking-cream: #F5F2E9;
+    --banking-card: #FEFCF7;
+    --banking-border: #2C3E50;
+    --banking-gold: #B8860B;
+    --banking-text: #2C3E50;
   }
 
   .dark {
@@ -81,11 +83,12 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 10.6% 64.9%;
     
-    /* Dark mode autumn colors */
-    --autumn-cream: #2A2520;
-    --autumn-amber: #B8935C;
-    --autumn-forest-green: #4A7C59;
-    --autumn-warm-shadow: rgba(184, 147, 92, 0.2);
+    /* Dark mode banking colors */
+    --banking-cream: #2A2520;
+    --banking-card: #3C3530;
+    --banking-border: #4A7C59;
+    --banking-gold: #D4AF37;
+    --banking-text: #F5F2E9;
   }
 }
 
@@ -101,9 +104,13 @@
     line-height: 1.6;
   }
 
-  /* Remove the complex orange background pattern entirely */
+  /* Banking Parchment Background */
   body:not(.manager-dashboard) {
-    background: #000000; /* Simple black background instead of orange */
+    background: #F5F2E9;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(184, 134, 11, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(44, 62, 80, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 40% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 50%);
     min-height: 100vh;
   }
 
@@ -142,7 +149,7 @@
     font-family: 'Poppins', 'Inter', sans-serif;
     font-weight: 600;
     line-height: 1.3;
-    color: var(--autumn-forest-green);
+    color: var(--banking-text);
   }
 
   /* Text shadow utilities for better readability */
@@ -160,213 +167,206 @@
 }
 
 @layer components {
-  /* NEW AUTUMN THEME COMPONENTS */
-  .autumn-card {
-    background-color: var(--autumn-cream) !important;
-    border: 3px solid var(--autumn-amber) !important;
-    border-radius: 0.75rem;
-    box-shadow: 0 4px 6px -1px var(--autumn-warm-shadow), 0 2px 4px -1px var(--autumn-warm-shadow);
+  /* BANKING PARCHMENT THEME COMPONENTS */
+  .banking-card {
+    background-color: var(--banking-card) !important;
+    border: 6px solid var(--banking-border) !important;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.1), 0 4px 8px rgba(44, 62, 80, 0.05);
     padding: 1.5rem;
     transition: all 0.3s ease;
     font-family: 'Inter', sans-serif;
+    position: relative;
   }
 
-  .autumn-card:hover {
+  .banking-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 25px -5px var(--autumn-warm-shadow), 0 4px 6px -2px var(--autumn-warm-shadow);
+    box-shadow: 0 12px 48px rgba(44, 62, 80, 0.15), 0 6px 12px rgba(44, 62, 80, 0.08);
   }
 
-  .autumn-card-secondary {
-    background-color: var(--autumn-cream) !important;
-    border: 2px solid var(--autumn-amber) !important;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 4px -1px var(--autumn-warm-shadow);
+  .banking-card-secondary {
+    background-color: var(--banking-card) !important;
+    border: 4px solid var(--banking-border) !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.08);
     padding: 1rem;
     transition: all 0.2s ease;
     font-family: 'Inter', sans-serif;
   }
 
-  .autumn-card-secondary:hover {
+  .banking-card-secondary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px -2px var(--autumn-warm-shadow);
+    box-shadow: 0 6px 24px rgba(44, 62, 80, 0.12);
   }
 
-  /* NEW FINTECH XL CARDS - MAXIMUM SIZE */
-  .autumn-card-fintech-xl {
-    background: linear-gradient(135deg, #F8F6F0 0%, #FDF6E3 100%);
-    border: 6px solid #D4A574;
-    border-radius: 1rem;
-    box-shadow: 
-      0 10px 25px -5px rgba(212, 165, 116, 0.3), 
-      0 4px 6px -2px rgba(212, 165, 116, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.5);
-    padding: 2rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-family: 'Inter', sans-serif;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .autumn-card-fintech-xl:hover {
-    transform: translateY(-4px);
-    box-shadow: 
-      0 20px 40px -10px rgba(212, 165, 116, 0.4), 
-      0 8px 16px -4px rgba(212, 165, 116, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    border-color: #B8935C;
-  }
-
-  .autumn-card-fintech-xl::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #D4A574, #B8935C, #D4A574);
-    opacity: 0.8;
-  }
-
-  .autumn-card-fintech-xl::after {
-    content: '';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: 8px;
-    height: 8px;
-    background: #D4A574;
-    border-radius: 50%;
-    opacity: 0.6;
-  }
-
-  /* Enhanced existing autumn components */
-  .autumn-title {
-    color: var(--autumn-forest-green) !important;
+  .banking-title {
+    color: var(--banking-text) !important;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     line-height: 1.3;
     margin-bottom: 0.75rem;
   }
 
-  .autumn-subtitle {
-    color: var(--autumn-forest-green) !important;
+  .banking-subtitle {
+    color: var(--banking-text) !important;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     line-height: 1.4;
     margin-bottom: 0.5rem;
   }
 
-  .autumn-text {
-    color: #374151;
+  .banking-text {
+    color: var(--banking-text);
     font-family: 'Inter', sans-serif;
     font-weight: 400;
     line-height: 1.6;
   }
 
-  .autumn-button-primary {
-    background: linear-gradient(135deg, var(--autumn-amber) 0%, #B8935C 100%);
-    border: 2px solid var(--autumn-forest-green);
-    color: var(--autumn-forest-green);
+  .banking-button-primary {
+    background: linear-gradient(135deg, var(--banking-gold) 0%, #D4AF37 100%);
+    border: 3px solid var(--banking-border);
+    color: var(--banking-card);
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     padding: 0.75rem 1.5rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px -1px var(--autumn-warm-shadow);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
     transition: all 0.2s ease;
   }
 
-  .autumn-button-primary:hover {
+  .banking-button-primary:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 12px -2px var(--autumn-warm-shadow);
-    background: linear-gradient(135deg, #B8935C 0%, var(--autumn-amber) 100%);
+    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
+    background: linear-gradient(135deg, #D4AF37 0%, var(--banking-gold) 100%);
   }
 
-  .autumn-button-secondary {
+  .banking-button-secondary {
     background-color: transparent;
-    border: 2px solid var(--autumn-amber);
-    color: var(--autumn-forest-green);
+    border: 3px solid var(--banking-gold);
+    color: var(--banking-text);
     font-family: 'Poppins', sans-serif;
     font-weight: 500;
     padding: 0.5rem 1rem;
-    border-radius: 0.5rem;
+    border-radius: 12px;
     transition: all 0.2s ease;
   }
 
-  .autumn-button-secondary:hover {
-    background-color: var(--autumn-amber);
-    color: white;
+  .banking-button-secondary:hover {
+    background-color: var(--banking-gold);
+    color: var(--banking-card);
   }
 
-  .autumn-input {
-    background-color: var(--autumn-cream);
-    border: 2px solid var(--autumn-amber);
-    border-radius: 0.5rem;
+  .banking-input {
+    background-color: var(--banking-card);
+    border: 3px solid var(--banking-border);
+    border-radius: 12px;
     padding: 0.75rem;
     font-family: 'Inter', sans-serif;
     transition: all 0.2s ease;
-    color: var(--autumn-forest-green);
+    color: var(--banking-text);
   }
 
-  .autumn-input:focus {
+  .banking-input:focus {
     outline: none;
-    border-color: var(--autumn-forest-green);
-    box-shadow: 0 0 0 3px rgba(27, 67, 50, 0.1);
+    border-color: var(--banking-gold);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
   }
 
-  .autumn-badge {
-    background-color: var(--autumn-amber);
-    color: var(--autumn-forest-green);
+  .banking-badge {
+    background-color: var(--banking-gold);
+    color: var(--banking-card);
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     font-size: 0.75rem;
     padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    border: 1px solid var(--autumn-forest-green);
+    border-radius: 12px;
+    border: 2px solid var(--banking-border);
   }
 
-  /* DEPRECATED - keeping for backwards compatibility but updating colors */
+  /* Backwards compatibility aliases */
+  .autumn-card {
+    @apply banking-card;
+  }
+
+  .autumn-card-secondary {
+    @apply banking-card-secondary;
+  }
+
+  .autumn-card-fintech-xl {
+    @apply banking-card;
+  }
+
+  .autumn-title {
+    @apply banking-title;
+  }
+
+  .autumn-subtitle {
+    @apply banking-subtitle;
+  }
+
+  .autumn-text {
+    @apply banking-text;
+  }
+
+  .autumn-button-primary {
+    @apply banking-button-primary;
+  }
+
+  .autumn-button-secondary {
+    @apply banking-button-secondary;
+  }
+
+  .autumn-input {
+    @apply banking-input;
+  }
+
+  .autumn-badge {
+    @apply banking-badge;
+  }
+
+  /* DEPRECATED - keeping for backwards compatibility */
   .fintech-card {
-    @apply autumn-card;
+    @apply banking-card;
   }
 
   .fintech-card-secondary {
-    @apply autumn-card-secondary;
+    @apply banking-card-secondary;
   }
 
   .fintech-gradient-card {
-    @apply autumn-card;
+    @apply banking-card;
   }
 
   .fintech-metric-card {
-    @apply autumn-card-secondary;
+    @apply banking-card-secondary;
   }
 
   .fintech-chart-container {
-    @apply autumn-card;
+    @apply banking-card;
   }
 
   .fintech-button-primary {
-    @apply autumn-button-primary;
+    @apply banking-button-primary;
   }
 
   .fintech-button-secondary {
-    @apply autumn-button-secondary;
+    @apply banking-button-secondary;
   }
 
   .fintech-input {
-    @apply autumn-input;
+    @apply banking-input;
   }
 
-  /* Winchester Green Theme Components - Updated for autumn */
+  /* Winchester Green Theme Components - Updated for banking */
   .cream-badge {
-    @apply autumn-badge;
+    @apply banking-badge;
   }
 
   .cream-pill {
-    background-color: var(--autumn-amber);
-    color: var(--autumn-forest-green);
-    border: 1px solid var(--autumn-forest-green);
-    border-radius: 9999px;
+    background-color: var(--banking-gold);
+    color: var(--banking-card);
+    border: 2px solid var(--banking-border);
+    border-radius: 12px;
     min-width: 20px;
     height: 20px;
     padding: 0 0.5rem;
@@ -382,30 +382,30 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background-color: var(--autumn-amber);
-    border: 2px solid var(--autumn-forest-green);
+    background-color: var(--banking-gold);
+    border: 2px solid var(--banking-border);
   }
 
   .cream-status-success {
-    @apply autumn-badge;
+    @apply banking-badge;
     background-color: #10B981;
     color: white;
   }
 
   .cream-status-warning {
-    @apply autumn-badge;
+    @apply banking-badge;
     background-color: #F59E0B;
     color: white;
   }
 
   .cream-status-error {
-    @apply autumn-badge;
+    @apply banking-badge;
     background-color: #EF4444;
     color: white;
   }
 
   .cream-status-info {
-    @apply autumn-badge;
+    @apply banking-badge;
     background-color: #3B82F6;
     color: white;
   }
@@ -447,30 +447,30 @@
 
 /* Service Categories - Transform to theme-appropriate cards */
 .service-category-card {
-  @apply autumn-card;
+  @apply banking-card;
   text-align: center;
 }
 
 /* Navigation and header elements */
 .nav-card {
-  @apply autumn-card-secondary;
+  @apply banking-card-secondary;
 }
 
 /* Form containers */
 .form-container {
-  @apply autumn-card;
+  @apply banking-card;
   padding: 2rem;
 }
 
 /* Stats and metric cards */
 .stats-card {
-  @apply autumn-card-secondary;
+  @apply banking-card-secondary;
   padding: 1.5rem;
 }
 
 /* Chart containers */
 .chart-card {
-  @apply autumn-card;
+  @apply banking-card;
   padding: 1.5rem;
 }
 
@@ -485,11 +485,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--autumn-amber);
-  border-radius: 9999px;
+  background-color: var(--banking-gold);
+  border-radius: 12px;
   transition: background-color 0.2s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--autumn-forest-green);
+  background-color: var(--banking-border);
 }
