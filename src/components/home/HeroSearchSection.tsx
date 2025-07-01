@@ -85,21 +85,21 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Certn Banner - Thicker and with teeth ON the banner */}
+        {/* Certn Banner - Fine-tuned thickness and smaller teeth */}
         {showBanner && (
           <div className="certn-banner-wrapper">
             <div 
               className="certn-banner-coupon"
               style={{ backgroundColor: '#d4f3b7' }}
             >
-              <div className="relative z-10 flex items-center justify-between px-4 py-4">
+              <div className="relative z-10 flex items-center justify-between px-4 py-3">
                 <div className="flex items-center space-x-3">
                   <img 
                     src="/CERTN.png" 
                     alt="Certn" 
                     className="h-8 w-auto"
                   />
-                  <span className="font-semibold text-base text-gray-800">
+                  <span className="font-semibold text-lg text-gray-800">
                     Free background check with annual premium!
                   </span>
                 </div>
@@ -125,7 +125,7 @@ const HeroSearchSection = () => {
           left: 0;
           right: 0;
           z-index: 50;
-          height: 80px;
+          height: 60px;
           pointer-events: none;
         }
 
@@ -144,13 +144,13 @@ const HeroSearchSection = () => {
           top: 0;
           left: 0;
           right: 0;
-          height: 8px;
+          height: 6px;
           background: repeating-linear-gradient(
             to right,
             #2d3748 0px,
-            #2d3748 12px,
-            transparent 12px,
-            transparent 24px
+            #2d3748 8px,
+            transparent 8px,
+            transparent 16px
           );
           animation: chainsawMoveHorizontal 1.5s linear infinite;
           z-index: 20;
@@ -163,13 +163,13 @@ const HeroSearchSection = () => {
           bottom: 0;
           left: 0;
           right: 0;
-          height: 8px;
+          height: 6px;
           background: repeating-linear-gradient(
             to right,
             #2d3748 0px,
-            #2d3748 12px,
-            transparent 12px,
-            transparent 24px
+            #2d3748 8px,
+            transparent 8px,
+            transparent 16px
           );
           animation: chainsawMoveHorizontal 1.5s linear infinite reverse;
           z-index: 20;
@@ -182,15 +182,15 @@ const HeroSearchSection = () => {
           top: 0;
           bottom: 0;
           left: 0;
-          width: 8px;
+          width: 6px;
           background: repeating-linear-gradient(
             to bottom,
             #2d3748 0px,
-            #2d3748 12px,
-            transparent 12px,
-            transparent 24px
+            #2d3748 8px,
+            transparent 8px,
+            transparent 16px
           );
-          animation: chainsawMoveVertical 1.5s linear infinite;
+          animation: chainsawMoveVertical 1.5s linear infinite reverse;
           z-index: 20;
         }
 
@@ -201,13 +201,13 @@ const HeroSearchSection = () => {
           top: 0;
           bottom: 0;
           right: 0;
-          width: 8px;
+          width: 6px;
           background: repeating-linear-gradient(
             to bottom,
             #2d3748 0px,
-            #2d3748 12px,
-            transparent 12px,
-            transparent 24px
+            #2d3748 8px,
+            transparent 8px,
+            transparent 16px
           );
           animation: chainsawMoveVertical 1.5s linear infinite;
           z-index: 20;
@@ -218,7 +218,7 @@ const HeroSearchSection = () => {
             background-position: 0px 0px;
           }
           100% {
-            background-position: 24px 0px;
+            background-position: 16px 0px;
           }
         }
 
@@ -227,7 +227,7 @@ const HeroSearchSection = () => {
             background-position: 0px 0px;
           }
           100% {
-            background-position: 0px 24px;
+            background-position: 0px 16px;
           }
         }
 
