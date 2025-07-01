@@ -85,7 +85,7 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Bottom Banner - Back to original position */}
+        {/* Fixed Banner - Sticks to bottom of screen */}
         {showBanner && (
           <div 
             className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg certn-banner-coupon"
@@ -165,7 +165,6 @@ const HeroSearchSection = () => {
           transform-origin: center center;
           will-change: transform;
           /* Perforated edge styling */
-          position: relative;
           border-radius: 8px;
         }
 
