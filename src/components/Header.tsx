@@ -74,8 +74,8 @@ const Header = () => {
             <HamburgerMenu />
           </div>
 
-          {/* Right: Dashboard + User Menu/Auth + Language Toggle - pushed to the right */}
-          <div className="flex items-center space-x-3 ml-auto mr-4">
+          {/* Right: Dashboard + User Menu/Auth + Language Toggle - moved 1.5 inches towards center */}
+          <div className="flex items-center space-x-3 ml-auto mr-24">
             {user ? (
               <div className="flex items-center space-x-2">
                 <Link to="/dashboard">
