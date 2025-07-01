@@ -28,92 +28,176 @@ const HeroSearchSection = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center pt-16">
-      {/* Main Content */}
-      <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-2xl">
-          Find local experts near you
-        </h1>
-        
-        {/* Search Bar - Exact UberEats Style */}
-        <div className="bg-white rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
-          {/* Location Input */}
-          <div className="flex-1 relative">
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <MapPin className="h-5 w-5 text-gray-400" />
-            </div>
-            <Input
-              type="text"
-              placeholder="Enter delivery address"
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="pl-10 border-none shadow-none text-lg h-12 focus:ring-0"
-            />
-          </div>
-
-          {/* Service Category Dropdown */}
-          <div className="relative">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="appearance-none bg-transparent border-none text-lg h-12 pr-8 pl-4 focus:ring-0 cursor-pointer min-w-[150px]"
-            >
-              {serviceCategories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-          </div>
-
-          {/* Search Button */}
-          <Button
-            onClick={handleSearch}
-            className="bg-black text-white hover:bg-gray-800 px-8 h-12 text-lg rounded-lg"
-          >
-            Search here
-          </Button>
-        </div>
-
-        <p className="mt-4 text-white/90 drop-shadow-lg">
-          Or{' '}
-          <Link to="/auth" className="underline font-medium text-white hover:text-white/80">
-            Sign In
-          </Link>
-        </p>
-      </div>
-
-      {/* Bottom Banner - Updated with actual Certn logo */}
-      {showBanner && (
-        <div 
-          className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg"
-          style={{ backgroundColor: '#d4f3b7' }}
-        >
-          <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              {/* Actual Certn Logo from public directory */}
-              <img 
-                src="/CERTN.png" 
-                alt="Certn" 
-                className="h-8 w-auto"
+    <>
+      <div className="relative min-h-screen flex items-center justify-center pt-16">
+        {/* Main Content */}
+        <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-2xl">
+            Find local experts near you
+          </h1>
+          
+          {/* Search Bar - Exact UberEats Style */}
+          <div className="bg-white rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
+            {/* Location Input */}
+            <div className="flex-1 relative">
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <MapPin className="h-5 w-5 text-gray-400" />
+              </div>
+              <Input
+                type="text"
+                placeholder="Enter delivery address"
+                value={location}
+                onChange={(e) => setLocation(e.target.value)}
+                className="pl-10 border-none shadow-none text-lg h-12 focus:ring-0"
               />
-              <span className="font-semibold text-sm md:text-base text-gray-800">
-                Free background check with annual premium!
-              </span>
             </div>
+
+            {/* Service Category Dropdown */}
+            <div className="relative">
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="appearance-none bg-transparent border-none text-lg h-12 pr-8 pl-4 focus:ring-0 cursor-pointer min-w-[150px]"
+              >
+                {serviceCategories.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
+            </div>
+
+            {/* Search Button */}
             <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setShowBanner(false)}
-              className="p-1 hover:bg-gray-800/10 text-gray-800"
+              onClick={handleSearch}
+              className="bg-black text-white hover:bg-gray-800 px-8 h-12 text-lg rounded-lg"
             >
-              <X className="h-4 w-4" />
+              Search here
             </Button>
           </div>
+
+          <p className="mt-4 text-white/90 drop-shadow-lg">
+            Or{' '}
+            <Link to="/auth" className="underline font-medium text-white hover:text-white/80">
+              Sign In
+            </Link>
+          </p>
         </div>
-      )}
-    </div>
+
+        {/* Bottom Banner - Updated with Wind Flag Animation */}
+        {showBanner && (
+          <div 
+            className="fixed bottom-0 left-0 right-0 z-40 text-gray-800 px-4 py-3 shadow-lg certn-banner-flag"
+            style={{ backgroundColor: '#d4f3b7' }}
+          >
+            <div className="max-w-7xl mx-auto flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                {/* Actual Certn Logo from public directory */}
+                <img 
+                  src="/CERTN.png" 
+                  alt="Certn" 
+                  className="h-8 w-auto"
+                />
+                <span className="font-semibold text-sm md:text-base text-gray-800">
+                  Free background check with annual premium!
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowBanner(false)}
+                className="p-1 hover:bg-gray-800/10 text-gray-800"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Wind Flag Animation Styles */}
+      <style>{`
+        @keyframes windFlag {
+          0% {
+            transform: translateX(0px) rotate(0deg);
+          }
+          25% {
+            transform: translateX(2px) rotate(0.5deg);
+          }
+          50% {
+            transform: translateX(4px) rotate(1deg);
+          }
+          75% {
+            transform: translateX(2px) rotate(-0.5deg);
+          }
+          100% {
+            transform: translateX(0px) rotate(0deg);
+          }
+        }
+
+        @keyframes windWave {
+          0% {
+            transform: scaleX(1) rotate(0deg);
+          }
+          16.67% {
+            transform: scaleX(1.005) rotate(0.8deg);
+          }
+          33.33% {
+            transform: scaleX(1.01) rotate(1.5deg);
+          }
+          50% {
+            transform: scaleX(1.008) rotate(2deg);
+          }
+          66.67% {
+            transform: scaleX(1.003) rotate(1deg);
+          }
+          83.33% {
+            transform: scaleX(1.001) rotate(-0.5deg);
+          }
+          100% {
+            transform: scaleX(1) rotate(0deg);
+          }
+        }
+
+        .certn-banner-flag {
+          animation: windFlag 3s ease-in-out infinite;
+          transform-origin: left center;
+          will-change: transform;
+        }
+
+        .certn-banner-flag::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: inherit;
+          animation: windWave 3s ease-in-out infinite;
+          transform-origin: left center;
+          z-index: -1;
+          opacity: 0.6;
+        }
+
+        /* Add subtle shadow animation for depth */
+        .certn-banner-flag {
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+          transition: box-shadow 0.3s ease;
+        }
+
+        .certn-banner-flag:hover {
+          animation-play-state: paused;
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Ensure smooth performance */
+        .certn-banner-flag * {
+          backface-visibility: hidden;
+          perspective: 1000px;
+        }
+      `}</style>
+    </>
   );
 };
 
