@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -17,6 +18,20 @@ import {
   List,
   Grid
 } from 'lucide-react';
+
+interface Ticket {
+  id: string;
+  title: string;
+  description: string;
+  priority: 'low' | 'medium' | 'high';
+  assignee: string;
+  client: string;
+  location: string;
+  estimatedDuration: number;
+  status: 'todo' | 'in-progress' | 'review' | 'done';
+  tags: string[];
+  createdAt: string;
+}
 
 const KanbanBoard = () => {
   const { user } = useAuth();
