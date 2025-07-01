@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleSwitch } from "@/contexts/RoleSwitchContext";
@@ -239,64 +240,64 @@ const UnifiedDashboard = () => {
 
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-metric-card">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white/90 text-shadow">
+                      <p className="text-sm font-medium opacity-80 mb-1">
                         {currentRole === 'provider' ? 'Total Bookings' : 'Services Booked'}
                       </p>
-                      <p className="text-3xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold">
                         {dashboardData?.stats?.totalBookings || '0'}
                       </p>
                     </div>
-                    <Calendar className="h-8 w-8 text-white/70 drop-shadow-md" />
+                    <Calendar className="h-8 w-8 opacity-70" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-metric-card">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white/90 text-shadow">
+                      <p className="text-sm font-medium opacity-80 mb-1">
                         {currentRole === 'provider' ? 'Active Jobs' : 'Pending Requests'}
                       </p>
-                      <p className="text-3xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold">
                         {dashboardData?.stats?.activeJobs || '0'}
                       </p>
                     </div>
-                    <Clock className="h-8 w-8 text-white/70 drop-shadow-md" />
+                    <Clock className="h-8 w-8 opacity-70" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-metric-card">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white/90 text-shadow">
+                      <p className="text-sm font-medium opacity-80 mb-1">
                         {currentRole === 'provider' ? 'Monthly Revenue' : 'Total Spent'}
                       </p>
-                      <p className="text-3xl font-bold text-white text-shadow-lg">
+                      <p className="text-3xl font-bold">
                         ${dashboardData?.stats?.monthlyRevenue || '0'}
                       </p>
                     </div>
-                    <DollarSign className="h-8 w-8 text-white/70 drop-shadow-md" />
+                    <DollarSign className="h-8 w-8 opacity-70" />
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-slate-800/60 hover:bg-slate-800/70 transition-all duration-200 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-metric-card">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-white/90 text-shadow">Rating</p>
-                      <p className="text-3xl font-bold text-white text-shadow-lg">
+                      <p className="text-sm font-medium opacity-80 mb-1">Rating</p>
+                      <p className="text-3xl font-bold">
                         {dashboardData?.stats?.rating || '0'}
                       </p>
                     </div>
-                    <Star className="h-8 w-8 text-white/70 drop-shadow-md" />
+                    <Star className="h-8 w-8 opacity-70" />
                   </div>
                 </CardContent>
               </Card>
@@ -305,9 +306,9 @@ const UnifiedDashboard = () => {
             {/* GPS Job Analyzer Preview - Only for Providers */}
             {currentRole === 'provider' && (
               <div className="mb-8">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2 text-white text-shadow">
+                    <CardTitle className="flex items-center gap-2">
                       <Navigation className="h-5 w-5" />
                       GPS Job Analyzer
                     </CardTitle>
@@ -315,38 +316,38 @@ const UnifiedDashboard = () => {
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-white text-shadow-lg">
+                        <div className="text-2xl font-bold mb-1">
                           {dashboardData?.stats?.optimizedRoutes || '0'}
                         </div>
-                        <div className="text-white/80 text-sm text-shadow">Optimized Routes</div>
+                        <div className="text-sm opacity-70">Optimized Routes</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-white text-shadow-lg">
+                        <div className="text-2xl font-bold mb-1">
                           {dashboardData?.stats?.timesSaved || '0'} min
                         </div>
-                        <div className="text-white/80 text-sm text-shadow">Time Saved Today</div>
+                        <div className="text-sm opacity-70">Time Saved Today</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-2xl font-bold text-white text-shadow-lg">
+                        <div className="text-2xl font-bold mb-1">
                           {dashboardData?.emergencyJobs?.length || '0'}
                         </div>
-                        <div className="text-white/80 text-sm text-shadow">Emergency Jobs</div>
+                        <div className="text-sm opacity-70">Emergency Jobs</div>
                       </div>
                     </div>
                     
                     {dashboardData?.emergencyJobs && dashboardData.emergencyJobs.length > 0 && (
                       <div className="space-y-2 mb-4">
-                        <h4 className="text-white font-medium text-shadow">Pending Emergency Jobs:</h4>
+                        <h4 className="font-medium">Pending Emergency Jobs:</h4>
                         {dashboardData.emergencyJobs.map((job: any) => (
-                          <div key={job.id} className="flex items-center justify-between p-3 bg-white/10 rounded-lg">
+                          <div key={job.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                             <div>
-                              <p className="text-white text-shadow">{job.title}</p>
-                              <p className="text-white/70 text-sm text-shadow">{job.location}</p>
+                              <p className="font-medium">{job.title}</p>
+                              <p className="text-sm opacity-70">{job.location}</p>
                             </div>
                             <Badge 
                               className={`${
-                                job.urgency === 'high' ? 'bg-red-500/80' : 'bg-yellow-500/80'
-                              } text-white`}
+                                job.urgency === 'high' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'
+                              }`}
                             >
                               {job.urgency}
                             </Badge>
@@ -356,7 +357,7 @@ const UnifiedDashboard = () => {
                     )}
                     
                     <Link to="/gps-job-analyzer">
-                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                      <Button className="fintech-button-primary w-full">
                         <Route className="h-4 w-4 mr-2" />
                         Open Full Job Analyzer
                       </Button>
@@ -370,19 +371,19 @@ const UnifiedDashboard = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
               {/* Recent Activity */}
               <div className="lg:col-span-2">
-                <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+                <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle className="text-white text-shadow">Recent Activity</CardTitle>
+                    <CardTitle>Recent Activity</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
                       {dashboardData?.recentActivity?.map((activity: any) => (
-                        <div key={activity.id} className="flex items-center justify-between p-4 bg-white/5 rounded-lg backdrop-blur-sm border border-white/10">
+                        <div key={activity.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                           <div className="flex items-center gap-4">
-                            <div className="w-3 h-3 bg-blue-400 rounded-full"></div>
+                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                             <div>
-                              <p className="font-medium text-white text-shadow">{activity.title}</p>
-                              <p className="text-sm text-white/70 text-shadow">{activity.time}</p>
+                              <p className="font-medium">{activity.title}</p>
+                              <p className="text-sm opacity-70">{activity.time}</p>
                             </div>
                           </div>
                         </div>
@@ -393,32 +394,32 @@ const UnifiedDashboard = () => {
               </div>
 
               {/* Quick Actions */}
-              <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+              <Card className="fintech-card">
                 <CardHeader>
-                  <CardTitle className="text-white text-shadow">Quick Actions</CardTitle>
+                  <CardTitle>Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-4">
                     <Link to="/bookings">
-                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                      <Button className="fintech-button-secondary w-full">
                         <Calendar className="h-4 w-4 mr-2" />
                         Bookings
                       </Button>
                     </Link>
                     <Link to="/manager">
-                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                      <Button className="fintech-button-secondary w-full">
                         <Users className="h-4 w-4 mr-2" />
                         Manager Hub
                       </Button>
                     </Link>
                     <Link to="/analytics-dashboard">
-                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                      <Button className="fintech-button-secondary w-full">
                         <TrendingUp className="h-4 w-4 mr-2" />
                         Analytics
                       </Button>
                     </Link>
                     <Link to="/services">
-                      <Button className="w-full bg-white/10 hover:bg-white/20 text-white border-white/20 backdrop-blur-sm">
+                      <Button className="fintech-button-secondary w-full">
                         <MapPin className="h-4 w-4 mr-2" />
                         Browse Services
                       </Button>
