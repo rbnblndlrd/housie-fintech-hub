@@ -85,6 +85,8 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   /* Remove the complex orange background pattern entirely */
@@ -98,6 +100,29 @@
     background: transparent !important;
     background-image: none !important;
     min-height: 100vh;
+  }
+
+  /* FULL WIDTH LAYOUT - Remove all default margins and constraints */
+  #root {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100vw !important;
+  }
+
+  /* Remove default container constraints */
+  .container {
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Allow pages to use full width */
+  main, section, article, div[class*="page"], div[class*="layout"] {
+    max-width: none !important;
   }
 
   /* Text shadow utilities for better readability */
@@ -292,6 +317,30 @@
   .dark .cream-notification-dot {
     background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
     border: 2px solid #000000 !important; /* Black border */
+  }
+
+  /* FULL WIDTH UTILITIES */
+  .full-width-page {
+    width: 100vw !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .full-width-container {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .full-width-card {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 }
 
