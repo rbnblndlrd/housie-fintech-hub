@@ -78,10 +78,13 @@ const Calendar = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
+        
+        {/* Reduced margin container - only affects body content, not header */}
+        <div className="pt-16 px-2 pb-4">
+          <div className="max-w-full mx-auto">
+            
             {/* Header with Navigation */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4 px-2">
               <div className="flex items-center gap-4">
                 <Button 
                   variant="ghost" 
@@ -92,8 +95,8 @@ const Calendar = () => {
                   Dashboard
                 </Button>
                 <div>
-                  <h1 className="text-3xl font-bold text-white text-shadow-lg">Calendar</h1>
-                  <p className="text-white/90 text-shadow">Manage your appointments and schedule</p>
+                  <h1 className="text-3xl font-bold text-white drop-shadow-lg">Calendar</h1>
+                  <p className="text-white/90 drop-shadow-md">Manage your appointments and schedule</p>
                 </div>
               </div>
               
@@ -130,15 +133,15 @@ const Calendar = () => {
             </div>
 
             {/* Google Calendar Integration */}
-            <div className="mb-6">
+            <div className="mb-4 px-2">
               <GoogleCalendarIntegration />
             </div>
 
-            {/* Big Calendar Grid */}
-            <Card className="bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+            {/* Big Calendar Grid - Using fintech styling */}
+            <Card className="fintech-chart-container mb-4 mx-2">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-white text-shadow">
-                  <CalendarIcon className="h-5 w-5 text-blue-400" />
+                <CardTitle className="flex items-center gap-2">
+                  <CalendarIcon className="h-5 w-5 text-blue-600" />
                   Schedule Overview
                 </CardTitle>
               </CardHeader>
@@ -146,7 +149,7 @@ const Calendar = () => {
                 {/* Calendar Header */}
                 <div className="grid grid-cols-7 gap-2 mb-4">
                   {['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'].map((day) => (
-                    <div key={day} className="p-3 text-center font-medium text-white/90 border-b border-white/20">
+                    <div key={day} className="p-3 text-center font-medium bg-gray-100 rounded border-b">
                       {day}
                     </div>
                   ))}
@@ -164,13 +167,13 @@ const Calendar = () => {
                         key={day.toISOString()}
                         className={`min-h-[140px] p-3 border rounded-lg transition-colors ${
                           isCurrentMonth 
-                            ? 'bg-white/10 hover:bg-white/20' 
-                            : 'bg-white/5 hover:bg-white/10'
-                        } ${isToday ? 'ring-2 ring-blue-400' : 'border-white/20'}`}
+                            ? 'bg-white/90 hover:bg-white' 
+                            : 'bg-gray-50 hover:bg-gray-100'
+                        } ${isToday ? 'ring-2 ring-blue-400' : 'border-gray-200'}`}
                       >
                         <div className={`text-sm font-medium mb-2 ${
-                          isCurrentMonth ? 'text-white' : 'text-white/50'
-                        } ${isToday ? 'text-blue-400 font-bold' : ''}`}>
+                          isCurrentMonth ? 'text-gray-900' : 'text-gray-400'
+                        } ${isToday ? 'text-blue-600 font-bold' : ''}`}>
                           {format(day, 'd')}
                         </div>
                         
@@ -194,10 +197,10 @@ const Calendar = () => {
               </CardContent>
             </Card>
 
-            {/* Today's Schedule */}
-            <Card className="mt-6 bg-slate-800/60 border-slate-600/30 backdrop-blur-md shadow-xl">
+            {/* Today's Schedule - Using fintech styling */}
+            <Card className="fintech-card mx-2">
               <CardHeader>
-                <CardTitle className="text-white text-shadow">Today's Schedule</CardTitle>
+                <CardTitle>Today's Schedule</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -205,16 +208,16 @@ const Calendar = () => {
                     .filter(event => isSameDay(event.date, new Date()))
                     .sort((a, b) => a.date.getTime() - b.date.getTime())
                     .map((event) => (
-                      <div key={event.id} className="flex items-center justify-between p-4 bg-white/10 rounded-lg border border-white/20">
+                      <div key={event.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border">
                         <div className="flex-1">
                           <div className="flex items-center gap-3 mb-1">
-                            <span className="font-medium text-lg text-white">{format(event.date, 'HH:mm')}</span>
-                            <span className="font-medium text-white">{event.title}</span>
+                            <span className="font-medium text-lg">{format(event.date, 'HH:mm')}</span>
+                            <span className="font-medium">{event.title}</span>
                             <Badge className={`${getPriorityColor(event.priority)} text-xs`}>
                               {event.priority}
                             </Badge>
                           </div>
-                          <div className="text-sm text-white/70">
+                          <div className="text-sm text-gray-600">
                             <span>Client: {event.client}</span>
                             <span className="mx-2">•</span>
                             <span>Location: {event.location}</span>
@@ -223,10 +226,10 @@ const Calendar = () => {
                           </div>
                         </div>
                         <div className="flex gap-2">
-                          <Button size="sm" variant="outline" className="text-white border-white/20 hover:bg-white/10">
+                          <Button size="sm" variant="outline" className="border-gray-300 hover:bg-gray-100">
                             Edit
                           </Button>
-                          <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                          <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
                             Complete
                           </Button>
                         </div>
@@ -235,7 +238,7 @@ const Calendar = () => {
                 </div>
                 
                 {events.filter(event => isSameDay(event.date, new Date())).length === 0 && (
-                  <div className="text-center py-8 text-white/70">
+                  <div className="text-center py-8 text-gray-500">
                     No appointments scheduled for today
                   </div>
                 )}
