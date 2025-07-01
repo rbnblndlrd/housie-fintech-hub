@@ -85,21 +85,21 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Certn Banner - Shorter and with teeth ON the banner */}
+        {/* Certn Banner - Thicker and with teeth ON the banner */}
         {showBanner && (
           <div className="certn-banner-wrapper">
             <div 
               className="certn-banner-coupon"
               style={{ backgroundColor: '#d4f3b7' }}
             >
-              <div className="relative z-10 flex items-center justify-between px-4 py-2">
+              <div className="relative z-10 flex items-center justify-between px-4 py-4">
                 <div className="flex items-center space-x-3">
                   <img 
                     src="/CERTN.png" 
                     alt="Certn" 
-                    className="h-6 w-auto"
+                    className="h-8 w-auto"
                   />
-                  <span className="font-semibold text-sm text-gray-800">
+                  <span className="font-semibold text-base text-gray-800">
                     Free background check with annual premium!
                   </span>
                 </div>
@@ -125,7 +125,7 @@ const HeroSearchSection = () => {
           left: 0;
           right: 0;
           z-index: 50;
-          height: 50px;
+          height: 80px;
           pointer-events: none;
         }
 
@@ -209,7 +209,7 @@ const HeroSearchSection = () => {
             transparent 12px,
             transparent 24px
           );
-          animation: chainsawMoveVertical 1.5s linear infinite reverse;
+          animation: chainsawMoveVertical 1.5s linear infinite;
           z-index: 20;
         }
 
