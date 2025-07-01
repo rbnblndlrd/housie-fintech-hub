@@ -85,22 +85,21 @@ const HeroSearchSection = () => {
           </p>
         </div>
 
-        {/* Fixed Banner - Full width with chainsaw edges */}
+        {/* Certn Banner - Shorter and with teeth ON the banner */}
         {showBanner && (
           <div className="certn-banner-wrapper">
             <div 
               className="certn-banner-coupon"
               style={{ backgroundColor: '#d4f3b7' }}
             >
-              <div className="relative z-10 flex items-center justify-between px-4 py-3">
+              <div className="relative z-10 flex items-center justify-between px-4 py-2">
                 <div className="flex items-center space-x-3">
-                  {/* Actual Certn Logo from public directory */}
                   <img 
                     src="/CERTN.png" 
                     alt="Certn" 
-                    className="h-8 w-auto"
+                    className="h-6 w-auto"
                   />
-                  <span className="font-semibold text-sm md:text-base text-gray-800">
+                  <span className="font-semibold text-sm text-gray-800">
                     Free background check with annual premium!
                   </span>
                 </div>
@@ -118,7 +117,7 @@ const HeroSearchSection = () => {
         )}
       </div>
 
-      {/* Simplified Chainsaw Animation Styles */}
+      {/* Chainsaw Animation Styles */}
       <style>{`
         .certn-banner-wrapper {
           position: fixed;
@@ -126,91 +125,92 @@ const HeroSearchSection = () => {
           left: 0;
           right: 0;
           z-index: 50;
+          height: 50px;
           pointer-events: none;
         }
 
         .certn-banner-coupon {
           position: relative;
-          width: 100vw;
+          width: 100%;
+          height: 100%;
           pointer-events: auto;
-          margin: 0;
-          padding: 0;
+          overflow: hidden;
         }
 
-        /* Top chainsaw edge */
+        /* Top chainsaw edge - positioned ON the banner */
         .certn-banner-coupon::before {
           content: '';
           position: absolute;
-          top: -6px;
+          top: 0;
           left: 0;
           right: 0;
-          height: 6px;
+          height: 8px;
           background: repeating-linear-gradient(
             to right,
             #2d3748 0px,
-            #2d3748 10px,
-            transparent 10px,
-            transparent 20px
+            #2d3748 12px,
+            transparent 12px,
+            transparent 24px
           );
-          animation: chainsawMoveHorizontal 1s linear infinite;
-          z-index: 1;
+          animation: chainsawMoveHorizontal 1.5s linear infinite;
+          z-index: 20;
         }
 
-        /* Bottom chainsaw edge */
+        /* Bottom chainsaw edge - positioned ON the banner */
         .certn-banner-coupon::after {
           content: '';
           position: absolute;
-          bottom: -6px;
+          bottom: 0;
           left: 0;
           right: 0;
-          height: 6px;
+          height: 8px;
           background: repeating-linear-gradient(
             to right,
             #2d3748 0px,
-            #2d3748 10px,
-            transparent 10px,
-            transparent 20px
+            #2d3748 12px,
+            transparent 12px,
+            transparent 24px
           );
-          animation: chainsawMoveHorizontal 1s linear infinite reverse;
-          z-index: 1;
+          animation: chainsawMoveHorizontal 1.5s linear infinite reverse;
+          z-index: 20;
         }
 
-        /* Left vertical chainsaw edge */
+        /* Left vertical chainsaw edge - positioned ON the banner */
         .certn-banner-wrapper::before {
           content: '';
           position: absolute;
           top: 0;
           bottom: 0;
-          left: -6px;
-          width: 6px;
+          left: 0;
+          width: 8px;
           background: repeating-linear-gradient(
             to bottom,
             #2d3748 0px,
-            #2d3748 10px,
-            transparent 10px,
-            transparent 20px
+            #2d3748 12px,
+            transparent 12px,
+            transparent 24px
           );
-          animation: chainsawMoveVertical 1s linear infinite;
-          z-index: 1;
+          animation: chainsawMoveVertical 1.5s linear infinite;
+          z-index: 20;
         }
 
-        /* Right vertical chainsaw edge */
+        /* Right vertical chainsaw edge - positioned ON the banner */
         .certn-banner-wrapper::after {
           content: '';
           position: absolute;
           top: 0;
           bottom: 0;
-          right: -6px;
-          width: 6px;
+          right: 0;
+          width: 8px;
           background: repeating-linear-gradient(
             to bottom,
             #2d3748 0px,
-            #2d3748 10px,
-            transparent 10px,
-            transparent 20px
+            #2d3748 12px,
+            transparent 12px,
+            transparent 24px
           );
-          animation: chainsawMoveVertical 1s linear infinite reverse;
-          z-index: 1;
+          animation: chainsawMoveVertical 1.5s linear infinite reverse;
+          z-index: 20;
         }
 
         @keyframes chainsawMoveHorizontal {
@@ -218,7 +218,7 @@ const HeroSearchSection = () => {
             background-position: 0px 0px;
           }
           100% {
-            background-position: 20px 0px;
+            background-position: 24px 0px;
           }
         }
 
@@ -227,11 +227,11 @@ const HeroSearchSection = () => {
             background-position: 0px 0px;
           }
           100% {
-            background-position: 0px 20px;
+            background-position: 0px 24px;
           }
         }
 
-        /* Hover interaction - pause chainsaw */
+        /* Hover effects */
         .certn-banner-coupon:hover::before,
         .certn-banner-coupon:hover::after,
         .certn-banner-wrapper:hover::before,
