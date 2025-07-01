@@ -76,7 +76,6 @@ const SubcategoryFilter: React.FC<SubcategoryFilterProps> = ({
     }
   };
 
-  // Always show the filter, but disable it when category is 'all'
   return (
     <Select value={value} onValueChange={onChange} disabled={isLoading || category === 'all'}>
       <SelectTrigger className={`${className} ${category === 'all' ? 'opacity-50' : ''}`}>

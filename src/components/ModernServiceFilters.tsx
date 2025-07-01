@@ -1,39 +1,14 @@
 
 import React from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Clock, MapPin, DollarSign, Shield } from 'lucide-react';
-import SubcategoryFilter from './filters/SubcategoryFilter';
-
-const serviceCategories = [
-  { id: 'all', name: 'Category' },
-  { id: 'cleaning', name: 'Cleaning' },
-  { id: 'wellness', name: 'Wellness' },
-  { id: 'care_pets', name: 'Pet Care' },
-  { id: 'lawn_snow', name: 'Lawn & Snow' },
-  { id: 'construction', name: 'Construction' }
-];
-
-const locations = [
-  { id: 'montreal', name: 'Montreal' },
-  { id: 'toronto', name: 'Toronto' },
-  { id: 'vancouver', name: 'Vancouver' }
-];
-
-const timeSlots = [
-  'Any time',
-  '9:00 AM', '9:30 AM', '10:00 AM', '10:30 AM', '11:00 AM',
-  '2:00 PM', '2:30 PM', '3:00 PM', '3:30 PM', '4:00 PM'
-];
-
-const priceRanges = [
-  { id: 'all', name: 'Price Range' },
-  { id: '20-40', name: '$20-40/hour' },
-  { id: '40-60', name: '$40-60/hour' },
-  { id: '60-100', name: '$60-100/hour' },
-  { id: '100+', name: '$100+/hour' }
-];
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Slider } from '@/components/ui/slider';
+import { Switch } from '@/components/ui/switch';
+import { Card, CardContent } from '@/components/ui/card';
+import CategoryFilter from '@/components/filters/CategoryFilter';
+import SubcategoryFilter from '@/components/filters/SubcategoryFilter';
+import { Search, MapPin, DollarSign, Shield, Star, Filter, RotateCcw } from 'lucide-react';
 
 interface ModernServiceFiltersProps {
   searchTerm: string;
@@ -53,116 +28,179 @@ interface ModernServiceFiltersProps {
 }
 
 const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
+  searchTerm,
   selectedCategory,
   selectedSubcategory,
   selectedLocation,
   selectedTime,
+  priceRange,
   verifiedOnly,
+  onSearchChange,
   onCategoryChange,
   onSubcategoryChange,
   onLocationChange,
   onTimeChange,
   onPriceRangeChange,
-  onVerifiedToggle
+  onVerifiedToggle,
 }) => {
+  const resetFilters = () => {
+    onSearchChange('');
+    onCategoryChange('all');
+    onSubcategoryChange('all');
+    onLocationChange('all');
+    onTimeChange('Any time');
+    onPriceRangeChange([10, 200]);
+    onVerifiedToggle(false);
+  };
+
+  const activeFiltersCount = [
+    searchTerm !== '',
+    selectedCategory !== 'all',
+    selectedSubcategory !== 'all',
+    selectedLocation !== 'all',
+    selectedTime !== 'Any time',
+    priceRange[0] !== 10 || priceRange[1] !== 200,
+    verifiedOnly
+  ].filter(Boolean).length;
+
   return (
-    <div className="flex flex-wrap gap-4 items-center justify-center md:justify-start">
-      {/* Category Filter */}
-      <Select value={selectedCategory} onValueChange={onCategoryChange}>
-        <SelectTrigger className="w-[200px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-          <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-full bg-gray-100 flex items-center justify-center">
-              <span className="text-xs">🏷️</span>
+    <Card className="fintech-card mb-6">
+      <CardContent className="p-6">
+        {/* Search Bar */}
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+          <Input
+            placeholder="Search services, providers, or locations..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="pl-10 h-12 text-lg fintech-input"
+          />
+        </div>
+
+        {/* Filter Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          {/* Category Filter */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Category
+            </label>
+            <CategoryFilter
+              value={selectedCategory}
+              onChange={onCategoryChange}
+              className="fintech-input"
+            />
+          </div>
+
+          {/* Subcategory Filter */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium flex items-center gap-2">
+              <Filter className="h-4 w-4" />
+              Subcategory
+            </label>
+            <SubcategoryFilter
+              category={selectedCategory}
+              value={selectedSubcategory}
+              onChange={onSubcategoryChange}
+              className="fintech-input"
+            />
+          </div>
+
+          {/* Location Filter */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              Location
+            </label>
+            <select
+              value={selectedLocation}
+              onChange={(e) => onLocationChange(e.target.value)}
+              className="w-full p-3 border-2 border-black rounded-md fintech-input"
+            >
+              <option value="all">All Locations</option>
+              <option value="montreal">Montreal</option>
+              <option value="laval">Laval</option>
+              <option value="longueuil">Longueuil</option>
+              <option value="gatineau">Gatineau</option>
+              <option value="sherbrooke">Sherbrooke</option>
+              <option value="saguenay">Saguenay</option>
+              <option value="quebec">Quebec City</option>
+              <option value="trois-rivieres">Trois-Rivières</option>
+            </select>
+          </div>
+
+          {/* Time Filter */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Availability</label>
+            <select
+              value={selectedTime}
+              onChange={(e) => onTimeChange(e.target.value)}
+              className="w-full p-3 border-2 border-black rounded-md fintech-input"
+            >
+              <option value="Any time">Any time</option>
+              <option value="Today">Today</option>
+              <option value="Tomorrow">Tomorrow</option>
+              <option value="This week">This week</option>
+              <option value="Next week">Next week</option>
+              <option value="This month">This month</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Price Range */}
+        <div className="mb-6">
+          <label className="text-sm font-medium flex items-center gap-2 mb-3">
+            <DollarSign className="h-4 w-4" />
+            Price Range: ${priceRange[0]} - ${priceRange[1]} CAD/hour
+          </label>
+          <Slider
+            value={priceRange}
+            onValueChange={onPriceRangeChange}
+            max={500}
+            min={10}
+            step={5}
+            className="w-full"
+          />
+        </div>
+
+        {/* Verification Toggle */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center space-x-3">
+            <Shield className="h-5 w-5 text-green-600" />
+            <div>
+              <label className="text-sm font-medium">Verified Providers Only</label>
+              <p className="text-xs text-gray-500">Show only background-checked providers</p>
             </div>
-            <SelectValue placeholder="Category" />
           </div>
-        </SelectTrigger>
-        <SelectContent className="fintech-card border-4 border-black shadow-xl">
-          {serviceCategories.map(category => (
-            <SelectItem key={category.id} value={category.id} className="rounded-lg hover:bg-gray-100">
-              {category.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+          <Switch
+            checked={verifiedOnly}
+            onCheckedChange={onVerifiedToggle}
+          />
+        </div>
 
-      {/* Subcategory Filter */}
-      <SubcategoryFilter
-        category={selectedCategory}
-        value={selectedSubcategory}
-        onChange={onSubcategoryChange}
-        className="w-[220px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200"
-      />
-
-      {/* Location Filter */}
-      <Select value={selectedLocation} onValueChange={onLocationChange}>
-        <SelectTrigger className="w-[180px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
+        {/* Filter Actions */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-gray-500" />
-            <SelectValue placeholder="Montreal" />
+            {activeFiltersCount > 0 && (
+              <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                {activeFiltersCount} filter{activeFiltersCount !== 1 ? 's' : ''} active
+              </Badge>
+            )}
           </div>
-        </SelectTrigger>
-        <SelectContent className="fintech-card border-4 border-black shadow-xl">
-          {locations.map(location => (
-            <SelectItem key={location.id} value={location.id} className="rounded-lg hover:bg-gray-100">
-              {location.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {/* Time Filter */}
-      <Select value={selectedTime} onValueChange={onTimeChange}>
-        <SelectTrigger className="w-[150px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-gray-500" />
-            <SelectValue placeholder="Any time" />
-          </div>
-        </SelectTrigger>
-        <SelectContent className="fintech-card border-4 border-black shadow-xl">
-          {timeSlots.map(time => (
-            <SelectItem key={time} value={time} className="rounded-lg hover:bg-gray-100">
-              {time}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {/* Price Range Filter */}
-      <Select onValueChange={(value) => {
-        if (value === '20-40') onPriceRangeChange([20, 40]);
-        else if (value === '40-60') onPriceRangeChange([40, 60]);
-        else if (value === '60-100') onPriceRangeChange([60, 100]);
-        else onPriceRangeChange([10, 200]);
-      }}>
-        <SelectTrigger className="w-[160px] h-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-          <div className="flex items-center gap-2">
-            <DollarSign className="w-4 h-4 text-gray-500" />
-            <SelectValue placeholder="Price Range" />
-          </div>
-        </SelectTrigger>
-        <SelectContent className="fintech-card border-4 border-black shadow-xl">
-          {priceRanges.map(range => (
-            <SelectItem key={range.id} value={range.id} className="rounded-lg hover:bg-gray-100">
-              {range.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-
-      {/* Verified Only Toggle */}
-      <div className="flex items-center gap-3 px-4 py-3 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-black hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200">
-        <Shield className="w-4 h-4 text-blue-600" />
-        <Label htmlFor="verified-toggle" className="text-sm font-medium text-gray-700 cursor-pointer">
-          Verified Only
-        </Label>
-        <Switch
-          id="verified-toggle"
-          checked={verifiedOnly}
-          onCheckedChange={onVerifiedToggle}
-        />
-      </div>
-    </div>
+          
+          {activeFiltersCount > 0 && (
+            <Button
+              variant="outline"
+              onClick={resetFilters}
+              className="flex items-center gap-2"
+            >
+              <RotateCcw className="h-4 w-4" />
+              Reset Filters
+            </Button>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

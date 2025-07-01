@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -34,6 +33,7 @@ interface ProviderProfile {
 interface ServiceCategory {
   id: string;
   name: string;
+  icon: string;
 }
 
 interface ServiceSubcategory {
@@ -55,11 +55,13 @@ interface ServicesSectionProps {
 }
 
 const serviceCategories: ServiceCategory[] = [
-  { id: 'cleaning', name: 'Cleaning' },
-  { id: 'wellness', name: 'Wellness' },
-  { id: 'care_pets', name: 'Care/Pets' },
-  { id: 'lawn_snow', name: 'Lawn & Snow' },
-  { id: 'construction', name: 'Construction' }
+  { id: 'personal_wellness', name: 'Personal Wellness', icon: '💆' },
+  { id: 'cleaning', name: 'Cleaning Services', icon: '🧹' },
+  { id: 'exterior_grounds', name: 'Exterior & Grounds', icon: '🌿' },
+  { id: 'pet_care', name: 'Pet Care Services', icon: '🐕' },
+  { id: 'appliance_tech', name: 'Appliance & Tech Repair', icon: '🔧' },
+  { id: 'event_services', name: 'Event Services', icon: '🎪' },
+  { id: 'moving_services', name: 'Moving Services', icon: '🚚' }
 ];
 
 const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
@@ -318,7 +320,10 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
   return (
     <Card className="fintech-card">
       <CardHeader>
-        <CardTitle className="text-gray-900">Services Offered</CardTitle>
+        <CardTitle className="text-xl font-bold flex items-center gap-2">
+          <span>🔧</span>
+          My Services
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Verification Status */}
@@ -338,106 +343,13 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
           </div>
         )}
 
-        {/* Existing Services */}
-        <div className="space-y-3">
-          {services.map((service) => (
-            <div key={service.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-1">
-                  <h4 className="font-medium text-gray-900">{service.title}</h4>
-                  <Badge variant="secondary">{service.category.replace('_', ' ')}</Badge>
-                  <Badge variant="outline" className={getRiskBadgeColor(service.risk_category)}>
-                    {service.risk_category} risk
-                  </Badge>
-                </div>
-                <p className="text-sm text-gray-600 mb-1">{service.description}</p>
-                <p className="text-sm font-medium text-gray-900">
-                  ${service.base_price} / {service.pricing_type}
-                </p>
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => deleteService(service.id)}
-                className="text-red-600 hover:text-red-700"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          ))}
-        </div>
-
-        {/* Add New Service */}
-        <div className="border-t pt-6">
-          <h4 className="font-medium text-gray-900 mb-4">Add New Service</h4>
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category *
-                </label>
-                <Select 
-                  value={newService.category} 
-                  onValueChange={(value) => setNewService({...newService, category: value, subcategory: ''})}
-                >
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {serviceCategories.map(category => (
-                      <SelectItem key={category.id} value={category.id}>
-                        {category.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Subcategory *
-                </label>
-                <Select 
-                  value={newService.subcategory} 
-                  onValueChange={(value) => setNewService({...newService, subcategory: value})}
-                  disabled={!newService.category}
-                >
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue placeholder="Select subcategory" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {subcategories.map(subcategory => {
-                      const canOffer = canOfferSubcategory(subcategory);
-                      return (
-                        <SelectItem 
-                          key={subcategory.id} 
-                          value={subcategory.subcategory_id}
-                          disabled={!canOffer}
-                          className={!canOffer ? 'opacity-50' : ''}
-                        >
-                          <div className="flex items-center justify-between w-full">
-                            <div className="flex items-center gap-2">
-                              <span className="text-lg">{subcategory.icon}</span>
-                              <span>{subcategory.subcategory}</span>
-                            </div>
-                            {!canOffer && <AlertTriangle className="h-4 w-4 text-red-500" />}
-                          </div>
-                        </SelectItem>
-                      );
-                    })}
-                  </SelectContent>
-                </Select>
-                {newService.subcategory && getSelectedSubcategory() && (
-                  <div className="mt-2 flex gap-1 flex-wrap">
-                    {getVerificationBadges(getSelectedSubcategory()!)}
-                  </div>
-                )}
-              </div>
-            </div>
-
+        {/* Add New Service Form */}
+        <div className="border rounded-lg p-4 space-y-4">
+          <h3 className="font-semibold">Add New Service</h3>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Service Title *
-              </label>
+              <label className="block text-sm font-medium mb-2">Service Title *</label>
               <Input
                 value={newService.title}
                 onChange={(e) => setNewService({...newService, title: e.target.value})}
@@ -445,64 +357,185 @@ const ServicesSection: React.FC<ServicesSectionProps> = ({ providerId }) => {
                 className="border-gray-300"
               />
             </div>
-
+            
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <Textarea
-                value={newService.description}
-                onChange={(e) => setNewService({...newService, description: e.target.value})}
-                placeholder="Describe your service..."
-                rows={3}
+              <label className="block text-sm font-medium mb-2">Base Price ($CAD) *</label>
+              <Input
+                type="number"
+                value={newService.base_price}
+                onChange={(e) => setNewService({...newService, base_price: parseFloat(e.target.value) || 0})}
+                placeholder="0.00"
+                min="0"
+                step="0.01"
                 className="border-gray-300"
               />
             </div>
+          </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Base Price ($) *
-                </label>
-                <Input
-                  type="number"
-                  value={newService.base_price}
-                  onChange={(e) => setNewService({...newService, base_price: parseFloat(e.target.value) || 0})}
-                  placeholder="0.00"
-                  min="0"
-                  step="0.01"
-                  className="border-gray-300"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pricing Type *
-                </label>
-                <Select 
-                  value={newService.pricing_type} 
-                  onValueChange={(value) => setNewService({...newService, pricing_type: value})}
-                >
-                  <SelectTrigger className="border-gray-300">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="hourly">Hourly</SelectItem>
-                    <SelectItem value="flat">Fixed Price</SelectItem>
-                    <SelectItem value="per_service">Per Service</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Category *</label>
+              <Select 
+                value={newService.category} 
+                onValueChange={(value) => setNewService({...newService, category: value, subcategory: ''})}
+              >
+                <SelectTrigger className="border-gray-300">
+                  <SelectValue placeholder="Select category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {serviceCategories.map((cat) => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      <div className="flex items-center gap-2">
+                        <span>{cat.icon}</span>
+                        <span>{cat.name}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
-            <Button
-              onClick={addService}
-              disabled={saving || !newService.title || !newService.category || !newService.subcategory}
-              className="w-full fintech-button-primary"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              {saving ? 'Adding Service...' : 'Add Service'}
-            </Button>
+            <div>
+              <label className="block text-sm font-medium mb-2">Subcategory *</label>
+              <Select 
+                value={newService.subcategory} 
+                onValueChange={(value) => setNewService({...newService, subcategory: value})}
+                disabled={!newService.category}
+              >
+                <SelectTrigger className="border-gray-300">
+                  <SelectValue placeholder="Select subcategory" />
+                </SelectTrigger>
+                <SelectContent>
+                  {subcategories.map((sub) => {
+                    const canOffer = canOfferSubcategory(sub);
+                    return (
+                      <SelectItem 
+                        key={sub.id} 
+                        value={sub.subcategory_id}
+                        disabled={!canOffer}
+                        className={!canOffer ? 'opacity-50' : ''}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{sub.icon}</span>
+                          <span>{sub.subcategory}</span>
+                          {!canOffer && (
+                            <AlertTriangle className="h-4 w-4 text-orange-500" />
+                          )}
+                        </div>
+                      </SelectItem>
+                    );
+                  })}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
+
+          {newService.subcategory && getSelectedSubcategory() && (
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <div className="flex flex-wrap gap-2 mb-2">
+                {getVerificationBadges(getSelectedSubcategory()!)}
+              </div>
+              <p className="text-sm text-gray-600">
+                {getSelectedSubcategory()?.description}
+              </p>
+            </div>
+          )}
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Description</label>
+            <Textarea
+              value={newService.description}
+              onChange={(e) => setNewService({...newService, description: e.target.value})}
+              placeholder="Describe your service in detail..."
+              rows={3}
+              className="border-gray-300"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-2">Pricing Type *</label>
+            <Select 
+              value={newService.pricing_type} 
+              onValueChange={(value) => setNewService({...newService, pricing_type: value})}
+            >
+              <SelectTrigger className="border-gray-300">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="hourly">Hourly</SelectItem>
+                <SelectItem value="flat">Fixed Price</SelectItem>
+                <SelectItem value="per_service">Per Service</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <Button 
+            onClick={addService} 
+            disabled={saving || !newService.title || !newService.category || !newService.subcategory}
+            className="w-full fintech-button-primary"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            {saving ? 'Adding...' : 'Add Service'}
+          </Button>
+        </div>
+
+        {/* Existing Services */}
+        <div className="space-y-4">
+          <h3 className="font-semibold">Current Services ({services.length})</h3>
+          
+          {services.length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              No services added yet. Add your first service above!
+            </div>
+          ) : (
+            services.map((service) => (
+              <div key={service.id} className="border rounded-lg p-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h4 className="font-semibold text-lg">{service.title}</h4>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge className={getRiskBadgeColor(service.risk_category)}>
+                        {service.risk_category} risk
+                      </Badge>
+                      {service.background_check_required && (
+                        <Badge variant="outline" className="bg-purple-100 text-purple-700">
+                          <Shield className="h-3 w-3 mr-1" />
+                          Background Check
+                        </Badge>
+                      )}
+                      {service.ccq_rbq_required && (
+                        <Badge variant="outline" className="bg-blue-100 text-blue-700">
+                          <Award className="h-3 w-3 mr-1" />
+                          CCQ/RBQ
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-lg">${service.base_price}</span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => deleteService(service.id)}
+                      className="text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+                
+                {service.description && (
+                  <p className="text-gray-600 mb-2">{service.description}</p>
+                )}
+                
+                <div className="text-sm text-gray-500">
+                  Category: {serviceCategories.find(cat => cat.id === service.category)?.name} • 
+                  Subcategory: {service.subcategory} • 
+                  Pricing: ${service.base_price} / {service.pricing_type}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

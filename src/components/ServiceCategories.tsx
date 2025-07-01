@@ -10,34 +10,46 @@ interface ServiceCategoriesProps {
 
 const serviceCategories = [
   { 
-    id: 'cleaning', 
-    name: 'Cleaning', 
-    color: 'bg-blue-100 text-blue-700 border-blue-300',
-    icon: '🏠'
-  },
-  { 
-    id: 'wellness', 
-    name: 'Wellness', 
-    color: 'bg-green-100 text-green-700 border-green-300',
-    icon: '💪'
-  },
-  { 
-    id: 'care_pets', 
-    name: 'Pet Care', 
+    id: 'personal_wellness', 
+    name: 'Personal Wellness', 
     color: 'bg-purple-100 text-purple-700 border-purple-300',
+    icon: '💆'
+  },
+  { 
+    id: 'cleaning', 
+    name: 'Cleaning Services', 
+    color: 'bg-blue-100 text-blue-700 border-blue-300',
+    icon: '🧹'
+  },
+  { 
+    id: 'exterior_grounds', 
+    name: 'Exterior & Grounds', 
+    color: 'bg-green-100 text-green-700 border-green-300',
+    icon: '🌿'
+  },
+  { 
+    id: 'pet_care', 
+    name: 'Pet Care Services', 
+    color: 'bg-orange-100 text-orange-700 border-orange-300',
     icon: '🐕'
   },
   { 
-    id: 'lawn_snow', 
-    name: 'Lawn & Snow', 
-    color: 'bg-yellow-100 text-yellow-700 border-yellow-300',
-    icon: '🌳'
+    id: 'appliance_tech', 
+    name: 'Appliance & Tech Repair', 
+    color: 'bg-gray-100 text-gray-700 border-gray-300',
+    icon: '🔧'
   },
   { 
-    id: 'construction', 
-    name: 'Construction', 
-    color: 'bg-orange-100 text-orange-700 border-orange-300',
-    icon: '🔧'
+    id: 'event_services', 
+    name: 'Event Services', 
+    color: 'bg-pink-100 text-pink-700 border-pink-300',
+    icon: '🎪'
+  },
+  { 
+    id: 'moving_services', 
+    name: 'Moving Services', 
+    color: 'bg-indigo-100 text-indigo-700 border-indigo-300',
+    icon: '🚚'
   }
 ];
 
