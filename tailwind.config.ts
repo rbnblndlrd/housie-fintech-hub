@@ -53,22 +53,15 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Autumn theme colors
-        autumn: {
-          cream: "#FDF6E3",
-          amber: "#D4A574",
-          "forest-green": "#1B4332",
-          "warm-shadow": "rgba(212, 165, 116, 0.15)",
-        },
         // Add cream color definition
         cream: {
-          DEFAULT: "#FDF6E3", // Warm cream color matching the autumn design
+          DEFAULT: "#f9f7e8", // Warm cream color matching the design
           50: "#fefcf7",
           100: "#fdf9f0",
           200: "#faf5e7",
           300: "#f6f0db",
           400: "#f1e8ca",
-          500: "#FDF6E3", // Default cream
+          500: "#f9f7e8", // Default cream
           600: "#e8d5a6",
           700: "#d4b574",
           800: "#b8954a",
@@ -79,11 +72,6 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      fontFamily: {
-        sans: ['Inter', 'Poppins', 'system-ui', 'sans-serif'],
-        inter: ['Inter', 'sans-serif'],
-        poppins: ['Poppins', 'sans-serif'],
       },
       keyframes: {
         "accordion-down": {
@@ -111,7 +99,7 @@ export default {
     },
   },
   plugins: [require("tailwindcss-animate")],
-  // Safelist for dynamic overlay positioning classes and autumn theme
+  // Safelist for dynamic overlay positioning classes
   safelist: [
     // Static positioning classes used in overlay system
     'top-20',
@@ -141,16 +129,6 @@ export default {
     'min-w-[44px]',
     'w-full',
     'max-w-sm',
-    // Autumn theme classes
-    'autumn-card',
-    'autumn-card-secondary',
-    'autumn-title',
-    'autumn-subtitle',
-    'autumn-text',
-    'autumn-button-primary',
-    'autumn-button-secondary',
-    'autumn-input',
-    'autumn-badge',
     // Cream color variations for safelist
     'bg-cream',
     'bg-cream/95',

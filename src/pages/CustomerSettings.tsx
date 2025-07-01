@@ -7,7 +7,7 @@ import RoleSwitcher from '@/components/profile/RoleSwitcher';
 const CustomerSettings = () => {
   return (
     <div className="container mx-auto px-4 py-8 space-y-6">
-      <h1 className="autumn-title text-3xl font-bold">Customer Settings</h1>
+      <h1 className="text-3xl font-bold">Customer Settings</h1>
       
       {/* Debug Panel - Remove this in production */}
       <RoleDebugger />
@@ -26,7 +26,7 @@ const CustomerSettings = () => {
           <CardTitle>Account Settings</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="autumn-text">Account settings will be implemented here.</p>
+          <p className="text-gray-600">Account settings will be implemented here.</p>
         </CardContent>
       </Card>
     </div>

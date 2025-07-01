@@ -1,6 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;  
 @tailwind utilities;
@@ -40,13 +40,6 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 10.6% 64.9%;
-    
-    /* Banking Parchment theme colors */
-    --banking-cream: #F5F2E9;
-    --banking-card: #FEFCF7;
-    --banking-border: #2C3E50;
-    --banking-gold: #B8860B;
-    --banking-text: #2C3E50;
   }
 
   .dark {
@@ -82,13 +75,6 @@
     --sidebar-accent-foreground: 240 4.8% 95.9%;
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 10.6% 64.9%;
-    
-    /* Dark mode banking colors */
-    --banking-cream: #2A2520;
-    --banking-card: #3C3530;
-    --banking-border: #4A7C59;
-    --banking-gold: #D4AF37;
-    --banking-text: #F5F2E9;
   }
 }
 
@@ -98,19 +84,14 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Inter', 'Poppins', sans-serif;
+    font-family: 'Inter', sans-serif;
     margin: 0 !important;
     padding: 0 !important;
-    line-height: 1.6;
   }
 
-  /* Banking Parchment Background */
+  /* Remove the complex orange background pattern entirely */
   body:not(.manager-dashboard) {
-    background: #F5F2E9;
-    background-image: 
-      radial-gradient(circle at 20% 50%, rgba(184, 134, 11, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, rgba(44, 62, 80, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 40% 80%, rgba(184, 134, 11, 0.02) 0%, transparent 50%);
+    background: #000000; /* Simple black background instead of orange */
     min-height: 100vh;
   }
 
@@ -144,14 +125,6 @@
     max-width: none !important;
   }
 
-  /* Typography improvements */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', 'Inter', sans-serif;
-    font-weight: 600;
-    line-height: 1.3;
-    color: var(--banking-text);
-  }
-
   /* Text shadow utilities for better readability */
   .text-shadow {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
@@ -167,247 +140,120 @@
 }
 
 @layer components {
-  /* BANKING PARCHMENT THEME COMPONENTS */
-  .banking-card {
-    background-color: var(--banking-card) !important;
-    border: 6px solid var(--banking-border) !important;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(44, 62, 80, 0.1), 0 4px 8px rgba(44, 62, 80, 0.05);
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    font-family: 'Inter', sans-serif;
-    position: relative;
-  }
-
-  .banking-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 48px rgba(44, 62, 80, 0.15), 0 6px 12px rgba(44, 62, 80, 0.08);
-  }
-
-  .banking-card-secondary {
-    background-color: var(--banking-card) !important;
-    border: 4px solid var(--banking-border) !important;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(44, 62, 80, 0.08);
-    padding: 1rem;
-    transition: all 0.2s ease;
-    font-family: 'Inter', sans-serif;
-  }
-
-  .banking-card-secondary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 24px rgba(44, 62, 80, 0.12);
-  }
-
-  .banking-title {
-    color: var(--banking-text) !important;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 700;
-    line-height: 1.3;
-    margin-bottom: 0.75rem;
-  }
-
-  .banking-subtitle {
-    color: var(--banking-text) !important;
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    line-height: 1.4;
-    margin-bottom: 0.5rem;
-  }
-
-  .banking-text {
-    color: var(--banking-text);
-    font-family: 'Inter', sans-serif;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-
-  .banking-button-primary {
-    background: linear-gradient(135deg, var(--banking-gold) 0%, #D4AF37 100%);
-    border: 3px solid var(--banking-border);
-    color: var(--banking-card);
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    padding: 0.75rem 1.5rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
-    transition: all 0.2s ease;
-  }
-
-  .banking-button-primary:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(184, 134, 11, 0.4);
-    background: linear-gradient(135deg, #D4AF37 0%, var(--banking-gold) 100%);
-  }
-
-  .banking-button-secondary {
-    background-color: transparent;
-    border: 3px solid var(--banking-gold);
-    color: var(--banking-text);
-    font-family: 'Poppins', sans-serif;
-    font-weight: 500;
-    padding: 0.5rem 1rem;
-    border-radius: 12px;
-    transition: all 0.2s ease;
-  }
-
-  .banking-button-secondary:hover {
-    background-color: var(--banking-gold);
-    color: var(--banking-card);
-  }
-
-  .banking-input {
-    background-color: var(--banking-card);
-    border: 3px solid var(--banking-border);
-    border-radius: 12px;
-    padding: 0.75rem;
-    font-family: 'Inter', sans-serif;
-    transition: all 0.2s ease;
-    color: var(--banking-text);
-  }
-
-  .banking-input:focus {
-    outline: none;
-    border-color: var(--banking-gold);
-    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
-  }
-
-  .banking-badge {
-    background-color: var(--banking-gold);
-    color: var(--banking-card);
-    font-family: 'Poppins', sans-serif;
-    font-weight: 600;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    border: 2px solid var(--banking-border);
-  }
-
-  /* Backwards compatibility aliases */
-  .autumn-card {
-    @apply banking-card;
-  }
-
-  .autumn-card-secondary {
-    @apply banking-card-secondary;
-  }
-
-  .autumn-card-fintech-xl {
-    @apply banking-card;
-  }
-
-  .autumn-title {
-    @apply banking-title;
-  }
-
-  .autumn-subtitle {
-    @apply banking-subtitle;
-  }
-
-  .autumn-text {
-    @apply banking-text;
-  }
-
-  .autumn-button-primary {
-    @apply banking-button-primary;
-  }
-
-  .autumn-button-secondary {
-    @apply banking-button-secondary;
-  }
-
-  .autumn-input {
-    @apply banking-input;
-  }
-
-  .autumn-badge {
-    @apply banking-badge;
-  }
-
-  /* DEPRECATED - keeping for backwards compatibility */
+  /* Winchester Green with transparency and prominent black borders */
   .fintech-card {
-    @apply banking-card;
+    @apply rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+    background-color: rgba(129, 164, 136, 0.85) !important; /* Winchester Green #81a488 with transparency */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .fintech-card-secondary {
-    @apply banking-card-secondary;
+    @apply backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 3px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .fintech-gradient-card {
-    @apply banking-card;
+    @apply rounded-2xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm;
+    background-color: rgba(129, 164, 136, 0.85) !important; /* Winchester Green with transparency */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .fintech-metric-card {
-    @apply banking-card-secondary;
+    @apply backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 3px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .fintech-chart-container {
-    @apply banking-card;
+    @apply backdrop-blur-sm rounded-2xl shadow-lg transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.85) !important; /* Winchester Green with transparency */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .fintech-button-primary {
-    @apply banking-button-primary;
+    @apply text-white rounded-xl px-6 py-3 font-semibold shadow-[0_4px_15px_-2px_rgba(0,0,0,0.2)] hover:shadow-[0_6px_20px_-2px_rgba(0,0,0,0.3)] hover:-translate-y-0.5 transition-all duration-200;
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    border: 2px solid #000000 !important; /* Black border for buttons */
+  }
+
+  .fintech-button-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
   }
 
   .fintech-button-secondary {
-    @apply banking-button-secondary;
+    @apply hover:bg-white text-gray-800 rounded-xl px-6 py-3 font-semibold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 3px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .fintech-input {
-    @apply banking-input;
+    @apply backdrop-blur-sm rounded-xl shadow-lg focus:shadow-xl transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.7) !important; /* Winchester Green with transparency */
+    border: 3px solid #000000 !important; /* Prominent black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
-  /* Winchester Green Theme Components - Updated for banking */
+  .fintech-input::placeholder {
+    color: rgba(0, 0, 0, 0.6) !important; /* Dark placeholder text */
+  }
+
+  .fintech-grid-pattern {
+    background-image: 
+      radial-gradient(circle at 25px 25px, rgba(255,255,255,0.3) 2px, transparent 0),
+      radial-gradient(circle at 75px 75px, rgba(255,255,255,0.2) 2px, transparent 0);
+    background-size: 100px 100px;
+  }
+
+  /* Winchester Green Theme Components */
   .cream-badge {
-    @apply banking-badge;
+    @apply text-gray-800 rounded-full px-3 py-1 text-xs font-semibold shadow-sm hover:bg-stone-200 transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .cream-pill {
-    background-color: var(--banking-gold);
-    color: var(--banking-card);
-    border: 2px solid var(--banking-border);
-    border-radius: 12px;
-    min-width: 20px;
-    height: 20px;
-    padding: 0 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Poppins', sans-serif;
+    @apply text-gray-800 rounded-full min-w-[20px] h-5 px-2 text-xs font-bold shadow-sm flex items-center justify-center transition-all duration-200;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
+    color: #000000 !important; /* Black text for readability */
   }
 
   .cream-notification-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: var(--banking-gold);
-    border: 2px solid var(--banking-border);
+    @apply w-3 h-3 rounded-full shadow-sm;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
   }
 
   .cream-status-success {
-    @apply banking-badge;
-    background-color: #10B981;
-    color: white;
+    @apply text-green-700;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
   }
 
   .cream-status-warning {
-    @apply banking-badge;
-    background-color: #F59E0B;
-    color: white;
+    @apply text-orange-700;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
   }
 
   .cream-status-error {
-    @apply banking-badge;
-    background-color: #EF4444;
-    color: white;
+    @apply text-red-700;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
   }
 
   .cream-status-info {
-    @apply banking-badge;
-    background-color: #3B82F6;
-    color: white;
+    @apply text-blue-700;
+    background-color: rgba(129, 164, 136, 0.8) !important; /* Winchester Green with transparency */
+    border: 2px solid #000000 !important; /* Black border */
   }
 
   /* Hover lift animation */
@@ -418,6 +264,59 @@
   /* Text gradients */
   .housie-text-gradient {
     @apply bg-gradient-to-r from-orange-500 via-purple-600 to-blue-600 bg-clip-text text-transparent;
+  }
+
+  /* DARK MODE - Dark backgrounds with Winchester Green and black borders */
+  .dark .fintech-card-secondary {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  .dark .fintech-metric-card {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  .dark .fintech-chart-container {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  .dark .fintech-input {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  .dark .fintech-input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important; /* Light placeholder text for dark mode */
+  }
+
+  .dark .fintech-button-secondary {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 4px solid #000000 !important; /* Prominent black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  /* Dark mode Winchester Green theme */
+  .dark .cream-badge {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 2px solid #000000 !important; /* Black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  .dark .cream-pill {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 2px solid #000000 !important; /* Black border */
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
+  .dark .cream-notification-dot {
+    background-color: rgba(129, 164, 136, 0.6) !important; /* Winchester Green with transparency for dark mode */
+    border: 2px solid #000000 !important; /* Black border */
   }
 
   /* FULL WIDTH UTILITIES */
@@ -445,33 +344,29 @@
   }
 }
 
-/* Service Categories - Transform to theme-appropriate cards */
+/* Service Categories - Transform to theme-appropriate cards with Winchester Green */
 .service-category-card {
-  @apply banking-card;
-  text-align: center;
+  @apply fintech-card p-6 text-center;
 }
 
 /* Navigation and header elements */
 .nav-card {
-  @apply banking-card-secondary;
+  @apply fintech-card-secondary;
 }
 
 /* Form containers */
 .form-container {
-  @apply banking-card;
-  padding: 2rem;
+  @apply fintech-card p-8;
 }
 
 /* Stats and metric cards */
 .stats-card {
-  @apply banking-card-secondary;
-  padding: 1.5rem;
+  @apply fintech-metric-card p-6;
 }
 
 /* Chart containers */
 .chart-card {
-  @apply banking-card;
-  padding: 1.5rem;
+  @apply fintech-chart-container p-6;
 }
 
 /* Custom scrollbar */
@@ -485,11 +380,5 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--banking-gold);
-  border-radius: 12px;
-  transition: background-color 0.2s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--banking-border);
+  @apply bg-gray-300/70 rounded-full hover:bg-gray-400/70 transition-colors;
 }
