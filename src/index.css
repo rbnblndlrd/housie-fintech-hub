@@ -156,6 +156,26 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
+  /* Force ALL text elements inside fintech cards to use dark colors */
+  .fintech-card * {
+    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  }
+
+  .fintech-card h1,
+  .fintech-card h2,
+  .fintech-card h3,
+  .fintech-card h4,
+  .fintech-card h5,
+  .fintech-card h6 {
+    color: #1F1F1F !important; /* Dark charcoal for all headings */
+  }
+
+  .fintech-card p,
+  .fintech-card span,
+  .fintech-card div {
+    color: #1F1F1F !important; /* Dark charcoal for all text elements */
+  }
+
   .fintech-card-secondary {
     @apply backdrop-blur-sm rounded-xl cursor-pointer;
     background-color: #F8F5F0 !important; /* Slightly lighter warm cream */
@@ -169,6 +189,26 @@
   .fintech-card-secondary:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Force ALL text elements inside fintech-card-secondary to use dark colors */
+  .fintech-card-secondary * {
+    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  }
+
+  .fintech-card-secondary h1,
+  .fintech-card-secondary h2,
+  .fintech-card-secondary h3,
+  .fintech-card-secondary h4,
+  .fintech-card-secondary h5,
+  .fintech-card-secondary h6 {
+    color: #1F1F1F !important; /* Dark charcoal for all headings */
+  }
+
+  .fintech-card-secondary p,
+  .fintech-card-secondary span,
+  .fintech-card-secondary div {
+    color: #1F1F1F !important; /* Dark charcoal for all text elements */
   }
 
   .fintech-gradient-card {
@@ -186,6 +226,11 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
+  /* Force ALL text elements inside fintech-gradient-card to use dark colors */
+  .fintech-gradient-card * {
+    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  }
+
   .fintech-metric-card {
     @apply backdrop-blur-sm rounded-xl cursor-pointer;
     background-color: #F8F5F0 !important; /* Slightly lighter warm cream */
@@ -201,6 +246,11 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
+  /* Force ALL text elements inside fintech-metric-card to use dark colors */
+  .fintech-metric-card * {
+    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
+  }
+
   .fintech-chart-container {
     @apply backdrop-blur-sm rounded-2xl cursor-pointer;
     background-color: #F5F2E8 !important; /* Warm cream background */
@@ -214,6 +264,11 @@
   .fintech-chart-container:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Force ALL text elements inside fintech-chart-container to use dark colors */
+  .fintech-chart-container * {
+    color: #1F1F1F !important; /* Dark charcoal text for ALL elements */
   }
 
   /* Winchester Green backgrounds remain the same thickness for headers */
@@ -356,6 +411,10 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
+  .dark .fintech-card-secondary * {
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
   .dark .fintech-metric-card {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Black border */
@@ -370,6 +429,10 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
   }
 
+  .dark .fintech-metric-card * {
+    color: #ffffff !important; /* White text for dark mode readability */
+  }
+
   .dark .fintech-chart-container {
     background-color: #2D2D2D !important; /* Dark gray for dark mode */
     border: 2px solid #000000 !important; /* Black border */
@@ -382,6 +445,10 @@
   .dark .fintech-chart-container:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .dark .fintech-chart-container * {
+    color: #ffffff !important; /* White text for dark mode readability */
   }
 
   .dark .fintech-input {
