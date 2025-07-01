@@ -13,7 +13,7 @@ const Card = React.forwardRef<
       className
     )}
     style={{
-      backgroundColor: 'rgba(129, 164, 136, 0.85)',
+      backgroundColor: '#F8F6F0',
       border: '4px solid #000000',
       color: '#000000'
     }}
