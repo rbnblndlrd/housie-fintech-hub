@@ -184,7 +184,7 @@ const ModernServiceFilters: React.FC<ModernServiceFiltersProps> = ({
           <div className="flex items-center gap-2">
             {activeFiltersCount > 0 && (
               <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                {activeFiltersCount} <AutoTranslate>{activeFiltersCount !== 1 ? 'filters' : 'filter'} active</AutoTranslate>
+                {activeFiltersCount} <AutoTranslate>{`${activeFiltersCount !== 1 ? 'filters' : 'filter'} active`}</AutoTranslate>
               </Badge>
             )}
           </div>
