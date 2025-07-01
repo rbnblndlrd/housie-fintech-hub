@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -16,6 +15,7 @@ import {
   Search,
   Filter
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CustomerDashboard = () => {
   const { user } = useAuth();
@@ -50,13 +50,24 @@ const CustomerDashboard = () => {
         <Header />
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-6xl mx-auto">
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
-                Welcome Back!
-              </h1>
-              <p className="text-white/90 text-shadow">
-                Find and book services for your home
-              </p>
+            <div className="mb-8 flex items-center justify-between">
+              <div>
+                <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+                  Welcome Back!
+                </h1>
+                <p className="text-white/90 text-shadow">
+                  Find and book services for your home
+                </p>
+              </div>
+              <Link to="/calendar">
+                <Button
+                  variant="outline"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm flex items-center gap-2"
+                >
+                  <Calendar className="h-4 w-4" />
+                  View Calendar
+                </Button>
+              </Link>
             </div>
 
             {/* Stats Cards */}
@@ -148,14 +159,24 @@ const CustomerDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <Button className="fintech-inner-button w-full flex items-center gap-2">
-                      <Search className="h-4 w-4" />
-                      Find Services
-                    </Button>
-                    <Button className="fintech-inner-button w-full flex items-center gap-2">
-                      <Calendar className="h-4 w-4" />
-                      View Bookings
-                    </Button>
+                    <Link to="/calendar">
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        View Calendar
+                      </Button>
+                    </Link>
+                    <Link to="/services">
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Search className="h-4 w-4" />
+                        Find Services
+                      </Button>
+                    </Link>
+                    <Link to="/bookings">
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
+                        View Bookings
+                      </Button>
+                    </Link>
                     <Button className="fintech-inner-button w-full flex items-center gap-2">
                       <MapPin className="h-4 w-4" />
                       Emergency Services

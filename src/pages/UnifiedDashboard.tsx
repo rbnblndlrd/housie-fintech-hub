@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRoleSwitch } from "@/contexts/RoleSwitchContext";
@@ -225,6 +224,15 @@ const UnifiedDashboard = () => {
               </div>
               
               <div className="flex items-center gap-3">
+                <Link to="/calendar">
+                  <Button
+                    variant="outline"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm flex items-center gap-2"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    Calendar
+                  </Button>
+                </Link>
                 <Button
                   variant="outline"
                   onClick={() => switchRole(currentRole === 'provider' ? 'customer' : 'provider')}
@@ -356,7 +364,7 @@ const UnifiedDashboard = () => {
                       </div>
                     )}
                     
-                    <Link to="/gps-job-analyzer">
+                    <Link to="/gps">
                       <Button className="fintech-button-primary w-full">
                         <Route className="h-4 w-4 mr-2" />
                         Open Full Job Analyzer
@@ -400,9 +408,15 @@ const UnifiedDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-4">
-                    <Link to="/bookings">
+                    <Link to="/calendar">
                       <Button className="fintech-inner-button w-full flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
+                        Calendar
+                      </Button>
+                    </Link>
+                    <Link to="/bookings">
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Clock className="h-4 w-4" />
                         Bookings
                       </Button>
                     </Link>
