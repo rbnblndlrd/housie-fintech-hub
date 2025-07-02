@@ -82,8 +82,8 @@ const CompetitiveAdvantage = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
+        <div className="pt-16 pl-[188px] pr-8 pb-8">
+          <div className="max-w-6xl">
             <div className="text-center mb-12">
               <Badge className="fintech-button-primary px-6 py-3 text-sm font-bold mb-6 rounded-2xl">
                 🚀 COMPETITIVE ADVANTAGE
