@@ -18,11 +18,11 @@ const Home = () => {
   // Show loading state while auth is initializing
   if (loading) {
     return (
-      <div className="min-h-screen fintech-card-base flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <VideoBackground />
-        <div className="text-center space-y-4 relative z-10">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto fintech-text-primary" />
-          <p className="fintech-text-secondary">Loading HOUSIE...</p>
+        <div className="text-center space-y-4 relative z-30">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto text-gray-600" />
+          <p className="text-gray-700">Loading HOUSIE...</p>
         </div>
       </div>
     );
@@ -31,20 +31,20 @@ const Home = () => {
   return (
     <div className="min-h-screen relative">
       <VideoBackground />
-      <div className="relative z-10 min-h-screen fintech-card-base">
+      <div className="relative z-10 min-h-screen">
         <div className="container mx-auto px-4 py-12">
           <div className="text-center mb-12">
-            <h1 className="text-5xl font-bold mb-4 fintech-text-header">
+            <h1 className="text-5xl font-bold mb-4 text-white text-shadow-lg">
               Welcome to HOUSIE
             </h1>
-            <p className="text-xl fintech-text-secondary mb-8">
+            <p className="text-xl text-white/90 text-shadow mb-8">
               Your trusted home services platform
             </p>
             
             {!user ? (
               <Button 
                 onClick={() => navigate('/auth')}
-                className="fintech-button-primary mr-4"
+                className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm mr-4"
                 size="lg"
               >
                 Get Started
@@ -53,14 +53,14 @@ const Home = () => {
               <div className="flex gap-4 justify-center">
                 <Button 
                   onClick={() => navigate('/dashboard')}
-                  className="fintech-button-primary"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
                   size="lg"
                 >
                   Go to Dashboard
                 </Button>
                 <Button 
                   onClick={() => navigate('/services')}
-                  className="fintech-button-secondary"
+                  className="bg-white/20 border-white/30 text-white hover:bg-white/30 backdrop-blur-sm"
                   size="lg"
                 >
                   Browse Services

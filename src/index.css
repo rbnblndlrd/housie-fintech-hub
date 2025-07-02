@@ -3,6 +3,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Add text shadow utilities */
+@layer utilities {
+  .text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .text-shadow-lg {
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.9), 0 0 12px rgba(0, 0, 0, 0.5);
+  }
+}
+
 /* Fintech styling system with organic cloud-like gradients */
 @layer components {
   /* CSS Custom Properties for the new warm cream palette */

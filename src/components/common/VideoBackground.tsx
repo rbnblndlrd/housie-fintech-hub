@@ -24,7 +24,8 @@ const VideoBackground = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    console.log(`🎬 VideoBackground: Loading attempt ${videoState.retryCount + 1} - using /lovable-uploads/automne_gif.mp4`);
+    console.log(`🎬 VideoBackground: Loading attempt ${videoState.retryCount + 1}`);
+    console.log(`🎬 VideoBackground: Trying video at: ${window.location.origin}/lovable-uploads/automne_gif.mp4`);
     
     setVideoState(prev => ({
       ...prev,
@@ -43,6 +44,8 @@ const VideoBackground = () => {
 
     const handleError = (e: Event) => {
       console.error('🎬 VideoBackground: Video failed to load:', e);
+      console.log('🎬 VideoBackground: Video src was:', video.src);
+      
       if (videoState.retryCount < MAX_RETRIES) {
         const nextRetryCount = videoState.retryCount + 1;
         console.log(`🎬 VideoBackground: Retrying in ${RETRY_DELAY}ms (attempt ${nextRetryCount})`);
@@ -72,8 +75,17 @@ const VideoBackground = () => {
     video.addEventListener('canplay', handleSuccess, { once: true });
     video.addEventListener('error', handleError, { once: true });
 
-    // Load the video
-    video.src = '/lovable-uploads/automne_gif.mp4';
+    // Load the video with multiple fallback attempts
+    const videoSources = [
+      '/lovable-uploads/automne_gif.mp4',
+      '/public/lovable-uploads/automne_gif.mp4',
+      './lovable-uploads/automne_gif.mp4'
+    ];
+    
+    const currentSource = videoSources[Math.min(videoState.retryCount, videoSources.length - 1)];
+    console.log(`🎬 VideoBackground: Setting video source to: ${currentSource}`);
+    
+    video.src = currentSource;
     video.load();
   }, [videoState.retryCount]);
 
@@ -101,7 +113,6 @@ const VideoBackground = () => {
             className="w-full h-full object-cover"
             style={{ 
               filter: 'brightness(0.7)',
-              zIndex: 1
             }}
           >
             <source src="/lovable-uploads/automne_gif.mp4" type="video/mp4" />
@@ -124,16 +135,16 @@ const VideoBackground = () => {
           )}
         </>
       ) : (
-        <div className="w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-800">
-          <div className="absolute inset-0 opacity-30 bg-gradient-to-br from-blue-900/20 to-purple-900/20"></div>
+        <div className="w-full h-full bg-gradient-to-br from-orange-900 via-red-900 to-yellow-800">
+          <div className="absolute inset-0 opacity-60 bg-gradient-to-br from-amber-800/40 to-orange-900/40"></div>
           <div className="absolute inset-0 flex items-center justify-center z-10">
-            <div className="text-white/70 text-sm">Video background unavailable</div>
+            <div className="text-white/70 text-sm">Beautiful autumn backdrop</div>
           </div>
         </div>
       )}
       
-      {/* Overlay for text readability */}
-      <div className="absolute inset-0 bg-black/30 z-20"></div>
+      {/* Subtle overlay for text readability without hiding video */}
+      <div className="absolute inset-0 bg-black/20 z-5"></div>
     </div>
   );
 };
