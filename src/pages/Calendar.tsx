@@ -89,7 +89,7 @@ const Calendar = () => {
         <Header />
         
         {/* Adjusted container with proper margins to align with header elements */}
-        <div className="pt-16 px-8 pb-4 max-w-7xl mx-auto" style={{ paddingLeft: '128px', paddingRight: '128px' }}>
+        <div className="pt-16 pl-[188px] pr-[188px] pb-4">
           
           {/* Header with Navigation */}
           <div className="flex items-center justify-between mb-4">

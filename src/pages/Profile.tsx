@@ -44,8 +44,8 @@ const Profile = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-4xl mx-auto">
+        <div className="pt-16 pl-[188px] pr-[188px] pb-8">
+          <div className="max-w-full">
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
                 My Profile

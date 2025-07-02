@@ -113,8 +113,8 @@ const ServicesPage = () => {
       <VideoBackground />
       <div className="relative z-10">
         <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
+        <div className="pt-16 pl-[188px] pr-[188px] pb-8">
+          <div className="max-w-full">
             <ModernServicesHeader />
             <div className="mb-8">
               <ModernServiceFilters

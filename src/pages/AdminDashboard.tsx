@@ -97,7 +97,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="max-w-none mx-2 px-2 py-4">
+        <div className="pt-16 pl-[188px] pr-[188px] pb-4">
           <div className="space-y-4">
             <Skeleton className="h-8 w-64" />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -120,7 +120,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="max-w-none mx-2 px-2 py-4">
+        <div className="pt-16 pl-[188px] pr-[188px] pb-4">
           <Card>
             <CardContent className="pt-4">
               <div className="text-center">
@@ -140,7 +140,7 @@ const AdminDashboard = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="max-w-none mx-2 px-2 py-4">
+        <div className="pt-16 pl-[188px] pr-[188px] pb-4">
           <Card className="border-red-200 bg-red-50">
             <CardContent className="pt-4">
               <div className="text-center">
@@ -167,7 +167,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <div className="max-w-none mx-2 px-2 pt-14 pb-4">
+      <div className="pt-16 pl-[188px] pr-[188px] pb-4">
         <div className="mb-6">
           <div className="flex items-center justify-between">
             <div>
