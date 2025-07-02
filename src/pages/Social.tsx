@@ -83,8 +83,8 @@ const Social = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-16 pl-[188px] pr-[188px] pb-8">
-          <div className="max-w-full">
+        <div className="pt-16 pl-[188px] pr-8 pb-8">
+          <div className="max-w-5xl">
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
                 Community Hub
