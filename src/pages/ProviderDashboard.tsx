@@ -6,6 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
+import { useRouteOptimizer } from '@/hooks/useRouteOptimizer';
+import JobExecutionMode from '@/components/route-optimizer/JobExecutionMode';
+import { Link } from 'react-router-dom';
 import { 
   Calendar, 
   DollarSign, 
@@ -37,6 +40,19 @@ const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
   const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
   const [filterPeriod, setFilterPeriod] = useState('today');
+  
+  const {
+    executionMode,
+    phases,
+    routeJobs,
+    selectJob,
+    exitExecutionMode,
+    updatePhotoRequirement,
+    completeJob,
+    getSelectedJob,
+    getProgressPercentage,
+    getTotalRouteStats
+  } = useRouteOptimizer();
 
   // Sample data
   const recentBookings = [
@@ -215,23 +231,28 @@ const ProviderDashboard = () => {
                       </CardHeader>
                       <CardContent className="pt-0 px-3 pb-3">
                         <div className="space-y-1">
-                          {recentBookings.map((booking) => (
-                            <div key={booking.id} className="flex items-center gap-2 p-2 fintech-card-secondary rounded-lg">
+                          {routeJobs.map((job) => (
+                            <div 
+                              key={job.id} 
+                              className="flex items-center gap-2 p-2 fintech-card-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+                              onClick={() => selectJob(job.id)}
+                            >
                               <input
                                 type="checkbox"
-                                checked={selectedJobs.includes(booking.id)}
-                                onChange={() => handleJobSelection(booking.id)}
+                                checked={selectedJobs.includes(parseInt(job.id))}
+                                onChange={() => handleJobSelection(parseInt(job.id))}
                                 className="rounded"
+                                onClick={(e) => e.stopPropagation()}
                               />
                               <div className="flex-1 grid grid-cols-2 gap-1 text-xs">
-                                <span className="font-medium">{booking.date}</span>
-                                <span>{booking.client}</span>
-                                <span className="text-xs">{booking.service}</span>
-                                <Badge variant={getStatusBadge(booking.status)} className="w-fit text-xs">
-                                  {booking.status}
+                                <span className="font-medium">{job.scheduledTime}</span>
+                                <span>{job.customerName}</span>
+                                <span className="text-xs">{job.serviceType}</span>
+                                <Badge variant={getStatusBadge(job.status)} className="w-fit text-xs">
+                                  {job.status}
                                 </Badge>
                               </div>
-                              <span className="font-semibold text-sm">${booking.amount}</span>
+                              <span className="font-semibold text-sm">${job.amount}</span>
                             </div>
                           ))}
                         </div>
@@ -253,47 +274,60 @@ const ProviderDashboard = () => {
 
                   {/* Center Column - AI Route Planner & Calendar (35% width) */}
                   <div className="lg:col-span-4 space-y-2">
-                    {/* AI Route Planner */}
-                    <Card className="fintech-card">
-                      <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          <Zap className="h-4 w-4" />
-                          Smart Route Optimizer
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 px-3 pb-3">
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center mb-2">
-                          <Route className="h-6 w-6 mx-auto mb-1 text-gray-400" />
-                          <p className="text-xs text-gray-600">Drop jobs here to optimize route</p>
-                        </div>
-                        
-                        <div className="space-y-1 mb-2 text-xs">
-                          <div className="flex items-center justify-between">
-                            <span>Traffic Analysis:</span>
-                            <span className="text-green-600">Light traffic</span>
+                    {/* Smart Route Optimizer / Job Execution Mode */}
+                    {executionMode && getSelectedJob() ? (
+                      <JobExecutionMode
+                        job={getSelectedJob()!}
+                        phases={phases}
+                        progressPercentage={getProgressPercentage()}
+                        onBack={exitExecutionMode}
+                        onCompleteJob={completeJob}
+                        onUpdatePhotoRequirement={updatePhotoRequirement}
+                      />
+                    ) : (
+                      <Card className="fintech-card">
+                        <CardHeader className="pb-2 px-3 pt-3">
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <Zap className="h-4 w-4" />
+                            Smart Route Optimizer
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0 px-3 pb-3">
+                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center mb-2">
+                            <Route className="h-6 w-6 mx-auto mb-1 text-gray-400" />
+                            <p className="text-xs text-gray-600">Click jobs above to start execution mode</p>
                           </div>
-                          <div className="flex items-center justify-between">
-                            <span>Client Availability:</span>
-                            <span className="text-blue-600">4 time slots</span>
+                          
+                          <div className="space-y-1 mb-2 text-xs">
+                            <div className="flex items-center justify-between">
+                              <span>Traffic Analysis:</span>
+                              <span className="text-green-600">Light traffic</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                              <span>Client Availability:</span>
+                              <span className="text-blue-600">4 time slots</span>
+                            </div>
                           </div>
-                        </div>
-                        
-                        <div className="space-y-1">
-                          <Button className="w-full fintech-button-primary text-sm">
-                            <Route className="h-3 w-3 mr-1" />
-                            Optimize Route
-                          </Button>
-                          <Button variant="outline" className="w-full text-sm">
-                            <Navigation className="h-3 w-3 mr-1" />
-                            Start GPS Navigation
-                            <ArrowRight className="h-3 w-3 ml-1" />
-                          </Button>
-                          <Button variant="ghost" className="w-full text-xs">
-                            View Interactive Map →
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
+                          
+                          <div className="space-y-1">
+                            <Button className="w-full fintech-button-primary text-sm">
+                              <Route className="h-3 w-3 mr-1" />
+                              Optimize Route
+                            </Button>
+                            <Button variant="outline" className="w-full text-sm">
+                              <Navigation className="h-3 w-3 mr-1" />
+                              Start GPS Navigation
+                              <ArrowRight className="h-3 w-3 ml-1" />
+                            </Button>
+                            <Link to="/interactive-map">
+                              <Button variant="ghost" className="w-full text-xs">
+                                View Interactive Map →
+                              </Button>
+                            </Link>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    )}
 
                     {/* Calendar Widget */}
                     <Card className="fintech-card">
