@@ -19,6 +19,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useSubscriptionData } from '@/hooks/useSubscriptionData';
+import QuickSettingsPanel from './QuickSettingsPanel';
 import { getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
 import { 
   ChevronDown, 
@@ -235,13 +236,24 @@ const UserMenu = () => {
 
         <DropdownMenuSeparator />
 
-        {/* Settings */}
+        {/* Quick Settings */}
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger className="cursor-pointer">
+            <span className="mr-3">⚙️</span>
+            <span>Quick Settings</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent className="w-80">
+            <QuickSettingsPanel />
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        {/* Full Profile */}
         <DropdownMenuItem
           onClick={() => navigate("/profile")}
           className="cursor-pointer"
         >
-          <span className="mr-3">⚙️</span>
-          <span className="flex-1">Settings</span>
+          <span className="mr-3">👤</span>
+          <span className="flex-1">Full Profile</span>
         </DropdownMenuItem>
 
         {/* Sign Out */}
