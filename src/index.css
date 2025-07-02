@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Fintech styling system with textured backgrounds */
+/* Fintech styling system with textured backgrounds and content-aware gradients */
 @layer components {
   /* CSS Custom Properties for the new color palette */
   :root {
@@ -22,6 +22,16 @@
     --gradient-size: 150%;
     --gradient-x: 50%;
     --gradient-y: 50%;
+    
+    /* Content-aware gradient variables */
+    --content-center-x: 50%;
+    --content-center-y: 40%;
+    --text1-x: 25%;
+    --text1-y: 30%;
+    --text2-x: 75%;
+    --text2-y: 60%;
+    --text3-x: 50%;
+    --text3-y: 80%;
   }
 
   /* Auth hero text styling with glassmorphism */
@@ -88,25 +98,62 @@
       #EDDFAA !important;
   }
 
-  /* Base fintech card with textured background and glassmorphism */
+  /* Base fintech card with textured background and content-aware gradients */
   .fintech-card-base {
     background-image: var(--fintech-texture-bg);
     background-size: cover;
     background-position: center;
     position: relative;
     color: var(--fintech-primary-text);
+    overflow: hidden;
+  }
+
+  /* Content-aware gradient overlay for fintech cards */
+  .fintech-card-base::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse 200% 200% at var(--content-center-x, 50%) var(--content-center-y, 40%),
+      transparent 0%,
+      rgba(218, 194, 146, 0.1) 30%,
+      rgba(218, 194, 146, 0.3) 60%,
+      rgba(200, 170, 120, 0.5) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Smart edge darkening for fintech cards */
+  .fintech-card-base::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      linear-gradient(to right, rgba(180, 150, 100, 0.4) 0%, transparent 20%, transparent 80%, rgba(180, 150, 100, 0.4) 100%),
+      linear-gradient(to bottom, rgba(180, 150, 100, 0.4) 0%, transparent 20%, transparent 80%, rgba(180, 150, 100, 0.4) 100%);
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Multiple light sources for complex content */
+  .fintech-multi-light::before {
+    background: 
+      radial-gradient(circle at var(--text1-x) var(--text1-y), transparent 30%, rgba(200, 170, 120, 0.3) 70%),
+      radial-gradient(circle at var(--text2-x) var(--text2-y), transparent 30%, rgba(200, 170, 120, 0.3) 70%),
+      radial-gradient(circle at var(--text3-x) var(--text3-y), transparent 30%, rgba(200, 170, 120, 0.3) 70%) !important;
+    mix-blend-mode: multiply;
   }
 
   /* Glassmorphism overlay for all fintech cards */
-  .fintech-card-base::after {
-    content: '';
+  .fintech-card-base > .fintech-glassmorphism-overlay {
     position: absolute;
     inset: 0;
     background: rgba(255, 255, 255, var(--fintech-overlay-opacity, 0.3));
     backdrop-filter: blur(8px);
     border-radius: inherit;
     pointer-events: none;
-    z-index: 0;
+    z-index: 3;
   }
 
   /* Fintech texture patterns using the uploaded image */
@@ -138,10 +185,10 @@
     background-repeat: repeat;
   }
 
-  /* Ensure content stays above overlay */
+  /* Ensure content stays above all overlays */
   .fintech-card-base > * {
     position: relative;
-    z-index: 1;
+    z-index: 4;
   }
 
   /* Main fintech card styles with textured background */
