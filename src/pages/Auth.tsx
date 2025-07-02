@@ -160,7 +160,6 @@ const Auth = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                         style={{
-                          '--tw-ring-color': '#48594B',
                           borderColor: 'rgb(209 213 219)',
                         } as React.CSSProperties}
                         onFocus={(e) => {
@@ -188,7 +187,6 @@ const Auth = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                         style={{
-                          '--tw-ring-color': '#48594B',
                           borderColor: 'rgb(209 213 219)',
                         } as React.CSSProperties}
                         onFocus={(e) => {
@@ -208,8 +206,7 @@ const Auth = () => {
                     type="submit"
                     className="w-full text-white font-medium py-2 px-4 rounded-md transition-colors"
                     style={{ 
-                      backgroundColor: '#48594B',
-                      ':hover': { backgroundColor: '#3d4a3f' }
+                      backgroundColor: '#48594B'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = '#3d4a3f';
@@ -245,7 +242,6 @@ const Auth = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                         style={{
-                          '--tw-ring-color': '#48594B',
                           borderColor: 'rgb(209 213 219)',
                         } as React.CSSProperties}
                         onFocus={(e) => {
@@ -273,7 +269,6 @@ const Auth = () => {
                         onChange={(e) => setPassword(e.target.value)}
                         className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
                         style={{
-                          '--tw-ring-color': '#48594B',
                           borderColor: 'rgb(209 213 219)',
                         } as React.CSSProperties}
                         onFocus={(e) => {
@@ -294,8 +289,7 @@ const Auth = () => {
                     type="submit"
                     className="w-full text-white font-medium py-2 px-4 rounded-md transition-colors"
                     style={{ 
-                      backgroundColor: '#48594B',
-                      ':hover': { backgroundColor: '#3d4a3f' }
+                      backgroundColor: '#48594B'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.backgroundColor = '#3d4a3f';
