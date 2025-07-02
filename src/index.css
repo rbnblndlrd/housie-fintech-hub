@@ -67,10 +67,12 @@
     opacity: 0.95;
   }
 
-  /* Organic cloud-like card backgrounds */
+  /* Organic cloud-like card backgrounds using cream gradient */
   .card, .glass-card, .job-card, .widget-card {
     position: relative;
-    background: #FFF5E1; /* Light peachy cream base */
+    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
+    background-size: cover;
+    background-position: center;
     overflow: hidden;
   }
 
@@ -123,9 +125,9 @@
     z-index: 3;
   }
 
-  /* Base fintech card with textured background and content-aware gradients */
+  /* Base fintech card with cream gradient background and content-aware gradients */
   .fintech-card-base {
-    background-image: var(--fintech-texture-bg);
+    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     background-size: cover;
     background-position: center;
     position: relative;
@@ -181,30 +183,30 @@
     z-index: 3;
   }
 
-  /* Fintech texture patterns using the uploaded image */
+  /* Fintech texture patterns using the cream gradient image */
   .fintech-pattern-1 {
-    background-image: var(--fintech-texture-bg);
+    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     background-size: 200px 200px;
     background-position: 0 0;
     background-repeat: repeat;
   }
 
   .fintech-pattern-2 {
-    background-image: var(--fintech-texture-bg);
+    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     background-size: 150px 150px;
     background-position: 25px 25px;
     background-repeat: repeat;
   }
 
   .fintech-pattern-3 {
-    background-image: var(--fintech-texture-bg);
+    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     background-size: 300px 300px;
     background-position: -50px -50px;
     background-repeat: repeat;
   }
 
   .fintech-pattern-4 {
-    background-image: var(--fintech-texture-bg);
+    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     background-size: 250px 250px;
     background-position: 75px 75px;
     background-repeat: repeat;
@@ -216,7 +218,7 @@
     z-index: 4;
   }
 
-  /* Main fintech card styles with textured background */
+  /* Main fintech card styles with cream gradient background */
   .fintech-card {
     @apply fintech-card-base border-2 border-black rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1;
   }

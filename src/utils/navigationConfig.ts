@@ -23,6 +23,8 @@ export const customerNav: NavigationItem[] = [
   { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Manager", href: "/manager", icon: "⚙️" },
   { label: "Social", href: "/social", icon: "👥" },
+  { label: "Map", href: "/gps", icon: "🗺️" },
+  { label: "Bookings", href: "/bookings", icon: "📋" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];
@@ -34,6 +36,10 @@ export const providerNav: NavigationItem[] = [
   { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Manager", href: "/manager", icon: "⚙️" },
   { label: "Social", href: "/social", icon: "👥" },
+  { label: "Map", href: "/gps", icon: "🗺️" },
+  { label: "Bookings", href: "/bookings", icon: "📋" },
+  { label: "Analytics", href: "/analytics-dashboard", icon: "📈" },
+  { label: "Performance", href: "/performance", icon: "🎯" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];
@@ -57,12 +63,13 @@ export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provi
   if (!user) return [];
 
   return [
-    { label: "Map", href: "/emergency", icon: "🗺️" },
+    { label: "Map", href: "/gps", icon: "🗺️" },
     { label: "Dashboard", href: "/dashboard", icon: "📊" },
     { label: "Calendar", href: "/calendar", icon: "📅" },
     { label: "Manager", href: "/manager", icon: "⚙️" },
     { label: "AI Assistant", href: "/notifications", icon: "🤖" },
     { separator: true, label: "", href: "", icon: "" },
+    { label: "Profile", href: "/profile", icon: "👤" },
     { label: "Manage", href: "/subscription-management", icon: "⚙️" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
   ];

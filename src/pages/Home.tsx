@@ -33,18 +33,18 @@ const Home = () => {
           {user && (
             <div className="flex gap-4 justify-center">
               <Button 
-                onClick={() => navigate('/customer-dashboard')}
+                onClick={() => navigate('/dashboard')}
                 className="fintech-button-primary"
                 size="lg"
               >
-                Customer Dashboard
+                Go to Dashboard
               </Button>
               <Button 
-                onClick={() => navigate('/provider-dashboard')}
+                onClick={() => navigate('/services')}
                 className="fintech-button-secondary"
                 size="lg"
               >
-                Provider Dashboard
+                Browse Services
               </Button>
             </div>
           )}

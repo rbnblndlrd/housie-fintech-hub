@@ -17,6 +17,19 @@ import NotificationsPage from './pages/Notifications';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
+import Social from './pages/Social';
+import CompetitiveAdvantage from './pages/CompetitiveAdvantage';
+import Help from './pages/Help';
+import Calendar from './pages/Calendar';
+import GPS from './pages/GPS';
+import ManagerDashboard from './pages/ManagerDashboard';
+import Profile from './pages/Profile';
+import Services from './pages/Services';
+import BookingsPage from './pages/BookingsPage';
+import PerformanceDashboard from './pages/PerformanceDashboard';
+import BusinessInsights from './pages/BusinessInsights';
+import HelpCenter from './pages/HelpCenter';
+import InteractiveMapPage from './pages/InteractiveMapPage';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 
@@ -41,6 +54,21 @@ function App() {
                             <Route path="/notifications" element={<NotificationsPage />} />
                             <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
                             <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                            <Route path="/social" element={<Social />} />
+                            <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
+                            <Route path="/help" element={<Help />} />
+                            <Route path="/help-center" element={<HelpCenter />} />
+                            <Route path="/calendar" element={<Calendar />} />
+                            <Route path="/gps" element={<GPS />} />
+                            <Route path="/interactive-map" element={<InteractiveMapPage />} />
+                            <Route path="/manager" element={<ManagerDashboard />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/services" element={<Services />} />
+                            <Route path="/bookings" element={<BookingsPage />} />
+                            <Route path="/analytics" element={<AnalyticsDashboard />} />
+                            <Route path="/performance" element={<PerformanceDashboard />} />
+                            <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+                            <Route path="/business-insights" element={<BusinessInsights />} />
                             <Route path="*" element={<NotFound />} />
                           </Routes>
                           <Toaster />

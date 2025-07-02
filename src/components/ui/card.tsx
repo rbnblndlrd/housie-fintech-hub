@@ -19,7 +19,7 @@ const Card = React.forwardRef<
         className
       )}
       style={!isFintech ? {
-        backgroundImage: 'url(/SAND-TEXTURED.jpg)',
+        backgroundImage: 'url(/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         position: 'relative',
