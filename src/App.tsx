@@ -11,8 +11,6 @@ import { QueryClient } from './contexts/QueryClientContext';
 import { MapProvider } from './contexts/MapContext';
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
-import CustomerDashboard from './pages/CustomerDashboard';
-import ProviderDashboard from './pages/ProviderDashboard';
 import UnifiedDashboard from './pages/UnifiedDashboard';
 import ProviderProfile from './pages/ProviderProfile';
 import NotificationsPage from './pages/Notifications';
@@ -39,8 +37,6 @@ function App() {
                             <Route path="/" element={<Home />} />
                             <Route path="/auth" element={<AuthPage />} />
                             <Route path="/dashboard" element={<UnifiedDashboard />} />
-                            <Route path="/customer-dashboard" element={<CustomerDashboard />} />
-                            <Route path="/provider-dashboard" element={<ProviderDashboard />} />
                             <Route path="/provider-profile/:id" element={<ProviderProfile />} />
                             <Route path="/notifications" element={<NotificationsPage />} />
                             <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
