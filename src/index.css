@@ -15,6 +15,12 @@
     --fintech-accent-emergency: #A0522D;
     --fintech-accent-success: #556B2F;
     --fintech-glassmorphism-overlay: rgba(255, 255, 255, 0.3);
+    
+    /* Dynamic gradient variables */
+    --gradient-angle: 45deg;
+    --gradient-size: 150%;
+    --gradient-x: 50%;
+    --gradient-y: 50%;
   }
 
   /* Auth hero text styling with glassmorphism */
@@ -46,6 +52,39 @@
     color: #FFFFFF;
     text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9);
     opacity: 0.95;
+  }
+
+  /* Dynamic gradient card backgrounds */
+  .card, .glass-card, .job-card, .widget-card {
+    background: radial-gradient(
+      ellipse var(--gradient-size) var(--gradient-size) at var(--gradient-x) var(--gradient-y),
+      #FDFBD4 0%,        /* Light cream center */
+      #F8F2C8 35%,       /* Slightly darker */
+      #EDDFAA 70%,       /* Medium cream */
+      #E5D090 100%       /* Darkest edges */
+    );
+  }
+
+  /* Alternative gradient patterns */
+  .gradient-pattern-1 {
+    background: radial-gradient(
+      circle at var(--gradient-x) var(--gradient-y),
+      #FDFBD4 0%, #F5E6BC 50%, #E8D4A2 100%
+    ) !important;
+  }
+
+  .gradient-pattern-2 {
+    background: linear-gradient(
+      var(--gradient-angle),
+      #E8D4A2 0%, #FDFBD4 40%, #FDFBD4 60%, #E8D4A2 100%
+    ) !important;
+  }
+
+  .gradient-pattern-3 {
+    background: 
+      radial-gradient(at 20% 20%, #FDFBD4 0%, transparent 50%),
+      radial-gradient(at 80% 80%, #FDFBD4 0%, transparent 50%),
+      #EDDFAA !important;
   }
 
   /* Base fintech card with textured background and glassmorphism */
