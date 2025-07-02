@@ -141,22 +141,24 @@ const Help = () => {
               </div>
 
               {/* Centered Tabs */}
-              <div className="flex justify-center">
-                <TabsList className="grid grid-cols-3 w-full max-w-2xl">
-                  <TabsTrigger value="faq">
-                    <HelpCircle className="h-4 w-4 mr-2" />
-                    FAQ
-                  </TabsTrigger>
-                  <TabsTrigger value="contact">
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Contact Us
-                  </TabsTrigger>
-                  <TabsTrigger value="guides">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    Guides
-                  </TabsTrigger>
-                </TabsList>
-              </div>
+              <Tabs defaultValue="faq" className="space-y-6">
+                <div className="flex justify-center">
+                  <TabsList className="grid grid-cols-3 w-full max-w-2xl">
+                    <TabsTrigger value="faq">
+                      <HelpCircle className="h-4 w-4 mr-2" />
+                      FAQ
+                    </TabsTrigger>
+                    <TabsTrigger value="contact">
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Contact Us
+                    </TabsTrigger>
+                    <TabsTrigger value="guides">
+                      <BookOpen className="h-4 w-4 mr-2" />
+                      Guides
+                    </TabsTrigger>
+                  </TabsList>
+                </div>
+              </Tabs>
             </div>
           </div>
 
@@ -164,158 +166,157 @@ const Help = () => {
           <div className="pl-[188px] pr-8">
             <div className="max-w-5xl">
               <Tabs defaultValue="faq" className="space-y-6">
-
-              <TabsContent value="faq" className="space-y-6">
-                {faqItems.map((category, categoryIndex) => (
-                  <Card key={categoryIndex} className="fintech-card">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <category.icon className="h-5 w-5" />
-                        {category.category}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      {category.questions.map((item, index) => (
-                        <div key={index} className="border-b border-gray-200 last:border-b-0 pb-4 last:pb-0">
-                          <h3 className="font-medium mb-2">{item.q}</h3>
-                          <p className="text-sm opacity-80 leading-relaxed">{item.a}</p>
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-                ))}
-              </TabsContent>
-
-              <TabsContent value="contact" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {contactOptions.map((option, index) => (
-                    <Card key={index} className="fintech-card hover:scale-105 transition-transform duration-200">
+                <TabsContent value="faq" className="space-y-6">
+                  {faqItems.map((category, categoryIndex) => (
+                    <Card key={categoryIndex} className="fintech-card">
                       <CardHeader>
-                        <CardTitle className="flex items-center gap-3">
-                          <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                            <option.icon className="h-6 w-6 text-white" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              {option.title}
-                              {option.available && (
-                                <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
-                                  Available
-                                </Badge>
-                              )}
-                            </div>
-                          </div>
+                        <CardTitle className="flex items-center gap-2">
+                          <category.icon className="h-5 w-5" />
+                          {category.category}
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <p className="opacity-80 mb-4">{option.description}</p>
-                        <Button className="fintech-button-primary w-full">
-                          {option.action}
-                        </Button>
+                      <CardContent className="space-y-4">
+                        {category.questions.map((item, index) => (
+                          <div key={index} className="border-b border-gray-200 last:border-b-0 pb-4 last:pb-0">
+                            <h3 className="font-medium mb-2">{item.q}</h3>
+                            <p className="text-sm opacity-80 leading-relaxed">{item.a}</p>
+                          </div>
+                        ))}
                       </CardContent>
                     </Card>
                   ))}
-                </div>
+                </TabsContent>
 
-                <Card className="fintech-card">
-                  <CardHeader>
-                    <CardTitle>Support Hours</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="text-center">
-                        <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                        <h3 className="font-medium">Live Chat</h3>
-                        <p className="text-sm opacity-70">24/7 Available</p>
-                      </div>
-                      <div className="text-center">
-                        <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                        <h3 className="font-medium">Phone Support</h3>
-                        <p className="text-sm opacity-70">Mon-Fri: 8AM-8PM EST</p>
-                      </div>
-                      <div className="text-center">
-                        <Mail className="h-8 w-8 text-purple-600 mx-auto mb-2" />
-                        <h3 className="font-medium">Email Support</h3>
-                        <p className="text-sm opacity-70">Response within 24h</p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="guides" className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {[
-                    {
-                      title: "Getting Started Guide",
-                      description: "Learn the basics of using HOUSIE",
-                      icon: BookOpen,
-                      readTime: "5 min read",
-                      popular: true
-                    },
-                    {
-                      title: "Booking Your First Service",
-                      description: "Step-by-step guide to booking services",
-                      icon: CheckCircle,
-                      readTime: "3 min read",
-                      popular: true
-                    },
-                    {
-                      title: "Provider Guidelines",
-                      description: "How to become a service provider",
-                      icon: Users,
-                      readTime: "8 min read",
-                      popular: false
-                    },
-                    {
-                      title: "Safety & Security",
-                      description: "Keeping yourself safe on the platform",
-                      icon: Shield,
-                      readTime: "6 min read",
-                      popular: true
-                    },
-                    {
-                      title: "Payment & Billing",
-                      description: "Understanding payments and subscriptions",
-                      icon: CreditCard,
-                      readTime: "4 min read",
-                      popular: false
-                    },
-                    {
-                      title: "Account Settings",
-                      description: "Managing your profile and preferences",
-                      icon: Settings,
-                      readTime: "7 min read",
-                      popular: false
-                    }
-                  ].map((guide, index) => (
-                    <Card key={index} className="fintech-card hover:scale-105 transition-transform duration-200">
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <guide.icon className="h-8 w-8 text-blue-600" />
-                          {guide.popular && (
-                            <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
-                              <Star className="h-3 w-3 mr-1" />
-                              Popular
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle>{guide.title}</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <p className="opacity-80 mb-4">{guide.description}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm opacity-60">{guide.readTime}</span>
-                          <Button size="sm" className="fintech-button-secondary">
-                            Read Guide
+                <TabsContent value="contact" className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {contactOptions.map((option, index) => (
+                      <Card key={index} className="fintech-card hover:scale-105 transition-transform duration-200">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-3">
+                            <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+                              <option.icon className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2">
+                                {option.title}
+                                {option.available && (
+                                  <Badge className="bg-green-100 text-green-800 border-green-200 text-xs">
+                                    Available
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="opacity-80 mb-4">{option.description}</p>
+                          <Button className="fintech-button-primary w-full">
+                            {option.action}
                           </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle>Support Hours</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="text-center">
+                          <Clock className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                          <h3 className="font-medium">Live Chat</h3>
+                          <p className="text-sm opacity-70">24/7 Available</p>
                         </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </TabsContent>
-            </Tabs>
+                        <div className="text-center">
+                          <Phone className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                          <h3 className="font-medium">Phone Support</h3>
+                          <p className="text-sm opacity-70">Mon-Fri: 8AM-8PM EST</p>
+                        </div>
+                        <div className="text-center">
+                          <Mail className="h-8 w-8 text-purple-600 mx-auto mb-2" />
+                          <h3 className="font-medium">Email Support</h3>
+                          <p className="text-sm opacity-70">Response within 24h</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                <TabsContent value="guides" className="space-y-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[
+                      {
+                        title: "Getting Started Guide",
+                        description: "Learn the basics of using HOUSIE",
+                        icon: BookOpen,
+                        readTime: "5 min read",
+                        popular: true
+                      },
+                      {
+                        title: "Booking Your First Service",
+                        description: "Step-by-step guide to booking services",
+                        icon: CheckCircle,
+                        readTime: "3 min read",
+                        popular: true
+                      },
+                      {
+                        title: "Provider Guidelines",
+                        description: "How to become a service provider",
+                        icon: Users,
+                        readTime: "8 min read",
+                        popular: false
+                      },
+                      {
+                        title: "Safety & Security",
+                        description: "Keeping yourself safe on the platform",
+                        icon: Shield,
+                        readTime: "6 min read",
+                        popular: true
+                      },
+                      {
+                        title: "Payment & Billing",
+                        description: "Understanding payments and subscriptions",
+                        icon: CreditCard,
+                        readTime: "4 min read",
+                        popular: false
+                      },
+                      {
+                        title: "Account Settings",
+                        description: "Managing your profile and preferences",
+                        icon: Settings,
+                        readTime: "7 min read",
+                        popular: false
+                      }
+                    ].map((guide, index) => (
+                      <Card key={index} className="fintech-card hover:scale-105 transition-transform duration-200">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <guide.icon className="h-8 w-8 text-blue-600" />
+                            {guide.popular && (
+                              <Badge className="bg-yellow-100 text-yellow-800 border-yellow-200">
+                                <Star className="h-3 w-3 mr-1" />
+                                Popular
+                              </Badge>
+                            )}
+                          </div>
+                          <CardTitle>{guide.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="opacity-80 mb-4">{guide.description}</p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm opacity-60">{guide.readTime}</span>
+                            <Button size="sm" className="fintech-button-secondary">
+                              Read Guide
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </div>
         </div>
