@@ -82,7 +82,8 @@
     background-position: var(--bg-position-x, 35%) var(--bg-position-y, 40%);
     background-repeat: no-repeat;
     background-attachment: local;
-    border: 3px solid rgba(139, 111, 82, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
     box-shadow: 
       0 8px 12px -2px rgba(139, 111, 82, 0.15),
       0 4px 8px -2px rgba(139, 111, 82, 0.08);
