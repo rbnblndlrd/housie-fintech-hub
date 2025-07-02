@@ -126,9 +126,9 @@ const ProviderDashboard = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-20 px-4 pb-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
+        <div className="pt-16 px-2 pb-4">
+          <div className="max-w-full mx-auto">
+            <div className="mb-4">
               <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
                 Provider Dashboard
               </h1>
@@ -138,7 +138,7 @@ const ProviderDashboard = () => {
             </div>
 
             {/* Main Content Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
               <TabsList className="fintech-card p-1">
                 <TabsTrigger value="job-hub">
                   <Briefcase className="h-4 w-4 mr-2" />
@@ -158,11 +158,11 @@ const ProviderDashboard = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="job-hub" className="space-y-6">
+              <TabsContent value="job-hub" className="space-y-4">
                 {/* Top Section - Notification Banner */}
                 {pendingRequests.length > 0 && (
                   <Card className="fintech-card border-amber-200 bg-amber-50/80">
-                    <CardContent className="p-4">
+                    <CardContent className="p-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Bell className="h-5 w-5 text-amber-600" />
@@ -178,14 +178,14 @@ const ProviderDashboard = () => {
                   </Card>
                 )}
 
-                {/* Main Grid Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                {/* Main Grid Layout - Reduced gaps */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
                   {/* Left Column - AutoTask List (40% width) */}
-                  <div className="lg:col-span-5 space-y-4">
+                  <div className="lg:col-span-5 space-y-3">
                     <Card className="fintech-card">
-                      <CardHeader>
+                      <CardHeader className="pb-3">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="flex items-center gap-2">
+                          <CardTitle className="flex items-center gap-2 text-lg">
                             <CheckCircle className="h-5 w-5" />
                             AutoTask List
                           </CardTitle>
@@ -199,7 +199,7 @@ const ProviderDashboard = () => {
                         </div>
                         
                         {/* Filter Buttons */}
-                        <div className="flex gap-2 mt-4">
+                        <div className="flex gap-2 mt-3">
                           {['Today', 'This Week', 'Pending', 'Completed'].map((filter) => (
                             <Button
                               key={filter}
@@ -212,10 +212,10 @@ const ProviderDashboard = () => {
                           ))}
                         </div>
                       </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
+                      <CardContent className="pt-0">
+                        <div className="space-y-2">
                           {recentBookings.map((booking) => (
-                            <div key={booking.id} className="flex items-center gap-3 p-3 fintech-card-secondary rounded-lg">
+                            <div key={booking.id} className="flex items-center gap-3 p-2 fintech-card-secondary rounded-lg">
                               <input
                                 type="checkbox"
                                 checked={selectedJobs.includes(booking.id)}
@@ -236,7 +236,7 @@ const ProviderDashboard = () => {
                         </div>
                         
                         {selectedJobs.length > 0 && (
-                          <div className="mt-4 p-3 bg-amber-50 rounded-lg">
+                          <div className="mt-3 p-2 bg-amber-50 rounded-lg">
                             <p className="text-sm text-amber-800 mb-2">
                               {selectedJobs.length} jobs selected
                             </p>
@@ -251,22 +251,22 @@ const ProviderDashboard = () => {
                   </div>
 
                   {/* Center Column - AI Route Planner & Calendar (35% width) */}
-                  <div className="lg:col-span-4 space-y-4">
+                  <div className="lg:col-span-4 space-y-3">
                     {/* AI Route Planner */}
                     <Card className="fintech-card">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
                           <Zap className="h-5 w-5" />
                           Smart Route Optimizer
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
+                      <CardContent className="pt-0">
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mb-3">
                           <Route className="h-8 w-8 mx-auto mb-2 text-gray-400" />
                           <p className="text-sm text-gray-600">Drop jobs here to optimize route</p>
                         </div>
                         
-                        <div className="space-y-3 mb-4">
+                        <div className="space-y-2 mb-3">
                           <div className="flex items-center justify-between text-sm">
                             <span>Traffic Analysis:</span>
                             <span className="text-green-600">Light traffic</span>
@@ -296,14 +296,14 @@ const ProviderDashboard = () => {
 
                     {/* Calendar Widget */}
                     <Card className="fintech-card">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
                           <Calendar className="h-5 w-5" />
                           Calendar
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <div className="space-y-4">
+                      <CardContent className="pt-0">
+                        <div className="space-y-3">
                           <div className="text-center">
                             <div className="text-lg font-semibold">January 2024</div>
                             <div className="grid grid-cols-7 gap-1 mt-2 text-xs">
@@ -327,17 +327,17 @@ const ProviderDashboard = () => {
                   </div>
 
                   {/* Right Column - Quick Stats & Activity Feed (25% width) */}
-                  <div className="lg:col-span-3 space-y-4">
+                  <div className="lg:col-span-3 space-y-3">
                     {/* Quick Stats */}
                     <Card className="fintech-card">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
                           <BarChart3 className="h-5 w-5" />
                           Quick Stats
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="space-y-3">
+                      <CardContent className="pt-0 space-y-3">
+                        <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-sm">Today's Earnings</span>
                             <span className="font-semibold text-green-600">${todaysEarnings}</span>
@@ -356,16 +356,16 @@ const ProviderDashboard = () => {
 
                     {/* Recent Activity Feed */}
                     <Card className="fintech-card">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="flex items-center gap-2 text-lg">
                           <Activity className="h-5 w-5" />
                           Recent Activity
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
+                      <CardContent className="pt-0">
+                        <div className="space-y-2">
                           {recentActivity.map((activity, index) => (
-                            <div key={index} className="flex items-start gap-3 p-2 rounded-lg fintech-card-secondary">
+                            <div key={index} className="flex items-start gap-2 p-2 rounded-lg fintech-card-secondary">
                               <div className={`p-1 rounded-full ${
                                 activity.type === 'booking' ? 'bg-blue-100' :
                                 activity.type === 'payment' ? 'bg-green-100' :
