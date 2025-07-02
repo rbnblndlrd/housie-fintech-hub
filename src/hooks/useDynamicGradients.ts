@@ -39,11 +39,8 @@ export const useDynamicGradients = () => {
         const allPatterns = [
           'fintech-pattern-warm', 
           'fintech-pattern-cool', 
-          'fintech-pattern-vibrant',
           'fintech-pattern-soft',
-          'fintech-pattern-bold',
           'fintech-pattern-subtle',
-          'fintech-pattern-dynamic',
           'fintech-pattern-classic'
         ];
         allPatterns.forEach(pattern => htmlCard.classList.remove(pattern));
@@ -62,18 +59,18 @@ export const useDynamicGradients = () => {
         htmlCard.style.setProperty('--bg-position-x', `${bgPositionX}%`);
         htmlCard.style.setProperty('--bg-position-y', `${bgPositionY}%`);
         
-        // Larger scale variation to reduce tiling visibility
-        const scale = 1.2 + Math.random() * 0.6; // 1.2 to 1.8 scale for larger tiles
+        // Much larger scale variation to eliminate tiling visibility
+        const scale = 1.8 + Math.random() * 0.8; // 1.8 to 2.6 scale for much larger tiles
         htmlCard.style.setProperty('--pattern-scale', scale.toString());
         
-        // Limited hue shift for consistent brown tones (only negative values)
+        // Strictly controlled hue shift for consistent brown tones (only negative values)
         const hueShift = Math.random() * -15 - 5; // -20 to -5 degrees only
         htmlCard.style.setProperty('--hue-shift', `${hueShift}deg`);
         
-        // Additional brownish filter enhancements
-        const brownishSaturate = 0.8 + Math.random() * 0.3; // 0.8 to 1.1
-        const brownishBrightness = 0.9 + Math.random() * 0.2; // 0.9 to 1.1
-        const brownishContrast = 1.0 + Math.random() * 0.2; // 1.0 to 1.2
+        // Enhanced brownish filter optimizations
+        const brownishSaturate = 0.85 + Math.random() * 0.2; // 0.85 to 1.05
+        const brownishBrightness = 0.92 + Math.random() * 0.16; // 0.92 to 1.08
+        const brownishContrast = 1.05 + Math.random() * 0.15; // 1.05 to 1.20
         
         htmlCard.style.setProperty('--brownish-saturate', brownishSaturate.toString());
         htmlCard.style.setProperty('--brownish-brightness', brownishBrightness.toString());
@@ -92,9 +89,9 @@ export const useDynamicGradients = () => {
           }
         });
         
-        // Force background image application with larger tile sizes
+        // Force background image application with much larger tile sizes
         htmlCard.style.setProperty('background-image', 'url(/lovable-uploads/cream_gradient.jpg)', 'important');
-        htmlCard.style.setProperty('background-size', `${800 + Math.random() * 400}px`, 'important'); // 800-1200px
+        htmlCard.style.setProperty('background-size', `${1200 + Math.random() * 600}px`, 'important'); // 1200-1800px
         htmlCard.style.setProperty('background-repeat', 'no-repeat', 'important');
         htmlCard.style.setProperty('background-attachment', 'local', 'important');
       });
@@ -192,7 +189,7 @@ export const useDynamicGradients = () => {
             }
           });
         }
-      }
+      });
       
       if (shouldReapply) {
         console.log('🎨 DOM changed, reapplying brownish gradient system...');
