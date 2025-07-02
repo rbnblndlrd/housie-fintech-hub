@@ -24,7 +24,7 @@ const VideoBackground = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    console.log(`VideoBackground: Loading attempt ${videoState.retryCount + 1}`);
+    console.log(`VideoBackground: Loading attempt ${videoState.retryCount + 1} - using /lovable-uploads/automne_gif.mp4`);
     
     setVideoState(prev => ({
       ...prev,
@@ -33,7 +33,7 @@ const VideoBackground = () => {
     }));
 
     const handleSuccess = () => {
-      console.log('VideoBackground: Video loaded successfully');
+      console.log('VideoBackground: Video loaded successfully from /lovable-uploads/automne_gif.mp4');
       setVideoState(prev => ({
         ...prev,
         isLoading: false,
@@ -42,7 +42,7 @@ const VideoBackground = () => {
     };
 
     const handleError = () => {
-      console.error('VideoBackground: Video failed to load');
+      console.error('VideoBackground: Video failed to load from /lovable-uploads/automne_gif.mp4');
       if (videoState.retryCount < MAX_RETRIES) {
         const nextRetryCount = videoState.retryCount + 1;
         console.log(`VideoBackground: Retrying in ${RETRY_DELAY}ms (attempt ${nextRetryCount})`);
@@ -67,8 +67,8 @@ const VideoBackground = () => {
     video.addEventListener('canplay', handleSuccess, { once: true });
     video.addEventListener('error', handleError, { once: true });
 
-    // Load the video
-    video.src = '/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4';
+    // Load the video with correct path
+    video.src = '/lovable-uploads/automne_gif.mp4';
     video.load();
 
     return () => {
@@ -105,7 +105,7 @@ const VideoBackground = () => {
             className="w-full h-full object-cover"
             style={{ filter: 'brightness(0.7)' }}
           >
-            <source src="/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4" type="video/mp4" />
+            <source src="/lovable-uploads/automne_gif.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
