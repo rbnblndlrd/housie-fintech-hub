@@ -126,14 +126,12 @@ const PersonalProfileSection: React.FC<PersonalProfileSectionProps> = ({
                   <Users className="h-6 w-6 text-blue-500 mx-auto mb-2" />
                   <div className="text-2xl font-bold">45</div>
                   <div className="text-sm opacity-70">Network Connections</div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
 
         {/* Personal Privacy Settings */}
-        <div className="border-t pt-6">
+        <div className="mt-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Shield className="h-5 w-5" />
             Personal Privacy Settings
@@ -194,6 +192,9 @@ const PersonalProfileSection: React.FC<PersonalProfileSectionProps> = ({
             </div>
           </div>
         </div>
+          </div>
+        </div>
+
 
         {/* Personal Information */}
         <div className="border-t pt-6">
