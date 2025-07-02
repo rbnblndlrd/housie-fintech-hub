@@ -98,113 +98,115 @@ const BusinessProfileSection: React.FC<BusinessProfileSectionProps> = ({ editing
 
             {/* Business Privacy Settings */}
             <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Business Privacy Settings
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Show Business Location on Map</h4>
-                <p className="text-sm text-gray-600">Display your business location publicly for customers</p>
-              </div>
-              <Switch
-                checked={businessPrivacy.showOnMap}
-                onCheckedChange={(checked) => 
-                  setBusinessPrivacy({ ...businessPrivacy, showOnMap: checked })
-                }
-              />
-            </div>
-
-            {businessPrivacy.showOnMap && (
-              <div className="space-y-4 ml-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-600" />
-                  <Label className="text-base font-medium">
-                    Business Privacy Zone: {businessPrivacy.confidentialityRadius} km
-                  </Label>
-                </div>
-                
-                <div className="px-2">
-                  <Slider
-                    value={[businessPrivacy.confidentialityRadius]}
-                    onValueChange={([value]) => 
-                      setBusinessPrivacy({ ...businessPrivacy, confidentialityRadius: value })
-                    }
-                    min={1}
-                    max={15}
-                    step={1}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>1 km (Exact)</span>
-                    <span>15 km (Private)</span>
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Business Privacy Settings
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Show Business Location on Map</h4>
+                    <p className="text-sm text-gray-600">Display your business location publicly for customers</p>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Navigation className="h-4 w-4 text-green-600" />
-                  <Label className="text-base font-medium">
-                    Business Service Area: {businessPrivacy.serviceRadius} km
-                  </Label>
-                </div>
-                
-                <div className="px-2">
-                  <Slider
-                    value={[businessPrivacy.serviceRadius]}
-                    onValueChange={([value]) => 
-                      setBusinessPrivacy({ ...businessPrivacy, serviceRadius: value })
+                  <Switch
+                    checked={businessPrivacy.showOnMap}
+                    onCheckedChange={(checked) => 
+                      setBusinessPrivacy({ ...businessPrivacy, showOnMap: checked })
                     }
-                    min={10}
-                    max={100}
-                    step={5}
-                    className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>10 km (Local)</span>
-                    <span>100 km (Regional)</span>
+                </div>
+
+                {businessPrivacy.showOnMap && (
+                  <div className="space-y-4 ml-4">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-600" />
+                      <Label className="text-base font-medium">
+                        Business Privacy Zone: {businessPrivacy.confidentialityRadius} km
+                      </Label>
+                    </div>
+                    
+                    <div className="px-2">
+                      <Slider
+                        value={[businessPrivacy.confidentialityRadius]}
+                        onValueChange={([value]) => 
+                          setBusinessPrivacy({ ...businessPrivacy, confidentialityRadius: value })
+                        }
+                        min={1}
+                        max={15}
+                        step={1}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>1 km (Exact)</span>
+                        <span>15 km (Private)</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Navigation className="h-4 w-4 text-green-600" />
+                      <Label className="text-base font-medium">
+                        Business Service Area: {businessPrivacy.serviceRadius} km
+                      </Label>
+                    </div>
+                    
+                    <div className="px-2">
+                      <Slider
+                        value={[businessPrivacy.serviceRadius]}
+                        onValueChange={([value]) => 
+                          setBusinessPrivacy({ ...businessPrivacy, serviceRadius: value })
+                        }
+                        min={10}
+                        max={100}
+                        step={5}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>10 km (Local)</span>
+                        <span>100 km (Regional)</span>
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Business Directory Listing</h4>
+                    <p className="text-sm text-gray-600">Include your business in public directory searches</p>
+                  </div>
+                  <Switch
+                    checked={businessPrivacy.directoryListing}
+                    onCheckedChange={(checked) => 
+                      setBusinessPrivacy({ ...businessPrivacy, directoryListing: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Business Contact Information</h4>
+                    <p className="text-sm text-gray-600">Show business phone and email to potential customers</p>
+                  </div>
+                  <Switch
+                    checked={businessPrivacy.showContactInfo}
+                    onCheckedChange={(checked) => 
+                      setBusinessPrivacy({ ...businessPrivacy, showContactInfo: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Team Member Visibility</h4>
+                    <p className="text-sm text-gray-600">Display team member profiles on your business page</p>
+                  </div>
+                  <Switch
+                    checked={businessPrivacy.teamVisibility}
+                    onCheckedChange={(checked) => 
+                      setBusinessPrivacy({ ...businessPrivacy, teamVisibility: checked })
+                    }
+                  />
                 </div>
               </div>
-            )}
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Business Directory Listing</h4>
-                <p className="text-sm text-gray-600">Include your business in public directory searches</p>
-              </div>
-              <Switch
-                checked={businessPrivacy.directoryListing}
-                onCheckedChange={(checked) => 
-                  setBusinessPrivacy({ ...businessPrivacy, directoryListing: checked })
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Business Contact Information</h4>
-                <p className="text-sm text-gray-600">Show business phone and email to potential customers</p>
-              </div>
-              <Switch
-                checked={businessPrivacy.showContactInfo}
-                onCheckedChange={(checked) => 
-                  setBusinessPrivacy({ ...businessPrivacy, showContactInfo: checked })
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Team Member Visibility</h4>
-                <p className="text-sm text-gray-600">Display team member profiles on your business page</p>
-              </div>
-              <Switch
-                checked={businessPrivacy.teamVisibility}
-                onCheckedChange={(checked) => 
-                  setBusinessPrivacy({ ...businessPrivacy, teamVisibility: checked })
-                }
-              />
             </div>
           </div>
         </div>

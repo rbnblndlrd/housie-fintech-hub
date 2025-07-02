@@ -86,100 +86,102 @@ const ProviderProfileSection: React.FC<ProviderProfileSectionProps> = ({ userPro
 
             {/* Provider Privacy Settings */}
             <div className="mt-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Provider Privacy Settings
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Show Provider Location on Map</h4>
-                <p className="text-sm text-gray-600">Display your service location when providing services</p>
-              </div>
-              <Switch
-                checked={providerPrivacy.showOnMap}
-                onCheckedChange={(checked) => 
-                  setProviderPrivacy({ ...providerPrivacy, showOnMap: checked })
-                }
-              />
-            </div>
-
-            {providerPrivacy.showOnMap && (
-              <div className="space-y-4 ml-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-600" />
-                  <Label className="text-base font-medium">
-                    Provider Privacy Zone: {providerPrivacy.confidentialityRadius} km
-                  </Label>
-                </div>
-                
-                <div className="px-2">
-                  <Slider
-                    value={[providerPrivacy.confidentialityRadius]}
-                    onValueChange={([value]) => 
-                      setProviderPrivacy({ ...providerPrivacy, confidentialityRadius: value })
-                    }
-                    min={1}
-                    max={25}
-                    step={1}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>1 km (Precise)</span>
-                    <span>25 km (Very Private)</span>
+              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Provider Privacy Settings
+              </h3>
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Show Provider Location on Map</h4>
+                    <p className="text-sm text-gray-600">Display your service location when providing services</p>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Navigation className="h-4 w-4 text-green-600" />
-                  <Label className="text-base font-medium">
-                    Service Range: {providerPrivacy.serviceRadius} km
-                  </Label>
-                </div>
-                
-                <div className="px-2">
-                  <Slider
-                    value={[providerPrivacy.serviceRadius]}
-                    onValueChange={([value]) => 
-                      setProviderPrivacy({ ...providerPrivacy, serviceRadius: value })
+                  <Switch
+                    checked={providerPrivacy.showOnMap}
+                    onCheckedChange={(checked) => 
+                      setProviderPrivacy({ ...providerPrivacy, showOnMap: checked })
                     }
-                    min={5}
-                    max={50}
-                    step={1}
-                    className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>5 km (Local)</span>
-                    <span>50 km (Extended)</span>
+                </div>
+
+                {providerPrivacy.showOnMap && (
+                  <div className="space-y-4 ml-4">
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4 text-gray-600" />
+                      <Label className="text-base font-medium">
+                        Provider Privacy Zone: {providerPrivacy.confidentialityRadius} km
+                      </Label>
+                    </div>
+                    
+                    <div className="px-2">
+                      <Slider
+                        value={[providerPrivacy.confidentialityRadius]}
+                        onValueChange={([value]) => 
+                          setProviderPrivacy({ ...providerPrivacy, confidentialityRadius: value })
+                        }
+                        min={1}
+                        max={25}
+                        step={1}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>1 km (Precise)</span>
+                        <span>25 km (Very Private)</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Navigation className="h-4 w-4 text-green-600" />
+                      <Label className="text-base font-medium">
+                        Service Range: {providerPrivacy.serviceRadius} km
+                      </Label>
+                    </div>
+                    
+                    <div className="px-2">
+                      <Slider
+                        value={[providerPrivacy.serviceRadius]}
+                        onValueChange={([value]) => 
+                          setProviderPrivacy({ ...providerPrivacy, serviceRadius: value })
+                        }
+                        min={5}
+                        max={50}
+                        step={1}
+                        className="w-full"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>5 km (Local)</span>
+                        <span>50 km (Extended)</span>
+                      </div>
+                    </div>
                   </div>
+                )}
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Show Provider Ratings</h4>
+                    <p className="text-sm text-gray-600">Allow customers to see your provider ratings and reviews</p>
+                  </div>
+                  <Switch
+                    checked={providerPrivacy.showRatings}
+                    onCheckedChange={(checked) => 
+                      setProviderPrivacy({ ...providerPrivacy, showRatings: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <h4 className="font-medium">Provider Profile Visibility</h4>
+                    <p className="text-sm text-gray-600">Make your provider profile publicly searchable</p>
+                  </div>
+                  <Switch
+                    checked={providerPrivacy.profileVisibility}
+                    onCheckedChange={(checked) => 
+                      setProviderPrivacy({ ...providerPrivacy, profileVisibility: checked })
+                    }
+                  />
                 </div>
               </div>
-            )}
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Show Provider Ratings</h4>
-                <p className="text-sm text-gray-600">Allow customers to see your provider ratings and reviews</p>
-              </div>
-              <Switch
-                checked={providerPrivacy.showRatings}
-                onCheckedChange={(checked) => 
-                  setProviderPrivacy({ ...providerPrivacy, showRatings: checked })
-                }
-              />
-            </div>
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Provider Profile Visibility</h4>
-                <p className="text-sm text-gray-600">Make your provider profile publicly searchable</p>
-              </div>
-              <Switch
-                checked={providerPrivacy.profileVisibility}
-                onCheckedChange={(checked) => 
-                  setProviderPrivacy({ ...providerPrivacy, profileVisibility: checked })
-                }
-              />
             </div>
           </div>
         </div>
