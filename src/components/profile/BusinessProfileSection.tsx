@@ -95,11 +95,9 @@ const BusinessProfileSection: React.FC<BusinessProfileSectionProps> = ({ editing
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Business Privacy Settings */}
-        <div className="border-t pt-6">
+            {/* Business Privacy Settings */}
+            <div className="mt-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Shield className="h-5 w-5" />
             Business Privacy Settings

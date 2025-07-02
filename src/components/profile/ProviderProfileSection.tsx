@@ -83,11 +83,9 @@ const ProviderProfileSection: React.FC<ProviderProfileSectionProps> = ({ userPro
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* Provider Privacy Settings */}
-        <div className="border-t pt-6">
+            {/* Provider Privacy Settings */}
+            <div className="mt-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <Shield className="h-5 w-5" />
             Provider Privacy Settings
