@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -101,10 +102,10 @@ const Auth = () => {
       <div className="w-1/2 relative">
         <ContainedVideoBackground />
         <div className="absolute inset-0 bg-black/20 z-10"></div>
-        <div className="absolute inset-0 z-20 flex items-center justify-center">
-          <div className="text-center text-white">
-            <h1 className="text-4xl font-bold mb-4 drop-shadow-lg">Welcome to HOUSIE</h1>
-            <p className="text-xl drop-shadow-md">Your trusted home services platform</p>
+        <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
+          <div className="auth-hero-text">
+            <h1 className="text-5xl font-extrabold mb-3 text-white">Welcome to HOUSIE</h1>
+            <p className="text-xl text-white">Your trusted home services platform</p>
           </div>
         </div>
       </div>
