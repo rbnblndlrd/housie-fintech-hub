@@ -1,11 +1,11 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { RoleProvider } from './contexts/RoleContext';
-import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { SubscriptionProvider } from './contexts/SubscriptionContext';
+import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
 import { MapProvider } from './contexts/MapContext';
@@ -24,11 +24,11 @@ import DynamicGradientProvider from '@/components/common/DynamicGradientProvider
 function App() {
   return (
     <LanguageProvider>
-      <RoleProvider>
-        <RoleSwitchProvider>
+      <AuthProvider>
+        <RoleProvider>
           <SubscriptionProvider>
-            <AuthProvider>
-              <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+            <RoleSwitchProvider>
+              <ThemeProvider>
                 <QueryClient>
                   <MapProvider>
                     <DynamicGradientProvider>
@@ -52,10 +52,10 @@ function App() {
                   </MapProvider>
                 </QueryClient>
               </ThemeProvider>
-            </AuthProvider>
+            </RoleSwitchProvider>
           </SubscriptionProvider>
-        </RoleSwitchProvider>
-      </RoleProvider>
+        </RoleProvider>
+      </AuthProvider>
     </LanguageProvider>
   );
 }
