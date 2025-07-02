@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 
 export const useDynamicGradients = () => {
   useEffect(() => {
-    const applyCleanMarblePositioning = () => {
-      console.log('🎨 Applying clean marble texture with strategic cropping only...');
+    const applyStrategicOverlayPositioning = () => {
+      console.log('🎨 Applying strategic overlay method for watermark concealment...');
       
       // Get all fintech card elements
       const cardSelectors = [
@@ -17,41 +17,41 @@ export const useDynamicGradients = () => {
       ];
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
-      console.log(`🎨 Found ${cards.length} cards to style with clean marble positioning`);
+      console.log(`🎨 Found ${cards.length} cards to style with strategic overlay positioning`);
       
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
         
-        // Apply strategic watermark avoidance positioning
-        applyStrategicCropping(htmlCard, index);
+        // Apply strategic positioning to avoid watermark zones
+        applyWatermarkAvoidancePositioning(htmlCard, index);
       });
     };
 
-    const applyStrategicCropping = (card: HTMLElement, index: number) => {
-      // Clean areas coordinate mapping for marble texture (avoiding watermark zones)
-      const cleanMarbleZones = [
-        { x: 25, y: 30, scale: 2.8 }, // Top-left clean area
-        { x: 60, y: 35, scale: 3.0 }, // Top-right clean area  
-        { x: 35, y: 55, scale: 2.9 }, // Center clean area
-        { x: 45, y: 25, scale: 3.1 }, // Upper-center clean area
-        { x: 20, y: 50, scale: 2.7 }, // Left-center clean area
-        { x: 65, y: 60, scale: 3.2 }  // Right-lower clean area
+    const applyWatermarkAvoidancePositioning = (card: HTMLElement, index: number) => {
+      // Strategic positioning zones that avoid common watermark locations
+      const cleanZones = [
+        { x: 20, y: 25, scale: 2.1 }, // Top-left clean area
+        { x: 65, y: 30, scale: 2.3 }, // Top-right clean area  
+        { x: 30, y: 55, scale: 2.2 }, // Center-left clean area
+        { x: 50, y: 20, scale: 2.4 }, // Upper-center clean area
+        { x: 15, y: 45, scale: 2.0 }, // Left-center clean area
+        { x: 70, y: 65, scale: 2.5 }  // Right-lower clean area
       ];
       
       // Select a clean zone based on card index
-      const selectedZone = cleanMarbleZones[index % cleanMarbleZones.length];
+      const selectedZone = cleanZones[index % cleanZones.length];
       
-      // Add slight variation to avoid exact repetition
-      const bgPositionX = selectedZone.x + (Math.random() * 8 - 4); // ±4% variation
-      const bgPositionY = selectedZone.y + (Math.random() * 8 - 4); // ±4% variation
-      const scale = selectedZone.scale + (Math.random() * 0.3 - 0.15); // ±0.15 variation
+      // Add controlled variation to avoid exact repetition
+      const bgPositionX = selectedZone.x + (Math.random() * 6 - 3); // ±3% variation
+      const bgPositionY = selectedZone.y + (Math.random() * 6 - 3); // ±3% variation
+      const scale = selectedZone.scale + (Math.random() * 0.2 - 0.1); // ±0.1 variation
       
       // Apply strategic positioning to show clean areas
-      card.style.setProperty('--bg-position-x', `${Math.max(15, Math.min(75, bgPositionX))}%`);
-      card.style.setProperty('--bg-position-y', `${Math.max(20, Math.min(70, bgPositionY))}%`);
+      card.style.setProperty('--bg-position-x', `${Math.max(10, Math.min(80, bgPositionX))}%`);
+      card.style.setProperty('--bg-position-y', `${Math.max(15, Math.min(75, bgPositionY))}%`);
       card.style.setProperty('--marble-scale', scale.toString());
       
-      // Apply pattern variation classes
+      // Apply pattern variation classes for additional diversity
       const marblePatterns = [
         'fintech-pattern-warm', 
         'fintech-pattern-cool', 
@@ -63,18 +63,24 @@ export const useDynamicGradients = () => {
       // Remove any existing pattern classes
       marblePatterns.forEach(pattern => card.classList.remove(pattern));
       
-      // Apply random marble pattern for variety
+      // Apply strategic marble pattern for variety
       const randomPattern = marblePatterns[index % marblePatterns.length];
       card.classList.add(randomPattern);
       
-      console.log(`🎨 Applied clean positioning to card ${index}:`, {
+      console.log(`🎨 Applied strategic overlay positioning to card ${index}:`, {
         pattern: randomPattern,
         position: `${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`,
         scale: scale.toFixed(2)
       });
       
-      // Analyze text content for content-aware positioning
+      // Enhanced text contrast for content readability
       const textElements = card.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, .fintech-text-header');
+      textElements.forEach(element => {
+        const htmlElement = element as HTMLElement;
+        htmlElement.classList.add('text-enhanced-contrast');
+      });
+      
+      // Apply text-aware positioning for cards with multiple text elements
       if (textElements.length > 2) {
         card.classList.add('fintech-text-aware');
         console.log(`🎨 Applied text-aware positioning to card ${index}`);
@@ -82,7 +88,7 @@ export const useDynamicGradients = () => {
     };
 
     // Apply positioning immediately
-    setTimeout(applyCleanMarblePositioning, 100);
+    setTimeout(applyStrategicOverlayPositioning, 100);
 
     // Reapply when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
@@ -109,8 +115,8 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
-        console.log('🎨 DOM changed, reapplying clean marble positioning...');
-        setTimeout(applyCleanMarblePositioning, 100);
+        console.log('🎨 DOM changed, reapplying strategic overlay positioning...');
+        setTimeout(applyStrategicOverlayPositioning, 100);
       }
     });
 
