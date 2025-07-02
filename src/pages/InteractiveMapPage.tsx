@@ -11,6 +11,7 @@ import { Settings, Move, Shield } from 'lucide-react';
 import MapboxMap from '@/components/map/MapboxMap';
 import MapboxJobsOverlay from '@/components/map/MapboxJobsOverlay';
 import GPSNavigationOverlay from '@/components/map/GPSNavigationOverlay';
+import NavigationOverlay from '@/components/map/NavigationOverlay';
 import CustomerMapMode from '@/components/map/modes/CustomerMapMode';
 import ProviderMapMode from '@/components/map/modes/ProviderMapMode';
 import FleetManagerMode from '@/components/map/modes/FleetManagerMode';
@@ -41,6 +42,7 @@ const InteractiveMapPage = () => {
   const [userMode, setUserMode] = useState<UserMode>('customer');
   const [isDragging, setIsDragging] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showNavigation, setShowNavigation] = useState(false);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
   const [enabledLayers, setEnabledLayers] = useState<Record<string, boolean>>({
@@ -166,6 +168,10 @@ const InteractiveMapPage = () => {
     });
   };
 
+  const handleNavigationToggle = () => {
+    setShowNavigation(!showNavigation);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
@@ -213,6 +219,24 @@ const InteractiveMapPage = () => {
                 onCancelNavigation={handleCancelNavigation}
               />
             )}
+
+            {/* Navigation Overlay */}
+            <NavigationOverlay
+              isOpen={showNavigation}
+              onToggle={handleNavigationToggle}
+              currentJob={selectedJob ? {
+                id: selectedJob.id,
+                customerName: selectedJob.customerName,
+                address: selectedJob.address,
+                distance: "2.3 km",
+                estimatedTime: selectedJob.estimatedDuration
+              } : undefined}
+              nextJob={{
+                customerName: "Mike Ross",
+                distance: "5.1 km",
+                estimatedTime: "12 min"
+              }}
+            />
 
             {/* Top Controls Bar */}
             <div className="absolute top-4 right-4 z-50 pointer-events-auto">
