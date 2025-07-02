@@ -117,9 +117,9 @@ const ProviderDashboard = () => {
                   <Map className="h-4 w-4 mr-2" />
                   Map
                 </TabsTrigger>
-                <TabsTrigger value="crew">
+                <TabsTrigger value="community">
                   <Users className="h-4 w-4 mr-2" />
-                  Crew
+                  Community
                 </TabsTrigger>
                 <TabsTrigger value="profile">
                   <UserCog className="h-4 w-4 mr-2" />
@@ -214,14 +214,14 @@ const ProviderDashboard = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="crew">
+              <TabsContent value="community">
                 <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle>Crew Management</CardTitle>
+                    <CardTitle>Community</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-8">
-                      <p className="opacity-70">Crew management interface will be displayed here</p>
+                      <p className="opacity-70">Community features will be displayed here</p>
                     </div>
                   </CardContent>
                 </Card>
