@@ -128,31 +128,35 @@ const Help = () => {
                 Find answers to common questions or get in touch with our support team
               </p>
               
-              {/* Search Bar */}
-              <div className="relative max-w-2xl mx-auto">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
-                <Input
-                  placeholder="Search for help topics..."
-                  className="fintech-input pl-12 h-12 text-lg"
-                />
+              {/* Search Bar - Centered */}
+              <div className="flex justify-center">
+                <div className="relative max-w-2xl w-full">
+                  <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
+                  <Input
+                    placeholder="Search for help topics..."
+                    className="fintech-input pl-12 h-12 text-lg"
+                  />
+                </div>
               </div>
             </div>
 
             <Tabs defaultValue="faq" className="space-y-6">
-              <TabsList className="grid grid-cols-3 w-full max-w-2xl mx-auto">
-                <TabsTrigger value="faq">
-                  <HelpCircle className="h-4 w-4 mr-2" />
-                  FAQ
-                </TabsTrigger>
-                <TabsTrigger value="contact">
-                  <MessageCircle className="h-4 w-4 mr-2" />
-                  Contact Us
-                </TabsTrigger>
-                <TabsTrigger value="guides">
-                  <BookOpen className="h-4 w-4 mr-2" />
-                  Guides
-                </TabsTrigger>
-              </TabsList>
+              <div className="flex justify-center">
+                <TabsList className="grid grid-cols-3 w-full max-w-2xl">
+                  <TabsTrigger value="faq">
+                    <HelpCircle className="h-4 w-4 mr-2" />
+                    FAQ
+                  </TabsTrigger>
+                  <TabsTrigger value="contact">
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Contact Us
+                  </TabsTrigger>
+                  <TabsTrigger value="guides">
+                    <BookOpen className="h-4 w-4 mr-2" />
+                    Guides
+                  </TabsTrigger>
+                </TabsList>
+              </div>
 
               <TabsContent value="faq" className="space-y-6">
                 {faqItems.map((category, categoryIndex) => (
