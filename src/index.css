@@ -252,10 +252,10 @@
   .fintech-metric-card:hover {
     transform: translateY(-3px);
     box-shadow: 
-      0 15px 25px -5p rgba(139, 111, 82, 0.25),
+      0 15px 25px -5px rgba(139, 111, 82, 0.25),
       0 8px 12px -4px rgba(139, 111, 82, 0.15),
-      0 0 0 5px #15803d;
-    border-color: #15803d;
+      0 0 0 5px #5a6b57;
+    border-color: #5a6b57;
   }
 
   /* Enhanced text contrast utilities */
