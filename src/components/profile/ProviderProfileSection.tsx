@@ -86,22 +86,6 @@ const ProviderProfileSection: React.FC<ProviderProfileSectionProps> = ({ userPro
           </div>
         </div>
 
-        {/* Provider Specialties */}
-        <div className="border-t pt-6">
-          <h3 className="text-lg font-semibold mb-4">Provider Specialties</h3>
-          <div className="flex flex-wrap gap-2">
-            {userProfile.specialties.map((specialty: string) => (
-              <Badge key={specialty} variant="secondary" className="bg-green-500/20 text-green-800">
-                {specialty}
-              </Badge>
-            ))}
-            <Button variant="outline" size="sm">
-              <span className="text-lg mr-2">+</span>
-              Add Specialty
-            </Button>
-          </div>
-        </div>
-
         {/* Provider Privacy Settings */}
         <div className="border-t pt-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -199,6 +183,22 @@ const ProviderProfileSection: React.FC<ProviderProfileSectionProps> = ({ userPro
                 }
               />
             </div>
+          </div>
+        </div>
+
+        {/* Provider Specialties */}
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold mb-4">Provider Specialties</h3>
+          <div className="flex flex-wrap gap-2">
+            {userProfile.specialties.map((specialty: string) => (
+              <Badge key={specialty} variant="secondary" className="bg-green-500/20 text-green-800">
+                {specialty}
+              </Badge>
+            ))}
+            <Button variant="outline" size="sm">
+              <span className="text-lg mr-2">+</span>
+              Add Specialty
+            </Button>
           </div>
         </div>
       </CardContent>

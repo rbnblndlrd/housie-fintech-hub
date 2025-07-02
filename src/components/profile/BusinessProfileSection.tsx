@@ -98,52 +98,6 @@ const BusinessProfileSection: React.FC<BusinessProfileSectionProps> = ({ editing
           </div>
         </div>
 
-        {/* Business Information */}
-        <div className="border-t pt-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold">Business Information</h3>
-            <Button variant="outline" size="sm" onClick={() => setEditing(!editing)}>
-              <Edit className="h-4 w-4 mr-2" />
-              {editing ? 'Cancel' : 'Edit'}
-            </Button>
-          </div>
-          <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium">Business Name</label>
-                <Input 
-                  placeholder="Enter business name" 
-                  className="mt-1"
-                  disabled={!editing}
-                />
-              </div>
-              <div>
-                <label className="text-sm font-medium">Industry</label>
-                <Input 
-                  placeholder="Select industry" 
-                  className="mt-1"
-                  disabled={!editing}
-                />
-              </div>
-            </div>
-            <div>
-              <label className="text-sm font-medium">Business Description</label>
-              <Textarea 
-                placeholder="Describe your business..."
-                className="mt-1"
-                rows={3}
-                disabled={!editing}
-              />
-            </div>
-            {editing && (
-              <Button className="fintech-button-primary">
-                <Save className="h-4 w-4 mr-2" />
-                Save Changes
-              </Button>
-            )}
-          </div>
-        </div>
-
         {/* Business Privacy Settings */}
         <div className="border-t pt-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
@@ -254,6 +208,52 @@ const BusinessProfileSection: React.FC<BusinessProfileSectionProps> = ({ editing
                 }
               />
             </div>
+          </div>
+        </div>
+
+        {/* Business Information */}
+        <div className="border-t pt-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Business Information</h3>
+            <Button variant="outline" size="sm" onClick={() => setEditing(!editing)}>
+              <Edit className="h-4 w-4 mr-2" />
+              {editing ? 'Cancel' : 'Edit'}
+            </Button>
+          </div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium">Business Name</label>
+                <Input 
+                  placeholder="Enter business name" 
+                  className="mt-1"
+                  disabled={!editing}
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Industry</label>
+                <Input 
+                  placeholder="Select industry" 
+                  className="mt-1"
+                  disabled={!editing}
+                />
+              </div>
+            </div>
+            <div>
+              <label className="text-sm font-medium">Business Description</label>
+              <Textarea 
+                placeholder="Describe your business..."
+                className="mt-1"
+                rows={3}
+                disabled={!editing}
+              />
+            </div>
+            {editing && (
+              <Button className="fintech-button-primary">
+                <Save className="h-4 w-4 mr-2" />
+                Save Changes
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

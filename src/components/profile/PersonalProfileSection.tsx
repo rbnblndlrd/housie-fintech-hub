@@ -17,8 +17,6 @@ import {
   Camera, 
   Save, 
   Edit,
-  Eye,
-  EyeOff,
   MapPin,
   ToggleLeft,
   ToggleRight
@@ -134,6 +132,69 @@ const PersonalProfileSection: React.FC<PersonalProfileSectionProps> = ({
           </div>
         </div>
 
+        {/* Personal Privacy Settings */}
+        <div className="border-t pt-6">
+          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Personal Privacy Settings
+          </h3>
+          <div className="space-y-4">
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <h4 className="font-medium">Show Personal Location on Map</h4>
+                <p className="text-sm text-gray-600">Display your general location when browsing as a customer</p>
+              </div>
+              <Switch
+                checked={personalPrivacy.showOnMap}
+                onCheckedChange={(checked) => 
+                  setPersonalPrivacy({ ...personalPrivacy, showOnMap: checked })
+                }
+              />
+            </div>
+
+            {personalPrivacy.showOnMap && (
+              <div className="space-y-4 ml-4">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-gray-600" />
+                  <Label className="text-base font-medium">
+                    Personal Privacy Zone: {personalPrivacy.confidentialityRadius} km
+                  </Label>
+                </div>
+                
+                <div className="px-2">
+                  <Slider
+                    value={[personalPrivacy.confidentialityRadius]}
+                    onValueChange={([value]) => 
+                      setPersonalPrivacy({ ...personalPrivacy, confidentialityRadius: value })
+                    }
+                    min={1}
+                    max={25}
+                    step={1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>1 km (Precise)</span>
+                    <span>25 km (Very Private)</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+              <div>
+                <h4 className="font-medium">Show Contact Information</h4>
+                <p className="text-sm text-gray-600">Allow other users to see your contact details</p>
+              </div>
+              <Switch
+                checked={personalPrivacy.showContactInfo}
+                onCheckedChange={(checked) => 
+                  setPersonalPrivacy({ ...personalPrivacy, showContactInfo: checked })
+                }
+              />
+            </div>
+          </div>
+        </div>
+
         {/* Personal Information */}
         <div className="border-t pt-6">
           <div className="flex items-center justify-between mb-4">
@@ -196,69 +257,6 @@ const PersonalProfileSection: React.FC<PersonalProfileSectionProps> = ({
                 Save Changes
               </Button>
             )}
-          </div>
-        </div>
-
-        {/* Personal Privacy Settings */}
-        <div className="border-t pt-6">
-          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Personal Privacy Settings
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Show Personal Location on Map</h4>
-                <p className="text-sm text-gray-600">Display your general location when browsing as a customer</p>
-              </div>
-              <Switch
-                checked={personalPrivacy.showOnMap}
-                onCheckedChange={(checked) => 
-                  setPersonalPrivacy({ ...personalPrivacy, showOnMap: checked })
-                }
-              />
-            </div>
-
-            {personalPrivacy.showOnMap && (
-              <div className="space-y-4 ml-4">
-                <div className="flex items-center gap-2">
-                  <MapPin className="h-4 w-4 text-gray-600" />
-                  <Label className="text-base font-medium">
-                    Personal Privacy Zone: {personalPrivacy.confidentialityRadius} km
-                  </Label>
-                </div>
-                
-                <div className="px-2">
-                  <Slider
-                    value={[personalPrivacy.confidentialityRadius]}
-                    onValueChange={([value]) => 
-                      setPersonalPrivacy({ ...personalPrivacy, confidentialityRadius: value })
-                    }
-                    min={1}
-                    max={25}
-                    step={1}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <span>1 km (Precise)</span>
-                    <span>25 km (Very Private)</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-              <div>
-                <h4 className="font-medium">Show Contact Information</h4>
-                <p className="text-sm text-gray-600">Allow other users to see your contact details</p>
-              </div>
-              <Switch
-                checked={personalPrivacy.showContactInfo}
-                onCheckedChange={(checked) => 
-                  setPersonalPrivacy({ ...personalPrivacy, showContactInfo: checked })
-                }
-              />
-            </div>
           </div>
         </div>
       </CardContent>
