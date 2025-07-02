@@ -13,11 +13,8 @@ const VideoBackground = () => {
   });
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const retryCountRef = useRef(0);
   const loadAttemptedRef = useRef(false);
   
-  const MAX_RETRIES = 2;
-
   useEffect(() => {
     if (loadAttemptedRef.current) return;
     loadAttemptedRef.current = true;
@@ -25,7 +22,7 @@ const VideoBackground = () => {
     const video = videoRef.current;
     if (!video) return;
 
-    console.log('🎬 VideoBackground: Starting video load attempt');
+    console.log('🎬 VideoBackground: Loading video from correct path');
     
     const handleSuccess = () => {
       console.log('🎬 VideoBackground: Video loaded successfully!');
@@ -36,34 +33,21 @@ const VideoBackground = () => {
     };
 
     const handleError = () => {
-      console.error('🎬 VideoBackground: Video failed to load');
-      
-      if (retryCountRef.current < MAX_RETRIES) {
-        retryCountRef.current++;
-        console.log(`🎬 VideoBackground: Retrying (attempt ${retryCountRef.current + 1})`);
-        
-        setTimeout(() => {
-          if (video) {
-            video.load();
-          }
-        }, 1000);
-      } else {
-        console.error('🎬 VideoBackground: Max retries exceeded, using fallback');
-        setVideoState({
-          isLoading: false,
-          hasError: true
-        });
-      }
+      console.log('🎬 VideoBackground: Video failed to load, using fallback background');
+      setVideoState({
+        isLoading: false,
+        hasError: true
+      });
     };
 
     // Set up event listeners
     video.addEventListener('loadeddata', handleSuccess, { once: true });
     video.addEventListener('canplaythrough', handleSuccess, { once: true });
-    video.addEventListener('error', handleError);
+    video.addEventListener('error', handleError, { once: true });
 
-    // Start loading
-    console.log('🎬 VideoBackground: Setting video source');
-    video.src = '/lovable-uploads/automne_gif.mp4';
+    // Use the correct video file that exists in your project
+    console.log('🎬 VideoBackground: Setting video source to existing file');
+    video.src = '/lovable-uploads/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4';
     video.load();
 
     return () => {
@@ -89,7 +73,7 @@ const VideoBackground = () => {
               filter: 'brightness(0.6)',
             }}
           >
-            <source src="/lovable-uploads/automne_gif.mp4" type="video/mp4" />
+            <source src="/lovable-uploads/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4" type="video/mp4" />
             Your browser does not support the video tag.
           </video>
           
