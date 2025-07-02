@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -103,16 +104,14 @@ const Auth = () => {
         <div className="absolute inset-0 bg-black/20 z-10"></div>
         <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
           <div className="auth-hero-text text-center">
-            <h1 className="text-5xl font-extrabold mb-3 text-winchester-600 drop-shadow-2xl">Welcome to HOUSIE</h1>
+            <h1 className="text-5xl font-extrabold mb-3 text-green-600 drop-shadow-2xl">Welcome to HOUSIE</h1>
             <p className="text-xl text-white drop-shadow-lg">Your trusted home services platform</p>
           </div>
         </div>
       </div>
 
       {/* Right side - Winchester Green Background with Authentication Form */}
-      <div className="w-1/2 flex items-center justify-center p-8" style={{
-        background: 'linear-gradient(135deg, #815a4a 0%, #543e35 100%)'
-      }}>
+      <div className="w-1/2 flex items-center justify-center p-8 bg-green-700">
         <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-800">
@@ -151,7 +150,7 @@ const Auth = () => {
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-600 focus:ring-green-600"
                         required
                       />
                     </div>
@@ -167,7 +166,7 @@ const Auth = () => {
                         placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-600 focus:ring-green-600"
                         required
                       />
                     </div>
@@ -175,7 +174,7 @@ const Auth = () => {
                   
                   <Button
                     type="submit"
-                    className="w-full bg-winchester-700 hover:bg-winchester-800 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                     disabled={loading || !email || !password}
                   >
                     {loading ? (
@@ -202,7 +201,7 @@ const Auth = () => {
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-600 focus:ring-green-600"
                         required
                       />
                     </div>
@@ -218,7 +217,7 @@ const Auth = () => {
                         placeholder="Choose a password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-green-600 focus:ring-green-600"
                         required
                         minLength={6}
                       />
@@ -227,7 +226,7 @@ const Auth = () => {
                   
                   <Button
                     type="submit"
-                    className="w-full bg-winchester-700 hover:bg-winchester-800 text-white font-medium py-2 px-4 rounded-md transition-colors"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md transition-colors"
                     disabled={loading || !email || !password}
                   >
                     {loading ? (
