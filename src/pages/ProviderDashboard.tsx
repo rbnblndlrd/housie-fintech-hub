@@ -21,11 +21,22 @@ import {
   Eye,
   Briefcase,
   Map,
-  UserCog
+  UserCog,
+  Bell,
+  Filter,
+  ChevronDown,
+  Navigation,
+  Route,
+  BarChart3,
+  Activity,
+  Zap,
+  ArrowRight
 } from 'lucide-react';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
+  const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
+  const [filterPeriod, setFilterPeriod] = useState('today');
 
   // Sample data
   const recentBookings = [
@@ -81,14 +92,34 @@ const ProviderDashboard = () => {
     }
   ];
 
-  const earnings = [
-    { month: 'Jan', amount: 2340 },
-    { month: 'Feb', amount: 2180 },
-    { month: 'Mar', amount: 2650 },
-    { month: 'Apr', amount: 2890 },
-    { month: 'May', amount: 2420 },
-    { month: 'Jun', amount: 2780 },
+  const pendingRequests = recentBookings.filter(booking => booking.status === 'pending');
+  const todaysEarnings = 350;
+  const completedJobs = 4;
+  const activeRouteProgress = "3 of 5 stops completed";
+
+  const recentActivity = [
+    { type: 'booking', message: 'New booking request from Maria Garcia', time: '5 min ago' },
+    { type: 'payment', message: 'Payment received: $120.00', time: '15 min ago' },
+    { type: 'review', message: 'New 5-star review from John Smith', time: '1 hour ago' },
+    { type: 'booking', message: 'Booking confirmed with Lisa Chen', time: '2 hours ago' }
   ];
+
+  const handleJobSelection = (jobId: number) => {
+    setSelectedJobs(prev => 
+      prev.includes(jobId) 
+        ? prev.filter(id => id !== jobId)
+        : [...prev, jobId]
+    );
+  };
+
+  const getStatusBadge = (status: string) => {
+    const variants = {
+      'pending': 'secondary',
+      'confirmed': 'default',
+      'completed': 'outline'
+    } as const;
+    return variants[status as keyof typeof variants] || 'secondary';
+  };
 
   return (
     <>
@@ -128,76 +159,232 @@ const ProviderDashboard = () => {
               </TabsList>
 
               <TabsContent value="job-hub" className="space-y-6">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Recent Bookings */}
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5" />
-                        Recent Bookings
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-4">
-                        {recentBookings.slice(0, 3).map((booking) => (
-                          <div key={booking.id} className="flex items-center justify-between p-4 fintech-card-secondary rounded-lg">
-                            <div className="flex-1">
-                              <h4 className="font-medium">{booking.service}</h4>
-                              <p className="text-sm opacity-70">{booking.client}</p>
-                              <div className="flex items-center gap-4 mt-2 text-sm">
-                                <span className="flex items-center gap-1">
-                                  <Calendar className="h-3 w-3" />
-                                  {booking.date}
-                                </span>
-                                <span className="flex items-center gap-1">
-                                  <Clock className="h-3 w-3" />
-                                  {booking.time}
-                                </span>
+                {/* Top Section - Notification Banner */}
+                {pendingRequests.length > 0 && (
+                  <Card className="fintech-card border-amber-200 bg-amber-50/80">
+                    <CardContent className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <Bell className="h-5 w-5 text-amber-600" />
+                          <span className="font-medium text-amber-800">
+                            Pending Booking Requests ({pendingRequests.length})
+                          </span>
+                        </div>
+                        <Badge variant="secondary" className="bg-amber-200 text-amber-800">
+                          {pendingRequests.length}
+                        </Badge>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Main Grid Layout */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                  {/* Left Column - AutoTask List (40% width) */}
+                  <div className="lg:col-span-5 space-y-4">
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="flex items-center gap-2">
+                            <CheckCircle className="h-5 w-5" />
+                            AutoTask List
+                          </CardTitle>
+                          <div className="flex items-center gap-2">
+                            <Button variant="outline" size="sm">
+                              <Filter className="h-4 w-4 mr-1" />
+                              Columns
+                              <ChevronDown className="h-4 w-4 ml-1" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {/* Filter Buttons */}
+                        <div className="flex gap-2 mt-4">
+                          {['Today', 'This Week', 'Pending', 'Completed'].map((filter) => (
+                            <Button
+                              key={filter}
+                              variant={filterPeriod === filter.toLowerCase().replace(' ', '') ? "default" : "outline"}
+                              size="sm"
+                              onClick={() => setFilterPeriod(filter.toLowerCase().replace(' ', ''))}
+                            >
+                              {filter}
+                            </Button>
+                          ))}
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {recentBookings.map((booking) => (
+                            <div key={booking.id} className="flex items-center gap-3 p-3 fintech-card-secondary rounded-lg">
+                              <input
+                                type="checkbox"
+                                checked={selectedJobs.includes(booking.id)}
+                                onChange={() => handleJobSelection(booking.id)}
+                                className="rounded"
+                              />
+                              <div className="flex-1 grid grid-cols-2 gap-2 text-sm">
+                                <span className="font-medium">{booking.date}</span>
+                                <span>{booking.client}</span>
+                                <span>{booking.service}</span>
+                                <Badge variant={getStatusBadge(booking.status)} className="w-fit">
+                                  {booking.status}
+                                </Badge>
                               </div>
+                              <span className="font-semibold">${booking.amount}</span>
                             </div>
-                            <div className="text-right">
-                              <Badge 
-                                variant={booking.status === 'confirmed' ? 'default' : 'secondary'}
-                                className="mb-2"
-                              >
-                                {booking.status}
-                              </Badge>
-                              <p className="font-semibold">${booking.amount}</p>
+                          ))}
+                        </div>
+                        
+                        {selectedJobs.length > 0 && (
+                          <div className="mt-4 p-3 bg-amber-50 rounded-lg">
+                            <p className="text-sm text-amber-800 mb-2">
+                              {selectedJobs.length} jobs selected
+                            </p>
+                            <div className="flex gap-2">
+                              <Button size="sm" variant="outline">Bulk Update</Button>
+                              <Button size="sm" variant="outline">Export</Button>
                             </div>
                           </div>
-                        ))}
-                      </div>
-                      <Button variant="outline" className="w-full mt-4">
-                        <Eye className="h-4 w-4 mr-2" />
-                        View All Jobs
-                      </Button>
-                    </CardContent>
-                  </Card>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </div>
 
-                  {/* Quick Actions */}
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle>Quick Actions</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <Button className="w-full justify-start" variant="outline">
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Update Availability
-                      </Button>
-                      <Button className="w-full justify-start" variant="outline">
-                        <Users className="h-4 w-4 mr-2" />
-                        View Profile
-                      </Button>
-                      <Button className="w-full justify-start" variant="outline">
-                        <DollarSign className="h-4 w-4 mr-2" />
-                        Payout Settings
-                      </Button>
-                      <Button className="w-full justify-start" variant="outline">
-                        <Star className="h-4 w-4 mr-2" />
-                        Service Gallery
-                      </Button>
-                    </CardContent>
-                  </Card>
+                  {/* Center Column - AI Route Planner & Calendar (35% width) */}
+                  <div className="lg:col-span-4 space-y-4">
+                    {/* AI Route Planner */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Zap className="h-5 w-5" />
+                          Smart Route Optimizer
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center mb-4">
+                          <Route className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                          <p className="text-sm text-gray-600">Drop jobs here to optimize route</p>
+                        </div>
+                        
+                        <div className="space-y-3 mb-4">
+                          <div className="flex items-center justify-between text-sm">
+                            <span>Traffic Analysis:</span>
+                            <span className="text-green-600">Light traffic</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm">
+                            <span>Client Availability:</span>
+                            <span className="text-blue-600">4 time slots</span>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-2">
+                          <Button className="w-full fintech-button-primary">
+                            <Route className="h-4 w-4 mr-2" />
+                            Optimize Route
+                          </Button>
+                          <Button variant="outline" className="w-full">
+                            <Navigation className="h-4 w-4 mr-2" />
+                            Start GPS Navigation
+                            <ArrowRight className="h-4 w-4 ml-2" />
+                          </Button>
+                          <Button variant="ghost" className="w-full text-sm">
+                            View Interactive Map →
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Calendar Widget */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Calendar className="h-5 w-5" />
+                          Calendar
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          <div className="text-center">
+                            <div className="text-lg font-semibold">January 2024</div>
+                            <div className="grid grid-cols-7 gap-1 mt-2 text-xs">
+                              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+                                <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
+                              ))}
+                              {Array.from({length: 31}, (_, i) => (
+                                <div key={i} className={`p-1 text-center rounded ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
+                                  {i + 1}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                          <Button variant="outline" className="w-full">
+                            <Calendar className="h-4 w-4 mr-2" />
+                            Sync with Google
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Right Column - Quick Stats & Activity Feed (25% width) */}
+                  <div className="lg:col-span-3 space-y-4">
+                    {/* Quick Stats */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <BarChart3 className="h-5 w-5" />
+                          Quick Stats
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">Today's Earnings</span>
+                            <span className="font-semibold text-green-600">${todaysEarnings}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">Jobs Completed</span>
+                            <span className="font-semibold">{completedJobs}</span>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm">Route Progress</span>
+                            <span className="font-semibold text-blue-600">{activeRouteProgress}</span>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Recent Activity Feed */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Activity className="h-5 w-5" />
+                          Recent Activity
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {recentActivity.map((activity, index) => (
+                            <div key={index} className="flex items-start gap-3 p-2 rounded-lg fintech-card-secondary">
+                              <div className={`p-1 rounded-full ${
+                                activity.type === 'booking' ? 'bg-blue-100' :
+                                activity.type === 'payment' ? 'bg-green-100' :
+                                'bg-yellow-100'
+                              }`}>
+                                {activity.type === 'booking' && <Calendar className="h-3 w-3 text-blue-600" />}
+                                {activity.type === 'payment' && <DollarSign className="h-3 w-3 text-green-600" />}
+                                {activity.type === 'review' && <Star className="h-3 w-3 text-yellow-600" />}
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xs font-medium">{activity.message}</p>
+                                <p className="text-xs text-gray-500">{activity.time}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </div>
               </TabsContent>
 
