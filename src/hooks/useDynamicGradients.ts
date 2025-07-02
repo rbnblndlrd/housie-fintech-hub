@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 export const useDynamicGradients = () => {
   useEffect(() => {
     const applyOrganicCloudGradients = () => {
-      console.log('🎨 Applying DRAMATIC organic cloud gradients with enhanced randomization...');
+      console.log('🎨 Applying ENHANCED organic cloud gradients with background randomization...');
       
       // Get all fintech card elements
       const cardSelectors = [
@@ -17,7 +17,7 @@ export const useDynamicGradients = () => {
       ];
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
-      console.log(`🎨 Found ${cards.length} cards to style with DRAMATIC randomization`);
+      console.log(`🎨 Found ${cards.length} cards to style with ENHANCED randomization`);
       
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
@@ -25,7 +25,7 @@ export const useDynamicGradients = () => {
         // Apply content-aware gradients for fintech elements
         applyContentAwareGradient(htmlCard, index);
         
-        // DRAMATICALLY randomize the pattern - 8 distinct patterns instead of 4
+        // Apply 8 distinct patterns with enhanced randomization
         const patterns = [
           'fintech-pattern-warm', 
           'fintech-pattern-cool', 
@@ -45,26 +45,28 @@ export const useDynamicGradients = () => {
         htmlCard.classList.add(patterns[randomPattern]);
         console.log(`🎨 Applied ${patterns[randomPattern]} to card ${index}`);
         
-        // DRAMATICALLY increase overlay opacity variation (0.15 to 0.45 for visibility)
-        const overlayOpacity = 0.15 + Math.random() * 0.3; // Much more visible range
+        // Enhanced overlay opacity variation (0.15 to 0.45 for visibility)
+        const overlayOpacity = 0.15 + Math.random() * 0.3;
         htmlCard.style.setProperty('--fintech-overlay-opacity', overlayOpacity.toString());
         
-        // Add rotation variation to patterns
-        const rotation = Math.random() * 360;
-        htmlCard.style.setProperty('--pattern-rotation', `${rotation}deg`);
+        // Add background position variation instead of rotation
+        const bgPositionX = Math.random() * 100;
+        const bgPositionY = Math.random() * 100;
+        htmlCard.style.setProperty('--bg-position-x', `${bgPositionX}%`);
+        htmlCard.style.setProperty('--bg-position-y', `${bgPositionY}%`);
         
-        // Add scale variation to patterns
-        const scale = 0.8 + Math.random() * 0.6; // 0.8 to 1.4 scale
+        // Add scale variation to patterns (subtle)
+        const scale = 0.9 + Math.random() * 0.2; // 0.9 to 1.1 scale
         htmlCard.style.setProperty('--pattern-scale', scale.toString());
         
         // Add color hue shift for more variation
-        const hueShift = Math.random() * 60 - 30; // -30 to +30 degrees
+        const hueShift = Math.random() * 30 - 15; // -15 to +15 degrees (more subtle)
         htmlCard.style.setProperty('--hue-shift', `${hueShift}deg`);
         
-        console.log(`🎨 Card ${index} dramatic styling:`, {
+        console.log(`🎨 Card ${index} enhanced styling:`, {
           pattern: patterns[randomPattern],
           opacity: overlayOpacity.toFixed(3),
-          rotation: `${rotation.toFixed(1)}deg`,
+          bgPosition: `${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`,
           scale: scale.toFixed(2),
           hueShift: `${hueShift.toFixed(1)}deg`
         });
@@ -78,15 +80,15 @@ export const useDynamicGradients = () => {
       // Generate more dramatic organic cloud positions
       const seed = index * 137.5; // Golden angle for better distribution
       
-      // Cloud 1 position - much more varied (expanded range)
-      const cloud1X = 15 + Math.sin(seed) * 35; // 15-50% range (wider)
-      const cloud1Y = 20 + Math.cos(seed * 0.7) * 40; // 20-60% range (wider)
+      // Cloud 1 position - varied range
+      const cloud1X = 15 + Math.sin(seed) * 35; // 15-50% range
+      const cloud1Y = 20 + Math.cos(seed * 0.7) * 40; // 20-60% range
       
-      // Cloud 2 position - complementary with more variation
-      const cloud2X = 60 + Math.sin(seed * 1.3) * 30; // 60-90% range (wider)
-      const cloud2Y = 50 + Math.cos(seed * 1.8) * 35; // 50-85% range (wider)
+      // Cloud 2 position - complementary with variation
+      const cloud2X = 60 + Math.sin(seed * 1.3) * 30; // 60-90% range
+      const cloud2Y = 50 + Math.cos(seed * 1.8) * 35; // 50-85% range
       
-      // Vignette position - more dramatic asymmetry
+      // Vignette position - asymmetric placement
       const vignetteX = Math.sin(seed * 2.1) > 0 ? 
         10 + Math.random() * 25 : // Left side (10-35%)
         65 + Math.random() * 25;  // Right side (65-90%)
@@ -94,7 +96,7 @@ export const useDynamicGradients = () => {
         10 + Math.random() * 30 : // Top (10-40%)
         60 + Math.random() * 30;  // Bottom (60-90%)
       
-      // Apply dramatic cloud variations
+      // Apply cloud variations
       card.style.setProperty('--cloud1-x', `${cloud1X}%`);
       card.style.setProperty('--cloud1-y', `${cloud1Y}%`);
       card.style.setProperty('--cloud2-x', `${cloud2X}%`);
@@ -102,13 +104,13 @@ export const useDynamicGradients = () => {
       card.style.setProperty('--vignette-x', `${vignetteX}%`);
       card.style.setProperty('--vignette-y', `${vignetteY}%`);
 
-      console.log(`🎨 Card ${index} DRAMATIC cloud positions:`, {
+      console.log(`🎨 Card ${index} cloud positions:`, {
         cloud1: `${cloud1X.toFixed(1)}%, ${cloud1Y.toFixed(1)}%`,
         cloud2: `${cloud2X.toFixed(1)}%, ${cloud2Y.toFixed(1)}%`,
         vignette: `${vignetteX.toFixed(1)}%, ${vignetteY.toFixed(1)}%`
       });
 
-      // Enhanced multi-light effect
+      // Enhanced multi-light effect for text elements
       const textElements = card.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span');
       
       if (textElements.length > 1) {
@@ -169,8 +171,7 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
-        console.log('🎨 DOM changed, reapplying DRAMATIC gradient randomization...');
-        // Delay to ensure DOM is fully updated
+        console.log('🎨 DOM changed, reapplying enhanced gradient randomization...');
         setTimeout(applyOrganicCloudGradients, 100);
       }
     });

@@ -35,10 +35,11 @@
     --text3-x: 50%;
     --text3-y: 80%;
     
-    /* New dramatic variation variables */
-    --pattern-rotation: 0deg;
+    /* Enhanced variation variables (NO ROTATION) */
     --pattern-scale: 1;
     --hue-shift: 0deg;
+    --bg-position-x: 50%;
+    --bg-position-y: 50%;
   }
 
   /* Auth hero text styling with glassmorphism */
@@ -53,6 +54,8 @@
     max-width: 500px;
     margin: 0 auto;
     text-align: center;
+    position: relative;
+    z-index: 30;
   }
 
   .auth-hero-text h1 {
@@ -72,17 +75,17 @@
     opacity: 0.95;
   }
 
-  /* Base fintech card with enhanced cloud texture background */
+  /* Base fintech card with enhanced cloud texture background - NO ROTATION */
   .fintech-card-base {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
-    background-size: 400px 400px;
-    background-position: center;
+    background-size: calc(400px * var(--pattern-scale, 1)) calc(400px * var(--pattern-scale, 1));
+    background-position: var(--bg-position-x, 50%) var(--bg-position-y, 50%);
     background-repeat: repeat;
     position: relative;
     color: var(--fintech-primary-text) !important;
     overflow: hidden;
-    transform: rotate(var(--pattern-rotation, 0deg)) scale(var(--pattern-scale, 1));
     filter: hue-rotate(var(--hue-shift, 0deg));
+    z-index: 25;
   }
 
   /* Mobile optimization for fintech card base */
@@ -92,13 +95,13 @@
     }
   }
 
-  /* DRAMATICALLY enhanced cloud-like gradient overlay */
+  /* Enhanced cloud-like gradient overlay */
   .fintech-card-base::before {
     content: '';
     position: absolute;
     inset: 0;
     background: 
-      /* Much more visible primary cloud gradient */
+      /* Enhanced primary cloud gradient */
       radial-gradient(ellipse 200% 150% at var(--cloud1-x, 35%) var(--cloud1-y, 40%), 
         transparent 30%, 
         rgba(255, 248, 240, 0.15) 50%, 
@@ -109,7 +112,7 @@
         transparent 40%, 
         rgba(250, 235, 215, 0.2) 70%),
       
-      /* Stronger edge vignette for depth */
+      /* Enhanced edge vignette for depth */
       radial-gradient(ellipse 250% 300% at var(--vignette-x, 15%) var(--vignette-y, 85%), 
         transparent 30%, 
         rgba(222, 184, 135, 0.2) 60%, 
@@ -151,11 +154,11 @@
     opacity: 0.6;
   }
 
-  /* 8 DRAMATICALLY different fintech texture patterns */
+  /* 8 Enhanced fintech texture patterns with background positioning */
   .fintech-pattern-warm {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 150px 150px;
-    background-position: 0 0;
+    background-position: var(--bg-position-x, 0%) var(--bg-position-y, 0%);
     background-repeat: repeat;
     filter: hue-rotate(15deg) saturate(1.2) brightness(1.1);
   }
@@ -163,7 +166,7 @@
   .fintech-pattern-cool {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 200px 200px;
-    background-position: 25px 25px;
+    background-position: var(--bg-position-x, 25%) var(--bg-position-y, 25%);
     background-repeat: repeat;
     filter: hue-rotate(-20deg) saturate(0.9) brightness(0.95);
   }
@@ -171,7 +174,7 @@
   .fintech-pattern-vibrant {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 120px 120px;
-    background-position: -15px -15px;
+    background-position: var(--bg-position-x, -15%) var(--bg-position-y, -15%);
     background-repeat: repeat;
     filter: hue-rotate(30deg) saturate(1.4) brightness(1.15) contrast(1.1);
   }
@@ -179,7 +182,7 @@
   .fintech-pattern-soft {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 280px 280px;
-    background-position: 40px 40px;
+    background-position: var(--bg-position-x, 40%) var(--bg-position-y, 40%);
     background-repeat: repeat;
     filter: hue-rotate(-10deg) saturate(0.7) brightness(1.05) blur(0.5px);
   }
@@ -187,7 +190,7 @@
   .fintech-pattern-bold {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 100px 100px;
-    background-position: 10px 10px;
+    background-position: var(--bg-position-x, 10%) var(--bg-position-y, 10%);
     background-repeat: repeat;
     filter: hue-rotate(45deg) saturate(1.6) brightness(1.2) contrast(1.2);
   }
@@ -195,7 +198,7 @@
   .fintech-pattern-subtle {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 320px 320px;
-    background-position: -20px -20px;
+    background-position: var(--bg-position-x, -20%) var(--bg-position-y, -20%);
     background-repeat: repeat;
     filter: hue-rotate(-5deg) saturate(0.8) brightness(1.02) opacity(0.9);
   }
@@ -203,7 +206,7 @@
   .fintech-pattern-dynamic {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 180px 140px;
-    background-position: 30px -10px;
+    background-position: var(--bg-position-x, 30%) var(--bg-position-y, -10%);
     background-repeat: repeat;
     filter: hue-rotate(25deg) saturate(1.3) brightness(1.08) contrast(1.05);
   }
@@ -211,12 +214,12 @@
   .fintech-pattern-classic {
     background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 240px 240px;
-    background-position: 50px 50px;
+    background-position: var(--bg-position-x, 50%) var(--bg-position-y, 50%);
     background-repeat: repeat;
     filter: hue-rotate(8deg) saturate(1.1) brightness(1.03);
   }
 
-  /* Mobile-optimized pattern sizes with enhanced variation */
+  /* Mobile-optimized pattern sizes */
   @media (max-width: 768px) {
     .fintech-pattern-warm { background-size: 75px 75px !important; }
     .fintech-pattern-cool { background-size: 100px 100px !important; }
@@ -238,6 +241,7 @@
     position: relative;
     color: var(--fintech-primary-text) !important;
     overflow: hidden;
+    z-index: 25;
   }
 
   .fintech-card:hover {
@@ -265,6 +269,7 @@
     position: relative;
     color: var(--fintech-primary-text) !important;
     overflow: hidden;
+    z-index: 25;
   }
 
   .fintech-metric-card:hover {
@@ -280,6 +285,7 @@
     position: relative;
     color: var(--fintech-primary-text) !important;
     overflow: hidden;
+    z-index: 25;
   }
 
   /* Inner box styling for elements inside fintech cards */
@@ -292,6 +298,7 @@
     position: relative;
     color: var(--fintech-primary-text) !important;
     overflow: hidden;
+    z-index: 25;
   }
 
   .fintech-inner-box:hover {
@@ -308,6 +315,7 @@
     position: relative;
     color: var(--fintech-primary-text) !important;
     overflow: hidden;
+    z-index: 25;
   }
 
   .fintech-inner-button:hover {
@@ -319,6 +327,7 @@
     @apply border-2 border-black rounded-lg shadow-md transition-all duration-200 text-white;
     background-color: var(--fintech-accent-action) !important;
     touch-action: manipulation;
+    z-index: 25;
   }
 
   .fintech-button-primary:hover,
@@ -336,6 +345,7 @@
     position: relative;
     color: var(--fintech-primary-text) !important;
     touch-action: manipulation;
+    z-index: 25;
   }
 
   .fintech-button-secondary:hover,
@@ -347,12 +357,14 @@
     @apply border-2 border-black rounded-lg shadow-md transition-all duration-200 text-white;
     background-color: var(--fintech-accent-emergency) !important;
     touch-action: manipulation;
+    z-index: 25;
   }
 
   .fintech-button-success {
     @apply border-2 border-black rounded-lg shadow-md transition-all duration-200 text-white;
     background-color: var(--fintech-accent-success) !important;
     touch-action: manipulation;
+    z-index: 25;
   }
 
   /* Input styles with textured background */
@@ -364,6 +376,7 @@
     background-repeat: repeat;
     position: relative;
     color: var(--fintech-primary-text) !important;
+    z-index: 25;
   }
 
   /* Typography utility classes */
