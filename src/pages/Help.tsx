@@ -118,9 +118,10 @@ const Help = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-16 pl-[188px] pr-8 pb-8">
-          <div className="max-w-5xl">
-            <div className="text-center mb-8">
+        <div className="pt-16 pb-8">
+          {/* Centered Header Section */}
+          <div className="text-center mb-8 px-4">
+            <div className="max-w-4xl mx-auto">
               <h1 className="text-4xl font-bold text-white mb-4">
                 How can we help you?
               </h1>
@@ -129,7 +130,7 @@ const Help = () => {
               </p>
               
               {/* Search Bar - Centered */}
-              <div className="flex justify-center">
+              <div className="flex justify-center mb-8">
                 <div className="relative max-w-2xl w-full">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
                   <Input
@@ -138,9 +139,8 @@ const Help = () => {
                   />
                 </div>
               </div>
-            </div>
 
-            <Tabs defaultValue="faq" className="space-y-6">
+              {/* Centered Tabs */}
               <div className="flex justify-center">
                 <TabsList className="grid grid-cols-3 w-full max-w-2xl">
                   <TabsTrigger value="faq">
@@ -157,6 +157,13 @@ const Help = () => {
                   </TabsTrigger>
                 </TabsList>
               </div>
+            </div>
+          </div>
+
+          {/* Content Section with 188px left margin */}
+          <div className="pl-[188px] pr-8">
+            <div className="max-w-5xl">
+              <Tabs defaultValue="faq" className="space-y-6">
 
               <TabsContent value="faq" className="space-y-6">
                 {faqItems.map((category, categoryIndex) => (
@@ -309,6 +316,7 @@ const Help = () => {
                 </div>
               </TabsContent>
             </Tabs>
+            </div>
           </div>
         </div>
       </div>
