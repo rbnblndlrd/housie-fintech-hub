@@ -67,6 +67,21 @@ export default {
           800: "#b8954a",
           900: "#997a3d",
         },
+        // Add Winchester green color definition
+        winchester: {
+          DEFAULT: "#0F4C3A", // Deep forest green
+          50: "#f0f9f6",
+          100: "#dcf2e8",
+          200: "#bce5d4",
+          300: "#8dd0b8",
+          400: "#5bb396",
+          500: "#389577",
+          600: "#2a7862",
+          700: "#236150",
+          800: "#1f4f42",
+          900: "#0F4C3A", // Default Winchester green
+          950: "#0a2d23",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -136,5 +151,12 @@ export default {
     'bg-cream/80',
     'text-cream',
     'border-cream',
+    // Winchester green color variations for safelist
+    'bg-winchester',
+    'bg-winchester/95',
+    'bg-winchester/90',
+    'bg-winchester/80',
+    'text-winchester',
+    'border-winchester',
   ],
 } satisfies Config;

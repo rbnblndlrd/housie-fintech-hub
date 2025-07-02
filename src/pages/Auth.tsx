@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -110,8 +109,8 @@ const Auth = () => {
         </div>
       </div>
 
-      {/* Right side - Authentication Form */}
-      <div className="w-1/2 bg-gradient-to-br from-yellow-50 to-orange-50 flex items-center justify-center p-8">
+      {/* Right side - Authentication Form with Winchester Green Background */}
+      <div className="w-1/2 bg-gradient-to-br from-winchester-800 to-winchester-900 flex items-center justify-center p-8">
         <Card className="w-full max-w-md fintech-card">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
