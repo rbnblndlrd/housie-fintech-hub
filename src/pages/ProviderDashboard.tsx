@@ -180,11 +180,11 @@ const ProviderDashboard = () => {
               </TabsList>
 
               <TabsContent value="job-hub" className="space-y-3">
-                {/* Top Section - Reorganized Layout */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
-                  {/* Left Column - Quick Stats (smaller) */}
+                {/* Top Row - Quick Stats (left) and Calendar (right) */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-3">
+                  {/* Quick Stats - Top Left (1 column) */}
                   <div className="lg:col-span-1">
-                    <Card className="fintech-card">
+                    <Card className="fintech-card h-fit">
                       <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="flex items-center gap-2 text-base">
                           <BarChart3 className="h-4 w-4" />
@@ -210,9 +210,9 @@ const ProviderDashboard = () => {
                     </Card>
                   </div>
 
-                  {/* Right Column - Calendar (larger) */}
-                  <div className="lg:col-span-2">
-                    <Card className="fintech-card">
+                  {/* Calendar - Top Right (3 columns) */}
+                  <div className="lg:col-span-3">
+                    <Card className="fintech-card h-fit">
                       <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="flex items-center gap-2 text-base">
                           <Calendar className="h-4 w-4" />
@@ -244,36 +244,46 @@ const ProviderDashboard = () => {
                   </div>
                 </div>
 
-                {/* Recent Activity - Full width below */}
-                <Card className="fintech-card">
-                  <CardHeader className="pb-2 px-3 pt-3">
-                    <CardTitle className="flex items-center gap-2 text-base">
-                      <Activity className="h-4 w-4" />
-                      Recent Activity
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0 px-3 pb-3">
-                    <div className="space-y-1">
-                      {recentActivity.map((activity, index) => (
-                        <div key={index} className="flex items-start gap-2 p-2 rounded-lg fintech-card-secondary">
-                          <div className={`p-1 rounded-full ${
-                            activity.type === 'booking' ? 'bg-blue-100' :
-                            activity.type === 'payment' ? 'bg-green-100' :
-                            'bg-yellow-100'
-                          }`}>
-                            {activity.type === 'booking' && <Calendar className="h-2 w-2 text-blue-600" />}
-                            {activity.type === 'payment' && <DollarSign className="h-2 w-2 text-green-600" />}
-                            {activity.type === 'review' && <Star className="h-2 w-2 text-yellow-600" />}
-                          </div>
-                          <div className="flex-1">
-                            <p className="text-xs font-medium">{activity.message}</p>
-                            <p className="text-xs text-gray-500">{activity.time}</p>
-                          </div>
+                {/* Second Row - Recent Activity positioned according to red box */}
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
+                  {/* Recent Activity - Bottom Left (2 columns) */}
+                  <div className="lg:col-span-2">
+                    <Card className="fintech-card h-fit">
+                      <CardHeader className="pb-2 px-3 pt-3">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          <Activity className="h-4 w-4" />
+                          Recent Activity
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="pt-0 px-3 pb-3">
+                        <div className="space-y-1">
+                          {recentActivity.map((activity, index) => (
+                            <div key={index} className="flex items-start gap-2 p-2 rounded-lg fintech-card-secondary">
+                              <div className={`p-1 rounded-full ${
+                                activity.type === 'booking' ? 'bg-blue-100' :
+                                activity.type === 'payment' ? 'bg-green-100' :
+                                'bg-yellow-100'
+                              }`}>
+                                {activity.type === 'booking' && <Calendar className="h-2 w-2 text-blue-600" />}
+                                {activity.type === 'payment' && <DollarSign className="h-2 w-2 text-green-600" />}
+                                {activity.type === 'review' && <Star className="h-2 w-2 text-yellow-600" />}
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-xs font-medium">{activity.message}</p>
+                                <p className="text-xs text-gray-500">{activity.time}</p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
+                  
+                  {/* Empty space for future content (2 columns) */}
+                  <div className="lg:col-span-2">
+                    {/* This space matches the right red box area */}
+                  </div>
+                </div>
                 {pendingRequests.length > 0 && (
                   <Card className="fintech-card border-amber-200 bg-amber-50/80">
                     <CardContent className="p-2">
