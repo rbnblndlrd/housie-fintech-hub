@@ -16,15 +16,10 @@ const Card = React.forwardRef<
         "rounded-xl shadow-lg",
         // Only apply default card styling if NOT using fintech classes
         !isFintech && "text-card-foreground",
+        // Apply fintech-card-base if no fintech class is present but we want the cloud texture
+        !isFintech && "fintech-card-base",
         className
       )}
-      style={!isFintech ? {
-        backgroundImage: 'url(/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        position: 'relative',
-        color: '#2C1810'
-      } : undefined}
       {...props}
     />
   )
@@ -47,18 +42,13 @@ const CardTitle = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => {
-  const isFintech = className?.includes('fintech-') || 
-                   props['data-fintech'] || 
-                   React.useContext(React.createContext(false));
-  
   return (
     <h3
       ref={ref}
       className={cn(
-        "text-2xl font-semibold leading-none tracking-tight",
+        "text-2xl font-semibold leading-none tracking-tight fintech-text-header",
         className
       )}
-      style={!isFintech ? { color: '#1A0F08' } : undefined}
       {...props}
     />
   )
@@ -69,15 +59,10 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
-  const isFintech = className?.includes('fintech-') || 
-                   props['data-fintech'] || 
-                   React.useContext(React.createContext(false));
-  
   return (
     <p
       ref={ref}
-      className={cn("text-sm", className)}
-      style={!isFintech ? { color: '#5C4A3F' } : undefined}
+      className={cn("text-sm fintech-text-secondary", className)}
       {...props}
     />
   )
