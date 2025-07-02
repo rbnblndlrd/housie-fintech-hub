@@ -183,14 +183,14 @@ const ProviderDashboard = () => {
                 {/* Top Section - Calendar and Stats */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                   {/* Calendar Widget - Top Right Corner */}
-                  <Card className="fintech-card lg:order-2">
+                  <Card className="fintech-card lg:order-2 h-fit">
                     <CardHeader className="pb-2 px-3 pt-3">
                       <CardTitle className="flex items-center gap-2 text-base">
                         <Calendar className="h-4 w-4" />
                         Calendar
                       </CardTitle>
                     </CardHeader>
-                    <CardContent className="pt-0 px-3 pb-3">
+                    <CardContent className="pt-0 px-3 pb-3 flex flex-col justify-between h-full">
                       <div className="space-y-2">
                         <div className="text-center">
                           <div className="text-sm font-semibold">January 2024</div>
@@ -205,11 +205,11 @@ const ProviderDashboard = () => {
                             ))}
                           </div>
                         </div>
-                        <Button variant="outline" className="w-full text-sm">
-                          <Calendar className="h-3 w-3 mr-1" />
-                          Sync with Google
-                        </Button>
                       </div>
+                      <Button variant="outline" className="w-full text-sm mt-3">
+                        <Calendar className="h-3 w-3 mr-1" />
+                        Sync with Google
+                      </Button>
                     </CardContent>
                   </Card>
 
