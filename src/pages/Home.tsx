@@ -11,8 +11,8 @@ const Home = () => {
       {/* Video Background */}
       <VideoBackground />
       
-      {/* Main Content - Just the search section */}
-      <div className="relative z-10 min-h-screen w-full">
+      {/* Main Content - Adjusted for header spacing */}
+      <div className="relative z-10 min-h-screen w-full pt-0">
         <HeroSearchSection />
       </div>
     </>

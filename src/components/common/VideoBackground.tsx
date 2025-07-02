@@ -17,8 +17,8 @@ const VideoBackground = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const retryTimeoutRef = useRef<NodeJS.Timeout>();
   
-  const MAX_RETRIES = 3;
-  const RETRY_DELAY = 2000;
+  const MAX_RETRIES = 2;
+  const RETRY_DELAY = 1500;
 
   const attemptVideoLoad = useCallback(() => {
     const video = videoRef.current;
@@ -43,7 +43,6 @@ const VideoBackground = () => {
 
     const handleError = (e: Event) => {
       console.error('🎬 VideoBackground: Video failed to load:', e);
-      console.log('🎬 VideoBackground: Video src was:', video.src);
       
       if (videoState.retryCount < MAX_RETRIES) {
         const nextRetryCount = videoState.retryCount + 1;
@@ -74,17 +73,9 @@ const VideoBackground = () => {
     video.addEventListener('canplay', handleSuccess, { once: true });
     video.addEventListener('error', handleError, { once: true });
 
-    // Try different video source paths
-    const videoSources = [
-      '/lovable-uploads/automne_gif.mp4',
-      '/public/lovable-uploads/automne_gif.mp4',
-      './lovable-uploads/automne_gif.mp4'
-    ];
-    
-    const currentSource = videoSources[Math.min(videoState.retryCount, videoSources.length - 1)];
-    console.log(`🎬 VideoBackground: Setting video source to: ${currentSource}`);
-    
-    video.src = currentSource;
+    // Set the correct video source
+    console.log('🎬 VideoBackground: Setting video source to: /lovable-uploads/automne_gif.mp4');
+    video.src = '/lovable-uploads/automne_gif.mp4';
     video.load();
   }, [videoState.retryCount]);
 

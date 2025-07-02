@@ -9,6 +9,7 @@ import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
 import { MapProvider } from './contexts/MapContext';
+import Header from './components/Header';
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
@@ -46,31 +47,37 @@ function App() {
                     <DynamicGradientProvider>
                       <Router>
                         <div className="App min-h-screen">
-                          <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/auth" element={<AuthPage />} />
-                            <Route path="/dashboard" element={<UnifiedDashboard />} />
-                            <Route path="/provider-profile/:id" element={<ProviderProfile />} />
-                            <Route path="/notifications" element={<NotificationsPage />} />
-                            <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
-                            <Route path="/admin-dashboard" element={<AdminDashboard />} />
-                            <Route path="/social" element={<Social />} />
-                            <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
-                            <Route path="/help" element={<Help />} />
-                            <Route path="/help-center" element={<HelpCenter />} />
-                            <Route path="/calendar" element={<Calendar />} />
-                            <Route path="/gps" element={<GPS />} />
-                            <Route path="/interactive-map" element={<InteractiveMapPage />} />
-                            <Route path="/manager" element={<ManagerDashboard />} />
-                            <Route path="/profile" element={<Profile />} />
-                            <Route path="/services" element={<Services />} />
-                            <Route path="/bookings" element={<BookingsPage />} />
-                            <Route path="/analytics" element={<AnalyticsDashboard />} />
-                            <Route path="/performance" element={<PerformanceDashboard />} />
-                            <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
-                            <Route path="/business-insights" element={<BusinessInsights />} />
-                            <Route path="*" element={<NotFound />} />
-                          </Routes>
+                          {/* CRITICAL COMPONENT - Header must remain on all pages */}
+                          <Header />
+                          
+                          {/* Main content with proper spacing for fixed header */}
+                          <main className="pt-16">
+                            <Routes>
+                              <Route path="/" element={<Home />} />
+                              <Route path="/auth" element={<AuthPage />} />
+                              <Route path="/dashboard" element={<UnifiedDashboard />} />
+                              <Route path="/provider-profile/:id" element={<ProviderProfile />} />
+                              <Route path="/notifications" element={<NotificationsPage />} />
+                              <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
+                              <Route path="/admin-dashboard" element={<AdminDashboard />} />
+                              <Route path="/social" element={<Social />} />
+                              <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
+                              <Route path="/help" element={<Help />} />
+                              <Route path="/help-center" element={<HelpCenter />} />
+                              <Route path="/calendar" element={<Calendar />} />
+                              <Route path="/gps" element={<GPS />} />
+                              <Route path="/interactive-map" element={<InteractiveMapPage />} />
+                              <Route path="/manager" element={<ManagerDashboard />} />
+                              <Route path="/profile" element={<Profile />} />
+                              <Route path="/services" element={<Services />} />
+                              <Route path="/bookings" element={<BookingsPage />} />
+                              <Route path="/analytics" element={<AnalyticsDashboard />} />
+                              <Route path="/performance" element={<PerformanceDashboard />} />
+                              <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
+                              <Route path="/business-insights" element={<BusinessInsights />} />
+                              <Route path="*" element={<NotFound />} />
+                            </Routes>
+                          </main>
                           <Toaster />
                         </div>
                       </Router>
