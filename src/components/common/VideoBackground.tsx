@@ -25,7 +25,6 @@ const VideoBackground = () => {
     if (!video) return;
 
     console.log(`🎬 VideoBackground: Loading attempt ${videoState.retryCount + 1}`);
-    console.log(`🎬 VideoBackground: Trying video at: ${window.location.origin}/lovable-uploads/automne_gif.mp4`);
     
     setVideoState(prev => ({
       ...prev,
@@ -75,7 +74,7 @@ const VideoBackground = () => {
     video.addEventListener('canplay', handleSuccess, { once: true });
     video.addEventListener('error', handleError, { once: true });
 
-    // Load the video with multiple fallback attempts
+    // Try different video source paths
     const videoSources = [
       '/lovable-uploads/automne_gif.mp4',
       '/public/lovable-uploads/automne_gif.mp4',
@@ -112,7 +111,7 @@ const VideoBackground = () => {
             preload="auto"
             className="w-full h-full object-cover"
             style={{ 
-              filter: 'brightness(0.7)',
+              filter: 'brightness(0.6)',
             }}
           >
             <source src="/lovable-uploads/automne_gif.mp4" type="video/mp4" />
@@ -120,7 +119,7 @@ const VideoBackground = () => {
           </video>
           
           {videoState.isLoading && (
-            <div className="absolute inset-0 w-full h-full bg-black flex items-center justify-center z-10">
+            <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-900 via-red-900 to-yellow-800 flex items-center justify-center z-10">
               <div className="text-center">
                 <div className="text-white text-lg font-medium mb-2">
                   Loading video background...
@@ -143,8 +142,8 @@ const VideoBackground = () => {
         </div>
       )}
       
-      {/* Subtle overlay for text readability without hiding video */}
-      <div className="absolute inset-0 bg-black/20 z-5"></div>
+      {/* Subtle overlay for text readability */}
+      <div className="absolute inset-0 bg-black/30 z-5"></div>
     </div>
   );
 };

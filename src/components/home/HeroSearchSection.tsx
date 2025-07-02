@@ -27,7 +27,7 @@ const HeroSearchSection = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center pt-16">
+    <div className="relative min-h-screen flex items-center justify-center px-4">
       {/* Certn Info - Top Right Corner */}
       <div className="absolute top-24 right-6 z-20 flex items-center space-x-2 fintech-card backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
         <img 
@@ -41,13 +41,13 @@ const HeroSearchSection = () => {
       </div>
 
       {/* Main Content */}
-      <div className="relative z-10 max-w-2xl mx-auto px-4 text-center">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 drop-shadow-2xl">
+      <div className="relative z-10 max-w-2xl mx-auto text-center">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-8 text-shadow-lg">
           Find local experts near you
         </h1>
         
-        {/* Search Bar - Exact UberEats Style */}
-        <div className="fintech-card rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto">
+        {/* Search Bar - Clean UberEats Style */}
+        <div className="fintech-card rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 max-w-2xl mx-auto mb-6">
           {/* Location Input */}
           <div className="flex-1 relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
@@ -87,7 +87,7 @@ const HeroSearchSection = () => {
           </Button>
         </div>
 
-        <p className="mt-4 text-white/90 drop-shadow-lg">
+        <p className="text-white/90 text-shadow drop-shadow-lg">
           Or{' '}
           <Link to="/auth" className="underline font-medium text-white hover:text-white/80">
             Sign In
