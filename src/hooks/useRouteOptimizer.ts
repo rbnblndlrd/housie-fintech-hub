@@ -60,7 +60,10 @@ export const useRouteOptimizer = () => {
     }
   ]);
 
-  const [routeJobs, setRouteJobs] = useState<Job[]>([
+  const [routeJobs, setRouteJobs] = useState<Job[]>([]);
+  const [organizedJobs, setOrganizedJobs] = useState<Job[]>([]);
+  
+  const availableJobs: Job[] = [
     {
       id: '1',
       title: 'Emergency Plumbing Repair',
@@ -103,7 +106,7 @@ export const useRouteOptimizer = () => {
       scheduledTime: '14:00',
       coordinates: { lat: 45.5230, lng: -73.5800 }
     }
-  ]);
+  ];
 
   const selectJob = useCallback((jobId: string) => {
     setSelectedJobId(jobId);
@@ -164,30 +167,44 @@ export const useRouteOptimizer = () => {
     return Math.round((completedRequirements / totalRequirements) * 100);
   }, [phases]);
 
+  const addJobToRoute = useCallback((jobId: string) => {
+    const job = availableJobs.find(j => j.id === jobId);
+    if (job && !organizedJobs.find(j => j.id === jobId)) {
+      setOrganizedJobs(prev => [...prev, job]);
+    }
+  }, [availableJobs, organizedJobs]);
+
+  const removeJobFromRoute = useCallback((jobId: string) => {
+    setOrganizedJobs(prev => prev.filter(job => job.id !== jobId));
+  }, []);
+
   const getTotalRouteStats = useCallback(() => {
-    const totalEarnings = routeJobs.reduce((sum, job) => sum + job.amount, 0);
-    const totalTime = routeJobs.reduce((sum, job) => sum + job.estimatedDuration, 0);
-    const completedJobs = routeJobs.filter(job => job.status === 'completed').length;
+    const totalEarnings = organizedJobs.reduce((sum, job) => sum + job.amount, 0);
+    const totalTime = organizedJobs.reduce((sum, job) => sum + job.estimatedDuration, 0);
+    const completedJobs = organizedJobs.filter(job => job.status === 'completed').length;
     
     return {
       totalEarnings,
       totalTime: Math.round(totalTime / 60 * 10) / 10, // Convert to hours with 1 decimal
       completedJobs,
-      totalJobs: routeJobs.length
+      totalJobs: organizedJobs.length
     };
-  }, [routeJobs]);
+  }, [organizedJobs]);
 
   return {
     selectedJobId,
     executionMode,
     phases,
-    routeJobs,
+    routeJobs: availableJobs,
+    organizedJobs,
     selectJob,
     exitExecutionMode,
     updatePhotoRequirement,
     completeJob,
     getSelectedJob,
     getProgressPercentage,
-    getTotalRouteStats
+    getTotalRouteStats,
+    addJobToRoute,
+    removeJobFromRoute
   };
 };

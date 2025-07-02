@@ -45,14 +45,19 @@ const ProviderDashboard = () => {
     executionMode,
     phases,
     routeJobs,
+    organizedJobs,
     selectJob,
     exitExecutionMode,
     updatePhotoRequirement,
     completeJob,
     getSelectedJob,
     getProgressPercentage,
-    getTotalRouteStats
+    getTotalRouteStats,
+    addJobToRoute,
+    removeJobFromRoute
   } = useRouteOptimizer();
+
+  const [dragOver, setDragOver] = useState(false);
 
   // Sample data
   const recentBookings = [
@@ -233,7 +238,12 @@ const ProviderDashboard = () => {
                         <div className="space-y-1">
                           {routeJobs.map((job) => (
                             <div 
-                              key={job.id} 
+                              key={`job-${job.id}`}
+                              draggable
+                              onDragStart={(e) => {
+                                e.dataTransfer.setData('text/plain', job.id);
+                                e.dataTransfer.effectAllowed = 'copy';
+                              }}
                               className="flex items-center gap-2 p-2 fintech-card-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
                               onClick={() => selectJob(job.id)}
                             >
@@ -293,10 +303,51 @@ const ProviderDashboard = () => {
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0 px-3 pb-3">
-                          <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center mb-2">
+                          <div 
+                            className={`border-2 border-dashed rounded-lg p-3 text-center mb-2 transition-colors ${
+                              dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+                            }`}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setDragOver(true);
+                            }}
+                            onDragLeave={() => setDragOver(false)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setDragOver(false);
+                              const jobId = e.dataTransfer.getData('text/plain');
+                              addJobToRoute(jobId);
+                            }}
+                          >
                             <Route className="h-6 w-6 mx-auto mb-1 text-gray-400" />
-                            <p className="text-xs text-gray-600">Click jobs above to start execution mode</p>
+                            <p className="text-xs text-gray-600">
+                              {organizedJobs.length === 0 
+                                ? 'Drag jobs here to optimize route' 
+                                : `${organizedJobs.length} jobs in route`
+                              }
+                            </p>
                           </div>
+                          
+                          {organizedJobs.length > 0 && (
+                            <div className="space-y-1 mb-2">
+                              {organizedJobs.map((job, index) => (
+                                <div key={`route-${job.id}`} className="flex items-center gap-2 p-2 bg-blue-50 rounded text-xs">
+                                  <span className="w-4 h-4 bg-blue-600 text-white rounded-full text-xs flex items-center justify-center font-bold">
+                                    {index + 1}
+                                  </span>
+                                  <span className="flex-1">{job.customerName}</span>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-4 w-4 p-0 text-red-500"
+                                    onClick={() => removeJobFromRoute(job.id)}
+                                  >
+                                    ×
+                                  </Button>
+                                </div>
+                              ))}
+                            </div>
+                          )}
                           
                           <div className="space-y-1 mb-2 text-xs">
                             <div className="flex items-center justify-between">
