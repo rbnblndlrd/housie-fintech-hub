@@ -90,31 +90,31 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
       <div className={`fixed top-0 right-0 h-full w-80 lg:w-96 z-40 transition-transform duration-300 ease-out ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
-        <div className="h-full bg-white/95 backdrop-blur-sm border-l border-white/20 shadow-2xl overflow-y-auto">
+        <div className="h-full fintech-card border-l border-white/20 shadow-2xl overflow-y-auto">
           <Card className="h-full border-none bg-transparent shadow-none">
             <CardHeader className="pb-3 border-b border-white/20">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg">
-                  <Navigation className="h-5 w-5 text-blue-600" />
+                <CardTitle className="flex items-center gap-2 text-lg text-primary">
+                  <Navigation className="h-5 w-5 text-primary" />
                   Navigation & Route Details
                 </CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onToggle}
-                  className="h-8 w-8 p-0"
+                  className="h-8 w-8 p-0 text-primary hover:bg-white/10"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
               
               {currentJob && (
-                <div className="mt-2 p-3 bg-blue-50/80 rounded-lg">
-                  <div className="flex items-center gap-2 text-blue-800 font-medium">
+                <div className="mt-2 p-3 fintech-card-secondary rounded-lg">
+                  <div className="flex items-center gap-2 text-primary font-medium">
                     <MapPin className="h-4 w-4" />
                     Current Route
                   </div>
-                  <p className="text-sm text-blue-600 mt-1">
+                  <p className="text-sm text-muted-foreground mt-1">
                     To {currentJob.customerName} • {currentJob.distance} • {currentJob.estimatedTime}
                   </p>
                 </div>
@@ -124,7 +124,7 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
             <CardContent className="p-4 space-y-4">
               {/* Navigation Tabs */}
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-2">
+                <TabsList className="grid w-full grid-cols-2 fintech-card">
                   <TabsTrigger value="turn-by-turn">Turn-by-Turn</TabsTrigger>
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                 </TabsList>
@@ -132,7 +132,7 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
                 <TabsContent value="turn-by-turn" className="mt-4 space-y-4">
                   {/* Turn-by-Turn Directions */}
                   <div>
-                    <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                    <h3 className="font-medium text-primary mb-3 flex items-center gap-2">
                       <Route className="h-4 w-4" />
                       Turn-by-Turn Directions
                     </h3>
@@ -140,23 +140,23 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
                       {turnByTurnDirections.map((direction, index) => (
                         <div 
                           key={direction.step}
-                          className={`p-3 rounded-lg border ${
+                          className={`p-3 rounded-lg border fintech-card-secondary ${
                             index === 0 
-                              ? 'bg-blue-50 border-blue-200' 
-                              : 'bg-gray-50 border-gray-200'
+                              ? 'border-primary/20' 
+                              : 'border-muted/20'
                           }`}
                         >
                           <div className="flex items-start gap-3">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                              index === 0 ? 'bg-blue-600 text-white' : 'bg-gray-400 text-white'
+                              index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
                             }`}>
                               {direction.step}
                             </div>
                             <div className="flex-1">
                               <p className="font-medium text-sm">{direction.instruction}</p>
-                              <p className="text-xs text-gray-600">{direction.distance}</p>
+                              <p className="text-xs text-muted-foreground">{direction.distance}</p>
                             </div>
-                            {index === 0 && <ChevronRight className="h-4 w-4 text-blue-600" />}
+                            {index === 0 && <ChevronRight className="h-4 w-4 text-primary" />}
                           </div>
                         </div>
                       ))}

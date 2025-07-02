@@ -202,23 +202,19 @@ const InteractiveMapPage = () => {
             />
 
             {/* Jobs Overlay */}
-            {userMode === 'provider' && (
-              <MapboxJobsOverlay
-                map={map}
-                jobs={sampleJobs}
-                onJobClick={handleJobClick}
-              />
-            )}
+            <MapboxJobsOverlay
+              map={map}
+              jobs={sampleJobs}
+              onJobClick={handleJobClick}
+            />
 
             {/* GPS Navigation Overlay */}
-            {userMode === 'provider' && (
-              <GPSNavigationOverlay
-                selectedJob={selectedJob}
-                onStartNavigation={handleStartNavigation}
-                onCompleteJob={handleCompleteJob}
-                onCancelNavigation={handleCancelNavigation}
-              />
-            )}
+            <GPSNavigationOverlay
+              selectedJob={selectedJob}
+              onStartNavigation={handleStartNavigation}
+              onCompleteJob={handleCompleteJob}
+              onCancelNavigation={handleCancelNavigation}
+            />
 
             {/* Navigation Overlay */}
             <NavigationOverlay
@@ -241,20 +237,6 @@ const InteractiveMapPage = () => {
             {/* Top Controls Bar */}
             <div className="absolute top-4 right-4 z-50 pointer-events-auto">
               <div className="flex items-center gap-3">
-                {/* User Mode Selector */}
-                <div className="bg-white/95 backdrop-blur-sm rounded-lg border border-gray-300 p-2">
-                  <Select value={userMode} onValueChange={handleUserModeChange}>
-                    <SelectTrigger className="w-40 border-none bg-transparent">
-                      <SelectValue placeholder="Select mode" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="customer">Customer</SelectItem>
-                      <SelectItem value="provider">Provider</SelectItem>
-                      <SelectItem value="fleet-manager">Fleet Manager</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
                 {/* Settings Button */}
                 <Button
                   variant="outline"
@@ -289,7 +271,6 @@ const InteractiveMapPage = () => {
                 <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300 w-64">
                   <h3 className="font-semibold text-gray-900 mb-3">Map Settings</h3>
                   <div className="space-y-3 text-sm text-gray-600">
-                    <div>Current Mode: <span className="font-medium capitalize">{userMode.replace('-', ' ')}</span></div>
                     <div>Map Engine: <span className="font-medium">Mapbox (Privacy First)</span></div>
                     <div>Dragging: <span className="font-medium">{isDragging ? 'Enabled' : 'Disabled'}</span></div>
                     <div className="pt-2 text-xs text-gray-500">
@@ -301,27 +282,11 @@ const InteractiveMapPage = () => {
             )}
           </div>
 
-          {/* Mode-specific Right Panel */}
-          {userMode === 'customer' && (
-            <CustomerMapMode 
-              onDataLayerToggle={handleDataLayerToggle}
-              enabledLayers={enabledLayers}
-            />
-          )}
-
-          {userMode === 'provider' && (
-            <ProviderMapMode 
-              onDataLayerToggle={handleDataLayerToggle}
-              enabledLayers={enabledLayers}
-            />
-          )}
-
-          {userMode === 'fleet-manager' && (
-            <FleetManagerMode 
-              onDataLayerToggle={handleDataLayerToggle}
-              enabledLayers={enabledLayers}
-            />
-          )}
+          {/* Mode-specific Right Panel - Show provider mode by default */}
+          <ProviderMapMode 
+            onDataLayerToggle={handleDataLayerToggle}
+            enabledLayers={enabledLayers}
+          />
         </div>
 
         {/* Chat Bubble */}
