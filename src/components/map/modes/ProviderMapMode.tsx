@@ -92,281 +92,163 @@ const ProviderMapMode: React.FC<ProviderMapModeProps> = ({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <Tabs defaultValue="data-layers" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 m-2">
-            <TabsTrigger value="data-layers">Data Layers</TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="data-layers" className="p-4 space-y-4">
-            {/* Business Intelligence Content */}
-            {selectedPreset === 'business-intelligence' && (
-              <>
-                {/* Demand Hot Zones */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Zap className="h-4 w-4 text-orange-600" />
-                      Demand Hot Zones
-                    </CardTitle>
-                    <p className="text-xs text-gray-600">Service request frequency + demographics</p>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center justify-between mb-3">
-                      <Label htmlFor="demand-layer" className="text-sm">Demand Heat Map</Label>
-                      <Switch
-                        id="demand-layer"
-                        checked={enabledLayers.demand || false}
-                        onCheckedChange={() => handleLayerToggle('demand')}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      Based on monthly service requests and population data
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Competition Analysis */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <Users className="h-4 w-4 text-red-600" />
-                      Competition Analysis
-                    </CardTitle>
-                    <p className="text-xs text-gray-600">Business registry provider density</p>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center justify-between mb-3">
-                      <Label htmlFor="competition-layer" className="text-sm">Competition Zones</Label>
-                      <Switch
-                        id="competition-layer"
-                        checked={enabledLayers.competition || false}
-                        onCheckedChange={() => handleLayerToggle('competition')}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      Market saturation = active providers ÷ business opportunities
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Tip Zone Mapping */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-yellow-600" />
-                      Tip Zone Mapping
-                    </CardTitle>
-                    <p className="text-xs text-gray-600">Income + consumer spending patterns</p>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center justify-between mb-3">
-                      <Label htmlFor="tips-layer" className="text-sm">Tip Heat Map</Label>
-                      <Switch
-                        id="tips-layer"
-                        checked={enabledLayers.tips || false}
-                        onCheckedChange={() => handleLayerToggle('tips')}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      Average tip = (income ÷ 2000) × spending index
-                    </div>
-                  </CardContent>
-                </Card>
-
-                {/* Opportunity Areas */}
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm flex items-center gap-2">
-                      <TrendingUp className="h-4 w-4 text-green-600" />
-                      Opportunity Areas
-                    </CardTitle>
-                    <p className="text-xs text-gray-600">Market gaps + growth trends</p>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="flex items-center justify-between mb-3">
-                      <Label htmlFor="opportunity-layer" className="text-sm">Opportunity Zones</Label>
-                      <Switch
-                        id="opportunity-layer"
-                        checked={enabledLayers.opportunity || false}
-                        onCheckedChange={() => handleLayerToggle('opportunity')}
-                      />
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      Market gap × economic growth factor
-                    </div>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Opportunity Hunter Content */}
-            {selectedPreset === 'opportunity-hunter' && (
-              <>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm">Opportunity Hunter Features</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="text-sm text-gray-600">
-                      Advanced market gap detection and growth prediction
-                    </div>
-                    <Badge variant="outline" className="mt-2">Coming Soon</Badge>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Efficiency Optimizer Content */}
-            {selectedPreset === 'efficiency-optimizer' && (
-              <>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle className="text-sm">Efficiency Optimizer Features</CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
-                    <div className="text-sm text-gray-600">
-                      Route optimization and productivity analytics
-                    </div>
-                    <Badge variant="outline" className="mt-2">Coming Soon</Badge>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-
-            {/* Coming Soon Features */}
-            <Card className="border-dashed border-gray-300">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-orange-600" />
-                  Coming Soon
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Seasonal Demand Patterns</span>
-                  <Badge variant="outline" className="text-xs">Soon</Badge>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-gray-500">Route Optimization</span>
-                  <Badge variant="outline" className="text-xs">Soon</Badge>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="insights" className="p-4 space-y-4">
-            {/* Top Demand Areas */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Zap className="h-4 w-4 text-orange-600" />
-                  Highest Demand
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {demandData
-                  .sort((a, b) => b.demandScore - a.demandScore)
-                  .slice(0, 3)
-                  .map((area, index) => (
-                    <div key={index} className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600">{area.area}</span>
-                      <div className="flex items-center gap-2">
-                        <span className="font-medium">{area.serviceRequestsPerMonth}/mo</span>
-                        <div className="w-2 h-2 rounded-full bg-orange-500" />
-                      </div>
-                    </div>
-                  ))}
-              </CardContent>
-            </Card>
-
-            {/* Competition Levels */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Users className="h-4 w-4 text-red-600" />
-                  Competition Levels
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {competitionData.slice(0, 3).map((area, index) => (
-                  <div key={index} className="flex items-center justify-between text-xs">
-                    <span className="text-gray-600">{area.area}</span>
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">{area.activeProviders} providers</span>
-                      <Badge variant={area.competitionLevel === 'low' ? 'default' : area.competitionLevel === 'medium' ? 'secondary' : 'destructive'}>
-                        {area.competitionLevel}
-                      </Badge>
-                    </div>
+        {/* Temporarily hide the Data Layers/Insights switch */}
+        <div className="p-4 space-y-4">
+          {/* Business Intelligence Content */}
+          {selectedPreset === 'business-intelligence' && (
+            <>
+              {/* Demand Hot Zones */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Zap className="h-4 w-4 text-orange-600" />
+                    Demand Hot Zones
+                  </CardTitle>
+                  <p className="text-xs text-gray-600">Service request frequency + demographics</p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label htmlFor="demand-layer" className="text-sm">Demand Heat Map</Label>
+                    <Switch
+                      id="demand-layer"
+                      checked={enabledLayers.demand || false}
+                      onCheckedChange={() => handleLayerToggle('demand')}
+                    />
                   </div>
-                ))}
-              </CardContent>
-            </Card>
+                  <div className="text-xs text-gray-600">
+                    Based on monthly service requests and population data
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* Best Tip Zones */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <DollarSign className="h-4 w-4 text-yellow-600" />
-                  Best Tip Zones
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {tipData
-                  .sort((a, b) => b.avgTipAmount - a.avgTipAmount)
-                  .slice(0, 3)
-                  .map((area, index) => (
-                    <div key={index} className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600">{area.area}</span>
-                      <span className="font-medium">${area.avgTipAmount} avg tip</span>
-                    </div>
-                  ))}
-              </CardContent>
-            </Card>
+              {/* Competition Analysis */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <Users className="h-4 w-4 text-red-600" />
+                    Competition Analysis
+                  </CardTitle>
+                  <p className="text-xs text-gray-600">Business registry provider density</p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label htmlFor="competition-layer" className="text-sm">Competition Zones</Label>
+                    <Switch
+                      id="competition-layer"
+                      checked={enabledLayers.competition || false}
+                      onCheckedChange={() => handleLayerToggle('competition')}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Market saturation = active providers ÷ business opportunities
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* Top Opportunities */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <TrendingUp className="h-4 w-4 text-green-600" />
-                  Top Opportunities
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-2">
-                {opportunityData
-                  .sort((a, b) => b.opportunityScore - a.opportunityScore)
-                  .slice(0, 3)
-                  .map((area, index) => (
-                    <div key={index} className="flex items-center justify-between text-xs">
-                      <span className="text-gray-600">{area.area}</span>
-                      <span className="font-medium">${area.monthlyPotential}/mo</span>
-                    </div>
-                  ))}
-              </CardContent>
-            </Card>
+              {/* Tip Zone Mapping */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <DollarSign className="h-4 w-4 text-yellow-600" />
+                    Tip Zone Mapping
+                  </CardTitle>
+                  <p className="text-xs text-gray-600">Income + consumer spending patterns</p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label htmlFor="tips-layer" className="text-sm">Tip Heat Map</Label>
+                    <Switch
+                      id="tips-layer"
+                      checked={enabledLayers.tips || false}
+                      onCheckedChange={() => handleLayerToggle('tips')}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Average tip = (income ÷ 2000) × spending index
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* Data Sources Info */}
-            <Card className="bg-orange-50 border-orange-200">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm flex items-center gap-2">
-                  <Info className="h-4 w-4 text-orange-600" />
-                  Independent Data Sources
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <div className="space-y-2 text-xs text-orange-700">
-                  <div>• Demand: Service request APIs + demographics</div>
-                  <div>• Competition: Quebec business registry analysis</div>
-                  <div>• Tips: Statistics Canada income + spending data</div>
-                  <div>• Opportunity: Market gap analysis + growth trends</div>
-                </div>
-                <div className="mt-3 text-xs text-orange-600 font-medium">
-                  Each layer uses completely different data sources
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+              {/* Opportunity Areas */}
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm flex items-center gap-2">
+                    <TrendingUp className="h-4 w-4 text-green-600" />
+                    Opportunity Areas
+                  </CardTitle>
+                  <p className="text-xs text-gray-600">Market gaps + growth trends</p>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="flex items-center justify-between mb-3">
+                    <Label htmlFor="opportunity-layer" className="text-sm">Opportunity Zones</Label>
+                    <Switch
+                      id="opportunity-layer"
+                      checked={enabledLayers.opportunity || false}
+                      onCheckedChange={() => handleLayerToggle('opportunity')}
+                    />
+                  </div>
+                  <div className="text-xs text-gray-600">
+                    Market gap × economic growth factor
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {/* Opportunity Hunter Content */}
+          {selectedPreset === 'opportunity-hunter' && (
+            <>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Opportunity Hunter Features</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="text-sm text-gray-600">
+                    Advanced market gap detection and growth prediction
+                  </div>
+                  <Badge variant="outline" className="mt-2">Coming Soon</Badge>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {/* Efficiency Optimizer Content */}
+          {selectedPreset === 'efficiency-optimizer' && (
+            <>
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm">Efficiency Optimizer Features</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="text-sm text-gray-600">
+                    Route optimization and productivity analytics
+                  </div>
+                  <Badge variant="outline" className="mt-2">Coming Soon</Badge>
+                </CardContent>
+              </Card>
+            </>
+          )}
+
+          {/* Coming Soon Features */}
+          <Card className="border-dashed border-gray-300">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Clock className="h-4 w-4 text-orange-600" />
+                Coming Soon
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">Seasonal Demand Patterns</span>
+                <Badge variant="outline" className="text-xs">Soon</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-gray-500">Route Optimization</span>
+                <Badge variant="outline" className="text-xs">Soon</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
