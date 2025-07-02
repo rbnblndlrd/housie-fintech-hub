@@ -82,6 +82,15 @@ export default {
           900: "#0F4C3A", // Default Winchester green
           950: "#0a2d23",
         },
+        // Add fintech typography colors
+        fintech: {
+          primary: "#2C1810",
+          header: "#1A0F08", 
+          secondary: "#5C4A3F",
+          accent: "#8B4513",
+          emergency: "#A0522D",
+          success: "#556B2F",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -158,5 +167,12 @@ export default {
     'bg-winchester/80',
     'text-winchester',
     'border-winchester',
+    // Fintech color variations for safelist
+    'text-fintech-primary',
+    'text-fintech-header',
+    'text-fintech-secondary',
+    'text-fintech-accent',
+    'text-fintech-emergency',
+    'text-fintech-success',
   ],
 } satisfies Config;

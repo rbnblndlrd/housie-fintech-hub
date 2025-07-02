@@ -19,9 +19,11 @@ const Card = React.forwardRef<
         className
       )}
       style={!isFintech ? {
-        backgroundColor: '#F8F6F0',
-        border: '2px solid #000000',
-        color: '#000000'
+        backgroundImage: 'url(/SAND-TEXTURED.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        position: 'relative',
+        color: '#2C1810'
       } : undefined}
       {...props}
     />
@@ -56,7 +58,7 @@ const CardTitle = React.forwardRef<
         "text-2xl font-semibold leading-none tracking-tight",
         className
       )}
-      style={!isFintech ? { color: '#000000' } : undefined}
+      style={!isFintech ? { color: '#1A0F08' } : undefined}
       {...props}
     />
   )
@@ -75,7 +77,7 @@ const CardDescription = React.forwardRef<
     <p
       ref={ref}
       className={cn("text-sm", className)}
-      style={!isFintech ? { color: 'rgba(0, 0, 0, 0.7)' } : undefined}
+      style={!isFintech ? { color: '#5C4A3F' } : undefined}
       {...props}
     />
   )
