@@ -183,7 +183,7 @@ const ProviderDashboard = () => {
                 {pendingRequests.length > 0 && (
                   <div className="relative">
                     <Bell className="h-6 w-6 text-amber-600" />
-                    <Badge className="absolute -top-2 -right-2 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
+                    <Badge className="absolute -top-3 -right-3 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
                       {pendingRequests.length}
                     </Badge>
                   </div>
