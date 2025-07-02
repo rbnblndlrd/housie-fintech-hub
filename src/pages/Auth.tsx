@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -103,16 +102,18 @@ const Auth = () => {
         <ContainedVideoBackground />
         <div className="absolute inset-0 bg-black/20 z-10"></div>
         <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
-          <div className="auth-hero-text">
-            <h1 className="text-5xl font-extrabold mb-3 text-winchester-900 text-shadow-lg">Welcome to HOUSIE</h1>
-            <p className="text-xl text-white">Your trusted home services platform</p>
+          <div className="auth-hero-text text-center">
+            <h1 className="text-5xl font-extrabold mb-3 text-winchester-600 drop-shadow-2xl">Welcome to HOUSIE</h1>
+            <p className="text-xl text-white drop-shadow-lg">Your trusted home services platform</p>
           </div>
         </div>
       </div>
 
-      {/* Right side - Clean Authentication Form */}
-      <div className="w-1/2 bg-gradient-to-br from-winchester-800 to-winchester-900 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md bg-white shadow-xl border-2 border-gray-200 rounded-xl">
+      {/* Right side - Winchester Green Background with Authentication Form */}
+      <div className="w-1/2 flex items-center justify-center p-8" style={{
+        background: 'linear-gradient(135deg, #815a4a 0%, #543e35 100%)'
+      }}>
+        <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-gray-800">
               Get Started
