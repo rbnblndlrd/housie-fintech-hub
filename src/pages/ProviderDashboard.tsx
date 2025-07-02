@@ -160,24 +160,35 @@ const ProviderDashboard = () => {
 
             {/* Main Content Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-              <TabsList className="fintech-card p-1">
-                <TabsTrigger value="job-hub">
-                  <Briefcase className="h-4 w-4 mr-2" />
-                  Job Hub
-                </TabsTrigger>
-                <TabsTrigger value="map">
-                  <Map className="h-4 w-4 mr-2" />
-                  Map
-                </TabsTrigger>
-                <TabsTrigger value="community">
-                  <Users className="h-4 w-4 mr-2" />
-                  Community
-                </TabsTrigger>
-                <TabsTrigger value="profile">
-                  <UserCog className="h-4 w-4 mr-2" />
-                  Profile
-                </TabsTrigger>
-              </TabsList>
+              <div className="flex items-center gap-4">
+                <TabsList className="fintech-card p-1">
+                  <TabsTrigger value="job-hub">
+                    <Briefcase className="h-4 w-4 mr-2" />
+                    Job Hub
+                  </TabsTrigger>
+                  <TabsTrigger value="map">
+                    <Map className="h-4 w-4 mr-2" />
+                    Map
+                  </TabsTrigger>
+                  <TabsTrigger value="community">
+                    <Users className="h-4 w-4 mr-2" />
+                    Community
+                  </TabsTrigger>
+                  <TabsTrigger value="profile">
+                    <UserCog className="h-4 w-4 mr-2" />
+                    Profile
+                  </TabsTrigger>
+                </TabsList>
+                
+                {pendingRequests.length > 0 && (
+                  <div className="relative">
+                    <Bell className="h-6 w-6 text-amber-600" />
+                    <Badge className="absolute -top-2 -right-2 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
+                      {pendingRequests.length}
+                    </Badge>
+                  </div>
+                )}
+              </div>
 
               <TabsContent value="job-hub" className="space-y-3">
                 {/* Top Section - Calendar and Stats */}
@@ -273,23 +284,6 @@ const ProviderDashboard = () => {
                     </CardContent>
                   </Card>
                 </div>
-                {pendingRequests.length > 0 && (
-                  <Card className="fintech-card border-amber-200 bg-amber-50/80" style={{ border: '5px solid #000000' }}>
-                    <CardContent className="p-2">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <Bell className="h-5 w-5 text-amber-600" />
-                          <span className="font-medium text-amber-800">
-                            Pending Booking Requests ({pendingRequests.length})
-                          </span>
-                        </div>
-                        <Badge variant="secondary" className="bg-amber-200 text-amber-800">
-                          {pendingRequests.length}
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                )}
 
                 {/* Main Grid Layout - Tighter gaps */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-2">
