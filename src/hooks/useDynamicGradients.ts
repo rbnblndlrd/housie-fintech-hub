@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 
 export const useDynamicGradients = () => {
   useEffect(() => {
-    const applySmartContentAwareGradients = () => {
-      console.log('🎨 Applying SMART content-aware gradient system with cropped image...');
+    const applySmartMarbleGradients = () => {
+      console.log('🎨 Applying SMART marble texture system with watermark concealment...');
       
       // Get all fintech card elements
       const cardSelectors = [
@@ -17,25 +17,25 @@ export const useDynamicGradients = () => {
       ];
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
-      console.log(`🎨 Found ${cards.length} cards to style with smart content-aware system`);
+      console.log(`🎨 Found ${cards.length} cards to style with marble texture system`);
       
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
         
-        // Apply intelligent content-aware positioning
-        applyIntelligentContentPositioning(htmlCard, index);
+        // Apply intelligent watermark avoidance positioning
+        applyWatermarkAvoidancePositioning(htmlCard, index);
         
-        // Apply only brownish patterns (no yellowish variants)
-        const brownishPatterns = [
+        // Apply marble pattern variations with concealment
+        const marblePatterns = [
           'fintech-pattern-warm', 
           'fintech-pattern-cool', 
           'fintech-pattern-soft',
           'fintech-pattern-subtle',
           'fintech-pattern-classic'
         ];
-        const randomPattern = Math.floor(Math.random() * brownishPatterns.length);
+        const randomPattern = Math.floor(Math.random() * marblePatterns.length);
         
-        // Remove any existing fintech pattern classes
+        // Remove any existing pattern classes
         const allPatterns = [
           'fintech-pattern-warm', 
           'fintech-pattern-cool', 
@@ -45,89 +45,95 @@ export const useDynamicGradients = () => {
         ];
         allPatterns.forEach(pattern => htmlCard.classList.remove(pattern));
         
-        // Apply random brownish pattern
-        htmlCard.classList.add(brownishPatterns[randomPattern]);
-        console.log(`🎨 Applied ${brownishPatterns[randomPattern]} to card ${index}`);
+        // Apply random marble pattern
+        htmlCard.classList.add(marblePatterns[randomPattern]);
+        console.log(`🎨 Applied ${marblePatterns[randomPattern]} to card ${index}`);
         
-        // Enhanced overlay opacity variation (0.15 to 0.30 for subtlety)
-        const overlayOpacity = 0.15 + Math.random() * 0.15;
-        htmlCard.style.setProperty('--fintech-overlay-opacity', overlayOpacity.toString());
+        // Strategic marble scaling to avoid watermarks (200-350%)
+        const marbleScale = 2.5 + Math.random() * 1.0; // 2.5 to 3.5 scale
+        htmlCard.style.setProperty('--marble-scale', marbleScale.toString());
         
-        // Strict hue shift for consistent brown tones (smaller range)
-        const hueShift = Math.random() * -8 - 8; // -16 to -8 degrees only
+        // Overlay opacity for watermark concealment (0.3 to 0.6)
+        const overlayOpacity = 0.3 + Math.random() * 0.3;
+        htmlCard.style.setProperty('--marble-overlay-opacity', overlayOpacity.toString());
+        
+        // Subtle hue shift for marble tone consistency (-12 to -4 degrees)
+        const hueShift = Math.random() * -8 - 4; // -12 to -4 degrees
         htmlCard.style.setProperty('--hue-shift', `${hueShift}deg`);
         
-        // Enhanced brownish filter optimizations
-        const brownishSaturate = 0.9 + Math.random() * 0.15; // 0.9 to 1.05
-        const brownishBrightness = 0.95 + Math.random() * 0.1; // 0.95 to 1.05
-        const brownishContrast = 1.1 + Math.random() * 0.1; // 1.1 to 1.2
+        // Enhanced marble filter optimizations
+        const marbleSaturate = 0.88 + Math.random() * 0.12; // 0.88 to 1.0
+        const marbleBrightness = 1.0 + Math.random() * 0.1; // 1.0 to 1.1
+        const marbleContrast = 1.08 + Math.random() * 0.08; // 1.08 to 1.16
         
-        htmlCard.style.setProperty('--brownish-saturate', brownishSaturate.toString());
-        htmlCard.style.setProperty('--brownish-brightness', brownishBrightness.toString());
-        htmlCard.style.setProperty('--brownish-contrast', brownishContrast.toString());
+        htmlCard.style.setProperty('--marble-saturate', marbleSaturate.toString());
+        htmlCard.style.setProperty('--marble-brightness', marbleBrightness.toString());
+        htmlCard.style.setProperty('--marble-contrast', marbleContrast.toString());
         
-        console.log(`🎨 Card ${index} smart styling:`, {
-          pattern: brownishPatterns[randomPattern],
-          opacity: overlayOpacity.toFixed(3),
+        console.log(`🎨 Card ${index} marble styling:`, {
+          pattern: marblePatterns[randomPattern],
+          scale: marbleScale.toFixed(2),
+          overlayOpacity: overlayOpacity.toFixed(3),
           hueShift: `${hueShift.toFixed(1)}deg`,
           filters: {
-            saturate: brownishSaturate.toFixed(2),
-            brightness: brownishBrightness.toFixed(2),
-            contrast: brownishContrast.toFixed(2)
+            saturate: marbleSaturate.toFixed(2),
+            brightness: marbleBrightness.toFixed(2),
+            contrast: marbleContrast.toFixed(2)
           }
         });
         
-        // Force background image application with cropped image
-        htmlCard.style.setProperty('background-image', 'url(/lovable-uploads/cream_gradient-cropped.jpg)', 'important');
-        htmlCard.style.setProperty('background-size', `${1400 + Math.random() * 400}px`, 'important'); // 1400-1800px
+        // Force marble background image application
+        htmlCard.style.setProperty('background-image', 'url(/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg)', 'important');
+        htmlCard.style.setProperty('background-size', `${marbleScale * 100}%`, 'important');
         htmlCard.style.setProperty('background-repeat', 'no-repeat', 'important');
         htmlCard.style.setProperty('background-attachment', 'local', 'important');
       });
     };
 
-    const applyIntelligentContentPositioning = (card: HTMLElement, index: number) => {
+    const applyWatermarkAvoidancePositioning = (card: HTMLElement, index: number) => {
       // Analyze text content in the card
       const textElements = card.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, .fintech-text-header');
       const hasSignificantText = textElements.length > 2 || Array.from(textElements).some(el => (el.textContent?.length || 0) > 50);
       
-      console.log(`🎨 Card ${index} text analysis:`, {
+      console.log(`🎨 Card ${index} content analysis:`, {
         textElements: textElements.length,
         hasSignificantText,
         content: Array.from(textElements).slice(0, 2).map(el => el.textContent?.slice(0, 30))
       });
 
       if (hasSignificantText) {
-        // Content-heavy cards: Position to show yellowish areas behind text
-        applyTextAwarePositioning(card, index, textElements);
+        // Content-heavy cards: Position to avoid watermarks behind text
+        applyTextAwareMarblePositioning(card, index, textElements);
       } else {
-        // Minimal content cards: Focus on brownish areas
-        applyBrownishPositioning(card, index);
+        // Minimal content cards: Use clean marble areas
+        applyCleanMarblePositioning(card, index);
       }
     };
 
-    const applyTextAwarePositioning = (card: HTMLElement, index: number, textElements: NodeListOf<Element>) => {
-      // Coordinate mapping for cropped image (yellowish areas for text backing)
-      const yellowishZones = [
-        { x: 70, y: 25 }, // Top-right yellowish area
-        { x: 80, y: 45 }, // Mid-right yellowish area
-        { x: 65, y: 65 }  // Bottom-right yellowish area
+    const applyTextAwareMarblePositioning = (card: HTMLElement, index: number, textElements: NodeListOf<Element>) => {
+      // Clean areas coordinate mapping for marble texture (avoiding watermark zones)
+      const cleanMarbleZones = [
+        { x: 25, y: 30 }, // Top-left clean area
+        { x: 65, y: 25 }, // Top-right clean area
+        { x: 35, y: 55 }, // Center-left clean area
+        { x: 70, y: 60 }  // Center-right clean area
       ];
       
-      // Select a yellowish zone for text backing
-      const selectedZone = yellowishZones[index % yellowishZones.length];
+      // Select a clean zone for text backing
+      const selectedZone = cleanMarbleZones[index % cleanMarbleZones.length];
       
-      // Position background to place yellowish area behind main text
-      const bgPositionX = selectedZone.x + (Math.random() * 10 - 5); // ±5% variation
-      const bgPositionY = selectedZone.y + (Math.random() * 10 - 5); // ±5% variation
+      // Position background to place clean area behind main text
+      const bgPositionX = selectedZone.x + (Math.random() * 8 - 4); // ±4% variation
+      const bgPositionY = selectedZone.y + (Math.random() * 8 - 4); // ±4% variation
       
       card.style.setProperty('--bg-position-x', `${bgPositionX}%`);
       card.style.setProperty('--bg-position-y', `${bgPositionY}%`);
       
-      // Enhanced scale for better text readability
-      const scale = 2.0 + Math.random() * 0.4; // 2.0 to 2.4 scale
-      card.style.setProperty('--pattern-scale', scale.toString());
+      // Enhanced scale for better text readability on marble
+      const scale = 2.8 + Math.random() * 0.4; // 2.8 to 3.2 scale
+      card.style.setProperty('--marble-scale', scale.toString());
       
-      // Apply subtle yellow tint overlays behind text elements
+      // Apply gentle marble-tone overlays behind text elements
       let validTextPositions = 0;
       textElements.forEach((el, textIndex) => {
         if (textIndex >= 3) return; // Only handle first 3 text elements
@@ -148,41 +154,41 @@ export const useDynamicGradients = () => {
         }
       });
       
-      // Apply enhanced text-aware multi-light class
+      // Apply enhanced text-aware marble class
       if (validTextPositions > 0) {
         card.classList.add('fintech-text-aware');
-        console.log(`🎨 Applied text-aware positioning to card ${index} at ${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`);
+        console.log(`🎨 Applied text-aware marble positioning to card ${index} at ${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`);
       }
     };
 
-    const applyBrownishPositioning = (card: HTMLElement, index: number) => {
-      // Coordinate mapping for cropped image (brownish areas for general background)
-      const brownishZones = [
-        { x: 25, y: 35 }, // Left-center brownish area
-        { x: 45, y: 55 }, // Center brownish area
-        { x: 35, y: 75 }, // Bottom-left brownish area
-        { x: 15, y: 45 }  // Far-left brownish area
+    const applyCleanMarblePositioning = (card: HTMLElement, index: number) => {
+      // Clean areas coordinate mapping for marble texture (general background)
+      const cleanMarbleAreas = [
+        { x: 20, y: 35 }, // Left clean area
+        { x: 40, y: 45 }, // Center clean area
+        { x: 60, y: 35 }, // Right clean area
+        { x: 30, y: 65 }  // Bottom clean area
       ];
       
-      // Select a brownish zone
-      const selectedZone = brownishZones[index % brownishZones.length];
+      // Select a clean area
+      const selectedArea = cleanMarbleAreas[index % cleanMarbleAreas.length];
       
-      // Position background in brownish areas with variation
-      const bgPositionX = selectedZone.x + (Math.random() * 15 - 7.5); // ±7.5% variation
-      const bgPositionY = selectedZone.y + (Math.random() * 15 - 7.5); // ±7.5% variation
+      // Position background in clean areas with variation
+      const bgPositionX = selectedArea.x + (Math.random() * 12 - 6); // ±6% variation
+      const bgPositionY = selectedArea.y + (Math.random() * 12 - 6); // ±6% variation
       
-      card.style.setProperty('--bg-position-x', `${Math.max(5, Math.min(55, bgPositionX))}%`);
-      card.style.setProperty('--bg-position-y', `${Math.max(20, Math.min(85, bgPositionY))}%`);
+      card.style.setProperty('--bg-position-x', `${Math.max(15, Math.min(75, bgPositionX))}%`);
+      card.style.setProperty('--bg-position-y', `${Math.max(25, Math.min(75, bgPositionY))}%`);
       
-      // Standard scale for brownish areas
-      const scale = 1.8 + Math.random() * 0.4; // 1.8 to 2.2 scale
-      card.style.setProperty('--pattern-scale', scale.toString());
+      // Standard scale for clean areas
+      const scale = 2.6 + Math.random() * 0.4; // 2.6 to 3.0 scale
+      card.style.setProperty('--marble-scale', scale.toString());
       
-      console.log(`🎨 Applied brownish positioning to card ${index} at ${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`);
+      console.log(`🎨 Applied clean marble positioning to card ${index} at ${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`);
     };
 
     // Apply gradients immediately
-    setTimeout(applySmartContentAwareGradients, 100);
+    setTimeout(applySmartMarbleGradients, 100);
 
     // Reapply gradients when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
@@ -209,8 +215,8 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
-        console.log('🎨 DOM changed, reapplying smart content-aware gradient system...');
-        setTimeout(applySmartContentAwareGradients, 100);
+        console.log('🎨 DOM changed, reapplying smart marble texture system...');
+        setTimeout(applySmartMarbleGradients, 100);
       }
     });
 

@@ -26,23 +26,23 @@
     --ring: 221.2 83.2% 53.3%;
     --radius: 0.5rem;
     
-    /* Enhanced brownish gradient system variables with cropped image support */
-    --fintech-overlay-opacity: 0.25;
-    --bg-position-x: 35%;
-    --bg-position-y: 50%;
-    --pattern-scale: 1.8;
-    --hue-shift: -12deg;
-    --brownish-saturate: 0.95;
-    --brownish-brightness: 1.0;
-    --brownish-contrast: 1.15;
+    /* Enhanced marble texture system variables with watermark concealment */
+    --marble-overlay-opacity: 0.5;
+    --bg-position-x: 30%;
+    --bg-position-y: 45%;
+    --marble-scale: 2.8;
+    --hue-shift: -8deg;
+    --marble-saturate: 0.92;
+    --marble-brightness: 1.05;
+    --marble-contrast: 1.12;
     
-    /* Text-aware positioning variables */
-    --text1-x: 30%;
-    --text1-y: 25%;
-    --text2-x: 70%;
-    --text2-y: 60%;
-    --text3-x: 50%;
-    --text3-y: 80%;
+    /* Text-aware positioning variables for marble */
+    --text1-x: 25%;
+    --text1-y: 30%;
+    --text2-x: 65%;
+    --text2-y: 55%;
+    --text3-x: 45%;
+    --text3-y: 75%;
   }
 
   .dark {
@@ -77,132 +77,162 @@
   }
 }
 
-/* Enhanced Fintech Card System with Smart Content-Aware Cropped Image Backgrounds */
+/* Enhanced Fintech Card System with Beige Marble Texture and Watermark Concealment */
 @layer components {
-  /* Base fintech card styling with cropped image */
+  /* Base fintech card styling with marble texture and watermark concealment */
   .fintech-card-base {
     position: relative;
-    background-image: url('/lovable-uploads/cream_gradient-cropped.jpg');
-    background-size: calc(var(--pattern-scale, 1.8) * 1000px);
-    background-position: var(--bg-position-x, 35%) var(--bg-position-y, 50%);
+    background: 
+      linear-gradient(rgba(245, 240, 225, var(--marble-overlay-opacity, 0.5)), rgba(250, 245, 235, var(--marble-overlay-opacity, 0.5))),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-size: calc(var(--marble-scale, 2.8) * 100%);
+    background-position: var(--bg-position-x, 30%) var(--bg-position-y, 45%);
     background-repeat: no-repeat;
     background-attachment: local;
+    background-blend-mode: soft-light;
     filter: 
-      hue-rotate(var(--hue-shift, -12deg))
-      saturate(var(--brownish-saturate, 0.95))
-      brightness(var(--brownish-brightness, 1.0))
-      contrast(var(--brownish-contrast, 1.15));
-    backdrop-filter: blur(0.5px);
-    border: 1px solid rgba(101, 67, 33, 0.2);
+      hue-rotate(var(--hue-shift, -8deg))
+      saturate(var(--marble-saturate, 0.92))
+      brightness(var(--marble-brightness, 1.05))
+      contrast(var(--marble-contrast, 1.12))
+      blur(0.3px);
+    border: 1px solid rgba(139, 111, 82, 0.2);
     box-shadow: 
-      0 4px 6px -1px rgba(101, 67, 33, 0.1),
-      0 2px 4px -1px rgba(101, 67, 33, 0.06),
+      0 4px 6px -1px rgba(139, 111, 82, 0.1),
+      0 2px 4px -1px rgba(139, 111, 82, 0.06),
       inset 0 1px 0 rgba(255, 248, 240, 0.1);
+  }
+
+  /* Watermark concealment overlay */
+  .fintech-card-base::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(245, 240, 225, 0.3) 0%,
+      rgba(250, 245, 235, 0.4) 50%,
+      rgba(240, 235, 220, 0.5) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
   }
 
   .fintech-card {
     @apply fintech-card-base;
-    @apply bg-white/80 backdrop-blur-sm border-amber-200/30;
+    @apply bg-white/70 backdrop-blur-sm border-amber-200/30;
   }
 
   .fintech-metric-card {
     @apply fintech-card-base;
-    @apply bg-gradient-to-br from-amber-50/90 to-orange-50/90;
+    @apply bg-gradient-to-br from-amber-50/80 to-orange-50/80;
   }
 
   .fintech-chart-container {
     @apply fintech-card-base;
-    @apply bg-gradient-to-r from-amber-50/85 to-yellow-50/85;
+    @apply bg-gradient-to-r from-amber-50/75 to-yellow-50/75;
   }
 
   .fintech-inner-box {
     @apply fintech-card-base;
-    @apply bg-gradient-to-bl from-orange-50/80 to-amber-50/80;
+    @apply bg-gradient-to-bl from-orange-50/70 to-amber-50/70;
   }
 
   .fintech-button-secondary {
     @apply fintech-card-base;
-    @apply bg-gradient-to-r from-amber-100/90 to-orange-100/90;
+    @apply bg-gradient-to-r from-amber-100/80 to-orange-100/80;
   }
 
-  /* Enhanced Brownish Pattern Variations - Updated for Cropped Image */
+  /* Enhanced Marble Pattern Variations with Watermark Concealment */
   .fintech-pattern-warm {
-    background-image: 
-      radial-gradient(circle at 25% 35%, rgba(160, 82, 45, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 50%),
-      radial-gradient(circle at 65% 55%, rgba(139, 69, 19, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 50%),
-      radial-gradient(circle at 45% 75%, rgba(101, 67, 33, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 70%),
-      url('/lovable-uploads/cream_gradient-cropped.jpg');
+    background: 
+      radial-gradient(circle at 25% 35%, rgba(160, 120, 85, var(--marble-overlay-opacity, 0.2)) 0%, transparent 50%),
+      radial-gradient(circle at 65% 55%, rgba(139, 102, 73, var(--marble-overlay-opacity, 0.2)) 0%, transparent 50%),
+      radial-gradient(circle at 45% 75%, rgba(128, 98, 68, var(--marble-overlay-opacity, 0.2)) 0%, transparent 70%),
+      linear-gradient(rgba(245, 240, 225, 0.4), rgba(250, 245, 235, 0.4)),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-blend-mode: soft-light, soft-light, soft-light, overlay, normal;
   }
 
   .fintech-pattern-cool {
-    background-image: 
-      radial-gradient(circle at 30% 40%, rgba(139, 90, 43, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 50%),
-      radial-gradient(circle at 60% 60%, rgba(160, 102, 64, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 50%),
-      radial-gradient(circle at 40% 70%, rgba(133, 94, 66, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 70%),
-      url('/lovable-uploads/cream_gradient-cropped.jpg');
+    background: 
+      radial-gradient(circle at 30% 40%, rgba(139, 116, 87, var(--marble-overlay-opacity, 0.2)) 0%, transparent 50%),
+      radial-gradient(circle at 60% 60%, rgba(160, 128, 98, var(--marble-overlay-opacity, 0.2)) 0%, transparent 50%),
+      radial-gradient(circle at 40% 70%, rgba(133, 108, 83, var(--marble-overlay-opacity, 0.2)) 0%, transparent 70%),
+      linear-gradient(rgba(248, 243, 228, 0.4), rgba(252, 247, 232, 0.4)),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-blend-mode: soft-light, soft-light, soft-light, overlay, normal;
   }
 
   .fintech-pattern-soft {
-    background-image: 
-      radial-gradient(circle at 35% 45%, rgba(150, 111, 51, var(--fintech-overlay-opacity, 0.2)) 0%, transparent 60%),
-      radial-gradient(circle at 55% 65%, rgba(184, 134, 11, var(--fintech-overlay-opacity, 0.2)) 0%, transparent 60%),
-      radial-gradient(circle at 45% 80%, rgba(146, 108, 59, var(--fintech-overlay-opacity, 0.2)) 0%, transparent 75%),
-      url('/lovable-uploads/cream_gradient-cropped.jpg');
+    background: 
+      radial-gradient(circle at 35% 45%, rgba(150, 125, 95, var(--marble-overlay-opacity, 0.15)) 0%, transparent 60%),
+      radial-gradient(circle at 55% 65%, rgba(168, 140, 105, var(--marble-overlay-opacity, 0.15)) 0%, transparent 60%),
+      radial-gradient(circle at 45% 80%, rgba(146, 122, 92, var(--marble-overlay-opacity, 0.15)) 0%, transparent 75%),
+      linear-gradient(rgba(250, 245, 235, 0.3), rgba(255, 250, 240, 0.3)),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-blend-mode: soft-light, soft-light, soft-light, overlay, normal;
   }
 
   .fintech-pattern-subtle {
-    background-image: 
-      radial-gradient(circle at 20% 30%, rgba(133, 77, 14, var(--fintech-overlay-opacity, 0.15)) 0%, transparent 65%),
-      radial-gradient(circle at 50% 50%, rgba(161, 98, 7, var(--fintech-overlay-opacity, 0.15)) 0%, transparent 65%),
-      radial-gradient(circle at 35% 75%, rgba(120, 79, 23, var(--fintech-overlay-opacity, 0.15)) 0%, transparent 80%),
-      url('/lovable-uploads/cream_gradient-cropped.jpg');
+    background: 
+      radial-gradient(circle at 20% 30%, rgba(133, 105, 78, var(--marble-overlay-opacity, 0.1)) 0%, transparent 65%),
+      radial-gradient(circle at 50% 50%, rgba(161, 132, 98, var(--marble-overlay-opacity, 0.1)) 0%, transparent 65%),
+      radial-gradient(circle at 35% 75%, rgba(120, 95, 70, var(--marble-overlay-opacity, 0.1)) 0%, transparent 80%),
+      linear-gradient(rgba(252, 247, 237, 0.3), rgba(255, 252, 242, 0.3)),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-blend-mode: soft-light, soft-light, soft-light, overlay, normal;
   }
 
   .fintech-pattern-classic {
-    background-image: 
-      radial-gradient(circle at 40% 25%, rgba(165, 124, 42, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 55%),
-      radial-gradient(circle at 65% 45%, rgba(138, 118, 59, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 55%),
-      radial-gradient(circle at 50% 70%, rgba(149, 117, 42, var(--fintech-overlay-opacity, 0.25)) 0%, transparent 75%),
-      url('/lovable-uploads/cream_gradient-cropped.jpg');
+    background: 
+      radial-gradient(circle at 40% 25%, rgba(165, 138, 108, var(--marble-overlay-opacity, 0.2)) 0%, transparent 55%),
+      radial-gradient(circle at 65% 45%, rgba(138, 115, 88, var(--marble-overlay-opacity, 0.2)) 0%, transparent 55%),
+      radial-gradient(circle at 50% 70%, rgba(149, 125, 95, var(--marble-overlay-opacity, 0.2)) 0%, transparent 75%),
+      linear-gradient(rgba(247, 242, 232, 0.4), rgba(251, 246, 236, 0.4)),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-blend-mode: soft-light, soft-light, soft-light, overlay, normal;
   }
 
-  /* Smart Text-Aware Positioning - Uses Natural Yellowish Areas for Text Readability */
+  /* Smart Text-Aware Positioning for Marble Texture */
   .fintech-text-aware {
-    background-image: 
-      radial-gradient(circle at var(--text1-x, 30%) var(--text1-y, 25%), rgba(255, 235, 176, 0.08) 0%, transparent 35%),
-      radial-gradient(circle at var(--text2-x, 70%) var(--text2-y, 60%), rgba(255, 235, 176, 0.06) 0%, transparent 35%),
-      radial-gradient(circle at var(--text3-x, 50%) var(--text3-y, 80%), rgba(255, 235, 176, 0.04) 0%, transparent 35%),
-      var(--pattern-bg, radial-gradient(circle at 45% 55%, rgba(139, 69, 19, 0.15) 0%, transparent 70%)),
-      url('/lovable-uploads/cream_gradient-cropped.jpg');
+    background: 
+      radial-gradient(circle at var(--text1-x, 25%) var(--text1-y, 30%), rgba(255, 248, 235, 0.06) 0%, transparent 35%),
+      radial-gradient(circle at var(--text2-x, 65%) var(--text2-y, 55%), rgba(255, 248, 235, 0.04) 0%, transparent 35%),
+      radial-gradient(circle at var(--text3-x, 45%) var(--text3-y, 75%), rgba(255, 248, 235, 0.03) 0%, transparent 35%),
+      var(--pattern-bg, radial-gradient(circle at 45% 55%, rgba(139, 111, 82, 0.12) 0%, transparent 70%)),
+      linear-gradient(rgba(248, 243, 233, 0.4), rgba(252, 247, 237, 0.4)),
+      url('/lovable-uploads/beige-marble-texture-with-spot-pattern.jpg');
+    background-blend-mode: normal, normal, normal, soft-light, overlay, normal;
   }
 
-  /* Text styling for optimal contrast on intelligent backgrounds */
+  /* Text styling optimized for marble texture */
   .fintech-text-header {
-    color: #654321;
-    text-shadow: 0 1px 2px rgba(255, 248, 220, 0.9);
+    color: #8B6F52;
+    text-shadow: 0 1px 2px rgba(255, 250, 240, 0.9);
     font-weight: 600;
   }
 
   .fintech-text-secondary {
-    color: #8B4513;
-    opacity: 0.85;
+    color: #A0825A;
+    opacity: 0.88;
   }
 
-  /* Button styling for consistent theme */
+  /* Button styling for marble theme */
   .fintech-button-primary {
-    @apply bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white;
-    box-shadow: 0 4px 6px -1px rgba(139, 69, 19, 0.2);
+    @apply bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white;
+    box-shadow: 0 4px 6px -1px rgba(139, 111, 82, 0.25);
   }
 
-  /* Card secondary background */
+  /* Card secondary background for marble */
   .fintech-card-secondary {
     @apply fintech-card-base;
-    @apply bg-gradient-to-br from-amber-50/70 to-orange-50/70;
+    @apply bg-gradient-to-br from-amber-50/60 to-orange-50/60;
     backdrop-filter: blur(1px);
   }
 }
 
-/* Animation enhancements for smooth transitions */
+/* Animation enhancements for marble texture */
 @layer utilities {
   .fintech-card-base,
   .fintech-card,
@@ -218,8 +248,8 @@
   .fintech-metric-card:hover {
     transform: translateY(-2px);
     box-shadow: 
-      0 10px 15px -3px rgba(101, 67, 33, 0.15),
-      0 4px 6px -2px rgba(101, 67, 33, 0.08),
+      0 10px 15px -3px rgba(139, 111, 82, 0.18),
+      0 4px 6px -2px rgba(139, 111, 82, 0.1),
       inset 0 1px 0 rgba(255, 248, 240, 0.15);
   }
 }
