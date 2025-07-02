@@ -1,6 +1,6 @@
-
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { Navigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
@@ -8,6 +8,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import QuickSettingsPanel from '@/components/header/QuickSettingsPanel';
 import { 
   User, 
   Mail, 
@@ -17,11 +22,22 @@ import {
   Calendar,
   Settings,
   Shield,
-  Award
+  Award,
+  Building,
+  Users,
+  ToggleLeft,
+  ToggleRight,
+  Briefcase,
+  UserCheck,
+  MapPin as MapPinIcon,
+  Eye,
+  EyeOff,
+  Navigation
 } from 'lucide-react';
 
 const Profile = () => {
   const { user } = useAuth();
+  const { currentRole, switchRole } = useRoleSwitch();
 
   if (!user) {
     return <Navigate to="/auth" replace />;
@@ -37,6 +53,11 @@ const Profile = () => {
     completedJobs: 127,
     isVerified: true,
     specialties: ['Plumbing', 'Electrical', 'General Repairs']
+  };
+
+  const handleRoleToggle = async () => {
+    const newRole = currentRole === 'customer' ? 'provider' : 'customer';
+    await switchRole(newRole);
   };
 
   return (
@@ -55,7 +76,7 @@ const Profile = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               {/* Profile Overview */}
               <div className="lg:col-span-1">
                 <Card className="fintech-card">
@@ -71,7 +92,7 @@ const Profile = () => {
                       {userProfile.isVerified && (
                         <Badge className="bg-green-100 text-green-800 mb-2">
                           <Shield className="h-3 w-3 mr-1" />
-                          Verified Provider
+                          Verified User
                         </Badge>
                       )}
                     </div>
@@ -95,6 +116,33 @@ const Profile = () => {
                       </div>
                     </div>
 
+                    {/* Role Toggle */}
+                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
+                        <span className="text-sm font-medium">Account Type</span>
+                      </div>
+                      <div className="flex items-center justify-center gap-3">
+                        <span className={`text-sm ${currentRole === 'customer' ? 'font-bold text-blue-600' : 'text-gray-500'}`}>
+                          Customer
+                        </span>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={handleRoleToggle}
+                          className="p-1 h-auto"
+                        >
+                          {currentRole === 'customer' ? (
+                            <ToggleLeft className="h-6 w-6 text-gray-400" />
+                          ) : (
+                            <ToggleRight className="h-6 w-6 text-blue-600" />
+                          )}
+                        </Button>
+                        <span className={`text-sm ${currentRole === 'provider' ? 'font-bold text-blue-600' : 'text-gray-500'}`}>
+                          Provider
+                        </span>
+                      </div>
+                    </div>
+
                     <Button className="w-full mt-4 fintech-button-secondary">
                       <Settings className="h-4 w-4 mr-2" />
                       Edit Profile
@@ -103,53 +151,134 @@ const Profile = () => {
                 </Card>
               </div>
 
-              {/* Profile Details */}
-              <div className="lg:col-span-2 space-y-6">
-                {/* Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card className="fintech-metric-card">
-                    <CardContent className="p-4 text-center">
-                      <div className="flex items-center justify-center mb-2">
-                        <Star className="h-6 w-6 text-yellow-500" />
-                      </div>
-                      <div className="text-2xl font-bold">{userProfile.rating}</div>
-                      <div className="text-sm opacity-70">Average Rating</div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="fintech-metric-card">
-                    <CardContent className="p-4 text-center">
-                      <div className="flex items-center justify-center mb-2">
-                        <Award className="h-6 w-6 text-green-500" />
-                      </div>
-                      <div className="text-2xl font-bold">{userProfile.completedJobs}</div>
-                      <div className="text-sm opacity-70">Jobs Completed</div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="fintech-metric-card">
-                    <CardContent className="p-4 text-center">
-                      <div className="flex items-center justify-center mb-2">
-                        <User className="h-6 w-6 text-blue-500" />
-                      </div>
-                      <div className="text-2xl font-bold">98%</div>
-                      <div className="text-sm opacity-70">Response Rate</div>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                {/* Specialties */}
+              {/* Main Content */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Quick Settings */}
                 <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle>Specialties</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      <Settings className="h-5 w-5" />
+                      Quick Settings
+                    </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {userProfile.specialties.map((specialty) => (
-                        <Badge key={specialty} variant="secondary" className="bg-blue-500/20 text-blue-800">
-                          {specialty}
-                        </Badge>
-                      ))}
+                    <QuickSettingsPanel />
+                  </CardContent>
+                </Card>
+
+                {/* Personal Profile Stats */}
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <User className="h-5 w-5" />
+                      Personal Profile
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="fintech-metric-card p-4 text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <Star className="h-6 w-6 text-yellow-500" />
+                        </div>
+                        <div className="text-2xl font-bold">{userProfile.rating}</div>
+                        <div className="text-sm opacity-70">Personal Rating</div>
+                      </div>
+
+                      <div className="fintech-metric-card p-4 text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <Award className="h-6 w-6 text-green-500" />
+                        </div>
+                        <div className="text-2xl font-bold">{userProfile.completedJobs}</div>
+                        <div className="text-sm opacity-70">Personal Jobs</div>
+                      </div>
+
+                      <div className="fintech-metric-card p-4 text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <Users className="h-6 w-6 text-blue-500" />
+                        </div>
+                        <div className="text-2xl font-bold">45</div>
+                        <div className="text-sm opacity-70">Network Connections</div>
+                      </div>
+                    </div>
+
+                    {/* Personal Specialties */}
+                    <div>
+                      <h4 className="font-medium mb-3">Personal Specialties</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {userProfile.specialties.map((specialty) => (
+                          <Badge key={specialty} variant="secondary" className="bg-blue-500/20 text-blue-800">
+                            {specialty}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Business Profile */}
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Building className="h-5 w-5" />
+                      Business Profile
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                      <div className="fintech-metric-card p-4 text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <Star className="h-6 w-6 text-yellow-500" />
+                        </div>
+                        <div className="text-2xl font-bold">4.9</div>
+                        <div className="text-sm opacity-70">Business Rating</div>
+                      </div>
+
+                      <div className="fintech-metric-card p-4 text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <Briefcase className="h-6 w-6 text-green-500" />
+                        </div>
+                        <div className="text-2xl font-bold">89</div>
+                        <div className="text-sm opacity-70">Business Jobs</div>
+                      </div>
+
+                      <div className="fintech-metric-card p-4 text-center">
+                        <div className="flex items-center justify-center mb-2">
+                          <Building className="h-6 w-6 text-purple-500" />
+                        </div>
+                        <div className="text-2xl font-bold">12</div>
+                        <div className="text-sm opacity-70">Team Members</div>
+                      </div>
+                    </div>
+
+                    {/* Business Settings */}
+                    <div className="space-y-4">
+                      <h4 className="font-medium">Business Visibility Settings</h4>
+                      
+                      <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <Eye className="h-4 w-4 text-green-600" />
+                            <Label className="text-sm font-medium">Show Business on Map</Label>
+                          </div>
+                          <Switch defaultChecked />
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <MapPinIcon className="h-4 w-4 text-gray-600" />
+                            <Label className="text-sm font-medium">Business Privacy Zone: 5 km</Label>
+                          </div>
+                          <Slider defaultValue={[5]} min={1} max={25} step={1} className="w-full" />
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Navigation className="h-4 w-4 text-green-600" />
+                            <Label className="text-sm font-medium">Business Service Range: 50 km</Label>
+                          </div>
+                          <Slider defaultValue={[50]} min={5} max={100} step={1} className="w-full" />
+                        </div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
