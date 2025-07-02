@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 export const useDynamicGradients = () => {
   useEffect(() => {
     const applyOrganicCloudGradients = () => {
-      console.log('🎨 Applying organic cloud gradients with new texture...');
+      console.log('🎨 Applying organic cloud gradients with cream texture...');
       
       // Get all fintech card elements
       const cardSelectors = [
@@ -17,7 +17,7 @@ export const useDynamicGradients = () => {
       ];
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
-      console.log(`🎨 Found ${cards.length} cards to style with cloud texture`);
+      console.log(`🎨 Found ${cards.length} cards to style with cream texture`);
       
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
@@ -39,6 +39,9 @@ export const useDynamicGradients = () => {
         // Randomize overlay opacity for variation (very subtle)
         const overlayOpacity = 0.05 + Math.random() * 0.08; // 0.05 to 0.13 for maximum subtlety
         htmlCard.style.setProperty('--fintech-overlay-opacity', overlayOpacity.toString());
+        
+        // Force background image application (mobile-ready)
+        htmlCard.style.setProperty('background-image', 'url(/lovable-uploads/cream_gradient.jpg)', 'important');
       });
     };
 
@@ -137,7 +140,7 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
-        console.log('🎨 DOM changed, reapplying cloud texture gradients...');
+        console.log('🎨 DOM changed, reapplying cream texture gradients...');
         // Delay to ensure DOM is fully updated
         setTimeout(applyOrganicCloudGradients, 100);
       }

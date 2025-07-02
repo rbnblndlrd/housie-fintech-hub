@@ -6,18 +6,11 @@ const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  // Check if this card is using fintech styling
-  const isFintech = className?.includes('fintech-');
-  
   return (
     <div
       ref={ref}
       className={cn(
-        "rounded-xl shadow-lg",
-        // Only apply default card styling if NOT using fintech classes
-        !isFintech && "text-card-foreground",
-        // Apply fintech-card-base if no fintech class is present but we want the cloud texture
-        !isFintech && "fintech-card-base",
+        "rounded-xl shadow-lg fintech-card-base",
         className
       )}
       {...props}

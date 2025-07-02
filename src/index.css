@@ -7,7 +7,7 @@
 @layer components {
   /* CSS Custom Properties for the new warm cream palette */
   :root {
-    --fintech-texture-bg: url('/lovable-uploads/0a457080-c5f5-46c4-a0a1-2b4a309180c1.png');
+    --fintech-texture-bg: url('/lovable-uploads/cream_gradient.jpg');
     --fintech-primary-text: #2C1810;
     --fintech-header-text: #1A0F08;
     --fintech-secondary-text: #5C4A3F;
@@ -69,13 +69,20 @@
 
   /* Base fintech card with cloud texture background */
   .fintech-card-base {
-    background-image: url('/lovable-uploads/0a457080-c5f5-46c4-a0a1-2b4a309180c1.png');
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 400px 400px;
     background-position: center;
     background-repeat: repeat;
     position: relative;
-    color: var(--fintech-primary-text);
+    color: var(--fintech-primary-text) !important;
     overflow: hidden;
+  }
+
+  /* Mobile optimization for fintech card base */
+  @media (max-width: 768px) {
+    .fintech-card-base {
+      background-size: 200px 200px !important;
+    }
   }
 
   /* Very subtle cloud-like gradient overlay for fintech cards */
@@ -139,109 +146,203 @@
 
   /* Fintech texture patterns using the cloud gradient image */
   .fintech-pattern-1 {
-    background-image: url('/lovable-uploads/0a457080-c5f5-46c4-a0a1-2b4a309180c1.png');
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 180px 180px;
     background-position: 0 0;
     background-repeat: repeat;
   }
 
   .fintech-pattern-2 {
-    background-image: url('/lovable-uploads/0a457080-c5f5-46c4-a0a1-2b4a309180c1.png');
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 140px 140px;
     background-position: 20px 20px;
     background-repeat: repeat;
   }
 
   .fintech-pattern-3 {
-    background-image: url('/lovable-uploads/0a457080-c5f5-46c4-a0a1-2b4a309180c1.png');
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 220px 220px;
     background-position: -30px -30px;
     background-repeat: repeat;
   }
 
   .fintech-pattern-4 {
-    background-image: url('/lovable-uploads/0a457080-c5f5-46c4-a0a1-2b4a309180c1.png');
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
     background-size: 200px 200px;
     background-position: 50px 50px;
     background-repeat: repeat;
   }
 
+  /* Mobile-optimized pattern sizes */
+  @media (max-width: 768px) {
+    .fintech-pattern-1 { background-size: 90px 90px !important; }
+    .fintech-pattern-2 { background-size: 70px 70px !important; }
+    .fintech-pattern-3 { background-size: 110px 110px !important; }
+    .fintech-pattern-4 { background-size: 100px 100px !important; }
+  }
+
   /* Main fintech card styles with cloud gradient background */
   .fintech-card {
-    @apply fintech-card-base border-2 border-black rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1;
+    @apply border-2 border-black rounded-xl shadow-lg transition-all duration-200;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 400px 400px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
+    overflow: hidden;
+  }
+
+  .fintech-card:hover {
+    @apply shadow-xl -translate-y-1;
+  }
+
+  /* Mobile touch states */
+  @media (max-width: 768px) {
+    .fintech-card {
+      background-size: 200px 200px !important;
+      touch-action: manipulation;
+    }
+    
+    .fintech-card:active {
+      @apply shadow-xl -translate-y-1;
+    }
   }
 
   .fintech-metric-card {
-    @apply fintech-card-base border-2 border-black rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:-translate-y-1;
+    @apply border-2 border-black rounded-xl shadow-lg transition-all duration-200;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 400px 400px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
+    overflow: hidden;
+  }
+
+  .fintech-metric-card:hover {
+    @apply shadow-xl -translate-y-1;
   }
 
   .fintech-chart-container {
-    @apply fintech-card-base border-2 border-black rounded-xl shadow-lg;
+    @apply border-2 border-black rounded-xl shadow-lg;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 400px 400px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
+    overflow: hidden;
   }
 
   /* Inner box styling for elements inside fintech cards */
   .fintech-inner-box {
-    @apply fintech-card-base border-2 border-black rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5;
+    @apply border-2 border-black rounded-lg shadow-md transition-all duration-200;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 300px 300px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
+    overflow: hidden;
+  }
+
+  .fintech-inner-box:hover {
+    @apply shadow-lg -translate-y-0.5;
   }
 
   /* Inner button styling for buttons inside fintech cards */
   .fintech-inner-button {
-    @apply fintech-card-base border-2 border-black rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5;
+    @apply border-2 border-black rounded-lg shadow-md transition-all duration-200;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 200px 200px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
+    overflow: hidden;
+  }
+
+  .fintech-inner-button:hover {
+    @apply shadow-lg -translate-y-0.5;
   }
 
   /* Button styles with new accent colors */
   .fintech-button-primary {
-    @apply border-2 border-black rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 text-white;
-    background-color: var(--fintech-accent-action);
+    @apply border-2 border-black rounded-lg shadow-md transition-all duration-200 text-white;
+    background-color: var(--fintech-accent-action) !important;
+    touch-action: manipulation;
   }
 
-  .fintech-button-primary:hover {
-    background-color: #7A3A0F;
+  .fintech-button-primary:hover,
+  .fintech-button-primary:active {
+    @apply shadow-lg -translate-y-0.5;
+    background-color: #7A3A0F !important;
   }
 
   .fintech-button-secondary {
-    @apply fintech-card-base border-2 border-black rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5;
+    @apply border-2 border-black rounded-lg shadow-md transition-all duration-200;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 200px 200px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
+    touch-action: manipulation;
+  }
+
+  .fintech-button-secondary:hover,
+  .fintech-button-secondary:active {
+    @apply shadow-lg -translate-y-0.5;
   }
 
   .fintech-button-emergency {
-    @apply border-2 border-black rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 text-white;
-    background-color: var(--fintech-accent-emergency);
+    @apply border-2 border-black rounded-lg shadow-md transition-all duration-200 text-white;
+    background-color: var(--fintech-accent-emergency) !important;
+    touch-action: manipulation;
   }
 
   .fintech-button-success {
-    @apply border-2 border-black rounded-lg shadow-md hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5 text-white;
-    background-color: var(--fintech-accent-success);
+    @apply border-2 border-black rounded-lg shadow-md transition-all duration-200 text-white;
+    background-color: var(--fintech-accent-success) !important;
+    touch-action: manipulation;
   }
 
   /* Input styles with textured background */
   .fintech-input {
-    @apply fintech-card-base border-2 border-black rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    @apply border-2 border-black rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    background-image: url('/lovable-uploads/cream_gradient.jpg') !important;
+    background-size: 150px 150px;
+    background-position: center;
+    background-repeat: repeat;
+    position: relative;
+    color: var(--fintech-primary-text) !important;
   }
 
   /* Typography utility classes */
   .fintech-text-primary {
-    color: var(--fintech-primary-text);
+    color: var(--fintech-primary-text) !important;
   }
 
   .fintech-text-header {
-    color: var(--fintech-header-text);
+    color: var(--fintech-header-text) !important;
     font-weight: 600;
   }
 
   .fintech-text-secondary {
-    color: var(--fintech-secondary-text);
+    color: var(--fintech-secondary-text) !important;
   }
 
   .fintech-text-accent {
-    color: var(--fintech-accent-action);
+    color: var(--fintech-accent-action) !important;
   }
 
   .fintech-text-emergency {
-    color: var(--fintech-accent-emergency);
+    color: var(--fintech-accent-emergency) !important;
   }
 
   .fintech-text-success {
-    color: var(--fintech-accent-success);
+    color: var(--fintech-accent-success) !important;
   }
 }
 
@@ -296,7 +397,20 @@
   * {
     @apply border-border;
   }
-  body {
+  
+  /* Override body background only for non-fintech elements */
+  body:not(.fintech-card-base) {
     @apply bg-background text-foreground;
+  }
+  
+  /* Ensure fintech elements keep their styling */
+  .fintech-card,
+  .fintech-card-base,
+  .fintech-metric-card,
+  .fintech-chart-container,
+  .fintech-inner-box,
+  .fintech-inner-button,
+  .fintech-button-secondary {
+    background: var(--fintech-texture-bg) !important;
   }
 }
