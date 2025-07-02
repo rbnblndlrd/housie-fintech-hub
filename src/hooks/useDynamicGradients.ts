@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 export const useDynamicGradients = () => {
   useEffect(() => {
     const applyOrganicCloudGradients = () => {
+      console.log('🎨 Applying organic cloud gradients...');
+      
       // Get all fintech card elements
       const cardSelectors = [
         '.fintech-card',
@@ -15,6 +17,7 @@ export const useDynamicGradients = () => {
       ];
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
+      console.log(`🎨 Found ${cards.length} cards to style`);
       
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
@@ -31,9 +34,10 @@ export const useDynamicGradients = () => {
         
         // Apply random fintech pattern
         htmlCard.classList.add(patterns[randomPattern]);
+        console.log(`🎨 Applied ${patterns[randomPattern]} to card ${index}`);
         
         // Randomize overlay opacity for variation
-        const overlayOpacity = 0.2 + Math.random() * 0.3; // 0.2 to 0.5
+        const overlayOpacity = 0.1 + Math.random() * 0.2; // 0.1 to 0.3 for subtlety
         htmlCard.style.setProperty('--fintech-overlay-opacity', overlayOpacity.toString());
       });
     };
@@ -43,20 +47,20 @@ export const useDynamicGradients = () => {
       const seed = index * 137.5; // Golden angle for better distribution
       
       // Cloud 1 position - varies organically
-      const cloud1X = 25 + Math.sin(seed) * 25; // 25-50% range
-      const cloud1Y = 30 + Math.cos(seed * 0.7) * 30; // 30-60% range
+      const cloud1X = 25 + Math.sin(seed) * 20; // 25-45% range (reduced for subtlety)
+      const cloud1Y = 30 + Math.cos(seed * 0.7) * 25; // 30-55% range
       
       // Cloud 2 position - complementary to cloud 1
-      const cloud2X = 65 + Math.sin(seed * 1.3) * 25; // 65-90% range
-      const cloud2Y = 60 + Math.cos(seed * 1.8) * 25; // 60-85% range
+      const cloud2X = 65 + Math.sin(seed * 1.3) * 20; // 65-85% range (reduced)
+      const cloud2Y = 60 + Math.cos(seed * 1.8) * 20; // 60-80% range
       
       // Vignette position - push toward edges for asymmetry
       const vignetteX = Math.sin(seed * 2.1) > 0 ? 
-        10 + Math.random() * 25 : // Left side (10-35%)
-        65 + Math.random() * 25;  // Right side (65-90%)
+        15 + Math.random() * 20 : // Left side (15-35%)
+        65 + Math.random() * 20;  // Right side (65-85%)
       const vignetteY = Math.cos(seed * 2.5) > 0 ? 
-        10 + Math.random() * 30 : // Top (10-40%)
-        60 + Math.random() * 30;  // Bottom (60-90%)
+        15 + Math.random() * 25 : // Top (15-40%)
+        60 + Math.random() * 25;  // Bottom (60-85%)
       
       // Apply organic cloud variations
       card.style.setProperty('--cloud1-x', `${cloud1X}%`);
@@ -65,6 +69,12 @@ export const useDynamicGradients = () => {
       card.style.setProperty('--cloud2-y', `${cloud2Y}%`);
       card.style.setProperty('--vignette-x', `${vignetteX}%`);
       card.style.setProperty('--vignette-y', `${vignetteY}%`);
+
+      console.log(`🎨 Card ${index} cloud positions:`, {
+        cloud1: `${cloud1X}%, ${cloud1Y}%`,
+        cloud2: `${cloud2X}%, ${cloud2Y}%`,
+        vignette: `${vignetteX}%, ${vignetteY}%`
+      });
 
       // Get all text elements within the card for multi-light effect
       const textElements = card.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span');
@@ -94,12 +104,13 @@ export const useDynamicGradients = () => {
         // Apply multi-light class if we have multiple text elements
         if (validPositions > 1) {
           card.classList.add('fintech-multi-light');
+          console.log(`🎨 Applied multi-light effect to card ${index}`);
         }
       }
     };
 
-    // Apply gradients on initial load
-    applyOrganicCloudGradients();
+    // Apply gradients immediately
+    setTimeout(applyOrganicCloudGradients, 100);
 
     // Reapply gradients when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
@@ -126,6 +137,7 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
+        console.log('🎨 DOM changed, reapplying gradients...');
         // Delay to ensure DOM is fully updated
         setTimeout(applyOrganicCloudGradients, 100);
       }
