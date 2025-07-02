@@ -1,7 +1,7 @@
 
 import type { Config } from "tailwindcss";
 
-export default {
+const config: Config = {
   darkMode: ["class"],
   content: [
     "./pages/**/*.{ts,tsx}",
@@ -53,43 +53,17 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Add cream color definition
-        cream: {
-          DEFAULT: "#f9f7e8", // Warm cream color matching the design
-          50: "#fefcf7",
-          100: "#fdf9f0",
-          200: "#faf5e7",
-          300: "#f6f0db",
-          400: "#f1e8ca",
-          500: "#f9f7e8", // Default cream
-          600: "#e8d5a6",
-          700: "#d4b574",
-          800: "#b8954a",
-          900: "#997a3d",
-        },
-        // Add Winchester green color definition
         winchester: {
-          DEFAULT: "#0F4C3A", // Deep forest green
-          50: "#f0f9f6",
-          100: "#dcf2e8",
-          200: "#bce5d4",
-          300: "#8dd0b8",
-          400: "#5bb396",
-          500: "#389577",
-          600: "#2a7862",
-          700: "#236150",
-          800: "#1f4f42",
-          900: "#0F4C3A", // Default Winchester green
-          950: "#0a2d23",
-        },
-        // Add fintech typography colors
-        fintech: {
-          primary: "#2C1810",
-          header: "#1A0F08", 
-          secondary: "#5C4A3F",
-          accent: "#8B4513",
-          emergency: "#A0522D",
-          success: "#556B2F",
+          50: '#f8f6f3',
+          100: '#f0ebe5',
+          200: '#e0d5c9',
+          300: '#ccb9a7',
+          400: '#b89780',
+          500: '#a87c63',
+          600: '#9b6f57',
+          700: '#815a4a',
+          800: '#694a3f',
+          900: '#543e35',
         },
       },
       borderRadius: {
@@ -111,68 +85,9 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
-      // Mobile-first responsive breakpoints
-      screens: {
-        'xs': '475px',
-        'sm': '640px',
-        'md': '768px',
-        'lg': '1024px',
-        'xl': '1280px',
-        '2xl': '1536px',
-      },
     },
   },
   plugins: [require("tailwindcss-animate")],
-  // Safelist for dynamic overlay positioning classes
-  safelist: [
-    // Static positioning classes used in overlay system
-    'top-20',
-    'top-5',
-    'bottom-4',
-    'bottom-5',
-    'left-4',
-    'left-5',
-    'right-4',
-    'right-5',
-    'left-1/2',
-    'transform',
-    '-translate-x-1/2',
-    // Mobile responsive classes
-    'md:top-20',
-    'md:top-5',
-    'md:bottom-5',
-    'md:left-5',
-    'md:right-5',
-    'md:bottom-5',
-    // Z-index classes
-    'z-30',
-    'z-40',
-    'z-50',
-    // Mobile-specific classes
-    'min-h-[44px]',
-    'min-w-[44px]',
-    'w-full',
-    'max-w-sm',
-    // Cream color variations for safelist
-    'bg-cream',
-    'bg-cream/95',
-    'bg-cream/90',
-    'bg-cream/80',
-    'text-cream',
-    'border-cream',
-    // Winchester green color variations for safelist
-    'bg-winchester',
-    'bg-winchester/95',
-    'bg-winchester/90',
-    'bg-winchester/80',
-    'text-winchester',
-    'border-winchester',
-    // Fintech color variations for safelist
-    'text-fintech-primary',
-    'text-fintech-header',
-    'text-fintech-secondary',
-    'text-fintech-accent',
-    'text-fintech-emergency',
-    'text-fintech-success',
-  ],
 } satisfies Config;
+
+export default config;

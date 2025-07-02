@@ -104,17 +104,17 @@ const Auth = () => {
         <div className="absolute inset-0 bg-black/20 z-10"></div>
         <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
           <div className="auth-hero-text">
-            <h1 className="text-5xl font-extrabold mb-3 text-white">Welcome to HOUSIE</h1>
+            <h1 className="text-5xl font-extrabold mb-3 text-winchester-900 text-shadow-lg">Welcome to HOUSIE</h1>
             <p className="text-xl text-white">Your trusted home services platform</p>
           </div>
         </div>
       </div>
 
-      {/* Right side - Authentication Form with Winchester Green Background */}
+      {/* Right side - Clean Authentication Form */}
       <div className="w-1/2 bg-gradient-to-br from-winchester-800 to-winchester-900 flex items-center justify-center p-8">
-        <Card className="w-full max-w-md fintech-card">
+        <Card className="w-full max-w-md bg-white shadow-xl border-2 border-gray-200 rounded-xl">
           <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <CardTitle className="text-2xl font-bold text-gray-800">
               Get Started
             </CardTitle>
             <p className="text-gray-600">Sign in to your account or create a new one</p>
@@ -125,7 +125,7 @@ const Auth = () => {
             
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t" />
+                <span className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-white px-2 text-gray-500">Or continue with email</span>
@@ -133,15 +133,15 @@ const Auth = () => {
             </div>
 
             <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 bg-gray-100">
+                <TabsTrigger value="signin" className="text-gray-700">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="text-gray-700">Sign Up</TabsTrigger>
               </TabsList>
               
               <TabsContent value="signin">
                 <form onSubmit={handleSignIn} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
+                    <Label htmlFor="signin-email" className="text-gray-700 font-medium">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -150,14 +150,14 @@ const Auth = () => {
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
                         required
                       />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
+                    <Label htmlFor="signin-password" className="text-gray-700 font-medium">Password</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -166,7 +166,7 @@ const Auth = () => {
                         placeholder="Enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
                         required
                       />
                     </div>
@@ -174,7 +174,7 @@ const Auth = () => {
                   
                   <Button
                     type="submit"
-                    className="w-full fintech-button-primary"
+                    className="w-full bg-winchester-700 hover:bg-winchester-800 text-white font-medium py-2 px-4 rounded-md transition-colors"
                     disabled={loading || !email || !password}
                   >
                     {loading ? (
@@ -192,7 +192,7 @@ const Auth = () => {
               <TabsContent value="signup">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
+                    <Label htmlFor="signup-email" className="text-gray-700 font-medium">Email</Label>
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -201,14 +201,14 @@ const Auth = () => {
                         placeholder="Enter your email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
                         required
                       />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
+                    <Label htmlFor="signup-password" className="text-gray-700 font-medium">Password</Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                       <Input
@@ -217,7 +217,7 @@ const Auth = () => {
                         placeholder="Choose a password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10"
+                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-winchester-600 focus:ring-winchester-600"
                         required
                         minLength={6}
                       />
@@ -226,7 +226,7 @@ const Auth = () => {
                   
                   <Button
                     type="submit"
-                    className="w-full fintech-button-primary"
+                    className="w-full bg-winchester-700 hover:bg-winchester-800 text-white font-medium py-2 px-4 rounded-md transition-colors"
                     disabled={loading || !email || !password}
                   >
                     {loading ? (
