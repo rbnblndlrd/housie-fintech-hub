@@ -77,8 +77,8 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
           onClick={onToggle}
           variant="outline"
           size="sm"
-          className={`bg-white/95 backdrop-blur-sm border-white/20 hover:bg-white transition-all duration-300 ${
-            isOpen ? 'bg-blue-50 border-blue-500' : ''
+          className={`fintech-card backdrop-blur-sm border-2 border-white/20 hover:border-white/40 transition-all duration-300 ${
+            isOpen ? 'fintech-card-secondary border-primary/50' : ''
           }`}
         >
           <Navigation className="h-4 w-4 mr-2" />
@@ -90,31 +90,31 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
       <div className={`fixed top-0 right-0 h-full w-80 lg:w-96 z-40 transition-transform duration-300 ease-out ${
         isOpen ? 'translate-x-0' : 'translate-x-full'
       }`}>
-        <div className="h-full fintech-card border-l border-white/20 shadow-2xl overflow-y-auto">
+        <div className="h-full fintech-card-base fintech-pattern-warm border-l-2 border-white/20 shadow-2xl overflow-y-auto backdrop-blur-sm">
           <Card className="h-full border-none bg-transparent shadow-none">
             <CardHeader className="pb-3 border-b border-white/20">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2 text-lg text-primary">
-                  <Navigation className="h-5 w-5 text-primary" />
+                <CardTitle className="flex items-center gap-2 text-lg fintech-text-header">
+                  <Navigation className="h-5 w-5" />
                   Navigation & Route Details
                 </CardTitle>
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={onToggle}
-                  className="h-8 w-8 p-0 text-primary hover:bg-white/10"
+                  className="h-8 w-8 p-0 fintech-text-secondary hover:fintech-card-secondary"
                 >
                   <X className="h-4 w-4" />
                 </Button>
               </div>
               
               {currentJob && (
-                <div className="mt-2 p-3 fintech-card-secondary rounded-lg">
-                  <div className="flex items-center gap-2 text-primary font-medium">
+                <div className="mt-2 p-3 fintech-inner-box rounded-lg">
+                  <div className="flex items-center gap-2 fintech-text-header font-medium">
                     <MapPin className="h-4 w-4" />
                     Current Route
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="text-sm fintech-text-secondary mt-1">
                     To {currentJob.customerName} • {currentJob.distance} • {currentJob.estimatedTime}
                   </p>
                 </div>
@@ -124,15 +124,15 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
             <CardContent className="p-4 space-y-4">
               {/* Navigation Tabs */}
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid w-full grid-cols-2 fintech-card">
-                  <TabsTrigger value="turn-by-turn">Turn-by-Turn</TabsTrigger>
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsList className="grid w-full grid-cols-2 fintech-inner-box">
+                  <TabsTrigger value="turn-by-turn" className="fintech-text-secondary">Turn-by-Turn</TabsTrigger>
+                  <TabsTrigger value="overview" className="fintech-text-secondary">Overview</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="turn-by-turn" className="mt-4 space-y-4">
                   {/* Turn-by-Turn Directions */}
                   <div>
-                    <h3 className="font-medium text-primary mb-3 flex items-center gap-2">
+                    <h3 className="font-medium fintech-text-header mb-3 flex items-center gap-2">
                       <Route className="h-4 w-4" />
                       Turn-by-Turn Directions
                     </h3>
@@ -140,21 +140,21 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
                       {turnByTurnDirections.map((direction, index) => (
                         <div 
                           key={direction.step}
-                          className={`p-3 rounded-lg border fintech-card-secondary ${
+                          className={`p-3 rounded-lg border fintech-inner-box ${
                             index === 0 
-                              ? 'border-primary/20' 
-                              : 'border-muted/20'
+                              ? 'border-primary/40' 
+                              : 'border-white/20'
                           }`}
                         >
                           <div className="flex items-start gap-3">
                             <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                              index === 0 ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'
+                              index === 0 ? 'bg-primary text-primary-foreground' : 'fintech-card-secondary fintech-text-secondary'
                             }`}>
                               {direction.step}
                             </div>
                             <div className="flex-1">
-                              <p className="font-medium text-sm">{direction.instruction}</p>
-                              <p className="text-xs text-muted-foreground">{direction.distance}</p>
+                              <p className="font-medium text-sm fintech-text-header">{direction.instruction}</p>
+                              <p className="text-xs fintech-text-secondary">{direction.distance}</p>
                             </div>
                             {index === 0 && <ChevronRight className="h-4 w-4 text-primary" />}
                           </div>
@@ -167,29 +167,29 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
                 <TabsContent value="overview" className="mt-4 space-y-4">
                   {/* Route Overview */}
                   <div>
-                    <h3 className="font-medium text-gray-900 mb-3">Route Summary</h3>
+                    <h3 className="font-medium fintech-text-header mb-3">Route Summary</h3>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="p-3 bg-gray-50 rounded-lg">
-                        <div className="text-xs text-gray-600">Total Distance</div>
-                        <div className="font-semibold">{currentJob?.distance || "2.2 km"}</div>
+                      <div className="p-3 fintech-inner-box rounded-lg">
+                        <div className="text-xs fintech-text-secondary">Total Distance</div>
+                        <div className="font-semibold fintech-text-header">{currentJob?.distance || "2.2 km"}</div>
                       </div>
-                      <div className="p-3 bg-gray-50 rounded-lg">
-                        <div className="text-xs text-gray-600">Est. Time</div>
-                        <div className="font-semibold">{currentJob?.estimatedTime || "12 min"}</div>
+                      <div className="p-3 fintech-inner-box rounded-lg">
+                        <div className="text-xs fintech-text-secondary">Est. Time</div>
+                        <div className="font-semibold fintech-text-header">{currentJob?.estimatedTime || "12 min"}</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Nearby Services */}
                   <div>
-                    <h3 className="font-medium text-gray-900 mb-3">Nearby Services</h3>
+                    <h3 className="font-medium fintech-text-header mb-3">Nearby Services</h3>
                     <div className="space-y-2">
                       {nearbyServices.map((service, index) => (
-                        <div key={index} className="flex items-center gap-3 p-2 bg-gray-50 rounded-lg">
-                          <service.icon className="h-4 w-4 text-gray-600" />
+                        <div key={index} className="flex items-center gap-3 p-2 fintech-inner-box rounded-lg">
+                          <service.icon className="h-4 w-4 fintech-text-secondary" />
                           <div className="flex-1">
-                            <p className="text-sm font-medium">{service.name}</p>
-                            <p className="text-xs text-gray-600">{service.distance}</p>
+                            <p className="text-sm font-medium fintech-text-header">{service.name}</p>
+                            <p className="text-xs fintech-text-secondary">{service.distance}</p>
                           </div>
                         </div>
                       ))}
@@ -200,13 +200,13 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
 
               {/* Traffic Conditions */}
               <div>
-                <h3 className="font-medium text-gray-900 mb-3 flex items-center gap-2">
+                <h3 className="font-medium fintech-text-header mb-3 flex items-center gap-2">
                   <AlertTriangle className="h-4 w-4" />
                   Traffic Conditions
                 </h3>
                 <div className="space-y-2">
                   {trafficConditions.map((condition, index) => (
-                    <div key={index} className="flex items-center gap-3 text-sm">
+                    <div key={index} className="flex items-center gap-3 text-sm fintech-text-header">
                       <span>{condition.icon}</span>
                       <span>{condition.message}</span>
                     </div>
@@ -216,23 +216,23 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
 
               {/* Alternative Routes */}
               <div>
-                <h3 className="font-medium text-gray-900 mb-3">Alternative Routes</h3>
+                <h3 className="font-medium fintech-text-header mb-3">Alternative Routes</h3>
                 <div className="space-y-2">
                   {alternativeRoutes.map((route, index) => (
                     <div 
                       key={index}
                       className={`p-3 rounded-lg border cursor-pointer transition-colors ${
                         route.active 
-                          ? 'bg-blue-50 border-blue-200' 
-                          : 'bg-gray-50 border-gray-200 hover:bg-gray-100'
+                          ? 'fintech-card-secondary border-primary/40' 
+                          : 'fintech-inner-box border-white/20 hover:fintech-card-secondary'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <div>
-                          <p className="font-medium text-sm">{route.name}</p>
-                          {route.note && <p className="text-xs text-gray-600">{route.note}</p>}
+                          <p className="font-medium text-sm fintech-text-header">{route.name}</p>
+                          {route.note && <p className="text-xs fintech-text-secondary">{route.note}</p>}
                         </div>
-                        <div className="text-sm font-semibold">{route.time}</div>
+                        <div className="text-sm font-semibold fintech-text-header">{route.time}</div>
                       </div>
                     </div>
                   ))}
@@ -262,13 +262,13 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
               {/* Next Job Preview */}
               {nextJob && (
                 <div>
-                  <h3 className="font-medium text-gray-900 mb-3">Next Job Preview</h3>
-                  <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg">
+                  <h3 className="font-medium fintech-text-header mb-3">Next Job Preview</h3>
+                  <div className="p-3 fintech-card-secondary border border-primary/20 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
-                      <Car className="h-4 w-4 text-amber-600" />
-                      <span className="font-medium text-amber-800">{nextJob.customerName}</span>
+                      <Car className="h-4 w-4 text-primary" />
+                      <span className="font-medium fintech-text-header">{nextJob.customerName}</span>
                     </div>
-                    <p className="text-sm text-amber-600">
+                    <p className="text-sm fintech-text-secondary">
                       {nextJob.distance} • After current: {nextJob.estimatedTime} drive
                     </p>
                   </div>
@@ -278,7 +278,7 @@ const NavigationOverlay: React.FC<NavigationOverlayProps> = ({
               {/* Voice Navigation */}
               <Button
                 onClick={() => setVoiceEnabled(!voiceEnabled)}
-                className={`w-full ${voiceEnabled ? 'bg-blue-600 hover:bg-blue-700' : ''}`}
+                className={`w-full fintech-button-primary ${voiceEnabled ? 'bg-primary hover:bg-primary/90' : 'fintech-inner-box'}`}
                 variant={voiceEnabled ? "default" : "outline"}
               >
                 <Volume2 className="h-4 w-4 mr-2" />
