@@ -18,11 +18,14 @@ import {
   Mail,
   CheckCircle,
   AlertCircle,
-  Eye
+  Eye,
+  Briefcase,
+  Map,
+  UserCog
 } from 'lucide-react';
 
 const ProviderDashboard = () => {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('job-hub');
 
   // Sample data
   const recentBookings = [
@@ -106,13 +109,25 @@ const ProviderDashboard = () => {
             {/* Main Content Tabs */}
             <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
               <TabsList className="fintech-card p-1">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="bookings">Bookings</TabsTrigger>
-                <TabsTrigger value="earnings">Earnings</TabsTrigger>
-                <TabsTrigger value="reviews">Reviews</TabsTrigger>
+                <TabsTrigger value="job-hub">
+                  <Briefcase className="h-4 w-4 mr-2" />
+                  Job Hub
+                </TabsTrigger>
+                <TabsTrigger value="map">
+                  <Map className="h-4 w-4 mr-2" />
+                  Map
+                </TabsTrigger>
+                <TabsTrigger value="crew">
+                  <Users className="h-4 w-4 mr-2" />
+                  Crew
+                </TabsTrigger>
+                <TabsTrigger value="profile">
+                  <UserCog className="h-4 w-4 mr-2" />
+                  Profile
+                </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="overview" className="space-y-6">
+              <TabsContent value="job-hub" className="space-y-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Recent Bookings */}
                   <Card className="fintech-card">
@@ -154,7 +169,7 @@ const ProviderDashboard = () => {
                       </div>
                       <Button variant="outline" className="w-full mt-4">
                         <Eye className="h-4 w-4 mr-2" />
-                        View All Bookings
+                        View All Jobs
                       </Button>
                     </CardContent>
                   </Card>
@@ -186,70 +201,40 @@ const ProviderDashboard = () => {
                 </div>
               </TabsContent>
 
-              <TabsContent value="bookings">
+              <TabsContent value="map">
                 <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle>All Bookings</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      {recentBookings.map((booking) => (
-                        <div key={booking.id} className="flex items-center justify-between p-4 fintech-card-secondary rounded-lg">
-                          <div className="flex-1">
-                            <h4 className="font-medium">{booking.service}</h4>
-                            <p className="text-sm opacity-70">{booking.client}</p>
-                            <div className="flex items-center gap-4 mt-2 text-sm">
-                              <span className="flex items-center gap-1">
-                                <Calendar className="h-3 w-3" />
-                                {booking.date}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="h-3 w-3" />
-                                {booking.time}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <MapPin className="h-3 w-3" />
-                                {booking.location}
-                              </span>
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <Badge 
-                              variant={booking.status === 'confirmed' ? 'default' : 'secondary'}
-                              className="mb-2"
-                            >
-                              {booking.status}
-                            </Badge>
-                            <p className="font-semibold">${booking.amount}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="earnings">
-                <Card className="fintech-chart-container">
-                  <CardHeader>
-                    <CardTitle>Earnings Overview</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-64 flex items-center justify-center">
-                      <p className="opacity-70">Earnings chart will be displayed here</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="reviews">
-                <Card className="fintech-card">
-                  <CardHeader>
-                    <CardTitle>Customer Reviews</CardTitle>
+                    <CardTitle>Map View</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-8">
-                      <p className="opacity-70">Reviews and ratings will be displayed here</p>
+                      <p className="opacity-70">Interactive map will be displayed here</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="crew">
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle>Crew Management</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8">
+                      <p className="opacity-70">Crew management interface will be displayed here</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="profile">
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle>Profile Settings</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8">
+                      <p className="opacity-70">Profile settings and information will be displayed here</p>
                     </div>
                   </CardContent>
                 </Card>
