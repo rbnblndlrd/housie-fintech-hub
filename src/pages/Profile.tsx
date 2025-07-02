@@ -332,85 +332,121 @@ const Profile = () => {
 
                   {/* Business Profile Tab */}
                   <TabsContent value="business" className="space-y-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                      {/* Business Logo */}
-                      <div className="lg:col-span-1">
-                        <Card className="fintech-card">
-                          <CardContent className="p-6 text-center">
-                            <div className="relative w-24 h-24 mx-auto mb-4">
-                              <Avatar className="w-24 h-24">
-                                <AvatarFallback className="bg-gradient-to-r from-purple-500 to-orange-500 text-white text-2xl">
-                                  <Building className="h-8 w-8" />
-                                </AvatarFallback>
-                              </Avatar>
-                              <Button size="sm" className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0">
-                                <Camera className="h-4 w-4" />
+                    {/* Business Background Card */}
+                    <Card className="fintech-card relative overflow-hidden">
+                      {/* Business Banner Background */}
+                      <div 
+                        className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-orange-500/20 to-pink-500/20"
+                        style={{
+                          backgroundImage: `url('/lovable-uploads/c36ac505-ca7b-4431-ab6e-318a8be7da6e.png')`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                          backgroundRepeat: 'no-repeat'
+                        }}
+                      />
+                      
+                      {/* Content Overlay */}
+                      <div className="relative z-10 p-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                          {/* Business Logo Section */}
+                          <div className="lg:col-span-1">
+                            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6 text-center">
+                              <div className="relative w-24 h-24 mx-auto mb-4">
+                                <Avatar className="w-24 h-24">
+                                  <AvatarFallback className="bg-gradient-to-r from-purple-500 to-orange-500 text-white text-2xl">
+                                    <Building className="h-8 w-8" />
+                                  </AvatarFallback>
+                                </Avatar>
+                                <Button size="sm" className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0">
+                                  <Camera className="h-4 w-4" />
+                                </Button>
+                              </div>
+                              <Badge className="bg-purple-100 text-purple-800">Business Profile</Badge>
+                              
+                              {/* Banner Upload Button */}
+                              <Button variant="outline" size="sm" className="w-full mt-4">
+                                <Camera className="h-4 w-4 mr-2" />
+                                Upload Banner
                               </Button>
                             </div>
-                            <Badge className="bg-purple-100 text-purple-800">Business Profile</Badge>
-                          </CardContent>
-                        </Card>
-                      </div>
+                          </div>
 
-                      {/* Business Details */}
-                      <div className="lg:col-span-3 space-y-6">
-                        {/* Business Stats */}
-                        <Card className="fintech-card">
-                          <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                              <Building className="h-5 w-5" />
-                              Business Performance
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div className="fintech-metric-card p-4 text-center">
-                                <Star className="h-6 w-6 text-yellow-500 mx-auto mb-2" />
-                                <div className="text-2xl font-bold">4.9</div>
-                                <div className="text-sm opacity-70">Business Rating</div>
-                              </div>
-                              <div className="fintech-metric-card p-4 text-center">
-                                <Briefcase className="h-6 w-6 text-green-500 mx-auto mb-2" />
-                                <div className="text-2xl font-bold">89</div>
-                                <div className="text-sm opacity-70">Business Jobs</div>
-                              </div>
-                              <div className="fintech-metric-card p-4 text-center">
-                                <Users className="h-6 w-6 text-purple-500 mx-auto mb-2" />
-                                <div className="text-2xl font-bold">12</div>
-                                <div className="text-sm opacity-70">Team Members</div>
+                          {/* Business Content */}
+                          <div className="lg:col-span-3 space-y-6">
+                            {/* Business Performance Stats */}
+                            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6">
+                              <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                                <Building className="h-5 w-5" />
+                                Business Performance
+                              </h3>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="fintech-metric-card p-4 text-center bg-white/50">
+                                  <Star className="h-6 w-6 text-yellow-500 mx-auto mb-2" />
+                                  <div className="text-2xl font-bold">4.9</div>
+                                  <div className="text-sm opacity-70">Business Rating</div>
+                                </div>
+                                <div className="fintech-metric-card p-4 text-center bg-white/50">
+                                  <Briefcase className="h-6 w-6 text-green-500 mx-auto mb-2" />
+                                  <div className="text-2xl font-bold">89</div>
+                                  <div className="text-sm opacity-70">Business Jobs</div>
+                                </div>
+                                <div className="fintech-metric-card p-4 text-center bg-white/50">
+                                  <Users className="h-6 w-6 text-purple-500 mx-auto mb-2" />
+                                  <div className="text-2xl font-bold">12</div>
+                                  <div className="text-sm opacity-70">Team Members</div>
+                                </div>
                               </div>
                             </div>
-                          </CardContent>
-                        </Card>
 
-                        {/* Business Information */}
-                        <Card className="fintech-card">
-                          <CardHeader>
-                            <CardTitle>Business Information</CardTitle>
-                          </CardHeader>
-                          <CardContent className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                              <div>
-                                <label className="text-sm font-medium">Business Name</label>
-                                <Input placeholder="Enter business name" className="mt-1" />
+                            {/* Business Information */}
+                            <div className="bg-white/90 backdrop-blur-sm rounded-lg p-6">
+                              <div className="flex items-center justify-between mb-4">
+                                <h3 className="text-lg font-semibold">Business Information</h3>
+                                <Button variant="outline" size="sm" onClick={() => setEditing(!editing)}>
+                                  <Edit className="h-4 w-4 mr-2" />
+                                  {editing ? 'Cancel' : 'Edit'}
+                                </Button>
                               </div>
-                              <div>
-                                <label className="text-sm font-medium">Industry</label>
-                                <Input placeholder="Select industry" className="mt-1" />
+                              <div className="space-y-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  <div>
+                                    <label className="text-sm font-medium">Business Name</label>
+                                    <Input 
+                                      placeholder="Enter business name" 
+                                      className="mt-1"
+                                      disabled={!editing}
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="text-sm font-medium">Industry</label>
+                                    <Input 
+                                      placeholder="Select industry" 
+                                      className="mt-1"
+                                      disabled={!editing}
+                                    />
+                                  </div>
+                                </div>
+                                <div>
+                                  <label className="text-sm font-medium">Business Description</label>
+                                  <Textarea 
+                                    placeholder="Describe your business..."
+                                    className="mt-1"
+                                    rows={3}
+                                    disabled={!editing}
+                                  />
+                                </div>
+                                {editing && (
+                                  <Button className="fintech-button-primary">
+                                    <Save className="h-4 w-4 mr-2" />
+                                    Save Changes
+                                  </Button>
+                                )}
                               </div>
                             </div>
-                            <div>
-                              <label className="text-sm font-medium">Business Description</label>
-                              <Textarea 
-                                placeholder="Describe your business..."
-                                className="mt-1"
-                                rows={3}
-                              />
-                            </div>
-                          </CardContent>
-                        </Card>
+                          </div>
+                        </div>
                       </div>
-                    </div>
+                    </Card>
                   </TabsContent>
 
                   {/* Settings Tab */}
