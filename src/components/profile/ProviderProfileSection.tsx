@@ -31,7 +31,7 @@ const ProviderProfileSection: React.FC<ProviderProfileSectionProps> = ({ userPro
   });
 
   return (
-    <Card className="fintech-card">
+    <Card className="fintech-card bg-gray-50/80 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Briefcase className="h-5 w-5" />

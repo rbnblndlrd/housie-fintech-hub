@@ -37,7 +37,7 @@ const BusinessProfileSection: React.FC<BusinessProfileSectionProps> = ({ editing
   });
 
   return (
-    <Card className="fintech-card">
+    <Card className="fintech-card bg-gray-50/80 backdrop-blur-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Building className="h-5 w-5" />
