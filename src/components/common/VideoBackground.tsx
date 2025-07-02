@@ -109,7 +109,7 @@ const VideoBackground = () => {
             <source src="/lovable-uploads/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4" type="video/mp4" />
             <source src="/8f29cd4b-fed7-49b8-a5b9-018157280b00.mp4" type="video/mp4" />
             Your browser does not support the video tag.
-          </source>
+          </video>
           
           {videoState.isLoading && (
             <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-orange-900 via-red-900 to-yellow-800 flex items-center justify-center z-10">
