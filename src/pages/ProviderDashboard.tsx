@@ -180,11 +180,12 @@ const ProviderDashboard = () => {
               </TabsList>
 
               <TabsContent value="job-hub" className="space-y-3">
-                {/* Top Row - Quick Stats (left) and Calendar (right) */}
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 mb-3">
-                  {/* Quick Stats - Top Left (1 column) */}
-                  <div className="lg:col-span-1">
-                    <Card className="fintech-card h-fit">
+                {/* Top Section - Calendar and Stats */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
+                  {/* Stats Column - Stacked vertically */}
+                  <div className="space-y-3 lg:order-1 h-full">
+                    {/* Quick Stats */}
+                    <Card className="fintech-card">
                       <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="flex items-center gap-2 text-base">
                           <BarChart3 className="h-4 w-4" />
@@ -208,57 +209,19 @@ const ProviderDashboard = () => {
                         </div>
                       </CardContent>
                     </Card>
-                  </div>
 
-                  {/* Calendar - Top Right (3 columns) */}
-                  <div className="lg:col-span-3">
-                    <Card className="fintech-card h-fit">
-                      <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          <Calendar className="h-4 w-4" />
-                          Calendar
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 px-3 pb-3">
-                        <div className="space-y-2">
-                          <div className="text-center">
-                            <div className="text-sm font-semibold">January 2024</div>
-                            <div className="grid grid-cols-7 gap-1 mt-1 text-xs">
-                              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                                <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
-                              ))}
-                              {Array.from({length: 31}, (_, i) => (
-                                <div key={i} className={`p-1 text-center rounded text-xs ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
-                                  {i + 1}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          <Button variant="outline" className="w-full text-sm">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Sync with Google
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-
-                {/* Second Row - Recent Activity positioned according to red box */}
-                <div className="grid grid-cols-1 lg:grid-cols-4 gap-3">
-                  {/* Recent Activity - Bottom Left (2 columns) */}
-                  <div className="lg:col-span-2">
-                    <Card className="fintech-card h-fit">
+                    {/* Recent Activity Feed */}
+                    <Card className="fintech-card flex-1">
                       <CardHeader className="pb-2 px-3 pt-3">
                         <CardTitle className="flex items-center gap-2 text-base">
                           <Activity className="h-4 w-4" />
                           Recent Activity
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0 px-3 pb-3">
+                      <CardContent className="pt-0 px-3 pb-3 flex-1">
                         <div className="space-y-1">
-                          {recentActivity.map((activity, index) => (
-                            <div key={index} className="flex items-start gap-2 p-2 rounded-lg fintech-card-secondary">
+                          {recentActivity.slice(0, 3).map((activity, index) => (
+                            <div key={index} className="flex items-start gap-2 p-1 rounded-lg fintech-card-secondary">
                               <div className={`p-1 rounded-full ${
                                 activity.type === 'booking' ? 'bg-blue-100' :
                                 activity.type === 'payment' ? 'bg-green-100' :
@@ -278,11 +241,37 @@ const ProviderDashboard = () => {
                       </CardContent>
                     </Card>
                   </div>
-                  
-                  {/* Empty space for future content (2 columns) */}
-                  <div className="lg:col-span-2">
-                    {/* This space matches the right red box area */}
-                  </div>
+
+                  {/* Calendar Widget - Top Right Corner */}
+                  <Card className="fintech-card lg:order-2">
+                    <CardHeader className="pb-2 px-3 pt-3">
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Calendar className="h-4 w-4" />
+                        Calendar
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 px-3 pb-3">
+                      <div className="space-y-2">
+                        <div className="text-center">
+                          <div className="text-sm font-semibold">January 2024</div>
+                          <div className="grid grid-cols-7 gap-1 mt-1 text-xs">
+                            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+                              <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
+                            ))}
+                            {Array.from({length: 31}, (_, i) => (
+                              <div key={i} className={`p-1 text-center rounded text-xs ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
+                                {i + 1}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <Button variant="outline" className="w-full text-sm">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          Sync with Google
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
                 {pendingRequests.length > 0 && (
                   <Card className="fintech-card border-amber-200 bg-amber-50/80">
