@@ -254,7 +254,7 @@
     box-shadow: 
       0 15px 25px -5px rgba(139, 111, 82, 0.25),
       0 8px 12px -4px rgba(139, 111, 82, 0.15);
-    border-color: rgba(139, 111, 82, 0.6);
+    border-color: #003d00;
   }
 
   /* Enhanced text contrast utilities */
