@@ -254,7 +254,8 @@
     box-shadow: 
       0 15px 25px -5px rgba(139, 111, 82, 0.25),
       0 8px 12px -4px rgba(139, 111, 82, 0.15);
-    border-color: #003d00;
+    border: 5px solid;
+    border-image: linear-gradient(135deg, #6366f1, #8b5cf6, #a855f7) 1;
   }
 
   /* Enhanced text contrast utilities */
