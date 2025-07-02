@@ -1,9 +1,8 @@
-
 import { useEffect } from 'react';
 
 export const useDynamicGradients = () => {
   useEffect(() => {
-    const applyContentAwareGradients = () => {
+    const applyOrganicCloudGradients = () => {
       // Get all card elements including fintech cards
       const cardSelectors = [
         '.card:not(.fintech-card):not(.fintech-metric-card):not(.fintech-chart-container)',
@@ -19,7 +18,7 @@ export const useDynamicGradients = () => {
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
       
-      cards.forEach((card: Element) => {
+      cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
         
         // Check if this is a fintech element
@@ -47,34 +46,31 @@ export const useDynamicGradients = () => {
           const overlayOpacity = 0.2 + Math.random() * 0.3; // 0.2 to 0.5
           htmlCard.style.setProperty('--fintech-overlay-opacity', overlayOpacity.toString());
         } else {
-          // Regular gradient logic for non-fintech cards
-          // Randomize gradient center position (keeping it somewhat centered)
-          const x = 40 + Math.random() * 20; // 40-60%
-          const y = 40 + Math.random() * 20; // 40-60%
+          // Apply organic cloud-like gradients for regular cards
+          const seed = index * 137.5; // Golden angle for better distribution
           
-          // Randomize gradient size
-          const size = 120 + Math.random() * 80; // 120-200%
+          // Cloud positions - keep them off-center for organic feel
+          const cloud1X = 20 + Math.sin(seed) * 30; // 20-50% range
+          const cloud1Y = 25 + Math.cos(seed * 0.7) * 35; // 25-60% range
           
-          // Randomize gradient angle for linear gradients
-          const angle = Math.random() * 360; // 0-360 degrees
+          const cloud2X = 70 + Math.sin(seed * 1.3) * 25; // 70-95% range
+          const cloud2Y = 65 + Math.cos(seed * 1.8) * 30; // 65-95% range
           
-          // Apply random values
-          htmlCard.style.setProperty('--gradient-x', `${x}%`);
-          htmlCard.style.setProperty('--gradient-y', `${y}%`);
-          htmlCard.style.setProperty('--gradient-size', `${size}%`);
-          htmlCard.style.setProperty('--gradient-angle', `${angle}deg`);
+          // Vignette center - push toward edges for asymmetry
+          const vignetteX = Math.sin(seed * 2.1) > 0 ? 
+            15 + Math.random() * 20 : // Left side (15-35%)
+            65 + Math.random() * 20;  // Right side (65-85%)
+          const vignetteY = Math.cos(seed * 2.5) > 0 ? 
+            10 + Math.random() * 25 : // Top (10-35%)
+            65 + Math.random() * 25;  // Bottom (65-90%)
           
-          // Randomly apply one of the gradient patterns (33% chance each)
-          const patterns = ['gradient-pattern-1', 'gradient-pattern-2', 'gradient-pattern-3'];
-          const randomPattern = Math.floor(Math.random() * 4); // 0-3, where 3 means no pattern (default)
-          
-          // Remove any existing pattern classes
-          patterns.forEach(pattern => htmlCard.classList.remove(pattern));
-          
-          // Apply random pattern (75% chance of getting a pattern, 25% default)
-          if (randomPattern < 3) {
-            htmlCard.classList.add(patterns[randomPattern]);
-          }
+          // Apply organic cloud variations
+          htmlCard.style.setProperty('--cloud1-x', `${cloud1X}%`);
+          htmlCard.style.setProperty('--cloud1-y', `${cloud1Y}%`);
+          htmlCard.style.setProperty('--cloud2-x', `${cloud2X}%`);
+          htmlCard.style.setProperty('--cloud2-y', `${cloud2Y}%`);
+          htmlCard.style.setProperty('--vignette-x', `${vignetteX}%`);
+          htmlCard.style.setProperty('--vignette-y', `${vignetteY}%`);
         }
       });
     };
@@ -128,7 +124,6 @@ export const useDynamicGradients = () => {
           
           // Add multiple light sources for complex content
           if (textElements.length > 1) {
-            const textPositions: string[] = [];
             let validPositions = 0;
             
             Array.from(textElements).slice(0, 3).forEach((el, index) => {
@@ -166,7 +161,7 @@ export const useDynamicGradients = () => {
     };
 
     // Apply gradients on initial load
-    applyContentAwareGradients();
+    applyOrganicCloudGradients();
 
     // Reapply gradients when new elements are added to the DOM
     const observer = new MutationObserver((mutations) => {
@@ -197,7 +192,7 @@ export const useDynamicGradients = () => {
       
       if (shouldReapply) {
         // Delay to ensure DOM is fully updated
-        setTimeout(applyContentAwareGradients, 100);
+        setTimeout(applyOrganicCloudGradients, 100);
       }
     });
 
