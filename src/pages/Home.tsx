@@ -4,13 +4,26 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import { Loader2 } from 'lucide-react';
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  // Show loading state while auth is initializing
+  if (loading) {
+    return (
+      <div className="min-h-screen fintech-card-base flex items-center justify-center">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto fintech-text-primary" />
+          <p className="fintech-text-secondary">Loading HOUSIE...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-cream-50 to-cream-100">
+    <div className="min-h-screen fintech-card-base">
       <div className="container mx-auto px-4 py-12">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold mb-4 fintech-text-header">
@@ -20,7 +33,7 @@ const Home = () => {
             Your trusted home services platform
           </p>
           
-          {!user && (
+          {!user ? (
             <Button 
               onClick={() => navigate('/auth')}
               className="fintech-button-primary mr-4"
@@ -28,9 +41,7 @@ const Home = () => {
             >
               Get Started
             </Button>
-          )}
-          
-          {user && (
+          ) : (
             <div className="flex gap-4 justify-center">
               <Button 
                 onClick={() => navigate('/dashboard')}

@@ -10,7 +10,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string, fullName?: string) => Promise<void>;
   signOut: () => Promise<void>;
-  logout: () => Promise<void>; // Add logout alias for signOut
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,7 +25,6 @@ export const useAuth = () => {
 
 // Cleanup function to clear any conflicting auth state
 const cleanupAuthState = () => {
-  // Remove any stale auth tokens
   Object.keys(localStorage).forEach((key) => {
     if (key.startsWith('supabase.auth.') || key.includes('sb-')) {
       localStorage.removeItem(key);
@@ -49,22 +48,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log('🔄 Auth state changed:', event, {
           userEmail: session?.user?.email,
           hasSession: !!session,
-          userId: session?.user?.id,
-          userMetadata: session?.user?.user_metadata,
-          appMetadata: session?.user?.app_metadata
+          userId: session?.user?.id
         });
         
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
         
-        // Handle successful OAuth sign in
+        // Handle successful sign in with profile creation
         if (event === 'SIGNED_IN' && session?.user) {
-          console.log('✅ User signed in successfully via OAuth');
-          // Force page reload for OAuth to ensure clean state
-          if (window.location.pathname === '/auth') {
-            window.location.href = '/';
-          }
+          console.log('✅ User signed in successfully');
+          setTimeout(() => {
+            ensureUserProfile(session.user);
+          }, 0);
         }
       }
     );
@@ -80,18 +76,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           console.log('✅ Initial session retrieved:', {
             hasSession: !!session,
             userEmail: session?.user?.email,
-            userId: session?.user?.id,
-            userMetadata: session?.user?.user_metadata,
-            appMetadata: session?.user?.app_metadata
+            userId: session?.user?.id
           });
           setSession(session);
           setUser(session?.user ?? null);
+          
+          if (session?.user) {
+            setTimeout(() => {
+              ensureUserProfile(session.user);
+            }, 0);
+          }
         }
       } catch (error) {
         console.error('💥 Error in getInitialSession:', error);
       } finally {
         setLoading(false);
-        console.log('🏁 Initial session check complete');
       }
     };
 
@@ -103,13 +102,48 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
+  const ensureUserProfile = async (user: User) => {
+    try {
+      console.log('👤 Ensuring user profile exists for:', user.email);
+      
+      // Check if profile exists
+      const { data: existingProfile } = await supabase
+        .from('user_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (!existingProfile) {
+        console.log('📝 Creating user profile...');
+        const { error: profileError } = await supabase
+          .from('user_profiles')
+          .insert({
+            user_id: user.id,
+            username: user.email?.split('@')[0] || 'user',
+            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
+            active_role: 'customer',
+            can_provide_services: false,
+            can_book_services: true
+          });
+
+        if (profileError) {
+          console.error('❌ Error creating user profile:', profileError);
+        } else {
+          console.log('✅ User profile created successfully');
+        }
+      } else {
+        console.log('✅ User profile already exists');
+      }
+    } catch (error) {
+      console.error('💥 Error in ensureUserProfile:', error);
+    }
+  };
+
   const signIn = async (email: string, password: string) => {
     console.log('🔑 signIn called with email:', email);
     try {
-      // Clean up any existing auth state before signing in
       cleanupAuthState();
       
-      console.log('📡 Calling Supabase signInWithPassword...');
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -130,10 +164,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, fullName?: string) => {
     console.log('📝 signUp called with:', { email, fullName });
     try {
-      // Clean up any existing auth state before signing up
       cleanupAuthState();
       
-      console.log('📡 Calling Supabase signUp...');
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -145,72 +177,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
       
-      console.log('📊 Supabase signUp response:', {
-        hasUser: !!data.user,
-        userEmail: data.user?.email,
-        userId: data.user?.id,
-        emailConfirmed: data.user?.email_confirmed_at,
-        error: error ? error.message : null
-      });
-      
       if (error) {
         console.error('❌ Supabase signUp error:', error);
         throw error;
-      }
-
-      // Create user profile in your custom users table
-      if (data.user) {
-        console.log('👤 Creating user profile for:', data.user.email);
-        console.log('🔍 Profile data being inserted:', {
-          id: data.user.id,
-          email: data.user.email,
-          full_name: fullName || '',
-          user_role: 'seeker',
-          can_provide: false,
-          can_seek: true,
-          subscription_tier: 'free',
-          subscription_status: 'active'
-        });
-
-        const { error: profileError } = await supabase
-          .from('users')
-          .insert({
-            id: data.user.id,
-            email: data.user.email,
-            full_name: fullName || '',
-            user_role: 'seeker',
-            can_provide: false,
-            can_seek: true,
-            subscription_tier: 'free',
-            subscription_status: 'active'
-          });
-
-        if (profileError) {
-          console.error('❌ Error creating user profile:', {
-            code: profileError.code,
-            message: profileError.message,
-            details: profileError.details,
-            hint: profileError.hint
-          });
-          // Don't throw here - let the user continue even if profile creation fails
-          console.log('⚠️ User can still continue without profile');
-        } else {
-          console.log('✅ User profile created successfully');
-        }
-      }
-
-      // Check if email confirmation is required
-      if (data.user && !data.user.email_confirmed_at) {
-        console.log('📧 Email confirmation required for user:', data.user.email);
-        console.log('💡 To disable email confirmation for development:');
-        console.log('   1. Go to Supabase Dashboard > Authentication > Settings');
-        console.log('   2. Turn OFF "Confirm email"');
-        console.log('   3. Or check your email for confirmation link');
-        
-        // Create a custom error to inform the user about email confirmation
-        const confirmationError = new Error('Email confirmation required. Please check your email or disable email confirmation in Supabase settings for development.');
-        confirmationError.name = 'EmailConfirmationRequired';
-        throw confirmationError;
       }
 
       console.log('✅ signUp process completed');
@@ -224,7 +193,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signOut = async () => {
     console.log('🚪 signOut called');
     try {
-      // Clean up auth state first
       cleanupAuthState();
       
       const { error } = await supabase.auth.signOut();
@@ -234,7 +202,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       console.log('✅ signOut successful');
       
-      // Force page reload to ensure clean state
       window.location.href = '/auth';
     } catch (error) {
       console.error('💥 Error in signOut function:', error);
@@ -242,7 +209,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Add logout as an alias for signOut
   const logout = signOut;
 
   const value = {

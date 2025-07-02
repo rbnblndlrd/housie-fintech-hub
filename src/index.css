@@ -67,65 +67,7 @@
     opacity: 0.95;
   }
 
-  /* Organic cloud-like card backgrounds using cream gradient */
-  .card, .glass-card, .job-card, .widget-card {
-    position: relative;
-    background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
-    background-size: cover;
-    background-position: center;
-    overflow: hidden;
-  }
-
-  /* Multiple layered gradients for organic cloud effect */
-  .card::before, .glass-card::before, .job-card::before, .widget-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      /* Asymmetric edge darkening */
-      radial-gradient(ellipse 180% 150% at var(--cloud1-x) var(--cloud1-y), 
-        transparent 30%, 
-        rgba(180, 140, 90, 0.15) 50%, 
-        rgba(160, 120, 70, 0.35) 80%),
-      
-      /* Secondary cloud blob */
-      radial-gradient(circle 120% at var(--cloud2-x) var(--cloud2-y), 
-        transparent 40%, 
-        rgba(170, 130, 80, 0.25) 70%),
-      
-      /* Edge vignette - irregular */
-      radial-gradient(ellipse 200% 250% at var(--vignette-x) var(--vignette-y), 
-        transparent 20%, 
-        rgba(150, 110, 60, 0.4) 60%, 
-        rgba(130, 90, 50, 0.6) 100%);
-    
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* Watercolor effect for more painterly appearance */
-  .card::after, .glass-card::after, .job-card::after, .widget-card::after {
-    content: '';
-    position: absolute;
-    inset: -2%;
-    background: 
-      radial-gradient(ellipse at 85% 20%, transparent 50%, rgba(140, 100, 60, 0.3) 100%),
-      radial-gradient(ellipse at 15% 80%, transparent 45%, rgba(130, 90, 50, 0.35) 100%),
-      radial-gradient(ellipse at 90% 75%, transparent 55%, rgba(150, 110, 70, 0.25) 100%),
-      radial-gradient(ellipse at 10% 30%, transparent 50%, rgba(135, 95, 55, 0.3) 100%);
-    filter: blur(4px);
-    opacity: 0.6;
-    pointer-events: none;
-    z-index: 2;
-  }
-
-  /* Ensure content stays above all overlays */
-  .card > *, .glass-card > *, .job-card > *, .widget-card > * {
-    position: relative;
-    z-index: 3;
-  }
-
-  /* Base fintech card with cream gradient background and content-aware gradients */
+  /* Base fintech card with cream gradient background */
   .fintech-card-base {
     background-image: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     background-size: cover;
@@ -140,47 +82,57 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(
-      ellipse 200% 200% at var(--content-center-x, 50%) var(--content-center-y, 40%),
-      transparent 0%,
-      rgba(218, 194, 146, 0.1) 30%,
-      rgba(218, 194, 146, 0.3) 60%,
-      rgba(200, 170, 120, 0.5) 100%
-    );
+    background: 
+      /* Primary cloud gradient */
+      radial-gradient(ellipse 150% 120% at var(--cloud1-x, 35%) var(--cloud1-y, 40%), 
+        transparent 20%, 
+        rgba(255, 248, 240, 0.15) 40%, 
+        rgba(245, 222, 179, 0.25) 70%),
+      
+      /* Secondary cloud blob */
+      radial-gradient(ellipse 130% 100% at var(--cloud2-x, 70%) var(--cloud2-y, 65%), 
+        transparent 30%, 
+        rgba(250, 235, 215, 0.2) 60%),
+      
+      /* Edge vignette for depth */
+      radial-gradient(ellipse 200% 250% at var(--vignette-x, 15%) var(--vignette-y, 85%), 
+        transparent 20%, 
+        rgba(222, 184, 135, 0.3) 60%, 
+        rgba(205, 170, 125, 0.5) 100%);
+    
     pointer-events: none;
     z-index: 1;
   }
 
-  /* Smart edge darkening for fintech cards */
+  /* Watercolor effect for more painterly appearance */
   .fintech-card-base::after {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: -2%;
     background: 
-      linear-gradient(to right, rgba(180, 150, 100, 0.4) 0%, transparent 20%, transparent 80%, rgba(180, 150, 100, 0.4) 100%),
-      linear-gradient(to bottom, rgba(180, 150, 100, 0.4) 0%, transparent 20%, transparent 80%, rgba(180, 150, 100, 0.4) 100%);
+      radial-gradient(ellipse at 85% 20%, transparent 50%, rgba(245, 222, 179, 0.25) 100%),
+      radial-gradient(ellipse at 15% 80%, transparent 45%, rgba(238, 203, 173, 0.3) 100%),
+      radial-gradient(ellipse at 90% 75%, transparent 55%, rgba(250, 235, 215, 0.2) 100%),
+      radial-gradient(ellipse at 10% 30%, transparent 50%, rgba(245, 222, 179, 0.25) 100%);
+    filter: blur(3px);
+    opacity: 0.7;
     pointer-events: none;
     z-index: 2;
+  }
+
+  /* Ensure content stays above all overlays */
+  .fintech-card-base > * {
+    position: relative;
+    z-index: 3;
   }
 
   /* Multiple light sources for complex content */
   .fintech-multi-light::before {
     background: 
-      radial-gradient(circle at var(--text1-x) var(--text1-y), transparent 30%, rgba(200, 170, 120, 0.3) 70%),
-      radial-gradient(circle at var(--text2-x) var(--text2-y), transparent 30%, rgba(200, 170, 120, 0.3) 70%),
-      radial-gradient(circle at var(--text3-x) var(--text3-y), transparent 30%, rgba(200, 170, 120, 0.3) 70%) !important;
+      radial-gradient(circle at var(--text1-x) var(--text1-y), transparent 30%, rgba(245, 222, 179, 0.25) 70%),
+      radial-gradient(circle at var(--text2-x) var(--text2-y), transparent 30%, rgba(250, 235, 215, 0.25) 70%),
+      radial-gradient(circle at var(--text3-x) var(--text3-y), transparent 30%, rgba(238, 203, 173, 0.25) 70%) !important;
     mix-blend-mode: multiply;
-  }
-
-  /* Glassmorphism overlay for all fintech cards */
-  .fintech-card-base > .fintech-glassmorphism-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(255, 255, 255, var(--fintech-overlay-opacity, 0.3));
-    backdrop-filter: blur(8px);
-    border-radius: inherit;
-    pointer-events: none;
-    z-index: 3;
   }
 
   /* Fintech texture patterns using the cream gradient image */
@@ -210,12 +162,6 @@
     background-size: 250px 250px;
     background-position: 75px 75px;
     background-repeat: repeat;
-  }
-
-  /* Ensure content stays above all overlays */
-  .fintech-card-base > * {
-    position: relative;
-    z-index: 4;
   }
 
   /* Main fintech card styles with cream gradient background */
