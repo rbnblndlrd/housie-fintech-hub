@@ -274,7 +274,7 @@ const ProviderDashboard = () => {
                   </Card>
                 </div>
                 {pendingRequests.length > 0 && (
-                  <Card className="fintech-card border-amber-200 bg-amber-50/80">
+                  <Card className="fintech-card border-amber-200 bg-amber-50/80" style={{ border: '5px solid #000000' }}>
                     <CardContent className="p-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
