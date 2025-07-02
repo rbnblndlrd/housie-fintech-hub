@@ -7,7 +7,7 @@
 @layer components {
   /* CSS Custom Properties for the new color palette */
   :root {
-    --fintech-texture-bg: url('/SAND-TEXTURED.jpg');
+    --fintech-texture-bg: url('/lovable-uploads/b2f1939e-404e-467a-b5f9-615532cfd2db.png');
     --fintech-primary-text: #2C1810;
     --fintech-header-text: #1A0F08;
     --fintech-secondary-text: #5C4A3F;
@@ -15,6 +15,7 @@
     --fintech-accent-emergency: #A0522D;
     --fintech-accent-success: #556B2F;
     --fintech-glassmorphism-overlay: rgba(255, 255, 255, 0.3);
+    --fintech-overlay-opacity: 0.3;
     
     /* Dynamic gradient variables */
     --gradient-angle: 45deg;
@@ -101,11 +102,40 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: var(--fintech-glassmorphism-overlay);
+    background: rgba(255, 255, 255, var(--fintech-overlay-opacity, 0.3));
     backdrop-filter: blur(8px);
     border-radius: inherit;
     pointer-events: none;
     z-index: 0;
+  }
+
+  /* Fintech texture patterns using the uploaded image */
+  .fintech-pattern-1 {
+    background-image: var(--fintech-texture-bg);
+    background-size: 200px 200px;
+    background-position: 0 0;
+    background-repeat: repeat;
+  }
+
+  .fintech-pattern-2 {
+    background-image: var(--fintech-texture-bg);
+    background-size: 150px 150px;
+    background-position: 25px 25px;
+    background-repeat: repeat;
+  }
+
+  .fintech-pattern-3 {
+    background-image: var(--fintech-texture-bg);
+    background-size: 300px 300px;
+    background-position: -50px -50px;
+    background-repeat: repeat;
+  }
+
+  .fintech-pattern-4 {
+    background-image: var(--fintech-texture-bg);
+    background-size: 250px 250px;
+    background-position: 75px 75px;
+    background-repeat: repeat;
   }
 
   /* Ensure content stays above overlay */
