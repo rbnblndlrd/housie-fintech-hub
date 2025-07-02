@@ -180,7 +180,98 @@ const ProviderDashboard = () => {
               </TabsList>
 
               <TabsContent value="job-hub" className="space-y-3">
-                {/* Top Section - Notification Banner */}
+                {/* Top Section - Calendar, Quick Stats, Recent Activity */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+                  {/* Calendar Widget */}
+                  <Card className="fintech-card">
+                    <CardHeader className="pb-2 px-3 pt-3">
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Calendar className="h-4 w-4" />
+                        Calendar
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 px-3 pb-3">
+                      <div className="space-y-2">
+                        <div className="text-center">
+                          <div className="text-sm font-semibold">January 2024</div>
+                          <div className="grid grid-cols-7 gap-1 mt-1 text-xs">
+                            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+                              <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
+                            ))}
+                            {Array.from({length: 31}, (_, i) => (
+                              <div key={i} className={`p-1 text-center rounded text-xs ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
+                                {i + 1}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <Button variant="outline" className="w-full text-sm">
+                          <Calendar className="h-3 w-3 mr-1" />
+                          Sync with Google
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Quick Stats */}
+                  <Card className="fintech-card">
+                    <CardHeader className="pb-2 px-3 pt-3">
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <BarChart3 className="h-4 w-4" />
+                        Quick Stats
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 px-3 pb-3 space-y-2">
+                      <div className="space-y-1 text-xs">
+                        <div className="flex items-center justify-between">
+                          <span>Today's Earnings</span>
+                          <span className="font-semibold text-green-600">${todaysEarnings}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span>Jobs Completed</span>
+                          <span className="font-semibold">{completedJobs}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span>Route Progress</span>
+                          <span className="font-semibold text-blue-600">{activeRouteProgress}</span>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Recent Activity Feed */}
+                  <Card className="fintech-card">
+                    <CardHeader className="pb-2 px-3 pt-3">
+                      <CardTitle className="flex items-center gap-2 text-base">
+                        <Activity className="h-4 w-4" />
+                        Recent Activity
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-0 px-3 pb-3">
+                      <div className="space-y-1 max-h-24 overflow-y-auto">
+                        {recentActivity.slice(0, 3).map((activity, index) => (
+                          <div key={index} className="flex items-start gap-2 p-1 rounded-lg fintech-card-secondary">
+                            <div className={`p-1 rounded-full ${
+                              activity.type === 'booking' ? 'bg-blue-100' :
+                              activity.type === 'payment' ? 'bg-green-100' :
+                              'bg-yellow-100'
+                            }`}>
+                              {activity.type === 'booking' && <Calendar className="h-2 w-2 text-blue-600" />}
+                              {activity.type === 'payment' && <DollarSign className="h-2 w-2 text-green-600" />}
+                              {activity.type === 'review' && <Star className="h-2 w-2 text-yellow-600" />}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-xs font-medium">{activity.message}</p>
+                              <p className="text-xs text-gray-500">{activity.time}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                {/* Pending Booking Requests Banner */}
                 {pendingRequests.length > 0 && (
                   <Card className="fintech-card border-amber-200 bg-amber-50/80">
                     <CardContent className="p-2">
@@ -282,8 +373,8 @@ const ProviderDashboard = () => {
                     </Card>
                   </div>
 
-                  {/* Center Column - AI Route Planner & Calendar (35% width) */}
-                  <div className="lg:col-span-4 space-y-2">
+                  {/* Center Column - Smart Route Optimizer (60% width) */}
+                  <div className="lg:col-span-7 space-y-2">
                     {/* Smart Route Optimizer / Job Execution Mode */}
                     {executionMode && getSelectedJob() ? (
                       <JobExecutionMode
@@ -379,97 +470,6 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
                     )}
-
-                    {/* Calendar Widget */}
-                    <Card className="fintech-card">
-                      <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          <Calendar className="h-4 w-4" />
-                          Calendar
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 px-3 pb-3">
-                        <div className="space-y-2">
-                          <div className="text-center">
-                            <div className="text-sm font-semibold">January 2024</div>
-                            <div className="grid grid-cols-7 gap-1 mt-1 text-xs">
-                              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                                <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
-                              ))}
-                              {Array.from({length: 31}, (_, i) => (
-                                <div key={i} className={`p-1 text-center rounded text-xs ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
-                                  {i + 1}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                          <Button variant="outline" className="w-full text-sm">
-                            <Calendar className="h-3 w-3 mr-1" />
-                            Sync with Google
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-
-                  {/* Right Column - Quick Stats & Activity Feed (25% width) */}
-                  <div className="lg:col-span-3 space-y-2">
-                    {/* Quick Stats */}
-                    <Card className="fintech-card">
-                      <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          <BarChart3 className="h-4 w-4" />
-                          Quick Stats
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 px-3 pb-3 space-y-2">
-                        <div className="space-y-1 text-xs">
-                          <div className="flex items-center justify-between">
-                            <span>Today's Earnings</span>
-                            <span className="font-semibold text-green-600">${todaysEarnings}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span>Jobs Completed</span>
-                            <span className="font-semibold">{completedJobs}</span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <span>Route Progress</span>
-                            <span className="font-semibold text-blue-600">{activeRouteProgress}</span>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Recent Activity Feed */}
-                    <Card className="fintech-card">
-                      <CardHeader className="pb-2 px-3 pt-3">
-                        <CardTitle className="flex items-center gap-2 text-base">
-                          <Activity className="h-4 w-4" />
-                          Recent Activity
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="pt-0 px-3 pb-3">
-                        <div className="space-y-1">
-                          {recentActivity.map((activity, index) => (
-                            <div key={index} className="flex items-start gap-2 p-2 rounded-lg fintech-card-secondary">
-                              <div className={`p-1 rounded-full ${
-                                activity.type === 'booking' ? 'bg-blue-100' :
-                                activity.type === 'payment' ? 'bg-green-100' :
-                                'bg-yellow-100'
-                              }`}>
-                                {activity.type === 'booking' && <Calendar className="h-2 w-2 text-blue-600" />}
-                                {activity.type === 'payment' && <DollarSign className="h-2 w-2 text-green-600" />}
-                                {activity.type === 'review' && <Star className="h-2 w-2 text-yellow-600" />}
-                              </div>
-                              <div className="flex-1">
-                                <p className="text-xs font-medium">{activity.message}</p>
-                                <p className="text-xs text-gray-500">{activity.time}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
                   </div>
                 </div>
               </TabsContent>
