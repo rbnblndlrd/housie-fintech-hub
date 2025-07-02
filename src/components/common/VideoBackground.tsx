@@ -1,93 +1,77 @@
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface VideoState {
   isLoading: boolean;
   hasError: boolean;
-  retryCount: number;
 }
 
 const VideoBackground = () => {
   const [videoState, setVideoState] = useState<VideoState>({
     isLoading: true,
-    hasError: false,
-    retryCount: 0
+    hasError: false
   });
   
   const videoRef = useRef<HTMLVideoElement>(null);
-  const retryTimeoutRef = useRef<NodeJS.Timeout>();
+  const retryCountRef = useRef(0);
+  const loadAttemptedRef = useRef(false);
   
   const MAX_RETRIES = 2;
-  const RETRY_DELAY = 1500;
 
-  const attemptVideoLoad = useCallback(() => {
+  useEffect(() => {
+    if (loadAttemptedRef.current) return;
+    loadAttemptedRef.current = true;
+
     const video = videoRef.current;
     if (!video) return;
 
-    console.log(`🎬 VideoBackground: Loading attempt ${videoState.retryCount + 1}`);
+    console.log('🎬 VideoBackground: Starting video load attempt');
     
-    setVideoState(prev => ({
-      ...prev,
-      isLoading: true,
-      hasError: false
-    }));
-
     const handleSuccess = () => {
       console.log('🎬 VideoBackground: Video loaded successfully!');
-      setVideoState(prev => ({
-        ...prev,
+      setVideoState({
         isLoading: false,
         hasError: false
-      }));
+      });
     };
 
-    const handleError = (e: Event) => {
-      console.error('🎬 VideoBackground: Video failed to load:', e);
+    const handleError = () => {
+      console.error('🎬 VideoBackground: Video failed to load');
       
-      if (videoState.retryCount < MAX_RETRIES) {
-        const nextRetryCount = videoState.retryCount + 1;
-        console.log(`🎬 VideoBackground: Retrying in ${RETRY_DELAY}ms (attempt ${nextRetryCount})`);
+      if (retryCountRef.current < MAX_RETRIES) {
+        retryCountRef.current++;
+        console.log(`🎬 VideoBackground: Retrying (attempt ${retryCountRef.current + 1})`);
         
-        setVideoState(prev => ({ ...prev, retryCount: nextRetryCount }));
-        
-        retryTimeoutRef.current = setTimeout(() => {
-          attemptVideoLoad();
-        }, RETRY_DELAY);
+        setTimeout(() => {
+          if (video) {
+            video.load();
+          }
+        }, 1000);
       } else {
         console.error('🎬 VideoBackground: Max retries exceeded, using fallback');
-        setVideoState(prev => ({
-          ...prev,
+        setVideoState({
           isLoading: false,
           hasError: true
-        }));
+        });
       }
     };
 
-    // Clear previous event listeners
-    video.removeEventListener('loadeddata', handleSuccess);
-    video.removeEventListener('canplay', handleSuccess);
-    video.removeEventListener('error', handleError);
-
-    // Set up new event listeners
+    // Set up event listeners
     video.addEventListener('loadeddata', handleSuccess, { once: true });
-    video.addEventListener('canplay', handleSuccess, { once: true });
-    video.addEventListener('error', handleError, { once: true });
+    video.addEventListener('canplaythrough', handleSuccess, { once: true });
+    video.addEventListener('error', handleError);
 
-    // Set the correct video source
-    console.log('🎬 VideoBackground: Setting video source to: /lovable-uploads/automne_gif.mp4');
+    // Start loading
+    console.log('🎬 VideoBackground: Setting video source');
     video.src = '/lovable-uploads/automne_gif.mp4';
     video.load();
-  }, [videoState.retryCount]);
-
-  useEffect(() => {
-    attemptVideoLoad();
 
     return () => {
-      if (retryTimeoutRef.current) {
-        clearTimeout(retryTimeoutRef.current);
-      }
+      video.removeEventListener('loadeddata', handleSuccess);
+      video.removeEventListener('canplaythrough', handleSuccess);
+      video.removeEventListener('error', handleError);
     };
-  }, [attemptVideoLoad]);
+  }, []);
 
   return (
     <div className="fixed inset-0 w-full h-full z-0">
@@ -115,11 +99,6 @@ const VideoBackground = () => {
                 <div className="text-white text-lg font-medium mb-2">
                   Loading video background...
                 </div>
-                {videoState.retryCount > 0 && (
-                  <div className="text-white/70 text-sm">
-                    Attempt {videoState.retryCount + 1} of {MAX_RETRIES + 1}
-                  </div>
-                )}
               </div>
             </div>
           )}
