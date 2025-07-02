@@ -40,8 +40,6 @@ const InteractiveMapPage = () => {
 
   // State management
   const [userMode, setUserMode] = useState<UserMode>('customer');
-  const [isDragging, setIsDragging] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const [showNavigation, setShowNavigation] = useState(false);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -141,20 +139,6 @@ const InteractiveMapPage = () => {
     setSelectedJob(null);
   };
 
-  const handleSettingsToggle = () => {
-    setShowSettings(!showSettings);
-  };
-
-  const handleDraggingToggle = () => {
-    setIsDragging(!isDragging);
-    toast({
-      title: isDragging ? "Dragging Disabled" : "Dragging Enabled",
-      description: isDragging 
-        ? "Map interactions restored to normal"
-        : "You can now drag map elements"
-    });
-  };
-
   const handleDataLayerToggle = (layer: string, enabled: boolean) => {
     console.log('🎛️ Layer toggle:', layer, enabled);
     setEnabledLayers(prev => ({
@@ -234,52 +218,6 @@ const InteractiveMapPage = () => {
               }}
             />
 
-            {/* Top Controls Bar */}
-            <div className="absolute top-4 right-4 z-50 pointer-events-auto">
-              <div className="flex items-center gap-3">
-                {/* Settings Button */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleSettingsToggle}
-                  className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
-                    showSettings ? 'bg-blue-50 border-blue-500' : ''
-                  }`}
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
-
-                {/* Dragging Toggle */}
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDraggingToggle}
-                  className={`bg-white hover:bg-gray-50 border-2 border-gray-400 hover:border-gray-500 ${
-                    isDragging ? 'bg-orange-50 border-orange-500' : ''
-                  }`}
-                >
-                  <Move className="h-4 w-4 mr-2" />
-                  {isDragging ? 'Dragging On' : 'Dragging Off'}
-                </Button>
-              </div>
-            </div>
-
-            {/* Settings Panel */}
-            {showSettings && (
-              <div className="absolute top-20 right-4 z-50 pointer-events-auto">
-                <div className="bg-white/95 backdrop-blur-sm rounded-lg p-4 border border-gray-300 w-64">
-                  <h3 className="font-semibold text-gray-900 mb-3">Map Settings</h3>
-                  <div className="space-y-3 text-sm text-gray-600">
-                    <div>Map Engine: <span className="font-medium">Mapbox (Privacy First)</span></div>
-                    <div>Dragging: <span className="font-medium">{isDragging ? 'Enabled' : 'Disabled'}</span></div>
-                    <div className="pt-2 text-xs text-gray-500">
-                      Real Quebec data with GPS navigation
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
           </div>
 
           {/* Mode-specific Right Panel - Show provider mode by default */}
