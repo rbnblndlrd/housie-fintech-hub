@@ -126,9 +126,9 @@ const ProviderDashboard = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-16 px-2 pb-4">
+        <div className="pt-16 px-4 pb-2">
           <div className="max-w-full mx-auto">
-            <div className="mb-4">
+            <div className="mb-3">
               <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
                 Provider Dashboard
               </h1>
@@ -138,7 +138,7 @@ const ProviderDashboard = () => {
             </div>
 
             {/* Main Content Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
               <TabsList className="fintech-card p-1">
                 <TabsTrigger value="job-hub">
                   <Briefcase className="h-4 w-4 mr-2" />
@@ -158,11 +158,11 @@ const ProviderDashboard = () => {
                 </TabsTrigger>
               </TabsList>
 
-              <TabsContent value="job-hub" className="space-y-4">
+              <TabsContent value="job-hub" className="space-y-3">
                 {/* Top Section - Notification Banner */}
                 {pendingRequests.length > 0 && (
                   <Card className="fintech-card border-amber-200 bg-amber-50/80">
-                    <CardContent className="p-3">
+                    <CardContent className="p-2">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Bell className="h-5 w-5 text-amber-600" />
@@ -178,33 +178,34 @@ const ProviderDashboard = () => {
                   </Card>
                 )}
 
-                {/* Main Grid Layout - Reduced gaps */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                {/* Main Grid Layout - Tighter gaps */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-2">
                   {/* Left Column - AutoTask List (40% width) */}
-                  <div className="lg:col-span-5 space-y-3">
+                  <div className="lg:col-span-5 space-y-2">
                     <Card className="fintech-card">
-                      <CardHeader className="pb-3">
+                      <CardHeader className="pb-2 px-3 pt-3">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="flex items-center gap-2 text-lg">
-                            <CheckCircle className="h-5 w-5" />
+                          <CardTitle className="flex items-center gap-2 text-base">
+                            <CheckCircle className="h-4 w-4" />
                             AutoTask List
                           </CardTitle>
                           <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm">
-                              <Filter className="h-4 w-4 mr-1" />
+                            <Button variant="outline" size="sm" className="text-xs">
+                              <Filter className="h-3 w-3 mr-1" />
                               Columns
-                              <ChevronDown className="h-4 w-4 ml-1" />
+                              <ChevronDown className="h-3 w-3 ml-1" />
                             </Button>
                           </div>
                         </div>
                         
                         {/* Filter Buttons */}
-                        <div className="flex gap-2 mt-3">
+                        <div className="flex gap-1 mt-2">
                           {['Today', 'This Week', 'Pending', 'Completed'].map((filter) => (
                             <Button
                               key={filter}
                               variant={filterPeriod === filter.toLowerCase().replace(' ', '') ? "default" : "outline"}
                               size="sm"
+                              className="text-xs px-2 py-1"
                               onClick={() => setFilterPeriod(filter.toLowerCase().replace(' ', ''))}
                             >
                               {filter}
@@ -212,37 +213,37 @@ const ProviderDashboard = () => {
                           ))}
                         </div>
                       </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-2">
+                      <CardContent className="pt-0 px-3 pb-3">
+                        <div className="space-y-1">
                           {recentBookings.map((booking) => (
-                            <div key={booking.id} className="flex items-center gap-3 p-2 fintech-card-secondary rounded-lg">
+                            <div key={booking.id} className="flex items-center gap-2 p-2 fintech-card-secondary rounded-lg">
                               <input
                                 type="checkbox"
                                 checked={selectedJobs.includes(booking.id)}
                                 onChange={() => handleJobSelection(booking.id)}
                                 className="rounded"
                               />
-                              <div className="flex-1 grid grid-cols-2 gap-2 text-sm">
+                              <div className="flex-1 grid grid-cols-2 gap-1 text-xs">
                                 <span className="font-medium">{booking.date}</span>
                                 <span>{booking.client}</span>
-                                <span>{booking.service}</span>
-                                <Badge variant={getStatusBadge(booking.status)} className="w-fit">
+                                <span className="text-xs">{booking.service}</span>
+                                <Badge variant={getStatusBadge(booking.status)} className="w-fit text-xs">
                                   {booking.status}
                                 </Badge>
                               </div>
-                              <span className="font-semibold">${booking.amount}</span>
+                              <span className="font-semibold text-sm">${booking.amount}</span>
                             </div>
                           ))}
                         </div>
                         
                         {selectedJobs.length > 0 && (
-                          <div className="mt-3 p-2 bg-amber-50 rounded-lg">
-                            <p className="text-sm text-amber-800 mb-2">
+                          <div className="mt-2 p-2 bg-amber-50 rounded-lg">
+                            <p className="text-xs text-amber-800 mb-1">
                               {selectedJobs.length} jobs selected
                             </p>
-                            <div className="flex gap-2">
-                              <Button size="sm" variant="outline">Bulk Update</Button>
-                              <Button size="sm" variant="outline">Export</Button>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="outline" className="text-xs">Bulk Update</Button>
+                              <Button size="sm" variant="outline" className="text-xs">Export</Button>
                             </div>
                           </div>
                         )}
@@ -251,43 +252,43 @@ const ProviderDashboard = () => {
                   </div>
 
                   {/* Center Column - AI Route Planner & Calendar (35% width) */}
-                  <div className="lg:col-span-4 space-y-3">
+                  <div className="lg:col-span-4 space-y-2">
                     {/* AI Route Planner */}
                     <Card className="fintech-card">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <Zap className="h-5 w-5" />
+                      <CardHeader className="pb-2 px-3 pt-3">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          <Zap className="h-4 w-4" />
                           Smart Route Optimizer
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center mb-3">
-                          <Route className="h-8 w-8 mx-auto mb-2 text-gray-400" />
-                          <p className="text-sm text-gray-600">Drop jobs here to optimize route</p>
+                      <CardContent className="pt-0 px-3 pb-3">
+                        <div className="border-2 border-dashed border-gray-300 rounded-lg p-3 text-center mb-2">
+                          <Route className="h-6 w-6 mx-auto mb-1 text-gray-400" />
+                          <p className="text-xs text-gray-600">Drop jobs here to optimize route</p>
                         </div>
                         
-                        <div className="space-y-2 mb-3">
-                          <div className="flex items-center justify-between text-sm">
+                        <div className="space-y-1 mb-2 text-xs">
+                          <div className="flex items-center justify-between">
                             <span>Traffic Analysis:</span>
                             <span className="text-green-600">Light traffic</span>
                           </div>
-                          <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center justify-between">
                             <span>Client Availability:</span>
                             <span className="text-blue-600">4 time slots</span>
                           </div>
                         </div>
                         
-                        <div className="space-y-2">
-                          <Button className="w-full fintech-button-primary">
-                            <Route className="h-4 w-4 mr-2" />
+                        <div className="space-y-1">
+                          <Button className="w-full fintech-button-primary text-sm">
+                            <Route className="h-3 w-3 mr-1" />
                             Optimize Route
                           </Button>
-                          <Button variant="outline" className="w-full">
-                            <Navigation className="h-4 w-4 mr-2" />
+                          <Button variant="outline" className="w-full text-sm">
+                            <Navigation className="h-3 w-3 mr-1" />
                             Start GPS Navigation
-                            <ArrowRight className="h-4 w-4 ml-2" />
+                            <ArrowRight className="h-3 w-3 ml-1" />
                           </Button>
-                          <Button variant="ghost" className="w-full text-sm">
+                          <Button variant="ghost" className="w-full text-xs">
                             View Interactive Map →
                           </Button>
                         </div>
@@ -296,29 +297,29 @@ const ProviderDashboard = () => {
 
                     {/* Calendar Widget */}
                     <Card className="fintech-card">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <Calendar className="h-5 w-5" />
+                      <CardHeader className="pb-2 px-3 pt-3">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          <Calendar className="h-4 w-4" />
                           Calendar
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-3">
+                      <CardContent className="pt-0 px-3 pb-3">
+                        <div className="space-y-2">
                           <div className="text-center">
-                            <div className="text-lg font-semibold">January 2024</div>
-                            <div className="grid grid-cols-7 gap-1 mt-2 text-xs">
+                            <div className="text-sm font-semibold">January 2024</div>
+                            <div className="grid grid-cols-7 gap-1 mt-1 text-xs">
                               {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
                                 <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
                               ))}
                               {Array.from({length: 31}, (_, i) => (
-                                <div key={i} className={`p-1 text-center rounded ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
+                                <div key={i} className={`p-1 text-center rounded text-xs ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
                                   {i + 1}
                                 </div>
                               ))}
                             </div>
                           </div>
-                          <Button variant="outline" className="w-full">
-                            <Calendar className="h-4 w-4 mr-2" />
+                          <Button variant="outline" className="w-full text-sm">
+                            <Calendar className="h-3 w-3 mr-1" />
                             Sync with Google
                           </Button>
                         </div>
@@ -327,27 +328,27 @@ const ProviderDashboard = () => {
                   </div>
 
                   {/* Right Column - Quick Stats & Activity Feed (25% width) */}
-                  <div className="lg:col-span-3 space-y-3">
+                  <div className="lg:col-span-3 space-y-2">
                     {/* Quick Stats */}
                     <Card className="fintech-card">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <BarChart3 className="h-5 w-5" />
+                      <CardHeader className="pb-2 px-3 pt-3">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          <BarChart3 className="h-4 w-4" />
                           Quick Stats
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0 space-y-3">
-                        <div className="space-y-2">
+                      <CardContent className="pt-0 px-3 pb-3 space-y-2">
+                        <div className="space-y-1 text-xs">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm">Today's Earnings</span>
+                            <span>Today's Earnings</span>
                             <span className="font-semibold text-green-600">${todaysEarnings}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm">Jobs Completed</span>
+                            <span>Jobs Completed</span>
                             <span className="font-semibold">{completedJobs}</span>
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm">Route Progress</span>
+                            <span>Route Progress</span>
                             <span className="font-semibold text-blue-600">{activeRouteProgress}</span>
                           </div>
                         </div>
@@ -356,14 +357,14 @@ const ProviderDashboard = () => {
 
                     {/* Recent Activity Feed */}
                     <Card className="fintech-card">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                          <Activity className="h-5 w-5" />
+                      <CardHeader className="pb-2 px-3 pt-3">
+                        <CardTitle className="flex items-center gap-2 text-base">
+                          <Activity className="h-4 w-4" />
                           Recent Activity
                         </CardTitle>
                       </CardHeader>
-                      <CardContent className="pt-0">
-                        <div className="space-y-2">
+                      <CardContent className="pt-0 px-3 pb-3">
+                        <div className="space-y-1">
                           {recentActivity.map((activity, index) => (
                             <div key={index} className="flex items-start gap-2 p-2 rounded-lg fintech-card-secondary">
                               <div className={`p-1 rounded-full ${
@@ -371,9 +372,9 @@ const ProviderDashboard = () => {
                                 activity.type === 'payment' ? 'bg-green-100' :
                                 'bg-yellow-100'
                               }`}>
-                                {activity.type === 'booking' && <Calendar className="h-3 w-3 text-blue-600" />}
-                                {activity.type === 'payment' && <DollarSign className="h-3 w-3 text-green-600" />}
-                                {activity.type === 'review' && <Star className="h-3 w-3 text-yellow-600" />}
+                                {activity.type === 'booking' && <Calendar className="h-2 w-2 text-blue-600" />}
+                                {activity.type === 'payment' && <DollarSign className="h-2 w-2 text-green-600" />}
+                                {activity.type === 'review' && <Star className="h-2 w-2 text-yellow-600" />}
                               </div>
                               <div className="flex-1">
                                 <p className="text-xs font-medium">{activity.message}</p>
