@@ -25,14 +25,6 @@ const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
 
   // Sample data
-  const stats = {
-    totalEarnings: 12450.50,
-    completedJobs: 147,
-    averageRating: 4.8,
-    totalReviews: 134,
-    upcomingBookings: 8
-  };
-
   const recentBookings = [
     {
       id: 1,
@@ -109,84 +101,6 @@ const ProviderDashboard = () => {
               <p className="text-white/90 drop-shadow-md">
                 Welcome back! Here's your performance overview
               </p>
-            </div>
-
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
-              <Card className="fintech-metric-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium opacity-80 mb-1">Total Earnings</p>
-                      <p className="text-2xl font-bold">${stats.totalEarnings.toLocaleString()}</p>
-                      <p className="text-sm text-green-600 font-semibold mt-1">+15.2%</p>
-                    </div>
-                    <div className="w-10 h-10 bg-gradient-to-r from-green-600 to-emerald-600 rounded-lg flex items-center justify-center">
-                      <DollarSign className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="fintech-metric-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium opacity-80 mb-1">Completed Jobs</p>
-                      <p className="text-2xl font-bold">{stats.completedJobs}</p>
-                      <p className="text-sm text-blue-600 font-semibold mt-1">+8.7%</p>
-                    </div>
-                    <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg flex items-center justify-center">
-                      <CheckCircle className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="fintech-metric-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium opacity-80 mb-1">Average Rating</p>
-                      <p className="text-2xl font-bold">{stats.averageRating}</p>
-                      <p className="text-sm text-yellow-600 font-semibold mt-1">{stats.totalReviews} reviews</p>
-                    </div>
-                    <div className="w-10 h-10 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-lg flex items-center justify-center">
-                      <Star className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="fintech-metric-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium opacity-80 mb-1">Upcoming</p>
-                      <p className="text-2xl font-bold">{stats.upcomingBookings}</p>
-                      <p className="text-sm text-purple-600 font-semibold mt-1">This week</p>
-                    </div>
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg flex items-center justify-center">
-                      <Calendar className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="fintech-metric-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium opacity-80 mb-1">Response Rate</p>
-                      <p className="text-2xl font-bold">94%</p>
-                      <p className="text-sm text-green-600 font-semibold mt-1">Excellent</p>
-                    </div>
-                    <div className="w-10 h-10 bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-lg flex items-center justify-center">
-                      <TrendingUp className="h-5 w-5 text-white" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
 
             {/* Main Content Tabs */}
