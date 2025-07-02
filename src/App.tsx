@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { RoleProvider } from './contexts/RoleContext';
-import { SubscriptionProvider } from './contexts/SubscriptionContext';
+import { SubscriptionProvider } from './contexts/SubscriptionProvider';
 import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
@@ -13,6 +13,7 @@ import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import CustomerDashboard from './pages/CustomerDashboard';
 import ProviderDashboard from './pages/ProviderDashboard';
+import UnifiedDashboard from './pages/UnifiedDashboard';
 import ProviderProfile from './pages/ProviderProfile';
 import NotificationsPage from './pages/Notifications';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -37,6 +38,7 @@ function App() {
                           <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/auth" element={<AuthPage />} />
+                            <Route path="/dashboard" element={<UnifiedDashboard />} />
                             <Route path="/customer-dashboard" element={<CustomerDashboard />} />
                             <Route path="/provider-dashboard" element={<ProviderDashboard />} />
                             <Route path="/provider-profile/:id" element={<ProviderProfile />} />

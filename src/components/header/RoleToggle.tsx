@@ -40,11 +40,9 @@ const RoleToggle = () => {
       await switchRole(newRole);
       console.log('✅ Role switched successfully to:', newRole);
       
-      // Redirect to unified dashboard if currently on dashboard
-      if (location.pathname.includes('/dashboard')) {
-        console.log('🔧 Redirecting to unified dashboard');
-        navigate('/dashboard');
-      }
+      // No automatic redirect - let the dashboard handle role-based display
+      // The UnifiedDashboard will show the appropriate content based on current role
+      
     } catch (error) {
       console.error('❌ Role switch failed:', error);
     }
