@@ -126,7 +126,7 @@ const ProviderDashboard = () => {
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
         <Header />
-        <div className="pt-16 pl-40 pr-32 pb-2">
+        <div className="pt-16 pl-36 pr-36 pb-2">
           <div className="max-w-full">
             <div className="mb-3">
               <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
