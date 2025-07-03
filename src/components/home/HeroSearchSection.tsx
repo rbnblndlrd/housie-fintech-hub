@@ -523,19 +523,7 @@ const HeroSearchSection = () => {
         </div>
       )}
 
-      {/* Unlock Button - Only when positioning is locked */}
-      {!positioningMode && (
-        <div className="fixed top-4 left-4 z-[9999]">
-          <Button 
-            onClick={unlockPosition}
-            size="sm"
-            className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg"
-          >
-            <LockOpen className="h-3 w-3 mr-1" />
-            Unlock Positioning
-          </Button>
-        </div>
-      )}
+      {/* Unlock Button - Hidden as requested */}
 
       {/* Certn Banner */}
       <div 
