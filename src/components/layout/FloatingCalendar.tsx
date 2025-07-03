@@ -2,10 +2,23 @@ import React from 'react';
 import { Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import DraggableWidget from '@/components/dashboard/DraggableWidget';
+import { useDashboardLayout } from '@/hooks/useDashboardLayout';
 
 const FloatingCalendar = () => {
+  const { updateWidgetPosition, updateWidgetSize, toggleWidgetLock, getWidgetConfig } = useDashboardLayout();
+  
   return (
-    <Card className="fixed top-[280px] right-[30px] z-[999] w-[400px] h-[320px] bg-gradient-to-br from-amber-50 to-orange-100 border-0 shadow-xl">
+    <DraggableWidget
+      id="floating-calendar"
+      defaultPosition={getWidgetConfig('floating-calendar')?.position || { x: window.innerWidth - 430, y: 280 }}
+      defaultSize={getWidgetConfig('floating-calendar')?.size || { width: 400, height: 320 }}
+      isLocked={getWidgetConfig('floating-calendar')?.isLocked || false}
+      onPositionChange={updateWidgetPosition}
+      onSizeChange={updateWidgetSize}
+      onLockToggle={toggleWidgetLock}
+    >
+      <Card className="h-full w-full bg-gradient-to-br from-amber-50 to-orange-100 border-0 shadow-xl">
       <CardHeader className="pb-2 px-4 pt-4">
         <CardTitle className="flex items-center justify-between text-base">
           <div className="flex items-center gap-2">
@@ -61,6 +74,7 @@ const FloatingCalendar = () => {
         </div>
       </CardContent>
     </Card>
+    </DraggableWidget>
   );
 };
 

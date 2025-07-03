@@ -49,6 +49,12 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
     position: { x: 20, y: 640 },
     size: { width: 600, height: 350 },
     isLocked: false
+  },
+  {
+    id: 'floating-calendar',
+    position: { x: 1000, y: 280 },
+    size: { width: 400, height: 320 },
+    isLocked: false
   }
 ];
 
