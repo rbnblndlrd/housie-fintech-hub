@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge';
 
 const FloatingCalendar = () => {
   return (
-    <Card className="fixed top-5 right-5 z-[999] w-[400px] h-[320px] bg-gradient-to-br from-amber-50 to-orange-100 border-0 shadow-xl">
+    <Card className="fixed top-[280px] right-[30px] z-[999] w-[400px] h-[320px] bg-gradient-to-br from-amber-50 to-orange-100 border-0 shadow-xl">
       <CardHeader className="pb-2 px-4 pt-4">
         <CardTitle className="flex items-center justify-between text-base">
           <div className="flex items-center gap-2">

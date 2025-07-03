@@ -147,125 +147,131 @@ const ProviderDashboard = () => {
       <VideoBackground />
       <FloatingCalendar />
       <div className="relative z-10 min-h-screen">
-        <div className="mt-0 mx-[188px] pb-2">
+        <div className="pb-2">
           <div className="max-w-full">
-            <div className="mb-3">
+            {/* Provider Dashboard Pancarte - Centered and spaced */}
+            <div className="fixed top-[200px] left-1/2 transform -translate-x-1/2 z-20">
               <div className="weathered-street-sign flex items-center justify-center mb-2">
                 <h1 className="graffiti-text">
                   Provider Dashboard
                 </h1>
               </div>
+            </div>
+
+            {/* Welcome Text - Positioned between pancarte and widgets */}
+            <div className="fixed top-[250px] left-1/2 transform -translate-x-1/2 z-20 text-center">
               <p className="text-white/90 drop-shadow-md">
                 Welcome back! Here's your performance overview
               </p>
             </div>
 
-            {/* Main Content Tabs - At absolute top */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
-              <div className="flex items-center gap-4 mb-0">
-                <TabsList className="fintech-card p-1">
-                  <TabsTrigger value="job-hub">
-                    <Briefcase className="h-4 w-4 mr-2" />
-                    Job Hub
-                  </TabsTrigger>
-                  <TabsTrigger value="map">
-                    <Map className="h-4 w-4 mr-2" />
-                    Map
-                  </TabsTrigger>
-                  <TabsTrigger value="crew">
-                    <Users className="h-4 w-4 mr-2" />
-                    Crew
-                  </TabsTrigger>
-                  <TabsTrigger value="profile">
-                    <UserCog className="h-4 w-4 mr-2" />
-                    Profile
-                  </TabsTrigger>
-                </TabsList>
-                
-                {pendingRequests.length > 0 && (
-                  <div className="relative">
-                    <Bell className="h-6 w-6 text-amber-600" />
-                    <Badge className="absolute -top-4 -right-4 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
-                      {pendingRequests.length}
-                    </Badge>
-                  </div>
-                )}
-              </div>
+            {/* Main Content Tabs - Positioned with spacing */}
+            <div className="mt-[280px] mx-[188px]">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
+                <div className="flex items-center gap-4 mb-0">
+                  <TabsList className="fintech-card p-1">
+                    <TabsTrigger value="job-hub">
+                      <Briefcase className="h-4 w-4 mr-2" />
+                      Job Hub
+                    </TabsTrigger>
+                    <TabsTrigger value="map">
+                      <Map className="h-4 w-4 mr-2" />
+                      Map
+                    </TabsTrigger>
+                    <TabsTrigger value="crew">
+                      <Users className="h-4 w-4 mr-2" />
+                      Crew
+                    </TabsTrigger>
+                    <TabsTrigger value="profile">
+                      <UserCog className="h-4 w-4 mr-2" />
+                      Profile
+                    </TabsTrigger>
+                  </TabsList>
+                  
+                  {pendingRequests.length > 0 && (
+                    <div className="relative">
+                      <Bell className="h-6 w-6 text-amber-600" />
+                      <Badge className="absolute -top-4 -right-4 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
+                        {pendingRequests.length}
+                      </Badge>
+                    </div>
+                  )}
+                </div>
 
-              <TabsContent value="job-hub" className="space-y-5">
-                {/* Widget Grid - Calendar removed from grid (now floating) */}
-                <div className="grid grid-cols-5 grid-rows-3 gap-5">
-                  {/* Row 1: 4 assignable widgets */}
-                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
-                    <CardContent className="p-5">
-                      <div className="text-center">
-                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
-                          <TrendingUp className="h-6 w-6 text-white" />
+                <TabsContent value="job-hub" className="space-y-5">
+                  {/* Widget Grid - Calendar removed from grid (now floating) */}
+                  <div className="grid grid-cols-5 grid-rows-3 gap-5">
+                    {/* Row 1: 4 assignable widgets */}
+                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                      <CardContent className="p-5">
+                        <div className="text-center">
+                          <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <TrendingUp className="h-6 w-6 text-white" />
+                          </div>
+                          <h3 className="font-semibold text-orange-800">Performance</h3>
+                          <p className="text-sm text-orange-600">Track metrics</p>
                         </div>
-                        <h3 className="font-semibold text-orange-800">Performance</h3>
-                        <p className="text-sm text-orange-600">Track metrics</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
 
-                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
-                    <CardContent className="p-5">
-                      <div className="text-center">
-                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
-                          <DollarSign className="h-6 w-6 text-white" />
+                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                      <CardContent className="p-5">
+                        <div className="text-center">
+                          <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <DollarSign className="h-6 w-6 text-white" />
+                          </div>
+                          <h3 className="font-semibold text-orange-800">Earnings</h3>
+                          <p className="text-sm text-orange-600">$2,450 today</p>
                         </div>
-                        <h3 className="font-semibold text-orange-800">Earnings</h3>
-                        <p className="text-sm text-orange-600">$2,450 today</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
 
-                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
-                    <CardContent className="p-5">
-                      <div className="text-center">
-                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
-                          <Star className="h-6 w-6 text-white" />
+                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                      <CardContent className="p-5">
+                        <div className="text-center">
+                          <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <Star className="h-6 w-6 text-white" />
+                          </div>
+                          <h3 className="font-semibold text-orange-800">Rating</h3>
+                          <p className="text-sm text-orange-600">4.9 stars</p>
                         </div>
-                        <h3 className="font-semibold text-orange-800">Rating</h3>
-                        <p className="text-sm text-orange-600">4.9 stars</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
 
-                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
-                    <CardContent className="p-5">
-                      <div className="text-center">
-                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
-                          <Clock className="h-6 w-6 text-white" />
+                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                      <CardContent className="p-5">
+                        <div className="text-center">
+                          <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                            <Clock className="h-6 w-6 text-white" />
+                          </div>
+                          <h3 className="font-semibold text-orange-800">Active Jobs</h3>
+                          <p className="text-sm text-orange-600">3 pending</p>
                         </div>
-                        <h3 className="font-semibold text-orange-800">Active Jobs</h3>
-                        <p className="text-sm text-orange-600">3 pending</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
 
-                  {/* Row 2: Recent Activity (span 4 columns) */}
-                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0 col-span-4">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-orange-800">Recent Activity</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
-                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                          <span className="text-sm">Job completed: Kitchen repair - $180</span>
-                          <Badge variant="outline" className="ml-auto text-xs">5m ago</Badge>
+                    {/* Row 2: Recent Activity (span 4 columns) */}
+                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0 col-span-4">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-orange-800">Recent Activity</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
+                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                            <span className="text-sm">Job completed: Kitchen repair - $180</span>
+                            <Badge variant="outline" className="ml-auto text-xs">5m ago</Badge>
+                          </div>
+                          <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
+                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <span className="text-sm">New booking: Bathroom renovation</span>
+                            <Badge variant="outline" className="ml-auto text-xs">12m ago</Badge>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <span className="text-sm">New booking: Bathroom renovation</span>
-                          <Badge variant="outline" className="ml-auto text-xs">12m ago</Badge>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
 
-                  {/* Row 3: Smart Route Optimizer (span 2 columns) */}
+                    {/* Row 3: Smart Route Optimizer (span 2 columns) */}
                     {executionMode && getSelectedJob() ? (
                       <JobExecutionMode
                         job={getSelectedJob()!}
@@ -395,48 +401,49 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
                     )}
-                </div>
-              </TabsContent>
+                  </div>
+                </TabsContent>
 
-              <TabsContent value="map">
-                <Card className="fintech-card">
-                  <CardHeader>
-                    <CardTitle>Map View</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-8">
-                      <p className="opacity-70">Interactive map will be displayed here</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                <TabsContent value="map">
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle>Map View</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-8">
+                        <p className="opacity-70">Interactive map will be displayed here</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-              <TabsContent value="crew">
-                <Card className="fintech-card">
-                  <CardHeader>
-                    <CardTitle>Crew Center</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-8">
-                      <p className="opacity-70">Crew coordination features will be displayed here</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
+                <TabsContent value="crew">
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle>Crew Center</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-8">
+                        <p className="opacity-70">Crew coordination features will be displayed here</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
 
-              <TabsContent value="profile">
-                <Card className="fintech-card">
-                  <CardHeader>
-                    <CardTitle>Profile Settings</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-center py-8">
-                      <p className="opacity-70">Profile settings and information will be displayed here</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-            </Tabs>
+                <TabsContent value="profile">
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle>Profile Settings</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="text-center py-8">
+                        <p className="opacity-70">Profile settings and information will be displayed here</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
           </div>
         </div>
       </div>
