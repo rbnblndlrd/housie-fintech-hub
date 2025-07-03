@@ -50,13 +50,13 @@ const FloatingNavigation = () => {
 
   return (
     <>
-      {/* Original HOUSIE Logo */}
+      {/* Original HOUSIE Logo - Enlarged */}
       <Link 
         to="/dashboard" 
         className="fixed top-5 left-5 z-[1000] cursor-pointer hover:scale-105 transition-transform duration-300"
         style={{ 
-          width: '120px',
-          height: '50px',
+          width: '160px',
+          height: '70px',
           filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2)) hover:drop-shadow(0 4px 12px rgba(0,0,0,0.3))'
         }}
       >
@@ -67,22 +67,22 @@ const FloatingNavigation = () => {
         />
       </Link>
 
-      {/* Hamburger Menu Button - Properly spaced */}
+      {/* Hamburger Menu Button - Enlarged and properly spaced */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="fixed z-[1000] text-white flex items-center justify-center"
         style={{ 
-          top: '30px',
-          left: '150px',
-          width: '28px',
-          height: '28px',
+          top: '32px',
+          left: '190px',
+          width: '36px',
+          height: '36px',
           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
         }}
       >
         {isMenuOpen ? (
-          <X className="h-7 w-7" />
+          <X className="h-9 w-9" />
         ) : (
-          <Menu className="h-7 w-7" />
+          <Menu className="h-9 w-9" />
         )}
       </button>
 
