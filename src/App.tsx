@@ -9,7 +9,9 @@ import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
 import { MapProvider } from './contexts/MapContext';
-import Header from './components/Header';
+import ConditionalHeader from './components/layout/ConditionalHeader';
+import FloatingNavigation from './components/layout/FloatingNavigation';
+import ConditionalSpacingWrapper from './components/layout/ConditionalSpacingWrapper';
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
@@ -47,11 +49,15 @@ function App() {
                     <DynamicGradientProvider>
                       <Router>
                         <div className="App min-h-screen">
-                          {/* CRITICAL COMPONENT - Header must remain on all pages */}
-                          <Header />
+                          {/* Conditional Header - only shows on specific pages */}
+                          <ConditionalHeader />
                           
-                          {/* Main content with proper spacing for fixed header */}
-                          <main className="pt-16">
+                          {/* Floating Navigation - shows on headerless pages */}
+                          <FloatingNavigation />
+                          
+                          {/* Main content with conditional spacing */}
+                          <main className="conditional-main-spacing">
+                            <ConditionalSpacingWrapper>
                             <Routes>
                               <Route path="/" element={<Home />} />
                               <Route path="/auth" element={<AuthPage />} />
@@ -77,6 +83,7 @@ function App() {
                               <Route path="/business-insights" element={<BusinessInsights />} />
                               <Route path="*" element={<NotFound />} />
                             </Routes>
+                            </ConditionalSpacingWrapper>
                           </main>
                           <Toaster />
                         </div>

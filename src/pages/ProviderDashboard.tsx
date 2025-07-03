@@ -4,8 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
+import FloatingCalendar from '@/components/layout/FloatingCalendar';
 import { useRouteOptimizer } from '@/hooks/useRouteOptimizer';
 import JobExecutionMode from '@/components/route-optimizer/JobExecutionMode';
 import { Link } from 'react-router-dom';
@@ -145,9 +145,9 @@ const ProviderDashboard = () => {
   return (
     <>
       <VideoBackground />
+      <FloatingCalendar />
       <div className="relative z-10 min-h-screen">
-        <Header />
-        <div className="pt-16 pl-[188px] pr-[188px] pb-2">
+        <div className="mt-0 mx-[188px] pb-2">
           <div className="max-w-full">
             <div className="mb-3">
               <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
@@ -158,9 +158,9 @@ const ProviderDashboard = () => {
               </p>
             </div>
 
-            {/* Main Content Tabs */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-3">
-              <div className="flex items-center gap-4">
+            {/* Main Content Tabs - At absolute top */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
+              <div className="flex items-center gap-4 mb-0">
                 <TabsList className="fintech-card p-1">
                   <TabsTrigger value="job-hub">
                     <Briefcase className="h-4 w-4 mr-2" />
@@ -170,9 +170,9 @@ const ProviderDashboard = () => {
                     <Map className="h-4 w-4 mr-2" />
                     Map
                   </TabsTrigger>
-                  <TabsTrigger value="community">
+                  <TabsTrigger value="crew">
                     <Users className="h-4 w-4 mr-2" />
-                    Community
+                    Crew
                   </TabsTrigger>
                   <TabsTrigger value="profile">
                     <UserCog className="h-4 w-4 mr-2" />
@@ -190,77 +190,80 @@ const ProviderDashboard = () => {
                 )}
               </div>
 
-              <TabsContent value="job-hub" className="space-y-3">
-                {/* Top Section - Calendar Only */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 items-start">
-                  {/* Enhanced Calendar Widget */}
-                  <Card className="fintech-card">
-                    <CardHeader className="pb-2 px-3 pt-3">
-                      <CardTitle className="flex items-center justify-between text-base">
-                        <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          CALENDAR
+              <TabsContent value="job-hub" className="space-y-5">
+                {/* Widget Grid - Calendar removed from grid (now floating) */}
+                <div className="grid grid-cols-5 grid-rows-3 gap-5">
+                  {/* Row 1: 4 assignable widgets */}
+                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    <CardContent className="p-5">
+                      <div className="text-center">
+                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                          <TrendingUp className="h-6 w-6 text-white" />
                         </div>
-                        <Badge variant="outline" className="text-xs">Jan 2024</Badge>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="pt-0 px-3 pb-3">
-                      <div className="space-y-3">
-                        {/* Mini Calendar Grid */}
-                        <div className="grid grid-cols-7 gap-1 text-xs">
-                          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
-                            <div key={day} className="p-1 text-center font-medium text-gray-500">{day}</div>
-                          ))}
-                          {Array.from({length: 35}, (_, i) => {
-                            const date = i - 2; // Start from 30th of prev month
-                            const isCurrentMonth = date > 0 && date <= 31;
-                            const isToday = date === 15;
-                            const hasEvent = [3, 8, 15, 22, 28].includes(date);
-                            
-                            return (
-                              <div key={i} className={`
-                                p-1 text-center rounded text-xs cursor-pointer relative
-                                ${!isCurrentMonth ? 'text-gray-300' : ''}
-                                ${isToday ? 'bg-blue-500 text-white font-bold' : 'hover:bg-gray-100'}
-                                ${hasEvent && !isToday ? 'bg-orange-100 text-orange-800' : ''}
-                              `}>
-                                {isCurrentMonth ? date : date <= 0 ? 30 + date : date - 31}
-                                {hasEvent && (
-                                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full"></div>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </div>
-                        
-                        {/* Today's Schedule */}
-                        <div className="space-y-1 text-xs">
-                          <div className="font-medium text-gray-700">Today's Schedule:</div>
-                          <div className="space-y-1">
-                            <div className="flex justify-between items-center p-1 bg-blue-50 rounded">
-                              <span>10:00 AM - House Cleaning</span>
-                              <Badge variant="outline" className="text-xs">Confirmed</Badge>
-                            </div>
-                            <div className="flex justify-between items-center p-1 bg-orange-50 rounded">
-                              <span>2:00 PM - Plumbing</span>
-                              <Badge variant="secondary" className="text-xs">Pending</Badge>
-                            </div>
-                          </div>
-                        </div>
-                        
-                        <Button variant="outline" className="w-full text-sm">
-                          <Calendar className="h-3 w-3 mr-1" />
-                          Sync with Google
-                        </Button>
+                        <h3 className="font-semibold text-orange-800">Performance</h3>
+                        <p className="text-sm text-orange-600">Track metrics</p>
                       </div>
                     </CardContent>
                   </Card>
-                </div>
 
-                {/* Smart Route Optimizer */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-                  <div className="lg:col-span-1">
-                    {/* Smart Route Optimizer / Job Execution Mode */}
+                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    <CardContent className="p-5">
+                      <div className="text-center">
+                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                          <DollarSign className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-orange-800">Earnings</h3>
+                        <p className="text-sm text-orange-600">$2,450 today</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    <CardContent className="p-5">
+                      <div className="text-center">
+                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                          <Star className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-orange-800">Rating</h3>
+                        <p className="text-sm text-orange-600">4.9 stars</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    <CardContent className="p-5">
+                      <div className="text-center">
+                        <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
+                          <Clock className="h-6 w-6 text-white" />
+                        </div>
+                        <h3 className="font-semibold text-orange-800">Active Jobs</h3>
+                        <p className="text-sm text-orange-600">3 pending</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Row 2: Recent Activity (span 4 columns) */}
+                  <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0 col-span-4">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-orange-800">Recent Activity</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span className="text-sm">Job completed: Kitchen repair - $180</span>
+                          <Badge variant="outline" className="ml-auto text-xs">5m ago</Badge>
+                        </div>
+                        <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                          <span className="text-sm">New booking: Bathroom renovation</span>
+                          <Badge variant="outline" className="ml-auto text-xs">12m ago</Badge>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Row 3: Smart Route Optimizer (span 2 columns) */}
                     {executionMode && getSelectedJob() ? (
                       <JobExecutionMode
                         job={getSelectedJob()!}
@@ -271,7 +274,7 @@ const ProviderDashboard = () => {
                         onUpdatePhotoRequirement={updatePhotoRequirement}
                       />
                     ) : (
-                      <Card className="fintech-card">
+                      <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0 col-span-2">
                         <CardHeader className="pb-2 px-3 pt-3">
                           <CardTitle className="flex items-center justify-between text-base font-bold">
                             <div className="flex items-center gap-2">
@@ -390,7 +393,6 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
                     )}
-                  </div>
                 </div>
               </TabsContent>
 
@@ -407,14 +409,14 @@ const ProviderDashboard = () => {
                 </Card>
               </TabsContent>
 
-              <TabsContent value="community">
+              <TabsContent value="crew">
                 <Card className="fintech-card">
                   <CardHeader>
-                    <CardTitle>Community</CardTitle>
+                    <CardTitle>Crew Center</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="text-center py-8">
-                      <p className="opacity-70">Community features will be displayed here</p>
+                      <p className="opacity-70">Crew coordination features will be displayed here</p>
                     </div>
                   </CardContent>
                 </Card>

@@ -271,4 +271,28 @@
       0 1px 4px rgba(0, 0, 0, 0.8),
       0 0 2px rgba(0, 0, 0, 0.7);
   }
+
+  /* Conditional spacing for main content */
+  .conditional-main-spacing {
+    @apply pt-0; /* Default for headerless pages */
+  }
+  
+  /* For pages with headers */
+  .has-header .conditional-main-spacing {
+    @apply pt-16;
+  }
+
+  /* Slide-in animation for menu */
+  .animate-slide-in-right {
+    animation: slide-in-right 0.3s ease-out;
+  }
+  
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
 }
