@@ -97,7 +97,7 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
         
         {/* Notification Dropdown */}
         {isNotificationOpen && (
-          <div className="absolute top-full left-4 mt-2 z-40 w-96">
+          <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-40 w-96">
             <DashboardNotificationDropdown />
           </div>
         )}
