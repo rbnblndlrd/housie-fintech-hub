@@ -11,7 +11,7 @@ const HeroSearchSection = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Services');
   
   // Positioning mode state
-  const [positioningMode, setPositioningMode] = useState(true);
+  const [positioningMode, setPositioningMode] = useState(false);
   
   // Certn Banner state
   const [bannerPosition, setBannerPosition] = useState({ x: 50, y: 120 });
