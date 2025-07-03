@@ -47,7 +47,7 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
       <div className={`relative ${className}`}>
         <div className="h-full w-full flex items-center justify-start p-4">
           <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-            <TabsList className="fintech-card p-1 flex-col h-auto gap-1">
+            <TabsList className="bg-transparent p-0 flex-col h-auto gap-4 border-none shadow-none">
               {/* Job Hub with integrated notification bell */}
               <div className="relative w-full">
                 <TabsTrigger 
