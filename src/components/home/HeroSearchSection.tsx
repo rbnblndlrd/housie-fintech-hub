@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, ChevronDown, Move, RotateCw, Lock, Maximize2 } from 'lucide-react';
+import { MapPin, ChevronDown, Move, RotateCw, Lock, Maximize2, LockOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -188,6 +188,10 @@ const HeroSearchSection = () => {
     console.log(`Dashboard Arrows - X: ${dashboardArrowsPosition.x}px, Y: ${dashboardArrowsPosition.y}px, Rotation: ${dashboardArrowsRotation.toFixed(1)}deg, Size: ${dashboardArrowsSize.width}x${dashboardArrowsSize.height}`);
   };
 
+  const unlockPosition = () => {
+    setPositioningMode(true);
+  };
+
   const handleSearch = () => {
     console.log('Searching for:', { location, category: selectedCategory });
     navigate('/services');
@@ -292,6 +296,20 @@ const HeroSearchSection = () => {
           >
             <Lock className="h-3 w-3 mr-1" />
             Lock All Positions
+          </Button>
+        </div>
+      )}
+
+      {/* Unlock Button - Only when positioning is locked */}
+      {!positioningMode && (
+        <div className="fixed top-4 left-4 z-[9999]">
+          <Button 
+            onClick={unlockPosition}
+            size="sm"
+            className="bg-orange-600 hover:bg-orange-700 text-white shadow-lg"
+          >
+            <LockOpen className="h-3 w-3 mr-1" />
+            Unlock Positioning
           </Button>
         </div>
       )}
