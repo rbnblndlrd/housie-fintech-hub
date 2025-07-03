@@ -70,8 +70,8 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
   },
   {
     id: 'tabs-navigation',
-    position: { x: 188, y: 560 },
-    size: { width: 600, height: 80 },
+    position: { x: 20, y: 100 },
+    size: { width: 200, height: 300 },
     isLocked: false
   }
 ];

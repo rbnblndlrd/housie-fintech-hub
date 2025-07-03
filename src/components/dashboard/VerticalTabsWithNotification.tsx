@@ -62,7 +62,7 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
                 {/* Notification Bell positioned over Job Hub tab */}
                 <button
                   onClick={handleBellClick}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 flex items-center justify-center hover:bg-white/20 rounded-sm transition-colors z-10"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 flex items-center justify-center hover:bg-white/10 rounded-sm z-10"
                 >
                   <Bell className="h-4 w-4 text-orange-600" />
                   {unreadCount > 0 && (
