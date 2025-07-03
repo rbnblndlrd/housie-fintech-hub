@@ -189,7 +189,7 @@ const HeroSearchSection = () => {
   return (
     <div 
       className="relative min-h-screen flex items-center justify-center px-4"
-      onMouseMove={positioningMode ? (isDragging ? handleMouseMove : isRotating ? handleRotationMove : undefined) : undefined}
+      onMouseMove={positioningMode ? (isDragging || isDashboardDragging || isResizing || isDashboardResizing ? handleMouseMove : isRotating || isDashboardRotating ? handleRotationMove : undefined) : undefined}
       onMouseUp={positioningMode ? handleMouseUp : undefined}
     >
       {/* Grid Overlay - Only in positioning mode */}
