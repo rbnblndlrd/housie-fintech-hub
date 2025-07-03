@@ -118,14 +118,24 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
               <h3 className="font-semibold text-yellow-900">
                 {useMicIcon ? 'Voice Assistant' : 'Assistant'}
               </h3>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-                className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
-              >
-                <X className="h-4 w-4" />
-              </Button>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleNotificationClick}
+                  className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
+                >
+                  <Bell className="h-4 w-4" />
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsOpen(false)}
+                  className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
 
             {/* Clean Tab Navigation */}
@@ -169,17 +179,6 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                     )}
                   </button>
                 )}
-
-                {/* Notification Bell (third position) */}
-                <button
-                  onClick={handleNotificationClick}
-                  className={cn(
-                    "flex-1 py-3 px-4 text-sm font-medium transition-colors relative hover:bg-yellow-100",
-                    "text-yellow-700 hover:text-yellow-900"
-                  )}
-                >
-                  <Bell className="h-4 w-4 mx-auto" />
-                </button>
               </div>
             </div>
 
