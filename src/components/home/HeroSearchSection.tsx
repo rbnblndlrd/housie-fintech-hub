@@ -49,16 +49,6 @@ const HeroSearchSection = () => {
         </span>
       </div>
 
-      {/* Exit Arrows - Bottom Right Corner */}
-      <div 
-        className="fixed bottom-8 right-8 z-[9999] flex items-center justify-center"
-        style={{ 
-          userSelect: 'none',
-          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)'
-        }}
-      >
-        <div className="text-white text-3xl tracking-wider animate-pulse">➤➤➤</div>
-      </div>
 
       {/* Service On-Demand Section - Bottom Left */}
       <div className="fixed bottom-8 left-8 z-10" style={{ userSelect: 'none' }}>
