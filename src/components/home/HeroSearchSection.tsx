@@ -28,8 +28,8 @@ const HeroSearchSection = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
-      {/* Certn Info - Top Right Corner */}
-      <div className="absolute top-24 right-6 z-20 flex items-center space-x-2 fintech-card backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg">
+      {/* Certn Info - Top Right Corner - Tilted */}
+      <div className="absolute top-[120px] right-[50px] z-20 flex items-center space-x-2 fintech-card backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg" style={{ transform: 'rotate(-15deg)' }}>
         <img 
           src="/CERTN.png" 
           alt="Certn" 
@@ -39,6 +39,17 @@ const HeroSearchSection = () => {
           Free background check with annual premium!
         </span>
       </div>
+
+      {/* Animated Dashboard Indicator */}
+      <Link 
+        to="/dashboard" 
+        className="absolute top-[280px] right-[400px] z-5 text-white font-bold text-lg cursor-pointer hover:scale-105 transition-transform duration-300 dashboard-arrow-pulse"
+        style={{ 
+          textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)'
+        }}
+      >
+        Dashboard
+      </Link>
 
       {/* Main Content */}
       <div className="relative z-10 max-w-2xl mx-auto text-center">

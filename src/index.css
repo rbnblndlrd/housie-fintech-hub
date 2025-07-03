@@ -347,6 +347,19 @@
       linear-gradient(0deg, rgba(0,0,0,0.05) 1px, transparent 1px);
     background-size: 100% 20px, 100% 10px;
   }
+
+  /* Dashboard arrow pulse animation */
+  @keyframes arrowPulse {
+    0% { content: "Dashboard →"; }
+    33% { content: "Dashboard →→"; }
+    66% { content: "Dashboard →→→"; }
+    100% { content: "Dashboard →"; }
+  }
+
+  .dashboard-arrow-pulse::after {
+    content: "Dashboard →";
+    animation: arrowPulse 1.5s infinite;
+  }
   
   .weathered-street-sign::before {
     content: '';
