@@ -1,16 +1,22 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, ChevronDown, Move, RotateCw, Lock, Maximize2, LockOpen } from 'lucide-react';
+import { MapPin, ChevronDown, Move, RotateCw, Lock, Maximize2, LockOpen, Copy, Save, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useToast } from '@/hooks/use-toast';
 
 const HeroSearchSection = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [location, setLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Services');
   
   // Positioning mode state
   const [positioningMode, setPositioningMode] = useState(true);
+  
+  // Position recording state
+  const [savedPositions, setSavedPositions] = useState<any>(null);
+  const [lastSaveTime, setLastSaveTime] = useState<string | null>(null);
   
   // Object management state
   const [activeObject, setActiveObject] = useState<string | null>(null);
@@ -181,7 +187,182 @@ const HeroSearchSection = () => {
     });
   };
 
+  // Position recording functions
+  const savePositions = () => {
+    const positionData = {
+      timestamp: new Date().toISOString(),
+      certnBanner: { 
+        x: bannerPosition.x, 
+        y: bannerPosition.y, 
+        rotation: bannerRotation, 
+        width: bannerSize.width, 
+        height: bannerSize.height 
+      },
+      dashboardText: { 
+        x: dashboardTextPosition.x, 
+        y: dashboardTextPosition.y, 
+        rotation: dashboardTextRotation, 
+        width: dashboardTextSize.width, 
+        height: dashboardTextSize.height 
+      },
+      dashboardArrows: { 
+        x: dashboardArrowsPosition.x, 
+        y: dashboardArrowsPosition.y, 
+        rotation: dashboardArrowsRotation, 
+        width: dashboardArrowsSize.width, 
+        height: dashboardArrowsSize.height 
+      },
+      heroTitle: { 
+        x: heroTitlePosition.x, 
+        y: heroTitlePosition.y, 
+        rotation: heroTitleRotation, 
+        width: heroTitleSize.width, 
+        height: heroTitleSize.height 
+      },
+      searchSection: { 
+        x: searchSectionPosition.x, 
+        y: searchSectionPosition.y, 
+        rotation: searchSectionRotation, 
+        width: searchSectionSize.width, 
+        height: searchSectionSize.height 
+      }
+    };
+    
+    localStorage.setItem('heroSectionPositions', JSON.stringify(positionData));
+    setSavedPositions(positionData);
+    setLastSaveTime(positionData.timestamp);
+    
+    toast({
+      title: "Positions Saved",
+      description: "All object positions have been saved to localStorage.",
+    });
+  };
+
+  const loadPositions = () => {
+    const saved = localStorage.getItem('heroSectionPositions');
+    if (saved) {
+      try {
+        const positionData = JSON.parse(saved);
+        
+        // Load banner positions
+        setBannerPosition({ x: positionData.certnBanner.x, y: positionData.certnBanner.y });
+        setBannerRotation(positionData.certnBanner.rotation);
+        setBannerSize({ width: positionData.certnBanner.width, height: positionData.certnBanner.height });
+        
+        // Load dashboard text positions
+        setDashboardTextPosition({ x: positionData.dashboardText.x, y: positionData.dashboardText.y });
+        setDashboardTextRotation(positionData.dashboardText.rotation);
+        setDashboardTextSize({ width: positionData.dashboardText.width, height: positionData.dashboardText.height });
+        
+        // Load dashboard arrows positions
+        setDashboardArrowsPosition({ x: positionData.dashboardArrows.x, y: positionData.dashboardArrows.y });
+        setDashboardArrowsRotation(positionData.dashboardArrows.rotation);
+        setDashboardArrowsSize({ width: positionData.dashboardArrows.width, height: positionData.dashboardArrows.height });
+        
+        // Load hero title positions
+        setHeroTitlePosition({ x: positionData.heroTitle.x, y: positionData.heroTitle.y });
+        setHeroTitleRotation(positionData.heroTitle.rotation);
+        setHeroTitleSize({ width: positionData.heroTitle.width, height: positionData.heroTitle.height });
+        
+        // Load search section positions
+        setSearchSectionPosition({ x: positionData.searchSection.x, y: positionData.searchSection.y });
+        setSearchSectionRotation(positionData.searchSection.rotation);
+        setSearchSectionSize({ width: positionData.searchSection.width, height: positionData.searchSection.height });
+        
+        setSavedPositions(positionData);
+        setLastSaveTime(positionData.timestamp);
+        
+        toast({
+          title: "Positions Loaded",
+          description: "All objects have been restored to saved positions.",
+        });
+      } catch (error) {
+        toast({
+          title: "Load Error",
+          description: "Failed to load saved positions.",
+          variant: "destructive",
+        });
+      }
+    } else {
+      toast({
+        title: "No Saved Positions",
+        description: "No saved positions found in localStorage.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const copyPositionsToClipboard = async () => {
+    const positionData = {
+      timestamp: new Date().toISOString(),
+      certnBanner: { 
+        x: bannerPosition.x, 
+        y: bannerPosition.y, 
+        rotation: bannerRotation, 
+        width: bannerSize.width, 
+        height: bannerSize.height 
+      },
+      dashboardText: { 
+        x: dashboardTextPosition.x, 
+        y: dashboardTextPosition.y, 
+        rotation: dashboardTextRotation, 
+        width: dashboardTextSize.width, 
+        height: dashboardTextSize.height 
+      },
+      dashboardArrows: { 
+        x: dashboardArrowsPosition.x, 
+        y: dashboardArrowsPosition.y, 
+        rotation: dashboardArrowsRotation, 
+        width: dashboardArrowsSize.width, 
+        height: dashboardArrowsSize.height 
+      },
+      heroTitle: { 
+        x: heroTitlePosition.x, 
+        y: heroTitlePosition.y, 
+        rotation: heroTitleRotation, 
+        width: heroTitleSize.width, 
+        height: heroTitleSize.height 
+      },
+      searchSection: { 
+        x: searchSectionPosition.x, 
+        y: searchSectionPosition.y, 
+        rotation: searchSectionRotation, 
+        width: searchSectionSize.width, 
+        height: searchSectionSize.height 
+      }
+    };
+    
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(positionData, null, 2));
+      toast({
+        title: "Copied to Clipboard",
+        description: "Position data has been copied to your clipboard.",
+      });
+    } catch (error) {
+      toast({
+        title: "Copy Failed",
+        description: "Failed to copy to clipboard.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Load saved positions on component mount
+  useEffect(() => {
+    const saved = localStorage.getItem('heroSectionPositions');
+    if (saved) {
+      try {
+        const positionData = JSON.parse(saved);
+        setSavedPositions(positionData);
+        setLastSaveTime(positionData.timestamp);
+      } catch (error) {
+        console.error('Failed to load saved positions:', error);
+      }
+    }
+  }, []);
+
   const lockPosition = () => {
+    savePositions(); // Automatically save when locking
     setPositioningMode(false);
     console.log(`Certn Banner - X: ${bannerPosition.x}px, Y: ${bannerPosition.y}px, Rotation: ${bannerRotation.toFixed(1)}deg, Size: ${bannerSize.width}x${bannerSize.height}`);
     console.log(`Dashboard Text - X: ${dashboardTextPosition.x}px, Y: ${dashboardTextPosition.y}px, Rotation: ${dashboardTextRotation.toFixed(1)}deg, Size: ${dashboardTextSize.width}x${dashboardTextSize.height}`);
@@ -265,6 +446,14 @@ const HeroSearchSection = () => {
             </div>
           )}
           
+          {/* Saved Positions Info */}
+          {lastSaveTime && (
+            <div className="text-xs mb-3 p-2 bg-green-500/10 border border-green-500/20 rounded">
+              <div className="font-bold text-green-400">💾 Last Saved</div>
+              <div>{new Date(lastSaveTime).toLocaleTimeString()}</div>
+            </div>
+          )}
+          
           {/* Object Legend */}
           <div className="text-xs mb-3 space-y-1">
             <div className="flex items-center gap-2">
@@ -289,14 +478,48 @@ const HeroSearchSection = () => {
             </div>
           </div>
           
-          <Button 
-            onClick={lockPosition}
-            size="sm"
-            className="bg-green-600 hover:bg-green-700 text-white"
-          >
-            <Lock className="h-3 w-3 mr-1" />
-            Lock All Positions
-          </Button>
+          {/* Action Buttons */}
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <Button 
+                onClick={savePositions}
+                size="sm"
+                className="bg-blue-600 hover:bg-blue-700 text-white flex-1"
+              >
+                <Save className="h-3 w-3 mr-1" />
+                Save Layout
+              </Button>
+              <Button 
+                onClick={copyPositionsToClipboard}
+                size="sm"
+                className="bg-purple-600 hover:bg-purple-700 text-white flex-1"
+              >
+                <Copy className="h-3 w-3 mr-1" />
+                Copy JSON
+              </Button>
+            </div>
+            
+            <div className="flex gap-2">
+              {savedPositions && (
+                <Button 
+                  onClick={loadPositions}
+                  size="sm"
+                  className="bg-orange-600 hover:bg-orange-700 text-white flex-1"
+                >
+                  <Upload className="h-3 w-3 mr-1" />
+                  Load Saved
+                </Button>
+              )}
+              <Button 
+                onClick={lockPosition}
+                size="sm"
+                className="bg-green-600 hover:bg-green-700 text-white flex-1"
+              >
+                <Lock className="h-3 w-3 mr-1" />
+                Lock & Save
+              </Button>
+            </div>
+          </div>
         </div>
       )}
 
