@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
@@ -8,10 +8,35 @@ import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 
 const FloatingNavigation = () => {
+  const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user } = useAuth();
   const { currentRole, switchRole } = useRoleSwitch();
   const { toast } = useToast();
+
+  // Pages that HAVE headers - don't show floating navigation
+  const pagesWithHeader = [
+    '/provider-profile/',  // This will match /provider-profile/:id
+    '/social',
+    '/competitive-advantage',
+    '/help',
+    '/help-center',
+    '/profile',
+    '/services'
+  ];
+  
+  const shouldShowFloatingNav = !pagesWithHeader.some(path => {
+    if (path.endsWith('/')) {
+      // For dynamic routes like /provider-profile/:id
+      return location.pathname.startsWith(path);
+    }
+    return location.pathname === path;
+  });
+  
+  // Don't render if this page has a header
+  if (!shouldShowFloatingNav) {
+    return null;
+  }
 
   const handleSignOut = async () => {
     try {
