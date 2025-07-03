@@ -295,4 +295,14 @@
       transform: translateX(0);
     }
   }
+
+  /* Breathing animation for logo */
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1.0);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
 }
