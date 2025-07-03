@@ -14,9 +14,9 @@ const HeroSearchSection = () => {
   const [positioningMode, setPositioningMode] = useState(false);
   
   // Certn Banner state
-  const [bannerPosition, setBannerPosition] = useState({ x: 50, y: 120 });
-  const [bannerRotation, setBannerRotation] = useState(-15);
-  const [bannerSize, setBannerSize] = useState({ width: 300, height: 60 });
+  const [bannerPosition, setBannerPosition] = useState({ x: -32, y: 1382 });
+  const [bannerRotation, setBannerRotation] = useState(28.7);
+  const [bannerSize, setBannerSize] = useState({ width: 304, height: 97 });
   const [isDragging, setIsDragging] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
@@ -26,9 +26,9 @@ const HeroSearchSection = () => {
   const bannerRef = useRef<HTMLDivElement>(null);
   
   // Dashboard Graffiti state
-  const [dashboardPosition, setDashboardPosition] = useState({ x: 290, y: 120 });
-  const [dashboardRotation, setDashboardRotation] = useState(0);
-  const [dashboardSize, setDashboardSize] = useState({ width: 350, height: 120 });
+  const [dashboardPosition, setDashboardPosition] = useState({ x: 2096, y: 450 });
+  const [dashboardRotation, setDashboardRotation] = useState(1.0);
+  const [dashboardSize, setDashboardSize] = useState({ width: 351, height: 118 });
   const [isDashboardDragging, setIsDashboardDragging] = useState(false);
   const [isDashboardRotating, setIsDashboardRotating] = useState(false);
   const [isDashboardResizing, setIsDashboardResizing] = useState(false);
