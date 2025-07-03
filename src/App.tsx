@@ -33,6 +33,7 @@ import PerformanceDashboard from './pages/PerformanceDashboard';
 import BusinessInsights from './pages/BusinessInsights';
 import HelpCenter from './pages/HelpCenter';
 import InteractiveMapPage from './pages/InteractiveMapPage';
+import Pricing from './pages/Pricing';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 
@@ -81,6 +82,7 @@ function App() {
                               <Route path="/performance" element={<PerformanceDashboard />} />
                               <Route path="/performance-dashboard" element={<PerformanceDashboard />} />
                               <Route path="/business-insights" element={<BusinessInsights />} />
+                              <Route path="/pricing" element={<Pricing />} />
                               <Route path="*" element={<NotFound />} />
                             </Routes>
                             </ConditionalSpacingWrapper>
