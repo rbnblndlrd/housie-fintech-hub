@@ -28,7 +28,7 @@ const HeroSearchSection = () => {
   // Dashboard Graffiti state
   const [dashboardPosition, setDashboardPosition] = useState({ x: 290, y: 120 });
   const [dashboardRotation, setDashboardRotation] = useState(0);
-  const [dashboardSize, setDashboardSize] = useState({ width: 200, height: 80 });
+  const [dashboardSize, setDashboardSize] = useState({ width: 350, height: 120 });
   const [isDashboardDragging, setIsDashboardDragging] = useState(false);
   const [isDashboardRotating, setIsDashboardRotating] = useState(false);
   const [isDashboardResizing, setIsDashboardResizing] = useState(false);
@@ -299,8 +299,8 @@ const HeroSearchSection = () => {
         onMouseDown={positioningMode ? handleDashboardMouseDown : undefined}
       >
         <div className="text-white hover:scale-105 transition-transform duration-300 flex flex-col items-center h-full w-full justify-center">
-          <span className="font-graffiti text-3xl font-bold tracking-wider">DASHBOARD</span>
-          <span className="dashboard-arrows text-2xl mt-1"></span>
+          <span className="font-graffiti text-7xl font-bold tracking-wider">DASHBOARD</span>
+          <span className="dashboard-arrows text-4xl mt-1"></span>
         </div>
         
         {/* Control Handles - Only in positioning mode */}
