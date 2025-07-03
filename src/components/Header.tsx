@@ -46,7 +46,7 @@ const Header = () => {
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
                 alt="HOUSIE" 
-                className="h-36 w-auto"
+                className="h-8 w-auto"
                 onError={(e) => {
                   console.log('🖼️ Primary HOUSIE logo failed, trying fallback...');
                   const target = e.currentTarget;
