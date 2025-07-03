@@ -150,9 +150,11 @@ const ProviderDashboard = () => {
         <div className="mt-0 mx-[188px] pb-2">
           <div className="max-w-full">
             <div className="mb-3">
-              <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
-                Provider Dashboard
-              </h1>
+              <div className="weathered-street-sign flex items-center justify-center mb-2">
+                <h1 className="graffiti-text">
+                  Provider Dashboard
+                </h1>
+              </div>
               <p className="text-white/90 drop-shadow-md">
                 Welcome back! Here's your performance overview
               </p>

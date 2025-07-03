@@ -305,4 +305,79 @@
       transform: scale(1.02);
     }
   }
+
+  /* Weathered street sign animations */
+  @keyframes creaky-sway {
+    0%, 100% {
+      transform: rotate(-1deg);
+    }
+    50% {
+      transform: rotate(1.5deg);
+    }
+  }
+
+  /* Weathered street sign styling */
+  .weathered-street-sign {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(180deg, #8B4513 0%, #A0522D 25%, #654321 50%, #8B4513 75%, #5D4037 100%);
+    width: 400px;
+    height: 90px;
+    transform: rotate(-1deg);
+    animation: creaky-sway 4s ease-in-out infinite alternate;
+    transform-origin: top center;
+    
+    /* Irregular weathered shape */
+    clip-path: polygon(
+      5% 8%, 15% 2%, 25% 6%, 35% 0%, 45% 4%, 55% 1%, 65% 5%, 75% 0%, 85% 3%, 95% 7%,
+      98% 15%, 96% 25%, 99% 35%, 95% 45%, 98% 55%, 94% 65%, 97% 75%, 93% 85%, 95% 92%,
+      85% 96%, 75% 99%, 65% 94%, 55% 98%, 45% 95%, 35% 99%, 25% 93%, 15% 97%, 5% 94%,
+      2% 85%, 4% 75%, 1% 65%, 5% 55%, 2% 45%, 6% 35%, 3% 25%, 7% 15%
+    );
+    
+    /* Wood texture and weathering */
+    box-shadow: 
+      inset 0 2px 4px rgba(0,0,0,0.3),
+      inset 0 -2px 4px rgba(139,69,19,0.5),
+      0 4px 8px rgba(0,0,0,0.4);
+    
+    /* Wood planks effect */
+    background-image: 
+      linear-gradient(0deg, rgba(0,0,0,0.1) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 100% 20px, 100% 10px;
+  }
+  
+  .weathered-street-sign::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    width: 6px;
+    height: 6px;
+    background: #2C1810;
+    border-radius: 50%;
+    box-shadow: 
+      350px 0 0 #2C1810,
+      0 60px 0 #2C1810,
+      350px 60px 0 #2C1810;
+  }
+  
+  .graffiti-text {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 
+      2px 2px 0px #000,
+      -1px -1px 0px #666,
+      3px 3px 6px rgba(0,0,0,0.8);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 10;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+  }
 }
