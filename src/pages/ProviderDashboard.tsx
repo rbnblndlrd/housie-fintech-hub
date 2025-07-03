@@ -164,24 +164,50 @@ const ProviderDashboard = () => {
     <>
       <VideoBackground />
       <FloatingCalendar />
+      
+      {/* Draggable Dashboard Title */}
+      <div className="fixed top-0 left-0 z-40">
+        <DraggableWidget
+          id="dashboard-title"
+          defaultPosition={getWidgetConfig('dashboard-title').position}
+          defaultSize={getWidgetConfig('dashboard-title').size}
+          isLocked={getWidgetConfig('dashboard-title').isLocked}
+          onPositionChange={updateWidgetPosition}
+          onSizeChange={updateWidgetSize}
+          onLockToggle={toggleWidgetLock}
+        >
+          <div className="h-full w-full flex items-center justify-center">
+            <div className="weathered-street-sign flex items-center justify-center">
+              <h1 className="graffiti-text">
+                Provider Dashboard
+              </h1>
+            </div>
+          </div>
+        </DraggableWidget>
+      </div>
+
+      {/* Draggable Welcome Text */}
+      <div className="fixed top-0 left-0 z-40">
+        <DraggableWidget
+          id="welcome-text"
+          defaultPosition={getWidgetConfig('welcome-text').position}
+          defaultSize={getWidgetConfig('welcome-text').size}
+          isLocked={getWidgetConfig('welcome-text').isLocked}
+          onPositionChange={updateWidgetPosition}
+          onSizeChange={updateWidgetSize}
+          onLockToggle={toggleWidgetLock}
+        >
+          <div className="h-full w-full flex items-center justify-center text-center">
+            <p className="text-white/90 drop-shadow-md">
+              Welcome back! Here's your performance overview
+            </p>
+          </div>
+        </DraggableWidget>
+      </div>
+      
       <div className="relative z-10 min-h-screen">
         <div className="pb-2">
           <div className="max-w-full">
-            {/* Provider Dashboard Pancarte - Centered and spaced */}
-            <div className="fixed top-[200px] left-1/2 transform -translate-x-1/2 z-20">
-              <div className="weathered-street-sign flex items-center justify-center mb-2">
-                <h1 className="graffiti-text">
-                  Provider Dashboard
-                </h1>
-              </div>
-            </div>
-
-            {/* Welcome Text - Positioned between pancarte and widgets */}
-            <div className="fixed top-[250px] left-1/2 transform -translate-x-1/2 z-20 text-center">
-              <p className="text-white/90 drop-shadow-md">
-                Welcome back! Here's your performance overview
-              </p>
-            </div>
 
             {/* Dashboard Controls */}
             <div className="fixed top-4 right-4 z-30 flex gap-2">

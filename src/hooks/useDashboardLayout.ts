@@ -55,6 +55,18 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
     position: { x: window.innerWidth - 450, y: 50 },
     size: { width: 400, height: 320 },
     isLocked: false
+  },
+  {
+    id: 'dashboard-title',
+    position: { x: Math.max(0, window.innerWidth/2 - 200), y: 200 },
+    size: { width: 400, height: 80 },
+    isLocked: false
+  },
+  {
+    id: 'welcome-text',
+    position: { x: Math.max(0, window.innerWidth/2 - 250), y: 290 },
+    size: { width: 500, height: 60 },
+    isLocked: false
   }
 ];
 
