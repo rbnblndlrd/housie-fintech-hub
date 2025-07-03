@@ -298,13 +298,10 @@ const HeroSearchSection = () => {
         }}
         onMouseDown={positioningMode ? handleDashboardMouseDown : undefined}
       >
-        <Link 
-          to="/dashboard" 
-          className="text-white hover:scale-105 transition-transform duration-300 flex flex-col items-center h-full w-full justify-center"
-        >
+        <div className="text-white hover:scale-105 transition-transform duration-300 flex flex-col items-center h-full w-full justify-center">
           <span className="font-graffiti text-3xl font-bold tracking-wider">DASHBOARD</span>
           <span className="dashboard-arrows text-2xl mt-1"></span>
-        </Link>
+        </div>
         
         {/* Control Handles - Only in positioning mode */}
         {positioningMode && (
