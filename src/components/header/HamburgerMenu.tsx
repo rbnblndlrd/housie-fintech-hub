@@ -19,11 +19,11 @@ const HamburgerMenu = () => {
     <div className="relative">
       <Button
         variant="ghost"
-        size="sm"
+        size="default"
         onClick={() => setIsOpen(!isOpen)}
-        className="p-1.5 text-white hover:bg-gray-800"
+        className="p-2 text-white hover:bg-gray-800"
       >
-        {isOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
       </Button>
 
       {isOpen && (
