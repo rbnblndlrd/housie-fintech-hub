@@ -108,7 +108,7 @@ const FloatingNavigation = () => {
         {isMenuOpen ? (
           <X className="h-6 w-6" />
         ) : (
-          <Menu className="h-6 w-6" style={{ transform: 'rotate(180deg)' }} />
+          <Menu className="h-6 w-6" />
         )}
       </button>
 
