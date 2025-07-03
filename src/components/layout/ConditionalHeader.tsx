@@ -13,7 +13,9 @@ const ConditionalHeader = () => {
     '/help',
     '/help-center',
     '/profile',
-    '/services'
+    '/services',
+    '/analytics-dashboard',  // Has its own Header component
+    '/analytics'  // Also has its own Header component
   ];
   
   const shouldShowHeader = pagesWithHeader.some(path => {
