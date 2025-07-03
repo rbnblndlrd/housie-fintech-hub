@@ -92,16 +92,17 @@ const FloatingNavigation = () => {
         />
       </Link>
 
-      {/* Hamburger Menu Button - Smaller and properly spaced */}
+      {/* Hamburger Menu Button - Smaller and properly spaced with rotation */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="fixed z-[1000] text-white flex items-center justify-center"
+        className="fixed z-[1000] text-white flex items-center justify-center transition-transform duration-300"
         style={{ 
           top: '35px',
           left: '210px',
           width: '30px',
           height: '30px',
-          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+          transform: isMenuOpen ? 'rotate(90deg)' : 'rotate(0deg)'
         }}
       >
         {isMenuOpen ? (
@@ -111,42 +112,48 @@ const FloatingNavigation = () => {
         )}
       </button>
 
-      {/* Slide-out Menu */}
+      {/* Traditional Hamburger Dropdown Menu */}
       {isMenuOpen && (
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 z-[900] bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 z-[900] bg-black/30 backdrop-blur-sm"
             onClick={() => setIsMenuOpen(false)}
           />
           
-          {/* Menu Panel */}
-          <div className="fixed top-0 left-0 z-[950] w-80 h-screen bg-black/95 backdrop-blur-md animate-slide-in-right">
-            <div className="pt-20 px-6">
-              <div className="space-y-1">
-                {menuItems.map((item, index) => (
-                  item.action ? (
-                    <button
-                      key={index}
-                      onClick={item.action === 'signOut' ? handleSignOut : handleRoleSwitch}
-                      className="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors text-left"
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <span className="font-medium">{item.label}</span>
-                    </button>
-                  ) : (
-                    <Link
-                      key={index}
-                      to={item.href!}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  )
-                ))}
-              </div>
+          {/* Dropdown Menu Panel */}
+          <div 
+            className="fixed z-[950] bg-black/95 backdrop-blur-md rounded-lg border border-white/20 animate-fade-in"
+            style={{
+              top: '75px',
+              left: '20px',
+              width: '240px',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.3)'
+            }}
+          >
+            <div className="py-2">
+              {menuItems.map((item, index) => (
+                item.action ? (
+                  <button
+                    key={index}
+                    onClick={item.action === 'signOut' ? handleSignOut : handleRoleSwitch}
+                    className="w-full flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition-colors text-left"
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    <span className="font-medium">{item.label}</span>
+                  </button>
+                ) : (
+                  <Link
+                    key={index}
+                    to={item.href!}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="flex items-center gap-3 px-4 py-3 text-white hover:bg-white/10 transition-colors"
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    <span className="font-medium">{item.label}</span>
+                  </Link>
+                )
+              ))}
             </div>
           </div>
         </>
