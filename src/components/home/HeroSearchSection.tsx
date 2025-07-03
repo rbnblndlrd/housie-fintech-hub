@@ -27,15 +27,15 @@ const HeroSearchSection = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4">
-      {/* Certn Banner */}
+      {/* Certn Banner - Top Right Corner */}
       <div 
         className="absolute z-[9999] flex items-center space-x-2 fintech-card backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg"
         style={{ 
-          left: '-32px',
-          top: '1382px',
+          right: '32px',
+          top: '120px',
           width: '304px',
           height: '97px',
-          transform: 'rotate(28.7deg)',
+          transform: 'rotate(-8deg)',
           userSelect: 'none'
         }}
       >
