@@ -253,29 +253,61 @@ const ProviderDashboard = () => {
                     </Card>
                   </div>
 
-                  {/* Calendar Widget - Top Right Corner */}
+                  {/* Enhanced Calendar Widget */}
                   <Card className="fintech-card lg:order-2">
                     <CardHeader className="pb-2 px-3 pt-3">
-                      <CardTitle className="flex items-center gap-2 text-base">
-                        <Calendar className="h-4 w-4" />
-                        Calendar
+                      <CardTitle className="flex items-center justify-between text-base">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          CALENDAR
+                        </div>
+                        <Badge variant="outline" className="text-xs">Jan 2024</Badge>
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="pt-0 px-3 pb-3">
-                      <div className="space-y-2">
-                        <div className="text-center">
-                          <div className="text-sm font-semibold">January 2024</div>
-                          <div className="grid grid-cols-7 gap-1 mt-1 text-xs">
-                            {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
-                              <div key={day} className="p-1 font-medium text-gray-500">{day}</div>
-                            ))}
-                            {Array.from({length: 31}, (_, i) => (
-                              <div key={i} className={`p-1 text-center rounded text-xs ${i + 1 === 15 ? 'bg-blue-500 text-white' : 'hover:bg-gray-100'}`}>
-                                {i + 1}
+                      <div className="space-y-3">
+                        {/* Mini Calendar Grid */}
+                        <div className="grid grid-cols-7 gap-1 text-xs">
+                          {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
+                            <div key={day} className="p-1 text-center font-medium text-gray-500">{day}</div>
+                          ))}
+                          {Array.from({length: 35}, (_, i) => {
+                            const date = i - 2; // Start from 30th of prev month
+                            const isCurrentMonth = date > 0 && date <= 31;
+                            const isToday = date === 15;
+                            const hasEvent = [3, 8, 15, 22, 28].includes(date);
+                            
+                            return (
+                              <div key={i} className={`
+                                p-1 text-center rounded text-xs cursor-pointer relative
+                                ${!isCurrentMonth ? 'text-gray-300' : ''}
+                                ${isToday ? 'bg-blue-500 text-white font-bold' : 'hover:bg-gray-100'}
+                                ${hasEvent && !isToday ? 'bg-orange-100 text-orange-800' : ''}
+                              `}>
+                                {isCurrentMonth ? date : date <= 0 ? 30 + date : date - 31}
+                                {hasEvent && (
+                                  <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full"></div>
+                                )}
                               </div>
-                            ))}
+                            );
+                          })}
+                        </div>
+                        
+                        {/* Today's Schedule */}
+                        <div className="space-y-1 text-xs">
+                          <div className="font-medium text-gray-700">Today's Schedule:</div>
+                          <div className="space-y-1">
+                            <div className="flex justify-between items-center p-1 bg-blue-50 rounded">
+                              <span>10:00 AM - House Cleaning</span>
+                              <Badge variant="outline" className="text-xs">Confirmed</Badge>
+                            </div>
+                            <div className="flex justify-between items-center p-1 bg-orange-50 rounded">
+                              <span>2:00 PM - Plumbing</span>
+                              <Badge variant="secondary" className="text-xs">Pending</Badge>
+                            </div>
                           </div>
                         </div>
+                        
                         <Button variant="outline" className="w-full text-sm">
                           <Calendar className="h-3 w-3 mr-1" />
                           Sync with Google
@@ -287,80 +319,147 @@ const ProviderDashboard = () => {
 
                 {/* Main Grid Layout - Tighter gaps */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-2">
-                  {/* Left Column - AutoTask List (40% width) */}
+                  {/* Enhanced AutoTask Widget */}
                   <div className="lg:col-span-5 space-y-2">
                     <Card className="fintech-card">
                       <CardHeader className="pb-2 px-3 pt-3">
                         <div className="flex items-center justify-between">
-                          <CardTitle className="flex items-center gap-2 text-base">
+                          <CardTitle className="flex items-center gap-2 text-base font-bold">
                             <CheckCircle className="h-4 w-4" />
-                            AutoTask List
+                            AUTOTASK-TYPE OF LIST FOR TICKET MANAGEMENT.
                           </CardTitle>
-                          <div className="flex items-center gap-2">
-                            <Button variant="outline" size="sm" className="text-xs">
-                              <Filter className="h-3 w-3 mr-1" />
-                              Columns
-                              <ChevronDown className="h-3 w-3 ml-1" />
-                            </Button>
-                          </div>
+                          <Badge variant="outline" className="text-xs">CORE FEATURE</Badge>
                         </div>
+                        <p className="text-xs text-gray-600 mt-1">
+                          MAKE IT TIMELESS, AGELESS, BIG, BEAUTIFUL, USER-FRIENDLY, EXTENSIVE, TABBED - USEFUL TABS!
+                        </p>
                         
-                        {/* Filter Buttons */}
-                        <div className="flex gap-1 mt-2">
-                          {['Today', 'This Week', 'Pending', 'Completed'].map((filter) => (
+                        {/* Enhanced Filter Tabs */}
+                        <div className="flex gap-1 mt-3">
+                          {[
+                            { key: 'pending', label: 'PENDING/INCOMING JOB REQUESTS', count: 4 },
+                            { key: 'thisweek', label: 'THIS WEEK', count: 12 },
+                            { key: 'completed', label: 'COMPLETED', count: 8 }
+                          ].map((filter) => (
                             <Button
-                              key={filter}
-                              variant={filterPeriod === filter.toLowerCase().replace(' ', '') ? "default" : "outline"}
+                              key={filter.key}
+                              variant={filterPeriod === filter.key ? "default" : "outline"}
                               size="sm"
-                              className="text-xs px-2 py-1"
-                              onClick={() => setFilterPeriod(filter.toLowerCase().replace(' ', ''))}
+                              className="text-xs px-3 py-1 flex items-center gap-1"
+                              onClick={() => setFilterPeriod(filter.key)}
                             >
-                              {filter}
+                              {filter.label}
+                              <Badge variant="secondary" className="ml-1 text-xs">
+                                {filter.count}
+                              </Badge>
                             </Button>
                           ))}
                         </div>
                       </CardHeader>
                       <CardContent className="pt-0 px-3 pb-3">
+                        {/* Recent Feedback Section */}
+                        <div className="mb-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Star className="h-4 w-4 text-yellow-500" />
+                            <span className="font-semibold text-sm">RECENT FEEDBACK (AT A GLANCE)</span>
+                          </div>
+                          <div className="space-y-2 text-xs">
+                            <div className="flex items-center justify-between p-2 bg-white rounded border">
+                              <span>"Excellent plumbing work!" - Sarah J.</span>
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                ))}
+                              </div>
+                            </div>
+                            <div className="flex items-center justify-between p-2 bg-white rounded border">
+                              <span>"Quick and professional service" - Mike D.</span>
+                              <div className="flex">
+                                {[...Array(5)].map((_, i) => (
+                                  <Star key={i} className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Message Previewer */}
+                        <div className="mb-4 p-3 bg-green-50 rounded-lg border border-green-200">
+                          <div className="flex items-center gap-2 mb-2">
+                            <Mail className="h-4 w-4 text-green-600" />
+                            <span className="font-semibold text-sm">MESSAGE PREVIEWER (NOTIFICATIONS AND)</span>
+                          </div>
+                          <div className="space-y-1 text-xs">
+                            <div className="flex items-start gap-2 p-2 bg-white rounded">
+                              <div className="w-2 h-2 bg-green-500 rounded-full mt-1.5"></div>
+                              <div>
+                                <p className="font-medium">New booking request from Maria Garcia</p>
+                                <p className="text-gray-500">House cleaning - Tomorrow 2:00 PM</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2 p-2 bg-white rounded">
+                              <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5"></div>
+                              <div>
+                                <p className="font-medium">Payment confirmed: $120.00</p>
+                                <p className="text-gray-500">From John Smith - Electrical work</p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2 p-2 bg-white rounded">
+                              <div className="w-2 h-2 bg-orange-500 rounded-full mt-1.5"></div>
+                              <div>
+                                <p className="font-medium">Schedule change request</p>
+                                <p className="text-gray-500">Lisa Chen wants to reschedule</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Ticket List */}
                         <div className="space-y-1">
-                          {routeJobs.map((job) => (
+                          <div className="text-xs font-semibold mb-2 text-gray-700">ACTIVE TICKETS & JOBS</div>
+                          {recentBookings.slice(0, 4).map((booking) => (
                             <div 
-                              key={`job-${job.id}`}
+                              key={`booking-${booking.id}`}
                               draggable
                               onDragStart={(e) => {
-                                e.dataTransfer.setData('text/plain', job.id);
+                                e.dataTransfer.setData('text/plain', booking.id.toString());
                                 e.dataTransfer.effectAllowed = 'copy';
                               }}
-                              className="flex items-center gap-2 p-2 fintech-card-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
-                              onClick={() => selectJob(job.id)}
+                              className="flex items-center gap-2 p-2 fintech-card-secondary rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border"
+                              onClick={() => handleJobSelection(booking.id)}
                             >
                               <input
                                 type="checkbox"
-                                checked={selectedJobs.includes(parseInt(job.id))}
-                                onChange={() => handleJobSelection(parseInt(job.id))}
+                                checked={selectedJobs.includes(booking.id)}
+                                onChange={() => handleJobSelection(booking.id)}
                                 className="rounded"
                                 onClick={(e) => e.stopPropagation()}
                               />
-                              <div className="flex-1 grid grid-cols-2 gap-1 text-xs">
-                                <span className="font-medium">{job.scheduledTime}</span>
-                                <span>{job.customerName}</span>
-                                <span className="text-xs">{job.serviceType}</span>
-                                <Badge variant={getStatusBadge(job.status)} className="w-fit text-xs">
-                                  {job.status}
-                                </Badge>
+                              <div className="flex-1 text-xs">
+                                <div className="grid grid-cols-2 gap-1">
+                                  <span className="font-medium">{booking.time}</span>
+                                  <span className="font-semibold">${booking.amount}</span>
+                                  <span>{booking.service}</span>
+                                  <Badge variant={getStatusBadge(booking.status)} className="w-fit text-xs">
+                                    {booking.status}
+                                  </Badge>
+                                  <span className="text-gray-600">{booking.client}</span>
+                                  <span className="text-gray-500 text-xs">{booking.location}</span>
+                                </div>
                               </div>
-                              <span className="font-semibold text-sm">${job.amount}</span>
                             </div>
                           ))}
                         </div>
                         
                         {selectedJobs.length > 0 && (
-                          <div className="mt-2 p-2 bg-amber-50 rounded-lg">
-                            <p className="text-xs text-amber-800 mb-1">
-                              {selectedJobs.length} jobs selected
+                          <div className="mt-3 p-2 bg-amber-50 rounded-lg border border-amber-200">
+                            <p className="text-xs text-amber-800 mb-1 font-semibold">
+                              {selectedJobs.length} tickets selected for batch operations
                             </p>
                             <div className="flex gap-1">
-                              <Button size="sm" variant="outline" className="text-xs">Bulk Update</Button>
-                              <Button size="sm" variant="outline" className="text-xs">Export</Button>
+                              <Button size="sm" variant="outline" className="text-xs">Bulk Update Status</Button>
+                              <Button size="sm" variant="outline" className="text-xs">Export Report</Button>
+                              <Button size="sm" variant="outline" className="text-xs">Send Messages</Button>
                             </div>
                           </div>
                         )}
@@ -383,15 +482,19 @@ const ProviderDashboard = () => {
                     ) : (
                       <Card className="fintech-card">
                         <CardHeader className="pb-2 px-3 pt-3">
-                          <CardTitle className="flex items-center gap-2 text-base">
-                            <Zap className="h-4 w-4" />
-                            Smart Route Optimizer
+                          <CardTitle className="flex items-center justify-between text-base font-bold">
+                            <div className="flex items-center gap-2">
+                              <Route className="h-4 w-4" />
+                              SMART ROUTE OPTIMIZER
+                            </div>
+                            <Badge className="bg-orange-500 text-white text-xs">ACTIVE</Badge>
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="pt-0 px-3 pb-3">
+                          {/* Route Planning Area */}
                           <div 
-                            className={`border-2 border-dashed rounded-lg p-3 text-center mb-2 transition-colors ${
-                              dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-300'
+                            className={`border-2 border-dashed rounded-lg p-4 text-center mb-3 transition-colors min-h-[120px] flex flex-col items-center justify-center ${
+                              dragOver ? 'border-blue-400 bg-blue-50' : 'border-orange-300 bg-orange-50/30'
                             }`}
                             onDragOver={(e) => {
                               e.preventDefault();
@@ -405,62 +508,93 @@ const ProviderDashboard = () => {
                               addJobToRoute(jobId);
                             }}
                           >
-                            <Route className="h-6 w-6 mx-auto mb-1 text-gray-400" />
-                            <p className="text-xs text-gray-600">
+                            <Route className="h-8 w-8 mx-auto mb-2 text-orange-500" />
+                            <p className="text-sm font-medium text-gray-700 mb-1">
                               {organizedJobs.length === 0 
                                 ? 'Drag jobs here to optimize route' 
-                                : `${organizedJobs.length} jobs in route`
+                                : `${organizedJobs.length} jobs in optimization queue`
                               }
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              AI-powered route planning with real-time traffic analysis
                             </p>
                           </div>
                           
+                          {/* Route Display */}
                           {organizedJobs.length > 0 && (
-                            <div className="space-y-1 mb-2">
-                              {organizedJobs.map((job, index) => (
-                                <div key={`route-${job.id}`} className="flex items-center gap-2 p-2 bg-blue-50 rounded text-xs">
-                                  <span className="w-4 h-4 bg-blue-600 text-white rounded-full text-xs flex items-center justify-center font-bold">
-                                    {index + 1}
-                                  </span>
-                                  <span className="flex-1">{job.customerName}</span>
-                                  <Button
-                                    size="sm"
-                                    variant="ghost"
-                                    className="h-4 w-4 p-0 text-red-500"
-                                    onClick={() => removeJobFromRoute(job.id)}
-                                  >
-                                    ×
-                                  </Button>
-                                </div>
-                              ))}
+                            <div className="mb-3 p-3 bg-white rounded-lg border border-orange-200">
+                              <div className="text-sm font-semibold mb-2 text-orange-800">Optimized Route Sequence:</div>
+                              <div className="space-y-2">
+                                {organizedJobs.map((job, index) => (
+                                  <div key={`route-${job.id}`} className="flex items-center gap-3 p-2 bg-orange-50 rounded border border-orange-100">
+                                    <span className="w-6 h-6 bg-orange-600 text-white rounded-full text-xs flex items-center justify-center font-bold">
+                                      {index + 1}
+                                    </span>
+                                    <div className="flex-1 text-sm">
+                                      <div className="font-medium">{job.customerName}</div>
+                                      <div className="text-xs text-gray-600">{job.serviceType} • {job.scheduledTime}</div>
+                                    </div>
+                                    <div className="text-xs text-gray-500">${job.amount}</div>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      className="h-6 w-6 p-0 text-red-500 hover:bg-red-100"
+                                      onClick={() => removeJobFromRoute(job.id)}
+                                    >
+                                      ×
+                                    </Button>
+                                  </div>
+                                ))}
+                              </div>
                             </div>
                           )}
                           
-                          <div className="space-y-1 mb-2 text-xs">
-                            <div className="flex items-center justify-between">
-                              <span>Traffic Analysis:</span>
-                              <span className="text-green-600">Light traffic</span>
+                          {/* Analytics Panel */}
+                          <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+                            <div className="p-2 bg-green-50 rounded border border-green-200">
+                              <div className="flex items-center justify-between">
+                                <span className="text-green-700">Traffic Analysis:</span>
+                                <span className="font-semibold text-green-600">Light traffic</span>
+                              </div>
                             </div>
-                            <div className="flex items-center justify-between">
-                              <span>Client Availability:</span>
-                              <span className="text-blue-600">4 time slots</span>
+                            <div className="p-2 bg-blue-50 rounded border border-blue-200">
+                              <div className="flex items-center justify-between">
+                                <span className="text-blue-700">Client Availability:</span>
+                                <span className="font-semibold text-blue-600">4 time slots</span>
+                              </div>
+                            </div>
+                            <div className="p-2 bg-purple-50 rounded border border-purple-200">
+                              <div className="flex items-center justify-between">
+                                <span className="text-purple-700">Est. Travel Time:</span>
+                                <span className="font-semibold text-purple-600">2h 15m</span>
+                              </div>
+                            </div>
+                            <div className="p-2 bg-amber-50 rounded border border-amber-200">
+                              <div className="flex items-center justify-between">
+                                <span className="text-amber-700">Route Efficiency:</span>
+                                <span className="font-semibold text-amber-600">92%</span>
+                              </div>
                             </div>
                           </div>
                           
-                          <div className="space-y-1">
-                            <Button className="w-full fintech-button-primary text-sm">
-                              <Route className="h-3 w-3 mr-1" />
+                          {/* Action Buttons */}
+                          <div className="space-y-2">
+                            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold py-2">
+                              <Route className="h-4 w-4 mr-2" />
                               Optimize Route
                             </Button>
-                            <Button variant="outline" className="w-full text-sm">
-                              <Navigation className="h-3 w-3 mr-1" />
-                              Start GPS Navigation
-                              <ArrowRight className="h-3 w-3 ml-1" />
-                            </Button>
-                            <Link to="/interactive-map">
-                              <Button variant="ghost" className="w-full text-xs">
-                                View Interactive Map →
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
+                                <Navigation className="h-3 w-3 mr-1" />
+                                Start GPS Navigation
                               </Button>
-                            </Link>
+                              <Link to="/interactive-map" className="w-full">
+                                <Button variant="outline" className="w-full text-sm border-orange-300 hover:bg-orange-50">
+                                  <Map className="h-3 w-3 mr-1" />
+                                  View Interactive Map
+                                </Button>
+                              </Link>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
