@@ -70,7 +70,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
   },
   {
     id: 'tabs-navigation',
-    position: { x: 20, y: 100 },
+    position: { x: 20, y: Math.max(0, window.innerHeight/2 - 100) },
     size: { width: 200, height: 300 },
     isLocked: false
   }
