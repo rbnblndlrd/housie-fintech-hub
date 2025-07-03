@@ -56,6 +56,7 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
           </Tabs>
         </div>
       </div>
+    </div>
   );
 };
 
