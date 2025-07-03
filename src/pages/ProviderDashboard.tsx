@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import VideoBackground from '@/components/common/VideoBackground';
 import FloatingCalendar from '@/components/layout/FloatingCalendar';
+import DraggableWidget from '@/components/dashboard/DraggableWidget';
+import { useDashboardLayout } from '@/hooks/useDashboardLayout';
 import { useRouteOptimizer } from '@/hooks/useRouteOptimizer';
 import JobExecutionMode from '@/components/route-optimizer/JobExecutionMode';
 import { Link } from 'react-router-dom';
@@ -33,13 +35,29 @@ import {
   BarChart3,
   Activity,
   Zap,
-  ArrowRight
+  ArrowRight,
+  Edit,
+  Save,
+  RotateCcw
 } from 'lucide-react';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
   const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
   const [filterPeriod, setFilterPeriod] = useState('today');
+  
+  const {
+    widgets,
+    isEditMode,
+    setIsEditMode,
+    updateWidgetPosition,
+    updateWidgetSize,
+    toggleWidgetLock,
+    lockAllWidgets,
+    unlockAllWidgets,
+    resetLayout,
+    getWidgetConfig
+  } = useDashboardLayout();
   
   const {
     executionMode,
@@ -165,6 +183,39 @@ const ProviderDashboard = () => {
               </p>
             </div>
 
+            {/* Dashboard Controls */}
+            <div className="fixed top-4 right-4 z-30 flex gap-2">
+              <Button
+                onClick={() => setIsEditMode(!isEditMode)}
+                variant={isEditMode ? "default" : "outline"}
+                className="fintech-card"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                {isEditMode ? 'Exit Edit' : 'Edit Layout'}
+              </Button>
+              
+              {isEditMode && (
+                <>
+                  <Button
+                    onClick={lockAllWidgets}
+                    variant="outline"
+                    className="fintech-card"
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    Lock All
+                  </Button>
+                  <Button
+                    onClick={resetLayout}
+                    variant="outline"
+                    className="fintech-card"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Reset
+                  </Button>
+                </>
+              )}
+            </div>
+
             {/* Main Content Tabs - Positioned with spacing */}
             <div className="mt-[280px] mx-[188px]">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
@@ -199,10 +250,18 @@ const ProviderDashboard = () => {
                 </div>
 
                 <TabsContent value="job-hub" className="space-y-5">
-                  {/* Widget Grid - Calendar removed from grid (now floating) */}
-                  <div className="grid grid-cols-5 grid-rows-3 gap-5">
-                    {/* Row 1: 4 assignable widgets */}
-                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                  {/* Draggable Widget Container */}
+                  <div className="relative h-[1000px] w-full">
+                    {/* Performance Widget */}
+                    <DraggableWidget
+                      id="performance"
+                      defaultPosition={getWidgetConfig('performance').position}
+                      defaultSize={getWidgetConfig('performance').size}
+                      isLocked={getWidgetConfig('performance').isLocked}
+                      onPositionChange={updateWidgetPosition}
+                      onSizeChange={updateWidgetSize}
+                      onLockToggle={toggleWidgetLock}
+                    >
                       <CardContent className="p-5">
                         <div className="text-center">
                           <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
@@ -212,9 +271,18 @@ const ProviderDashboard = () => {
                           <p className="text-sm text-orange-600">Track metrics</p>
                         </div>
                       </CardContent>
-                    </Card>
+                    </DraggableWidget>
 
-                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    {/* Earnings Widget */}
+                    <DraggableWidget
+                      id="earnings"
+                      defaultPosition={getWidgetConfig('earnings').position}
+                      defaultSize={getWidgetConfig('earnings').size}
+                      isLocked={getWidgetConfig('earnings').isLocked}
+                      onPositionChange={updateWidgetPosition}
+                      onSizeChange={updateWidgetSize}
+                      onLockToggle={toggleWidgetLock}
+                    >
                       <CardContent className="p-5">
                         <div className="text-center">
                           <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
@@ -224,9 +292,18 @@ const ProviderDashboard = () => {
                           <p className="text-sm text-orange-600">$2,450 today</p>
                         </div>
                       </CardContent>
-                    </Card>
+                    </DraggableWidget>
 
-                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    {/* Rating Widget */}
+                    <DraggableWidget
+                      id="rating"
+                      defaultPosition={getWidgetConfig('rating').position}
+                      defaultSize={getWidgetConfig('rating').size}
+                      isLocked={getWidgetConfig('rating').isLocked}
+                      onPositionChange={updateWidgetPosition}
+                      onSizeChange={updateWidgetSize}
+                      onLockToggle={toggleWidgetLock}
+                    >
                       <CardContent className="p-5">
                         <div className="text-center">
                           <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
@@ -236,9 +313,18 @@ const ProviderDashboard = () => {
                           <p className="text-sm text-orange-600">4.9 stars</p>
                         </div>
                       </CardContent>
-                    </Card>
+                    </DraggableWidget>
 
-                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0">
+                    {/* Active Jobs Widget */}
+                    <DraggableWidget
+                      id="active-jobs"
+                      defaultPosition={getWidgetConfig('active-jobs').position}
+                      defaultSize={getWidgetConfig('active-jobs').size}
+                      isLocked={getWidgetConfig('active-jobs').isLocked}
+                      onPositionChange={updateWidgetPosition}
+                      onSizeChange={updateWidgetSize}
+                      onLockToggle={toggleWidgetLock}
+                    >
                       <CardContent className="p-5">
                         <div className="text-center">
                           <div className="h-12 w-12 bg-orange-500 rounded-full mx-auto mb-3 flex items-center justify-center">
@@ -248,10 +334,18 @@ const ProviderDashboard = () => {
                           <p className="text-sm text-orange-600">3 pending</p>
                         </div>
                       </CardContent>
-                    </Card>
+                    </DraggableWidget>
 
-                    {/* Row 2: Recent Activity (span 4 columns) */}
-                    <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0 col-span-4">
+                    {/* Recent Activity Widget */}
+                    <DraggableWidget
+                      id="recent-activity"
+                      defaultPosition={getWidgetConfig('recent-activity').position}
+                      defaultSize={getWidgetConfig('recent-activity').size}
+                      isLocked={getWidgetConfig('recent-activity').isLocked}
+                      onPositionChange={updateWidgetPosition}
+                      onSizeChange={updateWidgetSize}
+                      onLockToggle={toggleWidgetLock}
+                    >
                       <CardHeader className="pb-3">
                         <CardTitle className="text-orange-800">Recent Activity</CardTitle>
                       </CardHeader>
@@ -269,125 +363,77 @@ const ProviderDashboard = () => {
                           </div>
                         </div>
                       </CardContent>
-                    </Card>
+                    </DraggableWidget>
 
-                    {/* Row 3: Smart Route Optimizer (span 2 columns) */}
-                    {executionMode && getSelectedJob() ? (
-                      <JobExecutionMode
-                        job={getSelectedJob()!}
-                        phases={phases}
-                        progressPercentage={getProgressPercentage()}
-                        onBack={exitExecutionMode}
-                        onCompleteJob={completeJob}
-                        onUpdatePhotoRequirement={updatePhotoRequirement}
-                      />
-                    ) : (
-                      <Card className="fintech-card bg-gradient-to-br from-amber-50 to-orange-100 border-0 col-span-2">
-                        <CardHeader className="pb-2 px-3 pt-3">
-                          <CardTitle className="flex items-center justify-between text-base font-bold">
-                            <div className="flex items-center gap-2">
-                              <Route className="h-4 w-4" />
-                              SMART ROUTE OPTIMIZER
-                            </div>
-                            <Badge className="bg-orange-500 text-white text-xs">ACTIVE</Badge>
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="pt-0 px-3 pb-3">
-                          {/* Route Planning Area */}
-                          <div 
-                            className={`border-2 border-dashed rounded-lg p-4 text-center mb-3 transition-colors min-h-[120px] flex flex-col items-center justify-center ${
-                              dragOver ? 'border-blue-400 bg-blue-50' : 'border-orange-300 bg-orange-50/30'
-                            }`}
-                            onDragOver={(e) => {
-                              e.preventDefault();
-                              setDragOver(true);
-                            }}
-                            onDragLeave={() => setDragOver(false)}
-                            onDrop={(e) => {
-                              e.preventDefault();
-                              setDragOver(false);
-                              const jobId = e.dataTransfer.getData('text/plain');
-                              addJobToRoute(jobId);
-                            }}
-                          >
-                            <Route className="h-8 w-8 mx-auto mb-2 text-orange-500" />
-                            <p className="text-sm font-medium text-gray-700 mb-1">
-                              {organizedJobs.length === 0 
-                                ? 'Drag jobs here to optimize route' 
-                                : `${organizedJobs.length} jobs in optimization queue`
-                              }
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              AI-powered route planning with real-time traffic analysis
-                            </p>
-                          </div>
-                          
-                          {/* Route Display */}
-                          {organizedJobs.length > 0 && (
-                            <div className="mb-3 p-3 bg-white rounded-lg border border-orange-200">
-                              <div className="text-sm font-semibold mb-2 text-orange-800">Optimized Route Sequence:</div>
-                              <div className="space-y-2">
-                                {organizedJobs.map((job, index) => (
-                                  <div key={`route-${job.id}`} className="flex items-center gap-3 p-2 bg-orange-50 rounded border border-orange-100">
-                                    <span className="w-6 h-6 bg-orange-600 text-white rounded-full text-xs flex items-center justify-center font-bold">
-                                      {index + 1}
-                                    </span>
-                                    <div className="flex-1 text-sm">
-                                      <div className="font-medium">{job.customerName}</div>
-                                      <div className="text-xs text-gray-600">{job.serviceType} • {job.scheduledTime}</div>
-                                    </div>
-                                    <div className="text-xs text-gray-500">${job.amount}</div>
-                                    <Button
-                                      size="sm"
-                                      variant="ghost"
-                                      className="h-6 w-6 p-0 text-red-500 hover:bg-red-100"
-                                      onClick={() => removeJobFromRoute(job.id)}
-                                    >
-                                      ×
-                                    </Button>
-                                  </div>
-                                ))}
+                    {/* Smart Route Optimizer Widget */}
+                    <DraggableWidget
+                      id="route-optimizer"
+                      defaultPosition={getWidgetConfig('route-optimizer').position}
+                      defaultSize={getWidgetConfig('route-optimizer').size}
+                      isLocked={getWidgetConfig('route-optimizer').isLocked}
+                      onPositionChange={updateWidgetPosition}
+                      onSizeChange={updateWidgetSize}
+                      onLockToggle={toggleWidgetLock}
+                    >
+                      {executionMode && getSelectedJob() ? (
+                        <JobExecutionMode
+                          job={getSelectedJob()!}
+                          phases={phases}
+                          progressPercentage={getProgressPercentage()}
+                          onBack={exitExecutionMode}
+                          onCompleteJob={completeJob}
+                          onUpdatePhotoRequirement={updatePhotoRequirement}
+                        />
+                      ) : (
+                        <>
+                          <CardHeader className="pb-2 px-3 pt-3">
+                            <CardTitle className="flex items-center justify-between text-base font-bold">
+                              <div className="flex items-center gap-2">
+                                <Route className="h-4 w-4" />
+                                SMART ROUTE OPTIMIZER
                               </div>
+                              <Badge className="bg-orange-500 text-white text-xs">ACTIVE</Badge>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent className="pt-0 px-3 pb-3">
+                            {/* Route Planning Area */}
+                            <div 
+                              className={`border-2 border-dashed rounded-lg p-4 text-center mb-3 transition-colors min-h-[120px] flex flex-col items-center justify-center ${
+                                dragOver ? 'border-blue-400 bg-blue-50' : 'border-orange-300 bg-orange-50/30'
+                              }`}
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                setDragOver(true);
+                              }}
+                              onDragLeave={() => setDragOver(false)}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                setDragOver(false);
+                                const jobId = e.dataTransfer.getData('text/plain');
+                                addJobToRoute(jobId);
+                              }}
+                            >
+                              <Route className="h-8 w-8 mx-auto mb-2 text-orange-500" />
+                              <p className="text-sm font-medium text-gray-700 mb-1">
+                                {organizedJobs.length === 0 
+                                  ? 'Drag jobs here to optimize route' 
+                                  : `${organizedJobs.length} jobs in optimization queue`
+                                }
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                AI-powered route planning with real-time traffic analysis
+                              </p>
                             </div>
-                          )}
-                          
-                          {/* Analytics Panel */}
-                          <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
-                            <div className="p-2 bg-green-50 rounded border border-green-200">
-                              <div className="flex items-center justify-between">
-                                <span className="text-green-700">Traffic Analysis:</span>
-                                <span className="font-semibold text-green-600">Light traffic</span>
-                              </div>
-                            </div>
-                            <div className="p-2 bg-blue-50 rounded border border-blue-200">
-                              <div className="flex items-center justify-between">
-                                <span className="text-blue-700">Client Availability:</span>
-                                <span className="font-semibold text-blue-600">4 time slots</span>
-                              </div>
-                            </div>
-                            <div className="p-2 bg-purple-50 rounded border border-purple-200">
-                              <div className="flex items-center justify-between">
-                                <span className="text-purple-700">Est. Travel Time:</span>
-                                <span className="font-semibold text-purple-600">2h 15m</span>
-                              </div>
-                            </div>
-                            <div className="p-2 bg-amber-50 rounded border border-amber-200">
-                              <div className="flex items-center justify-between">
-                                <span className="text-amber-700">Route Efficiency:</span>
-                                <span className="font-semibold text-amber-600">92%</span>
-                              </div>
-                            </div>
-                          </div>
-                          
-                          {/* Action Buttons */}
-                          <div className="space-y-2">
-                            <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold py-2">
-                              <Route className="h-4 w-4 mr-2" />
-                              Optimize Route
-                            </Button>
-                            <div className="grid grid-cols-2 gap-2">
-                              <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
-                                <Navigation className="h-3 w-3 mr-1" />
+                            
+                            {/* Action Buttons */}
+                            <div className="space-y-2">
+                              <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold py-2">
+                                <Route className="h-4 w-4 mr-2" />
+                                Optimize Route
+                              </Button>
+                              <div className="grid grid-cols-2 gap-2">
+                                <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
+                                  <Navigation className="h-3 w-3 mr-1" />
                                 Start GPS Navigation
                               </Button>
                               <Link to="/interactive-map" className="w-full">
