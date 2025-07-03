@@ -252,6 +252,7 @@ const ProviderDashboard = () => {
                 defaultPosition={getWidgetConfig('tabs-navigation').position}
                 defaultSize={getWidgetConfig('tabs-navigation').size}
                 isLocked={getWidgetConfig('tabs-navigation').isLocked}
+                showCard={false}
                 onPositionChange={updateWidgetPosition}
                 onSizeChange={updateWidgetSize}
                 onLockToggle={toggleWidgetLock}

@@ -45,31 +45,32 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
       )}
       
       <div className={`relative ${className}`}>
-        <div className="h-full w-full flex items-center justify-start p-4">
+        {/* Remove padding and add modern styling */}
+        <div className="h-full w-full flex items-center justify-start">
           <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
-            <TabsList className="bg-transparent p-0 flex-col h-auto gap-4 border-none shadow-none">
+            <TabsList className="bg-transparent border-none shadow-none p-0 flex-col h-auto gap-3">
               {/* Job Hub with integrated notification bell */}
               <div className="relative w-full">
                 <TabsTrigger 
                   value="job-hub" 
                   onClick={handleJobHubClick}
-                  className="w-full justify-start relative pr-12"
+                  className="w-full justify-start relative pr-12 bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium hover:bg-white/20 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-600 transition-all duration-200 rounded-lg h-12"
                 >
-                  <Briefcase className="h-4 w-4 mr-2" />
-                  Job Hub
+                  <Briefcase className="h-4 w-4 mr-3 drop-shadow-sm" />
+                  <span className="drop-shadow-sm">Job Hub</span>
                 </TabsTrigger>
                 
                 {/* Notification Bell positioned over Job Hub tab */}
                 <button
                   onClick={handleBellClick}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 flex items-center justify-center hover:bg-white/10 rounded-sm z-10"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-6 w-6 flex items-center justify-center hover:bg-white/20 rounded-full z-10 transition-colors duration-200"
                 >
-                  <Bell className="h-4 w-4 text-orange-600" />
+                  <Bell className="h-4 w-4 text-orange-400 drop-shadow-sm hover:text-orange-300" />
                   {unreadCount > 0 && (
                     <CreamPill 
                       variant="notification" 
                       size="default"
-                      className="absolute -top-1 -right-1 min-w-[16px] h-[16px] text-xs flex items-center justify-center bg-red-500 text-white border-red-600"
+                      className="absolute -top-1 -right-1 min-w-[16px] h-[16px] text-xs flex items-center justify-center bg-red-500 text-white border-red-600 shadow-lg"
                     >
                       {unreadCount > 99 ? '99+' : unreadCount}
                     </CreamPill>
@@ -77,19 +78,28 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
                 </button>
               </div>
               
-              <TabsTrigger value="map" className="w-full justify-start">
-                <Map className="h-4 w-4 mr-2" />
-                Map
+              <TabsTrigger 
+                value="map" 
+                className="w-full justify-start bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium hover:bg-white/20 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-600 transition-all duration-200 rounded-lg h-12"
+              >
+                <Map className="h-4 w-4 mr-3 drop-shadow-sm" />
+                <span className="drop-shadow-sm">Map</span>
               </TabsTrigger>
               
-              <TabsTrigger value="crew" className="w-full justify-start">
-                <Users className="h-4 w-4 mr-2" />
-                Crew
+              <TabsTrigger 
+                value="crew" 
+                className="w-full justify-start bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium hover:bg-white/20 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-600 transition-all duration-200 rounded-lg h-12"
+              >
+                <Users className="h-4 w-4 mr-3 drop-shadow-sm" />
+                <span className="drop-shadow-sm">Crew</span>
               </TabsTrigger>
               
-              <TabsTrigger value="profile" className="w-full justify-start">
-                <UserCog className="h-4 w-4 mr-2" />
-                Profile
+              <TabsTrigger 
+                value="profile" 
+                className="w-full justify-start bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium hover:bg-white/20 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-600 transition-all duration-200 rounded-lg h-12"
+              >
+                <UserCog className="h-4 w-4 mr-3 drop-shadow-sm" />
+                <span className="drop-shadow-sm">Profile</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>

@@ -72,7 +72,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
     id: 'tabs-navigation',
     position: { x: 20, y: Math.max(0, window.innerHeight/2 - 50) },
     size: { width: 200, height: 300 },
-    isLocked: false
+    isLocked: true
   }
 ];
 
