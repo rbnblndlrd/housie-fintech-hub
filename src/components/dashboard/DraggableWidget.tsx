@@ -10,6 +10,7 @@ interface DraggableWidgetProps {
   defaultPosition?: { x: number; y: number };
   defaultSize?: { width: number; height: number };
   isLocked?: boolean;
+  showCard?: boolean;
   onPositionChange?: (id: string, position: { x: number; y: number }) => void;
   onSizeChange?: (id: string, size: { width: number; height: number }) => void;
   onLockToggle?: (id: string) => void;
@@ -21,6 +22,7 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({
   defaultPosition = { x: 0, y: 0 },
   defaultSize = { width: 300, height: 200 },
   isLocked = false,
+  showCard = true,
   onPositionChange,
   onSizeChange,
   onLockToggle
@@ -51,39 +53,75 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({
       dragHandleClassName="drag-handle"
       className={`${isLocked ? 'opacity-90' : ''}`}
     >
-      <Card className="h-full w-full fintech-card relative">
-        {/* Control Header */}
-        <div className="absolute top-2 right-2 z-10 flex gap-1">
-          <Button
-            size="sm"
-            variant="ghost"
-            className="h-6 w-6 p-0 bg-white/80 hover:bg-white/90"
-            onClick={() => onLockToggle?.(id)}
-          >
-            {isLocked ? (
-              <Lock className="h-3 w-3" />
-            ) : (
-              <Unlock className="h-3 w-3" />
+      {showCard ? (
+        <Card className="h-full w-full fintech-card relative">
+          {/* Control Header */}
+          <div className="absolute top-2 right-2 z-10 flex gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 p-0 bg-white/80 hover:bg-white/90"
+              onClick={() => onLockToggle?.(id)}
+            >
+              {isLocked ? (
+                <Lock className="h-3 w-3" />
+              ) : (
+                <Unlock className="h-3 w-3" />
+              )}
+            </Button>
+            {!isLocked && (
+              <div className="drag-handle cursor-move">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 bg-white/80 hover:bg-white/90"
+                >
+                  <Move className="h-3 w-3" />
+                </Button>
+              </div>
             )}
-          </Button>
-          {!isLocked && (
-            <div className="drag-handle cursor-move">
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-6 w-6 p-0 bg-white/80 hover:bg-white/90"
-              >
-                <Move className="h-3 w-3" />
-              </Button>
-            </div>
-          )}
+          </div>
+          
+          {/* Widget Content */}
+          <div className="h-full w-full">
+            {children}
+          </div>
+        </Card>
+      ) : (
+        <div className="h-full w-full relative">
+          {/* Control Header for text elements */}
+          <div className="absolute top-0 right-0 z-10 flex gap-1">
+            <Button
+              size="sm"
+              variant="ghost"
+              className="h-6 w-6 p-0 bg-black/30 hover:bg-black/50 text-white"
+              onClick={() => onLockToggle?.(id)}
+            >
+              {isLocked ? (
+                <Lock className="h-3 w-3" />
+              ) : (
+                <Unlock className="h-3 w-3" />
+              )}
+            </Button>
+            {!isLocked && (
+              <div className="drag-handle cursor-move">
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-6 w-6 p-0 bg-black/30 hover:bg-black/50 text-white"
+                >
+                  <Move className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+          </div>
+          
+          {/* Text Content */}
+          <div className="h-full w-full">
+            {children}
+          </div>
         </div>
-        
-        {/* Widget Content */}
-        <div className="h-full w-full">
-          {children}
-        </div>
-      </Card>
+      )}
     </Rnd>
   );
 };

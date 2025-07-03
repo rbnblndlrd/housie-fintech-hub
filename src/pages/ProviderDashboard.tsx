@@ -172,11 +172,12 @@ const ProviderDashboard = () => {
           defaultPosition={getWidgetConfig('dashboard-title').position}
           defaultSize={getWidgetConfig('dashboard-title').size}
           isLocked={getWidgetConfig('dashboard-title').isLocked}
+          showCard={false}
           onPositionChange={updateWidgetPosition}
           onSizeChange={updateWidgetSize}
           onLockToggle={toggleWidgetLock}
         >
-          <div className="h-full w-full flex items-center justify-center">
+          <div className="h-full w-full flex items-center justify-center pointer-events-none">
             <div className="weathered-street-sign flex items-center justify-center">
               <h1 className="graffiti-text">
                 Provider Dashboard
@@ -193,13 +194,14 @@ const ProviderDashboard = () => {
           defaultPosition={getWidgetConfig('welcome-text').position}
           defaultSize={getWidgetConfig('welcome-text').size}
           isLocked={getWidgetConfig('welcome-text').isLocked}
+          showCard={false}
           onPositionChange={updateWidgetPosition}
           onSizeChange={updateWidgetSize}
           onLockToggle={toggleWidgetLock}
         >
-          <div className="h-full w-full flex items-center justify-center text-center">
+          <div className="h-full w-full flex items-center justify-center text-center pointer-events-none">
             <p className="text-white/90 drop-shadow-md">
-              Welcome back! Here's your performance overview
+              Welcome back! Here&apos;s your performance overview
             </p>
           </div>
         </DraggableWidget>
@@ -242,38 +244,56 @@ const ProviderDashboard = () => {
               )}
             </div>
 
+            {/* Draggable Tabs Navigation */}
+            <div className="fixed top-0 left-0 z-40">
+              <DraggableWidget
+                id="tabs-navigation"
+                defaultPosition={getWidgetConfig('tabs-navigation').position}
+                defaultSize={getWidgetConfig('tabs-navigation').size}
+                isLocked={getWidgetConfig('tabs-navigation').isLocked}
+                onPositionChange={updateWidgetPosition}
+                onSizeChange={updateWidgetSize}
+                onLockToggle={toggleWidgetLock}
+              >
+                <div className="h-full w-full flex items-center justify-start p-4">
+                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                    <div className="flex items-center gap-4">
+                      <TabsList className="fintech-card p-1">
+                        <TabsTrigger value="job-hub">
+                          <Briefcase className="h-4 w-4 mr-2" />
+                          Job Hub
+                        </TabsTrigger>
+                        <TabsTrigger value="map">
+                          <Map className="h-4 w-4 mr-2" />
+                          Map
+                        </TabsTrigger>
+                        <TabsTrigger value="crew">
+                          <Users className="h-4 w-4 mr-2" />
+                          Crew
+                        </TabsTrigger>
+                        <TabsTrigger value="profile">
+                          <UserCog className="h-4 w-4 mr-2" />
+                          Profile
+                        </TabsTrigger>
+                      </TabsList>
+                      
+                      {pendingRequests.length > 0 && (
+                        <div className="relative">
+                          <Bell className="h-6 w-6 text-amber-600" />
+                          <Badge className="absolute -top-4 -right-4 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
+                            {pendingRequests.length}
+                          </Badge>
+                        </div>
+                      )}
+                    </div>
+                  </Tabs>
+                </div>
+              </DraggableWidget>
+            </div>
+
             {/* Main Content Tabs - Positioned with spacing */}
             <div className="mt-[280px] mx-[188px]">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
-                <div className="flex items-center gap-4 mb-0">
-                  <TabsList className="fintech-card p-1">
-                    <TabsTrigger value="job-hub">
-                      <Briefcase className="h-4 w-4 mr-2" />
-                      Job Hub
-                    </TabsTrigger>
-                    <TabsTrigger value="map">
-                      <Map className="h-4 w-4 mr-2" />
-                      Map
-                    </TabsTrigger>
-                    <TabsTrigger value="crew">
-                      <Users className="h-4 w-4 mr-2" />
-                      Crew
-                    </TabsTrigger>
-                    <TabsTrigger value="profile">
-                      <UserCog className="h-4 w-4 mr-2" />
-                      Profile
-                    </TabsTrigger>
-                  </TabsList>
-                  
-                  {pendingRequests.length > 0 && (
-                    <div className="relative">
-                      <Bell className="h-6 w-6 text-amber-600" />
-                      <Badge className="absolute -top-4 -right-4 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
-                        {pendingRequests.length}
-                      </Badge>
-                    </div>
-                  )}
-                </div>
 
                 <TabsContent value="job-hub" className="space-y-5">
                   {/* Draggable Widget Container */}
