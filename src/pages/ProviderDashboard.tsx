@@ -40,6 +40,7 @@ import {
   Save,
   RotateCcw
 } from 'lucide-react';
+import DashboardNotificationBell from '@/components/dashboard/DashboardNotificationBell';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
@@ -213,6 +214,8 @@ const ProviderDashboard = () => {
 
             {/* Dashboard Controls */}
             <div className="fixed top-4 right-4 z-30 flex gap-2">
+              <DashboardNotificationBell />
+              
               <Button
                 onClick={() => setIsEditMode(!isEditMode)}
                 variant={isEditMode ? "default" : "outline"}
@@ -382,34 +385,7 @@ const ProviderDashboard = () => {
                       </CardContent>
                     </DraggableWidget>
 
-                    {/* Recent Activity Widget */}
-                    <DraggableWidget
-                      id="recent-activity"
-                      defaultPosition={getWidgetConfig('recent-activity').position}
-                      defaultSize={getWidgetConfig('recent-activity').size}
-                      isLocked={getWidgetConfig('recent-activity').isLocked}
-                      onPositionChange={updateWidgetPosition}
-                      onSizeChange={updateWidgetSize}
-                      onLockToggle={toggleWidgetLock}
-                    >
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-orange-800">Recent Activity</CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-2">
-                          <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
-                            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <span className="text-sm">Job completed: Kitchen repair - $180</span>
-                            <Badge variant="outline" className="ml-auto text-xs">5m ago</Badge>
-                          </div>
-                          <div className="flex items-center gap-3 p-2 bg-white/60 rounded">
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                            <span className="text-sm">New booking: Bathroom renovation</span>
-                            <Badge variant="outline" className="ml-auto text-xs">12m ago</Badge>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </DraggableWidget>
+                    {/* Hidden Notifications Widget - now accessible via notification bell */}
 
                     {/* Smart Route Optimizer Widget */}
                     <DraggableWidget
