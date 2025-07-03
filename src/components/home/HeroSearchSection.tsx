@@ -26,7 +26,7 @@ const HeroSearchSection = () => {
   const bannerRef = useRef<HTMLDivElement>(null);
   
   // Dashboard Graffiti state (static - no customization)
-  const dashboardPosition = { x: 2096, y: 450 };
+  const dashboardPosition = { x: 2126, y: 450 };
   const dashboardRotation = 1.0;
   const dashboardSize = { width: 351, height: 118 };
 
@@ -234,8 +234,8 @@ const HeroSearchSection = () => {
           }}
         >
           <div className="text-white hover:scale-105 transition-transform duration-300 flex flex-col items-center h-full w-full justify-center">
-            <span className="font-graffiti text-7xl font-bold tracking-wider">DASHBOARD</span>
-            <span className="dashboard-arrows text-4xl mt-1">→</span>
+            <span className="font-mono text-5xl font-black tracking-wider transform -skew-x-12">DASHBOARD</span>
+            <span className="dashboard-arrows text-5xl mt-1 tracking-widest">➤➤➤</span>
           </div>
         </div>
       </Link>
