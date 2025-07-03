@@ -73,6 +73,12 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
     position: { x: 20, y: Math.max(0, window.innerHeight/2 - 50) },
     size: { width: 200, height: 300 },
     isLocked: true
+  },
+  {
+    id: 'floating-notification-bell',
+    position: { x: 170, y: Math.max(0, window.innerHeight/2 - 50) },
+    size: { width: 40, height: 40 },
+    isLocked: true
   }
 ];
 

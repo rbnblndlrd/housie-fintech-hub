@@ -41,6 +41,7 @@ import {
   RotateCcw
 } from 'lucide-react';
 import VerticalTabsWithNotification from '@/components/dashboard/VerticalTabsWithNotification';
+import FloatingNotificationBell from '@/components/dashboard/FloatingNotificationBell';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
@@ -261,6 +262,22 @@ const ProviderDashboard = () => {
                   activeTab={activeTab}
                   onTabChange={setActiveTab}
                 />
+              </DraggableWidget>
+            </div>
+
+            {/* Floating Notification Bell */}
+            <div className="fixed top-0 left-0 z-40">
+              <DraggableWidget
+                id="floating-notification-bell"
+                defaultPosition={getWidgetConfig('floating-notification-bell').position}
+                defaultSize={getWidgetConfig('floating-notification-bell').size}
+                isLocked={getWidgetConfig('floating-notification-bell').isLocked}
+                showCard={false}
+                onPositionChange={updateWidgetPosition}
+                onSizeChange={updateWidgetSize}
+                onLockToggle={toggleWidgetLock}
+              >
+                <FloatingNotificationBell />
               </DraggableWidget>
             </div>
 
