@@ -434,19 +434,20 @@ const ProviderDashboard = () => {
                               <div className="grid grid-cols-2 gap-2">
                                 <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
                                   <Navigation className="h-3 w-3 mr-1" />
-                                Start GPS Navigation
-                              </Button>
-                              <Link to="/interactive-map" className="w-full">
-                                <Button variant="outline" className="w-full text-sm border-orange-300 hover:bg-orange-50">
-                                  <Map className="h-3 w-3 mr-1" />
-                                  View Interactive Map
+                                  Start GPS Navigation
                                 </Button>
-                              </Link>
+                                <Link to="/interactive-map" className="w-full">
+                                  <Button variant="outline" className="w-full text-sm border-orange-300 hover:bg-orange-50">
+                                    <Map className="h-3 w-3 mr-1" />
+                                    View Interactive Map
+                                  </Button>
+                                </Link>
+                              </div>
                             </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    )}
+                          </CardContent>
+                        </>
+                      )}
+                    </DraggableWidget>
                   </div>
                 </TabsContent>
 
