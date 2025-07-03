@@ -97,7 +97,7 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
         
         {/* Notification Roll-up Menu */}
         {isNotificationOpen && (
-          <div className="absolute bottom-full left-0 mb-4 z-40 w-96">
+          <div className="absolute bottom-full mb-4 z-40 w-80" style={{ left: '44px' }}>
             <DashboardNotificationDropdown />
           </div>
         )}
