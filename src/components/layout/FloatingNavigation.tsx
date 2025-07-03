@@ -50,34 +50,21 @@ const FloatingNavigation = () => {
 
   return (
     <>
-      {/* Enhanced HOUSIE Logo Card */}
+      {/* Original HOUSIE Logo */}
       <Link 
         to="/dashboard" 
-        className="fixed top-5 left-5 z-[1000] cursor-pointer animate-pulse"
+        className="fixed top-5 left-5 z-[1000] cursor-pointer hover:scale-105 transition-transform duration-300"
         style={{ 
-          width: '100px',
-          height: '60px'
+          width: '120px',
+          height: '50px',
+          filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.2)) hover:drop-shadow(0 4px 12px rgba(0,0,0,0.3))'
         }}
       >
-        <div className="w-full h-full bg-gradient-to-br from-amber-50 to-orange-100 rounded-xl border border-white/30 flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300"
-             style={{ 
-               boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-               animation: 'breathe 3s ease-in-out infinite'
-             }}>
-          <img 
-            src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
-            alt="HOUSIE" 
-            className="h-8 w-auto"
-            onError={(e) => {
-              const target = e.currentTarget;
-              target.style.display = 'none';
-              const parent = target.parentElement;
-              if (parent) {
-                parent.innerHTML = '<span class="text-2xl font-bold text-orange-800">HOUSIE</span>';
-              }
-            }}
-          />
-        </div>
+        <img 
+          src="/lovable-uploads/2d34b4a9-1bd5-4c5f-9776-a4fa884c3d0c.png" 
+          alt="HOUSIE" 
+          className="w-full h-full object-contain"
+        />
       </Link>
 
       {/* Hamburger Menu Button - Properly spaced */}
@@ -86,7 +73,7 @@ const FloatingNavigation = () => {
         className="fixed z-[1000] text-white flex items-center justify-center"
         style={{ 
           top: '30px',
-          left: '140px',
+          left: '150px',
           width: '28px',
           height: '28px',
           filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
