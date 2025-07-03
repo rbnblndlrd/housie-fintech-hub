@@ -40,7 +40,7 @@ import {
   Save,
   RotateCcw
 } from 'lucide-react';
-import DashboardNotificationBell from '@/components/dashboard/DashboardNotificationBell';
+import VerticalTabsWithNotification from '@/components/dashboard/VerticalTabsWithNotification';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
@@ -214,8 +214,6 @@ const ProviderDashboard = () => {
 
             {/* Dashboard Controls */}
             <div className="fixed top-4 right-4 z-30 flex gap-2">
-              <DashboardNotificationBell />
-              
               <Button
                 onClick={() => setIsEditMode(!isEditMode)}
                 variant={isEditMode ? "default" : "outline"}
@@ -247,7 +245,7 @@ const ProviderDashboard = () => {
               )}
             </div>
 
-            {/* Draggable Tabs Navigation */}
+            {/* Draggable Vertical Tabs Navigation */}
             <div className="fixed top-0 left-0 z-40">
               <DraggableWidget
                 id="tabs-navigation"
@@ -258,39 +256,10 @@ const ProviderDashboard = () => {
                 onSizeChange={updateWidgetSize}
                 onLockToggle={toggleWidgetLock}
               >
-                <div className="h-full w-full flex items-center justify-start p-4">
-                  <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                    <div className="flex items-center gap-4">
-                      <TabsList className="fintech-card p-1">
-                        <TabsTrigger value="job-hub">
-                          <Briefcase className="h-4 w-4 mr-2" />
-                          Job Hub
-                        </TabsTrigger>
-                        <TabsTrigger value="map">
-                          <Map className="h-4 w-4 mr-2" />
-                          Map
-                        </TabsTrigger>
-                        <TabsTrigger value="crew">
-                          <Users className="h-4 w-4 mr-2" />
-                          Crew
-                        </TabsTrigger>
-                        <TabsTrigger value="profile">
-                          <UserCog className="h-4 w-4 mr-2" />
-                          Profile
-                        </TabsTrigger>
-                      </TabsList>
-                      
-                      {pendingRequests.length > 0 && (
-                        <div className="relative">
-                          <Bell className="h-6 w-6 text-amber-600" />
-                          <Badge className="absolute -top-4 -right-4 bg-amber-200 text-amber-800 text-xs min-w-[20px] h-5 flex items-center justify-center">
-                            {pendingRequests.length}
-                          </Badge>
-                        </div>
-                      )}
-                    </div>
-                  </Tabs>
-                </div>
+                <VerticalTabsWithNotification 
+                  activeTab={activeTab}
+                  onTabChange={setActiveTab}
+                />
               </DraggableWidget>
             </div>
 
