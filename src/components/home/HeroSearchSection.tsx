@@ -1,7 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, ChevronDown, Move, RotateCw, Lock } from 'lucide-react';
+import { MapPin, ChevronDown, Move, RotateCw, Lock, Maximize2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -12,13 +12,30 @@ const HeroSearchSection = () => {
   
   // Positioning mode state
   const [positioningMode, setPositioningMode] = useState(true);
+  
+  // Certn Banner state
   const [bannerPosition, setBannerPosition] = useState({ x: 50, y: 120 });
   const [bannerRotation, setBannerRotation] = useState(-15);
+  const [bannerSize, setBannerSize] = useState({ width: 300, height: 60 });
   const [isDragging, setIsDragging] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
+  const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [rotationStart, setRotationStart] = useState(0);
+  const [resizeStart, setResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
   const bannerRef = useRef<HTMLDivElement>(null);
+  
+  // Dashboard Graffiti state
+  const [dashboardPosition, setDashboardPosition] = useState({ x: 290, y: 120 });
+  const [dashboardRotation, setDashboardRotation] = useState(0);
+  const [dashboardSize, setDashboardSize] = useState({ width: 200, height: 80 });
+  const [isDashboardDragging, setIsDashboardDragging] = useState(false);
+  const [isDashboardRotating, setIsDashboardRotating] = useState(false);
+  const [isDashboardResizing, setIsDashboardResizing] = useState(false);
+  const [dashboardDragStart, setDashboardDragStart] = useState({ x: 0, y: 0 });
+  const [dashboardRotationStart, setDashboardRotationStart] = useState(0);
+  const [dashboardResizeStart, setDashboardResizeStart] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const dashboardRef = useRef<HTMLDivElement>(null);
 
   const serviceCategories = [
     'All Services',
@@ -31,7 +48,7 @@ const HeroSearchSection = () => {
     'Moving Services'
   ];
 
-  // Drag handlers
+  // Banner handlers
   const handleMouseDown = (e: React.MouseEvent) => {
     if (e.target === bannerRef.current || bannerRef.current?.contains(e.target as Node)) {
       setIsDragging(true);
@@ -48,15 +65,38 @@ const HeroSearchSection = () => {
         x: e.clientX - dragStart.x,
         y: e.clientY - dragStart.y
       });
+    } else if (isResizing) {
+      const deltaX = e.clientX - resizeStart.x;
+      const deltaY = e.clientY - resizeStart.y;
+      setBannerSize({
+        width: Math.max(100, resizeStart.width + deltaX),
+        height: Math.max(40, resizeStart.height + deltaY)
+      });
+    } else if (isDashboardDragging) {
+      setDashboardPosition({
+        x: e.clientX - dashboardDragStart.x,
+        y: e.clientY - dashboardDragStart.y
+      });
+    } else if (isDashboardResizing) {
+      const deltaX = e.clientX - dashboardResizeStart.x;
+      const deltaY = e.clientY - dashboardResizeStart.y;
+      setDashboardSize({
+        width: Math.max(100, dashboardResizeStart.width + deltaX),
+        height: Math.max(40, dashboardResizeStart.height + deltaY)
+      });
     }
   };
 
   const handleMouseUp = () => {
     setIsDragging(false);
     setIsRotating(false);
+    setIsResizing(false);
+    setIsDashboardDragging(false);
+    setIsDashboardRotating(false);
+    setIsDashboardResizing(false);
   };
 
-  // Rotation handlers
+  // Banner rotation handlers
   const handleRotationStart = (e: React.MouseEvent) => {
     e.stopPropagation();
     setIsRotating(true);
@@ -78,12 +118,67 @@ const HeroSearchSection = () => {
         const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
         setBannerRotation(angle - rotationStart);
       }
+    } else if (isDashboardRotating) {
+      const rect = dashboardRef.current?.getBoundingClientRect();
+      if (rect) {
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+        setDashboardRotation(angle - dashboardRotationStart);
+      }
     }
+  };
+
+  // Banner resize handlers
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsResizing(true);
+    setResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: bannerSize.width,
+      height: bannerSize.height
+    });
+  };
+
+  // Dashboard handlers
+  const handleDashboardMouseDown = (e: React.MouseEvent) => {
+    if (e.target === dashboardRef.current || dashboardRef.current?.contains(e.target as Node)) {
+      setIsDashboardDragging(true);
+      setDashboardDragStart({
+        x: e.clientX - dashboardPosition.x,
+        y: e.clientY - dashboardPosition.y
+      });
+    }
+  };
+
+  const handleDashboardRotationStart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDashboardRotating(true);
+    const rect = dashboardRef.current?.getBoundingClientRect();
+    if (rect) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * 180 / Math.PI;
+      setDashboardRotationStart(angle - dashboardRotation);
+    }
+  };
+
+  const handleDashboardResizeStart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsDashboardResizing(true);
+    setDashboardResizeStart({
+      x: e.clientX,
+      y: e.clientY,
+      width: dashboardSize.width,
+      height: dashboardSize.height
+    });
   };
 
   const lockPosition = () => {
     setPositioningMode(false);
-    console.log(`Final position: X: ${bannerPosition.x}px, Y: ${bannerPosition.y}px, Rotation: ${bannerRotation.toFixed(1)}deg`);
+    console.log(`Certn Banner - X: ${bannerPosition.x}px, Y: ${bannerPosition.y}px, Rotation: ${bannerRotation.toFixed(1)}deg, Size: ${bannerSize.width}x${bannerSize.height}`);
+    console.log(`Dashboard - X: ${dashboardPosition.x}px, Y: ${dashboardPosition.y}px, Rotation: ${dashboardRotation.toFixed(1)}deg, Size: ${dashboardSize.width}x${dashboardSize.height}`);
   };
 
   const handleSearch = () => {
@@ -130,7 +225,7 @@ const HeroSearchSection = () => {
         </div>
       )}
 
-      {/* Certn Banner - Draggable/Rotatable */}
+      {/* Certn Banner - Draggable/Rotatable/Resizable */}
       <div 
         ref={bannerRef}
         className={`absolute z-[9999] flex items-center space-x-2 fintech-card backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg cursor-move ${
@@ -139,6 +234,8 @@ const HeroSearchSection = () => {
         style={{ 
           left: `${bannerPosition.x}px`,
           top: `${bannerPosition.y}px`,
+          width: `${bannerSize.width}px`,
+          height: `${bannerSize.height}px`,
           transform: `rotate(${bannerRotation}deg)`,
           userSelect: 'none'
         }}
@@ -147,15 +244,16 @@ const HeroSearchSection = () => {
         <img 
           src="/CERTN.png" 
           alt="Certn" 
-          className="h-6 w-auto"
+          className="h-6 w-auto flex-shrink-0"
         />
-        <span className="text-sm font-medium text-gray-800">
+        <span className="text-sm font-medium text-gray-800 flex-grow overflow-hidden">
           Free background check with annual premium!
         </span>
         
-        {/* Rotation Handles - Only in positioning mode */}
+        {/* Control Handles - Only in positioning mode */}
         {positioningMode && (
           <>
+            {/* Rotation Handles */}
             <div 
               className="absolute -top-2 -right-2 w-4 h-4 bg-yellow-400 rounded-full cursor-grab border-2 border-white shadow-lg flex items-center justify-center"
               onMouseDown={handleRotationStart}
@@ -170,21 +268,74 @@ const HeroSearchSection = () => {
             >
               <RotateCw className="h-2 w-2 text-black" />
             </div>
+            
+            {/* Resize Handle */}
+            <div 
+              className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-400 rounded-full cursor-se-resize border-2 border-white shadow-lg flex items-center justify-center"
+              onMouseDown={handleResizeStart}
+              title="Drag to resize"
+            >
+              <Maximize2 className="h-2 w-2 text-black" />
+            </div>
           </>
         )}
       </div>
 
-      {/* Animated Dashboard Indicator - Positioned exactly like in image */}
-      <Link 
-        to="/dashboard" 
-        className="absolute top-[290px] right-[120px] z-5 text-white cursor-pointer hover:scale-105 transition-transform duration-300 flex flex-col items-center"
+      {/* Dashboard Graffiti - Draggable/Rotatable/Resizable */}
+      <div 
+        ref={dashboardRef}
+        className={`absolute z-[9999] flex flex-col items-center justify-center cursor-move ${
+          positioningMode ? 'border-2 border-green-400 border-dashed' : ''
+        }`}
         style={{ 
+          left: `${dashboardPosition.x}px`,
+          top: `${dashboardPosition.y}px`,
+          width: `${dashboardSize.width}px`,
+          height: `${dashboardSize.height}px`,
+          transform: `rotate(${dashboardRotation}deg)`,
+          userSelect: 'none',
           textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)'
         }}
+        onMouseDown={positioningMode ? handleDashboardMouseDown : undefined}
       >
-        <span className="font-graffiti text-3xl font-bold tracking-wider">DASHBOARD</span>
-        <span className="dashboard-arrows text-2xl mt-1"></span>
-      </Link>
+        <Link 
+          to="/dashboard" 
+          className="text-white hover:scale-105 transition-transform duration-300 flex flex-col items-center h-full w-full justify-center"
+        >
+          <span className="font-graffiti text-3xl font-bold tracking-wider">DASHBOARD</span>
+          <span className="dashboard-arrows text-2xl mt-1"></span>
+        </Link>
+        
+        {/* Control Handles - Only in positioning mode */}
+        {positioningMode && (
+          <>
+            {/* Rotation Handles */}
+            <div 
+              className="absolute -top-2 -right-2 w-4 h-4 bg-green-400 rounded-full cursor-grab border-2 border-white shadow-lg flex items-center justify-center"
+              onMouseDown={handleDashboardRotationStart}
+              title="Drag to rotate"
+            >
+              <RotateCw className="h-2 w-2 text-black" />
+            </div>
+            <div 
+              className="absolute -bottom-2 -left-2 w-4 h-4 bg-green-400 rounded-full cursor-grab border-2 border-white shadow-lg flex items-center justify-center"
+              onMouseDown={handleDashboardRotationStart}
+              title="Drag to rotate"
+            >
+              <RotateCw className="h-2 w-2 text-black" />
+            </div>
+            
+            {/* Resize Handle */}
+            <div 
+              className="absolute -bottom-2 -right-2 w-4 h-4 bg-blue-400 rounded-full cursor-se-resize border-2 border-white shadow-lg flex items-center justify-center"
+              onMouseDown={handleDashboardResizeStart}
+              title="Drag to resize"
+            >
+              <Maximize2 className="h-2 w-2 text-black" />
+            </div>
+          </>
+        )}
+      </div>
 
       {/* Main Content */}
       <div className="relative z-10 max-w-2xl mx-auto text-center">
