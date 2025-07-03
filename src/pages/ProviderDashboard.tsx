@@ -265,21 +265,7 @@ const ProviderDashboard = () => {
               </DraggableWidget>
             </div>
 
-            {/* Floating Notification Bell */}
-            <div className="fixed top-0 left-0 z-40">
-              <DraggableWidget
-                id="floating-notification-bell"
-                defaultPosition={getWidgetConfig('floating-notification-bell').position}
-                defaultSize={getWidgetConfig('floating-notification-bell').size}
-                isLocked={getWidgetConfig('floating-notification-bell').isLocked}
-                showCard={false}
-                onPositionChange={updateWidgetPosition}
-                onSizeChange={updateWidgetSize}
-                onLockToggle={toggleWidgetLock}
-              >
-                <FloatingNotificationBell />
-              </DraggableWidget>
-            </div>
+            {/* Notification bell moved back to Job Hub tab */}
 
             {/* Main Content Tabs - Positioned with spacing */}
             <div className="mt-[280px] mx-[188px]">
