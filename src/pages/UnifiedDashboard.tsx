@@ -5,6 +5,7 @@ import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { Navigate } from 'react-router-dom';
 import CustomerDashboard from './CustomerDashboard';
 import ProviderDashboard from './ProviderDashboard';
+import { ChatBubble } from '@/components/chat/ChatBubble';
 
 const UnifiedDashboard = () => {
   const { user, loading: authLoading } = useAuth();
@@ -39,11 +40,12 @@ const UnifiedDashboard = () => {
   // Render the appropriate dashboard based on current role
   console.log('🎯 Rendering dashboard for role:', currentRole);
   
-  if (currentRole === 'provider') {
-    return <ProviderDashboard />;
-  } else {
-    return <CustomerDashboard />;
-  }
+  return (
+    <>
+      {currentRole === 'provider' ? <ProviderDashboard /> : <CustomerDashboard />}
+      <ChatBubble />
+    </>
+  );
 };
 
 export default UnifiedDashboard;

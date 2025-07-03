@@ -1,12 +1,13 @@
 
-import React, { useState } from 'react';
-import { MessageCircle, X, Mic } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { MessageCircle, X, Mic, Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
 import { useAuth } from '@/contexts/AuthContext';
 import ChatPanel from './ChatPanel';
+import DashboardNotificationDropdown from '@/components/dashboard/DashboardNotificationDropdown';
 import { useLocation } from 'react-router-dom';
 
 interface ChatBubbleProps {
@@ -37,7 +38,24 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>(initialTab);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const { totalUnreadCount } = useChat();
+
+  // Persistent tab memory
+  useEffect(() => {
+    const savedTab = localStorage.getItem('chatBubble-lastTab');
+    if (savedTab && (savedTab === 'messages' || savedTab === 'ai' || savedTab === 'voice')) {
+      // Validate access before restoring
+      if (savedTab === 'voice' && !hasVoiceAccess) return;
+      if (savedTab === 'messages' && !hasMessagesAccess) return;
+      setActiveTab(savedTab);
+    }
+  }, [hasVoiceAccess, hasMessagesAccess]);
+
+  // Save tab selection
+  useEffect(() => {
+    localStorage.setItem('chatBubble-lastTab', activeTab);
+  }, [activeTab]);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -51,6 +69,18 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     if (tab === 'messages' && !hasMessagesAccess) return;
     setActiveTab(tab);
   };
+
+  const handleNotificationClick = () => {
+    setIsNotificationOpen(!isNotificationOpen);
+  };
+
+  const closeNotification = () => {
+    setIsNotificationOpen(false);
+  };
+
+  // Determine tab order based on subscription
+  const isPremiumUser = userTier === 'premium' || userTier === 'professional';
+  const tabOrder = isPremiumUser ? ['ai', 'messages', 'voice'] : ['ai', 'messages', 'voice'];
 
   return (
     <>
@@ -101,117 +131,55 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             {/* Clean Tab Navigation */}
             <div className="bg-yellow-50 border-b-2 border-yellow-300">
               <div className="flex">
-                {isInteractiveMap ? (
-                  // Voice tab first for interactive map (if user has access)
-                  <>
-                    {hasVoiceAccess && (
-                      <button
-                        onClick={() => handleTabChange('voice')}
-                        className={cn(
-                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                          activeTab === 'voice'
-                            ? "text-green-600 bg-yellow-100"
-                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                        )}
-                      >
-                        🗣️ Voice
-                        {activeTab === 'voice' && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
-                        )}
-                      </button>
+                {/* AI Assistant Tab (first position, Claude for Premium/Pro, WebLLM for Free/Starter) */}
+                <button
+                  onClick={() => handleTabChange('ai')}
+                  className={cn(
+                    "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                    activeTab === 'ai'
+                      ? "text-purple-600 bg-yellow-100"
+                      : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                  )}
+                >
+                  {isPremiumUser ? 'Claude' : 'AI Assistant'}
+                  {activeTab === 'ai' && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
+                  )}
+                </button>
+
+                {/* Messages Tab (second position) */}
+                {hasMessagesAccess && (
+                  <button
+                    onClick={() => handleTabChange('messages')}
+                    className={cn(
+                      "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                      activeTab === 'messages'
+                        ? "text-blue-600 bg-yellow-100"
+                        : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
                     )}
-                    <button
-                      onClick={() => handleTabChange('ai')}
-                      className={cn(
-                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                        activeTab === 'ai'
-                          ? "text-purple-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                      )}
-                    >
-                      AI Text
-                      {activeTab === 'ai' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
-                      )}
-                    </button>
-                    {hasMessagesAccess && (
-                      <button
-                        onClick={() => handleTabChange('messages')}
-                        className={cn(
-                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                          activeTab === 'messages'
-                            ? "text-blue-600 bg-yellow-100"
-                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                        )}
-                      >
-                        Chat
-                        {totalUnreadCount > 0 && (
-                          <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
-                            {totalUnreadCount}
-                          </Badge>
-                        )}
-                        {activeTab === 'messages' && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-                        )}
-                      </button>
+                  >
+                    Messages
+                    {totalUnreadCount > 0 && (
+                      <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
+                        {totalUnreadCount}
+                      </Badge>
                     )}
-                  </>
-                ) : (
-                  // Default order for other pages
-                  <>
-                    {hasMessagesAccess && (
-                      <button
-                        onClick={() => handleTabChange('messages')}
-                        className={cn(
-                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                          activeTab === 'messages'
-                            ? "text-blue-600 bg-yellow-100"
-                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                        )}
-                      >
-                        Chat
-                        {totalUnreadCount > 0 && (
-                          <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
-                            {totalUnreadCount}
-                          </Badge>
-                        )}
-                        {activeTab === 'messages' && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-                        )}
-                      </button>
+                    {activeTab === 'messages' && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
                     )}
-                    <button
-                      onClick={() => handleTabChange('ai')}
-                      className={cn(
-                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                        activeTab === 'ai'
-                          ? "text-purple-600 bg-yellow-100"
-                          : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                      )}
-                    >
-                      AI Text
-                      {activeTab === 'ai' && (
-                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
-                      )}
-                    </button>
-                    {hasVoiceAccess && (
-                      <button
-                        onClick={() => handleTabChange('voice')}
-                        className={cn(
-                          "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                          activeTab === 'voice'
-                            ? "text-green-600 bg-yellow-100"
-                            : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
-                        )}
-                      >
-                        🗣️ Voice
-                        {activeTab === 'voice' && (
-                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-green-600" />
-                        )}
-                      </button>
-                    )}
-                  </>
+                  </button>
                 )}
+
+                {/* Notification Bell (third position) */}
+                <button
+                  onClick={handleNotificationClick}
+                  className={cn(
+                    "flex-1 py-3 px-4 text-sm font-medium transition-colors relative hover:bg-yellow-100",
+                    "text-yellow-700 hover:text-yellow-900"
+                  )}
+                >
+                  <Bell className="h-4 w-4 mx-auto" />
+                </button>
               </div>
             </div>
 
@@ -221,6 +189,19 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Notification Popup - Bottom Right Corner */}
+      {isNotificationOpen && (
+        <>
+          <div 
+            className="fixed inset-0 z-30" 
+            onClick={closeNotification}
+          />
+          <div className="fixed bottom-4 right-4 z-40 w-80">
+            <DashboardNotificationDropdown />
+          </div>
+        </>
       )}
 
       {/* Minimal Side Indicators */}
