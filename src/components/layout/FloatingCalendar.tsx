@@ -9,15 +9,16 @@ const FloatingCalendar = () => {
   const { updateWidgetPosition, updateWidgetSize, toggleWidgetLock, getWidgetConfig } = useDashboardLayout();
   
   return (
-    <DraggableWidget
-      id="floating-calendar"
-      defaultPosition={getWidgetConfig('floating-calendar')?.position || { x: window.innerWidth - 430, y: 280 }}
-      defaultSize={getWidgetConfig('floating-calendar')?.size || { width: 400, height: 320 }}
-      isLocked={getWidgetConfig('floating-calendar')?.isLocked || false}
-      onPositionChange={updateWidgetPosition}
-      onSizeChange={updateWidgetSize}
-      onLockToggle={toggleWidgetLock}
-    >
+    <div className="fixed top-0 left-0 z-50">
+      <DraggableWidget
+        id="floating-calendar"
+        defaultPosition={getWidgetConfig('floating-calendar')?.position || { x: window.innerWidth - 430, y: 100 }}
+        defaultSize={getWidgetConfig('floating-calendar')?.size || { width: 400, height: 320 }}
+        isLocked={getWidgetConfig('floating-calendar')?.isLocked || false}
+        onPositionChange={updateWidgetPosition}
+        onSizeChange={updateWidgetSize}
+        onLockToggle={toggleWidgetLock}
+      >
       <Card className="h-full w-full bg-gradient-to-br from-amber-50 to-orange-100 border-0 shadow-xl">
       <CardHeader className="pb-2 px-4 pt-4">
         <CardTitle className="flex items-center justify-between text-base">
@@ -74,7 +75,8 @@ const FloatingCalendar = () => {
         </div>
       </CardContent>
     </Card>
-    </DraggableWidget>
+      </DraggableWidget>
+    </div>
   );
 };
 

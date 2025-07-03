@@ -45,7 +45,7 @@ const DraggableWidget: React.FC<DraggableWidgetProps> = ({
           });
         }
       }}
-      bounds="parent"
+      bounds="window"
       minWidth={200}
       minHeight={150}
       dragHandleClassName="drag-handle"

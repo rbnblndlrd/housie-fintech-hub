@@ -163,6 +163,7 @@ const ProviderDashboard = () => {
   return (
     <>
       <VideoBackground />
+      <FloatingCalendar />
       <div className="relative z-10 min-h-screen">
         <div className="pb-2">
           <div className="max-w-full">
@@ -447,9 +448,6 @@ const ProviderDashboard = () => {
                         </>
                       )}
                      </DraggableWidget>
-
-                     {/* Floating Calendar Widget */}
-                     <FloatingCalendar />
                   </div>
                 </TabsContent>
 
