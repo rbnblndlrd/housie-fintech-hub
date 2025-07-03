@@ -177,12 +177,13 @@ const HeroSearchSection = () => {
       {/* Animated Dashboard Indicator */}
       <Link 
         to="/dashboard" 
-        className="absolute top-[280px] right-[400px] z-5 text-white font-bold text-lg cursor-pointer hover:scale-105 transition-transform duration-300 dashboard-arrow-pulse"
+        className="absolute top-[280px] right-[400px] z-5 text-white font-bold text-lg cursor-pointer hover:scale-105 transition-transform duration-300 flex items-center"
         style={{ 
           textShadow: '0 2px 8px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.9)'
         }}
       >
-        Dashboard
+        <span className="font-graffiti">Dashboard</span>
+        <span className="dashboard-arrows"></span>
       </Link>
 
       {/* Main Content */}
