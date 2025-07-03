@@ -50,27 +50,25 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
               >
                 <Briefcase className="h-4 w-4 mr-3 drop-shadow-sm" />
                 <span className="drop-shadow-sm">Job Hub</span>
-                <div className="relative">
-                  <button
-                    onClick={handleBellClick}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 flex items-center justify-center hover:bg-white/20 rounded-full z-10 transition-colors duration-200"
-                  >
-                    <Bell className="h-4 w-4 text-orange-400 drop-shadow-sm hover:text-orange-300" />
-                    {unreadCount > 0 && (
-                      <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] text-xs flex items-center justify-center bg-red-500 text-white rounded-full">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </button>
-                  
-                  {/* Notification Roll-up Menu */}
-                  {isNotificationOpen && (
-                    <div className="absolute bottom-full mb-4 z-40 w-80" style={{ left: '130px' }}>
-                      <DashboardNotificationDropdown />
-                    </div>
+                <button
+                  onClick={handleBellClick}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 h-8 w-8 flex items-center justify-center hover:bg-white/20 rounded-full z-10 transition-colors duration-200"
+                >
+                  <Bell className="h-4 w-4 text-orange-400 drop-shadow-sm hover:text-orange-300" />
+                  {unreadCount > 0 && (
+                    <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] text-xs flex items-center justify-center bg-red-500 text-white rounded-full">
+                      {unreadCount > 99 ? '99+' : unreadCount}
+                    </span>
                   )}
-                </div>
+                </button>
               </TabsTrigger>
+              
+              {/* Notification Popup - positioned relative to the entire tab container */}
+              {isNotificationOpen && (
+                <div className="absolute bottom-full left-full ml-4 mb-2 z-40 w-80">
+                  <DashboardNotificationDropdown />
+                </div>
+              )}
               
               <TabsTrigger 
                 value="map" 
