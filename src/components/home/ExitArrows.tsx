@@ -24,8 +24,7 @@ const ExitArrows = () => {
         className="fixed exit-arrows-container cursor-pointer hover:scale-110 transition-transform duration-200"
         style={{ 
           bottom: '100px', 
-          right: '50%',
-          transform: 'translateX(50%)',
+          right: '100px',
           zIndex: 100,
           fontSize: '36px',
           color: 'white',
