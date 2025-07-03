@@ -42,7 +42,7 @@ const Header = () => {
         <div className="housie-header-container-locked">
           {/* HOUSIE Logo - Permanently locked at 128px from left edge */}
           <div className="housie-logo-permanently-locked">
-            <Link to="/" className="flex items-center">
+            <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
               <img 
                 src="/lovable-uploads/a4e647f0-865a-42ef-a0cc-19226d5f0a35.png" 
                 alt="HOUSIE" 
@@ -55,7 +55,7 @@ const Header = () => {
                     console.log('🖼️ Fallback logo also failed, using final fallback...');
                     target.src = '/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png';
                     target.onerror = () => {
-                      console.log('🖼️ All logos failed, hiding image and showing text');
+                      console.log('🖼️ All logos failed, showing text fallback');
                       target.style.display = 'none';
                       const nextSibling = target.nextElementSibling as HTMLElement;
                       if (nextSibling) {
@@ -65,7 +65,7 @@ const Header = () => {
                   };
                 }}
               />
-              <span className="text-lg font-bold text-white ml-1 hidden">HOUSIE</span>
+              <span className="text-2xl font-bold text-white ml-1 hidden">HOUSIE</span>
             </Link>
           </div>
 
