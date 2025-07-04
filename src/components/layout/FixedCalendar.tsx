@@ -24,7 +24,7 @@ const FixedCalendar = () => {
 
   return (
     <div className="fixed top-4 right-4 z-50">
-      <div className="w-[320px] h-[280px] bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden">
+      <div className="w-[400px] h-[350px] bg-white border border-gray-200 shadow-lg rounded-lg overflow-hidden">
         {/* Header - 30px height */}
         <div className="h-[30px] px-3 flex items-center justify-between border-b border-gray-100">
           <div className="flex items-center gap-2">
@@ -57,8 +57,8 @@ const FixedCalendar = () => {
           </div>
         </div>
         
-        {/* Content - 250px height */}
-        <div className="h-[250px] p-3">
+        {/* Content - 320px height */}
+        <div className="h-[320px] p-3">
           {showSchedule ? (
             // Schedule View
             <div className="h-full overflow-y-auto">
