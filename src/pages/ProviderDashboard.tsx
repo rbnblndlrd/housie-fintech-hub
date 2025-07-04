@@ -39,8 +39,13 @@ import {
   Edit,
   Save,
   RotateCcw,
-  ClipboardList
+  ClipboardList,
+  Settings,
+  ChevronUp,
+  ArrowLeft
 } from 'lucide-react';
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
 import JobDetailView from '@/components/dashboard/JobDetailView';
@@ -83,6 +88,168 @@ const ProviderDashboard = () => {
   const [dragOver, setDragOver] = useState(false);
   const [selectedJob, setSelectedJob] = useState<any>(null);
   const [showJobDetail, setShowJobDetail] = useState(false);
+  
+  // Ticket Management State
+  const [showTicketSplitView, setShowTicketSplitView] = useState(false);
+  const [selectedTicket, setSelectedTicket] = useState<any>(null);
+  const [sortColumn, setSortColumn] = useState<string>('dueDate');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
+  // Sample Ticket Data
+  const tickets = [
+    {
+      id: 1,
+      title: 'Johnson Furnace #127',
+      dueDate: 'Jan 15',
+      customer: 'Mrs. Johnson',
+      priority: 'High',
+      status: 'In Progress',
+      rawDetails: {
+        customerInfo: 'Mrs. Johnson\n123 Main St, Westmount\n(514) 555-0123',
+        history: 'Previous visit on Dec 20th - replaced filter\nCustomer called about strange noise',
+        notes: 'Furnace making grinding noise, customer concerned about safety'
+      },
+      aiAnalysis: {
+        whatTried: 'Previous filter replacement, basic inspection completed',
+        nextSteps: '1. Check blower motor bearings\n2. Inspect heat exchanger\n3. Test safety controls',
+        customerReminders: 'Remind customer about annual maintenance schedule'
+      }
+    },
+    {
+      id: 2,
+      title: 'Smith Plumbing #132',
+      dueDate: 'Jan 16',
+      customer: 'John Smith',
+      priority: 'Medium',
+      status: 'Confirmed',
+      rawDetails: {
+        customerInfo: 'John Smith\n456 Oak Ave, Montreal\n(514) 555-0456',
+        history: 'New customer - kitchen sink backup reported',
+        notes: 'Kitchen sink draining slowly, possible clog in main line'
+      },
+      aiAnalysis: {
+        whatTried: 'Initial phone diagnosis completed',
+        nextSteps: '1. Snake kitchen drain\n2. Check garbage disposal\n3. Inspect main line',
+        customerReminders: 'Ask about other slow drains in house'
+      }
+    },
+    {
+      id: 3,
+      title: 'Chen Electrical #145',
+      dueDate: 'Jan 17',
+      customer: 'Mike Chen',
+      priority: 'Low',
+      status: 'Pending',
+      rawDetails: {
+        customerInfo: 'Mike Chen\n789 Pine St, Plateau\n(514) 555-0789',
+        history: 'Outlet replacement requested in home office',
+        notes: 'Customer wants USB outlets installed for home office setup'
+      },
+      aiAnalysis: {
+        whatTried: 'Quote provided, awaiting customer approval',
+        nextSteps: '1. Confirm outlet specifications\n2. Schedule installation\n3. Test all circuits',
+        customerReminders: 'Follow up on quote approval'
+      }
+    },
+    {
+      id: 4,
+      title: 'Wilson HVAC #156',
+      dueDate: 'Jan 18',
+      customer: 'Robert Wilson',
+      priority: 'High',
+      status: 'Emergency',
+      rawDetails: {
+        customerInfo: 'Robert Wilson\n321 Elm Dr, Outremont\n(514) 555-0321',
+        history: 'Emergency call - no heat, family with young children',
+        notes: 'System completely down, outside temperature -15°C'
+      },
+      aiAnalysis: {
+        whatTried: 'Emergency response scheduled',
+        nextSteps: '1. Check thermostat\n2. Inspect ignition system\n3. Test gas supply',
+        customerReminders: 'Priority service due to emergency nature'
+      }
+    },
+    {
+      id: 5,
+      title: 'Brown Kitchen #163',
+      dueDate: 'Jan 19',
+      customer: 'Sarah Brown',
+      priority: 'Medium',
+      status: 'Scheduled',
+      rawDetails: {
+        customerInfo: 'Sarah Brown\n654 Maple Ave, NDG\n(514) 555-0654',
+        history: 'Kitchen renovation - appliance installation needed',
+        notes: 'New dishwasher and garbage disposal installation'
+      },
+      aiAnalysis: {
+        whatTried: 'Site visit completed, measurements taken',
+        nextSteps: '1. Install dishwasher connections\n2. Wire garbage disposal\n3. Test all connections',
+        customerReminders: 'Confirm appliance delivery date'
+      }
+    },
+    {
+      id: 6,
+      title: 'Garcia Bathroom #178',
+      dueDate: 'Jan 20',
+      customer: 'Maria Garcia',
+      priority: 'Low',
+      status: 'Pending',
+      rawDetails: {
+        customerInfo: 'Maria Garcia\n987 Oak St, Verdun\n(514) 555-0987',
+        history: 'Bathroom faucet replacement requested',
+        notes: 'Customer wants modern fixture, provided style preferences'
+      },
+      aiAnalysis: {
+        whatTried: 'Product recommendations provided',
+        nextSteps: '1. Order selected fixture\n2. Schedule installation\n3. Remove old faucet',
+        customerReminders: 'Confirm fixture selection and color'
+      }
+    }
+  ];
+
+  const handleTicketParse = (ticket: any) => {
+    setSelectedTicket(ticket);
+    setShowTicketSplitView(true);
+  };
+
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+  };
+
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'High':
+        return 'text-red-600 font-semibold';
+      case 'Medium':
+        return 'text-orange-600 font-semibold';
+      case 'Low':
+        return 'text-green-600 font-semibold';
+      default:
+        return 'text-gray-600';
+    }
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'Emergency':
+        return 'bg-red-100 text-red-800';
+      case 'In Progress':
+        return 'bg-blue-100 text-blue-800';
+      case 'Confirmed':
+        return 'bg-green-100 text-green-800';
+      case 'Scheduled':
+        return 'bg-purple-100 text-purple-800';
+      case 'Pending':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
   // Sample data
   const recentBookings = [
@@ -389,44 +556,206 @@ const ProviderDashboard = () => {
                   {/* Desktop Job Hub - Full Layout with Widgets */}
                   <div className="hidden md:block">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      {/* Expanded Ticket Manager */}
+                      {/* Professional Ticket Management Table */}
                       <Card className="fintech-card lg:col-span-2 h-[600px]">
                         <CardHeader className="pb-4">
-                          <CardTitle className="flex items-center gap-2 text-xl">
-                            <ClipboardList className="h-6 w-6" />
-                            All Active Tickets
+                          <CardTitle className="flex items-center justify-between text-xl">
+                            <div className="flex items-center gap-2">
+                              <ClipboardList className="h-6 w-6" />
+                              All Active Tickets
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-muted-foreground hover:text-foreground"
+                            >
+                              <Settings className="h-4 w-4" />
+                            </Button>
                           </CardTitle>
                         </CardHeader>
                         <CardContent className="h-full pb-6">
-                          <div className="space-y-4 h-full">
-                            <div className="p-4 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5">
-                              <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                                <span>🤖 Quick Parse: Drop ticket here for AI summary</span>
+                          {!showTicketSplitView ? (
+                            <div className="h-full">
+                              <div className="p-3 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5 mb-4">
+                                <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+                                  <span>🤖 Quick Parse: Drop ticket here for AI summary</span>
+                                </div>
+                              </div>
+                              
+                              <div className="h-[480px] overflow-y-auto">
+                                <Table>
+                                  <TableHeader>
+                                    <TableRow>
+                                      <TableHead 
+                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                        onClick={() => handleSort('title')}
+                                      >
+                                        <div className="flex items-center gap-1">
+                                          Title
+                                          {sortColumn === 'title' && (
+                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                          )}
+                                        </div>
+                                      </TableHead>
+                                      <TableHead 
+                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                        onClick={() => handleSort('dueDate')}
+                                      >
+                                        <div className="flex items-center gap-1">
+                                          Due Date
+                                          {sortColumn === 'dueDate' && (
+                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                          )}
+                                        </div>
+                                      </TableHead>
+                                      <TableHead 
+                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                        onClick={() => handleSort('customer')}
+                                      >
+                                        <div className="flex items-center gap-1">
+                                          Customer
+                                          {sortColumn === 'customer' && (
+                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                          )}
+                                        </div>
+                                      </TableHead>
+                                      <TableHead 
+                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                        onClick={() => handleSort('priority')}
+                                      >
+                                        <div className="flex items-center gap-1">
+                                          Priority
+                                          {sortColumn === 'priority' && (
+                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                          )}
+                                        </div>
+                                      </TableHead>
+                                      <TableHead 
+                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                        onClick={() => handleSort('status')}
+                                      >
+                                        <div className="flex items-center gap-1">
+                                          Status
+                                          {sortColumn === 'status' && (
+                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                          )}
+                                        </div>
+                                      </TableHead>
+                                      <TableHead className="font-semibold">Actions</TableHead>
+                                    </TableRow>
+                                  </TableHeader>
+                                  <TableBody>
+                                    {tickets.map((ticket) => (
+                                      <TableRow key={ticket.id} className="hover:bg-muted/30">
+                                        <TableCell className="font-medium">{ticket.title}</TableCell>
+                                        <TableCell>{ticket.dueDate}</TableCell>
+                                        <TableCell>{ticket.customer}</TableCell>
+                                        <TableCell className={getPriorityColor(ticket.priority)}>
+                                          {ticket.priority}
+                                        </TableCell>
+                                        <TableCell>
+                                          <Badge className={getStatusColor(ticket.status)}>
+                                            {ticket.status}
+                                          </Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                          <div className="flex gap-2">
+                                            <Button 
+                                              size="sm" 
+                                              variant="outline" 
+                                              className="text-xs px-3 py-2 font-medium"
+                                              onClick={() => handleTicketParse(ticket)}
+                                            >
+                                              Parse
+                                            </Button>
+                                            <Button 
+                                              size="sm" 
+                                              variant="outline" 
+                                              className="text-xs px-3 py-2 font-medium"
+                                            >
+                                              Schedule
+                                            </Button>
+                                          </div>
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
                               </div>
                             </div>
-                            <div className="space-y-3 h-[480px] overflow-y-auto pr-2">
-                              {[
-                                'Johnson Furnace #127', 
-                                'Smith Plumbing #132', 
-                                'Chen Electrical #145', 
-                                'Williams HVAC #156', 
-                                'Brown Kitchen #163',
-                                'Davis Bathroom #178',
-                                'Miller Roof Repair #189',
-                                'Wilson Flooring #195',
-                                'Garcia Painting #204',
-                                'Martinez Landscaping #217'
-                              ].map((ticket, index) => (
-                                <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                                  <span className="text-sm font-medium">• {ticket}</span>
-                                  <div className="flex gap-2">
-                                    <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Parse</Button>
-                                    <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Schedule</Button>
-                                  </div>
-                                </div>
-                              ))}
+                          ) : (
+                            /* Split View Layout */
+                            <div className="h-full flex flex-col">
+                              <div className="flex items-center gap-2 mb-4">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => setShowTicketSplitView(false)}
+                                  className="hover:bg-muted"
+                                >
+                                  <ArrowLeft className="h-4 w-4 mr-2" />
+                                  Back to List
+                                </Button>
+                                <div className="text-lg font-semibold">{selectedTicket?.title}</div>
+                              </div>
+                              
+                              <div className="flex-1 grid grid-cols-2 gap-4 h-full">
+                                {/* Left Panel - Raw Ticket Details */}
+                                <Card className="bg-muted/20">
+                                  <CardHeader className="pb-3">
+                                    <CardTitle className="text-base">Raw Ticket Details</CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="space-y-4">
+                                    <div>
+                                      <h4 className="font-semibold text-sm mb-2">Customer Info</h4>
+                                      <pre className="text-xs bg-background p-3 rounded border whitespace-pre-wrap">
+                                        {selectedTicket?.rawDetails.customerInfo}
+                                      </pre>
+                                    </div>
+                                    <div>
+                                      <h4 className="font-semibold text-sm mb-2">History</h4>
+                                      <pre className="text-xs bg-background p-3 rounded border whitespace-pre-wrap">
+                                        {selectedTicket?.rawDetails.history}
+                                      </pre>
+                                    </div>
+                                    <div>
+                                      <h4 className="font-semibold text-sm mb-2">Notes</h4>
+                                      <pre className="text-xs bg-background p-3 rounded border whitespace-pre-wrap">
+                                        {selectedTicket?.rawDetails.notes}
+                                      </pre>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                                
+                                {/* Right Panel - AI Analysis */}
+                                <Card className="bg-blue-50/50">
+                                  <CardHeader className="pb-3">
+                                    <CardTitle className="text-base text-blue-800">AI Analysis Results</CardTitle>
+                                  </CardHeader>
+                                  <CardContent className="space-y-4">
+                                    <div>
+                                      <h4 className="font-semibold text-sm mb-2 text-blue-700">What You Tried</h4>
+                                      <pre className="text-xs bg-white p-3 rounded border whitespace-pre-wrap">
+                                        {selectedTicket?.aiAnalysis.whatTried}
+                                      </pre>
+                                    </div>
+                                    <div>
+                                      <h4 className="font-semibold text-sm mb-2 text-blue-700">Next Steps</h4>
+                                      <pre className="text-xs bg-white p-3 rounded border whitespace-pre-wrap">
+                                        {selectedTicket?.aiAnalysis.nextSteps}
+                                      </pre>
+                                    </div>
+                                    <div>
+                                      <h4 className="font-semibold text-sm mb-2 text-blue-700">Customer Reminders</h4>
+                                      <pre className="text-xs bg-white p-3 rounded border whitespace-pre-wrap">
+                                        {selectedTicket?.aiAnalysis.customerReminders}
+                                      </pre>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </CardContent>
                       </Card>
 
