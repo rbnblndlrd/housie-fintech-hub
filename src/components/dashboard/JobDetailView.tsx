@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { 
   ArrowLeft, 
   Phone, 
@@ -9,7 +11,8 @@ import {
   Bot,
   Check,
   Clock,
-  MessageSquare
+  MessageSquare,
+  X
 } from 'lucide-react';
 
 interface JobDetailViewProps {
@@ -26,15 +29,16 @@ interface JobDetailViewProps {
 
 const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
   const [showAnalysis, setShowAnalysis] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleParseWithAI = () => {
     setShowAnalysis(true);
   };
 
-  return (
-    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+  const jobContent = (
+    <>
       {/* Header Section */}
-      <div className="sticky top-0 bg-white border-b border-gray-200 p-4">
+      <div className={`${isMobile ? 'sticky top-0 bg-white border-b border-gray-200 p-4' : 'pb-4'}`}>
         <div className="flex items-center gap-3 mb-3">
           <Button 
             variant="ghost" 
@@ -42,7 +46,7 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
             onClick={onBack}
             className="p-2"
           >
-            <ArrowLeft className="h-5 w-5" />
+            {isMobile ? <ArrowLeft className="h-5 w-5" /> : <X className="h-5 w-5" />}
           </Button>
           <div className="flex-1">
             <h1 className="text-lg font-bold text-gray-800">{job.service}</h1>
@@ -165,7 +169,28 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
           </div>
         </div>
       </div>
-    </div>
+    </>
+  );
+
+  if (isMobile) {
+    // Mobile: Full-screen experience
+    return (
+      <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+        {jobContent}
+      </div>
+    );
+  }
+
+  // Desktop: Modal experience
+  return (
+    <Dialog open={true} onOpenChange={onBack}>
+      <DialogContent className="max-w-2xl w-[70%] max-h-[80vh] overflow-y-auto p-0">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Job Details</DialogTitle>
+        </DialogHeader>
+        {jobContent}
+      </DialogContent>
+    </Dialog>
   );
 };
 
