@@ -85,7 +85,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   return (
     <>
       {!isOpen ? (
-        <div className="fixed z-50" style={{ bottom: '188px', right: '188px' }}>
+        <div className="fixed bottom-0 right-0 z-50">
           <Button
             onClick={handleOpen}
             className={cn(
@@ -111,7 +111,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
           </Button>
         </div>
       ) : (
-        <div className="fixed z-50" style={{ bottom: '188px', right: '188px' }}>
+        <div className="fixed bottom-0 right-0 z-50">
           <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
             <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
@@ -197,8 +197,10 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             className="fixed inset-0 z-30" 
             onClick={closeNotification}
           />
-          <div className="fixed z-40 w-80" style={{ bottom: '788px', right: '188px' }}>
-            <DashboardNotificationDropdown />
+          <div className="fixed bottom-[620px] right-4 z-40 w-80">
+            <div className="bg-white rounded-full shadow-2xl border-2 border-yellow-300 p-6 animate-scale-in">
+              <DashboardNotificationDropdown />
+            </div>
           </div>
         </>
       )}
