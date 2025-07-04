@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -94,6 +94,23 @@ const ProviderDashboard = () => {
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
   const [sortColumn, setSortColumn] = useState<string>('dueDate');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [showColumnChooser, setShowColumnChooser] = useState(false);
+  const [visibleColumns, setVisibleColumns] = useState(() => {
+    const saved = localStorage.getItem('ticketTableColumns');
+    return saved ? JSON.parse(saved) : {
+      title: true,
+      dueDate: true,
+      customer: true,
+      priority: true,
+      status: true,
+      actions: true
+    };
+  });
+
+  // Save column preferences to localStorage
+  useEffect(() => {
+    localStorage.setItem('ticketTableColumns', JSON.stringify(visibleColumns));
+  }, [visibleColumns]);
 
   // Sample Ticket Data
   const tickets = [
@@ -567,9 +584,71 @@ const ProviderDashboard = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-muted-foreground hover:text-foreground"
+                              className="text-muted-foreground hover:text-foreground relative"
+                              onClick={() => setShowColumnChooser(!showColumnChooser)}
                             >
                               <Settings className="h-4 w-4" />
+                              {showColumnChooser && (
+                                <div className="absolute top-full right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
+                                  <div className="p-3 space-y-2">
+                                    <div className="font-semibold text-sm mb-2">Show Columns</div>
+                                    <label className="flex items-center gap-2 text-sm">
+                                      <input
+                                        type="checkbox"
+                                        checked={visibleColumns.title}
+                                        disabled
+                                        className="rounded"
+                                      />
+                                      Title (required)
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                      <input
+                                        type="checkbox"
+                                        checked={visibleColumns.dueDate}
+                                        onChange={(e) => setVisibleColumns(prev => ({...prev, dueDate: e.target.checked}))}
+                                        className="rounded"
+                                      />
+                                      Due Date
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                      <input
+                                        type="checkbox"
+                                        checked={visibleColumns.customer}
+                                        onChange={(e) => setVisibleColumns(prev => ({...prev, customer: e.target.checked}))}
+                                        className="rounded"
+                                      />
+                                      Customer
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                      <input
+                                        type="checkbox"
+                                        checked={visibleColumns.priority}
+                                        onChange={(e) => setVisibleColumns(prev => ({...prev, priority: e.target.checked}))}
+                                        className="rounded"
+                                      />
+                                      Priority
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                      <input
+                                        type="checkbox"
+                                        checked={visibleColumns.status}
+                                        onChange={(e) => setVisibleColumns(prev => ({...prev, status: e.target.checked}))}
+                                        className="rounded"
+                                      />
+                                      Status
+                                    </label>
+                                    <label className="flex items-center gap-2 text-sm">
+                                      <input
+                                        type="checkbox"
+                                        checked={visibleColumns.actions}
+                                        disabled
+                                        className="rounded"
+                                      />
+                                      Actions (required)
+                                    </label>
+                                  </div>
+                                </div>
+                              )}
                             </Button>
                           </CardTitle>
                         </CardHeader>
@@ -586,99 +665,117 @@ const ProviderDashboard = () => {
                                 <Table>
                                   <TableHeader>
                                     <TableRow>
-                                      <TableHead 
-                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
-                                        onClick={() => handleSort('title')}
-                                      >
-                                        <div className="flex items-center gap-1">
-                                          Title
-                                          {sortColumn === 'title' && (
-                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                                          )}
-                                        </div>
-                                      </TableHead>
-                                      <TableHead 
-                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
-                                        onClick={() => handleSort('dueDate')}
-                                      >
-                                        <div className="flex items-center gap-1">
-                                          Due Date
-                                          {sortColumn === 'dueDate' && (
-                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                                          )}
-                                        </div>
-                                      </TableHead>
-                                      <TableHead 
-                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
-                                        onClick={() => handleSort('customer')}
-                                      >
-                                        <div className="flex items-center gap-1">
-                                          Customer
-                                          {sortColumn === 'customer' && (
-                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                                          )}
-                                        </div>
-                                      </TableHead>
-                                      <TableHead 
-                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
-                                        onClick={() => handleSort('priority')}
-                                      >
-                                        <div className="flex items-center gap-1">
-                                          Priority
-                                          {sortColumn === 'priority' && (
-                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                                          )}
-                                        </div>
-                                      </TableHead>
-                                      <TableHead 
-                                        className="cursor-pointer hover:bg-muted/50 font-semibold"
-                                        onClick={() => handleSort('status')}
-                                      >
-                                        <div className="flex items-center gap-1">
-                                          Status
-                                          {sortColumn === 'status' && (
-                                            sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
-                                          )}
-                                        </div>
-                                      </TableHead>
-                                      <TableHead className="font-semibold">Actions</TableHead>
+                                      {visibleColumns.title && (
+                                        <TableHead 
+                                          className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                          onClick={() => handleSort('title')}
+                                        >
+                                          <div className="flex items-center gap-1">
+                                            Title
+                                            {sortColumn === 'title' && (
+                                              sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                            )}
+                                          </div>
+                                        </TableHead>
+                                      )}
+                                      {visibleColumns.dueDate && (
+                                        <TableHead 
+                                          className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                          onClick={() => handleSort('dueDate')}
+                                        >
+                                          <div className="flex items-center gap-1">
+                                            Due Date
+                                            {sortColumn === 'dueDate' && (
+                                              sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                            )}
+                                          </div>
+                                        </TableHead>
+                                      )}
+                                      {visibleColumns.customer && (
+                                        <TableHead 
+                                          className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                          onClick={() => handleSort('customer')}
+                                        >
+                                          <div className="flex items-center gap-1">
+                                            Customer
+                                            {sortColumn === 'customer' && (
+                                              sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                            )}
+                                          </div>
+                                        </TableHead>
+                                      )}
+                                      {visibleColumns.priority && (
+                                        <TableHead 
+                                          className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                          onClick={() => handleSort('priority')}
+                                        >
+                                          <div className="flex items-center gap-1">
+                                            Priority
+                                            {sortColumn === 'priority' && (
+                                              sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                            )}
+                                          </div>
+                                        </TableHead>
+                                      )}
+                                      {visibleColumns.status && (
+                                        <TableHead 
+                                          className="cursor-pointer hover:bg-muted/50 font-semibold"
+                                          onClick={() => handleSort('status')}
+                                        >
+                                          <div className="flex items-center gap-1">
+                                            Status
+                                            {sortColumn === 'status' && (
+                                              sortDirection === 'asc' ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />
+                                            )}
+                                          </div>
+                                        </TableHead>
+                                      )}
+                                      {visibleColumns.actions && (
+                                        <TableHead className="font-semibold">Actions</TableHead>
+                                      )}
                                     </TableRow>
                                   </TableHeader>
                                   <TableBody>
-                                    {tickets.map((ticket) => (
-                                      <TableRow key={ticket.id} className="hover:bg-muted/30">
-                                        <TableCell className="font-medium">{ticket.title}</TableCell>
-                                        <TableCell>{ticket.dueDate}</TableCell>
-                                        <TableCell>{ticket.customer}</TableCell>
-                                        <TableCell className={getPriorityColor(ticket.priority)}>
-                                          {ticket.priority}
-                                        </TableCell>
-                                        <TableCell>
-                                          <Badge className={getStatusColor(ticket.status)}>
-                                            {ticket.status}
-                                          </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                          <div className="flex gap-2">
-                                            <Button 
-                                              size="sm" 
-                                              variant="outline" 
-                                              className="text-xs px-3 py-2 font-medium"
-                                              onClick={() => handleTicketParse(ticket)}
-                                            >
-                                              Parse
-                                            </Button>
-                                            <Button 
-                                              size="sm" 
-                                              variant="outline" 
-                                              className="text-xs px-3 py-2 font-medium"
-                                            >
-                                              Schedule
-                                            </Button>
-                                          </div>
-                                        </TableCell>
-                                      </TableRow>
-                                    ))}
+                                     {tickets.map((ticket) => (
+                                       <TableRow key={ticket.id} className="hover:bg-muted/30">
+                                         {visibleColumns.title && <TableCell className="font-medium">{ticket.title}</TableCell>}
+                                         {visibleColumns.dueDate && <TableCell>{ticket.dueDate}</TableCell>}
+                                         {visibleColumns.customer && <TableCell>{ticket.customer}</TableCell>}
+                                         {visibleColumns.priority && (
+                                           <TableCell className={getPriorityColor(ticket.priority)}>
+                                             {ticket.priority}
+                                           </TableCell>
+                                         )}
+                                         {visibleColumns.status && (
+                                           <TableCell>
+                                             <Badge className={getStatusColor(ticket.status)}>
+                                               {ticket.status}
+                                             </Badge>
+                                           </TableCell>
+                                         )}
+                                         {visibleColumns.actions && (
+                                           <TableCell>
+                                             <div className="flex gap-2">
+                                               <Button 
+                                                 size="sm" 
+                                                 variant="outline" 
+                                                 className="text-xs px-3 py-2 font-medium"
+                                                 onClick={() => handleTicketParse(ticket)}
+                                               >
+                                                 Parse
+                                               </Button>
+                                               <Button 
+                                                 size="sm" 
+                                                 variant="outline" 
+                                                 className="text-xs px-3 py-2 font-medium"
+                                               >
+                                                 Schedule
+                                               </Button>
+                                             </div>
+                                           </TableCell>
+                                         )}
+                                       </TableRow>
+                                     ))}
                                   </TableBody>
                                 </Table>
                               </div>
