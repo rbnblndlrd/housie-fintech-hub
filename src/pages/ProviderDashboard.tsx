@@ -40,13 +40,14 @@ import {
   Save,
   RotateCcw
 } from 'lucide-react';
-import VerticalTabsWithNotification from '@/components/dashboard/VerticalTabsWithNotification';
-import FloatingNotificationBell from '@/components/dashboard/FloatingNotificationBell';
+import JobHubSidebar from '@/components/dashboard/JobHubSidebar';
+import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
   const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
   const [filterPeriod, setFilterPeriod] = useState('today');
+  const [isJobHubOpen, setIsJobHubOpen] = useState(false);
   
   const {
     widgets,
@@ -246,15 +247,20 @@ const ProviderDashboard = () => {
               )}
             </div>
 
-            {/* Fixed Vertical Tabs Navigation - Positioned Higher */}
+            {/* Simple Navigation - Left Side */}
             <div className="fixed top-80 left-10 z-40 w-48">
-              <VerticalTabsWithNotification 
+              <SimpleNavigation 
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
+                onJobHubClick={() => setIsJobHubOpen(true)}
               />
             </div>
 
-            {/* Notification bell moved back to Job Hub tab */}
+            {/* Job Hub Sidebar */}
+            <JobHubSidebar 
+              isOpen={isJobHubOpen}
+              onClose={() => setIsJobHubOpen(false)}
+            />
 
             {/* Main Content Tabs - Positioned with spacing */}
             <div className="mt-[280px] mx-[188px]">
