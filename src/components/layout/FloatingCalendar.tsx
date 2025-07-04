@@ -106,49 +106,49 @@ const FloatingCalendar = () => {
               </div>
             )}
           </CardHeader>
-          <CardContent className="pt-0 px-4 pb-4 overflow-hidden">
+          <CardContent className="pt-0 px-4 pb-4 h-full flex flex-col">
             {showTodayView ? (
               // Today's Schedule View - REPLACES the calendar entirely
-              <div className="h-[280px] overflow-y-auto space-y-3">
+              <div className="flex-1 space-y-4">
                 {todaysEvents.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
-                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
-                      <Calendar className="w-6 h-6 text-gray-600" />
+                  <div className="flex flex-col items-center justify-center h-full text-center space-y-3">
+                    <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                      <Calendar className="w-8 h-8 text-gray-600" />
                     </div>
                     <div>
-                      <h4 className="text-sm font-semibold text-gray-900 mb-1">No jobs scheduled for today</h4>
-                      <p className="text-xs text-gray-600">Take some time to plan ahead!</p>
+                      <h4 className="text-base font-semibold text-gray-900 mb-2">No jobs scheduled for today</h4>
+                      <p className="text-sm text-gray-600">Take some time to plan ahead!</p>
                     </div>
                   </div>
                 ) : (
                   todaysEvents.map((event) => (
                     <div
                       key={event.id}
-                      className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                      className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-sm transition-all duration-200 cursor-pointer"
                     >
                       <div className="flex items-start justify-between">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="text-lg font-bold text-gray-900">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-4 mb-3">
+                            <div className="text-xl font-bold text-gray-900">
                               {event.time}
                             </div>
-                            <div className="text-lg">
+                            <div className="text-2xl">
                               {getServiceIcon(event.title)}
                             </div>
-                            <span className="text-xs text-gray-500 font-medium">
+                            <span className="text-sm text-gray-500 font-medium">
                               {event.status}
                             </span>
                           </div>
                           
-                          <div className="space-y-1 text-xs text-gray-600">
-                            <div>{event.client}</div>
-                            <div className="truncate">{event.location}</div>
-                            <div>{event.duration}</div>
+                          <div className="space-y-2 text-sm text-gray-600">
+                            <div className="font-medium">{event.client}</div>
+                            <div>{event.location}</div>
+                            <div className="text-gray-500">{event.duration}</div>
                           </div>
                         </div>
                         
-                        <div className="text-right ml-2">
-                          <div className="text-sm font-semibold text-gray-900">
+                        <div className="text-right ml-4">
+                          <div className="text-lg font-bold text-gray-900">
                             ${event.amount}
                           </div>
                         </div>
@@ -162,7 +162,7 @@ const FloatingCalendar = () => {
               <div>
                 <div className="grid grid-cols-7 gap-1 text-xs">
                   {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
-                    <div key={day} className="p-1 text-center font-medium text-gray-500">{day}</div>
+                    <div key={day} className="p-2 text-center font-medium text-gray-500">{day}</div>
                   ))}
                   {Array.from({length: 35}, (_, i) => {
                     const date = i - 2;
@@ -174,7 +174,7 @@ const FloatingCalendar = () => {
                       <div 
                         key={i} 
                         className={cn(
-                          "p-1 text-center rounded text-xs cursor-pointer relative transition-colors",
+                          "p-2 text-center rounded text-base font-semibold cursor-pointer relative transition-colors min-h-[32px] flex items-center justify-center",
                           !isCurrentMonth && 'text-gray-300',
                           isToday ? 'bg-gray-900 text-white font-bold' : 'hover:bg-gray-100',
                           hasEvent && !isToday && 'bg-gray-100 text-gray-800'
