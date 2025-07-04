@@ -18,7 +18,8 @@ import {
   AlertCircle,
   Home,
   Wrench,
-  Zap
+  Zap,
+  Locate
 } from 'lucide-react';
 
 // Set Mapbox access token
@@ -48,8 +49,10 @@ const GPSNavigationMap: React.FC = () => {
   const [emergencyJobAlert, setEmergencyJobAlert] = useState<JobLocation | null>(null);
   const [selectedJob, setSelectedJob] = useState<JobLocation | null>(null);
   const [optimizedRoute, setOptimizedRoute] = useState(false);
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [routeSource, setRouteSource] = useState<string | null>(null);
 
-  // Quebec coordinates
+  // Quebec coordinates (fallback)
   const quebecCenter = { lat: 46.8139, lng: -71.2082 };
 
   // Sample job locations for today
@@ -101,26 +104,75 @@ const GPSNavigationMap: React.FC = () => {
     }
   ]);
 
+  // Get user's current location
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+        },
+        (error) => {
+          console.log('Geolocation error:', error);
+          // Fallback to Quebec coordinates
+          setUserLocation(quebecCenter);
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
+      );
+    } else {
+      setUserLocation(quebecCenter);
+    }
+  }, []);
+
   // Initialize Mapbox map
   useEffect(() => {
-    if (!mapContainer.current) return;
+    if (!mapContainer.current || !userLocation) return;
 
     try {
-      // Initialize map with proper error handling
+      // Initialize map with user location or fallback
       map.current = new mapboxgl.Map({
         container: mapContainer.current,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [quebecCenter.lng, quebecCenter.lat],
-        zoom: 10,
+        center: [userLocation.lng, userLocation.lat],
+        zoom: 12,
         attributionControl: false
       });
 
       // Add navigation controls
       map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-      // Wait for map to load before adding markers
+      // Wait for map to load before adding route data
       map.current.on('load', () => {
         console.log('Mapbox map loaded successfully');
+        
+        // Add route source for drawing routes
+        map.current!.addSource('route', {
+          type: 'geojson',
+          data: {
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: []
+            }
+          }
+        });
+
+        // Add route layer
+        map.current!.addLayer({
+          id: 'route',
+          type: 'line',
+          source: 'route',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round'
+          },
+          paint: {
+            'line-color': 'hsl(221.2, 83.2%, 53.3%)', // Primary blue from design system
+            'line-width': 4,
+            'line-opacity': 0.8
+          }
+        });
       });
 
       map.current.on('error', (e) => {
@@ -139,11 +191,53 @@ const GPSNavigationMap: React.FC = () => {
         map.current.remove();
       }
     };
-  }, []);
+  }, [userLocation]);
+
+  // Create custom marker with job type icon
+  const createJobMarker = (job: JobLocation) => {
+    const markerColor = job.status === 'emergency' ? '#ef4444' : 
+                       job.status === 'confirmed' ? '#10b981' : '#f59e0b';
+    
+    const jobIcon = job.type === 'plumbing' ? '🔧' :
+                   job.type === 'electrical' ? '⚡' :
+                   job.type === 'hvac' ? '🏠' : '🛠️';
+    
+    const el = document.createElement('div');
+    el.className = 'job-marker';
+    el.innerHTML = `
+      <div style="
+        background-color: ${markerColor};
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: 3px solid white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        transition: transform 0.2s ease;
+      ">${jobIcon}</div>
+    `;
+    
+    // Add hover effect
+    el.addEventListener('mouseenter', () => {
+      const markerDiv = el.querySelector('div') as HTMLElement;
+      if (markerDiv) markerDiv.style.transform = 'scale(1.1)';
+    });
+    
+    el.addEventListener('mouseleave', () => {
+      const markerDiv = el.querySelector('div') as HTMLElement;
+      if (markerDiv) markerDiv.style.transform = 'scale(1)';
+    });
+    
+    return el;
+  };
 
   // Add job markers to map
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !userLocation) return;
 
     // Wait for map to be loaded before adding markers
     const addMarkersWhenReady = () => {
@@ -151,91 +245,154 @@ const GPSNavigationMap: React.FC = () => {
       markers.current.forEach(marker => marker.remove());
       markers.current = [];
 
-      // Add current location marker (user location)
+      // Add user location marker with accuracy circle
       const userLocationEl = document.createElement('div');
-      userLocationEl.style.backgroundColor = '#3b82f6';
-      userLocationEl.style.width = '16px';
-      userLocationEl.style.height = '16px';
-      userLocationEl.style.borderRadius = '50%';
-      userLocationEl.style.border = '3px solid white';
-      userLocationEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+      userLocationEl.innerHTML = `
+        <div style="
+          position: relative;
+          width: 20px;
+          height: 20px;
+        ">
+          <div style="
+            background-color: rgba(59, 130, 246, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            animation: pulse 2s infinite;
+          "></div>
+          <div style="
+            background-color: #3b82f6;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 1;
+          "></div>
+        </div>
+      `;
       
       const userMarker = new mapboxgl.Marker(userLocationEl)
-        .setLngLat([quebecCenter.lng, quebecCenter.lat])
+        .setLngLat([userLocation.lng, userLocation.lat])
         .addTo(map.current!);
       
       markers.current.push(userMarker);
 
-      // Add job markers
+      // Add job markers with custom icons
       todayJobs.forEach(job => {
-      const markerColor = job.status === 'emergency' ? '#ef4444' : 
-                         job.status === 'confirmed' ? '#10b981' : '#f59e0b';
+        const el = createJobMarker(job);
 
-      // Create marker element
-      const el = document.createElement('div');
-      el.className = 'job-marker';
-      el.style.backgroundColor = markerColor;
-      el.style.width = '12px';
-      el.style.height = '12px';
-      el.style.borderRadius = '50%';
-      el.style.border = '2px solid white';
-      el.style.cursor = 'pointer';
-      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
-
-      // Create popup
-      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
-        <div class="p-3">
-          <h3 class="font-semibold text-gray-900 mb-2">${job.title}</h3>
-          <div class="space-y-1 text-sm text-gray-600">
-            <div>📍 ${job.address}</div>
-            <div>👤 ${job.customerName}</div>
-            <div>⏱️ ${job.estimatedDuration} minutes</div>
-            <div>💰 $${job.hourlyRate}/hour</div>
-            <div>🚗 ${job.distance} - ${job.travelTime}</div>
+        // Create popup
+        const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+          <div class="p-3">
+            <h3 class="font-semibold text-gray-900 mb-2">${job.title}</h3>
+            <div class="space-y-1 text-sm text-gray-600">
+              <div>📍 ${job.address}</div>
+              <div>👤 ${job.customerName}</div>
+              <div>⏱️ ${job.estimatedDuration} minutes</div>
+              <div>💰 $${job.hourlyRate}/hour</div>
+              <div>🚗 ${job.distance} - ${job.travelTime}</div>
+            </div>
           </div>
-        </div>
-      `);
+        `);
 
-      // Create marker
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([job.lng, job.lat])
-        .setPopup(popup)
-        .addTo(map.current!);
+        // Create marker
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat([job.lng, job.lat])
+          .setPopup(popup)
+          .addTo(map.current!);
 
-      // Add click event
-      el.addEventListener('click', () => {
-        setSelectedJob(job);
+        // Add click event
+        el.addEventListener('click', () => {
+          setSelectedJob(job);
+        });
+
+        markers.current.push(marker);
       });
 
-      markers.current.push(marker);
-    });
+      // Add emergency job marker if exists
+      if (emergencyJobAlert) {
+        const el = document.createElement('div');
+        el.className = 'emergency-marker';
+        el.innerHTML = `
+          <div style="
+            background-color: #ef4444;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+            animation: pulse 1.5s infinite;
+          ">🚨</div>
+        `;
 
-     // Add emergency job marker if exists
-     if (emergencyJobAlert) {
-       const el = document.createElement('div');
-       el.className = 'emergency-marker animate-pulse';
-       el.style.backgroundColor = '#ef4444';
-       el.style.width = '16px';
-       el.style.height = '16px';
-       el.style.borderRadius = '50%';
-       el.style.border = '3px solid white';
-       el.style.cursor = 'pointer';
-       el.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
+        const marker = new mapboxgl.Marker(el)
+          .setLngLat([emergencyJobAlert.lng, emergencyJobAlert.lat])
+          .addTo(map.current!);
 
-       const marker = new mapboxgl.Marker(el)
-         .setLngLat([emergencyJobAlert.lng, emergencyJobAlert.lat])
-         .addTo(map.current!);
+        markers.current.push(marker);
+      }
+    };
 
-       markers.current.push(marker);
-     }
-   };
+    if (map.current.loaded()) {
+      addMarkersWhenReady();
+    } else {
+      map.current.on('load', addMarkersWhenReady);
+    }
+  }, [todayJobs, emergencyJobAlert, userLocation]);
 
-   if (map.current.loaded()) {
-     addMarkersWhenReady();
-   } else {
-     map.current.on('load', addMarkersWhenReady);
-   }
-  }, [todayJobs, emergencyJobAlert]);
+  // Update route visualization when optimized
+  useEffect(() => {
+    if (!map.current || !map.current.loaded() || !userLocation) return;
+
+    if (optimizedRoute) {
+      // Create route coordinates (user location + job locations in optimized order)
+      const coordinates = [
+        [userLocation.lng, userLocation.lat],
+        ...todayJobs.map(job => [job.lng, job.lat])
+      ];
+
+      // Update route source
+      const routeData = {
+        type: 'Feature' as const,
+        properties: {},
+        geometry: {
+          type: 'LineString' as const,
+          coordinates
+        }
+      };
+
+      if (map.current.getSource('route')) {
+        (map.current.getSource('route') as mapboxgl.GeoJSONSource).setData(routeData);
+      }
+
+      // Fit map to show entire route
+      const bounds = new mapboxgl.LngLatBounds();
+      coordinates.forEach(coord => bounds.extend(coord as [number, number]));
+      map.current.fitBounds(bounds, { padding: 100, duration: 1000 });
+    } else {
+      // Clear route
+      if (map.current.getSource('route')) {
+        (map.current.getSource('route') as mapboxgl.GeoJSONSource).setData({
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: []
+          }
+        });
+      }
+    }
+  }, [optimizedRoute, todayJobs, userLocation]);
 
   // Simulate emergency job alert
   useEffect(() => {
@@ -272,6 +429,16 @@ const GPSNavigationMap: React.FC = () => {
 
   const handleOptimizeRoute = () => {
     setOptimizedRoute(!optimizedRoute);
+  };
+
+  const handleLocateUser = () => {
+    if (userLocation && map.current) {
+      map.current.flyTo({
+        center: [userLocation.lng, userLocation.lat],
+        zoom: 14,
+        duration: 1000
+      });
+    }
   };
 
   const handleAcceptEmergency = () => {
@@ -319,7 +486,7 @@ const GPSNavigationMap: React.FC = () => {
       )}
 
       {/* Route Optimization Panel */}
-      <Card className="absolute bottom-20 left-4 z-10 w-72">
+      <Card className="absolute bottom-24 left-4 z-10 w-72 md:bottom-20">
         <CardContent className="p-4">
           <div className="flex items-center justify-between mb-3">
             <span className="font-medium">Route Optimization</span>
@@ -349,12 +516,22 @@ const GPSNavigationMap: React.FC = () => {
         </CardContent>
       </Card>
 
+      {/* Locate User Button */}
+      <Button
+        size="sm"
+        variant="outline"
+        className="absolute top-20 right-4 z-10 bg-white/90 backdrop-blur-sm"
+        onClick={handleLocateUser}
+      >
+        <Locate className="h-4 w-4" />
+      </Button>
+
       {/* Bottom Action Panel */}
       <Card className="absolute bottom-4 left-4 right-4 z-10">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+        <CardContent className="p-3">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Navigation className="h-4 w-4 mr-2" />
                 Navigate to Next Job
               </Button>
@@ -366,11 +543,11 @@ const GPSNavigationMap: React.FC = () => {
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm">
                 <CheckCircle className="h-4 w-4 mr-2" />
-                Mark Complete
+                Complete
               </Button>
-              <Button variant="outline" size="sm" className="text-red-600 border-red-300">
+              <Button variant="outline" size="sm" className="text-destructive border-destructive/50">
                 <AlertTriangle className="h-4 w-4 mr-2" />
-                Emergency Backup
+                Emergency
               </Button>
             </div>
           </div>
@@ -449,7 +626,7 @@ const GPSNavigationMap: React.FC = () => {
       <div 
         ref={mapContainer} 
         className="w-full h-full rounded-lg bg-gray-100"
-        style={{ minHeight: '500px' }} 
+        style={{ minHeight: '100vh' }} 
       />
     </div>
   );
