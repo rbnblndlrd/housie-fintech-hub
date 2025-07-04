@@ -1161,14 +1161,22 @@ const ProviderDashboard = () => {
                     </Card>
                   </div>
 
-                  {/* Desktop Bookings Layout */}
+                    {/* Desktop Bookings Layout */}
                   <div className="hidden md:block space-y-6">
-                    {/* Desktop Calendar Widget */}
-                    <FixedCalendar />
+                    {/* Desktop Calendar Widget - Fixed Z-index */}
+                    <div className="relative z-20">
+                      <FixedCalendar />
+                    </div>
                     
                     {/* Desktop Analytics Dashboard */}
                     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                      <Card className="fintech-card">
+                      <Card 
+                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                        onClick={() => {
+                          // Show revenue breakdown
+                          console.log('Revenue breakdown clicked');
+                        }}
+                      >
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3">
                             <div className="h-12 w-12 bg-green-500 rounded-full flex items-center justify-center">
@@ -1182,7 +1190,13 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
                       
-                      <Card className="fintech-card">
+                      <Card 
+                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                        onClick={() => {
+                          setFilterPeriod('pending');
+                          console.log('Filter to pending requests');
+                        }}
+                      >
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3">
                             <div className="h-12 w-12 bg-orange-500 rounded-full flex items-center justify-center">
@@ -1196,7 +1210,13 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
                       
-                      <Card className="fintech-card">
+                      <Card 
+                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                        onClick={() => {
+                          setFilterPeriod('confirmed');
+                          console.log('Filter to confirmed jobs');
+                        }}
+                      >
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3">
                             <div className="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center">
@@ -1210,7 +1230,12 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
                       
-                      <Card className="fintech-card">
+                      <Card 
+                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
+                        onClick={() => {
+                          console.log('Show rating details');
+                        }}
+                      >
                         <CardContent className="p-6">
                           <div className="flex items-center gap-3">
                             <div className="h-12 w-12 bg-yellow-500 rounded-full flex items-center justify-center">
@@ -1226,7 +1251,7 @@ const ProviderDashboard = () => {
                     </div>
 
                     {/* Desktop Incoming Requests Table */}
-                    <Card className="fintech-card">
+                    <Card className="fintech-card relative z-10">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <Calendar className="h-6 w-6" />
@@ -1248,8 +1273,15 @@ const ProviderDashboard = () => {
                               </TableRow>
                             </TableHeader>
                             <TableBody>
-                              {recentBookings.map((booking) => (
-                                <TableRow key={booking.id} className="hover:bg-muted/30">
+                              {recentBookings
+                                .filter(booking => filterPeriod === 'pending' ? booking.status === 'pending' :
+                                                  filterPeriod === 'confirmed' ? booking.status === 'confirmed' :
+                                                  filterPeriod === 'today' ? true : true)
+                                .map((booking) => (
+                                <TableRow 
+                                  key={booking.id} 
+                                  className="hover:bg-muted/50 transition-colors duration-200 cursor-pointer"
+                                >
                                   <TableCell className="font-medium">{booking.client}</TableCell>
                                   <TableCell>{booking.service}</TableCell>
                                   <TableCell>{booking.date}</TableCell>
@@ -1266,14 +1298,26 @@ const ProviderDashboard = () => {
                                         <>
                                           <Button 
                                             size="sm" 
-                                            className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2"
+                                            className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2 transition-colors"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              console.log(`Accepting booking ${booking.id}`);
+                                              // Update booking status to confirmed
+                                            }}
                                           >
                                             Accept
                                           </Button>
                                           <Button 
                                             size="sm" 
                                             variant="outline" 
-                                            className="text-xs px-3 py-2"
+                                            className="text-xs px-3 py-2 hover:bg-red-50 hover:text-red-600 hover:border-red-300 transition-colors"
+                                            onClick={(e) => {
+                                              e.stopPropagation();
+                                              if (confirm(`Are you sure you want to decline this booking from ${booking.client}?`)) {
+                                                console.log(`Declining booking ${booking.id}`);
+                                                // Update booking status to declined
+                                              }
+                                            }}
                                           >
                                             Decline
                                           </Button>
@@ -1282,7 +1326,12 @@ const ProviderDashboard = () => {
                                         <Button 
                                           size="sm" 
                                           variant="outline" 
-                                          className="text-xs px-3 py-2"
+                                          className="text-xs px-3 py-2 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-300 transition-colors"
+                                          onClick={(e) => {
+                                            e.stopPropagation();
+                                            console.log(`Viewing details for booking ${booking.id}`);
+                                            // Open booking details modal
+                                          }}
                                         >
                                           View Details
                                         </Button>
