@@ -625,8 +625,7 @@ const GPSNavigationMap: React.FC = () => {
       {/* Mapbox Map Container */}
       <div 
         ref={mapContainer} 
-        className="w-full h-full rounded-lg bg-gray-100"
-        style={{ minHeight: '100vh' }} 
+        className="absolute inset-0 w-full h-full"
       />
     </div>
   );
