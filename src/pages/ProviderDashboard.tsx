@@ -246,23 +246,12 @@ const ProviderDashboard = () => {
               )}
             </div>
 
-            {/* Draggable Vertical Tabs Navigation */}
-            <div className="fixed top-0 left-0 z-40">
-              <DraggableWidget
-                id="tabs-navigation"
-                defaultPosition={getWidgetConfig('tabs-navigation').position}
-                defaultSize={getWidgetConfig('tabs-navigation').size}
-                isLocked={getWidgetConfig('tabs-navigation').isLocked}
-                showCard={false}
-                onPositionChange={updateWidgetPosition}
-                onSizeChange={updateWidgetSize}
-                onLockToggle={toggleWidgetLock}
-              >
-                <VerticalTabsWithNotification 
-                  activeTab={activeTab}
-                  onTabChange={setActiveTab}
-                />
-              </DraggableWidget>
+            {/* Fixed Vertical Tabs Navigation - Positioned Higher */}
+            <div className="fixed top-16 left-4 z-40 w-48">
+              <VerticalTabsWithNotification 
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+              />
             </div>
 
             {/* Notification bell moved back to Job Hub tab */}
@@ -360,16 +349,9 @@ const ProviderDashboard = () => {
 
                     {/* Hidden Notifications Widget - now accessible via notification bell */}
 
-                    {/* Smart Route Optimizer Widget */}
-                    <DraggableWidget
-                      id="route-optimizer"
-                      defaultPosition={getWidgetConfig('route-optimizer').position}
-                      defaultSize={getWidgetConfig('route-optimizer').size}
-                      isLocked={getWidgetConfig('route-optimizer').isLocked}
-                      onPositionChange={updateWidgetPosition}
-                      onSizeChange={updateWidgetSize}
-                      onLockToggle={toggleWidgetLock}
-                    >
+                    {/* Smart Route Optimizer Widget - Fixed Layout */}
+                    <div className="absolute" style={{ left: '620px', top: '320px', width: '500px', height: '400px' }}>
+                      <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
                       {executionMode && getSelectedJob() ? (
                         <JobExecutionMode
                           job={getSelectedJob()!}
@@ -442,7 +424,8 @@ const ProviderDashboard = () => {
                           </CardContent>
                         </>
                       )}
-                     </DraggableWidget>
+                      </Card>
+                    </div>
                   </div>
                 </TabsContent>
 

@@ -2,13 +2,10 @@ import React, { useState } from 'react';
 import { Calendar, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import DraggableWidget from '@/components/dashboard/DraggableWidget';
-import { useDashboardLayout } from '@/hooks/useDashboardLayout';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 const FloatingCalendar = () => {
-  const { updateWidgetPosition, updateWidgetSize, toggleWidgetLock, getWidgetConfig } = useDashboardLayout();
   const [showTodayView, setShowTodayView] = useState(false);
   
   // Sample today's events data
@@ -58,17 +55,8 @@ const FloatingCalendar = () => {
   };
 
   return (
-    <div className="fixed top-0 left-0 z-50">
-      <DraggableWidget
-        id="floating-calendar"
-        defaultPosition={getWidgetConfig('floating-calendar')?.position || { x: window.innerWidth - 430, y: 100 }}
-        defaultSize={getWidgetConfig('floating-calendar')?.size || { width: 400, height: showTodayView ? 500 : 320 }}
-        isLocked={getWidgetConfig('floating-calendar')?.isLocked || false}
-        onPositionChange={updateWidgetPosition}
-        onSizeChange={updateWidgetSize}
-        onLockToggle={toggleWidgetLock}
-      >
-        <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
+    <div className="fixed top-4 right-4 w-80 h-[500px] z-50">
+      <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
           <CardHeader className="pb-2 px-4 pt-4">
             <CardTitle className="flex items-center justify-between text-base">
               <div className="flex items-center gap-2">
@@ -202,7 +190,6 @@ const FloatingCalendar = () => {
             )}
           </CardContent>
         </Card>
-      </DraggableWidget>
     </div>
   );
 };
