@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { Calendar, ArrowLeft, Clock, MapPin, User } from 'lucide-react';
+import { Calendar, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import DraggableWidget from '@/components/dashboard/DraggableWidget';
 import { useDashboardLayout } from '@/hooks/useDashboardLayout';
@@ -17,65 +16,45 @@ const FloatingCalendar = () => {
     {
       id: 1,
       time: "10:00 AM",
-      title: "House Cleaning",
+      title: "Cleaning Services",
       client: "Sarah Johnson", 
       location: "123 Main St, Toronto",
-      status: "confirmed",
+      status: "Confirmed",
       amount: 120,
       duration: "2 hours"
     },
     {
       id: 2,
       time: "2:00 PM", 
-      title: "Plumbing Repair",
+      title: "Appliance & Tech Repair",
       client: "Mike Chen",
       location: "456 Oak Ave, Toronto", 
-      status: "pending",
+      status: "Pending",
       amount: 85,
       duration: "1.5 hours"
     },
     {
       id: 3,
       time: "4:30 PM",
-      title: "Electrical Work", 
+      title: "Personal Wellness", 
       client: "Emma Davis",
       location: "789 Pine Rd, Toronto",
-      status: "en_route", 
+      status: "En Route", 
       amount: 150,
       duration: "2.5 hours"
     }
   ];
 
-  const getPriorityColor = (status: string) => {
-    switch (status) {
-      case 'confirmed': return 'bg-green-100 text-green-800 border-green-200';
-      case 'pending': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'completed': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'en_route': return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'client_note': return 'bg-orange-100 text-orange-800 border-orange-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
-  };
-
-  const getJobTypeColor = (title: string) => {
-    const jobType = title.toLowerCase();
-    if (jobType.includes('cleaning')) return 'border-l-blue-500';
-    if (jobType.includes('plumbing')) return 'border-l-green-500';
-    if (jobType.includes('electrical')) return 'border-l-yellow-500';
-    if (jobType.includes('painting')) return 'border-l-purple-500';
-    if (jobType.includes('landscaping')) return 'border-l-emerald-500';
-    return 'border-l-gray-500';
-  };
-
-  const formatStatusText = (status: string) => {
-    switch (status) {
-      case 'confirmed': return 'Confirmed';
-      case 'pending': return 'Pending';
-      case 'completed': return 'Completed';
-      case 'en_route': return 'En Route';
-      case 'client_note': return 'Client Note Added';
-      default: return status;
-    }
+  const getServiceIcon = (title: string) => {
+    const serviceType = title.toLowerCase();
+    if (serviceType.includes('personal wellness')) return '💆';
+    if (serviceType.includes('cleaning')) return '🧹';
+    if (serviceType.includes('exterior') || serviceType.includes('grounds')) return '🌿';
+    if (serviceType.includes('pet')) return '🐕';
+    if (serviceType.includes('appliance') || serviceType.includes('tech') || serviceType.includes('repair')) return '🔧';
+    if (serviceType.includes('event')) return '🎪';
+    if (serviceType.includes('moving') || serviceType.includes('delivery')) return '🚚';
+    return '🔧'; // default
   };
 
   return (
@@ -89,27 +68,36 @@ const FloatingCalendar = () => {
         onSizeChange={updateWidgetSize}
         onLockToggle={toggleWidgetLock}
       >
-        <Card className="h-full w-full bg-gradient-to-br from-amber-50 to-orange-100 border-0 shadow-xl">
+        <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
           <CardHeader className="pb-2 px-4 pt-4">
             <CardTitle className="flex items-center justify-between text-base">
               <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-blue-600" />
+                <Calendar className="h-4 w-4 text-gray-600" />
                 CALENDAR
               </div>
               <div className="flex items-center gap-2">
-                {showTodayView && (
+                {showTodayView ? (
                   <Button 
                     variant="ghost" 
                     size="sm" 
                     onClick={() => setShowTodayView(false)}
-                    className="h-6 w-6 p-0 hover:bg-amber-200"
+                    className="h-6 w-6 p-0 hover:bg-gray-100"
                   >
                     <ArrowLeft className="h-3 w-3" />
                   </Button>
+                ) : (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setShowTodayView(true)}
+                    className="h-6 w-6 p-0 hover:bg-gray-100"
+                  >
+                    <ArrowRight className="h-3 w-3" />
+                  </Button>
                 )}
-                <Badge variant="outline" className="text-xs">
+                <span className="text-xs border border-gray-300 px-2 py-1 rounded">
                   {showTodayView ? format(new Date(), 'MMM d, yyyy') : 'Jan 2024'}
-                </Badge>
+                </span>
               </div>
             </CardTitle>
             {showTodayView && (
@@ -120,12 +108,12 @@ const FloatingCalendar = () => {
           </CardHeader>
           <CardContent className="pt-0 px-4 pb-4 overflow-hidden">
             {showTodayView ? (
-              // Today's Schedule View
-              <div className="h-full overflow-y-auto space-y-3">
+              // Today's Schedule View - REPLACES the calendar entirely
+              <div className="h-[280px] overflow-y-auto space-y-3">
                 {todaysEvents.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-32 text-center space-y-2">
-                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Calendar className="w-6 h-6 text-blue-600" />
+                  <div className="flex flex-col items-center justify-center h-full text-center space-y-2">
+                    <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+                      <Calendar className="w-6 h-6 text-gray-600" />
                     </div>
                     <div>
                       <h4 className="text-sm font-semibold text-gray-900 mb-1">No jobs scheduled for today</h4>
@@ -136,42 +124,31 @@ const FloatingCalendar = () => {
                   todaysEvents.map((event) => (
                     <div
                       key={event.id}
-                      className={cn(
-                        "bg-white border rounded-lg p-3 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer border-l-4",
-                        getJobTypeColor(event.title)
-                      )}
+                      className="bg-white border border-gray-200 rounded-lg p-3 hover:shadow-sm transition-all duration-200 cursor-pointer"
                     >
                       <div className="flex items-start justify-between">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-2">
+                          <div className="flex items-center gap-3 mb-2">
                             <div className="text-lg font-bold text-gray-900">
                               {event.time}
                             </div>
-                            <Badge className={cn("px-2 py-0.5 text-xs font-medium border", getPriorityColor(event.status))}>
-                              {formatStatusText(event.status)}
-                            </Badge>
+                            <div className="text-lg">
+                              {getServiceIcon(event.title)}
+                            </div>
+                            <span className="text-xs text-gray-500 font-medium">
+                              {event.status}
+                            </span>
                           </div>
                           
-                          <h5 className="text-sm font-semibold text-gray-900 mb-2 truncate">{event.title}</h5>
-                          
                           <div className="space-y-1 text-xs text-gray-600">
-                            <div className="flex items-center gap-1">
-                              <User className="h-3 w-3 flex-shrink-0" />
-                              <span className="truncate">{event.client}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <MapPin className="h-3 w-3 flex-shrink-0" />
-                              <span className="truncate">{event.location}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Clock className="h-3 w-3 flex-shrink-0" />
-                              <span>{event.duration}</span>
-                            </div>
+                            <div>{event.client}</div>
+                            <div className="truncate">{event.location}</div>
+                            <div>{event.duration}</div>
                           </div>
                         </div>
                         
                         <div className="text-right ml-2">
-                          <div className="text-sm font-semibold text-green-600">
+                          <div className="text-sm font-semibold text-gray-900">
                             ${event.amount}
                           </div>
                         </div>
@@ -182,8 +159,7 @@ const FloatingCalendar = () => {
               </div>
             ) : (
               // Monthly Calendar View
-              <div className="space-y-3">
-                {/* Mini Calendar Grid */}
+              <div>
                 <div className="grid grid-cols-7 gap-1 text-xs">
                   {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
                     <div key={day} className="p-1 text-center font-medium text-gray-500">{day}</div>
@@ -200,8 +176,8 @@ const FloatingCalendar = () => {
                         className={cn(
                           "p-1 text-center rounded text-xs cursor-pointer relative transition-colors",
                           !isCurrentMonth && 'text-gray-300',
-                          isToday ? 'bg-blue-500 text-white font-bold' : 'hover:bg-amber-200',
-                          hasEvent && !isToday && 'bg-orange-100 text-orange-800'
+                          isToday ? 'bg-gray-900 text-white font-bold' : 'hover:bg-gray-100',
+                          hasEvent && !isToday && 'bg-gray-100 text-gray-800'
                         )}
                         onClick={() => {
                           if (isToday) {
@@ -211,41 +187,11 @@ const FloatingCalendar = () => {
                       >
                         {isCurrentMonth ? date : date <= 0 ? 30 + date : date - 31}
                         {hasEvent && (
-                          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full"></div>
+                          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-gray-600 rounded-full"></div>
                         )}
                       </div>
                     );
                   })}
-                </div>
-                
-                {/* Today's Schedule Summary */}
-                <div className="space-y-1 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-gray-700">Today's Schedule:</span>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => setShowTodayView(true)}
-                      className="h-5 px-2 py-0 text-xs hover:bg-amber-200"
-                    >
-                      View All
-                    </Button>
-                  </div>
-                  <div className="space-y-1">
-                    {todaysEvents.slice(0, 2).map((event) => (
-                      <div key={event.id} className="flex justify-between items-center p-1 bg-white/50 rounded">
-                        <span className="truncate">{event.time} - {event.title}</span>
-                        <Badge className={cn("text-xs", getPriorityColor(event.status))}>
-                          {formatStatusText(event.status)}
-                        </Badge>
-                      </div>
-                    ))}
-                    {todaysEvents.length > 2 && (
-                      <div className="text-center text-gray-500">
-                        +{todaysEvents.length - 2} more jobs
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             )}
