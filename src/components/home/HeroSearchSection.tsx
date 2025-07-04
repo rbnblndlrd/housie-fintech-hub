@@ -153,15 +153,15 @@ const HeroSearchSection = () => {
         </div>
       </div>
 
-      {/* Title */}
-      <div className="flex-1 flex flex-col justify-center">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white text-shadow-lg mb-8 text-center">
-          Service On-Demand
+      {/* Content positioned in lower third */}
+      <div className="flex-1 flex flex-col justify-end pb-32">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-center drop-shadow-2xl" style={{ textShadow: '2px 2px 4px rgba(255,255,255,0.8)' }}>
+          Browse
         </h1>
 
         {/* Search Bar - Positioned in lower 1/3 of screen */}
-        <div className="mt-16">
-          <div className="fintech-card rounded-lg shadow-2xl p-2 flex flex-col sm:flex-row gap-2 mb-6 max-w-2xl mx-auto">
+        <div className="mt-8">
+          <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl shadow-2xl p-3 flex flex-col sm:flex-row gap-2 mb-6 max-w-2xl mx-auto">
             {/* Location Input */}
             <div className="flex-1 relative">
               <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
