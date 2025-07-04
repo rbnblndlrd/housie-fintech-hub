@@ -105,16 +105,31 @@ const GPSNavigationMap: React.FC = () => {
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    // Initialize map
-    map.current = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: [quebecCenter.lng, quebecCenter.lat],
-      zoom: 12,
-    });
+    try {
+      // Initialize map with proper error handling
+      map.current = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [quebecCenter.lng, quebecCenter.lat],
+        zoom: 10,
+        attributionControl: false
+      });
 
-    // Add navigation controls
-    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+      // Add navigation controls
+      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Wait for map to load before adding markers
+      map.current.on('load', () => {
+        console.log('Mapbox map loaded successfully');
+      });
+
+      map.current.on('error', (e) => {
+        console.error('Mapbox error:', e);
+      });
+
+    } catch (error) {
+      console.error('Failed to initialize Mapbox map:', error);
+    }
 
     // Cleanup function
     return () => {
@@ -130,12 +145,29 @@ const GPSNavigationMap: React.FC = () => {
   useEffect(() => {
     if (!map.current) return;
 
-    // Clear existing markers
-    markers.current.forEach(marker => marker.remove());
-    markers.current = [];
+    // Wait for map to be loaded before adding markers
+    const addMarkersWhenReady = () => {
+      // Clear existing markers
+      markers.current.forEach(marker => marker.remove());
+      markers.current = [];
 
-    // Add job markers
-    todayJobs.forEach(job => {
+      // Add current location marker (user location)
+      const userLocationEl = document.createElement('div');
+      userLocationEl.style.backgroundColor = '#3b82f6';
+      userLocationEl.style.width = '16px';
+      userLocationEl.style.height = '16px';
+      userLocationEl.style.borderRadius = '50%';
+      userLocationEl.style.border = '3px solid white';
+      userLocationEl.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+      
+      const userMarker = new mapboxgl.Marker(userLocationEl)
+        .setLngLat([quebecCenter.lng, quebecCenter.lat])
+        .addTo(map.current!);
+      
+      markers.current.push(userMarker);
+
+      // Add job markers
+      todayJobs.forEach(job => {
       const markerColor = job.status === 'emergency' ? '#ef4444' : 
                          job.status === 'confirmed' ? '#10b981' : '#f59e0b';
 
@@ -178,24 +210,31 @@ const GPSNavigationMap: React.FC = () => {
       markers.current.push(marker);
     });
 
-    // Add emergency job marker if exists
-    if (emergencyJobAlert) {
-      const el = document.createElement('div');
-      el.className = 'emergency-marker animate-pulse';
-      el.style.backgroundColor = '#ef4444';
-      el.style.width = '16px';
-      el.style.height = '16px';
-      el.style.borderRadius = '50%';
-      el.style.border = '3px solid white';
-      el.style.cursor = 'pointer';
-      el.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
+     // Add emergency job marker if exists
+     if (emergencyJobAlert) {
+       const el = document.createElement('div');
+       el.className = 'emergency-marker animate-pulse';
+       el.style.backgroundColor = '#ef4444';
+       el.style.width = '16px';
+       el.style.height = '16px';
+       el.style.borderRadius = '50%';
+       el.style.border = '3px solid white';
+       el.style.cursor = 'pointer';
+       el.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
 
-      const marker = new mapboxgl.Marker(el)
-        .setLngLat([emergencyJobAlert.lng, emergencyJobAlert.lat])
-        .addTo(map.current!);
+       const marker = new mapboxgl.Marker(el)
+         .setLngLat([emergencyJobAlert.lng, emergencyJobAlert.lat])
+         .addTo(map.current!);
 
-      markers.current.push(marker);
-    }
+       markers.current.push(marker);
+     }
+   };
+
+   if (map.current.loaded()) {
+     addMarkersWhenReady();
+   } else {
+     map.current.on('load', addMarkersWhenReady);
+   }
   }, [todayJobs, emergencyJobAlert]);
 
   // Simulate emergency job alert
@@ -407,7 +446,11 @@ const GPSNavigationMap: React.FC = () => {
       )}
 
       {/* Mapbox Map Container */}
-      <div ref={mapContainer} className="w-full h-full rounded-lg" />
+      <div 
+        ref={mapContainer} 
+        className="w-full h-full rounded-lg bg-gray-100"
+        style={{ minHeight: '500px' }} 
+      />
     </div>
   );
 };

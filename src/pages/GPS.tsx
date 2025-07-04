@@ -163,14 +163,14 @@ const GPS = () => {
 
               {/* Mapbox Map */}
               <div className="lg:col-span-2">
-                <Card className="fintech-chart-container h-[600px]">
-                  <CardHeader>
+                <Card className="fintech-chart-container h-[600px] overflow-hidden">
+                  <CardHeader className="pb-2">
                     <CardTitle className="flex items-center gap-2">
                       <Route className="h-5 w-5" />
                       Interactive Map
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-0 h-full">
+                  <CardContent className="p-0 h-[calc(100%-60px)]">
                     <GPSNavigationMap />
                   </CardContent>
                 </Card>
