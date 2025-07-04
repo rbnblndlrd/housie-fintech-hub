@@ -50,22 +50,26 @@ const GPS = () => {
   };
 
   return (
-    <>
-      <VideoBackground />
-      <div className="relative z-10 min-h-screen">
-        <Header />
-        {/* Back Button - Floating over map */}
-        <Button 
-          variant="ghost" 
-          onClick={() => navigate('/kanban')}
-          className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-sm text-gray-900 hover:bg-white/95 flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Tickets
-        </Button>
+    <div className="relative min-h-screen">
+      {/* Full-Screen Map */}
+      <div className="absolute inset-0 w-full h-full z-0">
+        <GPSNavigationMap />
+      </div>
 
-        {/* Job Details Panel - Floating over map */}
-        <Card className="absolute top-4 right-4 z-20 w-80 max-h-[calc(100vh-100px)] overflow-y-auto bg-white/95 backdrop-blur-sm">
+      <Header />
+      
+      {/* Back Button - Floating over map */}
+      <Button 
+        variant="ghost" 
+        onClick={() => navigate('/kanban')}
+        className="absolute top-4 left-4 z-20 bg-white/90 backdrop-blur-sm text-gray-900 hover:bg-white/95 flex items-center gap-2"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        Back to Tickets
+      </Button>
+
+      {/* Job Details Panel - Floating over map */}
+      <Card className="absolute top-4 right-4 z-20 w-80 max-h-[calc(100vh-100px)] overflow-y-auto bg-white/95 backdrop-blur-sm">
           <CardHeader>
             <CardTitle>Job Details</CardTitle>
           </CardHeader>
@@ -148,12 +152,7 @@ const GPS = () => {
           </CardContent>
         </Card>
 
-        {/* Full-Screen Map */}
-        <div className="absolute inset-0 w-full h-full">
-          <GPSNavigationMap />
-        </div>
-      </div>
-    </>
+    </div>
   );
 };
 
