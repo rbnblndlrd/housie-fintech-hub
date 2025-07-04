@@ -43,6 +43,7 @@ import {
 } from 'lucide-react';
 
 import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
+import JobDetailView from '@/components/dashboard/JobDetailView';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
@@ -80,6 +81,8 @@ const ProviderDashboard = () => {
   } = useRouteOptimizer();
 
   const [dragOver, setDragOver] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
+  const [showJobDetail, setShowJobDetail] = useState(false);
 
   // Sample data
   const recentBookings = [
@@ -348,6 +351,10 @@ const ProviderDashboard = () => {
                             <div 
                               key={index} 
                               className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                              onClick={() => {
+                                setSelectedJob(job);
+                                setShowJobDetail(true);
+                              }}
                             >
                               {/* Time Header */}
                               <div className="text-xl font-bold text-gray-800 mb-2">
@@ -671,6 +678,14 @@ const ProviderDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Full-Screen Job Detail View */}
+      {showJobDetail && selectedJob && (
+        <JobDetailView 
+          job={selectedJob}
+          onBack={() => setShowJobDetail(false)}
+        />
+      )}
     </>
   );
 };
