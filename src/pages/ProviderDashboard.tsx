@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import VideoBackground from '@/components/common/VideoBackground';
-import FloatingCalendar from '@/components/layout/FloatingCalendar';
+import SimpleCalendar from '@/components/layout/SimpleCalendar';
 import DraggableWidget from '@/components/dashboard/DraggableWidget';
 import { useDashboardLayout } from '@/hooks/useDashboardLayout';
 import { useRouteOptimizer } from '@/hooks/useRouteOptimizer';
@@ -165,7 +165,7 @@ const ProviderDashboard = () => {
   return (
     <>
       <VideoBackground />
-      <FloatingCalendar />
+      <SimpleCalendar />
       
       {/* Draggable Dashboard Title */}
       <div className="fixed top-0 left-0 z-40">
