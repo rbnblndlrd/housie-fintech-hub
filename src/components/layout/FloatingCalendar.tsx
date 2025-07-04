@@ -158,12 +158,17 @@ const FloatingCalendar = () => {
                 )}
               </div>
             ) : (
-              // Monthly Calendar View
-              <div>
-                <div className="grid grid-cols-7 gap-1 text-xs">
+              // Monthly Calendar View - Full Height Grid
+              <div className="flex flex-col h-full">
+                {/* Header Row */}
+                <div className="grid grid-cols-7 gap-1 text-xs mb-2">
                   {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
-                    <div key={day} className="p-2 text-center font-medium text-gray-500">{day}</div>
+                    <div key={day} className="py-2 text-center font-medium text-gray-500">{day}</div>
                   ))}
+                </div>
+                
+                {/* Calendar Grid - 5 rows filling remaining height */}
+                <div className="grid grid-cols-7 gap-1 flex-1 grid-rows-5">
                   {Array.from({length: 35}, (_, i) => {
                     const date = i - 2;
                     const isCurrentMonth = date > 0 && date <= 31;
@@ -174,7 +179,7 @@ const FloatingCalendar = () => {
                       <div 
                         key={i} 
                         className={cn(
-                          "p-2 text-center rounded text-base font-semibold cursor-pointer relative transition-colors min-h-[32px] flex items-center justify-center",
+                          "p-4 text-center rounded text-base font-semibold cursor-pointer relative transition-colors flex items-center justify-center",
                           !isCurrentMonth && 'text-gray-300',
                           isToday ? 'bg-gray-900 text-white font-bold' : 'hover:bg-gray-100',
                           hasEvent && !isToday && 'bg-gray-100 text-gray-800'
@@ -187,7 +192,7 @@ const FloatingCalendar = () => {
                       >
                         {isCurrentMonth ? date : date <= 0 ? 30 + date : date - 31}
                         {hasEvent && (
-                          <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-gray-600 rounded-full"></div>
+                          <div className="absolute bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-gray-600 rounded-full"></div>
                         )}
                       </div>
                     );
