@@ -292,8 +292,8 @@ const ProviderDashboard = () => {
                   <div className="md:hidden space-y-4">
                     <h2 className="text-2xl font-bold text-gray-800 px-4">Today's Route</h2>
                     
-                    {/* Simple Job Cards */}
-                    <div className="space-y-4 px-4">
+                    {/* Compact Job Cards */}
+                    <div className="space-y-2 px-4">
                       {[
                         { 
                           time: '9:00 AM', 
@@ -326,52 +326,57 @@ const ProviderDashboard = () => {
                           phone: '(514) 555-0321',
                           address: '321 Elm Dr, Outremont',
                           status: 'Emergency'
+                        },
+                        { 
+                          time: '6:00 PM', 
+                          service: 'Wilson HVAC - Maintenance',
+                          customer: 'Robert Wilson',
+                          phone: '(514) 555-0654',
+                          address: '654 Maple Ave, NDG',
+                          status: 'Confirmed'
+                        },
+                        { 
+                          time: '7:30 PM', 
+                          service: 'Garcia Electrical - Install',
+                          customer: 'Maria Garcia',
+                          phone: '(514) 555-0987',
+                          address: '987 Oak St, Verdun',
+                          status: 'Pending'
                         }
                       ].map((job, index) => (
                         <div 
                           key={index} 
-                          className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm"
+                          className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
                           onClick={() => {
                             setSelectedJob(job);
                             setShowJobDetail(true);
                           }}
                         >
-                          {/* Time */}
-                          <div className="text-xl font-bold text-gray-800 mb-2">
-                            🕘 {job.time}
-                          </div>
-                          
-                          {/* Service */}
-                          <div className="text-base font-semibold text-gray-700 mb-2">
-                            {job.service}
-                          </div>
-                          
-                          {/* Customer Info */}
-                          <div className="text-sm text-gray-600 mb-1">
-                            {job.customer} • {job.phone}
-                          </div>
-                          
-                          {/* Address */}
-                          <div className="text-sm text-gray-600 mb-3">
-                            📍 {job.address}
-                          </div>
-                          
-                          {/* Status and Tap Hint */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium">Status:</span>
-                              <Badge 
-                                className={
-                                  job.status === 'Emergency' ? 'bg-red-100 text-red-800' :
-                                  job.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                                  'bg-yellow-100 text-yellow-800'
-                                }
-                              >
-                                {job.status}
-                              </Badge>
+                          {/* Compact Top Line - Time and Service */}
+                          <div className="flex items-center justify-between mb-1">
+                            <div className="text-sm font-bold text-gray-800">
+                              🕘 {job.time} - {job.service}
                             </div>
+                          </div>
+                          
+                          {/* Compact Info Line - Customer and Address */}
+                          <div className="text-xs text-gray-600 mb-2">
+                            {job.customer} • {job.address}
+                          </div>
+                          
+                          {/* Bottom Line - Status and Action */}
+                          <div className="flex items-center justify-between">
+                            <Badge 
+                              className={`text-xs px-2 py-0.5 ${
+                                job.status === 'Emergency' ? 'bg-red-100 text-red-800' :
+                                job.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
+                                'bg-yellow-100 text-yellow-800'
+                              }`}
+                            >
+                              {job.status}
+                            </Badge>
                             <div className="text-xs text-gray-400 italic">
-                              [Tap for details]
+                              [Tap details]
                             </div>
                           </div>
                         </div>
