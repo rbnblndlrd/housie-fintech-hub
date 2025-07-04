@@ -1111,54 +1111,233 @@ const ProviderDashboard = () => {
                 <TabsContent value="bookings" className="space-y-5">
                   {/* Mobile Bookings Layout */}
                   <div className="md:hidden space-y-4">
-                    {/* Mobile Calendar Widget */}
-                    <FixedCalendar />
+                    {/* Mini Analytics Bar - 2x2 Grid */}
+                    <div className="grid grid-cols-2 gap-3 px-4">
+                      <Card className="fintech-card">
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-xs font-medium text-gray-600">Revenue</p>
+                            <p className="text-lg font-bold text-green-600">$2,450</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="fintech-card">
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-xs font-medium text-gray-600">Pending</p>
+                            <p className="text-lg font-bold text-orange-600">3</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="fintech-card">
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-xs font-medium text-gray-600">Confirmed</p>
+                            <p className="text-lg font-bold text-blue-600">8</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      <Card className="fintech-card">
+                        <CardContent className="p-4">
+                          <div className="text-center">
+                            <p className="text-xs font-medium text-gray-600">Rating</p>
+                            <p className="text-lg font-bold text-yellow-600">4.8⭐</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Compact Calendar Widget */}
+                    <div className="px-4">
+                      <Card className="fintech-card">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-base">Today's Schedule</CardTitle>
+                        </CardHeader>
+                        <CardContent className="pt-0">
+                          <div className="text-sm text-gray-600">
+                            <p className="mb-1">🕘 9:00 AM - Johnson Cleaning</p>
+                            <p className="mb-1">🕐 1:00 PM - Smith Repair</p>
+                            <p>🕕 5:00 PM - Davis Installation</p>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                     
-                    {/* Mobile Incoming Requests */}
-                    <Card className="fintech-card">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Calendar className="h-5 w-5" />
-                          Incoming Requests
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {recentBookings.filter(booking => booking.status === 'pending').map((booking) => (
-                            <div key={booking.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    {/* Mobile Incoming Requests with Swipeable Cards */}
+                    <div className="px-4">
+                      <h2 className="text-lg font-bold text-gray-800 mb-4">Incoming Requests</h2>
+                      <div className="space-y-3">
+                        {recentBookings.filter(booking => booking.status === 'pending').map((booking) => (
+                          <Card 
+                            key={booking.id} 
+                            className="relative overflow-hidden bg-gradient-to-r from-orange-50 to-orange-100 border-l-4 border-orange-500 hover:shadow-md transition-all duration-200"
+                          >
+                            <CardContent className="p-4">
                               <div className="flex justify-between items-start mb-3">
                                 <div className="flex-1">
-                                  <h3 className="font-semibold text-gray-800">{booking.service}</h3>
-                                  <p className="text-sm text-gray-600">{booking.client}</p>
-                                  <p className="text-sm text-gray-500">{booking.date} at {booking.time}</p>
-                                  <p className="text-sm text-gray-500">{booking.location}</p>
-                                </div>
-                                <div className="text-right">
-                                  <span className="text-lg font-bold text-green-600">${booking.amount}</span>
+                                  <h3 className="text-lg font-bold text-gray-800 mb-1">{booking.client}</h3>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-gray-700">{booking.service}</span>
+                                    <span className="text-xl font-bold text-green-600">${booking.amount}</span>
+                                  </div>
+                                  <p className="text-sm text-gray-600 mb-1">{booking.date} • {booking.time}</p>
+                                  <div className="flex items-center gap-2">
+                                    <Badge className="bg-orange-100 text-orange-800 text-xs">
+                                      PENDING
+                                    </Badge>
+                                  </div>
                                 </div>
                               </div>
-                              <div className="flex gap-2">
-                                <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700 text-white">
-                                  Accept
+                              <div className="flex gap-2 mt-4">
+                                <Button 
+                                  size="sm" 
+                                  className="flex-1 h-11 bg-green-600 hover:bg-green-700 text-white font-semibold"
+                                  onClick={() => {
+                                    // Handle accept
+                                    console.log('Accept booking:', booking.id);
+                                  }}
+                                >
+                                  ✓ Accept
                                 </Button>
-                                <Button size="sm" variant="outline" className="flex-1">
-                                  Decline
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1 h-11 border-red-300 text-red-600 hover:bg-red-50 font-semibold"
+                                  onClick={() => {
+                                    // Handle decline
+                                    console.log('Decline booking:', booking.id);
+                                  }}
+                                >
+                                  ✗ Decline
                                 </Button>
-                                <Button size="sm" variant="outline" className="px-3">
-                                  Details
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="px-4 h-11 border-gray-300 text-gray-600 hover:bg-gray-50"
+                                  onClick={() => {
+                                    // Handle view details
+                                    console.log('View details:', booking.id);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
                                 </Button>
                               </div>
-                            </div>
-                          ))}
-                          {recentBookings.filter(booking => booking.status === 'pending').length === 0 && (
-                            <div className="text-center py-8 opacity-70">
-                              <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                              <p>No pending booking requests</p>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
+                            </CardContent>
+                          </Card>
+                        ))}
+                        
+                        {/* Confirmed Bookings */}
+                        {recentBookings.filter(booking => booking.status === 'confirmed').map((booking) => (
+                          <Card 
+                            key={booking.id} 
+                            className="relative overflow-hidden bg-gradient-to-r from-green-50 to-green-100 border-l-4 border-green-500"
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start mb-3">
+                                <div className="flex-1">
+                                  <h3 className="text-lg font-bold text-gray-800 mb-1">{booking.client}</h3>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-gray-700">{booking.service}</span>
+                                    <span className="text-xl font-bold text-green-600">${booking.amount}</span>
+                                  </div>
+                                  <p className="text-sm text-gray-600 mb-1">{booking.date} • {booking.time}</p>
+                                  <div className="flex items-center gap-2">
+                                    <Badge className="bg-green-100 text-green-800 text-xs">
+                                      CONFIRMED
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-4">
+                                <Button 
+                                  size="sm" 
+                                  className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                                  onClick={() => {
+                                    // Handle start job
+                                    console.log('Start job:', booking.id);
+                                  }}
+                                >
+                                  🚀 Start Job
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="px-4 h-11 border-gray-300 text-gray-600 hover:bg-gray-50"
+                                  onClick={() => {
+                                    // Handle view details
+                                    console.log('View details:', booking.id);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+
+                        {/* Completed Bookings */}
+                        {recentBookings.filter(booking => booking.status === 'completed').map((booking) => (
+                          <Card 
+                            key={booking.id} 
+                            className="relative overflow-hidden bg-gradient-to-r from-gray-50 to-gray-100 border-l-4 border-gray-400 opacity-80"
+                          >
+                            <CardContent className="p-4">
+                              <div className="flex justify-between items-start mb-3">
+                                <div className="flex-1">
+                                  <h3 className="text-lg font-bold text-gray-700 mb-1">{booking.client}</h3>
+                                  <div className="flex items-center justify-between mb-2">
+                                    <span className="font-semibold text-gray-600">{booking.service}</span>
+                                    <span className="text-xl font-bold text-gray-600">${booking.amount}</span>
+                                  </div>
+                                  <p className="text-sm text-gray-500 mb-1">{booking.date} • {booking.time}</p>
+                                  <div className="flex items-center gap-2">
+                                    <Badge className="bg-gray-100 text-gray-700 text-xs">
+                                      COMPLETED
+                                    </Badge>
+                                  </div>
+                                </div>
+                              </div>
+                              <div className="flex gap-2 mt-4">
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="flex-1 h-11 border-gray-300 text-gray-600 hover:bg-gray-50"
+                                  onClick={() => {
+                                    // Handle view receipt
+                                    console.log('View receipt:', booking.id);
+                                  }}
+                                >
+                                  📄 View Receipt
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  variant="outline" 
+                                  className="px-4 h-11 border-gray-300 text-gray-600 hover:bg-gray-50"
+                                  onClick={() => {
+                                    // Handle view details
+                                    console.log('View details:', booking.id);
+                                  }}
+                                >
+                                  <Eye className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                        
+                        {recentBookings.length === 0 && (
+                          <Card className="fintech-card">
+                            <CardContent className="py-12">
+                              <div className="text-center opacity-70">
+                                <Calendar className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                                <h3 className="text-lg font-semibold mb-2">No bookings yet</h3>
+                                <p className="text-gray-600">New booking requests will appear here</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
+                      </div>
+                    </div>
                   </div>
 
                     {/* Desktop Bookings Layout */}
