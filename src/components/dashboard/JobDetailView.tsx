@@ -76,11 +76,11 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
   );
 
   if (isMobile) {
-    // Mobile: Expanded card view with bottom sheet for analysis
+    // Mobile: Fixed header, scrollable content, fixed bottom action bar
     return (
-      <div className="fixed inset-0 bg-gray-50 z-50 overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-gray-200 p-4 z-10">
+      <div className="fixed inset-0 bg-gray-50 z-50 flex flex-col">
+        {/* Fixed Header */}
+        <div className="bg-white border-b border-gray-200 p-4 flex-shrink-0">
           <div className="flex items-center gap-3">
             <Button 
               variant="ghost" 
@@ -97,9 +97,10 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
           </div>
         </div>
 
-        <div className="p-4 space-y-4">
+        {/* Scrollable Content Area */}
+        <div className="flex-1 overflow-y-auto px-4 py-4">
           {/* Customer Info Card */}
-          <Card className="border-none shadow-sm">
+          <Card className="border-none shadow-sm mb-4">
             <CardContent className="p-6 space-y-4">
               <div>
                 <div className="text-xl font-bold text-gray-800">{job.customer}</div>
@@ -122,48 +123,24 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
                   {job.status}
                 </Badge>
               </div>
+            </CardContent>
+          </Card>
 
-              <div className="grid grid-cols-2 gap-3 pt-2">
-                <Button className="h-14 text-base font-semibold bg-blue-600 hover:bg-blue-700">
-                  <Phone className="h-5 w-5 mr-2" />
-                  📞 Call
-                </Button>
-                <Button variant="outline" className="h-14 text-base font-semibold">
-                  <MapPin className="h-5 w-5 mr-2" />
-                  🗺️ Navigate
-                </Button>
+          {/* Job Details Section */}
+          <Card className="border-none shadow-sm mb-4">
+            <CardContent className="p-6">
+              <h3 className="font-semibold text-gray-800 mb-3">Job Details</h3>
+              <div className="text-sm text-gray-600 space-y-2">
+                <p>• HVAC system maintenance and inspection</p>
+                <p>• Check all vents and filters</p>
+                <p>• Test thermostat functionality</p>
+                <p>• Estimated duration: 2-3 hours</p>
               </div>
             </CardContent>
           </Card>
 
-          {/* Parse Button */}
-          <Card className="border-none shadow-sm">
-            <CardContent className="p-6">
-              <Button 
-                onClick={handleParseWithAI}
-                className="w-full h-16 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
-              >
-                <Bot className="h-6 w-6 mr-3" />
-                📋 Parse with AI
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Action Buttons */}
-          <div className="space-y-3 pb-6">
-            <Button className="w-full h-16 text-lg font-semibold bg-green-600 hover:bg-green-700">
-              <Check className="h-6 w-6 mr-3" />
-              ✓ Mark Complete
-            </Button>
-            
-            <Button variant="outline" className="w-full h-14 text-base font-semibold">
-              <Clock className="h-5 w-5 mr-2" />
-              ⏰ Reschedule
-            </Button>
-          </div>
-
           {/* Up Next Section */}
-          <Card className="border-none shadow-sm bg-gray-100">
+          <Card className="border-none shadow-sm bg-gray-100 mb-4">
             <CardContent className="p-6">
               <h3 className="font-semibold text-gray-800 mb-3">Up Next</h3>
               <div className="text-sm text-gray-600">
@@ -174,6 +151,35 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Spacer for bottom action bar */}
+          <div className="h-24"></div>
+        </div>
+
+        {/* Fixed Bottom Action Bar */}
+        <div className="bg-white border-t border-gray-200 p-4 pb-safe flex-shrink-0">
+          <div className="grid grid-cols-2 gap-3">
+            <Button className="h-12 text-sm font-semibold bg-blue-600 hover:bg-blue-700">
+              <Phone className="h-4 w-4 mr-2" />
+              Call
+            </Button>
+            <Button variant="outline" className="h-12 text-sm font-semibold">
+              <MapPin className="h-4 w-4 mr-2" />
+              Navigate
+            </Button>
+            <Button 
+              onClick={handleParseWithAI}
+              variant="outline" 
+              className="h-12 text-sm font-semibold"
+            >
+              <Bot className="h-4 w-4 mr-2" />
+              Parse
+            </Button>
+            <Button className="h-12 text-sm font-semibold bg-green-600 hover:bg-green-700">
+              <Check className="h-4 w-4 mr-2" />
+              Complete
+            </Button>
+          </div>
         </div>
 
         {/* Bottom Sheet for AI Analysis */}
