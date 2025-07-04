@@ -259,31 +259,42 @@ const ProviderDashboard = () => {
             <div className="mt-[280px] mx-[280px] mr-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
 
-                <TabsContent value="job-hub" className="space-y-6">
-                  {/* Job Hub Content */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Ticket Manager */}
-                    <Card className="fintech-card lg:col-span-2">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <ClipboardList className="h-5 w-5" />
+                <TabsContent value="job-hub" className="space-y-8">
+                  {/* Job Hub Content - Ticket Manager is now the dominant element */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Expanded Ticket Manager */}
+                    <Card className="fintech-card lg:col-span-2 h-[600px]">
+                      <CardHeader className="pb-4">
+                        <CardTitle className="flex items-center gap-2 text-xl">
+                          <ClipboardList className="h-6 w-6" />
                           All Active Tickets
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          <div className="p-3 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <CardContent className="h-full pb-6">
+                        <div className="space-y-4 h-full">
+                          <div className="p-4 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
                               <span>🤖 Quick Parse: Drop ticket here for AI summary</span>
                             </div>
                           </div>
-                          <div className="space-y-2 max-h-64 overflow-y-auto">
-                            {['Johnson Furnace #127', 'Smith Plumbing #132', 'Chen Electrical #145', 'Williams HVAC #156', 'Brown Kitchen #163'].map((ticket, index) => (
-                              <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                                <span className="text-sm">• {ticket}</span>
+                          <div className="space-y-3 h-[480px] overflow-y-auto pr-2">
+                            {[
+                              'Johnson Furnace #127', 
+                              'Smith Plumbing #132', 
+                              'Chen Electrical #145', 
+                              'Williams HVAC #156', 
+                              'Brown Kitchen #163',
+                              'Davis Bathroom #178',
+                              'Miller Roof Repair #189',
+                              'Wilson Flooring #195',
+                              'Garcia Painting #204',
+                              'Martinez Landscaping #217'
+                            ].map((ticket, index) => (
+                              <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                                <span className="text-sm font-medium">• {ticket}</span>
                                 <div className="flex gap-2">
-                                  <Button size="sm" variant="outline" className="text-xs">Parse</Button>
-                                  <Button size="sm" variant="outline" className="text-xs">Schedule</Button>
+                                  <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Parse</Button>
+                                  <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Schedule</Button>
                                 </div>
                               </div>
                             ))}
