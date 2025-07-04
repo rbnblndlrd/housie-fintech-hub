@@ -263,50 +263,8 @@ const ProviderDashboard = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
 
                 <TabsContent value="job-hub" className="space-y-8">
-                  {/* Job Hub Content - Ticket Manager is now the dominant element */}
-                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Expanded Ticket Manager */}
-                    <Card className="fintech-card lg:col-span-2 h-[600px]">
-                      <CardHeader className="pb-4">
-                        <CardTitle className="flex items-center gap-2 text-xl">
-                          <ClipboardList className="h-6 w-6" />
-                          All Active Tickets
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="h-full pb-6">
-                        <div className="space-y-4 h-full">
-                          <div className="p-4 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5">
-                            <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
-                              <span>🤖 Quick Parse: Drop ticket here for AI summary</span>
-                            </div>
-                          </div>
-                          <div className="space-y-3 h-[480px] overflow-y-auto pr-2">
-                            {[
-                              'Johnson Furnace #127', 
-                              'Smith Plumbing #132', 
-                              'Chen Electrical #145', 
-                              'Williams HVAC #156', 
-                              'Brown Kitchen #163',
-                              'Davis Bathroom #178',
-                              'Miller Roof Repair #189',
-                              'Wilson Flooring #195',
-                              'Garcia Painting #204',
-                              'Martinez Landscaping #217'
-                            ].map((ticket, index) => (
-                              <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
-                                <span className="text-sm font-medium">• {ticket}</span>
-                                <div className="flex gap-2">
-                                  <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Parse</Button>
-                                  <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Schedule</Button>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    {/* Mobile-First Today's Route */}
+                  {/* Mobile Job Hub - Today's Route Cards */}
+                  <div className="md:hidden">
                     <Card className="fintech-card">
                       <CardHeader>
                         <CardTitle className="text-lg font-bold">Today's Route</CardTitle>
@@ -391,7 +349,7 @@ const ProviderDashboard = () => {
                                   </Badge>
                                 </div>
                                 <div className="text-xs text-gray-400 italic">
-                                  ← Swipe for details
+                                  ← Tap for details
                                 </div>
                               </div>
                             </div>
@@ -410,6 +368,157 @@ const ProviderDashboard = () => {
                         </div>
                       </CardContent>
                     </Card>
+                  </div>
+
+                  {/* Desktop Job Hub - Ticket Manager */}
+                  <div className="hidden md:block">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                      {/* Expanded Ticket Manager */}
+                      <Card className="fintech-card lg:col-span-2 h-[600px]">
+                        <CardHeader className="pb-4">
+                          <CardTitle className="flex items-center gap-2 text-xl">
+                            <ClipboardList className="h-6 w-6" />
+                            All Active Tickets
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="h-full pb-6">
+                          <div className="space-y-4 h-full">
+                            <div className="p-4 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5">
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground font-medium">
+                                <span>🤖 Quick Parse: Drop ticket here for AI summary</span>
+                              </div>
+                            </div>
+                            <div className="space-y-3 h-[480px] overflow-y-auto pr-2">
+                              {[
+                                'Johnson Furnace #127', 
+                                'Smith Plumbing #132', 
+                                'Chen Electrical #145', 
+                                'Williams HVAC #156', 
+                                'Brown Kitchen #163',
+                                'Davis Bathroom #178',
+                                'Miller Roof Repair #189',
+                                'Wilson Flooring #195',
+                                'Garcia Painting #204',
+                                'Martinez Landscaping #217'
+                              ].map((ticket, index) => (
+                                <div key={index} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors">
+                                  <span className="text-sm font-medium">• {ticket}</span>
+                                  <div className="flex gap-2">
+                                    <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Parse</Button>
+                                    <Button size="sm" variant="outline" className="text-xs px-3 py-2 font-medium">Schedule</Button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+
+                      {/* Desktop Today's Route */}
+                      <Card className="fintech-card">
+                        <CardHeader>
+                          <CardTitle className="text-lg font-bold">Today's Route</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          {/* Desktop Job Cards */}
+                          <div className="space-y-3">
+                            {[
+                              { 
+                                time: '9:00 AM', 
+                                service: 'Johnson Furnace (return visit)',
+                                customer: 'Mrs. Johnson',
+                                phone: '(514) 555-0123',
+                                address: '123 Main St, Westmount',
+                                status: 'Confirmed'
+                              },
+                              { 
+                                time: '11:30 AM', 
+                                service: 'New customer - Kitchen repair',
+                                customer: 'Mike Stevens',
+                                phone: '(514) 555-0456',
+                                address: '456 Oak Ave, Montreal',
+                                status: 'Pending'
+                              },
+                              { 
+                                time: '2:00 PM', 
+                                service: 'Smith Plumbing (follow-up)',
+                                customer: 'John Smith',
+                                phone: '(514) 555-0789',
+                                address: '789 Pine St, Plateau',
+                                status: 'Confirmed'
+                              },
+                              { 
+                                time: '4:30 PM', 
+                                service: 'Emergency call - Heating issue',
+                                customer: 'Sarah Davis',
+                                phone: '(514) 555-0321',
+                                address: '321 Elm Dr, Outremont',
+                                status: 'Emergency'
+                              }
+                            ].map((job, index) => (
+                              <div 
+                                key={index} 
+                                className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                                onClick={() => {
+                                  setSelectedJob(job);
+                                  setShowJobDetail(true);
+                                }}
+                              >
+                                {/* Time Header */}
+                                <div className="text-xl font-bold text-gray-800 mb-2">
+                                  🕘 {job.time}
+                                </div>
+                                
+                                {/* Service Type */}
+                                <div className="text-base font-semibold text-gray-700 mb-2">
+                                  {job.service}
+                                </div>
+                                
+                                {/* Customer Info */}
+                                <div className="text-sm text-gray-600 mb-1">
+                                  {job.customer} • {job.phone}
+                                </div>
+                                
+                                {/* Address */}
+                                <div className="text-sm text-gray-600 mb-2">
+                                  📍 {job.address}
+                                </div>
+                                
+                                {/* Status */}
+                                <div className="flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-sm font-medium">Status:</span>
+                                    <Badge 
+                                      className={
+                                        job.status === 'Emergency' ? 'bg-red-100 text-red-800' :
+                                        job.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
+                                        'bg-yellow-100 text-yellow-800'
+                                      }
+                                    >
+                                      {job.status}
+                                    </Badge>
+                                  </div>
+                                  <div className="text-xs text-gray-400 italic">
+                                    ← Click for details
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          {/* Action Buttons */}
+                          <div className="space-y-3 pt-4">
+                            <Button className="w-full h-12 text-base font-semibold bg-orange-600 hover:bg-orange-700">
+                              <MapPin className="h-5 w-5 mr-2" />
+                              🗺️ View Full Route
+                            </Button>
+                            <Button variant="outline" className="w-full h-12 text-base font-semibold border-orange-300 hover:bg-orange-50">
+                              💬 Ask Claude
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
 
                   {/* Draggable Widget Container for remaining widgets */}
