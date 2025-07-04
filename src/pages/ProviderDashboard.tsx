@@ -10,6 +10,7 @@ import DraggableWidget from '@/components/dashboard/DraggableWidget';
 import { useDashboardLayout } from '@/hooks/useDashboardLayout';
 import { useRouteOptimizer } from '@/hooks/useRouteOptimizer';
 import JobExecutionMode from '@/components/route-optimizer/JobExecutionMode';
+import GPSNavigationMap from '@/components/map/GPSNavigationMap';
 import { Link } from 'react-router-dom';
 import { 
   Calendar, 
@@ -1536,16 +1537,7 @@ const ProviderDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="map">
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle>Map View</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center py-8">
-                        <p className="opacity-70">Interactive map will be displayed here</p>
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <GPSNavigationMap />
                 </TabsContent>
 
                 <TabsContent value="messages">
