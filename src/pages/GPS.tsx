@@ -7,6 +7,7 @@ import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import GPSNavigationMap from '@/components/map/GPSNavigationMap';
 import { 
   MapPin, 
   Navigation, 
@@ -160,7 +161,7 @@ const GPS = () => {
                 </Card>
               </div>
 
-              {/* Map Placeholder */}
+              {/* Mapbox Map */}
               <div className="lg:col-span-2">
                 <Card className="fintech-chart-container h-[600px]">
                   <CardHeader>
@@ -169,24 +170,8 @@ const GPS = () => {
                       Interactive Map
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="h-full flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="h-16 w-16 opacity-50 mx-auto mb-4" />
-                      <h3 className="text-xl font-semibold mb-2">GPS Map Integration</h3>
-                      <p className="opacity-70 mb-4">
-                        Interactive map with real-time traffic and route optimization
-                      </p>
-                      <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-                        <div className="fintech-inner-box p-3">
-                          <Calculator className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-                          <div className="text-sm">Route Optimization</div>
-                        </div>
-                        <div className="fintech-inner-box p-3">
-                          <Fuel className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                          <div className="text-sm">Cost Analysis</div>
-                        </div>
-                      </div>
-                    </div>
+                  <CardContent className="p-0 h-full">
+                    <GPSNavigationMap />
                   </CardContent>
                 </Card>
               </div>

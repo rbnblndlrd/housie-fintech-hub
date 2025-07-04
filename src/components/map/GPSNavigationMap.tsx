@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useEffect, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Switch } from "@/components/ui/switch";
 import { 
   Navigation, 
   Phone, 
@@ -15,12 +15,14 @@ import {
   Clock, 
   DollarSign,
   Users,
-  Activity,
   AlertCircle,
   Home,
   Wrench,
   Zap
 } from 'lucide-react';
+
+// Set Mapbox access token
+mapboxgl.accessToken = 'pk.eyJ1IjoicmJuYmxuZGxyZCIsImEiOiJjbWNmdGYzN2wwY2RuMmtwd3M3d2hzM3NxIn0.MZfduMhwltc3eC8V5xYgcQ';
 
 interface JobLocation {
   id: string;
@@ -38,75 +40,163 @@ interface JobLocation {
   travelTime?: string;
 }
 
-interface IntelligenceOverlay {
-  id: string;
-  name: string;
-  enabled: boolean;
-  color: string;
-  icon: React.ReactNode;
-}
-
 const GPSNavigationMap: React.FC = () => {
-  const [currentLocation, setCurrentLocation] = useState({ lat: 45.5017, lng: -73.5673 });
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const markers = useRef<mapboxgl.Marker[]>([]);
+  
   const [emergencyJobAlert, setEmergencyJobAlert] = useState<JobLocation | null>(null);
-  const [intelligenceOverlays, setIntelligenceOverlays] = useState<IntelligenceOverlay[]>([
-    { id: 'crime', name: 'Crime & Safety', enabled: false, color: '#ef4444', icon: <AlertTriangle className="h-4 w-4" /> },
-    { id: 'demographics', name: 'Demographics', enabled: false, color: '#3b82f6', icon: <Users className="h-4 w-4" /> },
-    { id: 'density', name: 'Service Density', enabled: false, color: '#8b5cf6', icon: <Activity className="h-4 w-4" /> },
-    { id: 'traffic', name: 'Traffic', enabled: false, color: '#f59e0b', icon: <Route className="h-4 w-4" /> }
-  ]);
+  const [selectedJob, setSelectedJob] = useState<JobLocation | null>(null);
+  const [optimizedRoute, setOptimizedRoute] = useState(false);
+
+  // Quebec coordinates
+  const quebecCenter = { lat: 46.8139, lng: -71.2082 };
 
   // Sample job locations for today
   const [todayJobs] = useState<JobLocation[]>([
     {
       id: '1',
       title: 'Kitchen Faucet Repair',
-      address: '123 Saint-Catherine St, Montreal',
-      lat: 45.5088,
-      lng: -73.5878,
+      address: '123 Saint-Catherine St, Quebec City',
+      lat: 46.8095,
+      lng: -71.2155,
       type: 'plumbing',
       status: 'confirmed',
       hourlyRate: 85,
       estimatedDuration: 90,
       customerName: 'Marie Dubois',
-      customerPhone: '+1 514-555-0123',
+      customerPhone: '+1 418-555-0123',
       distance: '2.3 km',
       travelTime: '8 mins'
     },
     {
       id: '2',
       title: 'Electrical Outlet Installation',
-      address: '456 Rue Sherbrooke, Montreal',
-      lat: 45.5176,
-      lng: -73.5787,
+      address: '456 Grande Allée, Quebec City',
+      lat: 46.8025,
+      lng: -71.2198,
       type: 'electrical',
       status: 'confirmed',
       hourlyRate: 95,
       estimatedDuration: 120,
       customerName: 'Jean Tremblay',
-      customerPhone: '+1 514-555-0456',
+      customerPhone: '+1 418-555-0456',
       distance: '3.1 km',
       travelTime: '12 mins'
     },
     {
       id: '3',
       title: 'HVAC System Check',
-      address: '789 Boulevard Saint-Laurent, Montreal',
-      lat: 45.5152,
-      lng: -73.5689,
+      address: '789 Rue Saint-Jean, Quebec City',
+      lat: 46.8123,
+      lng: -71.2089,
       type: 'hvac',
       status: 'pending',
       hourlyRate: 105,
       estimatedDuration: 180,
       customerName: 'Sophie Gagnon',
-      customerPhone: '+1 514-555-0789',
+      customerPhone: '+1 418-555-0789',
       distance: '1.8 km',
       travelTime: '6 mins'
     }
   ]);
 
-  const [selectedJob, setSelectedJob] = useState<JobLocation | null>(null);
-  const [optimizedRoute, setOptimizedRoute] = useState(false);
+  // Initialize Mapbox map
+  useEffect(() => {
+    if (!mapContainer.current) return;
+
+    // Initialize map
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [quebecCenter.lng, quebecCenter.lat],
+      zoom: 12,
+    });
+
+    // Add navigation controls
+    map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    // Cleanup function
+    return () => {
+      markers.current.forEach(marker => marker.remove());
+      markers.current = [];
+      if (map.current) {
+        map.current.remove();
+      }
+    };
+  }, []);
+
+  // Add job markers to map
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Clear existing markers
+    markers.current.forEach(marker => marker.remove());
+    markers.current = [];
+
+    // Add job markers
+    todayJobs.forEach(job => {
+      const markerColor = job.status === 'emergency' ? '#ef4444' : 
+                         job.status === 'confirmed' ? '#10b981' : '#f59e0b';
+
+      // Create marker element
+      const el = document.createElement('div');
+      el.className = 'job-marker';
+      el.style.backgroundColor = markerColor;
+      el.style.width = '12px';
+      el.style.height = '12px';
+      el.style.borderRadius = '50%';
+      el.style.border = '2px solid white';
+      el.style.cursor = 'pointer';
+      el.style.boxShadow = '0 2px 4px rgba(0,0,0,0.3)';
+
+      // Create popup
+      const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
+        <div class="p-3">
+          <h3 class="font-semibold text-gray-900 mb-2">${job.title}</h3>
+          <div class="space-y-1 text-sm text-gray-600">
+            <div>📍 ${job.address}</div>
+            <div>👤 ${job.customerName}</div>
+            <div>⏱️ ${job.estimatedDuration} minutes</div>
+            <div>💰 $${job.hourlyRate}/hour</div>
+            <div>🚗 ${job.distance} - ${job.travelTime}</div>
+          </div>
+        </div>
+      `);
+
+      // Create marker
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([job.lng, job.lat])
+        .setPopup(popup)
+        .addTo(map.current!);
+
+      // Add click event
+      el.addEventListener('click', () => {
+        setSelectedJob(job);
+      });
+
+      markers.current.push(marker);
+    });
+
+    // Add emergency job marker if exists
+    if (emergencyJobAlert) {
+      const el = document.createElement('div');
+      el.className = 'emergency-marker animate-pulse';
+      el.style.backgroundColor = '#ef4444';
+      el.style.width = '16px';
+      el.style.height = '16px';
+      el.style.borderRadius = '50%';
+      el.style.border = '3px solid white';
+      el.style.cursor = 'pointer';
+      el.style.boxShadow = '0 0 10px rgba(239, 68, 68, 0.5)';
+
+      const marker = new mapboxgl.Marker(el)
+        .setLngLat([emergencyJobAlert.lng, emergencyJobAlert.lat])
+        .addTo(map.current!);
+
+      markers.current.push(marker);
+    }
+  }, [todayJobs, emergencyJobAlert]);
 
   // Simulate emergency job alert
   useEffect(() => {
@@ -115,15 +205,15 @@ const GPSNavigationMap: React.FC = () => {
         setEmergencyJobAlert({
           id: 'emergency-1',
           title: 'Burst Pipe Emergency',
-          address: '321 Rue Peel, Montreal',
-          lat: 45.5030,
-          lng: -73.5731,
+          address: '321 Rue de la Paix, Quebec City',
+          lat: 46.8156,
+          lng: -71.2067,
           type: 'plumbing',
           status: 'emergency',
           hourlyRate: 175,
           estimatedDuration: 60,
           customerName: 'Emergency Service',
-          customerPhone: '+1 514-555-9999',
+          customerPhone: '+1 418-555-9999',
           distance: '0.8 km',
           travelTime: '4 mins'
         });
@@ -133,41 +223,7 @@ const GPSNavigationMap: React.FC = () => {
     return () => clearTimeout(timer);
   }, [emergencyJobAlert]);
 
-  const getJobIcon = (type: string) => {
-    switch (type) {
-      case 'plumbing': return <Wrench className="h-4 w-4" />;
-      case 'electrical': return <Zap className="h-4 w-4" />;
-      case 'hvac': return <Home className="h-4 w-4" />;
-      default: return <Wrench className="h-4 w-4" />;
-    }
-  };
-
-  const getJobIconColor = (status: string) => {
-    switch (status) {
-      case 'confirmed': return '#10b981';
-      case 'pending': return '#f59e0b';
-      case 'emergency': return '#ef4444';
-      default: return '#6b7280';
-    }
-  };
-
-  const handleJobMarkerClick = (job: JobLocation) => {
-    setSelectedJob(job);
-  };
-
-  const handleToggleOverlay = (overlayId: string) => {
-    setIntelligenceOverlays(prev => 
-      prev.map(overlay => 
-        overlay.id === overlayId 
-          ? { ...overlay, enabled: !overlay.enabled }
-          : overlay
-      )
-    );
-  };
-
   const handleNavigateToJob = (job: JobLocation) => {
-    // In a real app, this would integrate with navigation apps
-    console.log(`Navigating to ${job.address}`);
     window.open(`https://maps.google.com/maps?daddr=${job.lat},${job.lng}`, '_blank');
   };
 
@@ -177,7 +233,6 @@ const GPSNavigationMap: React.FC = () => {
 
   const handleOptimizeRoute = () => {
     setOptimizedRoute(!optimizedRoute);
-    // In a real app, this would reorder jobs for optimal routing
   };
 
   const handleAcceptEmergency = () => {
@@ -191,13 +246,8 @@ const GPSNavigationMap: React.FC = () => {
     setEmergencyJobAlert(null);
   };
 
-  const enabledOverlayData = intelligenceOverlays.reduce((acc, overlay) => {
-    acc[overlay.id] = overlay.enabled;
-    return acc;
-  }, {} as Record<string, boolean>);
-
   return (
-    <div className="relative h-[600px] w-full">
+    <div className="relative h-full w-full">
       {/* Emergency Job Alert */}
       {emergencyJobAlert && (
         <Alert className="absolute top-4 left-4 right-4 z-10 border-red-500 bg-red-50">
@@ -228,29 +278,6 @@ const GPSNavigationMap: React.FC = () => {
           </AlertDescription>
         </Alert>
       )}
-
-      {/* Intelligence Overlays Toggle */}
-      <Card className="absolute top-4 right-4 z-10 w-64">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm">Intelligence Overlays</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {intelligenceOverlays.map((overlay) => (
-            <div key={overlay.id} className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div style={{ color: overlay.color }}>
-                  {overlay.icon}
-                </div>
-                <span className="text-sm">{overlay.name}</span>
-              </div>
-              <Switch
-                checked={overlay.enabled}
-                onCheckedChange={() => handleToggleOverlay(overlay.id)}
-              />
-            </div>
-          ))}
-        </CardContent>
-      </Card>
 
       {/* Route Optimization Panel */}
       <Card className="absolute bottom-20 left-4 z-10 w-72">
@@ -314,12 +341,14 @@ const GPSNavigationMap: React.FC = () => {
       {/* Job Details Popup */}
       {selectedJob && (
         <Card className="absolute top-20 left-1/2 transform -translate-x-1/2 z-10 w-80">
-          <CardHeader className="pb-3">
+          <CardContent className="p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-base flex items-center gap-2">
-                {getJobIcon(selectedJob.type)}
+              <h3 className="font-semibold text-base flex items-center gap-2">
+                {selectedJob.type === 'plumbing' && <Wrench className="h-4 w-4" />}
+                {selectedJob.type === 'electrical' && <Zap className="h-4 w-4" />}
+                {selectedJob.type === 'hvac' && <Home className="h-4 w-4" />}
                 {selectedJob.title}
-              </CardTitle>
+              </h3>
               <Badge 
                 className={`${
                   selectedJob.status === 'emergency' ? 'bg-red-100 text-red-800' :
@@ -330,8 +359,7 @@ const GPSNavigationMap: React.FC = () => {
                 {selectedJob.status}
               </Badge>
             </div>
-          </CardHeader>
-          <CardContent className="space-y-3">
+            
             <div className="space-y-2 text-sm">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4" />
@@ -350,6 +378,7 @@ const GPSNavigationMap: React.FC = () => {
                 <span>${selectedJob.hourlyRate}/hour</span>
               </div>
             </div>
+            
             <div className="flex gap-2">
               <Button 
                 size="sm" 
@@ -377,71 +406,8 @@ const GPSNavigationMap: React.FC = () => {
         </Card>
       )}
 
-      {/* Google Maps with Job Markers */}
-      <UnifiedGoogleMap
-        center={currentLocation}
-        zoom={13}
-        className="w-full h-full rounded-lg"
-        providers={[]}
-        mode="interactive"
-        enabledLayers={enabledOverlayData}
-      >
-        {/* Custom job markers would be rendered here */}
-        <div className="absolute inset-0 pointer-events-none">
-          {/* Current location indicator */}
-          <div 
-            className="absolute w-4 h-4 bg-blue-500 rounded-full border-2 border-white shadow-lg"
-            style={{
-              left: '50%',
-              top: '50%',
-              transform: 'translate(-50%, -50%)',
-              zIndex: 10
-            }}
-          />
-          
-          {/* Job location markers */}
-          {todayJobs.map((job, index) => (
-            <div
-              key={job.id}
-              className="absolute cursor-pointer"
-              style={{
-                left: `${45 + index * 5}%`,
-                top: `${40 + index * 3}%`,
-                transform: 'translate(-50%, -50%)',
-                zIndex: 5
-              }}
-              onClick={() => handleJobMarkerClick(job)}
-            >
-              <div 
-                className="w-6 h-6 rounded-full border-2 border-white shadow-lg flex items-center justify-center"
-                style={{ backgroundColor: getJobIconColor(job.status) }}
-              >
-                <div className="text-white text-xs">
-                  {getJobIcon(job.type)}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          {/* Emergency job marker */}
-          {emergencyJobAlert && (
-            <div
-              className="absolute cursor-pointer animate-pulse"
-              style={{
-                left: '48%',
-                top: '52%',
-                transform: 'translate(-50%, -50%)',
-                zIndex: 15
-              }}
-              onClick={() => handleJobMarkerClick(emergencyJobAlert)}
-            >
-              <div className="w-8 h-8 rounded-full border-2 border-white shadow-lg flex items-center justify-center bg-red-500">
-                <AlertTriangle className="h-4 w-4 text-white" />
-              </div>
-            </div>
-          )}
-        </div>
-      </UnifiedGoogleMap>
+      {/* Mapbox Map Container */}
+      <div ref={mapContainer} className="w-full h-full rounded-lg" />
     </div>
   );
 };
