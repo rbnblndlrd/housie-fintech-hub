@@ -112,6 +112,21 @@ const ProviderDashboard = () => {
     localStorage.setItem('ticketTableColumns', JSON.stringify(visibleColumns));
   }, [visibleColumns]);
 
+  // Click outside handler for column chooser
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (!target.closest('.column-chooser-container')) {
+        setShowColumnChooser(false);
+      }
+    };
+
+    if (showColumnChooser) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showColumnChooser]);
+
   // Sample Ticket Data
   const tickets = [
     {
@@ -584,7 +599,7 @@ const ProviderDashboard = () => {
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="text-muted-foreground hover:text-foreground relative"
+                              className="text-muted-foreground hover:text-foreground relative column-chooser-container"
                               onClick={() => setShowColumnChooser(!showColumnChooser)}
                             >
                               <Settings className="h-4 w-4" />
@@ -592,7 +607,7 @@ const ProviderDashboard = () => {
                                 <div className="absolute top-full right-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-10">
                                   <div className="p-3 space-y-2">
                                     <div className="font-semibold text-sm mb-2">Show Columns</div>
-                                    <label className="flex items-center gap-2 text-sm">
+                                    <label className="flex items-center gap-2 text-sm cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={visibleColumns.title}
@@ -601,7 +616,7 @@ const ProviderDashboard = () => {
                                       />
                                       Title (required)
                                     </label>
-                                    <label className="flex items-center gap-2 text-sm">
+                                    <label className="flex items-center gap-2 text-sm cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={visibleColumns.dueDate}
@@ -610,7 +625,7 @@ const ProviderDashboard = () => {
                                       />
                                       Due Date
                                     </label>
-                                    <label className="flex items-center gap-2 text-sm">
+                                    <label className="flex items-center gap-2 text-sm cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={visibleColumns.customer}
@@ -619,7 +634,7 @@ const ProviderDashboard = () => {
                                       />
                                       Customer
                                     </label>
-                                    <label className="flex items-center gap-2 text-sm">
+                                    <label className="flex items-center gap-2 text-sm cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={visibleColumns.priority}
@@ -628,7 +643,7 @@ const ProviderDashboard = () => {
                                       />
                                       Priority
                                     </label>
-                                    <label className="flex items-center gap-2 text-sm">
+                                    <label className="flex items-center gap-2 text-sm cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={visibleColumns.status}
@@ -637,7 +652,7 @@ const ProviderDashboard = () => {
                                       />
                                       Status
                                     </label>
-                                    <label className="flex items-center gap-2 text-sm">
+                                    <label className="flex items-center gap-2 text-sm cursor-pointer">
                                       <input
                                         type="checkbox"
                                         checked={visibleColumns.actions}
@@ -1094,71 +1109,202 @@ const ProviderDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="bookings" className="space-y-5">
-                  {/* Fixed Calendar - moved from job-hub */}
-                  <FixedCalendar />
-                  
-                  {/* Pending Bookings Section */}
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Calendar className="h-5 w-5" />
-                        Incoming Pending Bookings
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="space-y-3">
-                        {pendingRequests.map((booking) => (
-                          <div key={booking.id} className="fintech-inner-box flex items-center justify-between p-4">
-                            <div className="flex-1">
-                              <h3 className="font-medium">{booking.service}</h3>
-                              <p className="text-sm opacity-70">{booking.client} • {booking.date} at {booking.time}</p>
-                              <p className="text-sm opacity-60">{booking.location}</p>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-lg font-bold">${booking.amount}</span>
+                  {/* Mobile Bookings Layout */}
+                  <div className="md:hidden space-y-4">
+                    {/* Mobile Calendar Widget */}
+                    <FixedCalendar />
+                    
+                    {/* Mobile Incoming Requests */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Calendar className="h-5 w-5" />
+                          Incoming Requests
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {recentBookings.filter(booking => booking.status === 'pending').map((booking) => (
+                            <div key={booking.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                              <div className="flex justify-between items-start mb-3">
+                                <div className="flex-1">
+                                  <h3 className="font-semibold text-gray-800">{booking.service}</h3>
+                                  <p className="text-sm text-gray-600">{booking.client}</p>
+                                  <p className="text-sm text-gray-500">{booking.date} at {booking.time}</p>
+                                  <p className="text-sm text-gray-500">{booking.location}</p>
+                                </div>
+                                <div className="text-right">
+                                  <span className="text-lg font-bold text-green-600">${booking.amount}</span>
+                                </div>
+                              </div>
                               <div className="flex gap-2">
-                                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                                <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700 text-white">
                                   Accept
                                 </Button>
-                                <Button size="sm" variant="outline">
+                                <Button size="sm" variant="outline" className="flex-1">
                                   Decline
+                                </Button>
+                                <Button size="sm" variant="outline" className="px-3">
+                                  Details
                                 </Button>
                               </div>
                             </div>
-                          </div>
-                        ))}
-                        {pendingRequests.length === 0 && (
-                          <div className="text-center py-8 opacity-70">
-                            <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                            <p>No pending booking requests</p>
-                          </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                          ))}
+                          {recentBookings.filter(booking => booking.status === 'pending').length === 0 && (
+                            <div className="text-center py-8 opacity-70">
+                              <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                              <p>No pending booking requests</p>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
 
-                  {/* Booking Analytics Widget */}
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle>Booking Analytics</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="grid grid-cols-3 gap-4">
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-orange-600">{completedJobs}</p>
-                          <p className="text-sm opacity-70">Completed Today</p>
+                  {/* Desktop Bookings Layout */}
+                  <div className="hidden md:block space-y-6">
+                    {/* Desktop Calendar Widget */}
+                    <FixedCalendar />
+                    
+                    {/* Desktop Analytics Dashboard */}
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                      <Card className="fintech-card">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3">
+                            <div className="h-12 w-12 bg-green-500 rounded-full flex items-center justify-center">
+                              <DollarSign className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">This Week's Revenue</p>
+                              <p className="text-2xl font-bold text-green-600">$2,450</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="fintech-card">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3">
+                            <div className="h-12 w-12 bg-orange-500 rounded-full flex items-center justify-center">
+                              <Clock className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">Pending Requests</p>
+                              <p className="text-2xl font-bold text-orange-600">{pendingRequests.length}</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="fintech-card">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3">
+                            <div className="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center">
+                              <CheckCircle className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">Confirmed Jobs</p>
+                              <p className="text-2xl font-bold text-blue-600">8</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="fintech-card">
+                        <CardContent className="p-6">
+                          <div className="flex items-center gap-3">
+                            <div className="h-12 w-12 bg-yellow-500 rounded-full flex items-center justify-center">
+                              <Star className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-600">Average Rating</p>
+                              <p className="text-2xl font-bold text-yellow-600">4.8 ⭐</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+
+                    {/* Desktop Incoming Requests Table */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Calendar className="h-6 w-6" />
+                          Incoming Booking Requests
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead className="font-semibold">Customer</TableHead>
+                                <TableHead className="font-semibold">Service</TableHead>
+                                <TableHead className="font-semibold">Date</TableHead>
+                                <TableHead className="font-semibold">Time</TableHead>
+                                <TableHead className="font-semibold">Price</TableHead>
+                                <TableHead className="font-semibold">Status</TableHead>
+                                <TableHead className="font-semibold">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {recentBookings.map((booking) => (
+                                <TableRow key={booking.id} className="hover:bg-muted/30">
+                                  <TableCell className="font-medium">{booking.client}</TableCell>
+                                  <TableCell>{booking.service}</TableCell>
+                                  <TableCell>{booking.date}</TableCell>
+                                  <TableCell>{booking.time}</TableCell>
+                                  <TableCell className="font-semibold text-green-600">${booking.amount}</TableCell>
+                                  <TableCell>
+                                    <Badge className={getStatusBadge(booking.status)}>
+                                      {booking.status}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <div className="flex gap-2">
+                                      {booking.status === 'pending' ? (
+                                        <>
+                                          <Button 
+                                            size="sm" 
+                                            className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2"
+                                          >
+                                            Accept
+                                          </Button>
+                                          <Button 
+                                            size="sm" 
+                                            variant="outline" 
+                                            className="text-xs px-3 py-2"
+                                          >
+                                            Decline
+                                          </Button>
+                                        </>
+                                      ) : (
+                                        <Button 
+                                          size="sm" 
+                                          variant="outline" 
+                                          className="text-xs px-3 py-2"
+                                        >
+                                          View Details
+                                        </Button>
+                                      )}
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                              {recentBookings.length === 0 && (
+                                <TableRow>
+                                  <TableCell colSpan={7} className="text-center py-8 opacity-70">
+                                    <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                                    <p>No booking requests</p>
+                                  </TableCell>
+                                </TableRow>
+                              )}
+                            </TableBody>
+                          </Table>
                         </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-blue-600">${todaysEarnings}</p>
-                          <p className="text-sm opacity-70">Today's Earnings</p>
-                        </div>
-                        <div className="text-center">
-                          <p className="text-2xl font-bold text-green-600">{pendingRequests.length}</p>
-                          <p className="text-sm opacity-70">Pending Requests</p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                      </CardContent>
+                    </Card>
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="map">
