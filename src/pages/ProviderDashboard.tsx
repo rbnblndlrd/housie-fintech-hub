@@ -288,7 +288,7 @@ const ProviderDashboard = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
 
                 <TabsContent value="job-hub" className="space-y-8">
-                  {/* Mobile Job Hub - Simple Full-Screen Layout */}
+                  {/* Mobile Job Hub - Today's Route Only */}
                   <div className="md:hidden space-y-4">
                     <h2 className="text-2xl font-bold text-gray-800 px-4">Today's Route</h2>
                     
@@ -395,7 +395,7 @@ const ProviderDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Desktop Job Hub - Ticket Manager */}
+                  {/* Desktop Job Hub - Full Layout with Widgets */}
                   <div className="hidden md:block">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Expanded Ticket Manager */}
@@ -510,8 +510,8 @@ const ProviderDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Draggable Widget Container for remaining widgets */}
-                  <div className="relative h-[600px] w-full">
+                  {/* Draggable Widget Container for remaining widgets - Desktop Only */}
+                  <div className="hidden md:block relative h-[600px] w-full">
                     {/* Performance Widget */}
                     <DraggableWidget
                       id="performance"
@@ -596,9 +596,7 @@ const ProviderDashboard = () => {
                       </CardContent>
                     </DraggableWidget>
 
-                    {/* Hidden Notifications Widget - now accessible via notification bell */}
-
-                    {/* Smart Route Optimizer Widget - Fixed Layout */}
+                    {/* Smart Route Optimizer Widget - Desktop Only */}
                     <div className="absolute" style={{ left: '620px', top: '320px', width: '500px', height: '400px' }}>
                       <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
                       {executionMode && getSelectedJob() ? (
