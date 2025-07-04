@@ -171,27 +171,6 @@ const ProviderDashboard = () => {
     <>
       <VideoBackground />
       
-      {/* Draggable Dashboard Title */}
-      <div className="fixed top-0 left-0 z-40">
-        <DraggableWidget
-          id="dashboard-title"
-          defaultPosition={getWidgetConfig('dashboard-title').position}
-          defaultSize={getWidgetConfig('dashboard-title').size}
-          isLocked={getWidgetConfig('dashboard-title').isLocked}
-          showCard={false}
-          onPositionChange={updateWidgetPosition}
-          onSizeChange={updateWidgetSize}
-          onLockToggle={toggleWidgetLock}
-        >
-          <div className="h-full w-full flex items-center justify-center pointer-events-none">
-            <div className="weathered-street-sign flex items-center justify-center">
-              <h1 className="graffiti-text">
-                Provider Dashboard
-              </h1>
-            </div>
-          </div>
-        </DraggableWidget>
-      </div>
 
       {/* Draggable Welcome Text */}
       <div className="fixed top-0 left-0 z-40">
@@ -262,7 +241,7 @@ const ProviderDashboard = () => {
             <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border">
               <div className="flex items-center justify-around py-2">
                 {[
-                  { id: 'job-hub', label: 'Job Hub', emoji: '📋' },
+                  { id: 'job-hub', label: 'Job Hub', emoji: '🏠' },
                   { id: 'bookings', label: 'Bookings', emoji: '📅' },
                   { id: 'map', label: 'Map', emoji: '🗺️' },
                   { id: 'crew', label: 'Crew', emoji: '👥' }
