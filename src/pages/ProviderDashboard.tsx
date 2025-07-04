@@ -38,16 +38,17 @@ import {
   ArrowRight,
   Edit,
   Save,
-  RotateCcw
+  RotateCcw,
+  ClipboardList
 } from 'lucide-react';
-import JobHubSidebar from '@/components/dashboard/JobHubSidebar';
+
 import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
   const [selectedJobs, setSelectedJobs] = useState<number[]>([]);
   const [filterPeriod, setFilterPeriod] = useState('today');
-  const [isJobHubOpen, setIsJobHubOpen] = useState(false);
+  
   
   const {
     widgets,
@@ -247,27 +248,86 @@ const ProviderDashboard = () => {
             </div>
 
             {/* Simple Navigation - Left Side */}
-            <div className="fixed top-80 left-10 z-40 w-48">
+            <div className="fixed top-80 left-12 z-40 w-52">
               <SimpleNavigation 
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
-                onJobHubClick={() => setIsJobHubOpen(true)}
               />
             </div>
 
-            {/* Job Hub Sidebar */}
-            <JobHubSidebar 
-              isOpen={isJobHubOpen}
-              onClose={() => setIsJobHubOpen(false)}
-            />
-
             {/* Main Content Tabs - Positioned with spacing */}
-            <div className="mt-[280px] mx-[188px]">
+            <div className="mt-[280px] mx-[280px] mr-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
 
-                <TabsContent value="job-hub" className="space-y-5">
-                  {/* Draggable Widget Container */}
-                  <div className="relative h-[1000px] w-full">
+                <TabsContent value="job-hub" className="space-y-6">
+                  {/* Job Hub Content */}
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Ticket Manager */}
+                    <Card className="fintech-card lg:col-span-2">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <ClipboardList className="h-5 w-5" />
+                          All Active Tickets
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          <div className="p-3 border-2 border-dashed border-primary/20 rounded-lg bg-primary/5">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                              <span>🤖 Quick Parse: Drop ticket here for AI summary</span>
+                            </div>
+                          </div>
+                          <div className="space-y-2 max-h-64 overflow-y-auto">
+                            {['Johnson Furnace #127', 'Smith Plumbing #132', 'Chen Electrical #145', 'Williams HVAC #156', 'Brown Kitchen #163'].map((ticket, index) => (
+                              <div key={index} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                                <span className="text-sm">• {ticket}</span>
+                                <div className="flex gap-2">
+                                  <Button size="sm" variant="outline" className="text-xs">Parse</Button>
+                                  <Button size="sm" variant="outline" className="text-xs">Schedule</Button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* Today's Route */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="text-base">Today's Route</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {[
+                            { time: '9:00 AM', task: 'Johnson Furnace (return visit)' },
+                            { time: '11:30 AM', task: 'New customer - Kitchen repair' },
+                            { time: '2:00 PM', task: 'Smith Plumbing (follow-up)' }
+                          ].map((job, index) => (
+                            <div key={index} className="flex items-center gap-3 p-2 bg-muted/30 rounded">
+                              <Clock className="h-4 w-4 text-muted-foreground" />
+                              <div className="flex-1">
+                                <div className="text-sm font-medium">{job.time}</div>
+                                <div className="text-xs text-muted-foreground">{job.task}</div>
+                              </div>
+                            </div>
+                          ))}
+                          <div className="space-y-2 pt-2">
+                            <Button className="w-full" size="sm">
+                              <MapPin className="h-4 w-4 mr-2" />
+                              View Route on Map
+                            </Button>
+                            <Button variant="outline" className="w-full" size="sm">
+                              💬 Ask Claude
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* Draggable Widget Container for remaining widgets */}
+                  <div className="relative h-[600px] w-full">
                     {/* Performance Widget */}
                     <DraggableWidget
                       id="performance"
@@ -510,19 +570,6 @@ const ProviderDashboard = () => {
                     <CardContent>
                       <div className="text-center py-8">
                         <p className="opacity-70">Interactive map will be displayed here</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </TabsContent>
-
-                <TabsContent value="crew">
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle>Crew Center</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-center py-8">
-                        <p className="opacity-70">Crew coordination features will be displayed here</p>
                       </div>
                     </CardContent>
                   </Card>

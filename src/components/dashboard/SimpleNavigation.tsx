@@ -11,21 +11,18 @@ import {
 interface SimpleNavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
-  onJobHubClick: () => void;
 }
 
 const SimpleNavigation: React.FC<SimpleNavigationProps> = ({ 
   activeTab, 
-  onTabChange, 
-  onJobHubClick 
+  onTabChange
 }) => {
   const navItems = [
     { 
       id: 'job-hub', 
       label: 'Job Hub', 
       icon: ClipboardList, 
-      emoji: '📋',
-      isSpecial: true // This triggers the sidebar instead of tab change
+      emoji: '📋'
     },
     { 
       id: 'bookings', 
@@ -48,15 +45,11 @@ const SimpleNavigation: React.FC<SimpleNavigationProps> = ({
   ];
 
   const handleItemClick = (item: any) => {
-    if (item.isSpecial) {
-      onJobHubClick();
-    } else {
-      onTabChange(item.id);
-    }
+    onTabChange(item.id);
   };
 
   return (
-    <div className="flex flex-col space-y-3">
+    <div className="flex flex-col space-y-4">
       {navItems.map((item) => {
         const IconComponent = item.icon;
         const isActive = activeTab === item.id;
@@ -67,18 +60,17 @@ const SimpleNavigation: React.FC<SimpleNavigationProps> = ({
             variant={isActive ? "default" : "outline"}
             onClick={() => handleItemClick(item)}
             className={`
-              w-full justify-start h-12 px-4 text-left transition-all duration-200
+              w-full justify-start h-14 px-5 text-left transition-all duration-300 ease-in-out
               ${isActive 
-                ? 'bg-orange-600 hover:bg-orange-700 text-white shadow-lg' 
-                : 'bg-white hover:bg-orange-50 border-orange-200 text-gray-700 hover:text-orange-700'
+                ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg border-primary' 
+                : 'bg-background hover:bg-muted border-border text-foreground hover:text-primary hover:border-primary/50'
               }
+              rounded-lg font-medium
             `}
           >
             <div className="flex items-center gap-3">
-              <span className="text-lg">{item.emoji}</span>
-              <div className="flex flex-col items-start">
-                <span className="font-medium text-sm">{item.label}</span>
-              </div>
+              <span className="text-xl">{item.emoji}</span>
+              <span className="font-semibold text-sm tracking-wide">{item.label}</span>
             </div>
           </Button>
         );
