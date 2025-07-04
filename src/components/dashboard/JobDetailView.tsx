@@ -112,7 +112,7 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
                 className="w-full h-14 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
               >
                 <Bot className="h-6 w-6 mr-3" />
-                🤖 Parse with AI
+                📋 Parse
               </Button>
             ) : (
               <div className="space-y-4">
@@ -157,16 +157,10 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
             ✓ Mark Complete
           </Button>
           
-          <div className="grid grid-cols-2 gap-3">
-            <Button variant="outline" className="h-12 text-base font-semibold">
-              <Clock className="h-5 w-5 mr-2" />
-              ⏰ Reschedule
-            </Button>
-            <Button variant="outline" className="h-12 text-base font-semibold">
-              <MessageSquare className="h-5 w-5 mr-2" />
-              💬 Ask Claude
-            </Button>
-          </div>
+          <Button variant="outline" className="w-full h-12 text-base font-semibold">
+            <Clock className="h-5 w-5 mr-2" />
+            ⏰ Reschedule
+          </Button>
         </div>
       </div>
     </>
