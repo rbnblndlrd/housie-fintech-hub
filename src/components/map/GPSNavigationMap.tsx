@@ -485,67 +485,37 @@ const GPSNavigationMap: React.FC = () => {
         </Alert>
       )}
 
-      {/* Route Optimization Panel */}
-      <Card className="absolute bottom-24 left-4 z-10 w-72 md:bottom-20">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <span className="font-medium">Route Optimization</span>
-            <Button
-              size="sm"
-              variant={optimizedRoute ? "default" : "outline"}
-              onClick={handleOptimizeRoute}
-            >
-              <Route className="h-4 w-4 mr-2" />
-              {optimizedRoute ? 'Optimized' : 'Optimize'}
-            </Button>
-          </div>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span>Total Distance:</span>
-              <span className="font-medium">{optimizedRoute ? '6.8 km' : '7.2 km'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Total Time:</span>
-              <span className="font-medium">{optimizedRoute ? '22 mins' : '26 mins'}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Fuel Cost:</span>
-              <span className="font-medium">{optimizedRoute ? '$2.85' : '$3.20'}</span>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Locate User Button */}
       <Button
         size="sm"
         variant="outline"
-        className="absolute top-20 right-4 z-10 bg-white/90 backdrop-blur-sm"
+        className="absolute top-20 right-96 z-10 bg-white/90 backdrop-blur-sm"
         onClick={handleLocateUser}
       >
         <Locate className="h-4 w-4" />
       </Button>
 
       {/* Bottom Action Panel */}
-      <Card className="absolute bottom-4 left-4 right-4 z-10">
+      <Card className="absolute bottom-4 right-4 z-10 w-80 bg-white/95 backdrop-blur-sm">
         <CardContent className="p-3">
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+          <div className="flex flex-col gap-3">
+            <div className="flex gap-2">
+              <Button className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground">
                 <Navigation className="h-4 w-4 mr-2" />
-                Navigate to Next Job
+                Navigate
               </Button>
-              <Button variant="outline">
+              <Button variant="outline" size="sm">
                 <Phone className="h-4 w-4 mr-2" />
-                Call Customer
+                Call
               </Button>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" className="flex-1">
                 <CheckCircle className="h-4 w-4 mr-2" />
                 Complete
               </Button>
-              <Button variant="outline" size="sm" className="text-destructive border-destructive/50">
+              <Button variant="outline" size="sm" className="flex-1 text-destructive border-destructive/50">
                 <AlertTriangle className="h-4 w-4 mr-2" />
                 Emergency
               </Button>
