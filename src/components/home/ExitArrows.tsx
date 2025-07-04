@@ -10,13 +10,18 @@ const ExitArrows = () => {
 
   const handleClick = () => {
     if (user) {
-      // Redirect to dashboard based on user's role
+      // Redirect to dashboard based on user's role  
       navigate('/dashboard');
     } else {
-      // Redirect to pricing for anonymous visitors
-      navigate('/pricing');
+      // Don't show arrows for logged out users
+      return null;
     }
   };
+
+  // Only show arrows when user is authenticated
+  if (!user) {
+    return null;
+  }
 
   return (
     <>
