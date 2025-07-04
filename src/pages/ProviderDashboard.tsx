@@ -172,8 +172,8 @@ const ProviderDashboard = () => {
       <VideoBackground />
       
 
-      {/* Draggable Welcome Text */}
-      <div className="fixed top-0 left-0 z-40">
+      {/* Draggable Welcome Text - Desktop Only */}
+      <div className="hidden md:block fixed top-0 left-0 z-40">
         <DraggableWidget
           id="welcome-text"
           defaultPosition={getWidgetConfig('welcome-text').position}
@@ -244,7 +244,7 @@ const ProviderDashboard = () => {
                   { id: 'job-hub', label: 'Job Hub', emoji: '🏠' },
                   { id: 'bookings', label: 'Bookings', emoji: '📅' },
                   { id: 'map', label: 'Map', emoji: '🗺️' },
-                  { id: 'crew', label: 'Crew', emoji: '👥' }
+                  { id: 'messages', label: 'Assistant', emoji: '💬' }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -269,7 +269,10 @@ const ProviderDashboard = () => {
                 <TabsContent value="job-hub" className="space-y-8">
                   {/* Mobile Job Hub - Today's Route Only */}
                   <div className="md:hidden space-y-4">
-                    <h2 className="text-2xl font-bold text-gray-800 px-4">Today's Route</h2>
+                    <div className="px-4 py-2">
+                      <h1 className="text-xl font-bold text-white/90 drop-shadow-md mb-2">Welcome back!</h1>
+                      <h2 className="text-3xl font-bold text-gray-800">Today's Route</h2>
+                    </div>
                     
                     {/* Compact Job Cards */}
                     <div className="space-y-2 px-4">
@@ -367,9 +370,6 @@ const ProviderDashboard = () => {
                       <Button className="w-full h-12 text-base font-semibold bg-orange-600 hover:bg-orange-700">
                         <MapPin className="h-5 w-5 mr-2" />
                         🗺️ View Full Route
-                      </Button>
-                      <Button variant="outline" className="w-full h-12 text-base font-semibold border-orange-300 hover:bg-orange-50">
-                        💬 Ask Claude
                       </Button>
                     </div>
                   </div>
@@ -736,14 +736,18 @@ const ProviderDashboard = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="crew">
+                <TabsContent value="messages">
                   <Card className="fintech-card">
                     <CardHeader>
-                      <CardTitle>Crew Center</CardTitle>
+                      <CardTitle>AI Assistant & Messages</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="text-center py-8">
-                        <p className="opacity-70">Crew coordination features will be displayed here</p>
+                      <div className="h-[600px]">
+                        <iframe 
+                          src="/chat-panel" 
+                          className="w-full h-full border-0 rounded-lg"
+                          title="Chat Assistant"
+                        />
                       </div>
                     </CardContent>
                   </Card>

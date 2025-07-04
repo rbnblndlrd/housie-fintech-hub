@@ -37,10 +37,10 @@ const SimpleNavigation: React.FC<SimpleNavigationProps> = ({
       emoji: '🗺️' 
     },
     { 
-      id: 'crew', 
-      label: 'Crew', 
-      icon: Users, 
-      emoji: '👥' 
+      id: 'messages', 
+      label: 'Assistant', 
+      icon: User, 
+      emoji: '💬' 
     }
   ];
 
