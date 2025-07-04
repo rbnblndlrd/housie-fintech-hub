@@ -166,7 +166,6 @@ const ProviderDashboard = () => {
   return (
     <>
       <VideoBackground />
-      <FixedCalendar />
       
       {/* Draggable Dashboard Title */}
       <div className="fixed top-0 left-0 z-40">
@@ -435,6 +434,74 @@ const ProviderDashboard = () => {
                   </div>
                 </TabsContent>
 
+                <TabsContent value="bookings" className="space-y-5">
+                  {/* Fixed Calendar - moved from job-hub */}
+                  <FixedCalendar />
+                  
+                  {/* Pending Bookings Section */}
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Calendar className="h-5 w-5" />
+                        Incoming Pending Bookings
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3">
+                        {pendingRequests.map((booking) => (
+                          <div key={booking.id} className="fintech-inner-box flex items-center justify-between p-4">
+                            <div className="flex-1">
+                              <h3 className="font-medium">{booking.service}</h3>
+                              <p className="text-sm opacity-70">{booking.client} • {booking.date} at {booking.time}</p>
+                              <p className="text-sm opacity-60">{booking.location}</p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <span className="text-lg font-bold">${booking.amount}</span>
+                              <div className="flex gap-2">
+                                <Button size="sm" className="bg-green-600 hover:bg-green-700 text-white">
+                                  Accept
+                                </Button>
+                                <Button size="sm" variant="outline">
+                                  Decline
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                        {pendingRequests.length === 0 && (
+                          <div className="text-center py-8 opacity-70">
+                            <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                            <p>No pending booking requests</p>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Booking Analytics Widget */}
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle>Booking Analytics</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-3 gap-4">
+                        <div className="text-center">
+                          <p className="text-2xl font-bold text-orange-600">{completedJobs}</p>
+                          <p className="text-sm opacity-70">Completed Today</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-2xl font-bold text-blue-600">${todaysEarnings}</p>
+                          <p className="text-sm opacity-70">Today's Earnings</p>
+                        </div>
+                        <div className="text-center">
+                          <p className="text-2xl font-bold text-green-600">{pendingRequests.length}</p>
+                          <p className="text-sm opacity-70">Pending Requests</p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
                 <TabsContent value="map">
                   <Card className="fintech-card">
                     <CardHeader>
@@ -461,14 +528,14 @@ const ProviderDashboard = () => {
                   </Card>
                 </TabsContent>
 
-                <TabsContent value="profile">
+                <TabsContent value="crew">
                   <Card className="fintech-card">
                     <CardHeader>
-                      <CardTitle>Profile Settings</CardTitle>
+                      <CardTitle>Crew Center</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="text-center py-8">
-                        <p className="opacity-70">Profile settings and information will be displayed here</p>
+                        <p className="opacity-70">Crew coordination features will be displayed here</p>
                       </div>
                     </CardContent>
                   </Card>

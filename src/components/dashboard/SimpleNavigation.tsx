@@ -4,7 +4,8 @@ import {
   ClipboardList, 
   Map, 
   Users, 
-  User 
+  User,
+  Calendar
 } from 'lucide-react';
 
 interface SimpleNavigationProps {
@@ -27,6 +28,12 @@ const SimpleNavigation: React.FC<SimpleNavigationProps> = ({
       isSpecial: true // This triggers the sidebar instead of tab change
     },
     { 
+      id: 'bookings', 
+      label: 'Bookings', 
+      icon: Calendar, 
+      emoji: '📅' 
+    },
+    { 
       id: 'map', 
       label: 'Map', 
       icon: Map, 
@@ -37,12 +44,6 @@ const SimpleNavigation: React.FC<SimpleNavigationProps> = ({
       label: 'Crew', 
       icon: Users, 
       emoji: '👥' 
-    },
-    { 
-      id: 'profile', 
-      label: 'Profile', 
-      icon: User, 
-      emoji: '👤' 
     }
   ];
 
