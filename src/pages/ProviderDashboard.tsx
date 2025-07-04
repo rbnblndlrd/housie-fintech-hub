@@ -267,102 +267,114 @@ const ProviderDashboard = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
 
                 <TabsContent value="job-hub" className="space-y-8">
-                  {/* Mobile Job Hub - Today's Route Only */}
+                  {/* Mobile Job Hub - Dynamic Job Icon Grid */}
                   <div className="md:hidden space-y-4">
                     <div className="px-4 py-2">
                       <h1 className="text-xl font-bold text-white/90 drop-shadow-md mb-2">Welcome back!</h1>
                       <h2 className="text-3xl font-bold text-gray-800">Today's Route</h2>
                     </div>
                     
-                    {/* Compact Job Cards */}
-                    <div className="space-y-2 px-4">
-                      {[
-                        { 
-                          time: '9:00 AM', 
-                          service: 'Johnson Furnace (return visit)',
-                          customer: 'Mrs. Johnson',
-                          phone: '(514) 555-0123',
-                          address: '123 Main St, Westmount',
-                          status: 'Confirmed'
-                        },
-                        { 
-                          time: '11:30 AM', 
-                          service: 'New customer - Kitchen repair',
-                          customer: 'Mike Stevens',
-                          phone: '(514) 555-0456',
-                          address: '456 Oak Ave, Montreal',
-                          status: 'Pending'
-                        },
-                        { 
-                          time: '2:00 PM', 
-                          service: 'Smith Plumbing (follow-up)',
-                          customer: 'John Smith',
-                          phone: '(514) 555-0789',
-                          address: '789 Pine St, Plateau',
-                          status: 'Confirmed'
-                        },
-                        { 
-                          time: '4:30 PM', 
-                          service: 'Emergency call - Heating issue',
-                          customer: 'Sarah Davis',
-                          phone: '(514) 555-0321',
-                          address: '321 Elm Dr, Outremont',
-                          status: 'Emergency'
-                        },
-                        { 
-                          time: '6:00 PM', 
-                          service: 'Wilson HVAC - Maintenance',
-                          customer: 'Robert Wilson',
-                          phone: '(514) 555-0654',
-                          address: '654 Maple Ave, NDG',
-                          status: 'Confirmed'
-                        },
-                        { 
-                          time: '7:30 PM', 
-                          service: 'Garcia Electrical - Install',
-                          customer: 'Maria Garcia',
-                          phone: '(514) 555-0987',
-                          address: '987 Oak St, Verdun',
-                          status: 'Pending'
-                        }
-                      ].map((job, index) => (
-                        <div 
-                          key={index} 
-                          className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm"
-                          onClick={() => {
-                            setSelectedJob(job);
-                            setShowJobDetail(true);
-                          }}
-                        >
-                          {/* Compact Top Line - Time and Service */}
-                          <div className="flex items-center justify-between mb-1">
-                            <div className="text-sm font-bold text-gray-800">
-                              🕘 {job.time} - {job.service}
-                            </div>
-                          </div>
-                          
-                          {/* Compact Info Line - Customer and Address */}
-                          <div className="text-xs text-gray-600 mb-2">
-                            {job.customer} • {job.address}
-                          </div>
-                          
-                          {/* Bottom Line - Status and Action */}
-                          <div className="flex items-center justify-between">
-                            <Badge 
-                              className={`text-xs px-2 py-0.5 ${
-                                job.status === 'Emergency' ? 'bg-red-100 text-red-800' :
-                                job.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                                'bg-yellow-100 text-yellow-800'
+                    {/* Dynamic Job Icon Grid */}
+                    <div className="px-4">
+                      <div className="grid grid-cols-3 gap-4 justify-items-center">
+                        {[
+                          { 
+                            time: '9:00 AM', 
+                            service: 'Johnson Furnace (return visit)',
+                            customer: 'Johnson',
+                            phone: '(514) 555-0123',
+                            address: '123 Main St, Westmount',
+                            status: 'Confirmed',
+                            icon: '🔧',
+                            type: 'Furnace'
+                          },
+                          { 
+                            time: '11:30 AM', 
+                            service: 'New customer - Kitchen repair',
+                            customer: 'Stevens',
+                            phone: '(514) 555-0456',
+                            address: '456 Oak Ave, Montreal',
+                            status: 'Pending',
+                            icon: '🏠',
+                            type: 'Kitchen'
+                          },
+                          { 
+                            time: '2:00 PM', 
+                            service: 'Smith Plumbing (follow-up)',
+                            customer: 'Smith',
+                            phone: '(514) 555-0789',
+                            address: '789 Pine St, Plateau',
+                            status: 'Confirmed',
+                            icon: '🚿',
+                            type: 'Plumbing'
+                          },
+                          { 
+                            time: '4:30 PM', 
+                            service: 'Emergency call - Heating issue',
+                            customer: 'Davis',
+                            phone: '(514) 555-0321',
+                            address: '321 Elm Dr, Outremont',
+                            status: 'Emergency',
+                            icon: '🔥',
+                            type: 'Emergency'
+                          },
+                          { 
+                            time: '6:00 PM', 
+                            service: 'Wilson HVAC - Maintenance',
+                            customer: 'Wilson',
+                            phone: '(514) 555-0654',
+                            address: '654 Maple Ave, NDG',
+                            status: 'Confirmed',
+                            icon: '❄️',
+                            type: 'HVAC'
+                          },
+                          { 
+                            time: '7:30 PM', 
+                            service: 'Garcia Electrical - Install',
+                            customer: 'Garcia',
+                            phone: '(514) 555-0987',
+                            address: '987 Oak St, Verdun',
+                            status: 'Pending',
+                            icon: '⚡',
+                            type: 'Electric'
+                          }
+                        ].map((job, index) => (
+                          <div 
+                            key={index} 
+                            className="flex flex-col items-center space-y-1 cursor-pointer"
+                            onClick={() => {
+                              setSelectedJob(job);
+                              setShowJobDetail(true);
+                            }}
+                          >
+                            {/* Circular Job Icon */}
+                            <div 
+                              className={`w-[60px] h-[60px] rounded-full flex items-center justify-center text-xl font-bold border-4 bg-white shadow-lg ${
+                                job.status === 'Emergency' ? 'border-red-500' :
+                                job.status === 'Confirmed' ? 'border-green-500' :
+                                'border-yellow-500'
                               }`}
                             >
-                              {job.status}
-                            </Badge>
-                            <div className="text-xs text-gray-400 italic">
-                              [Tap details]
+                              {job.icon}
+                            </div>
+                            
+                            {/* Job Type */}
+                            <div className="text-xs font-semibold text-gray-800 text-center">
+                              {job.type}
+                            </div>
+                            
+                            {/* Time */}
+                            <div className="text-xs font-bold text-gray-700">
+                              {job.time}
+                            </div>
+                            
+                            {/* Customer Name (truncated) */}
+                            <div className="text-xs text-gray-600 text-center max-w-[70px] truncate">
+                              {job.customer}...
                             </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
                     
                     {/* Action Buttons */}
