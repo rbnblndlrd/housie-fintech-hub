@@ -250,16 +250,41 @@ const ProviderDashboard = () => {
               )}
             </div>
 
-            {/* Simple Navigation - Left Side */}
-            <div className="fixed top-80 left-12 z-40 w-52">
+            {/* Simple Navigation - Left Side - Desktop Only */}
+            <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
               <SimpleNavigation 
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
               />
             </div>
 
-            {/* Main Content Tabs - Positioned with spacing */}
-            <div className="mt-[280px] mx-[280px] mr-8">
+            {/* Bottom Tab Bar - Mobile Only */}
+            <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border">
+              <div className="flex items-center justify-around py-2">
+                {[
+                  { id: 'job-hub', label: 'Job Hub', emoji: '📋' },
+                  { id: 'bookings', label: 'Bookings', emoji: '📅' },
+                  { id: 'map', label: 'Map', emoji: '🗺️' },
+                  { id: 'crew', label: 'Crew', emoji: '👥' }
+                ].map((tab) => (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`flex flex-col items-center p-2 rounded-lg transition-colors ${
+                      activeTab === tab.id 
+                        ? 'bg-primary text-primary-foreground' 
+                        : 'text-muted-foreground hover:text-foreground'
+                    }`}
+                  >
+                    <span className="text-lg">{tab.emoji}</span>
+                    <span className="text-xs font-medium">{tab.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Main Content Tabs - Responsive spacing */}
+            <div className="mt-[280px] mx-4 mb-20 md:mx-[280px] md:mr-8 md:mb-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
 
                 <TabsContent value="job-hub" className="space-y-8">
