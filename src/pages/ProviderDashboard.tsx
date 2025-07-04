@@ -247,7 +247,7 @@ const ProviderDashboard = () => {
             </div>
 
             {/* Fixed Vertical Tabs Navigation - Positioned Higher */}
-            <div className="fixed top-80 left-4 z-40 w-48">
+            <div className="fixed top-80 left-10 z-40 w-48">
               <VerticalTabsWithNotification 
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
