@@ -80,7 +80,11 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
     };
   }, [center.lat, center.lng, zoom, markers, onMapClick, onMapLoad]);
 
-  return <div ref={mapContainer} className={className} />;
+  return <div 
+    ref={mapContainer} 
+    className={className}
+    style={{ width: '100%', height: '100%' }}
+  />;
 };
 
 export default MapboxMap;

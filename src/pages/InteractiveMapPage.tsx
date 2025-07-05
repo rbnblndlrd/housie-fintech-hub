@@ -169,10 +169,12 @@ const InteractiveMapPage = () => {
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
       
-      {/* Map Container */}
-      <div className="fixed inset-0 pt-16">
+      {/* Map Container - Responsive Sizing */}
+      <div className="fixed inset-0 pt-16" style={{
+        height: 'calc(100vh - 64px)' // Account for header on all devices
+      }}>
         <div className="w-full h-full relative flex">
-          {/* Map Section */}
+          {/* Map Section - Responsive */}
           <div className="flex-1 relative">
             {/* Privacy Notice */}
             <div className="absolute top-4 left-4 z-50 pointer-events-auto">
@@ -187,7 +189,7 @@ const InteractiveMapPage = () => {
               </div>
             </div>
 
-            {/* Mapbox Map */}
+            {/* Mapbox Map - Full Container */}
             <MapboxMap
               center={quebecCenter}
               zoom={10}
