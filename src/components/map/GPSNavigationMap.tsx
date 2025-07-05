@@ -5,7 +5,11 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Set Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicmJuYmxuZGxyZCIsImEiOiJjbWNmdGYzN2wwY2RuMmtwd3M3d2hzM3NxIn0.MZfduMhwltc3eC8V5xYgcQ';
 
-const GPSNavigationMap: React.FC = () => {
+interface GPSNavigationMapProps {
+  isDashboard?: boolean;
+}
+
+const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
 
@@ -39,8 +43,8 @@ const GPSNavigationMap: React.FC = () => {
   return (
     <div 
       ref={mapContainer} 
-      className="absolute inset-0 w-full h-full"
-      style={{ width: '100%', height: '100vh' }}
+      className={isDashboard ? "w-full h-full" : "absolute inset-0 w-full h-full"}
+      style={isDashboard ? { width: '100%', height: '600px' } : { width: '100%', height: '100vh' }}
     />
   );
 };

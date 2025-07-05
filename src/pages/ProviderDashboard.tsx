@@ -1534,7 +1534,9 @@ const ProviderDashboard = () => {
                 </TabsContent>
 
                 <TabsContent value="map">
-                  <GPSNavigationMap />
+                  <div className="w-full h-[600px] bg-background rounded-lg overflow-hidden">
+                    <GPSNavigationMap isDashboard={true} />
+                  </div>
                 </TabsContent>
 
                 <TabsContent value="messages">
