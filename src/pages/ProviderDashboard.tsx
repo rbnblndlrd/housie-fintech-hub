@@ -369,9 +369,6 @@ const ProviderDashboard = () => {
 
   return (
     <>
-      <VideoBackground />
-      
-
       {/* Draggable Welcome Text - Desktop Only */}
       <div className="hidden md:block fixed top-0 left-0 z-40">
         <DraggableWidget

@@ -13,6 +13,7 @@ import { GoogleMapsProvider } from './components/map/GoogleMapsProvider';
 import ConditionalHeader from './components/layout/ConditionalHeader';
 import FloatingNavigation from './components/layout/FloatingNavigation';
 import ConditionalSpacingWrapper from './components/layout/ConditionalSpacingWrapper';
+import ConditionalVideoBackground from './components/layout/ConditionalVideoBackground';
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
@@ -52,6 +53,9 @@ function App() {
                       <DynamicGradientProvider>
                         <Router>
                           <div className="App min-h-screen">
+                            {/* Conditional Video Background - only shows on specific pages */}
+                            <ConditionalVideoBackground />
+                            
                             {/* Conditional Header - only shows on specific pages */}
                             <ConditionalHeader />
                             
