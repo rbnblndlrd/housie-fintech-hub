@@ -17,6 +17,7 @@ interface MapboxMapProps {
     description?: string;
   }>;
   onMapClick?: (lat: number, lng: number) => void;
+  onMapLoad?: (map: mapboxgl.Map) => void;
 }
 
 const MapboxMap: React.FC<MapboxMapProps> = ({
@@ -24,7 +25,8 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
   zoom = 12,
   className = "w-full h-full",
   markers = [],
-  onMapClick
+  onMapClick,
+  onMapLoad
 }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
@@ -42,6 +44,11 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
 
     // Add navigation controls
     map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+    // Callback for external components to access map instance
+    if (onMapLoad) {
+      onMapLoad(map.current);
+    }
 
     // Add markers
     markers.forEach(marker => {
@@ -71,7 +78,7 @@ const MapboxMap: React.FC<MapboxMapProps> = ({
     return () => {
       map.current?.remove();
     };
-  }, [center.lat, center.lng, zoom, markers, onMapClick]);
+  }, [center.lat, center.lng, zoom, markers, onMapClick, onMapLoad]);
 
   return <div ref={mapContainer} className={className} />;
 };

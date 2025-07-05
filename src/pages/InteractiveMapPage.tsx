@@ -15,6 +15,7 @@ import NavigationOverlay from '@/components/map/NavigationOverlay';
 import CustomerMapMode from '@/components/map/modes/CustomerMapMode';
 import ProviderMapMode from '@/components/map/modes/ProviderMapMode';
 import FleetManagerMode from '@/components/map/modes/FleetManagerMode';
+import NeighborhoodArrowNavigation from '@/components/map/NeighborhoodArrowNavigation';
 import mapboxgl from 'mapbox-gl';
 
 type UserMode = 'customer' | 'provider' | 'fleet-manager';
@@ -156,6 +157,14 @@ const InteractiveMapPage = () => {
     setShowNavigation(!showNavigation);
   };
 
+  const handleNeighborhoodNavigate = (neighborhoodName: string, coordinates: { lat: number; lng: number }) => {
+    console.log('🏘️ Navigating to neighborhood:', neighborhoodName, coordinates);
+    toast({
+      title: "Neighborhood Navigation",
+      description: `Moving to ${neighborhoodName}`,
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
@@ -183,6 +192,15 @@ const InteractiveMapPage = () => {
               center={quebecCenter}
               zoom={10}
               className="w-full h-full"
+              onMapLoad={setMap}
+            />
+
+            {/* Revolutionary Neighborhood Arrow Navigation */}
+            <NeighborhoodArrowNavigation
+              map={map}
+              jobs={sampleJobs}
+              providers={[]} // Add provider data when available
+              onNavigate={handleNeighborhoodNavigate}
             />
 
             {/* Jobs Overlay */}
