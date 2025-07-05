@@ -15,7 +15,6 @@ const DynamicRoleSelector: React.FC<DynamicRoleSelectorProps> = ({
   selectedRole,
   onRoleChange,
 }) => {
-  // Determine available roles based on profile capabilities
   const getAvailableRoles = (): Array<{ key: ProfileRole; label: string; icon: React.ReactNode }> => {
     const roles = [
       { key: 'personal' as ProfileRole, label: 'Personal', icon: <User className="h-4 w-4" /> }
@@ -30,8 +29,8 @@ const DynamicRoleSelector: React.FC<DynamicRoleSelectorProps> = ({
       });
     }
 
-    // Add customer role if user can book services
-    if (profile.can_book_services) {
+    // Add customer role if user can book services (default for all users)
+    if (profile.can_book_services !== false) { // Default to true if not specified
       roles.push({ 
         key: 'customer' as ProfileRole, 
         label: 'Customer', 
@@ -39,7 +38,7 @@ const DynamicRoleSelector: React.FC<DynamicRoleSelectorProps> = ({
       });
     }
 
-    // Add crew role if provider (example crew)
+    // Add crew role if provider with business name
     if (profile.can_provide_services && profile.business_name) {
       roles.push({ 
         key: 'crew' as ProfileRole, 
@@ -49,7 +48,7 @@ const DynamicRoleSelector: React.FC<DynamicRoleSelectorProps> = ({
     }
 
     // Add collective role for customers (example collective)
-    if (profile.can_book_services) {
+    if (profile.can_book_services !== false) {
       roles.push({ 
         key: 'collective' as ProfileRole, 
         label: 'Collective: Home Reno', 
@@ -57,15 +56,7 @@ const DynamicRoleSelector: React.FC<DynamicRoleSelectorProps> = ({
       });
     }
 
-    // Add close buttons for crew/collective
-    if (roles.some(r => r.key === 'crew' || r.key === 'collective')) {
-      roles.push({ 
-        key: 'personal' as ProfileRole, 
-        label: '×', 
-        icon: <X className="h-3 w-3" /> 
-      });
-    }
-
+    console.log('🎭 DynamicRoleSelector: Available roles:', roles.map(r => r.key));
     return roles;
   };
 

@@ -21,27 +21,27 @@ const ProfileContentRenderer: React.FC<ProfileContentRendererProps> = ({
         return {
           title: 'Personal Stats',
           stats: [
-            { label: 'Total Jobs', value: '127', icon: <Briefcase className="h-4 w-4" /> },
-            { label: 'Network Connections', value: '45', icon: <Users className="h-4 w-4" /> },
-            { label: 'Average Rating', value: '4.8', icon: <Star className="h-4 w-4" /> },
+            { label: 'Total Jobs', value: (profile.total_bookings || 0).toString(), icon: <Briefcase className="h-4 w-4" /> },
+            { label: 'Network Connections', value: (profile.network_connections_count || 0).toString(), icon: <Users className="h-4 w-4" /> },
+            { label: 'Average Rating', value: (profile.average_rating || 0).toFixed(1), icon: <Star className="h-4 w-4" /> },
           ]
         };
       case 'provider':
         return {
           title: 'Provider Performance',
           stats: [
-            { label: 'Provider Jobs', value: '156', icon: <Briefcase className="h-4 w-4" /> },
-            { label: 'Network Size', value: '78', icon: <Users className="h-4 w-4" /> },
-            { label: 'Provider Rating', value: '4.9', icon: <Star className="h-4 w-4" /> },
+            { label: 'Provider Jobs', value: (profile.total_bookings || 0).toString(), icon: <Briefcase className="h-4 w-4" /> },
+            { label: 'Network Size', value: (profile.network_connections_count || 0).toString(), icon: <Users className="h-4 w-4" /> },
+            { label: 'Provider Rating', value: (profile.average_rating || 0).toFixed(1), icon: <Star className="h-4 w-4" /> },
           ]
         };
       case 'customer':
         return {
           title: 'Customer Activity',
           stats: [
-            { label: 'Bookings Made', value: '89', icon: <Calendar className="h-4 w-4" /> },
-            { label: 'Reviews Given', value: '12', icon: <Star className="h-4 w-4" /> },
-            { label: 'Customer Rating', value: '4.8', icon: <Star className="h-4 w-4" /> },
+            { label: 'Bookings Made', value: (profile.total_bookings || 0).toString(), icon: <Calendar className="h-4 w-4" /> },
+            { label: 'Reviews Given', value: (profile.total_reviews || 0).toString(), icon: <Star className="h-4 w-4" /> },
+            { label: 'Customer Rating', value: (profile.average_rating || 0).toFixed(1), icon: <Star className="h-4 w-4" /> },
           ]
         };
       case 'crew':

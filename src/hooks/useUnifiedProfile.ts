@@ -1,27 +1,39 @@
 
 import { useState, useEffect } from 'react';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { UnifiedUserProfile } from '@/types/userProfile';
 
 export const useUnifiedProfile = () => {
-  const user = useUser();
+  const { user } = useAuth();
   const [profile, setProfile] = useState<UnifiedUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log('🔍 useUnifiedProfile: User changed:', { 
+      hasUser: !!user, 
+      userId: user?.id,
+      email: user?.email 
+    });
+    
     if (user) {
       loadProfile();
+    } else {
+      setLoading(false);
+      setProfile(null);
+      setError(null);
     }
   }, [user]);
 
   const loadProfile = async () => {
     if (!user) {
+      console.log('❌ useUnifiedProfile: No user available');
       setLoading(false);
       return;
     }
 
+    console.log('🔄 useUnifiedProfile: Loading profile for user:', user.id);
     setLoading(true);
     setError(null);
 
@@ -30,10 +42,41 @@ export const useUnifiedProfile = () => {
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (fetchError) {
+        console.error('❌ useUnifiedProfile: Database error:', fetchError);
         throw fetchError;
+      }
+
+      if (!data) {
+        console.log('📝 useUnifiedProfile: No profile found, creating default profile');
+        // Create a default profile if none exists
+        const defaultProfile = {
+          user_id: user.id,
+          username: user.email?.split('@')[0] || 'user',
+          full_name: user.user_metadata?.full_name || user.email || 'User',
+          can_provide_services: false,
+          can_book_services: true,
+          active_role: 'customer' as const,
+          profile_type: 'individual' as const,
+          achievement_badges: []
+        };
+
+        const { data: newProfile, error: createError } = await supabase
+          .from('user_profiles')
+          .insert(defaultProfile)
+          .select()
+          .single();
+
+        if (createError) {
+          console.error('❌ useUnifiedProfile: Error creating profile:', createError);
+          throw createError;
+        }
+
+        console.log('✅ useUnifiedProfile: Created new profile:', newProfile);
+        setProfile(newProfile as UnifiedUserProfile);
+        return;
       }
 
       // Cast the data with proper type assertions
@@ -44,9 +87,16 @@ export const useUnifiedProfile = () => {
         achievement_badges: (data.achievement_badges as any[]) ?? []
       };
 
+      console.log('✅ useUnifiedProfile: Profile loaded successfully:', {
+        id: typedProfile.id,
+        username: typedProfile.username,
+        active_role: typedProfile.active_role,
+        can_provide_services: typedProfile.can_provide_services
+      });
+
       setProfile(typedProfile);
     } catch (error: any) {
-      console.error('Error loading unified profile:', error);
+      console.error('❌ useUnifiedProfile: Error loading profile:', error);
       setError(error.message || 'Failed to load profile');
     } finally {
       setLoading(false);
