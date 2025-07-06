@@ -2,11 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Import modular styles */
-@import './styles/variables.css';
-@import './styles/fintech-cards.css';
-@import './styles/animations.css';
-@import './styles/map.css';
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.5rem;
+    
+    /* Strategic marble positioning variables with overlay method */
+    --bg-position-x: 35%;
+    --bg-position-y: 40%;
+    --marble-scale: 2.2;
+    
+    /* Text-aware positioning variables for marble */
+    --text1-x: 25%;
+    --text1-y: 30%;
+    --text2-x: 65%;
+    --text2-y: 55%;
+    --text3-x: 45%;
+    --text3-y: 75%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 94.1%;
+  }
+}
 
 @layer base {
   * {
@@ -14,5 +68,442 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Enhanced Fintech Card System with Strategic Overlay Watermark Concealment */
+@layer components {
+  /* Base fintech card styling with strategic overlay method for watermark concealment */
+  .fintech-card-base {
+    position: relative;
+    background-image: url('/lovable-uploads/chalkboard-black.png');
+    background-size: calc(var(--marble-scale, 2.2) * 100%);
+    background-position: var(--bg-position-x, 35%) var(--bg-position-y, 40%);
+    background-repeat: no-repeat;
+    background-attachment: local;
+    border: 2px solid #F5F5DC;
+    border-radius: 12px;
+    box-shadow: 
+      0 8px 12px -2px rgba(139, 111, 82, 0.15),
+      0 4px 8px -2px rgba(139, 111, 82, 0.08);
+  }
+
+  /* Strategic overlay to conceal watermarks */
+  .fintech-card-base::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(
+      135deg, 
+      rgba(255, 248, 235, 0.3) 0%,
+      rgba(245, 235, 220, 0.4) 25%,
+      rgba(255, 250, 240, 0.2) 50%,
+      rgba(250, 240, 230, 0.35) 75%,
+      rgba(255, 248, 235, 0.25) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Content positioning above overlay */
+  .fintech-card-base > * {
+    position: relative;
+    z-index: 2;
+  }
+
+  .fintech-card {
+    @apply fintech-card-base;
+    @apply bg-white/50;
+  }
+
+  .fintech-metric-card {
+    @apply fintech-card-base;
+    @apply bg-gradient-to-br from-amber-50/60 to-orange-50/60;
+  }
+
+  .fintech-chart-container {
+    @apply fintech-card-base;
+    @apply bg-gradient-to-r from-amber-50/55 to-yellow-50/55;
+  }
+
+  .fintech-inner-box {
+    @apply fintech-card-base;
+    background: #5a6b57; /* Winchester Green */
+    border: 2px solid rgba(139, 111, 82, 0.25);
+    box-shadow: 
+      0 4px 6px -1px rgba(139, 111, 82, 0.1),
+      0 2px 4px -1px rgba(139, 111, 82, 0.06);
+  }
+
+  .fintech-button-secondary {
+    @apply fintech-card-base;
+    background: #5a6b57; /* Winchester Green */
+  }
+
+  /* Clean Chalkboard Pattern Variations with Strategic Positioning */
+  .fintech-pattern-warm {
+    background-image: url('/lovable-uploads/chalkboard-black.png');
+    background-size: calc(var(--marble-scale, 2.2) * 100%);
+    background-position: var(--bg-position-x, 25%) var(--bg-position-y, 35%);
+    background-repeat: no-repeat;
+  }
+
+  .fintech-pattern-cool {
+    background-image: url('/lovable-uploads/chalkboard-black.png');
+    background-size: calc(var(--marble-scale, 2.2) * 100%);
+    background-position: var(--bg-position-x, 60%) var(--bg-position-y, 40%);
+    background-repeat: no-repeat;
+  }
+
+  .fintech-pattern-soft {
+    background-image: url('/lovable-uploads/chalkboard-black.png');
+    background-size: calc(var(--marble-scale, 2.2) * 100%);
+    background-position: var(--bg-position-x, 40%) var(--bg-position-y, 60%);
+    background-repeat: no-repeat;
+  }
+
+  .fintech-pattern-subtle {
+    background-image: url('/lovable-uploads/chalkboard-black.png');
+    background-size: calc(var(--marble-scale, 2.2) * 100%);
+    background-position: var(--bg-position-x, 20%) var(--bg-position-y, 30%);
+    background-repeat: no-repeat;
+  }
+
+  .fintech-pattern-classic {
+    background-image: url('/lovable-uploads/chalkboard-black.png');
+    background-size: calc(var(--marble-scale, 2.2) * 100%);
+    background-position: var(--bg-position-x, 50%) var(--bg-position-y, 45%);
+    background-repeat: no-repeat;
+  }
+
+  /* Enhanced Text styling for better visibility */
+  .fintech-text-header {
+    color: #ffffff;
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.9),
+      0 1px 2px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .fintech-text-secondary {
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+    opacity: 0.95;
+    font-weight: 500;
+  }
+
+  /* Make all text in fintech cards white by default */
+  .fintech-card-base h1,
+  .fintech-card-base h2,
+  .fintech-card-base h3,
+  .fintech-card-base h4,
+  .fintech-card-base h5,
+  .fintech-card-base h6,
+  .fintech-card-base p,
+  .fintech-card-base span,
+  .fintech-card-base div,
+  .fintech-card-base label,
+  .fintech-card-base li {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Enhanced button styling */
+  .fintech-button-primary {
+    @apply bg-gradient-to-r from-amber-700 to-orange-700 hover:from-amber-800 hover:to-orange-800 text-white;
+    box-shadow: 0 6px 10px -2px rgba(139, 111, 82, 0.3);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Enhanced card secondary background */
+  .fintech-card-secondary {
+    @apply fintech-card-base;
+    background: #5a6b57; /* Winchester Green */
+    backdrop-filter: blur(0.5px);
+    border: 2px solid rgba(139, 111, 82, 0.25);
+  }
+
+  /* Comprehensive nested content areas within fintech cards */
+  .fintech-card-base .bg-white,
+  .fintech-card-base .bg-gray-50,
+  .fintech-card-base .bg-gray-100,
+  .fintech-card-base .bg-slate-50,
+  .fintech-card-base .bg-slate-100,
+  .fintech-card-base .bg-card,
+  .fintech-card-base .bg-background,
+  .fintech-card-base .bg-muted,
+  .fintech-card-base .bg-secondary,
+  .fintech-card-base [class*="bg-white"],
+  .fintech-card-base [class*="bg-gray"],
+  .fintech-card-base [class*="bg-slate"],
+  .fintech-card-base [class*="bg-card"],
+  .fintech-card-base [class*="bg-background"],
+  .fintech-card-base [class*="bg-muted"],
+  .fintech-card-base [class*="bg-secondary"],
+  .fintech-card-base input,
+  .fintech-card-base select,
+  .fintech-card-base textarea,
+  .fintech-card-base [role="dialog"],
+  .fintech-card-base [role="listbox"],
+  .fintech-card-base [data-radix-popper-content-wrapper],
+  .fintech-card-base .bg-popover {
+    background: #5a6b57 !important; /* Winchester Green for all nested light backgrounds */
+  }
+
+  /* Ensure table headers are visible on Winchester Green background */
+  .fintech-card-base th,
+  .fintech-card-base thead tr,
+  .fintech-card-base thead th {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+  }
+
+  /* Text overlay for video backgrounds */
+  .video-text-overlay {
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.6) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.6) 100%
+    );
+    backdrop-filter: blur(2px);
+    border-radius: 0.75rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .video-text-overlay h1,
+  .video-text-overlay h2,
+  .video-text-overlay h3,
+  .video-text-overlay p {
+    color: white !important;
+    text-shadow: 
+      0 2px 4px rgba(0, 0, 0, 0.8),
+      0 1px 2px rgba(0, 0, 0, 0.9);
+  }
+}
+
+/* Enhanced Animation and Interaction */
+@layer utilities {
+  .fintech-card-base,
+  .fintech-card,
+  .fintech-metric-card,
+  .fintech-chart-container,
+  .fintech-inner-box,
+  .fintech-card-secondary {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .fintech-card-base:hover,
+  .fintech-card:hover,
+  .fintech-metric-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 
+      0 15px 25px -5px rgba(139, 111, 82, 0.25),
+      0 8px 12px -4px rgba(139, 111, 82, 0.15),
+      0 0 0 5px #5a6b57;
+    border-color: #5a6b57;
+  }
+
+  /* Enhanced text contrast utilities */
+  .text-enhanced-contrast {
+    text-shadow: 
+      0 2px 4px rgba(255, 255, 255, 0.9),
+      0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .text-video-contrast {
+    text-shadow: 
+      0 2px 8px rgba(0, 0, 0, 0.9),
+      0 1px 4px rgba(0, 0, 0, 0.8),
+      0 0 2px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Conditional spacing for main content */
+  .conditional-main-spacing {
+    @apply pt-0; /* Default for headerless pages */
+  }
+  
+  /* For pages with headers */
+  .has-header .conditional-main-spacing {
+    @apply pt-16;
+  }
+
+  /* Slide-in animation for menu */
+  .animate-slide-in-right {
+    animation: slide-in-right 0.3s ease-out;
+  }
+  
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  /* Breathing animation for logo */
+  @keyframes breathe {
+    0%, 100% {
+      transform: scale(1.0);
+    }
+    50% {
+      transform: scale(1.02);
+    }
+  }
+
+  /* Weathered street sign animations */
+  @keyframes creaky-sway {
+    0%, 100% {
+      transform: rotate(-1deg);
+    }
+    50% {
+      transform: rotate(1.5deg);
+    }
+  }
+
+  /* Weathered street sign styling */
+  .weathered-street-sign {
+    position: relative;
+    display: inline-block;
+    background: linear-gradient(180deg, #8B4513 0%, #A0522D 25%, #654321 50%, #8B4513 75%, #5D4037 100%);
+    width: 400px;
+    height: 90px;
+    transform: rotate(-1deg);
+    animation: creaky-sway 4s ease-in-out infinite alternate;
+    transform-origin: top center;
+    
+    /* Irregular weathered shape */
+    clip-path: polygon(
+      5% 8%, 15% 2%, 25% 6%, 35% 0%, 45% 4%, 55% 1%, 65% 5%, 75% 0%, 85% 3%, 95% 7%,
+      98% 15%, 96% 25%, 99% 35%, 95% 45%, 98% 55%, 94% 65%, 97% 75%, 93% 85%, 95% 92%,
+      85% 96%, 75% 99%, 65% 94%, 55% 98%, 45% 95%, 35% 99%, 25% 93%, 15% 97%, 5% 94%,
+      2% 85%, 4% 75%, 1% 65%, 5% 55%, 2% 45%, 6% 35%, 3% 25%, 7% 15%
+    );
+    
+    /* Wood texture and weathering */
+    box-shadow: 
+      inset 0 2px 4px rgba(0,0,0,0.3),
+      inset 0 -2px 4px rgba(139,69,19,0.5),
+      0 4px 8px rgba(0,0,0,0.4);
+    
+    /* Wood planks effect */
+    background-image: 
+      linear-gradient(0deg, rgba(0,0,0,0.1) 1px, transparent 1px),
+      linear-gradient(0deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 100% 20px, 100% 10px;
+  }
+
+  /* Dashboard arrow animation - arrows move forward */
+  @keyframes arrowMove {
+    0% { content: "→"; }
+    33% { content: "→→"; }
+    66% { content: "→→→"; }
+    100% { content: "→"; }
+  }
+
+  .dashboard-arrows::after {
+    content: "→";
+    animation: arrowMove 1.5s infinite;
+    margin-left: 0.5rem;
+  }
+  
+  .weathered-street-sign::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    width: 6px;
+    height: 6px;
+    background: #2C1810;
+    border-radius: 50%;
+    box-shadow: 
+      350px 0 0 #2C1810,
+      0 60px 0 #2C1810,
+      350px 60px 0 #2C1810;
+  }
+  
+  .graffiti-text {
+    font-family: Impact, 'Arial Black', sans-serif;
+    font-weight: 900;
+    font-size: 2.5rem;
+    color: white;
+    text-shadow: 
+      2px 2px 0px #000,
+      -1px -1px 0px #666,
+      3px 3px 6px rgba(0,0,0,0.8);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 10;
+    line-height: 1;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Responsive Map Container Utilities */
+  .map-container-responsive {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .map-container-fullscreen {
+    position: absolute;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .map-container-dashboard {
+    position: relative;
+    width: 100%;
+    height: calc(100vh - 350px); /* Default: account for all dashboard UI elements */
+    min-height: 400px;
+    overflow: hidden;
+  }
+
+  /* Mobile-first responsive map sizing */
+  @media (max-width: 767px) {
+    .map-container-dashboard {
+      height: calc(100vh - 350px); /* Mobile: header(64) + reduced-top-margin(200) + bottom-tab(70) + margins(16) */
+      min-height: calc(100vh - 350px);
+    }
+    
+    /* Mobile InteractiveMapPage adjustments */
+    .fixed.inset-0.pt-16.p-4 {
+      padding: 8px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .map-container-dashboard {
+      height: calc(100vh - 350px); /* Desktop: account for header + side nav + tab bar */
+      min-height: 500px;
+    }
+  }
+
+  /* Ensure Mapbox GL container fills parent perfectly */
+  .mapboxgl-map {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit;
+  }
+
+  .mapboxgl-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: inherit;
+  }
+
+  /* Remove any margins from mapbox controls */
+  .mapboxgl-ctrl-group {
+    border-radius: 4px;
   }
 }
