@@ -1,366 +1,241 @@
-
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRole } from '@/contexts/RoleContext';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
-import { User, AlertTriangle } from 'lucide-react';
+import React from 'react';
 import Header from '@/components/Header';
-import ProfileNavigation from '@/components/ProfileNavigation';
-import BusinessInfoSection from '@/components/provider/BusinessInfoSection';
-import ServicesSection from '@/components/provider/ServicesSection';
-import ContactInfoSection from '@/components/provider/ContactInfoSection';
-import AvailabilitySection from '@/components/provider/AvailabilitySection';
-import PrivacySettingsSection from '@/components/provider/PrivacySettingsSection';
-
-interface ProviderProfile {
-  id: string;
-  business_name: string;
-  description: string;
-  years_experience: number;
-  hourly_rate: number;
-  service_radius_km: number;
-  cra_compliant: boolean;
-  verified: boolean;
-  insurance_verified: boolean;
-}
-
-interface UserProfile {
-  id: string;
-  full_name: string;
-  phone: string;
-  email: string;
-  profile_image: string;
-  address: string;
-  city: string;
-  province: string;
-  postal_code: string;
-  show_on_map?: boolean;
-  confidentiality_radius?: number;
-}
+import VideoBackground from '@/components/common/VideoBackground';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Heart, 
+  MessageCircle, 
+  Share2, 
+  Users, 
+  MapPin, 
+  Star,
+  Calendar,
+  Camera,
+  Plus
+} from 'lucide-react';
 
 const ProviderProfile = () => {
-  const { user } = useAuth();
-  const { currentRole } = useRole();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [providerProfile, setProviderProfile] = useState<ProviderProfile | null>(null);
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [profileCreationError, setProfileCreationError] = useState<string | null>(null);
-
-  // Redirect if role changes to customer
-  useEffect(() => {
-    if (currentRole === 'customer') {
-      navigate('/customer-profile');
+  const posts = [
+    {
+      id: 1,
+      user: {
+        name: "Marie Dubois",
+        avatar: "",
+        role: "Professional Cleaner",
+        location: "Montreal, QC"
+      },
+      content: "Just finished a deep clean for a lovely family in Westmount! Their home is sparkling ✨",
+      image: "",
+      likes: 24,
+      comments: 8,
+      shares: 3,
+      timestamp: "2 hours ago",
+      tags: ["cleaning", "residential"]
+    },
+    {
+      id: 2,
+      user: {
+        name: "Jean Martin",
+        avatar: "",
+        role: "Handyman",
+        location: "Laval, QC"
+      },
+      content: "Completed a kitchen renovation today. The before and after is incredible! 🔨",
+      image: "",
+      likes: 42,
+      comments: 15,
+      shares: 7,
+      timestamp: "4 hours ago",
+      tags: ["renovation", "kitchen"]
+    },
+    {
+      id: 3,
+      user: {
+        name: "Sophie Chen",
+        avatar: "",
+        role: "Electrician",
+        location: "Toronto, ON"
+      },
+      content: "Safety first! Just installed new electrical panels for a growing family. Always happy to help keep homes safe! ⚡",
+      image: "",
+      likes: 31,
+      comments: 12,
+      shares: 5,
+      timestamp: "6 hours ago",
+      tags: ["electrical", "safety"]
     }
-  }, [currentRole, navigate]);
+  ];
 
-  useEffect(() => {
-    if (user) {
-      fetchProviderProfile();
-      fetchUserProfile();
-    }
-  }, [user]);
-
-  const fetchProviderProfile = async () => {
-    try {
-      console.log('🔍 Fetching provider profile for user:', user?.id);
-      
-      const { data, error } = await supabase
-        .from('provider_profiles')
-        .select('*')
-        .eq('user_id', user?.id)
-        .single();
-
-      if (error && error.code !== 'PGRST116') {
-        console.error('❌ Error fetching provider profile:', error);
-        throw error;
-      }
-
-      if (data) {
-        console.log('✅ Provider profile found:', data.business_name || 'Unnamed');
-        setProviderProfile(data);
-      } else {
-        console.log('ℹ️ No provider profile found for user');
-        setProviderProfile(null);
-      }
-    } catch (error: any) {
-      console.error('❌ Error in fetchProviderProfile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load provider profile: " + error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
-  const fetchUserProfile = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('id', user?.id)
-        .single();
-
-      if (error) {
-        console.error('❌ Error fetching user profile:', error);
-        throw error;
-      }
-      
-      setUserProfile(data);
-    } catch (error: any) {
-      console.error('❌ Error in fetchUserProfile:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load user profile: " + error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const createProviderProfile = async () => {
-    if (!user?.id) {
-      toast({
-        title: "Error",
-        description: "User not authenticated",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      setSaving(true);
-      setProfileCreationError(null);
-      
-      console.log('🔄 Creating provider profile for user:', user.id);
-      
-      const profileData = {
-        user_id: user.id,
-        business_name: '',
-        description: '',
-        years_experience: 0,
-        hourly_rate: 0,
-        service_radius_km: 25,
-        cra_compliant: false,
-        verified: false,
-        insurance_verified: false,
-      };
-
-      console.log('📤 Inserting provider profile with data:', profileData);
-
-      const { data, error } = await supabase
-        .from('provider_profiles')
-        .insert(profileData)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('❌ Provider profile creation failed:', {
-          error: error,
-          code: error.code,
-          message: error.message,
-          details: error.details,
-          hint: error.hint
-        });
-        
-        // Provide specific error messages
-        let errorMessage = "Failed to create provider profile";
-        if (error.code === '23505') {
-          errorMessage = "A provider profile already exists for this user";
-        } else if (error.code === '42501') {
-          errorMessage = "Permission denied. Please try logging out and back in";
-        } else if (error.message) {
-          errorMessage = error.message;
-        }
-        
-        setProfileCreationError(errorMessage);
-        throw new Error(errorMessage);
-      }
-
-      if (!data) {
-        const msg = "Provider profile creation returned no data";
-        console.error('❌', msg);
-        setProfileCreationError(msg);
-        throw new Error(msg);
-      }
-
-      console.log('✅ Provider profile created successfully:', data);
-      setProviderProfile(data);
-      
-      toast({
-        title: "Success",
-        description: "Provider profile created successfully! You can now complete your business information.",
-      });
-
-      // Refresh the profile to ensure we have the latest data
-      setTimeout(() => {
-        fetchProviderProfile();
-      }, 1000);
-
-    } catch (error: any) {
-      console.error('❌ Error in createProviderProfile:', error);
-      
-      const errorMsg = error.message || "An unexpected error occurred";
-      setProfileCreationError(errorMsg);
-      
-      toast({
-        title: "Error",
-        description: errorMsg,
-        variant: "destructive",
-      });
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const retryProfileCreation = () => {
-    setProfileCreationError(null);
-    createProviderProfile();
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
-        <div className="pt-16 flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading profile...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (!providerProfile) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-        <Header />
-        <div className="pt-16 p-6">
-          <div className="max-w-4xl mx-auto">
-            <ProfileNavigation profileType="provider" />
-            <Card className="fintech-card">
-              <CardHeader className="text-center">
-                <CardTitle className="text-2xl font-bold text-gray-900">
-                  Become a Service Provider
-                </CardTitle>
-                <CardDescription className="text-gray-600">
-                  Create your provider profile to start offering services on HOUSIE
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="text-center space-y-4">
-                {profileCreationError && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-left">
-                    <div className="flex items-start space-x-3">
-                      <AlertTriangle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
-                      <div>
-                        <h4 className="font-medium text-red-900 mb-1">Profile Creation Failed</h4>
-                        <p className="text-red-700 text-sm mb-3">{profileCreationError}</p>
-                        <Button 
-                          onClick={retryProfileCreation}
-                          disabled={saving}
-                          variant="outline"
-                          size="sm"
-                          className="border-red-300 text-red-700 hover:bg-red-50"
-                        >
-                          {saving ? 'Retrying...' : 'Try Again'}
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                
-                <Button 
-                  onClick={createProviderProfile}
-                  disabled={saving}
-                  className="fintech-button-primary"
-                >
-                  {saving ? 'Creating Profile...' : 'Create Provider Profile'}
-                </Button>
-                
-                <div className="text-xs text-gray-500 mt-4">
-                  <p>Having trouble? Make sure you're logged in and try refreshing the page.</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const trendingTopics = [
+    { tag: "cleaning", count: 156 },
+    { tag: "renovation", count: 89 },
+    { tag: "plumbing", count: 67 },
+    { tag: "electrical", count: 54 },
+    { tag: "gardening", count: 43 }
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50">
-      <Header />
-      <div className="pt-16 p-6">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <ProfileNavigation profileType="provider" />
-          
-          {/* Header */}
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>
-            <p className="text-gray-600">Manage your business information and services</p>
-          </div>
+    <>
+      <VideoBackground />
+      <div className="relative z-10 min-h-screen">
+        <Header />
+        <div className="pt-16 pl-[188px] pr-8 pb-8">
+          <div className="max-w-5xl">
+            <div className="mb-8">
+              <h1 className="text-4xl font-bold text-white text-shadow-lg mb-2">
+                Community Hub
+              </h1>
+              <p className="text-white/90 text-shadow">
+                Connect with other service providers and share your experiences
+              </p>
+            </div>
 
-          {/* Profile Overview Card */}
-          <Card className="fintech-card">
-            <CardHeader className="flex flex-row items-center space-y-0 pb-4">
-              <div className="flex items-center space-x-4">
-                <div className="h-16 w-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shrink-0 shadow-lg">
-                  {providerProfile.business_name ? 
-                    providerProfile.business_name.split(' ').map(n => n[0]).join('').slice(0, 2) : 
-                    <User className="h-8 w-8" />
-                  }
-                </div>
-                <div>
-                  <CardTitle className="text-xl text-gray-900">
-                    {providerProfile.business_name || userProfile?.full_name || 'New Provider'}
-                  </CardTitle>
-                  <CardDescription className="text-gray-600">
-                    {providerProfile.verified ? '✅ Verified Provider' : '⏳ Pending Verification'}
-                  </CardDescription>
-                </div>
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Main Feed */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Create Post */}
+                <Card className="fintech-card">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Avatar>
+                        <AvatarFallback className="bg-blue-500 text-white">U</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 fintech-inner-box px-4 py-2 cursor-pointer hover:bg-gray-100 transition-colors">
+                        What's happening in your work today?
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <Button variant="ghost" size="sm" className="fintech-inner-button">
+                          <Camera className="h-4 w-4 mr-2" />
+                          Photo
+                        </Button>
+                        <Button variant="ghost" size="sm" className="fintech-inner-button">
+                          <MapPin className="h-4 w-4 mr-2" />
+                          Location
+                        </Button>
+                      </div>
+                      <Button className="fintech-button-primary">
+                        Post
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Posts Feed */}
+                {posts.map((post) => (
+                  <Card key={post.id} className="fintech-card">
+                    <CardContent className="p-6">
+                      <div className="flex items-start gap-3 mb-4">
+                        <Avatar>
+                          <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
+                            {post.user.name.split(' ').map(n => n[0]).join('')}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="font-semibold">{post.user.name}</h3>
+                            <Badge variant="outline" className="text-xs">
+                              {post.user.role}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm opacity-60">
+                            <MapPin className="h-3 w-3" />
+                            {post.user.location}
+                            <span>•</span>
+                            <span>{post.timestamp}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <p className="mb-4">{post.content}</p>
+
+                      <div className="flex flex-wrap gap-2 mb-4">
+                        {post.tags.map((tag) => (
+                          <Badge key={tag} variant="secondary" className="text-xs bg-blue-500/20 text-blue-800">
+                            #{tag}
+                          </Badge>
+                        ))}
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <div className="flex items-center gap-6">
+                          <Button variant="ghost" size="sm" className="fintech-inner-button hover:text-red-500">
+                            <Heart className="h-4 w-4 mr-2" />
+                            {post.likes}
+                          </Button>
+                          <Button variant="ghost" size="sm" className="fintech-inner-button hover:text-blue-500">
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            {post.comments}
+                          </Button>
+                          <Button variant="ghost" size="sm" className="fintech-inner-button hover:text-green-500">
+                            <Share2 className="h-4 w-4 mr-2" />
+                            {post.shares}
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
-            </CardHeader>
-          </Card>
 
-          {/* Profile Sections */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <BusinessInfoSection 
-              providerProfile={providerProfile}
-              setProviderProfile={setProviderProfile}
-            />
-            <ContactInfoSection 
-              userProfile={userProfile}
-              setUserProfile={setUserProfile}
-            />
-            <ServicesSection 
-              providerId={providerProfile.id}
-            />
-            <AvailabilitySection 
-              providerId={providerProfile.id}
-            />
-            
-            {/* Add Privacy Settings Section */}
-            <div className="lg:col-span-2">
-              <PrivacySettingsSection
-                userId={user?.id || ''}
-                showOnMap={userProfile?.show_on_map}
-                confidentialityRadius={userProfile?.confidentiality_radius}
-                onSettingsUpdate={fetchUserProfile}
-              />
+              {/* Sidebar */}
+              <div className="space-y-6">
+                {/* Trending Topics */}
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle>Trending Topics</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    {trendingTopics.map((topic) => (
+                      <div key={topic.tag} className="flex items-center justify-between">
+                        <span className="text-blue-600 cursor-pointer hover:text-blue-800">
+                          #{topic.tag}
+                        </span>
+                        <span className="text-sm opacity-60">{topic.count} posts</span>
+                      </div>
+                    ))}
+                  </CardContent>
+                </Card>
+
+                {/* Quick Stats */}
+                <Card className="fintech-card">
+                  <CardHeader>
+                    <CardTitle>Community Stats</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Users className="h-4 w-4" />
+                        <span>Active Providers</span>
+                      </div>
+                      <span className="font-semibold">1,247</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Star className="h-4 w-4" />
+                        <span>Jobs Completed</span>
+                      </div>
+                      <span className="font-semibold">8,392</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-4 w-4" />
+                        <span>This Month</span>
+                      </div>
+                      <span className="font-semibold">456</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
