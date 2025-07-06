@@ -16,9 +16,11 @@ import {
   Save,
   Settings,
   CheckCircle,
-  AlertCircle
+  AlertCircle,
+  Loader2
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
 
 interface BusinessTabProps {
   profile: UnifiedUserProfile;
@@ -26,7 +28,9 @@ interface BusinessTabProps {
 
 const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
   const { toast } = useToast();
+  const { enableProviderMode } = useUnifiedProfile();
   const [isEditing, setIsEditing] = useState(false);
+  const [isEnablingProvider, setIsEnablingProvider] = useState(false);
   const [businessPrivacyZone, setBusinessPrivacyZone] = useState(500);
   const [showServiceArea, setShowServiceArea] = useState(true);
   const [allowBusinessContact, setAllowBusinessContact] = useState(true);
@@ -37,6 +41,26 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
       description: "Your professional settings have been updated successfully.",
     });
     setIsEditing(false);
+  };
+
+  const handleBecomeProvider = async () => {
+    setIsEnablingProvider(true);
+    try {
+      await enableProviderMode();
+      toast({
+        title: "Provider Mode Enabled!",
+        description: "You can now offer services and access business settings.",
+      });
+      // Page will reload automatically from useUnifiedProfile hook
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to enable provider mode. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsEnablingProvider(false);
+    }
   };
 
   // Show message if user is not a provider
@@ -50,8 +74,19 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
             <p className="text-muted-foreground mb-4">
               You need to become a service provider to access business settings.
             </p>
-            <Button className="bg-primary hover:bg-primary/90">
-              Become a Provider
+            <Button 
+              className="bg-primary hover:bg-primary/90" 
+              onClick={handleBecomeProvider}
+              disabled={isEnablingProvider}
+            >
+              {isEnablingProvider ? (
+                <>
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  Enabling...
+                </>
+              ) : (
+                'Become a Provider'
+              )}
             </Button>
           </CardContent>
         </Card>

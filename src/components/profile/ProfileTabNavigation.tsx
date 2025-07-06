@@ -25,7 +25,7 @@ const ProfileTabNavigation: React.FC<ProfileTabNavigationProps> = ({
     {
       key: 'business' as ProfileTab,
       label: 'Business',
-      available: profile.can_provide_services
+      available: true // Always show Business tab - let BusinessTab component handle provider status
     }
   ];
 
