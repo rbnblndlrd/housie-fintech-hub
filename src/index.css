@@ -422,8 +422,8 @@
   /* Mobile-first responsive map sizing */
   @media (max-width: 767px) {
     .map-container-dashboard {
-      height: calc(100vh - 340px); /* Mobile: account for mobile header + bottom nav + tab bar */
-      min-height: calc(100vh - 340px);
+      height: calc(100vh - 320px); /* Mobile: reduced offset for better fit */
+      min-height: calc(100vh - 320px);
     }
     
     /* Mobile InteractiveMapPage adjustments */
