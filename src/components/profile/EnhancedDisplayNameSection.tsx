@@ -49,7 +49,7 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
   return (
     <div className="space-y-4">
       {/* Main Display Name Card */}
-      <Card className="bg-card/80 backdrop-blur-sm border-primary/20">
+      <Card className="bg-card/80 backdrop-blur-sm border-primary/20 h-full">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
@@ -60,7 +60,7 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
           </CardTitle>
         </CardHeader>
         
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 flex-1">
           {/* Enhanced Info Badge */}
           <div className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
             <div className="flex items-start gap-3">
@@ -202,7 +202,7 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
       </Card>
 
       {/* Network Connections Counter Card */}
-      <Card className="bg-card/80 backdrop-blur-sm border-green-200/50">
+      <Card className="bg-card/80 backdrop-blur-sm border-green-200/50 h-full">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Network className="h-4 w-4 text-green-600" />
@@ -210,7 +210,7 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
           </CardTitle>
         </CardHeader>
         
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 flex-1">
           {/* Main Network Stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-green-50/50 rounded-lg text-center">

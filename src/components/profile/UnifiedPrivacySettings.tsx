@@ -143,7 +143,7 @@ const UnifiedPrivacySettings: React.FC<UnifiedPrivacySettingsProps> = ({
   };
 
   return (
-    <Card className="bg-card/80 backdrop-blur-sm border-primary/10">
+    <Card className="bg-card/80 backdrop-blur-sm border-primary/10 h-full">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <Shield className="h-4 w-4 text-primary" />
@@ -155,7 +155,7 @@ const UnifiedPrivacySettings: React.FC<UnifiedPrivacySettingsProps> = ({
         <p className="text-sm text-muted-foreground">{getPrivacyDescription()}</p>
       </CardHeader>
       
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-6 flex-1">
         {/* Privacy Context Indicator */}
         <div className="p-3 bg-muted/20 rounded-lg border-l-4 border-primary">
           <div className="flex items-center gap-2 mb-1">

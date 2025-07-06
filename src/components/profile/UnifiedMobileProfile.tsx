@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import RevolutionaryRoleSelector from './RevolutionaryRoleSelector';
 import EnhancedProfileContentRenderer from './EnhancedProfileContentRenderer';
 import EnhancedDisplayNameSection from './EnhancedDisplayNameSection';
 import UnifiedPrivacySettings from './UnifiedPrivacySettings';
+import ProfileDynamicNavigation from './ProfileDynamicNavigation';
+import ProfileDesktopSidebar from './ProfileDesktopSidebar';
 
 export type ProfileRole = 'personal' | 'provider' | 'collective' | 'crew';
 
@@ -14,6 +19,7 @@ const UnifiedMobileProfile = () => {
   const { user } = useAuth();
   const { profile, loading, error } = useUnifiedProfile();
   const [selectedRole, setSelectedRole] = useState<ProfileRole>('personal');
+  const navigate = useNavigate();
 
   if (loading) {
     return (
@@ -66,74 +72,117 @@ const UnifiedMobileProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-      {/* Header */}
-      <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto p-4">
-          <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
-          <p className="text-sm text-muted-foreground">Manage your unified profile</p>
-        </div>
-      </div>
-
-      {/* Content - Responsive Layout */}
-      <div className="max-w-7xl mx-auto p-4">
-        {/* Mobile Layout */}
-        <div className="md:hidden space-y-6">
-          {/* Revolutionary Role Selector */}
-          <RevolutionaryRoleSelector
-            profile={profile}
-            selectedRole={selectedRole}
-            onRoleChange={setSelectedRole}
-          />
-
-          {/* Enhanced Display Name Section */}
-          <EnhancedDisplayNameSection profile={profile} />
-
-          {/* Enhanced Profile Content */}
-          <EnhancedProfileContentRenderer 
-            profile={profile}
-            selectedRole={selectedRole}
-          />
-
-          {/* Unified Privacy Settings */}
-          <UnifiedPrivacySettings 
-            profile={profile}
-            selectedRole={selectedRole}
-          />
+    <>
+      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+        {/* Header with Back Button for Mobile */}
+        <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40 md:hidden">
+          <div className="flex items-center gap-4 p-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => navigate('/dashboard')}
+              className="p-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-foreground">My Profile</h1>
+              <p className="text-xs text-muted-foreground">Manage your unified profile</p>
+            </div>
+          </div>
         </div>
 
-        {/* Desktop Layout - Horizontal */}
-        <div className="hidden md:flex md:gap-8 md:space-y-0">
-          {/* Left Column - Profile Content */}
-          <div className="flex-1 space-y-6">
-            {/* Revolutionary Role Selector */}
-            <RevolutionaryRoleSelector
+        {/* Desktop Header */}
+        <div className="hidden md:block bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto p-6">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/dashboard')}
+                className="p-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
+                <p className="text-sm text-muted-foreground">Manage your unified profile</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Layout */}
+        <div className="flex min-h-[calc(100vh-80px)]">
+          {/* Desktop Left Sidebar */}
+          <div className="hidden md:block">
+            <ProfileDesktopSidebar
               profile={profile}
               selectedRole={selectedRole}
               onRoleChange={setSelectedRole}
             />
-
-            {/* Enhanced Profile Content */}
-            <EnhancedProfileContentRenderer 
-              profile={profile}
-              selectedRole={selectedRole}
-            />
           </div>
 
-          {/* Right Column - Settings & Display Name */}
-          <div className="w-96 space-y-6">
-            {/* Enhanced Display Name Section */}
-            <EnhancedDisplayNameSection profile={profile} />
+          {/* Main Content Area */}
+          <div className="flex-1">
+            {/* Mobile Layout */}
+            <div className="md:hidden pb-20"> {/* Bottom padding for mobile nav */}
+              <div className="p-4 space-y-6">
+                {/* Enhanced Display Name Section */}
+                <EnhancedDisplayNameSection profile={profile} />
 
-            {/* Unified Privacy Settings */}
-            <UnifiedPrivacySettings 
-              profile={profile}
-              selectedRole={selectedRole}
-            />
+                {/* Enhanced Profile Content */}
+                <EnhancedProfileContentRenderer 
+                  profile={profile}
+                  selectedRole={selectedRole}
+                />
+
+                {/* Unified Privacy Settings */}
+                <UnifiedPrivacySettings 
+                  profile={profile}
+                  selectedRole={selectedRole}
+                />
+              </div>
+            </div>
+
+            {/* Desktop Layout - 2 Column Grid */}
+            <div className="hidden md:block p-6">
+              <div className="grid grid-cols-2 gap-6 max-w-6xl">
+                {/* Left Column */}
+                <div className="space-y-6">
+                  {/* Enhanced Display Name Section */}
+                  <EnhancedDisplayNameSection profile={profile} />
+
+                  {/* Enhanced Profile Content */}
+                  <EnhancedProfileContentRenderer 
+                    profile={profile}
+                    selectedRole={selectedRole}
+                  />
+                </div>
+
+                {/* Right Column */}
+                <div className="space-y-6">
+                  {/* Unified Privacy Settings */}
+                  <UnifiedPrivacySettings 
+                    profile={profile}
+                    selectedRole={selectedRole}
+                  />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Dynamic Mobile Navigation - Only shows on mobile */}
+      <div className="md:hidden">
+        <ProfileDynamicNavigation
+          profile={profile}
+          selectedRole={selectedRole}
+          onRoleChange={setSelectedRole}
+        />
+      </div>
+    </>
   );
 };
 

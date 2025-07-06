@@ -225,7 +225,7 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
       </Card>
 
       {/* Enhanced Performance Stats */}
-      <Card className="bg-card/80 backdrop-blur-sm">
+      <Card className="bg-card/80 backdrop-blur-sm h-full">
         <CardHeader className="pb-3">
           <CardTitle className="text-lg flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
@@ -233,14 +233,14 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
           </CardTitle>
           <p className="text-sm text-muted-foreground">{statsData.subtitle}</p>
         </CardHeader>
-        <CardContent className="pt-0">
-          <div className="grid grid-cols-1 gap-3">
+        <CardContent className="pt-0 flex-1">
+          <div className="grid grid-cols-1 gap-3 h-full">
             {statsData.stats.map((stat, index) => (
               <div 
                 key={index}
-                className="group p-4 bg-gradient-to-r from-muted/30 to-muted/20 rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-200"
+                className="group p-4 bg-gradient-to-r from-muted/30 to-muted/20 rounded-lg border border-border/50 hover:border-primary/30 transition-all duration-200 min-h-[80px] flex items-center"
               >
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-3">
                     <div className={`p-2 rounded-lg ${stat.color.replace('text-', 'bg-').replace('-600', '-100')} group-hover:scale-110 transition-transform`}>
                       <div className={stat.color}>
@@ -296,8 +296,8 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
 
       {/* Bio Section */}
       {profile.bio && (
-        <Card className="bg-card/80 backdrop-blur-sm">
-          <CardContent className="p-6">
+        <Card className="bg-card/80 backdrop-blur-sm h-full">
+          <CardContent className="p-6 flex-1">
             <h3 className="font-semibold mb-3 flex items-center gap-2">
               <Users className="h-4 w-4" />
               About {selectedRole === 'personal' ? 'Me' : 'This ' + selectedRole}
