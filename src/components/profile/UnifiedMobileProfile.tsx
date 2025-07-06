@@ -6,12 +6,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import RevolutionaryRoleSelector from './RevolutionaryRoleSelector';
 import EnhancedProfileContentRenderer from './EnhancedProfileContentRenderer';
 import EnhancedDisplayNameSection from './EnhancedDisplayNameSection';
 import UnifiedPrivacySettings from './UnifiedPrivacySettings';
 import ProfileDynamicNavigation from './ProfileDynamicNavigation';
-import ProfileDesktopSidebar from './ProfileDesktopSidebar';
 
 export type ProfileRole = 'personal' | 'provider' | 'collective' | 'crew';
 
@@ -92,39 +92,41 @@ const UnifiedMobileProfile = () => {
           </div>
         </div>
 
-        {/* Desktop Header */}
-        <div className="hidden md:block bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40">
-          <div className="max-w-7xl mx-auto p-6">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/dashboard')}
-                className="p-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-              </Button>
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
-                <p className="text-sm text-muted-foreground">Manage your unified profile</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Desktop Header - Remove grey bar */}
+        <div className="hidden md:block"></div>
 
-        {/* Content Layout */}
-        <div className="flex min-h-[calc(100vh-80px)]">
-          {/* Desktop Left Sidebar */}
-          <div className="hidden md:block">
-            <ProfileDesktopSidebar
-              profile={profile}
-              selectedRole={selectedRole}
-              onRoleChange={setSelectedRole}
-            />
+        {/* Content Layout - Remove sidebar, full width */}
+        <div className="min-h-[calc(100vh-80px)]">
+          {/* Desktop Floating Navigation - Left Side */}
+          <div className="hidden md:block fixed top-32 left-12 z-40 w-16">
+            <div className="space-y-4">
+              {[
+                { key: 'personal', icon: '👤', label: 'Personal' },
+                { key: 'provider', icon: '🔧', label: 'Provider' },
+                { key: 'collective', icon: '👥', label: 'Collective' },
+                { key: 'crew', icon: '⚡', label: 'Crews' }
+              ].map((role) => (
+                <button
+                  key={role.key}
+                  onClick={() => setSelectedRole(role.key as ProfileRole)}
+                  className={cn(
+                    "w-16 h-16 rounded-xl transition-all duration-300 flex items-center justify-center fintech-card group hover:scale-105",
+                    selectedRole === role.key
+                      ? "bg-primary text-primary-foreground shadow-2xl ring-2 ring-primary/50 scale-110"
+                      : "bg-background/80 backdrop-blur-sm hover:bg-background/90 hover:shadow-xl"
+                  )}
+                  title={role.label}
+                >
+                  <span className="text-2xl" role="img" aria-label={role.label}>
+                    {role.icon}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Main Content Area */}
-          <div className="flex-1 bg-gradient-to-br from-background to-muted/20">
+          <div className="w-full">
             {/* Mobile Layout */}
             <div className="md:hidden pb-24"> {/* Bottom padding for mobile nav */}
               <div className="p-4 space-y-6">
@@ -145,8 +147,8 @@ const UnifiedMobileProfile = () => {
               </div>
             </div>
 
-            {/* Desktop Layout - 2 Column Grid with Proper Spacing */}
-            <div className="hidden md:block p-8">
+            {/* Desktop Layout - 2 Column Grid with Left Margin for Navigation */}
+            <div className="hidden md:block p-8 ml-32">
               <div className="max-w-7xl mx-auto">
                 <div className="grid grid-cols-2 gap-8 items-start">
                   {/* Left Column */}
