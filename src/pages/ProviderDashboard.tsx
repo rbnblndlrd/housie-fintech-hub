@@ -461,7 +461,7 @@ const ProviderDashboard = () => {
 
         {/* Main Content Tabs - Responsive spacing */}
         <div className={activeTab === 'map' 
-          ? "mt-[280px] mx-2 mb-2 md:mx-[280px] md:mr-4 md:mb-4" 
+          ? "mt-[200px] mx-2 mb-2 md:mx-[280px] md:mr-4 md:mb-4" 
           : "mt-[280px] mx-4 mb-20 md:mx-[280px] md:mr-8 md:mb-8"
         }>
           <Tabs value={activeTab} onValueChange={setActiveTab} className={activeTab === 'map' ? "" : "space-y-5"}>
