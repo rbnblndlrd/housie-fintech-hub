@@ -69,35 +69,69 @@ const UnifiedMobileProfile = () => {
     <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
       {/* Header */}
       <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-50">
-        <div className="max-w-md mx-auto p-4">
+        <div className="max-w-7xl mx-auto p-4">
           <h1 className="text-2xl font-bold text-foreground">My Profile</h1>
           <p className="text-sm text-muted-foreground">Manage your unified profile</p>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-md mx-auto p-4 space-y-6">
-        {/* Revolutionary Role Selector */}
-        <RevolutionaryRoleSelector
-          profile={profile}
-          selectedRole={selectedRole}
-          onRoleChange={setSelectedRole}
-        />
+      {/* Content - Responsive Layout */}
+      <div className="max-w-7xl mx-auto p-4">
+        {/* Mobile Layout */}
+        <div className="md:hidden space-y-6">
+          {/* Revolutionary Role Selector */}
+          <RevolutionaryRoleSelector
+            profile={profile}
+            selectedRole={selectedRole}
+            onRoleChange={setSelectedRole}
+          />
 
-        {/* Enhanced Display Name Section */}
-        <EnhancedDisplayNameSection profile={profile} />
+          {/* Enhanced Display Name Section */}
+          <EnhancedDisplayNameSection profile={profile} />
 
-        {/* Enhanced Profile Content */}
-        <EnhancedProfileContentRenderer 
-          profile={profile}
-          selectedRole={selectedRole}
-        />
+          {/* Enhanced Profile Content */}
+          <EnhancedProfileContentRenderer 
+            profile={profile}
+            selectedRole={selectedRole}
+          />
 
-        {/* Unified Privacy Settings */}
-        <UnifiedPrivacySettings 
-          profile={profile}
-          selectedRole={selectedRole}
-        />
+          {/* Unified Privacy Settings */}
+          <UnifiedPrivacySettings 
+            profile={profile}
+            selectedRole={selectedRole}
+          />
+        </div>
+
+        {/* Desktop Layout - Horizontal */}
+        <div className="hidden md:flex md:gap-8 md:space-y-0">
+          {/* Left Column - Profile Content */}
+          <div className="flex-1 space-y-6">
+            {/* Revolutionary Role Selector */}
+            <RevolutionaryRoleSelector
+              profile={profile}
+              selectedRole={selectedRole}
+              onRoleChange={setSelectedRole}
+            />
+
+            {/* Enhanced Profile Content */}
+            <EnhancedProfileContentRenderer 
+              profile={profile}
+              selectedRole={selectedRole}
+            />
+          </div>
+
+          {/* Right Column - Settings & Display Name */}
+          <div className="w-96 space-y-6">
+            {/* Enhanced Display Name Section */}
+            <EnhancedDisplayNameSection profile={profile} />
+
+            {/* Unified Privacy Settings */}
+            <UnifiedPrivacySettings 
+              profile={profile}
+              selectedRole={selectedRole}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

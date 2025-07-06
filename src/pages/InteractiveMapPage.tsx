@@ -190,12 +190,14 @@ const InteractiveMapPage = () => {
             </div>
 
             {/* Mapbox Map - Full Container */}
-            <MapboxMap
-              center={quebecCenter}
-              zoom={10}
-              className="w-full h-full"
-              onMapLoad={setMap}
-            />
+            <div className="border-2 border-border rounded-lg overflow-hidden">
+              <MapboxMap
+                center={quebecCenter}
+                zoom={10}
+                className="w-full h-full"
+                onMapLoad={setMap}
+              />
+            </div>
 
             {/* Revolutionary Neighborhood Arrow Navigation */}
             <NeighborhoodArrowNavigation

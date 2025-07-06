@@ -24,12 +24,42 @@ interface UnifiedPrivacySettingsProps {
   selectedRole: ProfileRole;
 }
 
+interface PrivacySettingsState {
+  personal: {
+    showLocation: boolean;
+    showContact: boolean;
+    locationRadius: number[];
+    profileVisibility: boolean;
+  };
+  provider: {
+    showLocation: boolean;
+    showContact: boolean;
+    locationRadius: number[];
+    profileVisibility: boolean;
+    showServiceArea: boolean;
+  };
+  collective: {
+    showLocation: boolean;
+    showContact: boolean;
+    locationRadius: number[];
+    profileVisibility: boolean;
+    showGroupInfo: boolean;
+  };
+  crew: {
+    showLocation: boolean;
+    showContact: boolean;
+    locationRadius: number[];
+    profileVisibility: boolean;
+    showCrewInfo: boolean;
+  };
+}
+
 const UnifiedPrivacySettings: React.FC<UnifiedPrivacySettingsProps> = ({
   profile,
   selectedRole,
 }) => {
   // Mock privacy settings state - would come from database
-  const [privacySettings, setPrivacySettings] = useState({
+  const [privacySettings, setPrivacySettings] = useState<PrivacySettingsState>({
     personal: {
       showLocation: true,
       showContact: false,
@@ -210,7 +240,7 @@ const UnifiedPrivacySettings: React.FC<UnifiedPrivacySettingsProps> = ({
               <Label className="text-sm font-medium">Show Service Area</Label>
             </div>
             <Switch
-              checked={currentSettings.showServiceArea}
+              checked={(currentSettings as any).showServiceArea || false}
               onCheckedChange={(checked) => updateSetting('showServiceArea', checked)}
             />
           </div>
@@ -223,7 +253,7 @@ const UnifiedPrivacySettings: React.FC<UnifiedPrivacySettingsProps> = ({
               <Label className="text-sm font-medium">Show Group Information</Label>
             </div>
             <Switch
-              checked={currentSettings.showGroupInfo}
+              checked={(currentSettings as any).showGroupInfo || false}
               onCheckedChange={(checked) => updateSetting('showGroupInfo', checked)}
             />
           </div>
@@ -237,7 +267,7 @@ const UnifiedPrivacySettings: React.FC<UnifiedPrivacySettingsProps> = ({
                 <Label className="text-sm font-medium">Show Crew Information</Label>
               </div>
               <Switch
-                checked={currentSettings.showCrewInfo}
+                checked={(currentSettings as any).showCrewInfo || false}
                 onCheckedChange={(checked) => updateSetting('showCrewInfo', checked)}
               />
             </div>

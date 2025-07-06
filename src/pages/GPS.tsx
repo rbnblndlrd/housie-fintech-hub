@@ -13,8 +13,10 @@ const GPS = () => {
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full bg-background z-50">
-      <GPSNavigationMap />
+    <div className="fixed inset-0 w-full h-full bg-background z-50 p-2">
+      <div className="border-2 border-border rounded-lg overflow-hidden h-full">
+        <GPSNavigationMap />
+      </div>
     </div>
   );
 };
