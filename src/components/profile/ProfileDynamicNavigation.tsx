@@ -71,19 +71,16 @@ const ProfileDynamicNavigation: React.FC<ProfileDynamicNavigationProps> = ({
             onClick={() => !role.disabled && onRoleChange(role.key)}
             disabled={role.disabled}
             className={cn(
-              "flex flex-col items-center justify-center px-3 py-2 rounded-lg transition-all duration-300 min-w-[60px] touch-manipulation",
+              "flex items-center justify-center p-4 rounded-xl transition-all duration-300 min-w-[64px] min-h-[64px] touch-manipulation",
               selectedRole === role.key
-                ? "bg-primary text-primary-foreground shadow-lg scale-105"
+                ? "bg-primary text-primary-foreground shadow-lg scale-110"
                 : role.disabled
                 ? "opacity-50 cursor-not-allowed"
-                : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:scale-105"
             )}
           >
-            <span className="text-xl mb-1" role="img" aria-label={role.label}>
+            <span className="text-2xl" role="img" aria-label={role.label}>
               {role.icon}
-            </span>
-            <span className="text-xs font-medium leading-tight text-center">
-              {role.label}
             </span>
           </button>
         ))}

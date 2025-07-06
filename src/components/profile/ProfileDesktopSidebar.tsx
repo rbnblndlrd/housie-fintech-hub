@@ -28,7 +28,7 @@ const ProfileDesktopSidebar: React.FC<ProfileDesktopSidebarProps> = ({
         key: 'personal', 
         label: 'Personal', 
         icon: '👤',
-        description: 'Personal stats and activity'
+        description: 'Individual profile and activity'
       }
     ];
 
@@ -58,7 +58,7 @@ const ProfileDesktopSidebar: React.FC<ProfileDesktopSidebarProps> = ({
         key: 'crew', 
         label: 'Crews', 
         icon: '⚡',
-        description: 'Team leadership and management'
+        description: 'Team coordination and projects'
       });
     }
 
@@ -68,45 +68,48 @@ const ProfileDesktopSidebar: React.FC<ProfileDesktopSidebarProps> = ({
   const availableRoles = getAvailableRoles();
 
   return (
-    <div className="w-64 bg-card/80 backdrop-blur-sm border-r border-border/50 h-full">
-      <div className="p-6">
-        <h2 className="text-lg font-semibold text-foreground mb-6">Profile Sections</h2>
+    <div className="w-80 fintech-card border-r-4 border-border/30 h-full">
+      <div className="p-8">
+        <h2 className="text-2xl font-bold text-foreground mb-8 fintech-text-header">Profile Sections</h2>
         
-        <div className="space-y-2">
+        <div className="space-y-4">
           {availableRoles.map((role) => (
             <button
               key={role.key}
               onClick={() => !role.disabled && onRoleChange(role.key)}
               disabled={role.disabled}
               className={cn(
-                "w-full flex items-center gap-4 px-4 py-4 rounded-xl transition-all duration-300 text-left group",
+                "w-full flex items-center gap-6 px-6 py-6 rounded-2xl transition-all duration-300 text-left group fintech-card-base",
                 selectedRole === role.key
-                  ? "bg-primary text-primary-foreground shadow-lg ring-2 ring-primary/30"
+                  ? "bg-primary text-primary-foreground shadow-2xl ring-4 ring-primary/30 transform scale-105"
                   : role.disabled
                   ? "opacity-50 cursor-not-allowed"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-md"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:shadow-xl hover:transform hover:scale-102"
               )}
             >
               <div className={cn(
-                "flex items-center justify-center w-12 h-12 rounded-lg transition-colors",
+                "flex items-center justify-center w-16 h-16 rounded-2xl transition-all duration-300",
                 selectedRole === role.key
-                  ? "bg-primary-foreground/20"
-                  : "bg-muted/30 group-hover:bg-muted/50"
+                  ? "bg-primary-foreground/20 shadow-lg"
+                  : "bg-muted/30 group-hover:bg-muted/50 group-hover:shadow-md"
               )}>
-                <span className="text-2xl" role="img" aria-label={role.label}>
+                <span className="text-3xl" role="img" aria-label={role.label}>
                   {role.icon}
                 </span>
               </div>
               
               <div className="flex-1 min-w-0">
-                <div className="font-medium mb-1">
+                <div className={cn(
+                  "text-xl font-bold mb-2",
+                  selectedRole === role.key ? "text-primary-foreground" : "fintech-text-header"
+                )}>
                   {role.label}
                 </div>
                 <div className={cn(
-                  "text-sm leading-tight",
+                  "text-sm leading-relaxed",
                   selectedRole === role.key
                     ? "text-primary-foreground/80"
-                    : "text-muted-foreground"
+                    : "fintech-text-secondary"
                 )}>
                   {role.description}
                 </div>

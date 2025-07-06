@@ -124,9 +124,9 @@ const UnifiedMobileProfile = () => {
           </div>
 
           {/* Main Content Area */}
-          <div className="flex-1">
+          <div className="flex-1 bg-gradient-to-br from-background to-muted/20">
             {/* Mobile Layout */}
-            <div className="md:hidden pb-20"> {/* Bottom padding for mobile nav */}
+            <div className="md:hidden pb-24"> {/* Bottom padding for mobile nav */}
               <div className="p-4 space-y-6">
                 {/* Enhanced Display Name Section */}
                 <EnhancedDisplayNameSection profile={profile} />
@@ -145,28 +145,30 @@ const UnifiedMobileProfile = () => {
               </div>
             </div>
 
-            {/* Desktop Layout - 2 Column Grid */}
-            <div className="hidden md:block p-6">
-              <div className="grid grid-cols-2 gap-6 max-w-6xl">
-                {/* Left Column */}
-                <div className="space-y-6">
-                  {/* Enhanced Display Name Section */}
-                  <EnhancedDisplayNameSection profile={profile} />
+            {/* Desktop Layout - 2 Column Grid with Proper Spacing */}
+            <div className="hidden md:block p-8">
+              <div className="max-w-7xl mx-auto">
+                <div className="grid grid-cols-2 gap-8 items-start">
+                  {/* Left Column */}
+                  <div className="space-y-8">
+                    {/* Enhanced Display Name Section */}
+                    <EnhancedDisplayNameSection profile={profile} />
 
-                  {/* Enhanced Profile Content */}
-                  <EnhancedProfileContentRenderer 
-                    profile={profile}
-                    selectedRole={selectedRole}
-                  />
-                </div>
+                    {/* Enhanced Profile Content */}
+                    <EnhancedProfileContentRenderer 
+                      profile={profile}
+                      selectedRole={selectedRole}
+                    />
+                  </div>
 
-                {/* Right Column */}
-                <div className="space-y-6">
-                  {/* Unified Privacy Settings */}
-                  <UnifiedPrivacySettings 
-                    profile={profile}
-                    selectedRole={selectedRole}
-                  />
+                  {/* Right Column */}
+                  <div className="space-y-8">
+                    {/* Unified Privacy Settings */}
+                    <UnifiedPrivacySettings 
+                      profile={profile}
+                      selectedRole={selectedRole}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
