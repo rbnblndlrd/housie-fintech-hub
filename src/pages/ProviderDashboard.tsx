@@ -459,9 +459,12 @@ const ProviderDashboard = () => {
               </div>
             </div>
 
-            {/* Main Content Tabs - Responsive spacing */}
-            <div className="mt-[280px] mx-4 mb-20 md:mx-[280px] md:mr-8 md:mb-8">
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-5">
+        {/* Main Content Tabs - Responsive spacing */}
+        <div className={activeTab === 'map' 
+          ? "mt-[280px] mx-2 mb-2 md:mx-[280px] md:mr-4 md:mb-4" 
+          : "mt-[280px] mx-4 mb-20 md:mx-[280px] md:mr-8 md:mb-8"
+        }>
+          <Tabs value={activeTab} onValueChange={setActiveTab} className={activeTab === 'map' ? "" : "space-y-5"}>
 
                 <TabsContent value="job-hub" className="space-y-8">
                   {/* Mobile Job Hub - Dynamic Job Icon Grid */}
@@ -1533,13 +1536,11 @@ const ProviderDashboard = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="map" className="h-full p-0">
-                  <div className="h-full w-full border-2 border-border rounded-lg overflow-hidden bg-background">
-                    <div className="w-full h-full" style={{ height: 'calc(100vh - 200px)' }}>
-                      <GPSNavigationMap isDashboard={true} />
-                    </div>
-                  </div>
-                </TabsContent>
+            <TabsContent value="map" className="p-0 h-full">
+              <div className="map-container-dashboard border-2 border-border rounded-lg overflow-hidden bg-background shadow-lg">
+                <GPSNavigationMap isDashboard={true} />
+              </div>
+            </TabsContent>
 
                 <TabsContent value="messages">
                   <Card className="fintech-card">
