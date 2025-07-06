@@ -30,7 +30,7 @@ const ProfileTabNavigation: React.FC<ProfileTabNavigationProps> = ({
   ];
 
   return (
-    <div className="bg-transparent sticky top-0 z-30">
+    <div className="mb-4">
       <div className="flex">
         {tabs.map((tab) => {
           if (!tab.available) return null;

@@ -228,13 +228,30 @@
     border: 2px solid rgba(139, 111, 82, 0.25);
   }
 
-  /* Nested content areas within fintech cards */
+  /* Comprehensive nested content areas within fintech cards */
   .fintech-card-base .bg-white,
   .fintech-card-base .bg-gray-50,
+  .fintech-card-base .bg-gray-100,
   .fintech-card-base .bg-slate-50,
+  .fintech-card-base .bg-slate-100,
+  .fintech-card-base .bg-card,
+  .fintech-card-base .bg-background,
+  .fintech-card-base .bg-muted,
+  .fintech-card-base .bg-secondary,
   .fintech-card-base [class*="bg-white"],
   .fintech-card-base [class*="bg-gray"],
-  .fintech-card-base [class*="bg-slate"] {
+  .fintech-card-base [class*="bg-slate"],
+  .fintech-card-base [class*="bg-card"],
+  .fintech-card-base [class*="bg-background"],
+  .fintech-card-base [class*="bg-muted"],
+  .fintech-card-base [class*="bg-secondary"],
+  .fintech-card-base input,
+  .fintech-card-base select,
+  .fintech-card-base textarea,
+  .fintech-card-base [role="dialog"],
+  .fintech-card-base [role="listbox"],
+  .fintech-card-base [data-radix-popper-content-wrapper],
+  .fintech-card-base .bg-popover {
     background: #5a6b57 !important; /* Winchester Green for all nested light backgrounds */
   }
 
