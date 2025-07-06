@@ -116,7 +116,7 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
       case 'crew':
         return {
           title: 'Crew Leadership',
-          subtitle: 'Team management and performance',
+          subtitle: 'Team coordination and projects',
           stats: [
             { 
               label: 'Crew Jobs', 
@@ -184,8 +184,8 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
   return (
     <div className="space-y-4">
       {/* Enhanced Profile Header */}
-      <Card className="bg-card/80 backdrop-blur-sm border-2 border-primary/10">
-        <CardContent className="p-6">
+      <Card className="bg-card/95 backdrop-blur-sm border-2 border-primary/20">
+        <CardContent className="p-6 bg-background/30">
           <div className="flex flex-col items-center text-center space-y-4">
             <div className="relative">
               <Avatar className="h-24 w-24 ring-4 ring-primary/20 shadow-lg">
@@ -225,15 +225,15 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
       </Card>
 
       {/* Enhanced Performance Stats */}
-      <Card className="bg-card/80 backdrop-blur-sm h-full">
-        <CardHeader className="pb-3">
+      <Card className="bg-card/95 backdrop-blur-sm h-full border-2 border-border/20">
+        <CardHeader className="pb-3 bg-muted/20 rounded-t-lg border-b border-border/10">
           <CardTitle className="text-lg flex items-center gap-2">
             <TrendingUp className="h-5 w-5 text-primary" />
             {statsData.title}
           </CardTitle>
           <p className="text-sm text-muted-foreground">{statsData.subtitle}</p>
         </CardHeader>
-        <CardContent className="pt-0 flex-1">
+        <CardContent className="pt-0 flex-1 bg-background/30">
           <div className="grid grid-cols-1 gap-3 h-full">
             {statsData.stats.map((stat, index) => (
               <div 
@@ -268,14 +268,14 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
 
       {/* Role-specific Additional Info */}
       {selectedRole === 'crew' && (
-        <Card className="bg-card/80 backdrop-blur-sm border-orange-200/50">
-          <CardHeader>
+        <Card className="bg-card/95 backdrop-blur-sm border-2 border-orange-200/50">
+          <CardHeader className="bg-orange-50/30 rounded-t-lg border-b border-orange-200/20">
             <CardTitle className="text-base flex items-center gap-2">
               <Zap className="h-4 w-4 text-orange-500" />
               Crew Management
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="bg-background/30">
             <div className="space-y-3">
               <div className="flex justify-between items-center p-3 bg-orange-50/50 rounded-lg">
                 <span className="text-sm font-medium">Permission Level</span>
@@ -296,8 +296,8 @@ const EnhancedProfileContentRenderer: React.FC<EnhancedProfileContentRendererPro
 
       {/* Bio Section */}
       {profile.bio && (
-        <Card className="bg-card/80 backdrop-blur-sm h-full">
-          <CardContent className="p-6 flex-1">
+        <Card className="bg-card/95 backdrop-blur-sm h-full border-2 border-border/20">
+          <CardContent className="p-6 flex-1 bg-background/30">
             <h3 className="font-semibold mb-3 flex items-center gap-2">
               <Users className="h-4 w-4" />
               About {selectedRole === 'personal' ? 'Me' : 'This ' + selectedRole}

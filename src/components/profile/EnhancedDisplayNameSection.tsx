@@ -49,8 +49,8 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
   return (
     <div className="space-y-4">
       {/* Main Display Name Card */}
-      <Card className="bg-card/80 backdrop-blur-sm border-primary/20 h-full">
-        <CardHeader>
+      <Card className="bg-card/95 backdrop-blur-sm border-2 border-primary/20 h-full">
+        <CardHeader className="bg-primary/5 rounded-t-lg border-b border-primary/10">
           <CardTitle className="text-base flex items-center gap-2">
             <Shield className="h-4 w-4 text-primary" />
             Display Name System
@@ -60,7 +60,7 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
           </CardTitle>
         </CardHeader>
         
-        <CardContent className="space-y-4 flex-1">
+        <CardContent className="space-y-4 flex-1 bg-background/50">
           {/* Enhanced Info Badge */}
           <div className="p-4 bg-gradient-to-r from-primary/5 to-primary/10 border border-primary/20 rounded-lg">
             <div className="flex items-start gap-3">
@@ -202,15 +202,15 @@ const EnhancedDisplayNameSection: React.FC<EnhancedDisplayNameSectionProps> = ({
       </Card>
 
       {/* Network Connections Counter Card */}
-      <Card className="bg-card/80 backdrop-blur-sm border-green-200/50 h-full">
-        <CardHeader>
+      <Card className="bg-card/95 backdrop-blur-sm border-2 border-green-200/50 h-full">
+        <CardHeader className="bg-green-50/50 rounded-t-lg border-b border-green-200/20">
           <CardTitle className="text-base flex items-center gap-2">
             <Network className="h-4 w-4 text-green-600" />
             Network Connections Impact
           </CardTitle>
         </CardHeader>
         
-        <CardContent className="space-y-4 flex-1">
+        <CardContent className="space-y-4 flex-1 bg-background/50">
           {/* Main Network Stats */}
           <div className="grid grid-cols-2 gap-4">
             <div className="p-3 bg-green-50/50 rounded-lg text-center">

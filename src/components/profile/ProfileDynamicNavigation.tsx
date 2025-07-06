@@ -27,35 +27,23 @@ const ProfileDynamicNavigation: React.FC<ProfileDynamicNavigationProps> = ({
         key: 'personal', 
         label: 'Personal', 
         icon: '👤'
-      }
-    ];
-
-    // Add provider role if user can provide services
-    if (profile.can_provide_services) {
-      roles.push({ 
+      },
+      { 
         key: 'provider', 
         label: 'Provider', 
         icon: '🔧'
-      });
-    }
-
-    // Add collective role (always available for customers)
-    if (profile.can_book_services !== false) {
-      roles.push({ 
+      },
+      { 
         key: 'collective', 
         label: 'Collective', 
         icon: '👥'
-      });
-    }
-
-    // Add crew roles based on business name (providers with crews)
-    if (profile.can_provide_services && profile.business_name) {
-      roles.push({ 
+      },
+      { 
         key: 'crew', 
         label: 'Crews', 
         icon: '⚡'
-      });
-    }
+      }
+    ];
 
     return roles;
   };
