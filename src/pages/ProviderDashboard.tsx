@@ -1533,9 +1533,11 @@ const ProviderDashboard = () => {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="map">
-                  <div className="map-container-dashboard bg-background rounded-lg">
-                    <GPSNavigationMap isDashboard={true} />
+                <TabsContent value="map" className="h-full p-0">
+                  <div className="h-full w-full border-2 border-border rounded-lg overflow-hidden bg-background">
+                    <div className="w-full h-full" style={{ height: 'calc(100vh - 200px)' }}>
+                      <GPSNavigationMap isDashboard={true} />
+                    </div>
                   </div>
                 </TabsContent>
 

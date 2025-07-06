@@ -42,18 +42,17 @@ const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false
 
   // Responsive container classes and styles based on usage context
   const containerClasses = isDashboard 
-    ? "relative w-full h-full overflow-hidden" 
-    : "absolute inset-0 w-full h-full overflow-hidden";
+    ? "w-full h-full" 
+    : "absolute inset-0 w-full h-full";
 
   const containerStyles = isDashboard
     ? { 
         width: '100%', 
-        height: '100%',
-        minHeight: '100%' // Fill the container completely
+        height: '100%'
       }
     : { 
         width: '100%', 
-        height: '100vh' // Full viewport for standalone
+        height: '100vh'
       };
 
   return (

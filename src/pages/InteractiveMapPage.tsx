@@ -169,13 +169,13 @@ const InteractiveMapPage = () => {
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
       
-      {/* Map Container - Responsive Sizing */}
-      <div className="fixed inset-0 pt-16" style={{
-        height: 'calc(100vh - 64px)' // Account for header on all devices
+      {/* Map Container - Full Viewport with Border */}
+      <div className="fixed inset-0 pt-16 p-4" style={{
+        height: 'calc(100vh - 64px)' // Account for header
       }}>
-        <div className="w-full h-full relative flex">
-          {/* Map Section - Responsive */}
-          <div className="flex-1 relative">
+        <div className="w-full h-full border-2 border-border rounded-lg overflow-hidden bg-background shadow-lg relative flex">
+          {/* Map Section - Full Container */}
+          <div className="flex-1 relative overflow-hidden">
             {/* Privacy Notice */}
             <div className="absolute top-4 left-4 z-50 pointer-events-auto">
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-xs">
