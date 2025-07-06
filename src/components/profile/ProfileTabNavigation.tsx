@@ -30,7 +30,7 @@ const ProfileTabNavigation: React.FC<ProfileTabNavigationProps> = ({
   ];
 
   return (
-    <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-30">
+    <div className="bg-transparent sticky top-0 z-30">
       <div className="flex">
         {tabs.map((tab) => {
           if (!tab.available) return null;
@@ -41,10 +41,10 @@ const ProfileTabNavigation: React.FC<ProfileTabNavigationProps> = ({
               variant="ghost"
               onClick={() => onTabChange(tab.key)}
               className={cn(
-                "rounded-none border-b-2 border-transparent px-6 py-3 font-medium transition-all",
+                "rounded-none border-b-2 border-transparent px-6 py-3 font-medium transition-all bg-transparent",
                 activeTab === tab.key
-                  ? "border-primary bg-primary/5 text-primary"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "border-primary text-primary"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
               {tab.label}

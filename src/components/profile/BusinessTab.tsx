@@ -64,11 +64,20 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
       {/* Business Information Card */}
       <Card className="bg-card/95 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Briefcase className="h-5 w-5" />
-            Professional Service Provider
-            {profile.verified && <CheckCircle className="h-4 w-4 text-green-500" />}
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Briefcase className="h-5 w-5" />
+              Professional Service Provider
+              {profile.verified && <CheckCircle className="h-4 w-4 text-green-500" />}
+            </CardTitle>
+            <Button
+              variant={isEditing ? "default" : "outline"}
+              onClick={() => setIsEditing(!isEditing)}
+              size="sm"
+            >
+              {isEditing ? 'Cancel' : 'Edit Profile'}
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between p-3 bg-green-50/50 rounded-lg">
@@ -109,6 +118,22 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
               disabled={!isEditing}
             />
           </div>
+
+          {isEditing && (
+            <div className="flex gap-3 pt-4">
+              <Button onClick={handleSave} className="flex-1">
+                <Save className="h-4 w-4 mr-2" />
+                Save Changes
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => setIsEditing(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -228,18 +253,6 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
               </Badge>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-              <span className="text-sm">Insurance</span>
-              <Badge variant={profile.insurance_verified ? "default" : "secondary"}>
-                {profile.insurance_verified ? 'Verified' : 'Pending'}
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
-              <span className="text-sm">CRA Compliant</span>
-              <Badge variant={profile.cra_compliant ? "default" : "secondary"}>
-                {profile.cra_compliant ? 'Compliant' : 'Pending'}
-              </Badge>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-muted/20 rounded-lg">
               <span className="text-sm">Professional License</span>
               <Badge variant={profile.professional_license_verified ? "default" : "secondary"}>
                 {profile.professional_license_verified ? 'Verified' : 'Pending'}
@@ -249,32 +262,7 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
         </CardContent>
       </Card>
 
-      {/* Action Buttons */}
-      <div className="flex gap-3">
-        {isEditing ? (
-          <>
-            <Button onClick={handleSave} className="flex-1">
-              <Save className="h-4 w-4 mr-2" />
-              Save Changes
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={() => setIsEditing(false)}
-              className="flex-1"
-            >
-              Cancel
-            </Button>
-          </>
-        ) : (
-          <Button 
-            variant="outline" 
-            onClick={() => setIsEditing(true)}
-            className="w-full"
-          >
-            Edit Business Settings
-          </Button>
-        )}
-      </div>
+      {/* Action Buttons - Remove since they're now in the card */}
     </div>
   );
 };

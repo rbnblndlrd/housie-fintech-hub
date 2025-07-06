@@ -112,7 +112,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         </div>
       ) : (
         <div className="fixed z-50" style={{ bottom: '100px', right: '16px' }}>
-          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl w-96 h-[600px] flex flex-col overflow-hidden">
+          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
             <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
               <h3 className="font-semibold text-yellow-900">
