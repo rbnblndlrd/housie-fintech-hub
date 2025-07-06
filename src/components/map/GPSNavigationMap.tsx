@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { useMapTheme } from '@/hooks/useMapTheme';
+import MapThemeSelector from '@/components/map/MapThemeSelector';
 
 // Set Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicmJuYmxuZGxyZCIsImEiOiJjbWNmdGYzN2wwY2RuMmtwd3M3d2hzM3NxIn0.MZfduMhwltc3eC8V5xYgcQ';
@@ -12,14 +14,19 @@ interface GPSNavigationMapProps {
 const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
+  const { isDark } = useMapTheme();
 
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    // Initialize map
+    // Initialize map with theme-based style
+    const mapStyle = isDark 
+      ? 'mapbox://styles/mapbox/dark-v11'
+      : 'mapbox://styles/mapbox/streets-v11';
+    
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/streets-v11',
+      style: mapStyle,
       center: [-73.5673, 45.5017], // Montreal coordinates
       zoom: 10
     });
@@ -38,7 +45,7 @@ const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false
         map.current.remove();
       }
     };
-  }, []);
+  }, [isDark]); // Re-initialize when theme changes
 
   // Responsive container classes and styles based on usage context
   const containerClasses = isDashboard 
@@ -56,11 +63,18 @@ const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false
       };
 
   return (
-    <div 
-      ref={mapContainer} 
-      className={containerClasses}
-      style={containerStyles}
-    />
+    <div className="relative w-full h-full">
+      <div 
+        ref={mapContainer} 
+        className={containerClasses}
+        style={containerStyles}
+      />
+      
+      {/* Theme Toggle - positioned in top-left */}
+      <div className="absolute top-4 left-4 z-10">
+        <MapThemeSelector />
+      </div>
+    </div>
   );
 };
 

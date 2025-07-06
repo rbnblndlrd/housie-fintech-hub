@@ -119,10 +119,10 @@ export const mapThemes: Record<MapTheme, MapThemeConfig> = {
 };
 
 export const useMapTheme = () => {
-  // Default to teal & cream theme for the clean map
+  // Default to dark theme for better visibility
   const [currentTheme, setCurrentTheme] = useState<MapTheme>(() => {
     const saved = localStorage.getItem('interactive-map-theme');
-    return (saved as MapTheme) || 'tealCream';
+    return (saved as MapTheme) || 'dark';
   });
 
   const cycleTheme = () => {
@@ -134,6 +134,12 @@ export const useMapTheme = () => {
     console.log('🎨 useMapTheme: Theme cycled to:', nextTheme);
   };
 
+  const toggleLightDark = () => {
+    const newTheme = currentTheme === 'dark' ? 'standard' : 'dark';
+    setCurrentTheme(newTheme);
+    console.log('🎨 useMapTheme: Theme toggled to:', newTheme);
+  };
+
   useEffect(() => {
     localStorage.setItem('interactive-map-theme', currentTheme);
   }, [currentTheme]);
@@ -142,6 +148,8 @@ export const useMapTheme = () => {
     currentTheme,
     currentThemeConfig: mapThemes[currentTheme],
     cycleTheme,
-    setTheme: setCurrentTheme
+    toggleLightDark,
+    setTheme: setCurrentTheme,
+    isDark: currentTheme === 'dark'
   };
 };
