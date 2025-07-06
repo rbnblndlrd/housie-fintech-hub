@@ -388,7 +388,7 @@ const Help = () => {
                   </Card>
 
                   {/* Need More Help */}
-                  <Card className="fintech-card bg-gradient-to-br from-blue-50 to-purple-50">
+                  <Card className="fintech-card" style={{ backgroundColor: '#5a6b57' }}>
                     <CardContent className="p-6 text-center">
                       <HelpCircle className="h-12 w-12 text-blue-600 mx-auto mb-4" />
                       <h3 className="font-semibold mb-2">Still Need Help?</h3>
