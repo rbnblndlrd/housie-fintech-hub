@@ -132,7 +132,7 @@
 
   .fintech-inner-box {
     @apply fintech-card-base;
-    @apply bg-gradient-to-bl from-orange-50/50 to-amber-50/50;
+    background: #5a6b57; /* Winchester Green */
     border: 2px solid rgba(139, 111, 82, 0.25);
     box-shadow: 
       0 4px 6px -1px rgba(139, 111, 82, 0.1),
@@ -141,7 +141,7 @@
 
   .fintech-button-secondary {
     @apply fintech-card-base;
-    @apply bg-gradient-to-r from-amber-100/60 to-orange-100/60;
+    background: #5a6b57; /* Winchester Green */
   }
 
   /* Clean Chalkboard Pattern Variations with Strategic Positioning */
@@ -223,9 +223,19 @@
   /* Enhanced card secondary background */
   .fintech-card-secondary {
     @apply fintech-card-base;
-    @apply bg-gradient-to-br from-amber-50/40 to-orange-50/40;
+    background: #5a6b57; /* Winchester Green */
     backdrop-filter: blur(0.5px);
     border: 2px solid rgba(139, 111, 82, 0.25);
+  }
+
+  /* Nested content areas within fintech cards */
+  .fintech-card-base .bg-white,
+  .fintech-card-base .bg-gray-50,
+  .fintech-card-base .bg-slate-50,
+  .fintech-card-base [class*="bg-white"],
+  .fintech-card-base [class*="bg-gray"],
+  .fintech-card-base [class*="bg-slate"] {
+    background: #5a6b57 !important; /* Winchester Green for all nested light backgrounds */
   }
 
   /* Text overlay for video backgrounds */
