@@ -22,6 +22,7 @@ import NotificationsPage from './pages/Notifications';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
+import Social from './pages/Social';
 import CompetitiveAdvantage from './pages/CompetitiveAdvantage';
 import Help from './pages/Help';
 import Calendar from './pages/Calendar';
@@ -70,7 +71,7 @@ function App() {
                   <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
                   <Route path="/admin-dashboard" element={<AdminDashboard />} />
                   <Route path="/admin" element={<Navigate to="/admin-dashboard" replace />} />
-                  
+                  <Route path="/social" element={<Social />} />
                   <Route path="/competitive-advantage" element={<CompetitiveAdvantage />} />
                   <Route path="/help" element={<Help />} />
                   <Route path="/calendar" element={<Calendar />} />
