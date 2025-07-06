@@ -182,19 +182,35 @@
 
   /* Enhanced Text styling for better visibility */
   .fintech-text-header {
-    color: #654321;
+    color: #ffffff;
     text-shadow: 
-      0 2px 4px rgba(255, 255, 255, 0.9),
-      0 1px 2px rgba(139, 111, 82, 0.3);
+      0 2px 4px rgba(0, 0, 0, 0.9),
+      0 1px 2px rgba(0, 0, 0, 0.8);
     font-weight: 700;
     letter-spacing: -0.02em;
   }
 
   .fintech-text-secondary {
-    color: #8B6F52;
-    text-shadow: 0 1px 3px rgba(255, 255, 255, 0.8);
+    color: #ffffff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
     opacity: 0.95;
     font-weight: 500;
+  }
+
+  /* Make all text in fintech cards white by default */
+  .fintech-card-base h1,
+  .fintech-card-base h2,
+  .fintech-card-base h3,
+  .fintech-card-base h4,
+  .fintech-card-base h5,
+  .fintech-card-base h6,
+  .fintech-card-base p,
+  .fintech-card-base span,
+  .fintech-card-base div,
+  .fintech-card-base label,
+  .fintech-card-base li {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   }
 
   /* Enhanced button styling */
