@@ -253,6 +253,7 @@
   .fintech-card-base [data-radix-popper-content-wrapper],
   .fintech-card-base .bg-popover {
     background: #5a6b57 !important; /* Winchester Green for all nested light backgrounds */
+    border: 1px solid #F5F5DC !important; /* Thin cream border around Winchester Green windows */
   }
 
   /* Text overlay for video backgrounds */
