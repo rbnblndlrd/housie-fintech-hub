@@ -22,12 +22,15 @@ import {
   Users
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
 
 interface PersonalTabProps {
   profile: UnifiedUserProfile;
+  activeTab: ProfileTab;
+  onTabChange: (tab: ProfileTab) => void;
 }
 
-const PersonalTab: React.FC<PersonalTabProps> = ({ profile }) => {
+const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChange }) => {
   const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(profile.full_name || '');
@@ -62,6 +65,14 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile }) => {
             <User className="h-5 w-5" />
             Personal Information
           </CardTitle>
+          {/* Tab Navigation inside the card */}
+          <div className="mt-4">
+            <ProfileTabNavigation
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+              profile={profile}
+            />
+          </div>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Avatar and Basic Info */}

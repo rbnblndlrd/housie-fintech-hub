@@ -21,12 +21,15 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
+import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
 
 interface BusinessTabProps {
   profile: UnifiedUserProfile;
+  activeTab: ProfileTab;
+  onTabChange: (tab: ProfileTab) => void;
 }
 
-const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
+const BusinessTab: React.FC<BusinessTabProps> = ({ profile, activeTab, onTabChange }) => {
   const { toast } = useToast();
   const { enableProviderMode } = useUnifiedProfile();
   const [isEditing, setIsEditing] = useState(false);
@@ -74,6 +77,14 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
             <p className="text-muted-foreground mb-4">
               You need to become a service provider to access business settings.
             </p>
+            {/* Tab Navigation inside the card */}
+            <div className="mb-6">
+              <ProfileTabNavigation
+                activeTab={activeTab}
+                onTabChange={onTabChange}
+                profile={profile}
+              />
+            </div>
             <Button 
               className="bg-primary hover:bg-primary/90" 
               onClick={handleBecomeProvider}
@@ -105,13 +116,14 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
               Professional Service Provider
               {profile.verified && <CheckCircle className="h-4 w-4 text-green-500" />}
             </CardTitle>
-            <Button
-              variant={isEditing ? "default" : "outline"}
-              onClick={() => setIsEditing(!isEditing)}
-              size="sm"
-            >
-              {isEditing ? 'Cancel' : 'Edit Profile'}
-            </Button>
+          </div>
+          {/* Tab Navigation inside the card */}
+          <div className="mt-4">
+            <ProfileTabNavigation
+              activeTab={activeTab}
+              onTabChange={onTabChange}
+              profile={profile}
+            />
           </div>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -166,6 +178,18 @@ const BusinessTab: React.FC<BusinessTabProps> = ({ profile }) => {
                 className="flex-1"
               >
                 Cancel
+              </Button>
+            </div>
+          )}
+
+          {!isEditing && (
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant={isEditing ? "default" : "outline"}
+                onClick={() => setIsEditing(!isEditing)}
+                className="w-full"
+              >
+                Edit Profile
               </Button>
             </div>
           )}

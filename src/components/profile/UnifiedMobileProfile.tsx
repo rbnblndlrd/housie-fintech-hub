@@ -90,31 +90,23 @@ const UnifiedMobileProfile = () => {
       <div className="hidden md:block p-6 border-b bg-card/50 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto">
           <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
-          <p className="text-muted-foreground">Manage your personal and business information</p>
         </div>
       </div>
-
-      {/* Tab Navigation */}
-      <ProfileTabNavigation
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-        profile={profile}
-      />
 
       {/* Content Area */}
       <div className="flex-1">
         {/* Mobile Layout */}
         <div className="md:hidden p-4">
-          {activeTab === 'personal' && <PersonalTab profile={profile} />}
-          {activeTab === 'business' && <BusinessTab profile={profile} />}
+          {activeTab === 'personal' && <PersonalTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
+          {activeTab === 'business' && <BusinessTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
         </div>
 
         {/* Desktop Layout - 2 Column Grid */}
         <div className="hidden md:block p-8">
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {activeTab === 'personal' && <PersonalTab profile={profile} />}
-              {activeTab === 'business' && <BusinessTab profile={profile} />}
+              {activeTab === 'personal' && <PersonalTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
+              {activeTab === 'business' && <BusinessTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
             </div>
           </div>
         </div>
