@@ -6,19 +6,14 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import RevolutionaryRoleSelector from './RevolutionaryRoleSelector';
-import EnhancedProfileContentRenderer from './EnhancedProfileContentRenderer';
-import EnhancedDisplayNameSection from './EnhancedDisplayNameSection';
-import UnifiedPrivacySettings from './UnifiedPrivacySettings';
-import ProfileDynamicNavigation from './ProfileDynamicNavigation';
-
-export type ProfileRole = 'personal' | 'provider' | 'collective' | 'crew';
+import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
+import PersonalTab from './PersonalTab';
+import BusinessTab from './BusinessTab';
 
 const UnifiedMobileProfile = () => {
   const { user } = useAuth();
   const { profile, loading, error } = useUnifiedProfile();
-  const [selectedRole, setSelectedRole] = useState<ProfileRole>('personal');
+  const [activeTab, setActiveTab] = useState<ProfileTab>('personal');
   const navigate = useNavigate();
 
   if (loading) {
@@ -72,121 +67,59 @@ const UnifiedMobileProfile = () => {
   }
 
   return (
-    <>
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
-        {/* Header with Back Button for Mobile */}
-        <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40 md:hidden">
-          <div className="flex items-center gap-4 p-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/dashboard')}
-              className="p-2"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-foreground">My Profile</h1>
-              <p className="text-xs text-muted-foreground">Manage your unified profile</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop Header - Remove grey bar */}
-        <div className="hidden md:block"></div>
-
-        {/* Content Layout - Remove sidebar, full width */}
-        <div className="min-h-[calc(100vh-80px)]">
-          {/* Desktop Floating Navigation - Left Side */}
-          <div className="hidden md:block fixed top-32 left-12 z-40 w-16">
-            <div className="space-y-4">
-              {[
-                { key: 'personal', icon: '👤', label: 'Personal' },
-                { key: 'provider', icon: '🔧', label: 'Provider' },
-                { key: 'collective', icon: '👥', label: 'Collective' },
-                { key: 'crew', icon: '⚡', label: 'Crews' }
-              ].map((role) => (
-                <button
-                  key={role.key}
-                  onClick={() => setSelectedRole(role.key as ProfileRole)}
-                  className={cn(
-                    "w-16 h-16 rounded-xl transition-all duration-300 flex items-center justify-center fintech-card group hover:scale-105",
-                    selectedRole === role.key
-                      ? "bg-primary text-primary-foreground shadow-2xl ring-2 ring-primary/50 scale-110"
-                      : "bg-background/80 backdrop-blur-sm hover:bg-background/90 hover:shadow-xl"
-                  )}
-                  title={role.label}
-                >
-                  <span className="text-2xl" role="img" aria-label={role.label}>
-                    {role.icon}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Main Content Area */}
-          <div className="w-full">
-            {/* Mobile Layout */}
-            <div className="md:hidden pb-24"> {/* Bottom padding for mobile nav */}
-              <div className="p-4 space-y-6">
-                {/* Enhanced Display Name Section */}
-                <EnhancedDisplayNameSection profile={profile} />
-
-                {/* Enhanced Profile Content */}
-                <EnhancedProfileContentRenderer 
-                  profile={profile}
-                  selectedRole={selectedRole}
-                />
-
-                {/* Unified Privacy Settings */}
-                <UnifiedPrivacySettings 
-                  profile={profile}
-                  selectedRole={selectedRole}
-                />
-              </div>
-            </div>
-
-            {/* Desktop Layout - 2 Column Grid with Left Margin for Navigation */}
-            <div className="hidden md:block p-8 ml-32">
-              <div className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-2 gap-8 items-start">
-                  {/* Left Column */}
-                  <div className="space-y-8">
-                    {/* Enhanced Display Name Section */}
-                    <EnhancedDisplayNameSection profile={profile} />
-
-                    {/* Enhanced Profile Content */}
-                    <EnhancedProfileContentRenderer 
-                      profile={profile}
-                      selectedRole={selectedRole}
-                    />
-                  </div>
-
-                  {/* Right Column */}
-                  <div className="space-y-8">
-                    {/* Unified Privacy Settings */}
-                    <UnifiedPrivacySettings 
-                      profile={profile}
-                      selectedRole={selectedRole}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
+    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+      {/* Mobile Header with Back Button */}
+      <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40 md:hidden">
+        <div className="flex items-center gap-4 p-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/dashboard')}
+            className="p-2"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <div className="flex-1">
+            <h1 className="text-xl font-bold text-foreground">My Profile</h1>
+            <p className="text-xs text-muted-foreground">Manage your profile settings</p>
           </div>
         </div>
       </div>
 
-      {/* Dynamic Mobile Navigation - Only shows on mobile */}
-      <div className="md:hidden">
-        <ProfileDynamicNavigation
-          profile={profile}
-          selectedRole={selectedRole}
-          onRoleChange={setSelectedRole}
-        />
+      {/* Desktop Header */}
+      <div className="hidden md:block p-6 border-b bg-card/50 backdrop-blur-sm">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
+          <p className="text-muted-foreground">Manage your personal and business information</p>
+        </div>
       </div>
-    </>
+
+      {/* Tab Navigation */}
+      <ProfileTabNavigation
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+        profile={profile}
+      />
+
+      {/* Content Area */}
+      <div className="flex-1">
+        {/* Mobile Layout */}
+        <div className="md:hidden p-4">
+          {activeTab === 'personal' && <PersonalTab profile={profile} />}
+          {activeTab === 'business' && <BusinessTab profile={profile} />}
+        </div>
+
+        {/* Desktop Layout - 2 Column Grid */}
+        <div className="hidden md:block p-8">
+          <div className="max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {activeTab === 'personal' && <PersonalTab profile={profile} />}
+              {activeTab === 'business' && <BusinessTab profile={profile} />}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
