@@ -872,71 +872,131 @@ const ProviderDashboard = () => {
                         </CardContent>
                       </Card>
 
-                      {/* Desktop Today's Route */}
+                      {/* Enhanced Today's Route with integrated drag & drop */}
                       <Card className="fintech-card">
                         <CardHeader>
-                          <CardTitle className="text-lg font-bold">Today's Route</CardTitle>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-lg font-bold">Today's Route</CardTitle>
+                            <div className="flex items-center gap-2">
+                              <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
+                                <Zap className="h-3 w-3 mr-1" />
+                                🎯 Optimize
+                              </Button>
+                              <Button size="sm" variant="outline" className="border-orange-300 hover:bg-orange-50">
+                                💬 Ask Claude
+                              </Button>
+                            </div>
+                          </div>
                         </CardHeader>
                         <CardContent className="space-y-4">
-                          <div className="space-y-3">
-                            {[
-                              { 
-                                time: '9:00 AM', 
-                                service: 'Johnson Furnace (return visit)',
-                                customer: 'Mrs. Johnson',
-                                phone: '(514) 555-0123',
-                                address: '123 Main St, Westmount',
-                                status: 'Confirmed'
-                              },
-                              { 
-                                time: '11:30 AM', 
-                                service: 'New customer - Kitchen repair',
-                                customer: 'Mike Stevens',
-                                phone: '(514) 555-0456',
-                                address: '456 Oak Ave, Montreal',
-                                status: 'Pending'
+                          {/* Drag & Drop Zone */}
+                          <div 
+                            className={`border-2 border-dashed rounded-lg p-4 text-center transition-colors min-h-[140px] flex flex-col items-center justify-center ${
+                              dragOver ? 'border-blue-400 bg-blue-50' : 'border-orange-300 bg-orange-50/30'
+                            }`}
+                            onDragOver={(e) => {
+                              e.preventDefault();
+                              setDragOver(true);
+                            }}
+                            onDragLeave={() => setDragOver(false)}
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              setDragOver(false);
+                              const jobId = e.dataTransfer.getData('text/plain');
+                              addJobToRoute(jobId);
+                            }}
+                          >
+                            <Route className="h-8 w-8 mx-auto mb-2 text-orange-500" />
+                            <p className="text-sm font-medium text-gray-700 mb-1">
+                              ⚡ DRAG TO REORDER ⚡
+                            </p>
+                            <p className="text-xs text-gray-500 mb-2">
+                              {organizedJobs.length === 0 
+                                ? '🎯 Drag jobs here to optimize route' 
+                                : `${organizedJobs.length} jobs in optimization queue`
                               }
-                            ].map((job, index) => (
-                              <div 
-                                key={index} 
-                                className="bg-white border border-gray-200 rounded-lg p-3 shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                                onClick={() => {
-                                  setSelectedJob(job);
-                                  setShowJobDetail(true);
-                                }}
-                              >
-                                <div className="text-sm font-bold text-gray-800 mb-1">
-                                  🕘 {job.time}
-                                </div>
-                                <div className="text-sm font-semibold text-gray-700 mb-1">
-                                  {job.service}
-                                </div>
-                                <div className="text-xs text-gray-600 mb-1">
-                                  {job.customer}
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Badge 
-                                    className={
-                                      job.status === 'Emergency' ? 'bg-red-100 text-red-800' :
-                                      job.status === 'Confirmed' ? 'bg-green-100 text-green-800' :
-                                      'bg-yellow-100 text-yellow-800'
-                                    }
-                                  >
-                                    {job.status}
-                                  </Badge>
+                            </p>
+                            
+                            {/* Display organized jobs */}
+                            {organizedJobs.length > 0 && (
+                              <div className="w-full space-y-2 mt-3">
+                                {organizedJobs.slice(0, 3).map((job, index) => (
+                                  <div key={job.id} className="flex items-center gap-2 p-2 bg-white rounded border text-left">
+                                    <div className="flex items-center justify-center w-6 h-6 bg-orange-100 rounded-full text-xs font-bold text-orange-600">
+                                      {index + 1}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-xs font-medium text-gray-800 truncate">
+                                        📍 {job.scheduledTime} - {job.customerName}
+                                      </div>
+                                      <div className="text-xs text-gray-600 truncate">
+                                        {job.title}
+                                      </div>
+                                    </div>
+                                    <Button 
+                                      size="sm" 
+                                      variant="ghost" 
+                                      className="h-6 w-6 p-0 text-red-500 hover:text-red-700"
+                                      onClick={() => removeJobFromRoute(job.id)}
+                                    >
+                                      ×
+                                    </Button>
+                                  </div>
+                                ))}
+                                {organizedJobs.length > 3 && (
+                                  <div className="text-xs text-gray-500 text-center">
+                                    +{organizedJobs.length - 3} more jobs
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Default route items when no organized jobs */}
+                            {organizedJobs.length === 0 && (
+                              <div className="w-full space-y-2 mt-3">
+                                {[
+                                  { time: '9:00 AM', customer: 'Johnson', service: 'Furnace' },
+                                  { time: '11:30 AM', customer: 'Stevens', service: 'Kitchen repair' }
+                                ].map((job, index) => (
+                                  <div key={index} className="flex items-center gap-2 p-2 bg-white rounded border text-left">
+                                    <div className="flex items-center justify-center w-6 h-6 bg-green-100 rounded-full text-xs font-bold text-green-600">
+                                      {index + 1}
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                      <div className="text-xs font-medium text-gray-800">
+                                        📍 {job.time} - {job.customer}
+                                      </div>
+                                      <div className="text-xs text-gray-600">
+                                        {job.service}
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                                <div className="text-xs text-orange-600 font-medium mt-2">
+                                  ➕ Drop jobs here to add to route
                                 </div>
                               </div>
-                            ))}
+                            )}
                           </div>
                           
-                          <div className="space-y-3 pt-4">
-                            <Button className="w-full h-10 text-sm font-semibold bg-orange-600 hover:bg-orange-700">
-                              <MapPin className="h-4 w-4 mr-2" />
-                              🗺️ View Full Route
-                            </Button>
-                            <Button variant="outline" className="w-full h-10 text-sm font-semibold border-orange-300 hover:bg-orange-50">
-                              💬 Ask Claude
-                            </Button>
+                          {/* Action Buttons */}
+                          <div className="space-y-2">
+                            <Link to="/interactive-map" className="w-full">
+                              <Button className="w-full h-10 text-sm font-semibold bg-orange-600 hover:bg-orange-700">
+                                <MapPin className="h-4 w-4 mr-2" />
+                                🗺️ View Full Route
+                              </Button>
+                            </Link>
+                            <div className="grid grid-cols-2 gap-2">
+                              <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
+                                <Navigation className="h-3 w-3 mr-1" />
+                                Start GPS
+                              </Button>
+                              <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
+                                <ClipboardList className="h-3 w-3 mr-1" />
+                                View Bookings
+                              </Button>
+                            </div>
                           </div>
                         </CardContent>
                       </Card>
@@ -1029,83 +1089,21 @@ const ProviderDashboard = () => {
                       </CardContent>
                     </DraggableWidget>
 
-                    {/* Smart Route Optimizer Widget - Desktop Only */}
-                    <div className="absolute" style={{ left: '620px', top: '320px', width: '500px', height: '400px' }}>
-                      <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
-                      {executionMode && getSelectedJob() ? (
-                        <JobExecutionMode
-                          job={getSelectedJob()!}
-                          phases={phases}
-                          progressPercentage={getProgressPercentage()}
-                          onBack={exitExecutionMode}
-                          onCompleteJob={completeJob}
-                          onUpdatePhotoRequirement={updatePhotoRequirement}
-                        />
-                      ) : (
-                        <>
-                          <CardHeader className="pb-2 px-3 pt-3">
-                            <CardTitle className="flex items-center justify-between text-base font-bold">
-                              <div className="flex items-center gap-2">
-                                <Route className="h-4 w-4" />
-                                SMART ROUTE OPTIMIZER
-                              </div>
-                              <Badge className="bg-orange-500 text-white text-xs">ACTIVE</Badge>
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="pt-0 px-3 pb-3">
-                            {/* Route Planning Area */}
-                            <div 
-                              className={`border-2 border-dashed rounded-lg p-4 text-center mb-3 transition-colors min-h-[120px] flex flex-col items-center justify-center ${
-                                dragOver ? 'border-blue-400 bg-blue-50' : 'border-orange-300 bg-orange-50/30'
-                              }`}
-                              onDragOver={(e) => {
-                                e.preventDefault();
-                                setDragOver(true);
-                              }}
-                              onDragLeave={() => setDragOver(false)}
-                              onDrop={(e) => {
-                                e.preventDefault();
-                                setDragOver(false);
-                                const jobId = e.dataTransfer.getData('text/plain');
-                                addJobToRoute(jobId);
-                              }}
-                            >
-                              <Route className="h-8 w-8 mx-auto mb-2 text-orange-500" />
-                              <p className="text-sm font-medium text-gray-700 mb-1">
-                                {organizedJobs.length === 0 
-                                  ? 'Drag jobs here to optimize route' 
-                                  : `${organizedJobs.length} jobs in optimization queue`
-                                }
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                AI-powered route planning with real-time traffic analysis
-                              </p>
-                            </div>
-                            
-                            {/* Action Buttons */}
-                            <div className="space-y-2">
-                              <Button className="w-full bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold py-2">
-                                <Route className="h-4 w-4 mr-2" />
-                                Optimize Route
-                              </Button>
-                              <div className="grid grid-cols-2 gap-2">
-                                <Button variant="outline" className="text-sm border-orange-300 hover:bg-orange-50">
-                                  <Navigation className="h-3 w-3 mr-1" />
-                                  Start GPS Navigation
-                                </Button>
-                                <Link to="/interactive-map" className="w-full">
-                                  <Button variant="outline" className="w-full text-sm border-orange-300 hover:bg-orange-50">
-                                    <Map className="h-3 w-3 mr-1" />
-                                    View Interactive Map
-                                  </Button>
-                                </Link>
-                              </div>
-                            </div>
-                          </CardContent>
-                        </>
-                      )}
-                      </Card>
-                    </div>
+                    {/* Job Execution Mode - Only show when a job is selected */}
+                    {executionMode && getSelectedJob() && (
+                      <div className="absolute" style={{ left: '620px', top: '320px', width: '500px', height: '400px' }}>
+                        <Card className="h-full w-full bg-white border border-gray-200 shadow-lg">
+                          <JobExecutionMode
+                            job={getSelectedJob()!}
+                            phases={phases}
+                            progressPercentage={getProgressPercentage()}
+                            onBack={exitExecutionMode}
+                            onCompleteJob={completeJob}
+                            onUpdatePhotoRequirement={updatePhotoRequirement}
+                          />
+                        </Card>
+                      </div>
+                    )}
                   </div>
                 </TabsContent>
 
