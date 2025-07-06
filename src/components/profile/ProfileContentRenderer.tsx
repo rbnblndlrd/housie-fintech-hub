@@ -35,13 +35,13 @@ const ProfileContentRenderer: React.FC<ProfileContentRendererProps> = ({
             { label: 'Provider Rating', value: (profile.average_rating || 0).toFixed(1), icon: <Star className="h-4 w-4" /> },
           ]
         };
-      case 'customer':
+      case 'collective':
         return {
-          title: 'Customer Activity',
+          title: 'Collective Activity',
           stats: [
-            { label: 'Bookings Made', value: (profile.total_bookings || 0).toString(), icon: <Calendar className="h-4 w-4" /> },
-            { label: 'Reviews Given', value: (profile.total_reviews || 0).toString(), icon: <Star className="h-4 w-4" /> },
-            { label: 'Customer Rating', value: (profile.average_rating || 0).toFixed(1), icon: <Star className="h-4 w-4" /> },
+            { label: 'Group Bookings', value: '12', icon: <Calendar className="h-4 w-4" /> },
+            { label: 'Members', value: '8', icon: <Users className="h-4 w-4" /> },
+            { label: 'Group Rating', value: '4.7', icon: <Star className="h-4 w-4" /> },
           ]
         };
       case 'crew':

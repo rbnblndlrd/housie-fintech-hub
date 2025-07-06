@@ -3,12 +3,12 @@ import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import DynamicRoleSelector from './DynamicRoleSelector';
-import ProfileContentRenderer from './ProfileContentRenderer';
-import PrivacySettingsUnified from './PrivacySettingsUnified';
-import DisplayNameSection from './DisplayNameSection';
+import RevolutionaryRoleSelector from './RevolutionaryRoleSelector';
+import EnhancedProfileContentRenderer from './EnhancedProfileContentRenderer';
+import EnhancedDisplayNameSection from './EnhancedDisplayNameSection';
+import UnifiedPrivacySettings from './UnifiedPrivacySettings';
 
-export type ProfileRole = 'personal' | 'provider' | 'customer' | 'crew' | 'collective';
+export type ProfileRole = 'personal' | 'provider' | 'collective' | 'crew';
 
 const UnifiedMobileProfile = () => {
   const { user } = useAuth();
@@ -77,24 +77,24 @@ const UnifiedMobileProfile = () => {
 
       {/* Content */}
       <div className="max-w-md mx-auto p-4 space-y-6">
-        {/* Dynamic Role Selector */}
-        <DynamicRoleSelector
+        {/* Revolutionary Role Selector */}
+        <RevolutionaryRoleSelector
           profile={profile}
           selectedRole={selectedRole}
           onRoleChange={setSelectedRole}
         />
 
-        {/* Display Name Section */}
-        <DisplayNameSection profile={profile} />
+        {/* Enhanced Display Name Section */}
+        <EnhancedDisplayNameSection profile={profile} />
 
-        {/* Profile Content */}
-        <ProfileContentRenderer 
+        {/* Enhanced Profile Content */}
+        <EnhancedProfileContentRenderer 
           profile={profile}
           selectedRole={selectedRole}
         />
 
         {/* Unified Privacy Settings */}
-        <PrivacySettingsUnified 
+        <UnifiedPrivacySettings 
           profile={profile}
           selectedRole={selectedRole}
         />
