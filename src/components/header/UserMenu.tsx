@@ -2,7 +2,6 @@
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +19,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useSubscriptionData } from '@/hooks/useSubscriptionData';
 import { getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig';
+import { useToast } from '@/hooks/use-toast';
 import { 
   ChevronDown, 
   User, 
@@ -36,19 +36,34 @@ import {
 
 const UserMenu = () => {
   const { user, logout } = useAuth();
-  const { currentRole } = useRoleSwitch();
+  const { currentRole, switchRole } = useRoleSwitch();
   const navigate = useNavigate();
   const { subscriptionData, openSubscriptionPortal } = useSubscriptionData();
   const [currentStatus, setCurrentStatus] = useState('Available');
+  const { toast } = useToast();
 
   const handleLogout = async () => {
     try {
       await logout();
       await supabase.auth.signOut();
       navigate('/');
+      toast({
+        title: "Signed out",
+        description: "You have been successfully signed out.",
+      });
     } catch (error) {
       console.error('Error signing out:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
     }
+  };
+
+  const handleRoleSwitch = async () => {
+    const newRole = currentRole === 'customer' ? 'provider' : 'customer';
+    await switchRole(newRole);
   };
 
   const handleDropdownAction = (item: NavigationItem) => {
@@ -111,12 +126,7 @@ const UserMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-auto p-2 rounded-lg hover:bg-gray-800 flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src={user.user_metadata?.avatar_url} />
-            <AvatarFallback className="bg-blue-600 text-white text-sm font-medium">
-              {userInitials}
-            </AvatarFallback>
-          </Avatar>
+          <User className="h-8 w-8 text-gray-300" />
           <div className="hidden md:flex flex-col items-start">
             <span className="text-sm font-medium text-white">{userName}</span>
             <div className="flex items-center gap-1">
@@ -132,12 +142,9 @@ const UserMenu = () => {
         {/* User Info Section */}
         <div className="p-3 border-b">
           <div className="flex items-center gap-3">
-            <Avatar className="h-12 w-12">
-              <AvatarImage src={user.user_metadata?.avatar_url} />
-              <AvatarFallback className="bg-blue-600 text-white">
-                {userInitials}
-              </AvatarFallback>
-            </Avatar>
+            <div className="h-12 w-12 flex items-center justify-center bg-gray-100 rounded-full">
+              <User className="h-6 w-6 text-gray-600" />
+            </div>
             <div className="flex-1">
               <p className="font-medium text-gray-900">{userName}</p>
               <p className="text-sm text-gray-500">{user.email}</p>
@@ -209,8 +216,24 @@ const UserMenu = () => {
           onClick={() => navigate("/dashboard")}
           className="cursor-pointer"
         >
-          <span className="mr-3">📊</span>
+          <span className="mr-3">🏠</span>
           <span className="flex-1">Dashboard</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          onClick={() => navigate("/interactive-map")}
+          className="cursor-pointer"
+        >
+          <span className="mr-3">🗺️</span>
+          <span className="flex-1">Interactive Map</span>
+        </DropdownMenuItem>
+
+        <DropdownMenuItem
+          onClick={() => navigate("/manager")}
+          className="cursor-pointer"
+        >
+          <span className="mr-3">👥</span>
+          <span className="flex-1">Crew Center</span>
         </DropdownMenuItem>
 
         {/* Analytics Submenu */}
@@ -235,13 +258,31 @@ const UserMenu = () => {
 
         <DropdownMenuSeparator />
 
-        {/* Full Profile */}
+        {/* Profile Settings */}
         <DropdownMenuItem
           onClick={() => navigate("/profile")}
           className="cursor-pointer"
         >
           <span className="mr-3">👤</span>
-          <span className="flex-1">Full Profile</span>
+          <span className="flex-1">Profile Settings</span>
+        </DropdownMenuItem>
+
+        {/* Role Switch */}
+        <DropdownMenuItem
+          onClick={handleRoleSwitch}
+          className="cursor-pointer"
+        >
+          <span className="mr-3">🔄</span>
+          <span className="flex-1">Switch to {currentRole === 'customer' ? 'Provider' : 'Customer'}</span>
+        </DropdownMenuItem>
+
+        {/* Help & Support */}
+        <DropdownMenuItem
+          onClick={() => navigate("/help")}
+          className="cursor-pointer"
+        >
+          <span className="mr-3">❓</span>
+          <span className="flex-1">Help & Support</span>
         </DropdownMenuItem>
 
         {/* Sign Out */}

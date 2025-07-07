@@ -1,52 +1,16 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
-import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Button } from '@/components/ui/button';
 
 const FloatingNavigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
-  const { currentRole, switchRole } = useRoleSwitch();
-  const { toast } = useToast();
-
-  const handleSignOut = async () => {
-    try {
-      const { error } = await supabase.auth.signOut();
-      if (error) throw error;
-      
-      toast({
-        title: "Signed out",
-        description: "You have been successfully signed out.",
-      });
-    } catch (error) {
-      console.error('Sign-out error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to sign out. Please try again.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const handleRoleSwitch = async () => {
-    const newRole = currentRole === 'customer' ? 'provider' : 'customer';
-    await switchRole(newRole);
-    setIsMenuOpen(false);
-  };
 
   const menuItems = [
-    { icon: '🏠', label: 'Dashboard', href: '/dashboard' },
-    { icon: '🗺️', label: 'Interactive Map', href: '/interactive-map' },
-    { icon: '👥', label: 'Crew Center', href: '/manager' },
-    { icon: '👤', label: 'Profile Settings', href: '/profile' },
-    { icon: '🔄', label: `Switch to ${currentRole === 'customer' ? 'Provider' : 'Customer'}`, action: 'roleSwitch' },
-    { icon: '❓', label: 'Help & Support', href: '/help' },
-    { icon: '🚪', label: 'Sign Out', action: 'signOut' }
+    { label: 'Services', href: '/services' },
+    { label: 'Community', href: '/community' },
+    { label: 'Us vs Them', href: '/competitive-advantage' },
+    { label: 'Help Center', href: '/help' },
   ];
 
   // Pages that have their own headers - don't show FloatingNavigation
@@ -109,45 +73,26 @@ const FloatingNavigation = () => {
         )}
       </button>
 
-      {/* Slide-out Menu */}
+      {/* Dropdown Menu */}
       {isMenuOpen && (
-        <>
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 z-[900] bg-black/50 backdrop-blur-sm"
-            onClick={() => setIsMenuOpen(false)}
-          />
-          
-          {/* Menu Panel */}
-          <div className="fixed top-0 left-0 z-[950] w-80 h-screen bg-black/95 backdrop-blur-md animate-slide-in-right">
-            <div className="pt-20 px-6">
-              <div className="space-y-1">
-                {menuItems.map((item, index) => (
-                  item.action ? (
-                    <button
-                      key={index}
-                      onClick={item.action === 'signOut' ? handleSignOut : handleRoleSwitch}
-                      className="w-full flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors text-left"
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <span className="font-medium">{item.label}</span>
-                    </button>
-                  ) : (
-                    <Link
-                      key={index}
-                      to={item.href!}
-                      onClick={() => setIsMenuOpen(false)}
-                      className="flex items-center gap-4 px-4 py-3 text-white hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <span className="text-xl">{item.icon}</span>
-                      <span className="font-medium">{item.label}</span>
-                    </Link>
-                  )
-                ))}
-              </div>
-            </div>
+        <div className="fixed w-56 bg-black/95 backdrop-blur-sm shadow-lg rounded-lg border border-gray-800 z-[950]"
+             style={{ 
+               top: '75px',
+               left: '210px'
+             }}>
+          <div className="py-2">
+            {menuItems.map((item, index) => (
+              <Link
+                key={index}
+                to={item.href}
+                className="block px-4 py-2.5 text-white hover:bg-gray-800 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
-        </>
+        </div>
       )}
     </>
   );

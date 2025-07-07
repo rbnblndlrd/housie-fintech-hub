@@ -10,7 +10,7 @@ const HamburgerMenu = () => {
 
   const menuItems = [
     { label: 'Services', href: '/services' },
-    { label: 'Social', href: '/social' },
+    { label: 'Community', href: '/community' },
     { label: 'Us vs Them', href: '/competitive-advantage' },
     { label: 'Help Center', href: '/help' },
   ];
