@@ -22,7 +22,7 @@ import { getAnalyticsMenuItems, NavigationItem } from '@/utils/navigationConfig'
 import { useToast } from '@/hooks/use-toast';
 import { 
   ChevronDown, 
-  User, 
+  UserRound, 
   CheckCircle, 
   Clock, 
   AlertTriangle, 
@@ -126,7 +126,7 @@ const UserMenu = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-auto p-2 rounded-lg hover:bg-gray-800 flex items-center gap-2">
-          <User className="h-8 w-8 text-gray-300" />
+          <UserRound className="h-8 w-8 text-gray-300" />
           <div className="hidden md:flex flex-col items-start">
             <span className="text-sm font-medium text-white">{userName}</span>
             <div className="flex items-center gap-1">
@@ -143,7 +143,7 @@ const UserMenu = () => {
         <div className="p-3 border-b">
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 flex items-center justify-center bg-gray-100 rounded-full">
-              <User className="h-6 w-6 text-gray-600" />
+              <UserRound className="h-6 w-6 text-gray-600" />
             </div>
             <div className="flex-1">
               <p className="font-medium text-gray-900">{userName}</p>
@@ -221,40 +221,20 @@ const UserMenu = () => {
         </DropdownMenuItem>
 
         <DropdownMenuItem
-          onClick={() => navigate("/interactive-map")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">🗺️</span>
-          <span className="flex-1">Interactive Map</span>
-        </DropdownMenuItem>
-
-        <DropdownMenuItem
-          onClick={() => navigate("/manager")}
+          onClick={() => navigate("/community-dashboard")}
           className="cursor-pointer"
         >
           <span className="mr-3">👥</span>
-          <span className="flex-1">Crew Center</span>
+          <span className="flex-1">Community</span>
         </DropdownMenuItem>
 
-        {/* Analytics Submenu */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <span className="mr-3">📊</span>
-            <span>Analytics</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            {analyticsMenuItems.map((subItem, subIndex) => (
-              <DropdownMenuItem
-                key={`${subIndex}-${subItem.label}`}
-                onClick={() => handleDropdownAction(subItem)}
-                className="cursor-pointer"
-              >
-                <span className="mr-2">{subItem.icon}</span>
-                <span>{subItem.label}</span>
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        <DropdownMenuItem
+          onClick={() => navigate("/analytics-dashboard")}
+          className="cursor-pointer"
+        >
+          <span className="mr-3">📊</span>
+          <span className="flex-1">Analytics</span>
+        </DropdownMenuItem>
 
         <DropdownMenuSeparator />
 
@@ -265,15 +245,6 @@ const UserMenu = () => {
         >
           <span className="mr-3">👤</span>
           <span className="flex-1">Profile Settings</span>
-        </DropdownMenuItem>
-
-        {/* Role Switch */}
-        <DropdownMenuItem
-          onClick={handleRoleSwitch}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">🔄</span>
-          <span className="flex-1">Switch to {currentRole === 'customer' ? 'Provider' : 'Customer'}</span>
         </DropdownMenuItem>
 
         {/* Help & Support */}
