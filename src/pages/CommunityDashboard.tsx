@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { 
   Globe, 
   Users, 
@@ -19,40 +21,76 @@ import {
   Briefcase,
   MapPin,
   Network,
-  Zap
+  Zap,
+  Search,
+  X
 } from 'lucide-react';
 
 const CommunityDashboard = () => {
   const [activeTab, setActiveTab] = useState('discover');
+  const [openModal, setOpenModal] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  
   const communityStats = [
     {
       title: "Network Connections",
       value: "127",
       change: "+23",
       icon: Users,
-      color: "from-blue-600 to-cyan-600"
+      color: "from-blue-600 to-cyan-600",
+      modalKey: "connections"
     },
     {
       title: "Community Points",
       value: "2,450",
       change: "+180",
       icon: Trophy,
-      color: "from-yellow-600 to-orange-600"
+      color: "from-yellow-600 to-orange-600",
+      modalKey: "points"
     },
     {
-      title: "Crew Memberships",
+      title: "Memberships",
       value: "3",
       change: "+1",
       icon: Network,
-      color: "from-purple-600 to-violet-600"
+      color: "from-purple-600 to-violet-600",
+      modalKey: "memberships"
     },
     {
-      title: "Local Rank",
-      value: "#12",
-      change: "+3",
+      title: "Current Rank",
+      value: "Technomancer ⚡",
+      change: "+3 levels",
       icon: Award,
-      color: "from-green-600 to-emerald-600"
+      color: "from-green-600 to-emerald-600",
+      modalKey: "rank"
     }
+  ];
+
+  const connections = [
+    { name: "Sarah M.", service: "Cleaning Services", status: "Active", lastActivity: "2 hours ago", avatar: "SM" },
+    { name: "Mike T.", service: "Handyman", status: "Active", lastActivity: "1 day ago", avatar: "MT" },
+    { name: "Lisa K.", service: "Landscaping", status: "Connected", lastActivity: "3 days ago", avatar: "LK" },
+    { name: "Alex R.", service: "Plumbing", status: "Active", lastActivity: "5 hours ago", avatar: "AR" }
+  ];
+
+  const shopItems = [
+    { name: "Premium Badge", cost: 500, type: "badge", description: "Stand out with premium styling" },
+    { name: "2x Points Boost", cost: 1000, type: "boost", description: "Double points for 7 days" },
+    { name: "Dark Theme", cost: 300, type: "theme", description: "Exclusive dark mode theme" },
+    { name: "Gold Crown", cost: 2000, type: "badge", description: "Ultimate status symbol" }
+  ];
+
+  const memberships = [
+    { name: "Montreal Cleaners Unite", role: "Member", members: 45, lastActivity: "Active", type: "crew" },
+    { name: "Home Service Collective", role: "Coordinator", members: 128, lastActivity: "2 hours ago", type: "collective" },
+    { name: "Quality First Alliance", role: "Member", members: 67, lastActivity: "1 day ago", type: "crew" }
+  ];
+
+  const rankProgress = [
+    { category: "Cleaning", current: "Expert", progress: 85, next: "Master" },
+    { category: "Handyman", current: "Advanced", progress: 65, next: "Expert" },
+    { category: "Landscaping", current: "Intermediate", progress: 40, next: "Advanced" },
+    { category: "Overall", current: "Technomancer", progress: 75, next: "Grandmaster" }
   ];
 
   const nearbyCrews = [
@@ -124,7 +162,11 @@ const CommunityDashboard = () => {
             {/* Community Stats */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
               {communityStats.map((stat, index) => (
-                <Card key={index} className="fintech-metric-card">
+                <Card 
+                  key={index} 
+                  className="fintech-metric-card hover:scale-105 transition-transform cursor-pointer"
+                  onClick={() => setOpenModal(stat.modalKey)}
+                >
                   <CardContent className="p-6">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
@@ -413,6 +455,159 @@ const CommunityDashboard = () => {
             )}
           </div>
         </div>
+
+        {/* Modals */}
+        {/* Network Connections Modal */}
+        <Dialog open={openModal === 'connections'} onOpenChange={() => setOpenModal(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                Network Connections (127)
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="relative">
+                <Search className="absolute left-3 top-3 h-4 w-4 opacity-60" />
+                <Input 
+                  placeholder="Search connections..." 
+                  className="pl-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <div className="space-y-3 max-h-96 overflow-y-auto">
+                {connections.map((connection, index) => (
+                  <div key={index} className="flex items-center justify-between p-4 bg-muted/20 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-semibold">
+                        {connection.avatar}
+                      </div>
+                      <div>
+                        <p className="font-medium">{connection.name}</p>
+                        <p className="text-sm opacity-70">{connection.service}</p>
+                        <p className="text-xs opacity-60">Last active: {connection.lastActivity}</p>
+                      </div>
+                    </div>
+                    <Badge variant={connection.status === 'Active' ? 'default' : 'secondary'}>
+                      {connection.status}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Community Points Shop Modal */}
+        <Dialog open={openModal === 'points'} onOpenChange={() => setOpenModal(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5" />
+                Community Points Shop
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="p-4 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg text-white text-center">
+                <p className="text-3xl font-bold">2,450 Points</p>
+                <p className="opacity-90">Available Balance</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {shopItems.map((item, index) => (
+                  <div key={index} className="p-4 bg-muted/20 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium">{item.name}</h3>
+                      <Badge variant="outline">{item.type}</Badge>
+                    </div>
+                    <p className="text-sm opacity-70 mb-3">{item.description}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="font-bold text-lg">{item.cost} pts</span>
+                      <Button size="sm" disabled={item.cost > 2450}>
+                        {item.cost > 2450 ? 'Insufficient' : 'Purchase'}
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Memberships Modal */}
+        <Dialog open={openModal === 'memberships'} onOpenChange={() => setOpenModal(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Network className="h-5 w-5" />
+                My Memberships (3)
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              {memberships.map((membership, index) => (
+                <div key={index} className="p-4 bg-muted/20 rounded-lg">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <h3 className="font-medium">{membership.name}</h3>
+                      <p className="text-sm opacity-70">{membership.members} members • {membership.type}</p>
+                    </div>
+                    <Badge variant="default">{membership.role}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm opacity-70">Last activity: {membership.lastActivity}</span>
+                    <div className="flex gap-2">
+                      <Button size="sm" variant="outline">
+                        <MessageCircle className="h-4 w-4 mr-1" />
+                        Message
+                      </Button>
+                      <Button size="sm" variant="outline">
+                        View Details
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Rank Progression Modal */}
+        <Dialog open={openModal === 'rank'} onOpenChange={() => setOpenModal(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Award className="h-5 w-5" />
+                Rank Progression System
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="text-center p-4 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg text-white">
+                <p className="text-2xl font-bold">Technomancer ⚡</p>
+                <p className="opacity-90">Current Overall Rank</p>
+              </div>
+              <div className="space-y-4">
+                {rankProgress.map((category, index) => (
+                  <div key={index} className="p-4 bg-muted/20 rounded-lg">
+                    <div className="flex items-center justify-between mb-2">
+                      <div>
+                        <h3 className="font-medium">{category.category}</h3>
+                        <p className="text-sm opacity-70">Current: {category.current}</p>
+                      </div>
+                      <Badge variant="outline">Next: {category.next}</Badge>
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span>Progress to {category.next}</span>
+                        <span>{category.progress}%</span>
+                      </div>
+                      <Progress value={category.progress} className="h-2" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
