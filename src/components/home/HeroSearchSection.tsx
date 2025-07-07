@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { MapPin, ChevronDown, User, LogOut } from 'lucide-react';
+import { MapPin, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
+import UserMenu from '@/components/header/UserMenu';
 
 const HeroSearchSection = () => {
   const navigate = useNavigate();
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
   const [location, setLocation] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Services');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showUserMenu, setShowUserMenu] = useState(false);
 
   const serviceCategories = [
     'All Services',
@@ -42,15 +42,6 @@ const HeroSearchSection = () => {
       console.error('Sign in error:', error);
     }
     setIsLoading(false);
-  };
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-      setShowUserMenu(false);
-    } catch (error) {
-      console.error('Sign out error:', error);
-    }
   };
 
   // Render different UI based on authentication state
@@ -126,31 +117,9 @@ const HeroSearchSection = () => {
   // LOGGED IN STATE - Search functionality with user menu
   return (
     <div className="relative min-h-screen flex flex-col px-4">
-      {/* User Avatar/Menu - Floating */}
+      {/* User Menu - Floating */}
       <div className="absolute top-6 right-6 z-20">
-        <div className="relative">
-          <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            className="w-12 h-12 bg-gradient-to-br from-orange-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
-          >
-            <User className="h-6 w-6" />
-          </button>
-          
-          {showUserMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-30">
-              <div className="px-4 py-2 border-b border-gray-100">
-                <p className="text-sm font-medium text-gray-800">{user.email}</p>
-              </div>
-              <button
-                onClick={handleSignOut}
-                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center gap-2"
-              >
-                <LogOut className="h-4 w-4" />
-                Sign Out
-              </button>
-            </div>
-          )}
-        </div>
+        <UserMenu />
       </div>
 
       {/* Content positioned in lower third */}
