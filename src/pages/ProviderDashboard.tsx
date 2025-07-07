@@ -11,6 +11,7 @@ import { useDashboardLayout } from '@/hooks/useDashboardLayout';
 import { useRouteOptimizer } from '@/hooks/useRouteOptimizer';
 import JobExecutionMode from '@/components/route-optimizer/JobExecutionMode';
 import GPSNavigationMap from '@/components/map/GPSNavigationMap';
+import PokemonGOJobMap from '@/components/map/PokemonGOJobMap';
 import { Link } from 'react-router-dom';
 import { 
   Calendar, 
@@ -1536,7 +1537,7 @@ const ProviderDashboard = () => {
 
             <TabsContent value="map" className="p-0 h-full">
               <div className="map-container-dashboard border-2 border-border rounded-lg overflow-hidden bg-background shadow-lg">
-                <GPSNavigationMap isDashboard={true} />
+                <PokemonGOJobMap isDashboard={true} />
               </div>
             </TabsContent>
 
