@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { UnifiedUserProfile } from '@/types/userProfile';
 import { cn } from '@/lib/utils';
 
-export type ProfileTab = 'personal' | 'business';
+export type ProfileTab = 'personal' | 'provider';
 
 interface ProfileTabNavigationProps {
   activeTab: ProfileTab;
@@ -23,9 +23,9 @@ const ProfileTabNavigation: React.FC<ProfileTabNavigationProps> = ({
       available: true
     },
     {
-      key: 'business' as ProfileTab,
-      label: 'Business',
-      available: true // Always show Business tab - let BusinessTab component handle provider status
+      key: 'provider' as ProfileTab,
+      label: 'Provider',
+      available: profile.can_provide_services // Only show Provider tab if user is a provider
     }
   ];
 

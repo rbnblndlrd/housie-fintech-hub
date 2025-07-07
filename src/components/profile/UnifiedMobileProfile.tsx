@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
 import PersonalTab from './PersonalTab';
-import BusinessTab from './BusinessTab';
+import ProviderTab from './ProviderTab';
 
 const UnifiedMobileProfile = () => {
   const { user } = useAuth();
@@ -98,7 +98,7 @@ const UnifiedMobileProfile = () => {
         {/* Mobile Layout */}
         <div className="md:hidden p-4">
           {activeTab === 'personal' && <PersonalTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
-          {activeTab === 'business' && <BusinessTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
+          {activeTab === 'provider' && <ProviderTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
         </div>
 
         {/* Desktop Layout - 2 Column Grid */}
@@ -106,7 +106,7 @@ const UnifiedMobileProfile = () => {
           <div className="max-w-6xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {activeTab === 'personal' && <PersonalTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
-              {activeTab === 'business' && <BusinessTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
+              {activeTab === 'provider' && <ProviderTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
             </div>
           </div>
         </div>

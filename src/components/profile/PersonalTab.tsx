@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
+import { Slider } from '@/components/ui/slider';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { 
   User, 
@@ -13,13 +13,14 @@ import {
   EyeOff, 
   Save, 
   Shield, 
-  MapPin,
-  Phone,
-  Mail,
-  BarChart3,
-  Network,
+  Target,
+  Trophy,
   Star,
-  Users
+  Users,
+  BarChart3,
+  Award,
+  Crown,
+  Heart
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
@@ -35,10 +36,9 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
   const [isEditing, setIsEditing] = useState(false);
   const [displayName, setDisplayName] = useState(profile.full_name || '');
   const [fullName, setFullName] = useState(profile.full_name || '');
-  const [showLocationInfo, setShowLocationInfo] = useState(profile.show_location ?? true);
-  const [showContactInfo, setShowContactInfo] = useState(profile.show_contact_info ?? true);
+  const [comfortZone, setComfortZone] = useState([3]);
 
-  // Mock stats - in real app would come from database
+  // Stats from profile
   const stats = {
     totalJobs: profile.total_bookings || 127,
     networkConnections: profile.network_connections_count || 45,
@@ -47,6 +47,22 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
     reliabilityCommendations: profile.reliability_commendations || 18,
     courtesyCommendations: profile.courtesy_commendations || 31
   };
+
+  // Mock milestones and recognition data
+  const milestones = [
+    { name: 'First Service', completed: true, date: 'Jan 2024' },
+    { name: '10 Jobs Completed', completed: true, date: 'Mar 2024' },
+    { name: '50 Jobs Completed', completed: true, date: 'Jun 2024' },
+    { name: '100 Jobs Completed', completed: true, date: 'Nov 2024' },
+    { name: '200 Jobs Target', completed: false, progress: 63 }
+  ];
+
+  const achievements = [
+    { name: 'Trusted Member', icon: Shield, color: 'text-blue-600' },
+    { name: 'Quality Expert', icon: Star, color: 'text-yellow-600' },
+    { name: 'Reliable Pro', icon: Award, color: 'text-green-600' },
+    { name: 'Community Favorite', icon: Heart, color: 'text-red-600' }
+  ];
 
   const handleSave = () => {
     toast({
@@ -58,12 +74,12 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
 
   return (
     <div className="space-y-6">
-      {/* User Profile Card */}
+      {/* Identity Section */}
       <Card className="bg-card/95 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
-            Personal Information
+            Identity
           </CardTitle>
           {/* Tab Navigation inside the card */}
           <div className="mt-4">
@@ -87,7 +103,7 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
               <h3 className="font-semibold text-lg">{profile.full_name || 'User'}</h3>
               <p className="text-muted-foreground">{profile.username}</p>
               <Badge variant="secondary" className="mt-1">
-                {profile.profile_type === 'business' ? 'Business Profile' : 'Individual Profile'}
+                Personal Account
               </Badge>
             </div>
             {isEditing && (
@@ -97,44 +113,67 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
             )}
           </div>
 
-          {/* Display Name System */}
+          {/* Name Fields */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="displayName" className="text-sm font-medium flex items-center gap-2">
+                <Eye className="h-3 w-3" />
+                Display Name (Public)
+              </Label>
+              <Input
+                id="displayName"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+                placeholder="e.g., Zoé C."
+                disabled={!isEditing}
+              />
+            </div>
+            <div>
+              <Label htmlFor="fullName" className="text-sm font-medium flex items-center gap-2">
+                <EyeOff className="h-3 w-3" />
+                Full Name (Private)
+              </Label>
+              <Input
+                id="fullName"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                placeholder="e.g., Zoé Crevisse"
+                disabled={!isEditing}
+              />
+            </div>
+          </div>
+
+          {/* Comfort Zone Slider */}
           <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
             <div className="flex items-start gap-3 mb-4">
               <Shield className="h-5 w-5 text-primary mt-0.5" />
               <div>
-                <h4 className="font-medium text-foreground">Display Name Privacy</h4>
+                <h4 className="font-medium text-foreground">Comfort Zone</h4>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Control how your name appears to others before and after booking confirmation
+                  Intelligently adjusts privacy for both personal and professional contexts
                 </p>
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-4">
               <div>
-                <Label htmlFor="displayName" className="text-sm font-medium flex items-center gap-2">
-                  <Eye className="h-3 w-3" />
-                  Display Name (Public)
-                </Label>
-                <Input
-                  id="displayName"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="e.g., Zoé C."
-                  disabled={!isEditing}
-                />
-              </div>
-              <div>
-                <Label htmlFor="fullName" className="text-sm font-medium flex items-center gap-2">
-                  <EyeOff className="h-3 w-3" />
-                  Full Name (Private)
-                </Label>
-                <Input
-                  id="fullName"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  placeholder="e.g., Zoé Crevisse"
-                  disabled={!isEditing}
-                />
+                <Label className="text-sm font-medium">Privacy Level: {['Very Private', 'Private', 'Balanced', 'Open', 'Very Open'][comfortZone[0] - 1]}</Label>
+                <div className="mt-2">
+                  <Slider
+                    value={comfortZone}
+                    onValueChange={setComfortZone}
+                    max={5}
+                    min={1}
+                    step={1}
+                    className="w-full"
+                    disabled={!isEditing}
+                  />
+                </div>
+                <div className="flex justify-between text-xs text-muted-foreground mt-1">
+                  <span>Very Private</span>
+                  <span>Balanced</span>
+                  <span>Very Open</span>
+                </div>
               </div>
             </div>
           </div>
@@ -168,19 +207,78 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
         </CardContent>
       </Card>
 
-      {/* Performance Stats Card */}
+      {/* Milestones Section */}
+      <Card className="bg-card/95 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="h-5 w-5" />
+            Milestones
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {milestones.map((milestone, index) => (
+              <div key={index} className="flex items-center gap-4 p-3 rounded-lg bg-muted/20">
+                <div className={`w-3 h-3 rounded-full ${milestone.completed ? 'bg-green-500' : 'bg-muted'}`} />
+                <div className="flex-1">
+                  <p className="font-medium">{milestone.name}</p>
+                  {milestone.completed && milestone.date && (
+                    <p className="text-xs text-muted-foreground">Completed {milestone.date}</p>
+                  )}
+                  {!milestone.completed && milestone.progress && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                        <div 
+                          className="h-full bg-primary"
+                          style={{ width: `${milestone.progress}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-muted-foreground">{milestone.progress}%</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recognition Section */}
+      <Card className="bg-card/95 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Trophy className="h-5 w-5" />
+            Recognition
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 gap-4">
+            {achievements.map((achievement, index) => {
+              const IconComponent = achievement.icon;
+              return (
+                <div key={index} className="flex items-center gap-3 p-3 rounded-lg bg-muted/20">
+                  <IconComponent className={`h-5 w-5 ${achievement.color}`} />
+                  <span className="text-sm font-medium">{achievement.name}</span>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Performance Stats Section */}
       <Card className="bg-card/95 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5" />
-            Personal Performance Stats
+            Performance Stats
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="text-center p-3 bg-blue-50/50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">{stats.totalJobs}</div>
-              <p className="text-sm text-muted-foreground">Total Jobs</p>
+              <p className="text-sm text-muted-foreground">Jobs</p>
             </div>
             <div className="text-center p-3 bg-green-50/50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">{stats.networkConnections}</div>
@@ -193,88 +291,6 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
               </div>
               <p className="text-sm text-muted-foreground">Rating</p>
             </div>
-          </div>
-
-          {/* Commendations Mini-Graph */}
-          <div className="mt-6">
-            <h4 className="font-medium mb-3">Commendations Received</h4>
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Quality</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-blue-500"
-                      style={{ width: `${(stats.qualityCommendations / 50) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-medium w-8">{stats.qualityCommendations}</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Reliability</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-green-500"
-                      style={{ width: `${(stats.reliabilityCommendations / 50) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-medium w-8">{stats.reliabilityCommendations}</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm">Courtesy</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-purple-500"
-                      style={{ width: `${(stats.courtesyCommendations / 50) * 100}%` }}
-                    />
-                  </div>
-                  <span className="text-sm font-medium w-8">{stats.courtesyCommendations}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Privacy Settings Card */}
-      <Card className="bg-card/95 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="h-5 w-5" />
-            Personal Privacy Settings
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <MapPin className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="font-medium">Location Sharing</p>
-                <p className="text-sm text-muted-foreground">Allow others to see your general location</p>
-              </div>
-            </div>
-            <Switch
-              checked={showLocationInfo}
-              onCheckedChange={setShowLocationInfo}
-            />
-          </div>
-          
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <p className="font-medium">Contact Information</p>
-                <p className="text-sm text-muted-foreground">Show phone number after booking confirmation</p>
-              </div>
-            </div>
-            <Switch
-              checked={showContactInfo}
-              onCheckedChange={setShowContactInfo}
-            />
           </div>
         </CardContent>
       </Card>
