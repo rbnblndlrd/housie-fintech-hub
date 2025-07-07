@@ -311,81 +311,217 @@ const CommunityDashboard = () => {
             )}
 
             {activeTab === 'recognition' && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  {/* Achievements */}
+                <div className="space-y-6">
+                  {/* 1. Recogs Breakdown Section */}
                   <Card className="fintech-card">
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <Trophy className="h-5 w-5" />
-                        Achievements & Badges
+                        🏆 Current Recogs
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      {achievements.map((achievement, index) => (
-                        <div key={index} className={`p-4 rounded-lg ${
-                          achievement.earned ? 'bg-green-50/50' : 'bg-gray-50/50'
-                        }`}>
-                          <div className="flex items-center justify-between mb-2">
-                            <div className="flex items-center gap-2">
-                              <Crown className={`h-4 w-4 ${
-                                achievement.earned ? 'text-yellow-600' : 'text-gray-400'
-                              }`} />
-                              <p className="font-medium">{achievement.title}</p>
-                            </div>
-                            <Badge variant={
-                              achievement.rarity === 'Epic' ? 'default' : 
-                              achievement.rarity === 'Rare' ? 'secondary' : 'outline'
-                            }>
-                              {achievement.rarity}
-                            </Badge>
-                          </div>
-                          <p className="text-sm opacity-70 mb-2">{achievement.description}</p>
-                          {!achievement.earned && achievement.progress && (
-                            <div className="space-y-1">
-                              <div className="flex justify-between text-xs">
-                                <span>Progress</span>
-                                <span>{achievement.progress}%</span>
-                              </div>
-                              <Progress value={achievement.progress} className="h-2" />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </CardContent>
-                  </Card>
-
-                  {/* Shop Points */}
-                  <Card className="fintech-card">
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Zap className="h-5 w-5" />
-                        HOUSIE Shop Points
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
                       <div className="space-y-4">
-                        <div className="text-center p-6 bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg text-white">
-                          <p className="text-4xl font-bold mb-2">1,847</p>
-                          <p className="opacity-90">Available Shop Points</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="p-3 bg-blue-50/50 rounded-lg text-center">
-                            <p className="text-lg font-bold text-blue-600">+180</p>
-                            <p className="text-sm opacity-70">This Week</p>
+                        <div className="p-4 bg-muted/20 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">Quality</span>
+                            <span className="font-bold text-blue-600">23 recogs</span>
                           </div>
-                          <div className="p-3 bg-green-50/50 rounded-lg text-center">
-                            <p className="text-lg font-bold text-green-600">4.2x</p>
-                            <p className="text-sm opacity-70">Multiplier</p>
-                          </div>
+                          <Progress value={76} className="h-2 mb-1" />
+                          <p className="text-xs opacity-70">7 more to reach next milestone (30)</p>
                         </div>
-                        <Button className="w-full">
-                          <Trophy className="h-4 w-4 mr-2" />
-                          Visit HOUSIE Shop
-                        </Button>
+                        <div className="p-4 bg-muted/20 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">Reliability</span>
+                            <span className="font-bold text-green-600">18 recogs</span>
+                          </div>
+                          <Progress value={60} className="h-2 mb-1" />
+                          <p className="text-xs opacity-70">12 more to reach next milestone (30)</p>
+                        </div>
+                        <div className="p-4 bg-muted/20 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">Courtesy</span>
+                            <span className="font-bold text-purple-600">31 recogs</span>
+                          </div>
+                          <Progress value={100} className="h-2 mb-1" />
+                          <p className="text-xs opacity-70">Milestone reached! Next: 50</p>
+                        </div>
                       </div>
                     </CardContent>
                   </Card>
-              </div>
+
+                  {/* 2. Point Spread Gap Titles */}
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Trophy className="h-5 w-5" />
+                        ⚖️ Balanced Excellence Progression
+                      </CardTitle>
+                      <p className="text-sm opacity-70 mt-1">Current: Working toward Balanced Professional</p>
+                    </CardHeader>
+                    <CardContent className="space-y-3">
+                      <div className="p-3 bg-yellow-50/50 rounded-lg border-l-4 border-yellow-500">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Balanced Professional</span>
+                          <Badge variant="outline">🔒 Locked</Badge>
+                        </div>
+                        <p className="text-sm opacity-70 mt-1">15+ all categories, max 10 point gap</p>
+                      </div>
+                      <div className="p-3 bg-muted/20 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Well-Rounded Expert</span>
+                          <Badge variant="outline">🔒 Locked</Badge>
+                        </div>
+                        <p className="text-sm opacity-70 mt-1">30+ all categories, max 8 point gap</p>
+                      </div>
+                      <div className="p-3 bg-muted/20 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Source of Excellence</span>
+                          <Badge variant="outline">🔒 Locked</Badge>
+                        </div>
+                        <p className="text-sm opacity-70 mt-1">50+ all categories, max 6 point gap</p>
+                      </div>
+                      <div className="p-3 bg-muted/20 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Master of All Trades</span>
+                          <Badge variant="outline">🔒 Locked</Badge>
+                        </div>
+                        <p className="text-sm opacity-70 mt-1">75+ all categories, max 4 point gap</p>
+                      </div>
+                      <div className="p-3 bg-muted/20 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium">Origin of Perfection</span>
+                          <Badge variant="outline">🔒 Locked</Badge>
+                        </div>
+                        <p className="text-sm opacity-70 mt-1">100+ all categories, max 3 point gap</p>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    {/* 3. Behavioral Achievements */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Zap className="h-5 w-5" />
+                          ⚡ Professional Achievements
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="p-4 bg-green-50/50 rounded-lg border-l-4 border-green-500">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">✅ Quality Collector</span>
+                            <Badge variant="default">Complete</Badge>
+                          </div>
+                          <p className="text-sm opacity-70">23/100 Quality recogs</p>
+                          <Progress value={23} className="h-2 mt-2" />
+                        </div>
+                        <div className="p-4 bg-yellow-50/50 rounded-lg border-l-4 border-yellow-500">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">🔄 Lightning Response</span>
+                            <Badge variant="outline">In Progress</Badge>
+                          </div>
+                          <p className="text-sm opacity-70">Response time: 4 min avg, need &lt;2 min</p>
+                          <Progress value={50} className="h-2 mt-2" />
+                        </div>
+                        <div className="p-4 bg-muted/20 rounded-lg">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">🔒 Same Day Savior</span>
+                            <Badge variant="outline">Locked</Badge>
+                          </div>
+                          <p className="text-sm opacity-70">12/50 same-day bookings</p>
+                          <Progress value={24} className="h-2 mt-2" />
+                        </div>
+                        <div className="p-4 bg-green-50/50 rounded-lg border-l-4 border-green-500">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="font-medium">✅ Network Navigator</span>
+                            <Badge variant="default">Complete</Badge>
+                          </div>
+                          <p className="text-sm opacity-70">127/100 connections</p>
+                          <Progress value={100} className="h-2 mt-2" />
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    {/* 4. Meta-Achievement Progress */}
+                    <Card className="fintech-card">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Crown className="h-5 w-5" />
+                          👑 Kind of a Big Deal Progression
+                        </CardTitle>
+                        <p className="text-sm opacity-70 mt-1">Current Titles Earned: 3/5 needed</p>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <div className="p-4 bg-green-50/50 rounded-lg border-l-4 border-green-500">
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-600">✅</span>
+                            <span className="font-medium">Technomancer</span>
+                          </div>
+                          <p className="text-sm opacity-70 ml-6">Rank achievement</p>
+                        </div>
+                        <div className="p-4 bg-green-50/50 rounded-lg border-l-4 border-green-500">
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-600">✅</span>
+                            <span className="font-medium">Quality Collector</span>
+                          </div>
+                          <p className="text-sm opacity-70 ml-6">Recognition achievement</p>
+                        </div>
+                        <div className="p-4 bg-green-50/50 rounded-lg border-l-4 border-green-500">
+                          <div className="flex items-center gap-2">
+                            <span className="text-green-600">✅</span>
+                            <span className="font-medium">Network Navigator</span>
+                          </div>
+                          <p className="text-sm opacity-70 ml-6">Behavioral achievement</p>
+                        </div>
+                        <div className="p-4 bg-yellow-50/50 rounded-lg border-l-4 border-yellow-500">
+                          <div className="flex items-center gap-2">
+                            <span className="text-yellow-600">🔄</span>
+                            <span className="font-medium">Working on Lightning Response</span>
+                          </div>
+                          <p className="text-sm opacity-70 ml-6">Speed achievement in progress</p>
+                        </div>
+                        <div className="p-4 bg-yellow-50/50 rounded-lg border-l-4 border-yellow-500">
+                          <div className="flex items-center gap-2">
+                            <span className="text-yellow-600">🔄</span>
+                            <span className="font-medium">Working on Balanced Professional</span>
+                          </div>
+                          <p className="text-sm opacity-70 ml-6">Balance achievement in progress</p>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+
+                  {/* 5. Display Customization */}
+                  <Card className="fintech-card">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Star className="h-5 w-5" />
+                        🎨 Choose Your Public Display
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="p-4 bg-muted/20 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">Current Rank Display</p>
+                            <p className="text-sm opacity-70">Technomancer ⚡</p>
+                          </div>
+                          <Button variant="outline" size="sm">Change</Button>
+                        </div>
+                      </div>
+                      <div className="p-4 bg-muted/20 rounded-lg">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <p className="font-medium">Current Recognition Display</p>
+                            <p className="text-sm opacity-70">Quality Expert ⭐</p>
+                          </div>
+                          <Button variant="outline" size="sm">Change</Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
             )}
 
             {activeTab === 'social' && (
