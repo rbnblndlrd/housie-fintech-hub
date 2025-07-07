@@ -52,14 +52,11 @@ const FloatingNavigation = () => {
   // Pages that have their own headers - don't show FloatingNavigation
   const pagesWithHeader = [
     '/provider-profile/',  // This will match /provider-profile/:id
-    '/social',
     '/competitive-advantage',
     '/help',
     '/help-center',
     '/profile',
-    '/services',
-    '/analytics-dashboard',  // Has its own Header component
-    '/analytics'  // Also has its own Header component
+    '/services'
   ];
   
   const shouldShowFloatingNav = !pagesWithHeader.some(path => {

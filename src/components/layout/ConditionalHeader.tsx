@@ -8,14 +8,11 @@ const ConditionalHeader = () => {
   // Pages that KEEP the header
   const pagesWithHeader = [
     '/provider-profile/',  // This will match /provider-profile/:id
-    '/social',
     '/competitive-advantage',
     '/help',
     '/help-center',
     '/profile',
-    '/services',
-    '/analytics-dashboard',  // Has its own Header component
-    '/analytics'  // Also has its own Header component
+    '/services'
   ];
   
   const shouldShowHeader = pagesWithHeader.some(path => {
