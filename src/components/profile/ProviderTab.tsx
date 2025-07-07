@@ -17,8 +17,17 @@ import {
   Phone,
   Mail,
   Clock,
-  Wrench
+  Wrench,
+  Sparkles,
+  Home,
+  Trees,
+  Heart,
+  Zap,
+  Music,
+  Truck,
+  Trophy
 } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
 
@@ -35,12 +44,161 @@ const ProviderTab: React.FC<ProviderTabProps> = ({ profile, activeTab, onTabChan
   const [allowDirectContact, setAllowDirectContact] = useState(true);
   const [showAvailability, setShowAvailability] = useState(true);
 
-  // Mock professional data
-  const specialties = ['Plumbing', 'Electrical', 'General Repairs'];
-  const ranks = [
-    { name: 'Certified Professional', icon: CheckCircle, earned: true },
-    { name: 'Master Craftsman', icon: Crown, earned: true },
-    { name: 'Industry Expert', icon: Briefcase, earned: false }
+  // Guild Wars 2 style progression system
+  const serviceProgressions = [
+    {
+      id: 'personal_wellness',
+      name: 'Personal Wellness',
+      emoji: '💆',
+      tagline: 'The Knot Busters',
+      icon: Heart,
+      ranks: [
+        { title: 'Pressure Point Master', requirement: 50, timeEstimate: '1-3 months' },
+        { title: 'The Stress Eraser', requirement: 100, timeEstimate: '3-6 months' },
+        { title: 'Mobile Miracle Worker', requirement: 200, timeEstimate: '6-12 months' },
+        { title: 'Insurance Navigator', requirement: 300, timeEstimate: '9-18 months' },
+        { title: 'The Recovery Coach', requirement: 400, timeEstimate: '12-24 months' },
+        { title: 'The Knot Buster', requirement: 500, timeEstimate: '6 months to 3+ years', isMaster: true }
+      ]
+    },
+    {
+      id: 'cleaning_services',
+      name: 'Cleaning Services',
+      emoji: '🧹',
+      tagline: 'The Spotless Squad',
+      icon: Sparkles,
+      ranks: [
+        { title: 'Speed Cleaner', requirement: 25, timeEstimate: '1-2 months' },
+        { title: 'The Organizer', requirement: 75, timeEstimate: '3-6 months' },
+        { title: 'Chemical Connoisseur', requirement: 150, timeEstimate: '6-12 months' },
+        { title: 'Stain Slayer', requirement: 250, timeEstimate: '1-2 years' },
+        { title: 'Move-Out Magician', requirement: 350, timeEstimate: '2-3 years' },
+        { title: 'SPOTLESS', requirement: 500, timeEstimate: '2-4 years', isMaster: true }
+      ]
+    },
+    {
+      id: 'exterior_grounds',
+      name: 'Exterior & Grounds',
+      emoji: '🌿',
+      tagline: 'The Outdoor Crew',
+      icon: Trees,
+      ranks: [
+        { title: 'Weed Warrior', requirement: 30, timeEstimate: '1-2 months' },
+        { title: 'Pressure Perfect', requirement: 75, timeEstimate: '3-6 months' },
+        { title: 'The Landscaper', requirement: 150, timeEstimate: '6-12 months' },
+        { title: 'Risk Assessor', requirement: 250, timeEstimate: '1-2 years' },
+        { title: 'Drought Defier', requirement: 350, timeEstimate: '2-3 years' },
+        { title: 'Woodpecker', requirement: 500, timeEstimate: '2-4 years', isMaster: true }
+      ]
+    },
+    {
+      id: 'pet_care',
+      name: 'Pet Care Services',
+      emoji: '🐕',
+      tagline: 'The Paw Patrol',
+      icon: Heart,
+      ranks: [
+        { title: 'The Pet Whisperer', requirement: 50, timeEstimate: '2-4 months' },
+        { title: 'Animal Lover', requirement: 100, timeEstimate: '4-8 months' },
+        { title: 'Ruff Around the Edges', requirement: 200, timeEstimate: '8-16 months' },
+        { title: 'Paws & Reflect', requirement: 300, timeEstimate: '1-2 years' },
+        { title: 'Pack Leader', requirement: 400, timeEstimate: '1.5-3 years' },
+        { title: 'The Alpha', requirement: 500, timeEstimate: '2-4 years', isMaster: true }
+      ]
+    },
+    {
+      id: 'appliance_tech_repair',
+      name: 'Appliance & Tech Repair',
+      emoji: '🔧',
+      tagline: 'The Fix-It Phantoms',
+      icon: Zap,
+      ranks: [
+        { title: 'Brand Connoisseur', requirement: 25, timeEstimate: '1-3 months' },
+        { title: 'Diagnostic Prodigy', requirement: 75, timeEstimate: '3-9 months' },
+        { title: 'Circuit Expert', requirement: 150, timeEstimate: '6-18 months' },
+        { title: 'Warranty Wizard', requirement: 250, timeEstimate: '1-2.5 years' },
+        { title: 'The Specialist', requirement: 350, timeEstimate: '1.5-3.5 years' },
+        { title: 'Technomancer', requirement: 500, timeEstimate: '2-5 years', isMaster: true }
+      ]
+    },
+    {
+      id: 'event_services',
+      name: 'Event Services',
+      emoji: '🎪',
+      tagline: 'The Stage Commanders',
+      icon: Music,
+      ranks: [
+        { title: 'Load-In Legend', requirement: 15, timeEstimate: '2-6 months' },
+        { title: 'Time Crunch Hero', requirement: 40, timeEstimate: '6-16 months' },
+        { title: 'Sound Sage', requirement: 75, timeEstimate: '1-2.5 years' },
+        { title: 'Stage Architect', requirement: 125, timeEstimate: '1.5-4 years' },
+        { title: 'Party Coordinator', requirement: 175, timeEstimate: '2-5 years' },
+        { title: 'Showtime', requirement: 250, timeEstimate: '3-7 years', isMaster: true }
+      ]
+    },
+    {
+      id: 'moving_delivery',
+      name: 'Moving & Delivery',
+      emoji: '🚚',
+      tagline: 'The Heavy Lifters',
+      icon: Truck,
+      ranks: [
+        { title: 'Tetris Apprentice', requirement: 25, timeEstimate: '1-3 months' },
+        { title: 'Assembly Expert', requirement: 75, timeEstimate: '3-9 months' },
+        { title: 'Relocator', requirement: 150, timeEstimate: '6-18 months' },
+        { title: 'Road Warrior', requirement: 250, timeEstimate: '1-2.5 years' },
+        { title: 'Time Saver', requirement: 350, timeEstimate: '1.5-3.5 years' },
+        { title: 'Handler', requirement: 500, timeEstimate: '2-5 years', isMaster: true }
+      ]
+    }
+  ];
+
+  // Mock user's current job counts for different services (replace with real data)
+  const userJobCounts = {
+    personal_wellness: 127,
+    cleaning_services: 89,
+    exterior_grounds: 12,
+    pet_care: 0,
+    appliance_tech_repair: 45,
+    event_services: 3,
+    moving_delivery: 67
+  };
+
+  // User's active specialties (these should show first)
+  const userSpecialties = ['cleaning_services', 'personal_wellness', 'appliance_tech_repair'];
+
+  const getRankStatus = (progression: any, userCount: number) => {
+    let currentRankIndex = -1;
+    let nextRankIndex = 0;
+    
+    for (let i = 0; i < progression.ranks.length; i++) {
+      if (userCount >= progression.ranks[i].requirement) {
+        currentRankIndex = i;
+      } else {
+        nextRankIndex = i;
+        break;
+      }
+    }
+    
+    return { currentRankIndex, nextRankIndex };
+  };
+
+  const getProgressPercentage = (progression: any, userCount: number) => {
+    const { currentRankIndex, nextRankIndex } = getRankStatus(progression, userCount);
+    
+    if (currentRankIndex === progression.ranks.length - 1) return 100; // Max rank achieved
+    
+    const currentReq = currentRankIndex >= 0 ? progression.ranks[currentRankIndex].requirement : 0;
+    const nextReq = progression.ranks[nextRankIndex].requirement;
+    const progress = Math.min(100, ((userCount - currentReq) / (nextReq - currentReq)) * 100);
+    
+    return Math.max(0, progress);
+  };
+
+  // Sort progressions: user specialties first, then others
+  const sortedProgressions = [
+    ...serviceProgressions.filter(p => userSpecialties.includes(p.id)),
+    ...serviceProgressions.filter(p => !userSpecialties.includes(p.id))
   ];
 
   const handleSave = () => {
@@ -110,12 +268,15 @@ const ProviderTab: React.FC<ProviderTabProps> = ({ profile, activeTab, onTabChan
           <div>
             <Label>Specialties</Label>
             <div className="flex flex-wrap gap-2 mt-2">
-              {specialties.map((specialty, index) => (
-                <Badge key={index} variant="outline" className="flex items-center gap-1">
-                  <Wrench className="h-3 w-3" />
-                  {specialty}
-                </Badge>
-              ))}
+              {userSpecialties.map((specialtyId) => {
+                const progression = serviceProgressions.find(p => p.id === specialtyId);
+                return progression ? (
+                  <Badge key={specialtyId} variant="outline" className="flex items-center gap-1">
+                    <progression.icon className="h-3 w-3" />
+                    {progression.name}
+                  </Badge>
+                ) : null;
+              })}
             </div>
           </div>
 
@@ -215,31 +376,101 @@ const ProviderTab: React.FC<ProviderTabProps> = ({ profile, activeTab, onTabChan
         </CardContent>
       </Card>
 
-      {/* Rank Section */}
+      {/* HOUSIE Prestige Title Progressions */}
       <Card className="bg-card/95 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Crown className="h-5 w-5" />
-            Professional Rank
+            <Trophy className="h-5 w-5" />
+            🏆 HOUSIE Prestige Title Progressions
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            {ranks.map((rank, index) => {
-              const IconComponent = rank.icon;
+          <div className="space-y-6">
+            {sortedProgressions.map((progression) => {
+              const userCount = userJobCounts[progression.id as keyof typeof userJobCounts] || 0;
+              const { currentRankIndex, nextRankIndex } = getRankStatus(progression, userCount);
+              const progressPercentage = getProgressPercentage(progression, userCount);
+              const IconComponent = progression.icon;
+              
               return (
-                <div key={index} className={`flex items-center gap-4 p-3 rounded-lg ${rank.earned ? 'bg-green-50/50' : 'bg-muted/20'}`}>
-                  <IconComponent className={`h-5 w-5 ${rank.earned ? 'text-green-600' : 'text-muted-foreground'}`} />
-                  <div className="flex-1">
-                    <p className={`font-medium ${rank.earned ? 'text-green-800' : 'text-muted-foreground'}`}>
-                      {rank.name}
-                    </p>
+                <div key={progression.id} className="space-y-3">
+                  {/* Service Header */}
+                  <div className="flex items-center gap-3 p-3 bg-muted/20 rounded-lg">
+                    <span className="text-2xl">{progression.emoji}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <IconComponent className="h-4 w-4" />
+                        <h4 className="font-semibold">{progression.name}</h4>
+                      </div>
+                      <p className="text-sm text-muted-foreground">{progression.tagline}</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-lg">{userCount}</p>
+                      <p className="text-xs text-muted-foreground">jobs</p>
+                    </div>
                   </div>
-                  {rank.earned && (
-                    <Badge variant="default" className="bg-green-100 text-green-800">
-                      Earned
-                    </Badge>
+
+                  {/* Current Progress */}
+                  {userCount > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium">
+                          Current Progress: {currentRankIndex >= 0 ? progression.ranks[currentRankIndex].title : 'Not started'}
+                          {currentRankIndex < progression.ranks.length - 1 && (
+                            <> → {progression.ranks[nextRankIndex].title}</>
+                          )}
+                        </span>
+                        <span className="text-sm text-muted-foreground">
+                          {Math.round(progressPercentage)}%
+                        </span>
+                      </div>
+                      <Progress value={progressPercentage} className="h-2" />
+                      {currentRankIndex < progression.ranks.length - 1 && (
+                        <p className="text-xs text-muted-foreground">
+                          {progression.ranks[nextRankIndex].requirement - userCount} more jobs to reach {progression.ranks[nextRankIndex].title}
+                        </p>
+                      )}
+                    </div>
                   )}
+
+                  {/* Rank List */}
+                  <div className="grid gap-2">
+                    {progression.ranks.map((rank, rankIndex) => {
+                      const isEarned = userCount >= rank.requirement;
+                      const isInProgress = !isEarned && rankIndex === nextRankIndex && userCount > 0;
+                      const isLocked = !isEarned && !isInProgress;
+                      
+                      return (
+                        <div
+                          key={rankIndex}
+                          className={`flex items-center gap-3 p-2 rounded-lg text-sm ${
+                            isEarned 
+                              ? 'bg-green-50/50 text-green-800' 
+                              : isInProgress 
+                                ? 'bg-blue-50/50 text-blue-800'
+                                : 'bg-muted/20 text-muted-foreground'
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            {isEarned && <span>✅</span>}
+                            {isInProgress && <span>🔄</span>}
+                            {isLocked && <span>🔒</span>}
+                            {rank.isMaster && <Trophy className="h-4 w-4 text-yellow-600" />}
+                          </div>
+                          
+                          <div className="flex-1">
+                            <span className="font-medium">{rank.title}</span>
+                            {rank.isMaster && <span className="ml-1">🏆</span>}
+                          </div>
+                          
+                          <div className="text-right">
+                            <div className="font-medium">{rank.requirement} jobs</div>
+                            <div className="text-xs text-muted-foreground">{rank.timeEstimate}</div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               );
             })}
