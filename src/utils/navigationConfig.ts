@@ -21,7 +21,7 @@ export const customerNav: NavigationItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
-  { label: "Social", href: "/social", icon: "👥" },
+  { label: "Community", href: "/community", icon: "👥" },
   { label: "Map", href: "/gps", icon: "🗺️" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
@@ -32,10 +32,9 @@ export const providerNav: NavigationItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "📊" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
-  { label: "Social", href: "/social", icon: "👥" },
+  { label: "Community", href: "/community", icon: "👥" },
   { label: "Map", href: "/gps", icon: "🗺️" },
   { label: "Analytics", href: "/analytics-dashboard", icon: "📈" },
-  { label: "Performance", href: "/performance", icon: "🎯" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
 ];
@@ -84,7 +83,6 @@ export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'cust
 export const getAnalyticsMenuItems = (): NavigationItem[] => {
   return [
     { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
-    { label: "Performance", href: "/performance-dashboard", icon: "📈" },
     { label: "Business Insights", href: "/business-insights", icon: "💼" },
     { label: "Tax Reports", href: "/tax-reports", icon: "📋" }
   ];
