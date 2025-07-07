@@ -117,58 +117,61 @@ const HeroSearchSection = () => {
   // LOGGED IN STATE - Search functionality with user menu
   return (
     <div className="relative min-h-screen flex flex-col px-4">
-      {/* User Menu - Floating */}
+      {/* User Menu - Floating with enhanced visibility */}
       <div className="absolute top-6 right-6 z-20">
-        <UserMenu />
+        <div className="bg-black/20 backdrop-blur-sm rounded-2xl p-2 border border-white/20 shadow-2xl">
+          <UserMenu />
+        </div>
       </div>
 
-      {/* Content positioned in lower third */}
-      <div className="flex-1 flex flex-col justify-end pb-32">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 text-center drop-shadow-2xl" style={{ textShadow: '2px 2px 4px rgba(255,255,255,0.8)' }}>
+      {/* Content positioned in bottom-left */}
+      <div className="absolute bottom-8 left-8 max-w-2xl">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-8 drop-shadow-2xl" 
+            style={{ 
+              textShadow: '3px 3px 0px rgba(0,0,0,0.8), -1px -1px 0px rgba(0,0,0,0.8), 1px -1px 0px rgba(0,0,0,0.8), -1px 1px 0px rgba(0,0,0,0.8), 6px 6px 12px rgba(0,0,0,0.5)' 
+            }}>
           Browse
         </h1>
 
-        {/* Search Bar - Positioned in lower 1/3 of screen */}
-        <div className="mt-8">
-          <div className="bg-white/20 backdrop-blur-md border border-white/30 rounded-2xl shadow-2xl p-3 flex flex-col sm:flex-row gap-2 mb-6 max-w-2xl mx-auto">
-            {/* Location Input */}
-            <div className="flex-1 relative">
-              <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-                <MapPin className="h-5 w-5 text-gray-400" />
-              </div>
-              <Input
-                type="text"
-                placeholder="Enter delivery address"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                className="pl-10 border-none shadow-none text-lg h-12 focus:ring-0 bg-transparent"
-              />
+        {/* Search Bar - Enhanced visibility */}
+        <div className="bg-white/25 backdrop-blur-md border-2 border-white/40 rounded-2xl shadow-2xl p-4 flex flex-col sm:flex-row gap-3">
+          {/* Location Input */}
+          <div className="flex-1 relative">
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              <MapPin className="h-5 w-5 text-gray-600" />
             </div>
-
-            {/* Service Category Dropdown */}
-            <div className="relative">
-              <select
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="appearance-none bg-transparent border-none text-lg h-12 pr-8 pl-4 focus:ring-0 cursor-pointer min-w-[150px]"
-              >
-                {serviceCategories.map((category) => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
-            </div>
-
-            {/* Search Button */}
-            <Button
-              onClick={handleSearch}
-              className="bg-black text-white hover:bg-gray-800 px-8 h-12 text-lg rounded-lg border-2 border-black"
-            >
-              Search here
-            </Button>
+            <Input
+              type="text"
+              placeholder="Enter location"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              className="pl-10 border-none shadow-none text-lg h-14 focus:ring-0 bg-white/60 text-gray-900 placeholder:text-gray-600 font-medium rounded-xl"
+            />
           </div>
+
+          {/* Service Category Dropdown */}
+          <div className="relative">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="appearance-none bg-white/60 border-none text-lg h-14 pr-8 pl-4 focus:ring-0 cursor-pointer min-w-[160px] font-medium text-gray-900 rounded-xl"
+            >
+              {serviceCategories.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-600 pointer-events-none" />
+          </div>
+
+          {/* Search Button */}
+          <Button
+            onClick={handleSearch}
+            className="bg-black text-white hover:bg-gray-800 px-8 h-14 text-lg font-semibold rounded-xl border-2 border-black shadow-lg hover:shadow-xl transition-all duration-200"
+          >
+            Search here
+          </Button>
         </div>
       </div>
     </div>
