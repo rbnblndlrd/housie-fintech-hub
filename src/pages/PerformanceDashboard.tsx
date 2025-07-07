@@ -2,6 +2,7 @@
 import React from 'react';
 import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
+import AnalyticsNavigation from '@/components/dashboard/AnalyticsNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Zap, 
@@ -48,8 +49,12 @@ const PerformanceDashboard = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        <Header />
-        <div className="pt-20 px-4 pb-8">
+        {/* Analytics Navigation - Left Side - Desktop Only */}
+        <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
+          <AnalyticsNavigation />
+        </div>
+        
+        <div className="pt-20 px-4 pb-8 md:pl-[280px]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">

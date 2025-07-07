@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import VideoBackground from '@/components/common/VideoBackground';
-import DashboardNavigation from '@/components/dashboard/DashboardNavigation';
+import AnalyticsNavigation from '@/components/dashboard/AnalyticsNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -176,9 +176,9 @@ const AnalyticsDashboard = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        {/* Dashboard Navigation - Left Side - Desktop Only */}
+        {/* Analytics Navigation - Left Side - Desktop Only */}
         <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
-          <DashboardNavigation />
+          <AnalyticsNavigation />
         </div>
 
         <div className="pt-20 px-4 pb-8 md:pl-[280px]">

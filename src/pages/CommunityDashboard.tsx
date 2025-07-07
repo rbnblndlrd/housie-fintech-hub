@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import VideoBackground from '@/components/common/VideoBackground';
-import DashboardNavigation from '@/components/dashboard/DashboardNavigation';
+import CommunityNavigation from '@/components/dashboard/CommunityNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 
 const CommunityDashboard = () => {
+  const [activeTab, setActiveTab] = useState('discover');
   const communityStats = [
     {
       title: "Network Connections",
@@ -104,9 +105,9 @@ const CommunityDashboard = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        {/* Dashboard Navigation - Left Side - Desktop Only */}
+        {/* Community Navigation - Left Side - Desktop Only */}
         <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
-          <DashboardNavigation />
+          <CommunityNavigation activeTab={activeTab} onTabChange={setActiveTab} />
         </div>
 
         <div className="pt-20 px-4 pb-8 md:pl-[280px]">
@@ -140,28 +141,8 @@ const CommunityDashboard = () => {
               ))}
             </div>
 
-            {/* Community Tabs */}
-            <Tabs defaultValue="discover" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 mb-8 bg-card/20 backdrop-blur-md">
-                <TabsTrigger value="discover" className="flex items-center gap-2">
-                  <Globe className="h-4 w-4" />
-                  Discover
-                </TabsTrigger>
-                <TabsTrigger value="network" className="flex items-center gap-2">
-                  <Users className="h-4 w-4" />
-                  My Network
-                </TabsTrigger>
-                <TabsTrigger value="recognition" className="flex items-center gap-2">
-                  <Trophy className="h-4 w-4" />
-                  Recognition
-                </TabsTrigger>
-                <TabsTrigger value="stats" className="flex items-center gap-2">
-                  <BarChart3 className="h-4 w-4" />
-                  Social Stats
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="discover" className="space-y-6">
+            {/* Community Content Based on Active Tab */}
+            {activeTab === 'discover' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Nearby Crews */}
                   <Card className="fintech-card">
@@ -217,10 +198,10 @@ const CommunityDashboard = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              </TabsContent>
+              </div>
+            )}
 
-              <TabsContent value="network" className="space-y-6">
+            {activeTab === 'network' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* My Connections */}
                   <Card className="fintech-card">
@@ -284,10 +265,10 @@ const CommunityDashboard = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              </TabsContent>
+              </div>
+            )}
 
-              <TabsContent value="recognition" className="space-y-6">
+            {activeTab === 'recognition' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Achievements */}
                   <Card className="fintech-card">
@@ -362,10 +343,10 @@ const CommunityDashboard = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              </TabsContent>
+              </div>
+            )}
 
-              <TabsContent value="stats" className="space-y-6">
+            {activeTab === 'social' && (
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   {/* Community Impact */}
                   <Card className="fintech-card">
@@ -428,9 +409,8 @@ const CommunityDashboard = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
+              </div>
+            )}
           </div>
         </div>
       </div>

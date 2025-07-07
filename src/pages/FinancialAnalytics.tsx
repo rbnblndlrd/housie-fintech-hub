@@ -1,71 +1,71 @@
-
 import React from 'react';
-import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
+import AnalyticsNavigation from '@/components/dashboard/AnalyticsNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
-  TrendingUp, 
   DollarSign, 
-  PieChart, 
+  TrendingUp, 
+  PieChart,
   BarChart3,
-  Target,
   CreditCard,
   Wallet,
-  ArrowUpRight
+  ArrowUpRight,
+  ArrowDownRight
 } from 'lucide-react';
 
 const FinancialAnalytics = () => {
   const financialMetrics = [
     {
-      title: "Monthly Revenue",
-      value: "$45,230",
-      change: "+15.2%",
-      icon: DollarSign,
-      color: "from-green-600 to-emerald-600"
+      title: "Revenue Growth",
+      value: "+15.2%",
+      change: "vs last month",
+      icon: TrendingUp,
+      color: "from-green-600 to-emerald-600",
+      trending: "up"
     },
     {
       title: "Profit Margin",
       value: "28.5%",
-      change: "+3.1%",
-      icon: Target,
-      color: "from-blue-600 to-cyan-600"
-    },
-    {
-      title: "Average Transaction",
-      value: "$187",
-      change: "+8.7%",
-      icon: CreditCard,
-      color: "from-purple-600 to-violet-600"
+      change: "+3.1% vs target",
+      icon: PieChart,
+      color: "from-blue-600 to-cyan-600",
+      trending: "up"
     },
     {
       title: "Cash Flow",
       value: "$12,450",
-      change: "+22.3%",
+      change: "+22.3% this quarter",
       icon: Wallet,
-      color: "from-yellow-600 to-orange-600"
+      color: "from-purple-600 to-violet-600",
+      trending: "up"
+    },
+    {
+      title: "Operating Costs",
+      value: "$8,230",
+      change: "-5.2% optimized",
+      icon: CreditCard,
+      color: "from-yellow-600 to-orange-600",
+      trending: "down"
     }
-  ];
-
-  const revenueStreams = [
-    { category: "Service Fees", amount: "$28,500", percentage: 63 },
-    { category: "Subscription", amount: "$8,200", percentage: 18 },
-    { category: "Premium Features", amount: "$5,800", percentage: 13 },
-    { category: "Other", amount: "$2,730", percentage: 6 }
   ];
 
   return (
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        <Header />
-        <div className="pt-20 px-4 pb-8">
+        {/* Analytics Navigation - Left Side - Desktop Only */}
+        <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
+          <AnalyticsNavigation />
+        </div>
+
+        <div className="pt-20 px-4 pb-8 md:pl-[280px]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
               <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
                 Financial Analytics
               </h1>
               <p className="text-white/90 drop-shadow-md">
-                Comprehensive financial analysis and revenue insights
+                Deep dive into your financial performance and projections
               </p>
             </div>
 
@@ -78,8 +78,14 @@ const FinancialAnalytics = () => {
                       <div className="flex-1">
                         <p className="text-sm font-medium opacity-80 mb-1">{metric.title}</p>
                         <p className="text-3xl font-bold">{metric.value}</p>
-                        <p className="text-sm text-green-600 mt-1 flex items-center">
-                          <ArrowUpRight className="h-3 w-3 mr-1" />
+                        <p className={`text-sm mt-1 flex items-center ${
+                          metric.trending === 'up' ? 'text-green-600' : 'text-blue-600'
+                        }`}>
+                          {metric.trending === 'up' ? (
+                            <ArrowUpRight className="h-3 w-3 mr-1" />
+                          ) : (
+                            <ArrowDownRight className="h-3 w-3 mr-1" />
+                          )}
                           {metric.change}
                         </p>
                       </div>
@@ -92,75 +98,61 @@ const FinancialAnalytics = () => {
               ))}
             </div>
 
+            {/* Financial Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-              {/* Revenue Chart */}
               <Card className="fintech-chart-container">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <BarChart3 className="h-5 w-5" />
-                    Revenue Trends
+                    Revenue Breakdown
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-64 flex items-center justify-center">
-                    <p className="opacity-70">Revenue trend chart will be displayed here</p>
+                    <p className="opacity-70">Revenue breakdown chart will be displayed here</p>
                   </div>
                 </CardContent>
               </Card>
 
-              {/* Revenue Breakdown */}
               <Card className="fintech-chart-container">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <PieChart className="h-5 w-5" />
-                    Revenue Streams
+                    <TrendingUp className="h-5 w-5" />
+                    Financial Forecasting
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  {revenueStreams.map((stream, index) => (
-                    <div key={index} className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium">{stream.category}</span>
-                          <span className="opacity-70">{stream.amount}</span>
-                        </div>
-                        <div className="w-full bg-gray-200/30 rounded-full h-2">
-                          <div 
-                            className="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full" 
-                            style={{ width: `${stream.percentage}%` }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <CardContent>
+                  <div className="h-64 flex items-center justify-center">
+                    <p className="opacity-70">Financial forecasting chart will be displayed here</p>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Financial Forecasting */}
+            {/* Financial Insights */}
             <Card className="fintech-card">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <TrendingUp className="h-5 w-5" />
-                  Financial Forecasting
+                  <DollarSign className="h-5 w-5" />
+                  Key Financial Insights
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="text-center">
-                    <h3 className="font-medium mb-2">Next Month Projection</h3>
+                    <h3 className="font-medium mb-2">Projected Monthly Revenue</h3>
                     <p className="text-2xl font-bold text-green-600">$52,800</p>
                     <p className="opacity-70 text-sm">+16.7% growth expected</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="font-medium mb-2">Quarterly Target</h3>
-                    <p className="text-2xl font-bold text-blue-600">$150,000</p>
-                    <p className="opacity-70 text-sm">87% progress to goal</p>
+                    <h3 className="font-medium mb-2">Break-even Point</h3>
+                    <p className="text-2xl font-bold text-blue-600">Day 18</p>
+                    <p className="opacity-70 text-sm">Of each month</p>
                   </div>
                   <div className="text-center">
-                    <h3 className="font-medium mb-2">Annual Forecast</h3>
-                    <p className="text-2xl font-bold text-purple-600">$600,000</p>
-                    <p className="opacity-70 text-sm">Based on current trends</p>
+                    <h3 className="font-medium mb-2">ROI on Marketing</h3>
+                    <p className="text-2xl font-bold text-purple-600">340%</p>
+                    <p className="opacity-70 text-sm">Above industry average</p>
                   </div>
                 </div>
               </CardContent>

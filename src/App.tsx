@@ -34,6 +34,7 @@ import PerformanceDashboard from './pages/PerformanceDashboard';
 import BusinessInsights from './pages/BusinessInsights';
 import CommunityDashboard from './pages/CommunityDashboard';
 import TaxReports from './pages/TaxReports';
+import FinancialAnalytics from './pages/FinancialAnalytics';
 import InteractiveMapPage from './pages/InteractiveMapPage';
 import Pricing from './pages/Pricing';
 import { Toaster } from '@/components/ui/toaster';
@@ -88,6 +89,8 @@ function App() {
                   <Route path="/community-dashboard" element={<CommunityDashboard />} />
                   <Route path="/business-insights" element={<BusinessInsights />} />
                   <Route path="/tax-reports" element={<TaxReports />} />
+                  <Route path="/performance" element={<PerformanceDashboard />} />
+                  <Route path="/financial-analytics" element={<FinancialAnalytics />} />
                   <Route path="/pricing" element={<Pricing />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
