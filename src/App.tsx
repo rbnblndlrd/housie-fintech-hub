@@ -17,6 +17,7 @@ import ConditionalVideoBackground from './components/layout/ConditionalVideoBack
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
+import BookingsPage from './pages/BookingsPage';
 import ProviderProfile from './pages/ProviderProfile';
 import NotificationsPage from './pages/Notifications';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -68,6 +69,7 @@ function App() {
                   <Route path="/" element={<Home />} />
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/dashboard" element={<UnifiedDashboard />} />
+                  <Route path="/bookings" element={<BookingsPage />} />
                   <Route path="/provider-profile/:id" element={<ProviderProfile />} />
                   <Route path="/notifications" element={<NotificationsPage />} />
                   <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />

@@ -5,6 +5,7 @@ import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
+import DashboardNavigation from '@/components/dashboard/DashboardNavigation';
 import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
 import CalendarPreview from '@/components/calendar/CalendarPreview';
 import { ChatBubble } from '@/components/chat/ChatBubble';
@@ -67,7 +68,12 @@ const BookingsPage = () => {
       <div className="relative z-10 min-h-screen">
         <Header />
         
-        <div className="pt-16 pl-[188px] pr-[188px] pb-8">
+        {/* Dashboard Navigation - Left Side - Desktop Only */}
+        <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
+          <DashboardNavigation />
+        </div>
+        
+        <div className="pt-16 pl-[188px] pr-[188px] pb-8 md:pl-[280px]">
           <div className="max-w-full">
             <div className="mb-6">
               <Button 
