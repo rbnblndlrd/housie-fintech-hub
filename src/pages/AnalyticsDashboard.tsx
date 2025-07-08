@@ -1,9 +1,11 @@
 
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import VideoBackground from '@/components/common/VideoBackground';
 import AnalyticsNavigation from '@/components/dashboard/AnalyticsNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
@@ -33,6 +35,7 @@ import {
 } from 'lucide-react';
 
 const AnalyticsDashboard = () => {
+  const navigate = useNavigate();
   // Sample data for charts
   const revenueData = [
     { month: 'Jan', revenue: 45000, bookings: 320 },
@@ -176,6 +179,19 @@ const AnalyticsDashboard = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
+        {/* Back Navigation */}
+        <div className="fixed top-4 left-4 z-50">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate(-1)}
+            className="bg-slate-800/90 backdrop-blur-sm border-slate-700 shadow-lg text-slate-200"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
+        
         {/* Analytics Navigation - Left Side - Desktop Only */}
         <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
           <AnalyticsNavigation />
