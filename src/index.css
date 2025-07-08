@@ -196,7 +196,7 @@
     font-weight: 500;
   }
 
-  /* Make all text in fintech cards white by default */
+  /* Make all text in fintech cards white by default, except badges */
   .fintech-card-base h1,
   .fintech-card-base h2,
   .fintech-card-base h3,
@@ -204,12 +204,19 @@
   .fintech-card-base h5,
   .fintech-card-base h6,
   .fintech-card-base p,
-  .fintech-card-base span,
-  .fintech-card-base div,
+  .fintech-card-base span:not([class*="badge"]):not([class*="Badge"]),
+  .fintech-card-base div:not([class*="badge"]):not([class*="Badge"]),
   .fintech-card-base label,
   .fintech-card-base li {
     color: #ffffff !important;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Ensure badges maintain their proper colors inside fintech cards */
+  .fintech-card-base [class*="badge"],
+  .fintech-card-base [class*="Badge"] {
+    color: inherit !important;
+    text-shadow: none !important;
   }
 
   /* Enhanced button styling */
