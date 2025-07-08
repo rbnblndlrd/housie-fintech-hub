@@ -16,8 +16,8 @@ const GPS = () => {
 
   return (
     <div className="fixed inset-0 w-full h-full bg-background z-50 p-2">
-      {/* Back Navigation - Positioned under HOUSIE logo */}
-      <div className="absolute top-20 left-4 z-50">
+      {/* Back Navigation - Centered under HOUSIE logo */}
+      <div className="absolute top-20 left-1/2 transform -translate-x-1/2 z-50">
         <Button
           variant="outline"
           size="sm"
