@@ -17,12 +17,12 @@ const GPS = () => {
   return (
     <div className="fixed inset-0 w-full h-full bg-background z-50 p-2">
       {/* Back Navigation - Above Job Hub tab */}
-      <div className="absolute top-[88px] left-[22px] z-50">
+      <div className="absolute top-[94px] left-[22px] z-50">
         <Button
           variant="outline"
           size="sm"
           onClick={() => navigate('/dashboard')}
-          className="bg-slate-800/90 backdrop-blur-sm border-slate-700 shadow-lg text-slate-200"
+          className="bg-white border-slate-300 shadow-lg text-slate-800 hover:bg-slate-50"
         >
           <ArrowLeft className="h-4 w-4" />
         </Button>

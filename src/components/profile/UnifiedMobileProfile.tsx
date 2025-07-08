@@ -75,12 +75,12 @@ const UnifiedMobileProfile = () => {
         <div className="p-2 md:p-8">
           <div className="max-w-6xl mx-auto">
             {/* Mobile Navigation - Above Job Hub tab */}
-            <div className="md:hidden fixed top-[88px] left-[22px] z-50">
+            <div className="md:hidden fixed top-[94px] left-[22px] z-50">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => navigate('/dashboard')}
-                className="bg-slate-50/90 backdrop-blur-sm border-slate-200 shadow-lg"
+                className="bg-white border-slate-300 shadow-lg text-slate-800 hover:bg-slate-50"
               >
                 <ArrowLeft className="h-4 w-4" />
               </Button>
