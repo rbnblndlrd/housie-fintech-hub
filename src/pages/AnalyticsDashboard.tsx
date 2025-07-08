@@ -179,8 +179,8 @@ const AnalyticsDashboard = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        {/* Back Navigation - Positioned in red box area */}
-        <div className="fixed top-4 left-32 z-50">
+        {/* Back Navigation - Positioned under HOUSIE logo */}
+        <div className="fixed top-20 left-4 z-50">
           <Button
             variant="outline"
             size="sm"

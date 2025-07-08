@@ -74,8 +74,8 @@ const UnifiedMobileProfile = () => {
         {/* Mobile: Full screen layout, Desktop: Normal padding */}
         <div className="p-2 md:p-8">
           <div className="max-w-6xl mx-auto">
-            {/* Mobile Navigation - Positioned in red box area */}
-            <div className="md:hidden fixed top-4 left-32 z-50">
+            {/* Mobile Navigation - Positioned under HOUSIE logo */}
+            <div className="md:hidden fixed top-20 left-4 z-50">
               <Button
                 variant="outline"
                 size="sm"

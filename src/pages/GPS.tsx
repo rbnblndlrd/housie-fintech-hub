@@ -16,16 +16,15 @@ const GPS = () => {
 
   return (
     <div className="fixed inset-0 w-full h-full bg-background z-50 p-2">
-      {/* Back Navigation - Positioned in red box area */}
-      <div className="absolute top-4 left-32 z-50">
+      {/* Back Navigation - Positioned under HOUSIE logo */}
+      <div className="absolute top-20 left-4 z-50">
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/dashboard')}
           className="bg-slate-800/90 backdrop-blur-sm border-slate-700 shadow-lg text-slate-200"
         >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
+          <ArrowLeft className="h-4 w-4" />
         </Button>
       </div>
       
