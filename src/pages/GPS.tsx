@@ -17,7 +17,7 @@ const GPS = () => {
   return (
     <div className="fixed inset-0 w-full h-full bg-background z-50 p-2">
       {/* Back Navigation - Above Job Hub tab */}
-      <div className="absolute top-[100px] left-[22px] z-50">
+      <div className="absolute top-[88px] left-[22px] z-50">
         <Button
           variant="outline"
           size="sm"

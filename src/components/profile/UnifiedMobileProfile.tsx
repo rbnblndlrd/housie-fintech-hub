@@ -75,7 +75,7 @@ const UnifiedMobileProfile = () => {
         <div className="p-2 md:p-8">
           <div className="max-w-6xl mx-auto">
             {/* Mobile Navigation - Above Job Hub tab */}
-            <div className="md:hidden fixed top-[100px] left-[22px] z-50">
+            <div className="md:hidden fixed top-[88px] left-[22px] z-50">
               <Button
                 variant="outline"
                 size="sm"
