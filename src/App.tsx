@@ -33,6 +33,7 @@ import Services from './pages/Services';
 import PerformanceDashboard from './pages/PerformanceDashboard';
 import BusinessInsights from './pages/BusinessInsights';
 import CommunityDashboard from './pages/CommunityDashboard';
+import Prestige from './pages/Prestige';
 import TaxReports from './pages/TaxReports';
 import FinancialAnalytics from './pages/FinancialAnalytics';
 import InteractiveMapPage from './pages/InteractiveMapPage';
@@ -87,6 +88,7 @@ function App() {
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
                   <Route path="/community" element={<CommunityDashboard />} />
                   <Route path="/community-dashboard" element={<CommunityDashboard />} />
+                  <Route path="/prestige" element={<Prestige />} />
                   <Route path="/business-insights" element={<BusinessInsights />} />
                   <Route path="/tax-reports" element={<TaxReports />} />
                   <Route path="/performance" element={<PerformanceDashboard />} />
