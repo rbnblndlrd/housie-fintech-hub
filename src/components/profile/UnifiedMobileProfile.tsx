@@ -68,15 +68,6 @@ const UnifiedMobileProfile = () => {
 
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* Desktop/Tablet Header Only - Hidden on Mobile */}
-      <div className="hidden md:block bg-slate-50/90 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-40">
-        <div className="flex items-center gap-4 p-4">
-          <div className="flex-1">
-            <h1 className="text-xl font-bold text-foreground">My Profile</h1>
-            <p className="text-xs text-muted-foreground">Manage your profile settings</p>
-          </div>
-        </div>
-      </div>
 
       {/* Content Area - Full Screen on Mobile, Normal on Desktop */}
       <div className="flex-1">

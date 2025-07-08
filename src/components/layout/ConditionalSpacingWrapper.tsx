@@ -11,11 +11,9 @@ const ConditionalSpacingWrapper: React.FC<ConditionalSpacingWrapperProps> = ({ c
   // Pages that KEEP the header
   const pagesWithHeader = [
     '/provider-profile/',  // This will match /provider-profile/:id
-    '/social',
     '/competitive-advantage',
     '/help',
     '/help-center',
-    '/profile',
     '/services'
   ];
   
