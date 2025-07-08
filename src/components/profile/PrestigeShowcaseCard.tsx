@@ -40,7 +40,7 @@ const PrestigeShowcaseCard: React.FC<PrestigeShowcaseCardProps> = ({ profile, is
   const overallRating = profile.average_rating || 4.8;
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border border-card/50 shadow-md hover:shadow-lg transition-shadow">
+    <Card className="bg-slate-50 border border-slate-200 shadow-md hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-lg">

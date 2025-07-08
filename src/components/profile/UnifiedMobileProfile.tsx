@@ -67,7 +67,7 @@ const UnifiedMobileProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
+    <div className="min-h-screen bg-slate-100">
       {/* Mobile Header with Back Button */}
       <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40 md:hidden">
         <div className="flex items-center gap-4 p-4">
@@ -83,13 +83,6 @@ const UnifiedMobileProfile = () => {
             <h1 className="text-xl font-bold text-foreground">My Profile</h1>
             <p className="text-xs text-muted-foreground">Manage your profile settings</p>
           </div>
-        </div>
-      </div>
-
-      {/* Desktop Header */}
-      <div className="hidden md:block p-6 border-b bg-card/50 backdrop-blur-sm">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="text-3xl font-bold text-foreground">My Profile</h1>
         </div>
       </div>
 

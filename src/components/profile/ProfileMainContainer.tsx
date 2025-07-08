@@ -36,7 +36,7 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
   return (
     <div className="space-y-6">
       {/* Main Profile Container */}
-      <Card className="relative overflow-hidden bg-gradient-to-br from-card via-card/95 to-card/90 backdrop-blur-sm border-0 shadow-xl">
+      <Card className="relative overflow-hidden bg-slate-50 border border-slate-200 shadow-lg">
         {/* Background Image Placeholder */}
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 opacity-50" />
         

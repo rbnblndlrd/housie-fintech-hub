@@ -19,7 +19,7 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({ profile, isEd
   };
 
   return (
-    <Card className="bg-card/60 backdrop-blur-sm border border-card/50 shadow-md hover:shadow-lg transition-shadow">
+    <Card className="bg-slate-50 border border-slate-200 shadow-md hover:shadow-lg transition-shadow">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Shield className="h-5 w-5 text-orange-600" />
