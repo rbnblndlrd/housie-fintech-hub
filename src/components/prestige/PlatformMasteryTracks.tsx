@@ -6,12 +6,20 @@ interface PlatformMasteryTracksProps {
   searchTerm: string;
   activeTrack: string | null;
   setActiveTrack: (trackId: string | null) => void;
+  statusFilter?: string;
+  activeSection?: string | null;
+  setActiveSection?: (sectionId: string | null) => void;
+  viewMode?: 'preview' | 'detailed';
 }
 
 const PlatformMasteryTracks: React.FC<PlatformMasteryTracksProps> = ({
   searchTerm,
   activeTrack,
-  setActiveTrack
+  setActiveTrack,
+  statusFilter,
+  activeSection,
+  setActiveSection,
+  viewMode
 }) => {
   const platformMasteryTracks = [
     {
@@ -126,6 +134,10 @@ const PlatformMasteryTracks: React.FC<PlatformMasteryTracksProps> = ({
       activeTrack={activeTrack}
       setActiveTrack={setActiveTrack}
       sectionId="platform-mastery"
+      statusFilter={statusFilter}
+      activeSection={activeSection}
+      setActiveSection={setActiveSection}
+      viewMode={viewMode}
     />
   );
 };

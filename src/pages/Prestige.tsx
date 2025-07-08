@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, Search, Filter } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import VideoBackground from '@/components/common/VideoBackground';
 import PrestigeHero from '@/components/prestige/PrestigeHero';
 import PrestigeIntroduction from '@/components/prestige/PrestigeIntroduction';
@@ -15,6 +17,8 @@ const Prestige = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTrack, setActiveTrack] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   return (
     <>
@@ -60,49 +64,134 @@ const Prestige = () => {
             {/* Introduction Section */}
             <PrestigeIntroduction />
 
-            {/* Search and Filter */}
-            <div className="bg-slate-50/80 backdrop-blur-sm rounded-lg border border-slate-200 p-6">
-              <div className="relative max-w-md">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search prestige tracks..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
+            {/* Enhanced Search and Filter */}
+            <div className="bg-slate-50/80 backdrop-blur-sm rounded-lg border border-slate-200 p-6 sticky top-16 md:top-20 z-30">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="relative flex-1 max-w-md">
+                  <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search prestige tracks..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10"
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger className="w-32">
+                      <Filter className="h-4 w-4 mr-2" />
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All</SelectItem>
+                      <SelectItem value="current">In Progress</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="locked">Locked</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
 
             {/* Prestige Track Sections */}
-            <div className="space-y-8">
-              {/* Service-Specific Prestige Tracks */}
-              <ServiceSpecificTracks 
-                searchTerm={searchTerm}
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-              />
+            <Tabs defaultValue="overview" className="space-y-6">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 bg-slate-50/80 backdrop-blur-sm">
+                <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="service">Service</TabsTrigger>
+                <TabsTrigger value="recognition">Recognition</TabsTrigger>
+                <TabsTrigger value="customer">Customer</TabsTrigger>
+                <TabsTrigger value="platform">Platform</TabsTrigger>
+              </TabsList>
 
-              {/* Recognition Prestige Tracks */}
-              <RecognitionTracks 
-                searchTerm={searchTerm}
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-              />
+              <TabsContent value="overview" className="space-y-6">
+                <div className="grid gap-4 md:gap-6">
+                  <ServiceSpecificTracks 
+                    searchTerm={searchTerm}
+                    activeTrack={activeTrack}
+                    setActiveTrack={setActiveTrack}
+                    statusFilter={statusFilter}
+                    activeSection={activeSection}
+                    setActiveSection={setActiveSection}
+                    viewMode="preview"
+                  />
+                  <RecognitionTracks 
+                    searchTerm={searchTerm}
+                    activeTrack={activeTrack}
+                    setActiveTrack={setActiveTrack}
+                    statusFilter={statusFilter}
+                    activeSection={activeSection}
+                    setActiveSection={setActiveSection}
+                    viewMode="preview"
+                  />
+                  <CustomerTracks 
+                    searchTerm={searchTerm}
+                    activeTrack={activeTrack}
+                    setActiveTrack={setActiveTrack}
+                    statusFilter={statusFilter}
+                    activeSection={activeSection}
+                    setActiveSection={setActiveSection}
+                    viewMode="preview"
+                  />
+                  <PlatformMasteryTracks 
+                    searchTerm={searchTerm}
+                    activeTrack={activeTrack}
+                    setActiveTrack={setActiveTrack}
+                    statusFilter={statusFilter}
+                    activeSection={activeSection}
+                    setActiveSection={setActiveSection}
+                    viewMode="preview"
+                  />
+                </div>
+              </TabsContent>
 
-              {/* Customer-Only Prestige Tracks */}
-              <CustomerTracks 
-                searchTerm={searchTerm}
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-              />
+              <TabsContent value="service">
+                <ServiceSpecificTracks 
+                  searchTerm={searchTerm}
+                  activeTrack={activeTrack}
+                  setActiveTrack={setActiveTrack}
+                  statusFilter={statusFilter}
+                  activeSection={activeSection}
+                  setActiveSection={setActiveSection}
+                  viewMode="detailed"
+                />
+              </TabsContent>
 
-              {/* Platform Mastery Tracks */}
-              <PlatformMasteryTracks 
-                searchTerm={searchTerm}
-                activeTrack={activeTrack}
-                setActiveTrack={setActiveTrack}
-              />
-            </div>
+              <TabsContent value="recognition">
+                <RecognitionTracks 
+                  searchTerm={searchTerm}
+                  activeTrack={activeTrack}
+                  setActiveTrack={setActiveTrack}
+                  statusFilter={statusFilter}
+                  activeSection={activeSection}
+                  setActiveSection={setActiveSection}
+                  viewMode="detailed"
+                />
+              </TabsContent>
+
+              <TabsContent value="customer">
+                <CustomerTracks 
+                  searchTerm={searchTerm}
+                  activeTrack={activeTrack}
+                  setActiveTrack={setActiveTrack}
+                  statusFilter={statusFilter}
+                  activeSection={activeSection}
+                  setActiveSection={setActiveSection}
+                  viewMode="detailed"
+                />
+              </TabsContent>
+
+              <TabsContent value="platform">
+                <PlatformMasteryTracks 
+                  searchTerm={searchTerm}
+                  activeTrack={activeTrack}
+                  setActiveTrack={setActiveTrack}
+                  statusFilter={statusFilter}
+                  activeSection={activeSection}
+                  setActiveSection={setActiveSection}
+                  viewMode="detailed"
+                />
+              </TabsContent>
+            </Tabs>
 
             {/* Bottom Spacing */}
             <div className="h-16" />

@@ -6,12 +6,20 @@ interface ServiceSpecificTracksProps {
   searchTerm: string;
   activeTrack: string | null;
   setActiveTrack: (trackId: string | null) => void;
+  statusFilter?: string;
+  activeSection?: string | null;
+  setActiveSection?: (sectionId: string | null) => void;
+  viewMode?: 'preview' | 'detailed';
 }
 
 const ServiceSpecificTracks: React.FC<ServiceSpecificTracksProps> = ({
   searchTerm,
   activeTrack,
-  setActiveTrack
+  setActiveTrack,
+  statusFilter,
+  activeSection,
+  setActiveSection,
+  viewMode
 }) => {
   const serviceSpecificTracks = [
     {
@@ -138,6 +146,10 @@ const ServiceSpecificTracks: React.FC<ServiceSpecificTracksProps> = ({
       activeTrack={activeTrack}
       setActiveTrack={setActiveTrack}
       sectionId="service-specific"
+      statusFilter={statusFilter}
+      activeSection={activeSection}
+      setActiveSection={setActiveSection}
+      viewMode={viewMode}
       defaultExpanded={true}
     />
   );

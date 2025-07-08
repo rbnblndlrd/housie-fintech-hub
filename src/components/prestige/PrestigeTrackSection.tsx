@@ -4,6 +4,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ChevronDown, ChevronRight, CheckCircle, Clock, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import PreviewTrackCard from './PreviewTrackCard';
+import TitleModal from './TitleModal';
 
 interface PrestigeLevel {
   title: string;
@@ -33,6 +35,10 @@ interface PrestigeTrackSectionProps {
   setActiveTrack: (trackId: string | null) => void;
   defaultExpanded?: boolean;
   sectionId: string;
+  statusFilter?: string;
+  activeSection?: string | null;
+  setActiveSection?: (sectionId: string | null) => void;
+  viewMode?: 'preview' | 'detailed';
 }
 
 const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
@@ -44,20 +50,52 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
   activeTrack,
   setActiveTrack,
   defaultExpanded = false,
-  sectionId
+  sectionId,
+  statusFilter = 'all',
+  activeSection,
+  setActiveSection,
+  viewMode = 'detailed'
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
+  const [selectedTitle, setSelectedTitle] = React.useState<{
+    track: PrestigeTrack;
+    level: PrestigeLevel;
+    levelIndex: number;
+  } | null>(null);
 
-  // Filter tracks based on search term with null safety
+  // Accordion behavior - only one section open at a time
+  const handleSectionToggle = () => {
+    if (setActiveSection) {
+      setActiveSection(activeSection === sectionId ? null : sectionId);
+    } else {
+      setIsExpanded(!isExpanded);
+    }
+  };
+
+  const sectionIsExpanded = setActiveSection ? activeSection === sectionId : isExpanded;
+
+  // Filter tracks based on search term and status filter with null safety
   const filteredTracks = (tracks || []).filter(track => {
     if (!track || !track.title || !track.levels) return false;
+    
+    // Search filter
     const searchLower = (searchTerm || '').toLowerCase();
-    return track.title.toLowerCase().includes(searchLower) ||
+    const matchesSearch = track.title.toLowerCase().includes(searchLower) ||
            (track.subtitle || '').toLowerCase().includes(searchLower) ||
            track.levels.some(level => level && level.title && level.title.toLowerCase().includes(searchLower));
+    
+    if (!matchesSearch) return false;
+    
+    // Status filter
+    if (statusFilter === 'all') return true;
+    
+    return track.levels.some(level => {
+      if (!level) return false;
+      return level.status === statusFilter;
+    });
   });
 
-  if (filteredTracks.length === 0 && searchTerm) {
+  if (filteredTracks.length === 0 && (searchTerm || statusFilter !== 'all')) {
     return null;
   }
 
@@ -83,12 +121,78 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
     }
   };
 
+  // Preview mode for overview tab
+  if (viewMode === 'preview') {
+    return (
+      <Card className="bg-slate-50/80 backdrop-blur-sm border border-slate-200 shadow-lg">
+        <CardHeader 
+          className="cursor-pointer hover:bg-slate-50/60 transition-colors"
+          onClick={handleSectionToggle}
+        >
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              {icon}
+              <div>
+                <h3 className="text-lg font-bold">{title}</h3>
+                {subtitle && (
+                  <p className="text-sm text-muted-foreground font-normal">{subtitle}</p>
+                )}
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="text-xs">
+                {filteredTracks.length} tracks
+              </Badge>
+              {sectionIsExpanded ? (
+                <ChevronDown className="h-5 w-5 text-muted-foreground" />
+              ) : (
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              )}
+            </div>
+          </CardTitle>
+        </CardHeader>
+
+        {sectionIsExpanded && (
+          <CardContent className="pt-0">
+            <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+              {filteredTracks.map((track) => (
+                <PreviewTrackCard
+                  key={track.id}
+                  id={track.id}
+                  title={track.title}
+                  subtitle={track.subtitle}
+                  emoji={track.emoji}
+                  levels={track.levels}
+                  onClick={() => setActiveTrack(activeTrack === track.id ? null : track.id)}
+                />
+              ))}
+            </div>
+          </CardContent>
+        )}
+      </Card>
+    );
+  }
+
+  // Detailed mode for individual category tabs
   return (
-    <Card className="bg-slate-50/80 backdrop-blur-sm border border-slate-200 shadow-lg">
-      <CardHeader 
-        className="cursor-pointer hover:bg-slate-50/60 transition-colors"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+    <div className="space-y-6">
+      <TitleModal
+        isOpen={!!selectedTitle}
+        onClose={() => setSelectedTitle(null)}
+        title={selectedTitle?.level.title || ''}
+        trackTitle={selectedTitle?.track.title || ''}
+        emoji={selectedTitle?.track.emoji || ''}
+        level={selectedTitle?.level || {} as PrestigeLevel}
+        levelIndex={selectedTitle?.levelIndex || 0}
+        totalLevels={selectedTitle?.track.levels.length || 0}
+        nextLevel={selectedTitle ? selectedTitle.track.levels[selectedTitle.levelIndex + 1] : undefined}
+      />
+
+      <Card className="bg-slate-50/80 backdrop-blur-sm border border-slate-200 shadow-lg">
+        <CardHeader 
+          className="cursor-pointer hover:bg-slate-50/60 transition-colors"
+          onClick={handleSectionToggle}
+        >
         <CardTitle className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             {icon}
@@ -103,7 +207,7 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
             <Badge variant="outline" className="text-xs">
               {filteredTracks.length} tracks
             </Badge>
-            {isExpanded ? (
+            {sectionIsExpanded ? (
               <ChevronDown className="h-5 w-5 text-muted-foreground" />
             ) : (
               <ChevronRight className="h-5 w-5 text-muted-foreground" />
@@ -112,7 +216,7 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
         </CardTitle>
       </CardHeader>
 
-      {isExpanded && (
+      {sectionIsExpanded && (
         <CardContent className="pt-0">
           <div className="space-y-6">
             {filteredTracks.map((track) => {
@@ -188,7 +292,15 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
                               <div className="flex items-center gap-3">
                                 {getStatusIcon(level.status)}
                                 <div>
-                                  <h5 className="font-medium text-foreground">{level.title}</h5>
+                                  <h5 
+                                    className="font-medium text-foreground hover:text-primary cursor-pointer transition-colors"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setSelectedTitle({ track, level, levelIndex: index });
+                                    }}
+                                  >
+                                    {level.title}
+                                  </h5>
                                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                     <span>{level.jobsRequired} jobs</span>
                                     <span>•</span>
@@ -220,9 +332,10 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
             })}
           </div>
         </CardContent>
-      )}
-    </Card>
-  );
+          )}
+        </Card>
+      </div>
+    );
 };
 
 export default PrestigeTrackSection;

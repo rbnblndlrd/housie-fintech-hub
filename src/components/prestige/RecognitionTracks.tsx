@@ -6,12 +6,20 @@ interface RecognitionTracksProps {
   searchTerm: string;
   activeTrack: string | null;
   setActiveTrack: (trackId: string | null) => void;
+  statusFilter?: string;
+  activeSection?: string | null;
+  setActiveSection?: (sectionId: string | null) => void;
+  viewMode?: 'preview' | 'detailed';
 }
 
 const RecognitionTracks: React.FC<RecognitionTracksProps> = ({
   searchTerm,
   activeTrack,
-  setActiveTrack
+  setActiveTrack,
+  statusFilter,
+  activeSection,
+  setActiveSection,
+  viewMode
 }) => {
   const recognitionTracks = [
     {
@@ -126,6 +134,10 @@ const RecognitionTracks: React.FC<RecognitionTracksProps> = ({
       activeTrack={activeTrack}
       setActiveTrack={setActiveTrack}
       sectionId="recognition"
+      statusFilter={statusFilter}
+      activeSection={activeSection}
+      setActiveSection={setActiveSection}
+      viewMode={viewMode}
     />
   );
 };

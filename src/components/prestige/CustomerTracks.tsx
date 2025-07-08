@@ -6,12 +6,20 @@ interface CustomerTracksProps {
   searchTerm: string;
   activeTrack: string | null;
   setActiveTrack: (trackId: string | null) => void;
+  statusFilter?: string;
+  activeSection?: string | null;
+  setActiveSection?: (sectionId: string | null) => void;
+  viewMode?: 'preview' | 'detailed';
 }
 
 const CustomerTracks: React.FC<CustomerTracksProps> = ({
   searchTerm,
   activeTrack,
-  setActiveTrack
+  setActiveTrack,
+  statusFilter,
+  activeSection,
+  setActiveSection,
+  viewMode
 }) => {
   const customerTracks = [
     {
@@ -109,6 +117,10 @@ const CustomerTracks: React.FC<CustomerTracksProps> = ({
       activeTrack={activeTrack}
       setActiveTrack={setActiveTrack}
       sectionId="customer-only"
+      statusFilter={statusFilter}
+      activeSection={activeSection}
+      setActiveSection={setActiveSection}
+      viewMode={viewMode}
     />
   );
 };
