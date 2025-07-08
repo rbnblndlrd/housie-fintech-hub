@@ -83,7 +83,7 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
         <CardContent className="relative z-10 pt-0">
           {/* Bio/Description Section */}
           <div className="mb-6">
-            <div className="p-4 bg-card/50 backdrop-blur-sm rounded-lg border">
+            <div className="p-4 bg-slate-50/80 backdrop-blur-sm rounded-lg border border-slate-200">
               <h3 className="font-medium text-foreground mb-2">About</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {profile.bio || profile.description || 'No description provided yet. Click "Edit Details" to add one!'}
@@ -94,13 +94,13 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
           {/* Provider-specific fields integration */}
           {isProvider && (
             <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 bg-accent/5 rounded-lg border border-accent/20">
+              <div className="p-3 bg-slate-50/80 rounded-lg border border-slate-200">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Business</p>
                 <p className="font-medium text-foreground">
                   {profile.business_name || 'Individual Provider'}
                 </p>
               </div>
-              <div className="p-3 bg-accent/5 rounded-lg border border-accent/20">
+              <div className="p-3 bg-slate-50/80 rounded-lg border border-slate-200">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Rate</p>
                 <p className="font-medium text-foreground">
                   ${profile.hourly_rate || 45}/hr
