@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Crown, Briefcase, User } from 'lucide-react';
 import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
-import PersonalTab from './PersonalTab';
-import ProviderTab from './ProviderTab';
+import ProfileMainContainer from './ProfileMainContainer';
 
 const UnifiedMobileProfile = () => {
   const { user } = useAuth();
@@ -95,19 +95,23 @@ const UnifiedMobileProfile = () => {
 
       {/* Content Area */}
       <div className="flex-1">
-        {/* Mobile Layout */}
-        <div className="md:hidden p-4">
-          {activeTab === 'personal' && <PersonalTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
-          {activeTab === 'provider' && <ProviderTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
-        </div>
-
-        {/* Desktop Layout - 2 Column Grid */}
-        <div className="hidden md:block p-8">
+        {/* Unified Layout for Mobile and Desktop */}
+        <div className="p-4 md:p-8">
           <div className="max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {activeTab === 'personal' && <PersonalTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
-              {activeTab === 'provider' && <ProviderTab profile={profile} activeTab={activeTab} onTabChange={setActiveTab} />}
+            {/* Tab Navigation */}
+            <div className="mb-6">
+              <ProfileTabNavigation
+                activeTab={activeTab}
+                onTabChange={setActiveTab}
+                profile={profile}
+              />
             </div>
+
+            {/* Main Profile Container */}
+            <ProfileMainContainer 
+              profile={profile} 
+              isProvider={activeTab === 'provider'} 
+            />
           </div>
         </div>
       </div>
