@@ -1,10 +1,9 @@
 
 import React, { useState } from 'react';
-import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
+import { UnifiedMapboxMap } from "@/components/UnifiedMapboxMap";
 import { useEmergencyJobsData } from '@/hooks/useEmergencyJobsData';
 import { useRole } from '@/contexts/RoleContext';
 import { montrealProviders } from '@/data/montrealProviders';
-import EmergencyJobMarkersOverlay from './map/EmergencyJobMarkersOverlay';
 import LiveStatsCard from './map/LiveStatsCard';
 import SelectedJobCard from './map/SelectedJobCard';
 import LoadingOverlay from './map/LoadingOverlay';
@@ -33,20 +32,14 @@ const InteractiveJobsMap: React.FC = () => {
 
   return (
     <div className="relative h-full w-full">
-      {/* Unified Google Map */}
-      <UnifiedGoogleMap
+      {/* Unified Mapbox Map */}
+      <UnifiedMapboxMap
         center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={12}
         className="w-full h-full rounded-lg"
         providers={montrealProviders}
         mode="interactive"
-      >
-        {/* Emergency Job Markers Overlay as children */}
-        <EmergencyJobMarkersOverlay
-          emergencyJobs={emergencyJobs}
-          onJobSelect={handleJobSelect}
-        />
-      </UnifiedGoogleMap>
+      />
 
       {/* Live Stats Card */}
       <LiveStatsCard liveStats={liveStats} />

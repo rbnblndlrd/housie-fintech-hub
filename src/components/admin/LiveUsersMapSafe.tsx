@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin, AlertTriangle } from 'lucide-react';
@@ -45,26 +44,16 @@ const LiveUsersMapSafe: React.FC<LiveUsersMapSafeProps> = ({ sessions }) => {
       </CardHeader>
       <CardContent>
         <div className="h-96 rounded-xl overflow-hidden bg-gray-50 flex items-center justify-center">
-          {window.google ? (
-            <div className="text-center">
-              <MapPin className="h-12 w-12 text-blue-500 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">Google Maps Integration</p>
-              <p className="text-sm text-gray-500">
-                {sessionsWithLocation.length} users with location data
-              </p>
-            </div>
-          ) : (
-            <div className="text-center">
-              <AlertTriangle className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
-              <p className="text-gray-600 mb-2">Map Temporarily Unavailable</p>
-              <p className="text-sm text-gray-500">
-                Location data still being tracked: {sessionsWithLocation.length} users
-              </p>
-            </div>
-          )}
+          <div className="text-center">
+            <MapPin className="h-12 w-12 text-blue-500 mx-auto mb-4" />
+            <p className="text-gray-600 mb-2">Mapbox Integration</p>
+            <p className="text-sm text-gray-500">
+              {sessionsWithLocation.length} users with location data
+            </p>
+          </div>
         </div>
         
-        {/* Location List as Fallback */}
+        {/* Location List as Primary Display */}
         <div className="mt-4 max-h-48 overflow-y-auto">
           <h4 className="font-medium text-sm text-gray-700 mb-2">Active User Locations:</h4>
           <div className="space-y-2">

@@ -17,8 +17,8 @@ import {
   TrendingUp,
   Activity
 } from 'lucide-react';
-import { useMapTheme } from '@/hooks/useMapTheme';
-import MapThemeSelector from '@/components/map/MapThemeSelector';
+// import { useMapTheme } from '@/hooks/useMapTheme'; // Removed with Google Maps
+// import MapThemeSelector from '@/components/map/MapThemeSelector'; // Removed with Google Maps
 import { usePokemonGOJobs, PokemonGOJob, Provider } from '@/hooks/usePokemonGOJobs';
 
 // Set Mapbox access token
@@ -36,7 +36,7 @@ const PokemonGOJobMap: React.FC<PokemonGOJobMapProps> = ({ isDashboard = false }
   const [showFilters, setShowFilters] = useState(false);
   const [showStats, setShowStats] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'all' | 'individual' | 'opportunity' | 'emergency'>('all');
-  const { isDark } = useMapTheme();
+  const isDark = false; // Default to light theme without Google Maps theming
   
   // Use the Pokemon GO jobs hook
   const { jobs, providers, stats, loading, acceptJob, filterJobs } = usePokemonGOJobs();
@@ -244,7 +244,7 @@ const PokemonGOJobMap: React.FC<PokemonGOJobMapProps> = ({ isDashboard = false }
       
       {/* Mobile-First Controls */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
-        <MapThemeSelector />
+        {/* MapThemeSelector removed with Google Maps */}
         
         {/* Stats Toggle Button */}
         <Button

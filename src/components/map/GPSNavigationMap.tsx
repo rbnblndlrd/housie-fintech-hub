@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { useMapTheme } from '@/hooks/useMapTheme';
-import MapThemeSelector from '@/components/map/MapThemeSelector';
+// import { useMapTheme } from '@/hooks/useMapTheme'; // Removed with Google Maps
+// import MapThemeSelector from '@/components/map/MapThemeSelector'; // Removed with Google Maps
 
 // Set Mapbox access token
 mapboxgl.accessToken = 'pk.eyJ1IjoicmJuYmxuZGxyZCIsImEiOiJjbWNmdGYzN2wwY2RuMmtwd3M3d2hzM3NxIn0.MZfduMhwltc3eC8V5xYgcQ';
@@ -14,7 +14,7 @@ interface GPSNavigationMapProps {
 const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const { isDark } = useMapTheme();
+  const isDark = false; // Default to light theme without Google Maps theming
 
   useEffect(() => {
     if (!mapContainer.current) return;
@@ -70,10 +70,7 @@ const GPSNavigationMap: React.FC<GPSNavigationMapProps> = ({ isDashboard = false
         style={containerStyles}
       />
       
-      {/* Theme Toggle - positioned in top-left */}
-      <div className="absolute top-4 left-4 z-10">
-        <MapThemeSelector />
-      </div>
+      {/* Theme controls removed with Google Maps */}
     </div>
   );
 };

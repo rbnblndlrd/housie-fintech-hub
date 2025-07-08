@@ -4,8 +4,8 @@ import { usePrivacyEmergencyJobs } from '@/hooks/usePrivacyEmergencyJobs';
 import { useRole } from '@/contexts/RoleContext';
 import { getProviderWithServiceRadius } from '@/utils/locationPrivacy';
 import { montrealProviders } from '@/data/montrealProviders';
-import { UnifiedGoogleMap } from './UnifiedGoogleMap';
-import PrivacyMapMarkers from './map/PrivacyMapMarkers';
+import { UnifiedMapboxMap } from './UnifiedMapboxMap';
+// import PrivacyMapMarkers from './map/PrivacyMapMarkers'; // Removed with Google Maps
 import LiveStatsCard from './map/LiveStatsCard';
 import LoadingOverlay from './map/LoadingOverlay';
 import SelectedJobCard from './map/SelectedJobCard';
@@ -58,22 +58,13 @@ const PrivacyInteractiveJobsMap: React.FC<PrivacyInteractiveJobsMapProps> = ({ s
 
   return (
     <div className="relative h-full w-full">
-      {/* Unified Google Map Container */}
-      <UnifiedGoogleMap
+      {/* Unified Mapbox Map Container */}
+      <UnifiedMapboxMap
         center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={11}
         className="w-full h-full rounded-lg"
         mode="privacy"
-      >
-        {/* Privacy-Protected Map Markers */}
-        <PrivacyMapMarkers
-          providers={privacyProviders}
-          jobs={emergencyJobs}
-          isMapReady={true}
-          onProviderClick={(provider) => console.log('Provider clicked:', provider.name)}
-          onJobClick={handleJobSelect}
-        />
-      </UnifiedGoogleMap>
+      />
 
       {/* Live Stats Card */}
       <LiveStatsCard liveStats={liveStats} />

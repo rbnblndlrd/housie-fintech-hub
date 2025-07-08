@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { MapPin } from 'lucide-react';
-import { LiveUsersMap } from '../LiveUsersMap';
+import LiveUsersMapSafe from '../LiveUsersMapSafe';
 
 interface UserSession {
   id: string;
@@ -41,9 +41,7 @@ const LiveUsersMapCard: React.FC<LiveUsersMapCardProps> = ({ sessions }) => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="h-96 rounded-xl overflow-hidden">
-          <LiveUsersMap sessions={sessions} />
-        </div>
+        <LiveUsersMapSafe sessions={sessions} />
       </CardContent>
     </Card>
   );

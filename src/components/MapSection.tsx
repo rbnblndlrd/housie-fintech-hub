@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import ServiceCategories from "@/components/ServiceCategories";
-import { UnifiedGoogleMap } from "@/components/UnifiedGoogleMap";
+import { UnifiedMapboxMap } from "@/components/UnifiedMapboxMap";
 import { Provider } from "@/types/service";
 
 interface MapSectionProps {
@@ -26,7 +26,7 @@ const MapSection: React.FC<MapSectionProps> = ({
       <div className="space-y-6">
         <ServiceCategories onCategorySelect={onCategorySelect} />
 
-        {/* Interactive Google Map */}
+        {/* Interactive Mapbox Map */}
         <Card className="fintech-card">
           <CardHeader>
             <CardTitle className="text-lg bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
@@ -34,7 +34,7 @@ const MapSection: React.FC<MapSectionProps> = ({
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <UnifiedGoogleMap
+            <UnifiedMapboxMap
               center={{ lat: 45.5017, lng: -73.5673 }}
               zoom={12}
               className="h-64 rounded-xl"
@@ -50,7 +50,7 @@ const MapSection: React.FC<MapSectionProps> = ({
 
   // For provider profile, render just the map without extra card wrapper
   return (
-    <UnifiedGoogleMap
+    <UnifiedMapboxMap
       center={{ lat: 45.5017, lng: -73.5673 }}
       zoom={12}
       className="h-full rounded-xl"

@@ -2,36 +2,19 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Sun, Moon } from 'lucide-react';
-import { useMapTheme } from '@/hooks/useMapTheme';
+// import { useMapTheme } from '@/hooks/useMapTheme'; // Removed with Google Maps
 
 const MapThemeSelector: React.FC = () => {
-  const { isDark, toggleLightDark } = useMapTheme();
-
-  const handleThemeToggle = () => {
-    console.log('🎨 MapThemeSelector: Theme toggle clicked, current isDark:', isDark);
-    toggleLightDark();
-  };
-
-  console.log('🎨 MapThemeSelector render:', { isDark });
-
+  // Theme selector disabled - Google Maps removed
   return (
     <Button
       variant="outline"
       size="sm"
-      onClick={handleThemeToggle}
-      className="bg-white hover:bg-gray-50 text-gray-900 border-2 border-gray-400 hover:border-gray-500 transition-all duration-200 min-w-[100px] justify-center font-medium pointer-events-auto"
+      disabled
+      className="bg-white/60 text-gray-500 border-2 border-gray-300 min-w-[100px] justify-center font-medium pointer-events-none opacity-50"
     >
-      {isDark ? (
-        <>
-          <Sun className="h-4 w-4 mr-2" />
-          <span>Light</span>
-        </>
-      ) : (
-        <>
-          <Moon className="h-4 w-4 mr-2" />
-          <span>Dark</span>
-        </>
-      )}
+      <Sun className="h-4 w-4 mr-2" />
+      <span>Theme</span>
     </Button>
   );
 };

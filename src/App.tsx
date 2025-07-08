@@ -9,7 +9,6 @@ import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
 import { MapProvider } from './contexts/MapContext';
-import { GoogleMapsProvider } from './components/map/GoogleMapsProvider';
 import ConditionalHeader from './components/layout/ConditionalHeader';
 import FloatingNavigation from './components/layout/FloatingNavigation';
 import ConditionalSpacingWrapper from './components/layout/ConditionalSpacingWrapper';
@@ -53,7 +52,6 @@ function App() {
               <ThemeProvider>
                 <QueryClient>
                   <MapProvider>
-                    <GoogleMapsProvider>
                       <DynamicGradientProvider>
                         <Router>
                           <div className="App min-h-screen">
@@ -104,7 +102,6 @@ function App() {
                           </div>
                         </Router>
                        </DynamicGradientProvider>
-                     </GoogleMapsProvider>
                    </MapProvider>
                  </QueryClient>
                </ThemeProvider>
