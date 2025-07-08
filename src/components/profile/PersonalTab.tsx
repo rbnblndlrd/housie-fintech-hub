@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
+import PrivacyMiniMap from './PrivacyMiniMap';
 
 interface PersonalTabProps {
   profile: UnifiedUserProfile;
@@ -143,40 +144,6 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
             </div>
           </div>
 
-          {/* Comfort Zone Slider */}
-          <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
-            <div className="flex items-start gap-3 mb-4">
-              <Shield className="h-5 w-5 text-primary mt-0.5" />
-              <div>
-                <h4 className="font-medium text-foreground">Comfort Zone</h4>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Intelligently adjusts privacy for both personal and professional contexts
-                </p>
-              </div>
-            </div>
-            
-            <div className="space-y-4">
-              <div>
-                <Label className="text-sm font-medium">Privacy Level: {['Very Private', 'Private', 'Balanced', 'Open', 'Very Open'][comfortZone[0] - 1]}</Label>
-                <div className="mt-2">
-                  <Slider
-                    value={comfortZone}
-                    onValueChange={setComfortZone}
-                    max={5}
-                    min={1}
-                    step={1}
-                    className="w-full"
-                    disabled={!isEditing}
-                  />
-                </div>
-                <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                  <span>Very Private</span>
-                  <span>Balanced</span>
-                  <span>Very Open</span>
-                </div>
-              </div>
-            </div>
-          </div>
 
           {/* Action Buttons */}
           <div className="flex gap-3">
@@ -206,6 +173,16 @@ const PersonalTab: React.FC<PersonalTabProps> = ({ profile, activeTab, onTabChan
           </div>
         </CardContent>
       </Card>
+
+      {/* Privacy Zone Mini-Map */}
+      <PrivacyMiniMap 
+        isEditing={isEditing}
+        onPrivacyZoneChange={(radius) => {
+          // Handle privacy zone changes here
+          console.log('Privacy zone changed to:', radius + 'km');
+        }}
+        initialRadius={3}
+      />
 
       {/* Milestones Section */}
       <Card className="bg-card/95 backdrop-blur-sm">

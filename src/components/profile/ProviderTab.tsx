@@ -30,6 +30,7 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
 import ProfileTabNavigation, { ProfileTab } from './ProfileTabNavigation';
+import ServiceAreaMiniMap from './ServiceAreaMiniMap';
 
 interface ProviderTabProps {
   profile: UnifiedUserProfile;
@@ -173,55 +174,16 @@ const ProviderTab: React.FC<ProviderTabProps> = ({ profile, activeTab, onTabChan
         </CardContent>
       </Card>
 
-      {/* Service Area Slider */}
-      <Card className="bg-card/95 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <MapPin className="h-5 w-5" />
-            Service Area
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="space-y-4">
-            <div>
-              <Label className="text-sm font-medium">
-                Coverage: {getServiceAreaText(serviceArea[0])}
-              </Label>
-              <div className="mt-2">
-                <Slider
-                  value={serviceArea}
-                  onValueChange={setServiceArea}
-                  max={50}
-                  min={5}
-                  step={5}
-                  className="w-full"
-                  disabled={!isEditing}
-                />
-              </div>
-              <div className="flex justify-between text-xs text-muted-foreground mt-1">
-                <span>5km Local</span>
-                <span>25km Regional</span>
-                <span>50km+ Montreal</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-2 text-xs">
-              <div className="text-center p-2 bg-blue-50/50 rounded">
-                <span className="text-blue-600 font-medium">5-10km</span>
-                <p className="text-blue-600">Local</p>
-              </div>
-              <div className="text-center p-2 bg-green-50/50 rounded">
-                <span className="text-green-600 font-medium">15-30km</span>
-                <p className="text-green-600">Regional</p>
-              </div>
-              <div className="text-center p-2 bg-purple-50/50 rounded">
-                <span className="text-purple-600 font-medium">35km+</span>
-                <p className="text-purple-600">Montreal</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Service Area Mini-Map */}
+      <ServiceAreaMiniMap 
+        isEditing={isEditing}
+        onServiceAreaChange={(city, radius) => {
+          // Handle service area changes here
+          console.log('Service area changed:', city, radius + 'km');
+        }}
+        initialCity="Montreal"
+        initialRadius={25}
+      />
 
 
       {/* Professional Contact Options */}
