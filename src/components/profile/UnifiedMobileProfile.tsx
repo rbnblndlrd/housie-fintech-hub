@@ -74,8 +74,8 @@ const UnifiedMobileProfile = () => {
         {/* Mobile: Full screen layout, Desktop: Normal padding */}
         <div className="p-2 md:p-8">
           <div className="max-w-6xl mx-auto">
-            {/* Mobile Navigation - Centered under HOUSIE logo */}
-            <div className="md:hidden fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+            {/* Mobile Navigation - Above Job Hub tab */}
+            <div className="md:hidden fixed top-20 left-8 z-50">
               <Button
                 variant="outline"
                 size="sm"
