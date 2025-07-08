@@ -46,7 +46,7 @@ const UnifiedDashboard = () => {
   return (
     <>
       {/* Back Navigation - Above Job Hub tab */}
-      <div className="fixed top-20 left-8 z-50">
+      <div className="fixed top-[100px] left-[22px] z-50">
         <Button
           variant="outline"
           size="sm"
