@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Trophy, Award, Settings } from 'lucide-react';
+import PrestigeProfilePreview from './PrestigeProfilePreview';
 
 interface RecognitionCardsProps {
   onRecognitionClick: (type: string) => void;
@@ -10,6 +11,7 @@ interface RecognitionCardsProps {
 }
 
 const RecognitionCards = ({ onRecognitionClick, onRankClick, onCustomizeClick }: RecognitionCardsProps) => {
+  const [showPrestigePreview, setShowPrestigePreview] = useState(false);
   const recognitionData = [
     {
       type: 'quality',
@@ -67,14 +69,14 @@ const RecognitionCards = ({ onRecognitionClick, onRankClick, onCustomizeClick }:
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card 
           className="fintech-metric-card hover:scale-105 transition-transform cursor-pointer"
-          onClick={onRankClick}
+          onClick={() => setShowPrestigePreview(true)}
         >
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
                 <p className="text-sm font-medium opacity-80 mb-1">Current Rank</p>
                 <p className="text-2xl font-bold">Technomancer ⚡</p>
-                <p className="text-sm opacity-70 mt-1">Appliance & Tech Repair</p>
+                <p className="text-sm opacity-70 mt-1">Preview Prestige Profile</p>
               </div>
               <div className="w-12 h-12 bg-gradient-to-r from-yellow-600 to-orange-600 rounded-xl flex items-center justify-center">
                 <Award className="h-6 w-6 text-white" />
@@ -101,6 +103,12 @@ const RecognitionCards = ({ onRecognitionClick, onRankClick, onCustomizeClick }:
           </CardContent>
         </Card>
       </div>
+
+      {/* Prestige Profile Preview Modal */}
+      <PrestigeProfilePreview 
+        isOpen={showPrestigePreview}
+        onClose={() => setShowPrestigePreview(false)}
+      />
     </div>
   );
 };
