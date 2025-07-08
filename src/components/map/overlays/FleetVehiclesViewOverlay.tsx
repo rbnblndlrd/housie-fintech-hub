@@ -69,12 +69,12 @@ export const FleetVehiclesViewOverlay: React.FC<FleetVehiclesViewOverlayProps> =
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'available': return 'bg-green-500';
-      case 'en-route': return 'bg-blue-500';
-      case 'on-job': return 'bg-orange-500';
-      case 'returning': return 'bg-purple-500';
-      case 'offline': return 'bg-gray-500';
-      default: return 'bg-gray-500';
+      case 'available': return 'bg-green-600';
+      case 'en-route': return 'bg-blue-600';
+      case 'on-job': return 'bg-orange-600';
+      case 'returning': return 'bg-purple-600';
+      case 'offline': return 'bg-slate-600';
+      default: return 'bg-slate-600';
     }
   };
 
