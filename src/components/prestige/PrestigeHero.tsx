@@ -1,9 +1,13 @@
 import React from 'react';
-import { Crown, Trophy } from 'lucide-react';
+import { Crown, Trophy, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
 const PrestigeHero = () => {
+  const navigate = useNavigate();
+  
   // Mock user's highest prestige - in real app this would come from user data
   const userHighestPrestige = {
     title: "Technomancer",
@@ -16,6 +20,19 @@ const PrestigeHero = () => {
 
   return (
     <div className="text-center space-y-6">
+      {/* Compact Back Navigation - Desktop Only */}
+      <div className="hidden md:flex items-center justify-start mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/')}
+          className="text-slate-300 hover:text-slate-100 hover:bg-slate-800/50 -ml-2"
+        >
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Back to Home
+        </Button>
+      </div>
+
       {/* Main Hero Card */}
       <Card className="bg-gradient-to-br from-orange-500/10 via-yellow-500/10 to-red-500/10 border-orange-200 shadow-xl overflow-hidden">
         <CardContent className="p-8 md:p-12">

@@ -24,32 +24,13 @@ const Prestige = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        {/* Desktop/Tablet Header - Hidden on Mobile */}
-        <div className="hidden md:block bg-slate-50/90 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-40">
-          <div className="flex items-center gap-4 p-4">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => navigate('/community-dashboard')}
-              className="shrink-0"
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Community
-            </Button>
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-foreground">Prestige System</h1>
-              <p className="text-xs text-muted-foreground">Your professional development journey</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Mobile: Floating Back Button */}
+        {/* Mobile: Compact Back Button */}
         <div className="md:hidden fixed top-4 left-4 z-50">
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/community-dashboard')}
-            className="bg-slate-50/90 backdrop-blur-sm border-slate-200 shadow-lg"
+            onClick={() => navigate('/')}
+            className="bg-slate-800/90 backdrop-blur-sm border-slate-700 shadow-lg text-slate-200"
           >
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -65,7 +46,7 @@ const Prestige = () => {
             <PrestigeIntroduction />
 
             {/* Enhanced Search and Filter */}
-            <div className="bg-slate-800/90 backdrop-blur-sm rounded-lg border border-slate-700 p-6 sticky top-16 md:top-20 z-30">
+            <div className="bg-slate-800/90 backdrop-blur-sm rounded-lg border border-slate-700 p-6 sticky top-4 z-30">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
