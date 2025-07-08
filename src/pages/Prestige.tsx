@@ -65,7 +65,7 @@ const Prestige = () => {
             <PrestigeIntroduction />
 
             {/* Enhanced Search and Filter */}
-            <div className="bg-slate-50/80 backdrop-blur-sm rounded-lg border border-slate-200 p-6 sticky top-16 md:top-20 z-30">
+            <div className="bg-slate-800/90 backdrop-blur-sm rounded-lg border border-slate-700 p-6 sticky top-16 md:top-20 z-30">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="relative flex-1 max-w-md">
                   <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
@@ -95,7 +95,7 @@ const Prestige = () => {
 
             {/* Prestige Track Sections */}
             <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 bg-slate-50/80 backdrop-blur-sm">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 bg-slate-800/90 backdrop-blur-sm border border-slate-700">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="service">Service</TabsTrigger>
                 <TabsTrigger value="recognition">Recognition</TabsTrigger>
