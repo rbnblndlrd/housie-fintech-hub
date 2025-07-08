@@ -40,10 +40,12 @@ import InteractiveMapPage from './pages/InteractiveMapPage';
 import Pricing from './pages/Pricing';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 function App() {
   return (
-    <LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
       <AuthProvider>
         <RoleProvider>
           <SubscriptionProvider>
@@ -101,16 +103,17 @@ function App() {
                             <Toaster />
                           </div>
                         </Router>
-                      </DynamicGradientProvider>
-                    </GoogleMapsProvider>
-                  </MapProvider>
-                </QueryClient>
-              </ThemeProvider>
-            </RoleSwitchProvider>
-          </SubscriptionProvider>
-        </RoleProvider>
-      </AuthProvider>
-    </LanguageProvider>
+                       </DynamicGradientProvider>
+                     </GoogleMapsProvider>
+                   </MapProvider>
+                 </QueryClient>
+               </ThemeProvider>
+             </RoleSwitchProvider>
+           </SubscriptionProvider>
+         </RoleProvider>
+       </AuthProvider>
+     </LanguageProvider>
+    </ErrorBoundary>
   );
 }
 

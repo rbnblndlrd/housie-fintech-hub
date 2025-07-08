@@ -48,12 +48,14 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(defaultExpanded);
 
-  // Filter tracks based on search term
-  const filteredTracks = tracks.filter(track =>
-    track.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    track.subtitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    track.levels.some(level => level.title.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  // Filter tracks based on search term with null safety
+  const filteredTracks = (tracks || []).filter(track => {
+    if (!track || !track.title || !track.levels) return false;
+    const searchLower = (searchTerm || '').toLowerCase();
+    return track.title.toLowerCase().includes(searchLower) ||
+           (track.subtitle || '').toLowerCase().includes(searchLower) ||
+           track.levels.some(level => level && level.title && level.title.toLowerCase().includes(searchLower));
+  });
 
   if (filteredTracks.length === 0 && searchTerm) {
     return null;
@@ -114,11 +116,12 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
         <CardContent className="pt-0">
           <div className="space-y-6">
             {filteredTracks.map((track) => {
+              if (!track || !track.levels) return null;
               const isTrackExpanded = activeTrack === track.id;
-              const currentLevel = track.levels.find(level => level.status === 'current');
-              const completedLevels = track.levels.filter(level => level.status === 'completed').length;
+              const currentLevel = track.levels.find(level => level && level.status === 'current');
+              const completedLevels = track.levels.filter(level => level && level.status === 'completed').length;
               const totalLevels = track.levels.length;
-              const progressPercentage = (completedLevels / totalLevels) * 100;
+              const progressPercentage = totalLevels > 0 ? (completedLevels / totalLevels) * 100 : 0;
 
               return (
                 <Card 
@@ -168,7 +171,9 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
                       )}
                       
                       <div className="space-y-3">
-                        {track.levels.map((level, index) => (
+                        {(track.levels || []).map((level, index) => {
+                          if (!level) return null;
+                          return (
                           <div 
                             key={index}
                             className={`p-4 rounded-lg border transition-all ${
@@ -205,7 +210,8 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
                               )}
                             </div>
                           </div>
-                        ))}
+                          );
+                        }).filter(Boolean)}
                       </div>
                     </CardContent>
                   )}
