@@ -18,11 +18,11 @@ const UnifiedMobileProfile = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
+      <div className="min-h-screen bg-slate-100 p-4">
         <div className="max-w-md mx-auto space-y-4">
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-12 w-full" />
-          <Card>
+          <Card className="bg-slate-50">
             <CardContent className="p-6 space-y-4">
               <Skeleton className="h-20 w-20 rounded-full mx-auto" />
               <Skeleton className="h-6 w-48 mx-auto" />
@@ -40,9 +40,9 @@ const UnifiedMobileProfile = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
+      <div className="min-h-screen bg-slate-100 p-4">
         <div className="max-w-md mx-auto">
-          <Card>
+          <Card className="bg-slate-50">
             <CardContent className="p-6 text-center">
               <p className="text-destructive">Error: {error}</p>
             </CardContent>
@@ -54,9 +54,9 @@ const UnifiedMobileProfile = () => {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-background to-muted/20 p-4">
+      <div className="min-h-screen bg-slate-100 p-4">
         <div className="max-w-md mx-auto">
-          <Card>
+          <Card className="bg-slate-50">
             <CardContent className="p-6 text-center">
               <p className="text-muted-foreground">Profile not found</p>
             </CardContent>
@@ -69,7 +69,7 @@ const UnifiedMobileProfile = () => {
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Mobile Header with Back Button */}
-      <div className="bg-card/80 backdrop-blur-sm border-b sticky top-0 z-40 md:hidden">
+      <div className="bg-slate-50/90 backdrop-blur-sm border-b border-slate-200 sticky top-0 z-40 md:hidden">
         <div className="flex items-center gap-4 p-4">
           <Button
             variant="ghost"
