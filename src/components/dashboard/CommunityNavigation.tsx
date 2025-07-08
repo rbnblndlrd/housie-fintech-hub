@@ -28,7 +28,7 @@ const CommunityNavigation = ({ activeTab, onTabChange }: CommunityNavigationProp
     },
     { 
       id: 'recognition', 
-      label: 'Recognition', 
+      label: 'Prestige', 
       icon: Trophy, 
       emoji: '🏆'
     },
