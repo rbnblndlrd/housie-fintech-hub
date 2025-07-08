@@ -176,17 +176,19 @@ const PrestigeTrackSection: React.FC<PrestigeTrackSectionProps> = ({
   // Detailed mode for individual category tabs
   return (
     <div className="space-y-6">
-      <TitleModal
-        isOpen={!!selectedTitle}
-        onClose={() => setSelectedTitle(null)}
-        title={selectedTitle?.level.title || ''}
-        trackTitle={selectedTitle?.track.title || ''}
-        emoji={selectedTitle?.track.emoji || ''}
-        level={selectedTitle?.level || {} as PrestigeLevel}
-        levelIndex={selectedTitle?.levelIndex || 0}
-        totalLevels={selectedTitle?.track.levels.length || 0}
-        nextLevel={selectedTitle ? selectedTitle.track.levels[selectedTitle.levelIndex + 1] : undefined}
-      />
+      {selectedTitle && selectedTitle.level && selectedTitle.track && (
+        <TitleModal
+          isOpen={true}
+          onClose={() => setSelectedTitle(null)}
+          title={selectedTitle.level.title}
+          trackTitle={selectedTitle.track.title}
+          emoji={selectedTitle.track.emoji}
+          level={selectedTitle.level}
+          levelIndex={selectedTitle.levelIndex}
+          totalLevels={selectedTitle.track.levels.length}
+          nextLevel={selectedTitle.track.levels[selectedTitle.levelIndex + 1]}
+        />
+      )}
 
       <Card className="bg-slate-50/80 backdrop-blur-sm border border-slate-200 shadow-lg">
         <CardHeader 

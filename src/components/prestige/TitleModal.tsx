@@ -55,6 +55,12 @@ const TitleModal: React.FC<TitleModalProps> = ({
           text: 'Locked',
           color: 'bg-gray-500/10 text-gray-700 border-gray-200'
         };
+      default:
+        return {
+          icon: <Target className="h-5 w-5 text-gray-600" />,
+          text: 'Unknown',
+          color: 'bg-gray-500/10 text-gray-700 border-gray-200'
+        };
     }
   };
 
