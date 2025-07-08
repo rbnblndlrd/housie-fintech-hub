@@ -24,6 +24,11 @@ class ProfileErrorBoundaryClass extends React.Component<
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('🚨 ProfileErrorBoundary: Component crashed:', error, errorInfo);
+    
+    // Handle specific DataClone errors
+    if (error.name === 'DataCloneError' || error.message.includes('DataClone')) {
+      console.warn('🔄 DataClone error detected - this is usually a request serialization issue');
+    }
   }
 
   render() {
@@ -58,7 +63,10 @@ const ProfileErrorFallback: React.FC<{ error: Error | null }> = ({ error }) => {
         
         <CardContent className="text-center space-y-4">
           <p className="text-muted-foreground">
-            We encountered an issue loading your profile. This might be a temporary problem.
+            {error?.name === 'DataCloneError' || error?.message.includes('DataClone') 
+              ? 'There was a communication issue while loading your profile. Please try again.'
+              : 'We encountered an issue loading your profile. This might be a temporary problem.'
+            }
           </p>
           
           {error && (

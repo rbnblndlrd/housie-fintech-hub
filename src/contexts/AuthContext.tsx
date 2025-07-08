@@ -55,12 +55,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         setLoading(false);
         
-        // Handle successful sign in with profile creation
+        // Handle successful sign in - profile creation is handled by useUnifiedProfile
         if (event === 'SIGNED_IN' && session?.user) {
           console.log('✅ User signed in successfully');
-          setTimeout(() => {
-            ensureUserProfile(session.user);
-          }, 0);
         }
       }
     );
@@ -80,12 +77,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           });
           setSession(session);
           setUser(session?.user ?? null);
-          
-          if (session?.user) {
-            setTimeout(() => {
-              ensureUserProfile(session.user);
-            }, 0);
-          }
         }
       } catch (error) {
         console.error('💥 Error in getInitialSession:', error);
@@ -102,42 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const ensureUserProfile = async (user: User) => {
-    try {
-      console.log('👤 Ensuring user profile exists for:', user.email);
-      
-      // Check if profile exists
-      const { data: existingProfile } = await supabase
-        .from('user_profiles')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (!existingProfile) {
-        console.log('📝 Creating user profile...');
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert({
-            user_id: user.id,
-            username: user.email?.split('@')[0] || 'user',
-            full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
-            active_role: 'customer',
-            can_provide_services: false,
-            can_book_services: true
-          });
-
-        if (profileError) {
-          console.error('❌ Error creating user profile:', profileError);
-        } else {
-          console.log('✅ User profile created successfully');
-        }
-      } else {
-        console.log('✅ User profile already exists');
-      }
-    } catch (error) {
-      console.error('💥 Error in ensureUserProfile:', error);
-    }
-  };
+  // Profile creation is now handled by useUnifiedProfile hook to prevent race conditions
 
   const signIn = async (email: string, password: string) => {
     console.log('🔑 signIn called with email:', email);

@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { UnifiedUserProfile } from '@/types/userProfile';
@@ -9,36 +9,60 @@ export const useUnifiedProfile = () => {
   const [profile, setProfile] = useState<UnifiedUserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const loadingRef = useRef(false);
+  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Debounced profile loading to prevent race conditions
+  const debouncedLoadProfile = useCallback(() => {
+    if (debounceTimeoutRef.current) {
+      clearTimeout(debounceTimeoutRef.current);
+    }
+    
+    debounceTimeoutRef.current = setTimeout(() => {
+      if (user && !loadingRef.current) {
+        loadProfile();
+      }
+    }, 100);
+  }, [user]);
 
   useEffect(() => {
     console.log('🔍 useUnifiedProfile: User changed:', { 
       hasUser: !!user, 
       userId: user?.id,
-      email: user?.email 
+      email: user?.email,
+      isCurrentlyLoading: loadingRef.current
     });
     
     if (user) {
-      loadProfile();
+      debouncedLoadProfile();
     } else {
       setLoading(false);
       setProfile(null);
       setError(null);
+      loadingRef.current = false;
     }
-  }, [user]);
+
+    return () => {
+      if (debounceTimeoutRef.current) {
+        clearTimeout(debounceTimeoutRef.current);
+      }
+    };
+  }, [user, debouncedLoadProfile]);
 
   const loadProfile = async () => {
-    if (!user) {
-      console.log('❌ useUnifiedProfile: No user available');
-      setLoading(false);
+    if (!user || loadingRef.current) {
+      console.log('❌ useUnifiedProfile: No user available or already loading');
       return;
     }
 
     console.log('🔄 useUnifiedProfile: Loading profile for user:', user.id);
+    loadingRef.current = true;
     setLoading(true);
     setError(null);
 
     try {
-      const { data, error: fetchError } = await supabase
+      // Check if profile exists first
+      const { data: existingProfile, error: fetchError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('user_id', user.id)
@@ -49,23 +73,23 @@ export const useUnifiedProfile = () => {
         throw fetchError;
       }
 
-      if (!data) {
+      if (!existingProfile) {
         console.log('📝 useUnifiedProfile: No profile found, creating default profile');
-        // Create a default profile if none exists
-        const defaultProfile = {
+        // Create profile with minimal data to avoid serialization issues
+        const profileData = {
           user_id: user.id,
           username: user.email?.split('@')[0] || 'user',
-          full_name: user.user_metadata?.full_name || user.email || 'User',
+          full_name: user.user_metadata?.full_name || user.email?.split('@')[0] || 'User',
           can_provide_services: false,
           can_book_services: true,
-          active_role: 'customer' as const,
-          profile_type: 'individual' as const,
+          active_role: 'customer',
+          profile_type: 'individual',
           achievement_badges: []
         };
 
         const { data: newProfile, error: createError } = await supabase
           .from('user_profiles')
-          .insert(defaultProfile)
+          .insert(profileData)
           .select()
           .single();
 
@@ -74,32 +98,37 @@ export const useUnifiedProfile = () => {
           throw createError;
         }
 
-        console.log('✅ useUnifiedProfile: Created new profile:', newProfile);
-        setProfile(newProfile as UnifiedUserProfile);
+        console.log('✅ useUnifiedProfile: Created new profile');
+        
+        // Clean data for serialization
+        const cleanProfile: UnifiedUserProfile = {
+          ...newProfile,
+          active_role: (newProfile.active_role as "customer" | "provider") ?? 'customer',
+          profile_type: (newProfile.profile_type as "individual" | "business") ?? 'individual',
+          achievement_badges: Array.isArray(newProfile.achievement_badges) ? newProfile.achievement_badges : []
+        };
+        
+        setProfile(cleanProfile);
         return;
       }
 
-      // Cast the data with proper type assertions
-      const typedProfile: UnifiedUserProfile = {
-        ...data,
-        active_role: (data.active_role as "customer" | "provider") ?? 'customer',
-        profile_type: (data.profile_type as "individual" | "business") ?? 'individual',
-        achievement_badges: (data.achievement_badges as any[]) ?? []
+      // Clean existing profile data for serialization
+      const cleanProfile: UnifiedUserProfile = {
+        ...existingProfile,
+        active_role: (existingProfile.active_role as "customer" | "provider") ?? 'customer',
+        profile_type: (existingProfile.profile_type as "individual" | "business") ?? 'individual',
+        achievement_badges: Array.isArray(existingProfile.achievement_badges) ? existingProfile.achievement_badges : []
       };
 
-      console.log('✅ useUnifiedProfile: Profile loaded successfully:', {
-        id: typedProfile.id,
-        username: typedProfile.username,
-        active_role: typedProfile.active_role,
-        can_provide_services: typedProfile.can_provide_services
-      });
-
-      setProfile(typedProfile);
+      console.log('✅ useUnifiedProfile: Profile loaded successfully');
+      setProfile(cleanProfile);
+      
     } catch (error: any) {
       console.error('❌ useUnifiedProfile: Error loading profile:', error);
       setError(error.message || 'Failed to load profile');
     } finally {
       setLoading(false);
+      loadingRef.current = false;
     }
   };
 
