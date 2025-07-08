@@ -11,7 +11,6 @@ const ConditionalHeader = () => {
     '/competitive-advantage',
     '/help',
     '/help-center',
-    '/profile',
     '/services'
   ];
   
