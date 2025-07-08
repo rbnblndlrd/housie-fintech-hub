@@ -16,8 +16,8 @@ const GPS = () => {
 
   return (
     <div className="fixed inset-0 w-full h-full bg-background z-50 p-2">
-      {/* Back Navigation */}
-      <div className="absolute top-4 left-4 z-50">
+      {/* Back Navigation - Positioned in red box area */}
+      <div className="absolute top-4 left-32 z-50">
         <Button
           variant="outline"
           size="sm"
