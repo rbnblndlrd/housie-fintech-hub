@@ -54,7 +54,7 @@ const UnifiedDashboard = () => {
           className="bg-white border-slate-300 shadow-lg text-slate-800 hover:bg-slate-50"
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Home
+          Back
         </Button>
       </div>
       

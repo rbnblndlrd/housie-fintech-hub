@@ -1,4 +1,8 @@
+
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import VideoBackground from '@/components/common/VideoBackground';
 import CommunityNavigation from '@/components/dashboard/CommunityNavigation';
 import RecognitionCards from '@/components/community/RecognitionCards';
@@ -6,7 +10,6 @@ import ProgressPreviewCards from '@/components/community/ProgressPreviewCards';
 import RecognitionModal from '@/components/community/modals/RecognitionModal';
 import CustomizeDisplayModal from '@/components/community/modals/CustomizeDisplayModal';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -29,6 +32,7 @@ import {
 } from 'lucide-react';
 
 const CommunityDashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('discover');
   const [openModal, setOpenModal] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -158,6 +162,19 @@ const CommunityDashboard = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
+        {/* Back Navigation */}
+        <div className="fixed top-[94px] left-[22px] z-50">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="bg-white border-slate-300 shadow-lg text-slate-800 hover:bg-slate-50"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
+
         {/* Community Navigation - Left Side - Desktop Only */}
         <div className="hidden md:block fixed top-80 left-12 z-40 w-52">
           <CommunityNavigation activeTab={activeTab} onTabChange={setActiveTab} />
