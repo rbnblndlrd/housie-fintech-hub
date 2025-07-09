@@ -94,6 +94,10 @@ function App() {
                   <Route path="/performance" element={<PerformanceDashboard />} />
                   <Route path="/financial-analytics" element={<FinancialAnalytics />} />
                   <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/clusters/new" element={<React.lazy(() => import('./pages/clusters/ClusterCreate'))} />
+                  <Route path="/clusters/:id" element={<React.lazy(() => import('./pages/clusters/ClusterView'))} />
+                  <Route path="/clusters" element={<React.lazy(() => import('./pages/clusters/ClusterDashboard'))} />
+                  <Route path="/bids" element={<React.lazy(() => import('./pages/clusters/ProviderBids'))} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                               </ConditionalSpacingWrapper>
