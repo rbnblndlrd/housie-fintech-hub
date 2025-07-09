@@ -35,6 +35,32 @@ serve(async (req) => {
       throw new Error('Invalid authentication');
     }
 
+    // Check and deduct AI credits (1 credit for opportunity optimization)
+    const { data: creditResult, error: creditError } = await supabase.rpc('deduct_ai_credits', {
+      user_uuid: user.id,
+      amount: 1,
+      action_name: 'optimize_opportunity'
+    });
+
+    if (creditError) {
+      console.error('Credit check failed:', creditError);
+      throw new Error('Failed to process AI credits');
+    }
+
+    if (!creditResult.success) {
+      return new Response(JSON.stringify({
+        success: false,
+        error: 'Insufficient AI credits',
+        current_balance: creditResult.current_balance,
+        required: creditResult.required
+      }), {
+        status: 402,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log(`AI credits deducted. New balance: ${creditResult.new_balance}`);
+
     const { opportunity_id, crew_id } = await req.json();
 
     if (!opportunity_id || !crew_id) {

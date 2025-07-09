@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useAICredits } from '@/hooks/useAICredits';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -16,7 +17,8 @@ import {
   Clock, 
   Brain,
   AlertTriangle,
-  CheckCircle
+  CheckCircle,
+  Zap
 } from 'lucide-react';
 
 interface ServiceSlot {
@@ -50,6 +52,7 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
 }) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { credits, checkCredits } = useAICredits();
   
   const [userCrew, setUserCrew] = useState<any>(null);
   const [crewMembers, setCrewMembers] = useState<CrewMember[]>([]);
@@ -166,6 +169,17 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
   const optimizeWithAnnette = async () => {
     setHousieOptimizing(true);
     try {
+      // Check AI credits first
+      const hasCredits = await checkCredits(1);
+      if (!hasCredits) {
+        toast({
+          title: "Insufficient AI Credits",
+          description: `You need 1 AI credit to use Annette optimization. You have ${credits.balance} credits.`,
+          variant: "destructive"
+        });
+        return;
+      }
+
       // Validate that we have role assignments
       const unassignedSlots = serviceSlots.filter(slot => !roleAssignments[slot.id]);
       if (unassignedSlots.length > 0) {
@@ -300,7 +314,13 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
               <Users className="h-5 w-5" />
               Plan Crew Bid
             </CardTitle>
-            <Button variant="ghost" onClick={onClose}>×</Button>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Zap className="h-4 w-4" />
+                <span>{credits.balance} AI credits</span>
+              </div>
+              <Button variant="ghost" onClick={onClose}>×</Button>
+            </div>
           </div>
         </CardHeader>
 
@@ -402,12 +422,13 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"></div>
                     Annette is planning your schedule...
                   </>
-                ) : (
-                  <>
-                    <Brain className="h-4 w-4 mr-2" />
-                    Optimize with Annette
-                  </>
-                )}
+                 ) : (
+                   <>
+                     <Brain className="h-4 w-4 mr-2" />
+                     Optimize with Annette
+                     <Badge variant="secondary" className="ml-2 text-xs">1 credit</Badge>
+                   </>
+                 )}
               </Button>
             </div>
           </div>

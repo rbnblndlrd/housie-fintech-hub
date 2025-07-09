@@ -60,12 +60,30 @@ export const useCredits = () => {
     if (!user) return;
 
     try {
-      const { data, error } = await supabase.rpc('get_user_credits', { user_uuid: user.id });
+      // Get user credits from the user_credits table directly since the function was renamed
+      const { data, error } = await supabase
+        .from('user_credits')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
       
-      if (error) throw error;
-      
-      if (data && data.length > 0) {
-        setCredits(data[0]);
+      if (error && error.code !== 'PGRST116') {
+        // If no record exists, create one with defaults
+        const { data: newData, error: insertError } = await supabase
+          .from('user_credits')
+          .insert({ 
+            user_id: user.id, 
+            total_credits: 0, 
+            used_credits: 0,
+            remaining_credits: 0 
+          })
+          .select()
+          .single();
+        
+        if (insertError) throw insertError;
+        setCredits(newData);
+      } else if (data) {
+        setCredits(data);
       }
     } catch (error) {
       console.error('Error fetching credits:', error);

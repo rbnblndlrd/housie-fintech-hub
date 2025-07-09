@@ -150,6 +150,63 @@ export type Database = {
           },
         ]
       }
+      ai_credit_logs: {
+        Row: {
+          action: string
+          created_at: string | null
+          credits_used: number
+          id: string
+          metadata: Json | null
+          result: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          metadata?: Json | null
+          result?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          credits_used?: number
+          id?: string
+          metadata?: Json | null
+          result?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_credits: {
+        Row: {
+          balance: number
+          created_at: string | null
+          id: string
+          last_granted_at: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string | null
+          id?: string
+          last_granted_at?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string | null
+          id?: string
+          last_granted_at?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_feature_costs: {
         Row: {
           created_at: string | null
@@ -3114,6 +3171,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: undefined
       }
+      deduct_ai_credits: {
+        Args: {
+          user_uuid: string
+          amount: number
+          action_name: string
+          result_text?: string
+          metadata_json?: Json
+        }
+        Returns: Json
+      }
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }
         Returns: unknown
@@ -3171,13 +3238,9 @@ export type Database = {
         }
         Returns: string
       }
-      get_user_credits: {
+      get_user_ai_credits: {
         Args: { user_uuid: string }
-        Returns: {
-          total_credits: number
-          used_credits: number
-          remaining_credits: number
-        }[]
+        Returns: number
       }
       get_user_current_role: {
         Args: { target_user_id: string }
