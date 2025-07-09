@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -11,7 +12,8 @@ const ConditionalHeader = () => {
     '/competitive-advantage',
     '/help',
     '/help-center',
-    '/services'
+    '/services',
+    '/pricing'  // Added pricing page to keep header
   ];
   
   const shouldShowHeader = pagesWithHeader.some(path => {

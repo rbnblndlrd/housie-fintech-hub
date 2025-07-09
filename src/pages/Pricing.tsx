@@ -132,10 +132,12 @@ const Pricing = () => {
               <h1 className="text-5xl font-bold text-white text-shadow-lg mb-4">
                 Choose Your <span className="text-orange-400">Plan</span>
               </h1>
-              <p className="text-xl text-white/90 text-shadow max-w-3xl mx-auto">
-                Select the perfect plan for your needs. All plans include our core features 
-                with transparent pricing and no hidden fees.
-              </p>
+              <div className="bg-black/40 backdrop-blur-sm rounded-2xl px-8 py-6 max-w-4xl mx-auto border border-white/10">
+                <p className="text-xl text-white font-medium leading-relaxed tracking-wide drop-shadow-lg">
+                  Select the perfect plan for your needs. All plans include our core features 
+                  with transparent pricing and no hidden fees.
+                </p>
+              </div>
             </div>
 
             {/* Pricing Cards */}
