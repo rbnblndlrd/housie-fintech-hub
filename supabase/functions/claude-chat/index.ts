@@ -151,10 +151,13 @@ Key guidelines:
 - Prioritize user safety and platform best practices
 - Help users maximize their earnings and efficiency
 
-${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help with any HOUSIE-related questions.'}`;`;
+${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help with any HOUSIE-related questions.'}`;
+
+    // Build conversation content safely
+    const conversationContent = `${systemPrompt}\n\nConversation history:\n${JSON.stringify(conversationHistory, null, 2)}\n\nUser message: ${message}`;
 
     const messages = [
-      { role: 'user', content: `${systemPrompt}\n\nConversation history: ${JSON.stringify(conversationHistory)}\n\nUser message: ${message}` }
+      { role: 'user', content: conversationContent }
     ];
 
     // Estimate input tokens
