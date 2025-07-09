@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin, Users, DollarSign } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { OpportunityBidForm } from "@/components/opportunities/OpportunityBidForm";
+import { ContextualAnnetteButton } from "@/components/chat/ContextualAnnetteButton";
 
 interface Opportunity {
   id: string;
@@ -151,6 +152,22 @@ export default function OpportunityDetail() {
 
   return (
     <div className="container mx-auto max-w-4xl p-6 space-y-6">
+      {/* AI Assistant Banner for customers */}
+      {isCustomer && (
+        <div className="bg-muted/50 border border-border rounded-lg p-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-100 to-blue-100 flex items-center justify-center">
+              🧠
+            </div>
+            <div>
+              <p className="text-sm font-medium">Need help comparing crew bids?</p>
+              <p className="text-xs text-muted-foreground">Ask Annette for guidance on proposals and decision-making</p>
+            </div>
+          </div>
+          <ContextualAnnetteButton variant="embedded" />
+        </div>
+      )}
+
       {/* Header */}
       <Card>
         <CardHeader>

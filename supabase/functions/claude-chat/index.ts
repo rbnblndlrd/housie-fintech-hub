@@ -127,6 +127,9 @@ serve(async (req) => {
         case 'booking':
           contextualPrompt = 'The user has questions about a specific booking. Focus on clarification, requirements, and service details.';
           break;
+        case 'opportunities':
+          contextualPrompt = 'The user is viewing an opportunity with crew bids. Focus on explaining proposals, comparing crews, revenue splits, scheduling details, and helping them make informed decisions about which crew to select.';
+          break;
       }
     }
 

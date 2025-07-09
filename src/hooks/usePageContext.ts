@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 
 export interface PageContext {
-  pageType: 'dashboard' | 'community-dashboard' | 'analytics-dashboard' | 'services' | 'profile' | 'clusters' | 'other';
+  pageType: 'dashboard' | 'community-dashboard' | 'analytics-dashboard' | 'services' | 'profile' | 'clusters' | 'opportunities' | 'other';
   context: string;
   suggestions: string[];
   voiceTriggers: string[];
@@ -141,6 +141,28 @@ export const usePageContext = (): PageContext => {
           "Coordination tips?"
         ],
         annettePersonality: "I'm your cluster assistant, specializing in group coordination and community organization. I help ensure smooth collaboration and successful cluster activation."
+      };
+    }
+
+    // Opportunities - Crew Bid Advisor
+    if (path.includes('/opportunities')) {
+      return {
+        pageType: 'opportunities',
+        context: "You're viewing an opportunity page. I can help explain crew bids, compare proposals, and guide your decision-making process.",
+        suggestions: [
+          "What does this bid mean?",
+          "Who should I pick?",
+          "Help me compare crews",
+          "Explain revenue splits",
+          "What if no crews show up?"
+        ],
+        voiceTriggers: [
+          "Explain this bid?",
+          "Compare crews?",
+          "Revenue split help?",
+          "Bid guidance?"
+        ],
+        annettePersonality: "I'm your proposal advisor, helping you navigate crew bids with confidence. I explain complex scheduling, break down revenue splits, and guide you toward the best choice for your project."
       };
     }
 
