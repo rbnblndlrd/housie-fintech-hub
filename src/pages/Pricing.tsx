@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -124,7 +123,6 @@ const Pricing = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        <Header />
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">
             {/* Header Section */}
