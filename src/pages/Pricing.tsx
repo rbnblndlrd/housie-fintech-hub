@@ -1,10 +1,11 @@
+
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, Star, AlertTriangle, Crown, Zap, Users, BarChart3 } from 'lucide-react';
+import { Check, Star, AlertTriangle, Crown, Zap, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 
@@ -35,7 +36,7 @@ const Pricing = () => {
     },
     {
       name: "Starter",
-      price: 9.99,
+      price: 4.99,
       billing: "monthly",
       icon: <Zap className="h-8 w-8 text-blue-500" />,
       features: [
@@ -54,8 +55,8 @@ const Pricing = () => {
       buttonVariant: "default" as const
     },
     {
-      name: "Premium",
-      price: 29.99,
+      name: "Professional",
+      price: 8.99,
       billing: "monthly",
       icon: <Crown className="h-8 w-8 text-yellow-500" />,
       features: [
@@ -70,27 +71,27 @@ const Pricing = () => {
       ],
       limitations: [],
       recommended: true,
-      buttonText: "Choose Premium",
+      buttonText: "Choose Professional",
       buttonVariant: "default" as const
     },
     {
-      name: "Enterprise",
-      price: 99.99,
+      name: "Premium",
+      price: 15.99,
       billing: "monthly",
-      icon: <Users className="h-8 w-8 text-purple-500" />,
+      icon: <Sparkles className="h-8 w-8 text-purple-500" />,
       features: [
         "Unlimited bookings",
         "Dedicated account manager",
-        "White-label solution",
+        "Premium profile features",
         "Advanced API access",
         "Custom integrations",
         "Advanced reporting",
         "Multi-location support",
-        "Team management"
+        "Priority feature requests"
       ],
       limitations: [],
       recommended: false,
-      buttonText: "Contact Sales",
+      buttonText: "Choose Premium",
       buttonVariant: "default" as const
     }
   ];
@@ -215,24 +216,24 @@ const Pricing = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div className="text-center">
-                    <BarChart3 className="h-12 w-12 text-blue-400 mx-auto mb-4" />
+                    <Crown className="h-12 w-12 text-blue-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-white mb-2">Advanced Analytics</h3>
                     <p className="text-white/70">
                       Track your business performance with detailed insights and reporting.
                     </p>
                   </div>
                   <div className="text-center">
-                    <Crown className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
+                    <Sparkles className="h-12 w-12 text-yellow-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-white mb-2">Premium Support</h3>
                     <p className="text-white/70">
                       Get priority support from our dedicated team of experts.
                     </p>
                   </div>
                   <div className="text-center">
-                    <Users className="h-12 w-12 text-green-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-white mb-2">Team Collaboration</h3>
+                    <Zap className="h-12 w-12 text-green-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-white mb-2">Crew Collaboration</h3>
                     <p className="text-white/70">
-                      Work seamlessly with your team using our collaboration tools.
+                      Work seamlessly with your crew using our collaboration tools.
                     </p>
                   </div>
                 </div>
