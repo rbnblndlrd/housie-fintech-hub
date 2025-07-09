@@ -44,6 +44,9 @@ import ProviderBids from './pages/clusters/ProviderBids';
 import OpportunityList from './pages/opportunities/OpportunityList';
 import OpportunityCreate from './pages/opportunities/OpportunityCreate';
 import OpportunityDetail from './pages/opportunities/OpportunityDetail';
+import CrewOpportunities from './pages/crews/CrewOpportunities';
+import CrewBids from './pages/crews/CrewBids';
+import OpportunityBidPlannerPage from './pages/opportunities/OpportunityBidPlanner';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -108,6 +111,9 @@ function App() {
                   <Route path="/opportunities" element={<OpportunityList />} />
                   <Route path="/opportunities/new" element={<OpportunityCreate />} />
                   <Route path="/opportunities/:id" element={<OpportunityDetail />} />
+                  <Route path="/opportunities/:id/bid" element={<OpportunityBidPlannerPage />} />
+                  <Route path="/crews/opportunities" element={<CrewOpportunities />} />
+                  <Route path="/crews/bids" element={<CrewBids />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                               </ConditionalSpacingWrapper>
