@@ -141,7 +141,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             {/* Clean Tab Navigation */}
             <div className="bg-yellow-50 border-b-2 border-yellow-300">
               <div className="flex">
-                {/* AI Assistant Tab (first position, Claude for Premium/Pro, WebLLM for Free/Starter) */}
+                {/* AI Assistant Tab (Annette) */}
                 <button
                   onClick={() => handleTabChange('ai')}
                   className={cn(
@@ -151,7 +151,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
                   )}
                 >
-                  {isPremiumUser ? 'Claude' : 'AI Assistant'}
+                  Ask Annette
                   {activeTab === 'ai' && (
                     <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
                   )}

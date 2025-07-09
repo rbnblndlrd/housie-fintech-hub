@@ -29,26 +29,26 @@ const AIConversationHeader: React.FC<AIConversationHeaderProps> = ({
           <ArrowLeft className="h-4 w-4" />
         </Button>
         
-        <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center">
+        <div className="w-10 h-10 bg-gradient-to-r from-purple-600 to-orange-500 rounded-full flex items-center justify-center">
           <Bot className="h-5 w-5 text-white" />
         </div>
         
         <div className="flex-1">
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            HOUSIE AI Assistant
+            Annette
             {webLLMReady ? <Cpu className="h-4 w-4 text-green-500" /> : <Sparkles className="h-4 w-4 text-purple-500 animate-pulse" />}
           </h3>
           <p className="text-xs text-purple-600 dark:text-purple-400">
-            {webLLMLoading ? 'AI is thinking...' : 
-             isTyping ? 'AI is typing...' : 
-             webLLMReady ? 'Local AI ready' : 'Ready to help'}
+            {webLLMLoading ? 'Thinking...' : 
+             isTyping ? 'Typing...' : 
+             webLLMReady ? 'Local AI ready' : 'Your HOUSIE AI Assistant'}
           </p>
         </div>
         
         <Badge className={`border-0 text-white ${
-          webLLMReady ? 'bg-gradient-to-r from-green-500 to-blue-500' : 'bg-gradient-to-r from-purple-500 to-blue-500'
+          webLLMReady ? 'bg-gradient-to-r from-green-500 to-orange-500' : 'bg-gradient-to-r from-purple-500 to-orange-500'
         }`}>
-          {webLLMReady ? 'Local AI' : 'AI'}
+          {webLLMReady ? 'Local AI' : 'Annette'}
         </Badge>
       </div>
     </div>

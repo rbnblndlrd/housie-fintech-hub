@@ -20,6 +20,10 @@ interface ChatRequest {
     role: 'user' | 'assistant';
     content: string;
   }>;
+  context?: {
+    type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking';
+    data?: any;
+  };
 }
 
 // Estimate API cost based on token usage (approximate)
@@ -42,7 +46,32 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, sessionId, userId, conversationHistory = [] }: ChatRequest = await req.json();
+    const { message, sessionId, userId, conversationHistory = [], context }: ChatRequest = await req.json();
+
+    // Deduct AI credits first
+    const { data: deductResult, error: deductError } = await supabase.rpc('deduct_ai_credits', {
+      user_uuid: userId,
+      amount: 1,
+      action_name: 'annette_chat',
+      result_text: null,
+      metadata_json: { sessionId, context: context || null }
+    });
+
+    if (deductError || !deductResult?.success) {
+      return new Response(
+        JSON.stringify({ 
+          error: 'Insufficient credits',
+          response: deductResult?.reason === 'insufficient_credits' 
+            ? "I'm sorry, but you need at least 1 AI credit to chat with me. You can earn more credits by completing services, participating in clusters, or through daily grants."
+            : "Unable to process your request right now. Please try again.",
+          success: false
+        }),
+        {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        }
+      );
+    }
 
     if (!anthropicApiKey) {
       throw new Error('Anthropic API key not configured');
@@ -60,7 +89,7 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           error: 'API temporarily disabled',
-          response: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
+          response: "🚫 **Annette AI is temporarily unavailable**\n\nYour AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
           success: false
         }),
         {
@@ -70,32 +99,59 @@ serve(async (req) => {
       );
     }
 
-    // Build the conversation context
-    const systemPrompt = `You are HOUSIE AI, a helpful assistant for a home services platform called HOUSIE. 
+    // Build the conversation context with Annette identity
+    let contextualPrompt = '';
+    if (context?.type) {
+      switch (context.type) {
+        case 'route':
+          contextualPrompt = 'The user is asking for help with route optimization and scheduling. Focus on travel efficiency, time management, and logistics.';
+          break;
+        case 'bid':
+          contextualPrompt = 'The user needs help with bid planning and strategy. Focus on pricing, team coordination, competitive analysis, and project planning.';
+          break;
+        case 'profile':
+          contextualPrompt = 'The user wants help optimizing their HOUSIE profile. Focus on service descriptions, portfolio presentation, and customer appeal.';
+          break;
+        case 'cluster':
+          contextualPrompt = 'The user is managing a cluster or group booking. Focus on coordination, scheduling, and group efficiency.';
+          break;
+        case 'booking':
+          contextualPrompt = 'The user has questions about a specific booking. Focus on clarification, requirements, and service details.';
+          break;
+      }
+    }
 
-Your role is to help users with:
-- Finding local service providers (cleaning, lawn care, construction, wellness, pet care)
-- Providing price estimates and cost comparisons
-- Booking assistance and scheduling help
-- Service recommendations and tips
-- Answering questions about home maintenance and improvements
+    const systemPrompt = `You are Annette, the helpful AI assistant for HOUSIE - a home services platform. 
+
+Your personality:
+- Friendly, professional, and knowledgeable about home services
+- Proactive in offering solutions and optimizations
+- Focused on helping users succeed on the HOUSIE platform
+- Always identify yourself as "Annette" when appropriate
+
+Your capabilities include:
+- Route planning and optimization for service providers
+- Bid strategy and pricing advice
+- Profile optimization suggestions
+- Cluster and group booking coordination
+- Service recommendations and cost estimates
+- Platform navigation and feature explanations
+- Crew management and coordination tips
+
+Special commands you recognize:
+- "/route" - Focus on route optimization and scheduling
+- "/split" - Help with dividing jobs or crews
+- "/profile" - Provide profile improvement suggestions
 
 Key guidelines:
-- Be friendly, helpful, and professional
-- Provide specific, actionable advice when possible
-- Ask clarifying questions to better understand user needs
-- Suggest connecting users with verified service providers
-- Include relevant cost estimates when discussing services
-- Always prioritize user safety and recommend insured/verified providers
+- Provide specific, actionable advice
+- Ask clarifying questions when needed
+- Suggest verified, insured providers when relevant
+- Include cost estimates when discussing services
+- Prioritize user safety and platform best practices
+- Help users maximize their earnings and efficiency
 
-Special features:
-- If users ask about "tax" or mention "tax?", provide helpful tax information for home services
-- If users ask about "pets" or mention "pets?", give pet-related home service advice
-- If users ask about "cleaning costs", provide detailed cleaning service estimates
-- If users say "test claude" or similar, respond enthusiastically about Claude 4 capabilities
-- If users ask about colors or say "show me colors", describe beautiful color palettes for home design
-
-Current context: User is asking about home services through the HOUSIE platform.`;
+${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help with any HOUSIE-related questions.'}`;`;
 
     const messages = [
       { role: 'user', content: `${systemPrompt}\n\nConversation history: ${JSON.stringify(conversationHistory)}\n\nUser message: ${message}` }
@@ -192,6 +248,7 @@ Current context: User is asking about home services through the HOUSIE platform.
       JSON.stringify({ 
         response: claudeResponse,
         success: true,
+        credits_remaining: deductResult?.new_balance || 0,
         cost_info: {
           estimated_tokens: estimatedInputTokens + estimatedOutputTokens,
           estimated_cost: estimatedCost
