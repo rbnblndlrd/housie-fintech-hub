@@ -16,7 +16,9 @@ import {
   Sparkles, 
   Send,
   Calendar,
-  Route 
+  Route,
+  Brain,
+  CheckCircle
 } from 'lucide-react';
 
 interface Cluster {
@@ -31,6 +33,17 @@ interface Cluster {
   max_participants: number;
   target_participants: number;
   status: string;
+  housie_optimization?: {
+    success: boolean;
+    summary: string;
+    route: Array<{
+      unit: string;
+      start: string;
+      end: string;
+    }>;
+    preferred_block_id: string;
+    confidence: 'high' | 'medium' | 'low';
+  };
 }
 
 interface ClusterBidPanelProps {
@@ -68,6 +81,30 @@ const ClusterBidPanel: React.FC<ClusterBidPanelProps> = ({ cluster, onBidSubmitt
     } catch (error) {
       console.error('Error fetching participants:', error);
     }
+  };
+
+  const useHousieOptimization = () => {
+    if (!cluster.housie_optimization) return;
+    
+    const totalHours = cluster.housie_optimization.route.reduce((total, stop) => {
+      const start = new Date(`2000-01-01T${stop.start}`);
+      const end = new Date(`2000-01-01T${stop.end}`);
+      return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+    }, 0);
+    
+    const suggestedAmount = totalHours * 45; // $45/hour base rate
+    
+    setBidData(prev => ({
+      ...prev,
+      estimated_hours: totalHours.toFixed(1),
+      total_amount: suggestedAmount.toFixed(2),
+      proposed_schedule: `HOUSIE Optimized Schedule: ${cluster.housie_optimization.summary}\n\nProposed Route:\n${cluster.housie_optimization.route.map(stop => `Unit ${stop.unit}: ${stop.start}-${stop.end}`).join('\n')}`
+    }));
+
+    toast({
+      title: "HOUSIE Schedule Applied!",
+      description: "Optimization data has been used to prefill your bid."
+    });
   };
 
   const handleClaudeAnalysis = async () => {
@@ -160,6 +197,55 @@ const ClusterBidPanel: React.FC<ClusterBidPanelProps> = ({ cluster, onBidSubmitt
       </CardHeader>
 
       <CardContent className="space-y-6">
+        {/* HOUSIE Optimization Panel */}
+        {cluster.housie_optimization ? (
+          <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <Brain className="h-5 w-5 text-green-600" />
+                  <h4 className="font-medium text-green-900">HOUSIE Suggestion</h4>
+                  <Badge variant="outline" className="text-xs bg-green-100">
+                    {cluster.housie_optimization.confidence} confidence
+                  </Badge>
+                </div>
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={useHousieOptimization}
+                  className="flex items-center gap-1 text-green-700 border-green-300 hover:bg-green-50"
+                >
+                  <CheckCircle className="h-3 w-3" />
+                  Use in My Bid
+                </Button>
+              </div>
+              <p className="text-sm text-green-800 mb-3">{cluster.housie_optimization.summary}</p>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="text-xs">
+                  <span className="text-green-600 font-medium">Total Hours:</span> {cluster.housie_optimization.route.reduce((total, stop) => {
+                    const start = new Date(`2000-01-01T${stop.start}`);
+                    const end = new Date(`2000-01-01T${stop.end}`);
+                    return total + (end.getTime() - start.getTime()) / (1000 * 60 * 60);
+                  }, 0).toFixed(1)}h
+                </div>
+                <div className="text-xs">
+                  <span className="text-green-600 font-medium">Units:</span> {cluster.housie_optimization.route.length}
+                </div>
+                <div className="text-xs">
+                  <span className="text-green-600 font-medium">Time Block:</span> {cluster.housie_optimization.route[0]?.start} - {cluster.housie_optimization.route[cluster.housie_optimization.route.length - 1]?.end}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="bg-yellow-50 border-yellow-200">
+            <CardContent className="p-4 text-center">
+              <Brain className="h-8 w-8 text-yellow-600 mx-auto mb-2" />
+              <p className="text-sm text-yellow-800">Organizer has not yet optimized schedule with HOUSIE.</p>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Cluster Overview */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card>

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Users, 
   MapPin, 
@@ -13,7 +14,9 @@ import {
   Share2, 
   Play, 
   Settings,
-  UserPlus 
+  UserPlus,
+  Brain,
+  Route
 } from 'lucide-react';
 
 interface Cluster {
@@ -32,6 +35,17 @@ interface Cluster {
   share_code: string;
   requires_verification: boolean;
   created_at: string;
+  housie_optimization?: {
+    success: boolean;
+    summary: string;
+    route: Array<{
+      unit: string;
+      start: string;
+      end: string;
+    }>;
+    preferred_block_id: string;
+    confidence: 'high' | 'medium' | 'low';
+  };
 }
 
 interface ClusterViewCardProps {
@@ -47,9 +61,40 @@ const ClusterViewCard: React.FC<ClusterViewCardProps> = ({
 }) => {
   const { toast } = useToast();
   const [activating, setActivating] = useState(false);
+  const [optimizing, setOptimizing] = useState(false);
 
   const progressPercentage = (cluster.participant_count / cluster.target_participants) * 100;
   const canActivate = cluster.participant_count >= cluster.min_participants && cluster.status === 'pending';
+
+  const handleOptimizeSchedule = async () => {
+    setOptimizing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('optimize-cluster', {
+        body: { cluster_id: cluster.id }
+      });
+
+      if (error) throw error;
+
+      if (data.success) {
+        toast({
+          title: "Schedule Optimized!",
+          description: data.summary
+        });
+        onUpdate?.();
+      } else {
+        throw new Error(data.error || 'Optimization failed');
+      }
+    } catch (error) {
+      console.error('Error optimizing cluster:', error);
+      toast({
+        title: "Optimization Failed",
+        description: error.message || "Failed to optimize schedule. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setOptimizing(false);
+    }
+  };
 
   const handleActivateCluster = async () => {
     setActivating(true);
@@ -192,19 +237,65 @@ const ClusterViewCard: React.FC<ClusterViewCardProps> = ({
           </div>
         </div>
 
+        {/* HOUSIE Optimization Results */}
+        {isOrganizer && cluster.housie_optimization && (
+          <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Brain className="h-4 w-4 text-purple-600" />
+                <h4 className="font-medium text-purple-900">HOUSIE Schedule Optimization</h4>
+                <Badge variant="outline" className="text-xs">
+                  {cluster.housie_optimization.confidence} confidence
+                </Badge>
+              </div>
+              <p className="text-sm text-purple-800 mb-3">{cluster.housie_optimization.summary}</p>
+              {cluster.housie_optimization.route.length > 0 && (
+                <div className="space-y-2">
+                  <h5 className="text-xs font-medium text-purple-700">Optimized Route:</h5>
+                  <div className="grid grid-cols-2 gap-1">
+                    {cluster.housie_optimization.route.slice(0, 4).map((stop, index) => (
+                      <div key={index} className="text-xs bg-white/50 rounded px-2 py-1">
+                        Unit {stop.unit}: {stop.start}-{stop.end}
+                      </div>
+                    ))}
+                  </div>
+                  {cluster.housie_optimization.route.length > 4 && (
+                    <p className="text-xs text-purple-600">
+                      +{cluster.housie_optimization.route.length - 4} more units
+                    </p>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        )}
+
         {/* Action Buttons */}
         <div className="flex gap-3">
           {isOrganizer ? (
-            canActivate && (
-              <Button 
-                onClick={handleActivateCluster}
-                disabled={activating}
-                className="flex-1 flex items-center gap-2"
-              >
-                <Play className="h-4 w-4" />
-                {activating ? 'Activating...' : 'Activate Cluster'}
-              </Button>
-            )
+            <div className="flex gap-2 w-full">
+              {cluster.participant_count >= cluster.min_participants && !cluster.housie_optimization && (
+                <Button 
+                  onClick={handleOptimizeSchedule}
+                  disabled={optimizing}
+                  variant="outline"
+                  className="flex-1 flex items-center gap-2"
+                >
+                  <Brain className="h-4 w-4" />
+                  {optimizing ? 'Optimizing...' : 'Optimize Schedule (HOUSIE)'}
+                </Button>
+              )}
+              {canActivate && (
+                <Button 
+                  onClick={handleActivateCluster}
+                  disabled={activating}
+                  className="flex-1 flex items-center gap-2"
+                >
+                  <Play className="h-4 w-4" />
+                  {activating ? 'Activating...' : 'Activate Cluster'}
+                </Button>
+              )}
+            </div>
           ) : (
             cluster.status === 'pending' && (
               <Button 
