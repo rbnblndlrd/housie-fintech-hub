@@ -31,7 +31,13 @@ import {
   Star,
   Zap,
   Shield,
-  UserCheck
+  UserCheck,
+  Home,
+  Users,
+  BarChart3,
+  Settings,
+  HelpCircle,
+  LogOut
 } from 'lucide-react';
 
 const UserMenu = () => {
@@ -138,132 +144,150 @@ const UserMenu = () => {
           <ChevronDown className="h-4 w-4 text-gray-300" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 bg-white border shadow-lg z-50" align="end" forceMount>
-        {/* User Info Section */}
-        <div className="p-3 border-b">
+      <DropdownMenuContent className="w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl z-50 fintech-card" align="end" forceMount>
+        {/* User Info Section with Gradient Header */}
+        <div className="p-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-t-lg mb-2">
           <div className="flex items-center gap-3">
-            <div className="h-12 w-12 flex items-center justify-center bg-gray-100 rounded-full">
-              <UserRound className="h-6 w-6 text-gray-600" />
+            <div className="h-12 w-12 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
+              <UserRound className="h-6 w-6 text-white" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-gray-900">{userName}</p>
-              <p className="text-sm text-gray-500">{user.email}</p>
-              <Badge className="mt-1 bg-blue-100 text-blue-800 border-blue-200">
+              <p className="font-semibold text-white text-lg drop-shadow-sm">{userName}</p>
+              <p className="text-white/80 text-sm">{user.email}</p>
+              <Badge className="mt-2 bg-white/20 text-white border-white/30 backdrop-blur-sm">
                 {currentRole === 'provider' ? 'Service Provider' : 'Customer'}
               </Badge>
             </div>
           </div>
         </div>
 
-        {/* Subscription Section */}
-        <DropdownMenuLabel>Subscription & Status</DropdownMenuLabel>
-        <DropdownMenuItem
-          onClick={openSubscriptionPortal}
-          className="cursor-pointer flex items-center justify-between"
-        >
-          <div className="flex items-center gap-2">
-            {getSubscriptionIcon(subscriptionData.subscription_tier)}
-            <span className="capitalize">{subscriptionData.subscription_tier} Plan</span>
-          </div>
-          <span className="text-xs text-blue-600">Manage →</span>
-        </DropdownMenuItem>
-
-        {/* Status Management */}
-        <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <div className="flex items-center gap-2">
-              {getStatusIcon(currentStatus)}
-              <UserCheck className="h-4 w-4 text-blue-600" />
-              <span>{currentStatus} • Verified</span>
+        {/* Subscription Section with Enhanced Styling */}
+        <div className="px-2 mb-2">
+          <DropdownMenuLabel className="text-white/90 font-medium mb-2">Subscription & Status</DropdownMenuLabel>
+          <DropdownMenuItem
+            onClick={openSubscriptionPortal}
+            className="cursor-pointer flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-amber-600/20 to-orange-600/20 border border-amber-500/30 hover:from-amber-600/30 hover:to-orange-600/30 transition-all duration-200"
+          >
+            <div className="flex items-center gap-3">
+              {getSubscriptionIcon(subscriptionData.subscription_tier)}
+              <div>
+                <span className="text-white font-medium capitalize">{subscriptionData.subscription_tier} Plan</span>
+                <p className="text-white/70 text-xs">Active subscription</p>
+              </div>
             </div>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuItem
-              onClick={() => handleStatusChange('Available')}
-              className="cursor-pointer"
-            >
-              <CheckCircle className="h-4 w-4 text-green-500 mr-2" />
-              <span>Available</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => handleStatusChange('Busy')}
-              className="cursor-pointer"
-            >
-              <Minus className="h-4 w-4 text-red-500 mr-2" />
-              <span>Busy</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => handleStatusChange('Away')}
-              className="cursor-pointer"
-            >
-              <Clock className="h-4 w-4 text-yellow-500 mr-2" />
-              <span>Away</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              onClick={() => handleStatusChange('Do Not Disturb')}
-              className="cursor-pointer"
-            >
-              <AlertTriangle className="h-4 w-4 text-gray-500 mr-2" />
-              <span>Do Not Disturb</span>
-            </DropdownMenuItem>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub>
+            <span className="text-amber-400 text-xs font-medium bg-amber-400/20 px-2 py-1 rounded">Manage →</span>
+          </DropdownMenuItem>
+        </div>
+
+        {/* Status Management with Modern Design */}
+        <div className="px-2 mb-2">
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="cursor-pointer p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50">
+              <div className="flex items-center gap-3">
+                {getStatusIcon(currentStatus)}
+                <UserCheck className="h-4 w-4 text-emerald-400" />
+                <div>
+                  <span className="text-white font-medium">{currentStatus}</span>
+                  <p className="text-emerald-400 text-xs">Verified Account</p>
+                </div>
+              </div>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="bg-slate-900 border-slate-700">
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Available')}
+                className="cursor-pointer text-white hover:bg-slate-800"
+              >
+                <CheckCircle className="h-4 w-4 text-green-500 mr-3" />
+                <span>Available</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Busy')}
+                className="cursor-pointer text-white hover:bg-slate-800"
+              >
+                <Minus className="h-4 w-4 text-red-500 mr-3" />
+                <span>Busy</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Away')}
+                className="cursor-pointer text-white hover:bg-slate-800"
+              >
+                <Clock className="h-4 w-4 text-yellow-500 mr-3" />
+                <span>Away</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => handleStatusChange('Do Not Disturb')}
+                className="cursor-pointer text-white hover:bg-slate-800"
+              >
+                <AlertTriangle className="h-4 w-4 text-gray-500 mr-3" />
+                <span>Do Not Disturb</span>
+              </DropdownMenuItem>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+        </div>
         
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-slate-700 my-2" />
         
-        {/* Main Navigation Items */}
-        <DropdownMenuItem
-          onClick={() => navigate("/dashboard")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">🏠</span>
-          <span className="flex-1">Dashboard</span>
-        </DropdownMenuItem>
+        {/* Main Navigation Items with Modern Icons and Gradients */}
+        <div className="px-2 space-y-1">
+          <DropdownMenuItem
+            onClick={() => navigate("/dashboard")}
+            className="cursor-pointer p-3 rounded-lg hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 transition-all duration-200 group"
+          >
+            <Home className="h-5 w-5 text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
+            <span className="text-white font-medium">Dashboard</span>
+          </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onClick={() => navigate("/community-dashboard")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">👥</span>
-          <span className="flex-1">Community</span>
-        </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => navigate("/community-dashboard")}
+            className="cursor-pointer p-3 rounded-lg hover:bg-gradient-to-r hover:from-purple-600/20 hover:to-pink-600/20 transition-all duration-200 group"
+          >
+            <Users className="h-5 w-5 text-purple-400 mr-3 group-hover:scale-110 transition-transform" />
+            <span className="text-white font-medium">Community</span>
+          </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onClick={() => navigate("/analytics-dashboard")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">📊</span>
-          <span className="flex-1">Analytics</span>
-        </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => navigate("/analytics-dashboard")}
+            className="cursor-pointer p-3 rounded-lg hover:bg-gradient-to-r hover:from-emerald-600/20 hover:to-teal-600/20 transition-all duration-200 group"
+          >
+            <BarChart3 className="h-5 w-5 text-emerald-400 mr-3 group-hover:scale-110 transition-transform" />
+            <span className="text-white font-medium">Analytics</span>
+          </DropdownMenuItem>
+        </div>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-slate-700 my-2" />
 
         {/* Profile Settings */}
-        <DropdownMenuItem
-          onClick={() => navigate("/profile")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">👤</span>
-          <span className="flex-1">Profile Settings</span>
-        </DropdownMenuItem>
+        <div className="px-2 space-y-1">
+          <DropdownMenuItem
+            onClick={() => navigate("/profile")}
+            className="cursor-pointer p-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 group"
+          >
+            <Settings className="h-5 w-5 text-slate-400 mr-3 group-hover:text-white transition-colors" />
+            <span className="text-white font-medium">Profile Settings</span>
+          </DropdownMenuItem>
 
-        {/* Help & Support */}
-        <DropdownMenuItem
-          onClick={() => navigate("/help")}
-          className="cursor-pointer"
-        >
-          <span className="mr-3">❓</span>
-          <span className="flex-1">Help & Support</span>
-        </DropdownMenuItem>
+          {/* Help & Support */}
+          <DropdownMenuItem
+            onClick={() => navigate("/help")}
+            className="cursor-pointer p-3 rounded-lg hover:bg-slate-700/50 transition-all duration-200 group"
+          >
+            <HelpCircle className="h-5 w-5 text-slate-400 mr-3 group-hover:text-white transition-colors" />
+            <span className="text-white font-medium">Help & Support</span>
+          </DropdownMenuItem>
+        </div>
 
-        {/* Sign Out */}
-        <DropdownMenuItem
-          onClick={handleLogout}
-          className="cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50"
-        >
-          <span className="mr-3">🚪</span>
-          <span className="flex-1">Sign Out</span>
-        </DropdownMenuItem>
+        <DropdownMenuSeparator className="bg-slate-700 my-2" />
+
+        {/* Sign Out with Danger Styling */}
+        <div className="px-2 pb-2">
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="cursor-pointer p-3 rounded-lg hover:bg-gradient-to-r hover:from-red-600/20 hover:to-red-700/20 border border-transparent hover:border-red-500/30 transition-all duration-200 group"
+          >
+            <LogOut className="h-5 w-5 text-red-400 mr-3 group-hover:scale-110 transition-transform" />
+            <span className="text-red-400 font-medium group-hover:text-red-300">Sign Out</span>
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );
