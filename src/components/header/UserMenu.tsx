@@ -37,7 +37,8 @@ import {
   BarChart3,
   Settings,
   HelpCircle,
-  LogOut
+  LogOut,
+  ArrowRight
 } from 'lucide-react';
 
 const UserMenu = () => {
@@ -93,15 +94,45 @@ const UserMenu = () => {
   const getSubscriptionIcon = (tier: string) => {
     switch (tier.toLowerCase()) {
       case 'premium':
-        return <Crown className="h-4 w-4 text-yellow-600" />;
+        return <Crown className="h-4 w-4 text-blue-200" />;
       case 'pro':
-        return <Star className="h-4 w-4 text-purple-600" />;
+        return <Star className="h-4 w-4 text-yellow-200" />;
       case 'starter':
-        return <Zap className="h-4 w-4 text-blue-600" />;
+        return <Zap className="h-4 w-4 text-gray-200" />;
       case 'admin':
-        return <Shield className="h-4 w-4 text-red-600" />;
+        return <Shield className="h-4 w-4 text-red-200" />;
       default:
-        return null;
+        return <Zap className="h-4 w-4 text-amber-600" />;
+    }
+  };
+
+  const getSubscriptionGradient = (tier: string) => {
+    switch (tier.toLowerCase()) {
+      case 'premium':
+        return 'from-blue-600 via-blue-700 to-indigo-800'; // Diamond
+      case 'pro':
+        return 'from-yellow-500 via-yellow-600 to-amber-700'; // Gold
+      case 'starter':
+        return 'from-gray-400 via-gray-500 to-gray-600'; // Silver
+      case 'admin':
+        return 'from-red-600 via-red-700 to-red-800'; // Special admin
+      default:
+        return 'from-amber-600 via-amber-700 to-orange-800'; // Bronze (free)
+    }
+  };
+
+  const getSubscriptionLabel = (tier: string) => {
+    switch (tier.toLowerCase()) {
+      case 'premium':
+        return 'Premium Plan';
+      case 'pro':
+        return 'Pro Plan';
+      case 'starter':
+        return 'Starter Plan';
+      case 'admin':
+        return 'Admin Access';
+      default:
+        return 'Free Plan';
     }
   };
 
@@ -145,8 +176,8 @@ const UserMenu = () => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl z-50 fintech-card" align="end" forceMount>
-        {/* User Info Section with Gradient Header */}
-        <div className="p-4 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 rounded-t-lg mb-2">
+        {/* User Info Section with Subscription-Based Gradient Header */}
+        <div className={`p-4 bg-gradient-to-r ${getSubscriptionGradient(subscriptionData.subscription_tier)} rounded-t-lg mb-2`}>
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
               <UserRound className="h-6 w-6 text-white" />
@@ -154,29 +185,33 @@ const UserMenu = () => {
             <div className="flex-1">
               <p className="font-semibold text-white text-lg drop-shadow-sm">{userName}</p>
               <p className="text-white/80 text-sm">{user.email}</p>
-              <Badge className="mt-2 bg-white/20 text-white border-white/30 backdrop-blur-sm">
-                {currentRole === 'provider' ? 'Service Provider' : 'Customer'}
-              </Badge>
-            </div>
-          </div>
-        </div>
-
-        {/* Subscription Section with Enhanced Styling */}
-        <div className="px-2 mb-2">
-          <DropdownMenuLabel className="text-white/90 font-medium mb-2">Subscription & Status</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={openSubscriptionPortal}
-            className="cursor-pointer flex items-center justify-between p-3 rounded-lg bg-gradient-to-r from-amber-600/20 to-orange-600/20 border border-amber-500/30 hover:from-amber-600/30 hover:to-orange-600/30 transition-all duration-200"
-          >
-            <div className="flex items-center gap-3">
-              {getSubscriptionIcon(subscriptionData.subscription_tier)}
-              <div>
-                <span className="text-white font-medium capitalize">{subscriptionData.subscription_tier} Plan</span>
-                <p className="text-white/70 text-xs">Active subscription</p>
+              <div className="flex items-center gap-2 mt-2">
+                <Badge className="bg-white/20 text-white border-white/30 backdrop-blur-sm">
+                  {currentRole === 'provider' ? 'Service Provider' : 'Customer'}
+                </Badge>
               </div>
             </div>
-            <span className="text-amber-400 text-xs font-medium bg-amber-400/20 px-2 py-1 rounded">Manage →</span>
-          </DropdownMenuItem>
+          </div>
+          
+          {/* Subscription Info Row */}
+          <div 
+            className="mt-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 cursor-pointer hover:bg-white/15 transition-all duration-200 group"
+            onClick={() => navigate('/pricing')}
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                {getSubscriptionIcon(subscriptionData.subscription_tier)}
+                <div>
+                  <span className="text-white font-medium text-sm">{getSubscriptionLabel(subscriptionData.subscription_tier)}</span>
+                  <p className="text-white/70 text-xs">Active subscription</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1 text-white/80 group-hover:text-white transition-colors">
+                <span className="text-xs font-medium">Manage</span>
+                <ArrowRight className="h-3 w-3" />
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Status Management with Modern Design */}
