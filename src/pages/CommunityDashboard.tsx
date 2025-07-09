@@ -14,6 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteButton } from '@/components/chat/AnnetteButton';
 import { 
   Globe, 
   Users, 
@@ -39,6 +41,7 @@ const CommunityDashboard = () => {
   const [recognitionModalOpen, setRecognitionModalOpen] = useState(false);
   const [selectedRecognitionType, setSelectedRecognitionType] = useState('');
   const [customizeModalOpen, setCustomizeModalOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
   const handleRecognitionClick = (type: string) => {
     setSelectedRecognitionType(type);
@@ -183,12 +186,21 @@ const CommunityDashboard = () => {
         <div className="pt-20 px-4 pb-8 md:pl-[280px]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
-                Community Dashboard
-              </h1>
-              <p className="text-white/90 drop-shadow-md">
-                Connect, collaborate, and grow with the HOUSIE community
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
+                    Community Dashboard
+                  </h1>
+                  <p className="text-white/90 drop-shadow-md">
+                    Connect, collaborate, and grow with the HOUSIE community
+                  </p>
+                </div>
+                <AnnetteButton
+                  onClick={() => setChatOpen(true)}
+                  variant="embedded"
+                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                />
+              </div>
             </div>
 
             {/* Community Stats */}
@@ -586,6 +598,8 @@ const CommunityDashboard = () => {
           isOpen={customizeModalOpen}
           onClose={() => setCustomizeModalOpen(false)}
         />
+        
+        <ChatBubble defaultTab="ai" />
       </div>
     </>
   );

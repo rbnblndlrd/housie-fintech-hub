@@ -24,6 +24,11 @@ interface ChatRequest {
     type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking';
     data?: any;
   };
+  pageContext?: {
+    pageType: string;
+    context: string;
+    annettePersonality: string;
+  };
 }
 
 // Estimate API cost based on token usage (approximate)
@@ -46,7 +51,7 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, sessionId, userId, conversationHistory = [], context }: ChatRequest = await req.json();
+    const { message, sessionId, userId, conversationHistory = [], context, pageContext }: ChatRequest = await req.json();
 
     // Deduct AI credits first
     const { data: deductResult, error: deductError } = await supabase.rpc('deduct_ai_credits', {
@@ -101,7 +106,11 @@ serve(async (req) => {
 
     // Build the conversation context with Annette identity
     let contextualPrompt = '';
-    if (context?.type) {
+    
+    // Use page context if available for more specific guidance
+    if (pageContext) {
+      contextualPrompt = `${pageContext.context} Personality: ${pageContext.annettePersonality}`;
+    } else if (context?.type) {
       switch (context.type) {
         case 'route':
           contextualPrompt = 'The user is asking for help with route optimization and scheduling. Focus on travel efficiency, time management, and logistics.';

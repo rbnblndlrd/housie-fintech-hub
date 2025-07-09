@@ -7,6 +7,8 @@ import ModernServiceFilters from '@/components/ModernServiceFilters';
 import ModernServicesGrid from '@/components/ModernServicesGrid';
 import { useServices } from '@/hooks/useServices';
 import { Service } from '@/types/service';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteButton } from '@/components/chat/AnnetteButton';
 
 const ServicesPage = () => {
   const { services, isLoading } = useServices();
@@ -143,6 +145,8 @@ const ServicesPage = () => {
             />
           </div>
         </div>
+        
+        <ChatBubble defaultTab="ai" />
       </div>
     </div>
   );

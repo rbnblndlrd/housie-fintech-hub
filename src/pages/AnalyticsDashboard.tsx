@@ -8,6 +8,8 @@ import AnalyticsNavigation from '@/components/dashboard/AnalyticsNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteButton } from '@/components/chat/AnnetteButton';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { 
   TrendingUp, 
@@ -200,12 +202,21 @@ const AnalyticsDashboard = () => {
         <div className="pt-20 px-4 pb-8 md:pl-[280px]">
           <div className="max-w-7xl mx-auto">
             <div className="mb-8">
-              <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
-                Analytics Dashboard
-              </h1>
-              <p className="text-white/90 drop-shadow-md">
-                Comprehensive insights into your business performance
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h1 className="text-4xl font-bold text-white drop-shadow-lg mb-2">
+                    Analytics Dashboard
+                  </h1>
+                  <p className="text-white/90 drop-shadow-md">
+                    Comprehensive insights into your business performance
+                  </p>
+                </div>
+                <AnnetteButton
+                  onClick={() => {}} // ChatBubble will handle this
+                  variant="embedded"
+                  className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+                />
+              </div>
             </div>
 
             {/* Overview Metrics */}
@@ -572,6 +583,8 @@ const AnalyticsDashboard = () => {
             </Tabs>
           </div>
         </div>
+        
+        <ChatBubble defaultTab="ai" />
       </div>
     </>
   );

@@ -15,6 +15,8 @@ import ServicesSection from '@/components/provider/ServicesSection';
 import ContactInfoSection from '@/components/provider/ContactInfoSection';
 import AvailabilitySection from '@/components/provider/AvailabilitySection';
 import PrivacySettingsSection from '@/components/provider/PrivacySettingsSection';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteButton } from '@/components/chat/AnnetteButton';
 
 interface ProviderProfile {
   id: string;
@@ -304,9 +306,17 @@ const ProviderProfile = () => {
           <ProfileNavigation profileType="provider" />
           
           {/* Header */}
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>
-            <p className="text-gray-600">Manage your business information and services</p>
+          <div className="text-center mb-4">
+            <div className="flex items-center justify-between">
+              <div className="text-left">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">Provider Profile</h1>
+                <p className="text-gray-600">Manage your business information and services</p>
+              </div>
+              <AnnetteButton
+                onClick={() => {}} // ChatBubble will handle this
+                variant="embedded"
+              />
+            </div>
           </div>
 
           {/* Profile Overview Card */}
@@ -357,11 +367,13 @@ const ProviderProfile = () => {
                 onSettingsUpdate={fetchUserProfile}
               />
             </div>
+            </div>
           </div>
         </div>
+        
+        <ChatBubble defaultTab="ai" />
       </div>
-    </div>
-  );
-};
+    );
+  };
 
 export default ProviderProfile;

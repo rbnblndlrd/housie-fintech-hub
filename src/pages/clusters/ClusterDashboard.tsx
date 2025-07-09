@@ -9,6 +9,8 @@ import ClusterViewCard from '@/components/clusters/ClusterViewCard';
 import VideoBackground from '@/components/common/VideoBackground';
 import { Plus, Users, Briefcase, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteButton } from '@/components/chat/AnnetteButton';
 
 const ClusterDashboard = () => {
   const { user } = useAuth();
@@ -293,6 +295,8 @@ const ClusterDashboard = () => {
             </Tabs>
           </div>
         </div>
+        
+        <ChatBubble defaultTab="ai" />
       </div>
     </>
   );

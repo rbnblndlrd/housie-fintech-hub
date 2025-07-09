@@ -10,6 +10,8 @@ import VideoBackground from '@/components/common/VideoBackground';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteButton } from '@/components/chat/AnnetteButton';
 
 const ClusterView = () => {
   const { id } = useParams<{ id: string }>();
@@ -190,6 +192,8 @@ const ClusterView = () => {
             )}
           </div>
         </div>
+        
+        <ChatBubble defaultTab="ai" />
       </div>
     </>
   );

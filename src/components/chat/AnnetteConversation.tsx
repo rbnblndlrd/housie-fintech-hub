@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Send, Bot, User, Loader2, Mic, MicOff, Coins } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAICredits } from '@/hooks/useAICredits';
+import { usePageContext } from '@/hooks/usePageContext';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Message {
@@ -30,6 +31,7 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
 }) => {
   const { user } = useAuth();
   const { credits, isLoading: creditsLoading, refreshCredits } = useAICredits();
+  const pageContext = usePageContext();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -51,17 +53,17 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
 
   useEffect(() => {
     // Add context-aware greeting message
-    if (context?.type && messages.length === 0) {
-      const contextGreeting = getContextGreeting(context.type);
+    if (messages.length === 0) {
+      const contextGreeting = context?.type ? getContextGreeting(context.type) : pageContext.annettePersonality;
       const welcomeMessage: Message = {
         id: 'welcome',
         role: 'assistant',
-        content: contextGreeting,
+        content: `Hi! I'm Annette, your HOUSIE assistant. ${contextGreeting}`,
         timestamp: new Date()
       };
       setMessages([welcomeMessage]);
     }
-  }, [context, messages.length]);
+  }, [context, pageContext, messages.length]);
 
   const getContextGreeting = (contextType: string): string => {
     switch (contextType) {
@@ -114,7 +116,8 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
           message: content,
           sessionId,
           userId: user?.id,
-          context: context || null
+          context: context || null,
+          pageContext: pageContext
         }
       });
 
