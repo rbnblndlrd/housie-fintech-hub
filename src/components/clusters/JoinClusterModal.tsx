@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,8 +6,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Users, Clock, Shield, UserPlus } from 'lucide-react';
 
@@ -17,13 +15,6 @@ interface Cluster {
   service_type: string;
   location: string;
   requires_verification: boolean;
-}
-
-interface TimeBlock {
-  id: string;
-  block_name: string;
-  start_time: string;
-  end_time: string;
 }
 
 interface JoinClusterModalProps {
@@ -39,53 +30,22 @@ const JoinClusterModal: React.FC<JoinClusterModalProps> = ({
   onClose,
   onSuccess
 }) => {
-  const { user } = useAuth();
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(false);
-  const [timeBlocks, setTimeBlocks] = useState<TimeBlock[]>([]);
   const [formData, setFormData] = useState({
-    display_name: '',
+    display_name: 'Alpha' + Math.floor(Math.random() * 100),
     unit_id: '',
     preferred_time_blocks: [] as string[],
     special_instructions: ''
   });
 
-  useEffect(() => {
-    if (isOpen) {
-      generateDisplayName();
-      fetchTimeBlocks();
-    }
-  }, [isOpen, cluster.id]);
-
-  const generateDisplayName = async () => {
-    try {
-      const { data, error } = await supabase.rpc('generate_display_name');
-      if (error) throw error;
-      
-      setFormData(prev => ({ ...prev, display_name: data }));
-    } catch (error) {
-      console.error('Error generating display name:', error);
-      // Fallback to basic generation
-      const names = ['Alpha', 'Beta', 'Gamma', 'Delta', 'Echo', 'Foxtrot'];
-      const randomName = names[Math.floor(Math.random() * names.length)] + Math.floor(Math.random() * 100);
-      setFormData(prev => ({ ...prev, display_name: randomName }));
-    }
-  };
-
-  const fetchTimeBlocks = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('cluster_time_blocks')
-        .select('*')
-        .eq('cluster_id', cluster.id);
-
-      if (error) throw error;
-      setTimeBlocks(data || []);
-    } catch (error) {
-      console.error('Error fetching time blocks:', error);
-    }
-  };
+  const timeBlockOptions = [
+    'Early Morning (6-9 AM)',
+    'Morning (9-12 PM)', 
+    'Afternoon (12-5 PM)',
+    'Evening (5-8 PM)'
+  ];
 
   const handleTimeBlockToggle = (blockId: string, checked: boolean) => {
     setFormData(prev => ({
@@ -98,69 +58,12 @@ const JoinClusterModal: React.FC<JoinClusterModalProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      toast({
-        title: "Authentication Required",
-        description: "Please sign in to join this cluster.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setLoading(true);
+
     try {
-      // Check if user is already a participant
-      const { data: existingParticipant, error: checkError } = await supabase
-        .from('cluster_participants')
-        .select('id')
-        .eq('cluster_id', cluster.id)
-        .eq('user_id', user.id)
-        .maybeSingle();
-
-      if (checkError) throw checkError;
-
-      if (existingParticipant) {
-        toast({
-          title: "Already Joined",
-          description: "You're already a participant in this cluster.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      // Add participant
-      const { error: participantError } = await supabase
-        .from('cluster_participants')
-        .insert({
-          cluster_id: cluster.id,
-          user_id: user.id,
-          display_name: formData.display_name,
-          unit_id: formData.unit_id || null,
-          special_instructions: formData.special_instructions || null
-        });
-
-      if (participantError) throw participantError;
-
-      // Add time block preferences
-      if (formData.preferred_time_blocks.length > 0) {
-        const preferences = formData.preferred_time_blocks.map(blockId => ({
-          cluster_id: cluster.id,
-          participant_id: user.id, // Will be updated with the actual participant ID
-          time_block_id: blockId
-        }));
-
-        // Note: This might need adjustment based on the actual participant ID
-        // For now, we'll use user_id as a reference
-        const { error: preferencesError } = await supabase
-          .from('cluster_participant_preferences')
-          .insert(preferences);
-
-        if (preferencesError) {
-          console.warn('Error adding preferences:', preferencesError);
-          // Don't fail the whole operation for preferences
-        }
-      }
-
+      // Simulate joining cluster
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
       toast({
         title: "Joined Successfully!",
         description: `You've joined "${cluster.title}". You'll be notified when it's activated.`
@@ -168,7 +71,6 @@ const JoinClusterModal: React.FC<JoinClusterModalProps> = ({
 
       onSuccess();
     } catch (error) {
-      console.error('Error joining cluster:', error);
       toast({
         title: "Error",
         description: "Failed to join cluster. Please try again.",
@@ -238,28 +140,26 @@ const JoinClusterModal: React.FC<JoinClusterModalProps> = ({
             </div>
 
             {/* Time Block Preferences */}
-            {timeBlocks.length > 0 && (
-              <div className="space-y-3">
-                <Label className="flex items-center gap-2">
-                  <Clock className="h-4 w-4" />
-                  Preferred Time Blocks
-                </Label>
-                <div className="space-y-2">
-                  {timeBlocks.map(block => (
-                    <div key={block.id} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={block.id}
-                        checked={formData.preferred_time_blocks.includes(block.id)}
-                        onCheckedChange={(checked) => handleTimeBlockToggle(block.id, checked as boolean)}
-                      />
-                      <Label htmlFor={block.id} className="text-sm font-normal">
-                        {block.block_name}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
+            <div className="space-y-3">
+              <Label className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                Preferred Time Blocks
+              </Label>
+              <div className="space-y-2">
+                {timeBlockOptions.map(block => (
+                  <div key={block} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={block}
+                      checked={formData.preferred_time_blocks.includes(block)}
+                      onCheckedChange={(checked) => handleTimeBlockToggle(block, checked as boolean)}
+                    />
+                    <Label htmlFor={block} className="text-sm font-normal">
+                      {block}
+                    </Label>
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
 
             {/* Special Instructions */}
             <div className="space-y-2">

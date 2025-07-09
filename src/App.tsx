@@ -37,6 +37,10 @@ import TaxReports from './pages/TaxReports';
 import FinancialAnalytics from './pages/FinancialAnalytics';
 import InteractiveMapPage from './pages/InteractiveMapPage';
 import Pricing from './pages/Pricing';
+import ClusterCreate from './pages/clusters/ClusterCreate';
+import ClusterView from './pages/clusters/ClusterView';
+import ClusterDashboard from './pages/clusters/ClusterDashboard';
+import ProviderBids from './pages/clusters/ProviderBids';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -94,10 +98,10 @@ function App() {
                   <Route path="/performance" element={<PerformanceDashboard />} />
                   <Route path="/financial-analytics" element={<FinancialAnalytics />} />
                   <Route path="/pricing" element={<Pricing />} />
-                  <Route path="/clusters/new" element={<React.lazy(() => import('./pages/clusters/ClusterCreate'))} />
-                  <Route path="/clusters/:id" element={<React.lazy(() => import('./pages/clusters/ClusterView'))} />
-                  <Route path="/clusters" element={<React.lazy(() => import('./pages/clusters/ClusterDashboard'))} />
-                  <Route path="/bids" element={<React.lazy(() => import('./pages/clusters/ProviderBids'))} />
+                  <Route path="/clusters/new" element={<ClusterCreate />} />
+                  <Route path="/clusters/:id" element={<ClusterView />} />
+                  <Route path="/clusters" element={<ClusterDashboard />} />
+                  <Route path="/bids" element={<ProviderBids />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                               </ConditionalSpacingWrapper>
