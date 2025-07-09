@@ -656,6 +656,7 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          housie_optimization: Json | null
           id: string
           location: string
           max_participants: number
@@ -674,6 +675,7 @@ export type Database = {
         Insert: {
           created_at?: string
           description?: string | null
+          housie_optimization?: Json | null
           id?: string
           location: string
           max_participants?: number
@@ -692,6 +694,7 @@ export type Database = {
         Update: {
           created_at?: string
           description?: string | null
+          housie_optimization?: Json | null
           id?: string
           location?: string
           max_participants?: number

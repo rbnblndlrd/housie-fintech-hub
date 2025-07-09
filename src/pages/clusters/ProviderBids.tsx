@@ -82,7 +82,7 @@ const ProviderBids = () => {
 
       // Fetch user's bids
       const { data: bids, error: bidsError } = await supabase
-        .from('cluster_provider_bids')
+        .from('cluster_bids')
         .select(`
           *,
           clusters (*)

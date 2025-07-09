@@ -98,7 +98,7 @@ const ClusterCreateForm = () => {
       
       // Create cluster
       const { data: cluster, error } = await supabase
-        .from('clusters' as any)
+        .from('clusters')
         .insert({
           organizer_id: user.id,
           title: formData.title,
@@ -106,7 +106,6 @@ const ClusterCreateForm = () => {
           service_type: formData.service_type,
           location: formData.location,
           neighborhood: formData.neighborhood,
-          days_available: formData.days_available,
           min_participants: formData.min_participants,
           max_participants: formData.max_participants,
           target_participants: formData.target_participants,
@@ -116,7 +115,7 @@ const ClusterCreateForm = () => {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error || !cluster) throw error || new Error('Failed to create cluster');
 
       // Create time blocks
       if (formData.time_blocks.length > 0) {
@@ -131,7 +130,7 @@ const ClusterCreateForm = () => {
         });
 
         const { error: timeBlockError } = await supabase
-          .from('cluster_time_blocks' as any)
+          .from('cluster_time_blocks')
           .insert(timeBlocksData);
 
         if (timeBlockError) throw timeBlockError;
