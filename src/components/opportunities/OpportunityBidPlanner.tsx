@@ -163,36 +163,66 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
     }));
   };
 
-  const optimizeWithHousie = async () => {
+  const optimizeWithAnnette = async () => {
     setHousieOptimizing(true);
     try {
-      // This would call the HOUSIE optimization function
-      // For now, we'll simulate it
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // Simulate HOUSIE suggestions
-      const suggestion = {
-        totalHours: serviceSlots.length * 2,
-        suggestedAmount: serviceSlots.length * 75,
-        schedule: {
-          startTime: "09:00",
-          endTime: "15:00",
-          breaks: ["12:00-13:00"]
+      // Validate that we have role assignments
+      const unassignedSlots = serviceSlots.filter(slot => !roleAssignments[slot.id]);
+      if (unassignedSlots.length > 0) {
+        toast({
+          title: "Incomplete Assignments",
+          description: "Please assign crew members to all required roles before optimizing.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!userCrew?.id) {
+        toast({
+          title: "No Crew Found",
+          description: "Unable to find your crew information.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      const { data, error } = await supabase.functions.invoke("optimize-opportunity", {
+        body: {
+          opportunity_id: opportunityId,
+          crew_id: userCrew.id
         }
-      };
-
-      setTotalBidAmount(suggestion.suggestedAmount);
-      setProposedSchedule(suggestion.schedule);
-
-      toast({
-        title: "HOUSIE Optimization Complete",
-        description: `Suggested bid: $${suggestion.suggestedAmount} for ${suggestion.totalHours} hours`,
       });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data?.success) {
+        // Update the schedule with Annette's suggestions
+        setProposedSchedule(data.crew_schedule || {});
+        
+        // Update revenue split with Annette's suggestions
+        if (data.revenue_split) {
+          const newSplit: { [memberId: string]: number } = {};
+          Object.entries(data.revenue_split).forEach(([userId, percentage]) => {
+            newSplit[userId] = Math.round((percentage as number) * 100);
+          });
+          setRevenueSplit(newSplit);
+        }
+
+        // Show Annette's summary
+        toast({
+          title: "Annette Optimization Complete",
+          description: data.summary || "Your crew schedule has been optimized.",
+        });
+      } else {
+        throw new Error(data?.error || "Optimization failed");
+      }
     } catch (error) {
-      console.error('Error optimizing with HOUSIE:', error);
+      console.error('Error optimizing with Annette:', error);
       toast({
         title: "Optimization Failed",
-        description: "Unable to get HOUSIE suggestions. Please set manually.",
+        description: "Annette couldn't optimize the schedule. Please set manually.",
         variant: "destructive"
       });
     } finally {
@@ -363,19 +393,19 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
             <div>
               <Button
                 variant="outline"
-                onClick={optimizeWithHousie}
-                disabled={housieOptimizing}
+                onClick={optimizeWithAnnette}
+                disabled={housieOptimizing || Object.keys(roleAssignments).length === 0}
                 className="w-full"
               >
                 {housieOptimizing ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary mr-2"></div>
-                    Optimizing...
+                    Annette is planning your schedule...
                   </>
                 ) : (
                   <>
                     <Brain className="h-4 w-4 mr-2" />
-                    Optimize with HOUSIE
+                    Optimize with Annette
                   </>
                 )}
               </Button>
@@ -384,20 +414,38 @@ const OpportunityBidPlanner: React.FC<OpportunityBidPlannerProps> = ({
 
           {/* Proposed Schedule */}
           <div>
-            <Label htmlFor="schedule">Proposed Schedule (Optional)</Label>
-            <Textarea
-              id="schedule"
-              value={JSON.stringify(proposedSchedule, null, 2)}
-              onChange={(e) => {
-                try {
-                  setProposedSchedule(JSON.parse(e.target.value));
-                } catch {
-                  // Invalid JSON, keep as string for now
-                }
-              }}
-              placeholder="Enter schedule details..."
-              className="min-h-[100px]"
-            />
+            <Label htmlFor="schedule">Proposed Schedule</Label>
+            {Array.isArray(proposedSchedule) && proposedSchedule.length > 0 ? (
+              <div className="space-y-2 p-4 border rounded-lg bg-muted/50">
+                <div className="text-sm font-medium text-muted-foreground">Annette's Schedule:</div>
+                {proposedSchedule.map((item: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between p-2 bg-background rounded">
+                    <div className="flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-muted-foreground" />
+                      <span className="font-medium">{item.member}</span>
+                      <Badge variant="outline" className="text-xs">{item.role}</Badge>
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {item.start} - {item.end}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <Textarea
+                id="schedule"
+                value={typeof proposedSchedule === 'object' ? JSON.stringify(proposedSchedule, null, 2) : proposedSchedule}
+                onChange={(e) => {
+                  try {
+                    setProposedSchedule(JSON.parse(e.target.value));
+                  } catch {
+                    setProposedSchedule(e.target.value);
+                  }
+                }}
+                placeholder="Enter schedule details or use Annette optimization..."
+                className="min-h-[100px]"
+              />
+            )}
           </div>
 
           {/* Bid Message */}
