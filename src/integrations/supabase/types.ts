@@ -850,6 +850,68 @@ export type Database = {
           },
         ]
       }
+      crew_members: {
+        Row: {
+          crew_id: string
+          id: string
+          joined_at: string
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          crew_id: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          crew_id?: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "crew_members_crew_id_fkey"
+            columns: ["crew_id"]
+            isOneToOne: false
+            referencedRelation: "crews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      crews: {
+        Row: {
+          captain_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          captain_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          captain_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       emergency_actions_log: {
         Row: {
           action_details: Json | null
@@ -1487,6 +1549,160 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunities: {
+        Row: {
+          accepted_crew_id: string | null
+          achievement_requirements: Json
+          created_at: string
+          crew_bid_deadline: string
+          customer_id: string
+          description: string
+          full_address: string
+          id: string
+          location_summary: string
+          preferred_date: string
+          required_services: Json
+          status: Database["public"]["Enums"]["opportunity_status"]
+          time_window_end: string
+          time_window_start: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          accepted_crew_id?: string | null
+          achievement_requirements?: Json
+          created_at?: string
+          crew_bid_deadline: string
+          customer_id: string
+          description: string
+          full_address: string
+          id?: string
+          location_summary: string
+          preferred_date: string
+          required_services?: Json
+          status?: Database["public"]["Enums"]["opportunity_status"]
+          time_window_end: string
+          time_window_start: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          accepted_crew_id?: string | null
+          achievement_requirements?: Json
+          created_at?: string
+          crew_bid_deadline?: string
+          customer_id?: string
+          description?: string
+          full_address?: string
+          id?: string
+          location_summary?: string
+          preferred_date?: string
+          required_services?: Json
+          status?: Database["public"]["Enums"]["opportunity_status"]
+          time_window_end?: string
+          time_window_start?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_accepted_crew_id_fkey"
+            columns: ["accepted_crew_id"]
+            isOneToOne: false
+            referencedRelation: "crews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunity_crew_bids: {
+        Row: {
+          crew_id: string
+          id: string
+          message: string | null
+          opportunity_id: string
+          proposed_schedule: Json
+          revenue_split: Json
+          status: Database["public"]["Enums"]["bid_status"]
+          submitted_at: string
+          total_bid_amount: number
+          updated_at: string
+        }
+        Insert: {
+          crew_id: string
+          id?: string
+          message?: string | null
+          opportunity_id: string
+          proposed_schedule?: Json
+          revenue_split?: Json
+          status?: Database["public"]["Enums"]["bid_status"]
+          submitted_at?: string
+          total_bid_amount: number
+          updated_at?: string
+        }
+        Update: {
+          crew_id?: string
+          id?: string
+          message?: string | null
+          opportunity_id?: string
+          proposed_schedule?: Json
+          revenue_split?: Json
+          status?: Database["public"]["Enums"]["bid_status"]
+          submitted_at?: string
+          total_bid_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_crew_bids_crew_id_fkey"
+            columns: ["crew_id"]
+            isOneToOne: false
+            referencedRelation: "crews"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "opportunity_crew_bids_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      opportunity_service_slots: {
+        Row: {
+          created_at: string
+          id: string
+          opportunity_id: string
+          required_achievement: string | null
+          service_type: string
+          title: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          opportunity_id: string
+          required_achievement?: string | null
+          service_type: string
+          title?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          opportunity_id?: string
+          required_achievement?: string | null
+          service_type?: string
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_service_slots_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "opportunities"
             referencedColumns: ["id"]
           },
         ]
@@ -3025,12 +3241,20 @@ export type Database = {
         | "customer_service"
         | "loyalty"
       achievement_tier: "bronze" | "silver" | "gold" | "platinum" | "diamond"
+      bid_status: "pending" | "accepted" | "rejected" | "withdrawn"
       leaderboard_type:
         | "weekly_earnings"
         | "monthly_bookings"
         | "customer_rating"
         | "response_time"
         | "territory_control"
+      opportunity_status:
+        | "open"
+        | "bidding"
+        | "assigned"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
       professional_license_type:
         | "rmt"
         | "physio"
@@ -3178,12 +3402,21 @@ export const Constants = {
         "loyalty",
       ],
       achievement_tier: ["bronze", "silver", "gold", "platinum", "diamond"],
+      bid_status: ["pending", "accepted", "rejected", "withdrawn"],
       leaderboard_type: [
         "weekly_earnings",
         "monthly_bookings",
         "customer_rating",
         "response_time",
         "territory_control",
+      ],
+      opportunity_status: [
+        "open",
+        "bidding",
+        "assigned",
+        "in_progress",
+        "completed",
+        "cancelled",
       ],
       professional_license_type: [
         "rmt",

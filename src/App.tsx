@@ -41,6 +41,9 @@ import ClusterCreate from './pages/clusters/ClusterCreate';
 import ClusterView from './pages/clusters/ClusterView';
 import ClusterDashboard from './pages/clusters/ClusterDashboard';
 import ProviderBids from './pages/clusters/ProviderBids';
+import OpportunityList from './pages/opportunities/OpportunityList';
+import OpportunityCreate from './pages/opportunities/OpportunityCreate';
+import OpportunityDetail from './pages/opportunities/OpportunityDetail';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -102,6 +105,9 @@ function App() {
                   <Route path="/clusters/:id" element={<ClusterView />} />
                   <Route path="/clusters" element={<ClusterDashboard />} />
                   <Route path="/bids" element={<ProviderBids />} />
+                  <Route path="/opportunities" element={<OpportunityList />} />
+                  <Route path="/opportunities/new" element={<OpportunityCreate />} />
+                  <Route path="/opportunities/:id" element={<OpportunityDetail />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                               </ConditionalSpacingWrapper>
