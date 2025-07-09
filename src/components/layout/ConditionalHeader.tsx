@@ -12,8 +12,8 @@ const ConditionalHeader = () => {
     '/competitive-advantage',
     '/help',
     '/help-center',
-    '/services',
-    '/pricing'  // Added pricing page to keep header
+    '/services'
+    // Removed '/pricing' since it has its own header handling
   ];
   
   const shouldShowHeader = pagesWithHeader.some(path => {

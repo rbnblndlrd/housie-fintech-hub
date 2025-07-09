@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -38,7 +37,8 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  ArrowRight
+  ArrowRight,
+  Sparkles
 } from 'lucide-react';
 
 const UserMenu = () => {
@@ -94,11 +94,11 @@ const UserMenu = () => {
   const getSubscriptionIcon = (tier: string) => {
     switch (tier.toLowerCase()) {
       case 'premium':
-        return <Crown className="h-4 w-4 text-blue-200" />;
-      case 'pro':
-        return <Star className="h-4 w-4 text-yellow-200" />;
+        return <Crown className="h-4 w-4 text-purple-200" />;
+      case 'professional':
+        return <Sparkles className="h-4 w-4 text-yellow-200" />;
       case 'starter':
-        return <Zap className="h-4 w-4 text-gray-200" />;
+        return <Star className="h-4 w-4 text-gray-300" />;
       case 'admin':
         return <Shield className="h-4 w-4 text-red-200" />;
       default:
@@ -109,31 +109,38 @@ const UserMenu = () => {
   const getSubscriptionGradient = (tier: string) => {
     switch (tier.toLowerCase()) {
       case 'premium':
-        return 'from-blue-600 via-blue-700 to-indigo-800'; // Diamond
-      case 'pro':
-        return 'from-yellow-500 via-yellow-600 to-amber-700'; // Gold
+        return 'from-purple-600 via-purple-700 to-indigo-800 shadow-purple-500/50'; // Diamond - shiny purple
+      case 'professional':
+        return 'from-yellow-400 via-yellow-500 to-amber-600 shadow-yellow-500/50'; // Gold - shiny gold
       case 'starter':
-        return 'from-gray-400 via-gray-500 to-gray-600'; // Silver
+        return 'from-gray-400 via-gray-500 to-slate-600 shadow-gray-500/30'; // Silver
       case 'admin':
-        return 'from-red-600 via-red-700 to-red-800'; // Special admin
+        return 'from-red-600 via-red-700 to-red-800 shadow-red-500/50'; // Special admin
       default:
-        return 'from-amber-600 via-amber-700 to-orange-800'; // Bronze (free)
+        return 'from-amber-600 via-orange-600 to-orange-700 shadow-orange-500/30'; // Bronze (free)
     }
   };
 
   const getSubscriptionLabel = (tier: string) => {
     switch (tier.toLowerCase()) {
       case 'premium':
-        return 'Premium Plan';
-      case 'pro':
-        return 'Pro Plan';
+        return 'Premium Plan (Diamond)';
+      case 'professional':
+        return 'Professional Plan (Gold)';
       case 'starter':
-        return 'Starter Plan';
+        return 'Starter Plan (Silver)';
       case 'admin':
         return 'Admin Access';
       default:
-        return 'Free Plan';
+        return 'Free Plan (Bronze)';
     }
+  };
+
+  const getShinyEffect = (tier: string) => {
+    if (tier.toLowerCase() === 'premium' || tier.toLowerCase() === 'professional') {
+      return 'before:absolute before:inset-0 before:bg-gradient-to-r before:from-transparent before:via-white/20 before:to-transparent before:translate-x-[-100%] hover:before:translate-x-[100%] before:transition-transform before:duration-700 relative overflow-hidden';
+    }
+    return '';
   };
 
   const getStatusIcon = (status: string) => {
@@ -177,7 +184,7 @@ const UserMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl z-50 fintech-card" align="end" forceMount>
         {/* User Info Section with Subscription-Based Gradient Header */}
-        <div className={`p-4 bg-gradient-to-r ${getSubscriptionGradient(subscriptionData.subscription_tier)} rounded-t-lg mb-2`}>
+        <div className={`p-4 bg-gradient-to-r ${getSubscriptionGradient(subscriptionData.subscription_tier)} rounded-t-lg mb-2 shadow-lg ${getShinyEffect(subscriptionData.subscription_tier)}`}>
           <div className="flex items-center gap-3">
             <div className="h-12 w-12 flex items-center justify-center bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
               <UserRound className="h-6 w-6 text-white" />
@@ -195,7 +202,7 @@ const UserMenu = () => {
           
           {/* Subscription Info Row */}
           <div 
-            className="mt-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 cursor-pointer hover:bg-white/15 transition-all duration-200 group"
+            className={`mt-3 p-3 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 cursor-pointer hover:bg-white/15 transition-all duration-200 group ${getShinyEffect(subscriptionData.subscription_tier)}`}
             onClick={() => navigate('/pricing')}
           >
             <div className="flex items-center justify-between">
