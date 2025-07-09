@@ -182,7 +182,7 @@ const UserMenu = () => {
           <ChevronDown className="h-4 w-4 text-gray-300" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-80 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-slate-700 shadow-2xl z-50 fintech-card" align="end" forceMount>
+      <DropdownMenuContent className="w-80 bg-slate-900 border-slate-700 shadow-2xl z-50 fintech-card" align="end" forceMount>
         {/* User Info Section with Subscription-Based Gradient Header */}
         <div className={`p-4 bg-gradient-to-r ${getSubscriptionGradient(subscriptionData.subscription_tier)} rounded-t-lg mb-2 shadow-lg ${getShinyEffect(subscriptionData.subscription_tier)}`}>
           <div className="flex items-center gap-3">
