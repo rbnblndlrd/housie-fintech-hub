@@ -532,6 +532,183 @@ export type Database = {
         }
         Relationships: []
       }
+      cluster_bids: {
+        Row: {
+          bid_amount: number
+          cluster_id: string
+          created_at: string
+          id: string
+          message: string | null
+          provider_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          bid_amount: number
+          cluster_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          provider_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          bid_amount?: number
+          cluster_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          provider_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cluster_bids_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cluster_participants: {
+        Row: {
+          cluster_id: string
+          display_name: string
+          id: string
+          joined_at: string
+          preferred_time_blocks: string[] | null
+          special_instructions: string | null
+          unit_id: string | null
+          user_id: string
+        }
+        Insert: {
+          cluster_id: string
+          display_name: string
+          id?: string
+          joined_at?: string
+          preferred_time_blocks?: string[] | null
+          special_instructions?: string | null
+          unit_id?: string | null
+          user_id: string
+        }
+        Update: {
+          cluster_id?: string
+          display_name?: string
+          id?: string
+          joined_at?: string
+          preferred_time_blocks?: string[] | null
+          special_instructions?: string | null
+          unit_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cluster_participants_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cluster_time_blocks: {
+        Row: {
+          block_name: string
+          cluster_id: string
+          created_at: string
+          end_time: string
+          id: string
+          preference_count: number
+          start_time: string
+        }
+        Insert: {
+          block_name: string
+          cluster_id: string
+          created_at?: string
+          end_time: string
+          id?: string
+          preference_count?: number
+          start_time: string
+        }
+        Update: {
+          block_name?: string
+          cluster_id?: string
+          created_at?: string
+          end_time?: string
+          id?: string
+          preference_count?: number
+          start_time?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cluster_time_blocks_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clusters: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          location: string
+          max_participants: number
+          min_participants: number
+          neighborhood: string | null
+          organizer_id: string
+          participant_count: number
+          requires_verification: boolean
+          service_type: string
+          share_code: string
+          status: string
+          target_participants: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location: string
+          max_participants?: number
+          min_participants?: number
+          neighborhood?: string | null
+          organizer_id: string
+          participant_count?: number
+          requires_verification?: boolean
+          service_type: string
+          share_code?: string
+          status?: string
+          target_participants?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          location?: string
+          max_participants?: number
+          min_participants?: number
+          neighborhood?: string | null
+          organizer_id?: string
+          participant_count?: number
+          requires_verification?: boolean
+          service_type?: string
+          share_code?: string
+          status?: string
+          target_participants?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       conversations: {
         Row: {
           booking_id: string | null
