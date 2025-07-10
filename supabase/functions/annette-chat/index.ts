@@ -175,27 +175,32 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
     const inputText = JSON.stringify(messages);
     const estimatedInputTokens = estimateTokens(inputText);
 
-    // Call Anthropic Claude API
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'x-api-key': anthropicApiKey,
-        'Content-Type': 'application/json',
-        'anthropic-version': '2023-06-01'
-      },
-      body: JSON.stringify({
-        model: 'claude-3-5-sonnet-20241022',
-        max_tokens: 500,
-        messages: messages
-      }),
-    });
+    // Call OpenAI API
+   const openaiApiKey = Deno.env.get('OPENAI_KEY');
 
-    if (!response.ok) {
-      throw new Error(`Anthropic API error: ${response.status}`);
-    }
+const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+  method: 'POST',
+  headers: {
+    'Authorization': `Bearer ${openaiApiKey}`,
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    model: 'gpt-4o', // You can also use 'gpt-4-turbo'
+    messages: [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: message }
+    ],
+    max_tokens: 500,
+    temperature: 0.7
+  })
+});
 
-    const data = await response.json();
-    const annetteResponse = data.content[0].text;
+if (!openaiResponse.ok) {
+  throw new Error(`OpenAI API error: ${openaiResponse.status}`);
+}
+
+const openaiData = await openaiResponse.json();
+const annetteResponse = openaiData.choices[0].message.content;
 
     // Estimate output tokens and total cost
     const estimatedOutputTokens = estimateTokens(annetteResponse);
