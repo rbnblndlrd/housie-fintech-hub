@@ -1018,6 +1018,7 @@ export type Database = {
           activated_at: string | null
           activated_by: string | null
           allowed_payment_methods: string[] | null
+          annette_api_enabled: boolean | null
           blocked_countries: string[] | null
           bookings_paused: boolean | null
           claude_access_enabled: boolean | null
@@ -1052,6 +1053,7 @@ export type Database = {
           activated_at?: string | null
           activated_by?: string | null
           allowed_payment_methods?: string[] | null
+          annette_api_enabled?: boolean | null
           blocked_countries?: string[] | null
           bookings_paused?: boolean | null
           claude_access_enabled?: boolean | null
@@ -1086,6 +1088,7 @@ export type Database = {
           activated_at?: string | null
           activated_by?: string | null
           allowed_payment_methods?: string[] | null
+          annette_api_enabled?: boolean | null
           blocked_countries?: string[] | null
           bookings_paused?: boolean | null
           claude_access_enabled?: boolean | null
@@ -3199,6 +3202,7 @@ export type Database = {
           activated_at: string | null
           activated_by: string | null
           allowed_payment_methods: string[] | null
+          annette_api_enabled: boolean | null
           blocked_countries: string[] | null
           bookings_paused: boolean | null
           claude_access_enabled: boolean | null
