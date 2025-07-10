@@ -216,3 +216,6 @@ verify_jwt = false
 
 [functions.annette-chat]
 verify_jwt = true
+
+[functions.admin-give-credits]
+verify_jwt = false

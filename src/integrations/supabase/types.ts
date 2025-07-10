@@ -3258,6 +3258,10 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: string
       }
+      grant_test_credits: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
+      }
       increment_network_connections: {
         Args: { p_provider_user_id: string; p_customer_user_id: string }
         Returns: undefined

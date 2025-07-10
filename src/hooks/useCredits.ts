@@ -201,6 +201,27 @@ export const useCredits = () => {
     }
   };
 
+  // Quick admin function to get test credits
+  const getTestCredits = async () => {
+    if (!user) return false;
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-give-credits', {
+        body: { email: user.email, credits: 50 }
+      });
+      
+      if (error) throw error;
+      
+      await fetchCredits();
+      toast.success('Added 50 test credits!');
+      return true;
+    } catch (error) {
+      console.error('Error getting test credits:', error);
+      toast.error('Failed to get test credits');
+      return false;
+    }
+  };
+
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
@@ -221,6 +242,7 @@ export const useCredits = () => {
     checkRateLimit,
     consumeCredits,
     addCredits,
+    getTestCredits,
     refreshCredits: fetchCredits
   };
 };
