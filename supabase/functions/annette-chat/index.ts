@@ -176,11 +176,13 @@ serve(async (req) => {
       );
     }
 
-    const openaiApiKey = Deno.env.get('OPENAI_KEY');
+    const openaiApiKey = Deno.env.get('ANNETTE_SECRET');
     
     if (!openaiApiKey) {
-      throw new Error('OpenAI API key not configured');
+      throw new Error('Annette OpenAI API key not configured');
     }
+
+    console.log("✅ Annette using OpenAI key from ANNETTE_SECRET");
 
     // Check emergency controls
     const { data: isEnabled, error: controlsError } = await supabase.rpc('is_annette_api_enabled');
