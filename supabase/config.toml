@@ -213,3 +213,6 @@ verify_jwt = true
 
 [functions.google-calendar-auth]
 verify_jwt = false
+
+[functions.annette-chat]
+verify_jwt = true

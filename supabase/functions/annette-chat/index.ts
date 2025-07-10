@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -21,7 +20,7 @@ interface ChatRequest {
     content: string;
   }>;
   context?: {
-    type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking';
+    type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking' | 'opportunities';
     data?: any;
   };
   pageContext?: {
@@ -196,10 +195,10 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
     }
 
     const data = await response.json();
-    const claudeResponse = data.content[0].text;
+    const annetteResponse = data.content[0].text;
 
     // Estimate output tokens and total cost
-    const estimatedOutputTokens = estimateTokens(claudeResponse);
+    const estimatedOutputTokens = estimateTokens(annetteResponse);
     const estimatedCost = estimateAPICost(estimatedInputTokens, estimatedOutputTokens);
 
     // Log API usage
@@ -210,7 +209,7 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
         session_id: sessionId,
         tokens_used: estimatedInputTokens + estimatedOutputTokens,
         estimated_cost: estimatedCost,
-        request_type: 'claude-chat',
+        request_type: 'annette-chat',
         status: 'success'
       });
 
@@ -245,7 +244,7 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
           session_id: sessionId,
           user_id: userId,
           message_type: 'assistant',
-          content: claudeResponse
+          content: annetteResponse
         }
       ]);
 
@@ -261,7 +260,7 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
 
     return new Response(
       JSON.stringify({ 
-        response: claudeResponse,
+        response: annetteResponse,
         success: true,
         credits_remaining: deductResult?.new_balance || 0,
         cost_info: {
@@ -275,7 +274,7 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
     );
 
   } catch (error) {
-    console.error('Error in claude-chat function:', error);
+    console.error('Error in annette-chat function:', error);
     
     // Log failed request
     try {
@@ -289,7 +288,7 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
           session_id: sessionId,
           tokens_used: 0,
           estimated_cost: 0,
-          request_type: 'claude-chat',
+          request_type: 'annette-chat',
           status: 'error'
         });
     } catch (logError) {

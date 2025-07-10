@@ -208,8 +208,8 @@ export const useClaudeChat = () => {
       // Determine response token limit based on user tier
       const maxTokens = rateLimitResult.daily_used !== undefined && feature?.is_free_tier ? 100 : 200;
 
-      // Call Claude API via Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke('claude-chat', {
+      // Call Annette API via Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('annette-chat', {
         body: {
           message: content.trim(),
           sessionId,

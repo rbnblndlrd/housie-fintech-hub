@@ -110,8 +110,8 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
     setIsLoading(true);
 
     try {
-      // Call Annette chat function (updated claude-chat)
-      const response = await supabase.functions.invoke('claude-chat', {
+      // Call Annette chat function
+      const response = await supabase.functions.invoke('annette-chat', {
         body: {
           message: content,
           sessionId,
