@@ -52,49 +52,72 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, sessionId, userId, conversationHistory = [], context, pageContext, featureType, creditsUsed }: ChatRequest = await req.json();
+    
+    // 📦 Step 1: Log raw request before parsing
+    let rawBody = '';
+    try {
+      rawBody = await req.text();
+      console.log('📦 Raw incoming request body:', rawBody);
+    } catch (e) {
+      console.error('❌ Failed to read request body:', e);
+      return new Response(JSON.stringify({ error: 'Malformed request' }), { 
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
 
-    // Map context type to appropriate action name for credit deduction
-    let actionName = 'basic_customer_support';
+    // 🔧 Step 2: Parse JSON safely and catch errors
+    let parsed: ChatRequest;
+    try {
+      parsed = JSON.parse(rawBody);
+    } catch (e) {
+      console.error('❌ Failed to parse JSON from request body:', {
+        error: e,
+        rawBody,
+      });
+      return new Response(JSON.stringify({ error: 'Invalid JSON format' }), { 
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+      });
+    }
+
+    // 🔧 Step 3: Destructure fields and log them
+    const {
+      message,
+      sessionId,
+      userId,
+      conversationHistory = [],
+      context,
+      pageContext,
+      featureType,
+      creditsUsed,
+    } = parsed;
+
+    console.log('🧠 Parsed Annette Input:', {
+      message,
+      userId,
+      context,
+      featureType,
+      contextType: context?.type,
+    });
+
+    // 💡 Automatic fallback for actionName
+    const actionName = featureType ?? context?.type ?? 'basic_customer_support';
     let creditAmount = 1;
     
-    if (featureType) {
-      actionName = featureType;
-      // Set credit amounts based on feature complexity
-      switch (featureType) {
-        case 'route_optimization':
-          creditAmount = 3;
-          break;
-        case 'business_insights':
-          creditAmount = 2;
-          break;
-        case 'advanced_scheduling':
-          creditAmount = 2;
-          break;
-        default:
-          creditAmount = 1;
-      }
-    } else if (context?.type) {
-      // Fallback context mapping
-      switch (context.type) {
-        case 'route':
-          actionName = 'route_optimization';
-          creditAmount = 3;
-          break;
-        case 'bid':
-        case 'opportunities':
-          actionName = 'business_insights';
-          creditAmount = 2;
-          break;
-        case 'profile':
-        case 'cluster':
-          actionName = 'advanced_scheduling';
-          creditAmount = 2;
-          break;
-        default:
-          actionName = 'basic_customer_support';
-          creditAmount = 1;
-      }
+    // Set credit amounts based on the determined action name
+    switch (actionName) {
+      case 'route_optimization':
+        creditAmount = 3;
+        break;
+      case 'business_insights':
+        creditAmount = 2;
+        break;
+      case 'advanced_scheduling':
+        creditAmount = 2;
+        break;
+      default:
+        creditAmount = 1;
     }
 
     // 🔍 Annette Credit Debug Logging
