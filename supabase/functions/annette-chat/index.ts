@@ -279,34 +279,53 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
     const inputText = JSON.stringify(messages);
     const estimatedInputTokens = estimateTokens(inputText);
 
-    // Call OpenAI API with proper message structure
-    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openaiApiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o',
-        messages: messages,
-        max_tokens: 500,
-        temperature: 0.7
-      })
-    });
+    console.log("📡 Sending OpenAI request with messages:", messages.length, "messages");
 
-    if (!openaiResponse.ok) {
-      throw new Error(`OpenAI API error: ${openaiResponse.status}`);
-    }
+    let annetteResponse: string;
+    
+    try {
+      // Call OpenAI API with proper message structure
+      const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${openaiApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o',
+          messages: messages,
+          max_tokens: 500,
+          temperature: 0.7
+        })
+      });
 
-    const openaiData = await openaiResponse.json();
-    
-    // Add safety guard for response structure
-    if (!openaiData?.choices?.[0]?.message?.content) {
-      console.error('🧨 OpenAI response malformed:', openaiData);
-      throw new Error('AI response format invalid');
+      if (!openaiResponse.ok) {
+        const errorText = await openaiResponse.text();
+        console.error('🚨 OpenAI API error:', openaiResponse.status, errorText);
+        throw new Error(`OpenAI API error: ${openaiResponse.status} - ${errorText}`);
+      }
+
+      const openaiData = await openaiResponse.json();
+      console.log("📬 Received OpenAI response:", JSON.stringify(openaiData, null, 2));
+      
+      // Add safety guard for response structure
+      if (!openaiData?.choices?.[0]?.message?.content) {
+        console.error('🧨 OpenAI response malformed:', openaiData);
+        throw new Error('AI response format invalid - no content in choices');
+      }
+      
+      annetteResponse = openaiData.choices[0].message.content;
+      
+    } catch (openaiError) {
+      console.error("💥 Annette AI crash:", {
+        error: openaiError.message,
+        stack: openaiError.stack,
+        inputMessages: messages.length
+      });
+
+      // Return a safe fallback response instead of crashing
+      annetteResponse = "I'm sorry, I'm experiencing technical difficulties right now. Please try your question again in a moment. If the problem persists, our support team can help you.";
     }
-    
-    const annetteResponse = openaiData.choices[0].message.content;
 
     // Estimate output tokens and total cost
     const estimatedOutputTokens = estimateTokens(annetteResponse);
