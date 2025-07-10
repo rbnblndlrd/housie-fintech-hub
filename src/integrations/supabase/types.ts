@@ -3141,6 +3141,10 @@ export type Database = {
         }
         Returns: Json
       }
+      admin_give_credits: {
+        Args: { target_user_id: string; credit_amount: number }
+        Returns: undefined
+      }
       award_community_rating_points: {
         Args: { p_user_id: string; p_points: number; p_reason: string }
         Returns: undefined
