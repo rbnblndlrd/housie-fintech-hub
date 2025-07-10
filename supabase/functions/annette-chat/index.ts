@@ -31,9 +31,9 @@ interface ChatRequest {
 
 // Estimate API cost based on token usage (approximate)
 const estimateAPICost = (inputTokens: number, outputTokens: number): number => {
-  // Claude 3.5 Sonnet pricing: $3 per 1M input tokens, $15 per 1M output tokens
-  const inputCost = (inputTokens / 1000000) * 3;
-  const outputCost = (outputTokens / 1000000) * 15;
+  // OpenAI GPT-4o pricing: $2.50 per 1M input tokens, $10 per 1M output tokens
+  const inputCost = (inputTokens / 1000000) * 2.50;
+  const outputCost = (outputTokens / 1000000) * 10;
   return inputCost + outputCost;
 };
 
@@ -76,8 +76,10 @@ serve(async (req) => {
       );
     }
 
-    if (!anthropicApiKey) {
-      throw new Error('Anthropic API key not configured');
+    const openaiApiKey = Deno.env.get('OPENAI_KEY');
+    
+    if (!openaiApiKey) {
+      throw new Error('OpenAI API key not configured');
     }
 
     // Check emergency controls
@@ -174,8 +176,7 @@ ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help wit
     const inputText = JSON.stringify(messages);
     const estimatedInputTokens = estimateTokens(inputText);
 
-    // Call OpenAI API
-   const openaiApiKey = Deno.env.get('OPENAI_KEY');
+    // Call OpenAI API (openaiApiKey already defined above)
 
 const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
   method: 'POST',
