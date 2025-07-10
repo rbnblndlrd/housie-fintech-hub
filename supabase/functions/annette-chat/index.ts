@@ -265,42 +265,48 @@ Key guidelines:
 
 ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help with any HOUSIE-related questions.'}`;
 
-    // Build conversation content safely
-    const conversationContent = `${systemPrompt}\n\nConversation history:\n${JSON.stringify(conversationHistory, null, 2)}\n\nUser message: ${message}`;
-
+    // Build proper message history for OpenAI
     const messages = [
-      { role: 'user', content: conversationContent }
+      { role: 'system', content: systemPrompt },
+      ...conversationHistory.map(entry => ({
+        role: entry.role,
+        content: entry.content
+      })),
+      { role: 'user', content: message }
     ];
 
     // Estimate input tokens
     const inputText = JSON.stringify(messages);
     const estimatedInputTokens = estimateTokens(inputText);
 
-    // Call OpenAI API (openaiApiKey already defined above)
+    // Call OpenAI API with proper message structure
+    const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${openaiApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-4o',
+        messages: messages,
+        max_tokens: 500,
+        temperature: 0.7
+      })
+    });
 
-const openaiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
-  method: 'POST',
-  headers: {
-    'Authorization': `Bearer ${openaiApiKey}`,
-    'Content-Type': 'application/json'
-  },
-  body: JSON.stringify({
-    model: 'gpt-4o', // You can also use 'gpt-4-turbo'
-    messages: [
-      { role: 'system', content: systemPrompt },
-      { role: 'user', content: message }
-    ],
-    max_tokens: 500,
-    temperature: 0.7
-  })
-});
+    if (!openaiResponse.ok) {
+      throw new Error(`OpenAI API error: ${openaiResponse.status}`);
+    }
 
-if (!openaiResponse.ok) {
-  throw new Error(`OpenAI API error: ${openaiResponse.status}`);
-}
-
-const openaiData = await openaiResponse.json();
-const annetteResponse = openaiData.choices[0].message.content;
+    const openaiData = await openaiResponse.json();
+    
+    // Add safety guard for response structure
+    if (!openaiData?.choices?.[0]?.message?.content) {
+      console.error('🧨 OpenAI response malformed:', openaiData);
+      throw new Error('AI response format invalid');
+    }
+    
+    const annetteResponse = openaiData.choices[0].message.content;
 
     // Estimate output tokens and total cost
     const estimatedOutputTokens = estimateTokens(annetteResponse);
