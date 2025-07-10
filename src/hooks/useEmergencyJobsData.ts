@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface EmergencyJob {
   id: string;
@@ -26,6 +27,7 @@ interface LiveStats {
 }
 
 export const useEmergencyJobsData = () => {
+  const { user } = useAuth();
   const [emergencyJobs, setEmergencyJobs] = useState<EmergencyJob[]>([]);
   const [liveStats, setLiveStats] = useState<LiveStats>({
     activeZones: 0,
@@ -171,23 +173,66 @@ export const useEmergencyJobsData = () => {
     try {
       console.log('Accepting emergency job:', jobId);
       
-      // Update the booking status to accepted
-      const { error } = await supabase
+      if (!user) {
+        console.error('User not authenticated');
+        return false;
+      }
+
+      // Find the job to get details for test records
+      const selectedJob = emergencyJobs.find(job => job.id === jobId);
+      
+      // Get provider profile ID for the current user
+      const { data: providerProfile } = await supabase
+        .from('provider_profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (!providerProfile) {
+        console.error('Provider profile not found for user');
+        return false;
+      }
+      
+      // Update the booking status to accepted and assign provider
+      const { error: updateError } = await supabase
         .from('bookings')
         .update({ 
           status: 'confirmed', 
-          accepted_at: new Date().toISOString() 
+          accepted_at: new Date().toISOString(),
+          provider_id: providerProfile.id
         })
         .eq('id', jobId);
 
-      if (error) {
-        console.error('Failed to accept emergency job:', error);
+      if (updateError) {
+        console.error('Failed to accept emergency job:', updateError);
         return false;
+      }
+
+      // Create test transaction record for analytics
+      if (selectedJob) {
+        const { error: transactionError } = await supabase
+          .from('point_transactions')
+          .insert({
+            user_id: user.id,
+            points_amount: Math.floor(selectedJob.total_amount / 10), // Convert dollars to points
+            reason: `Job accepted: ${selectedJob.title}`,
+            transaction_type: 'earned',
+            metadata: { 
+              job_id: jobId,
+              test_earnings: selectedJob.total_amount,
+              is_test: true 
+            }
+          });
+
+        if (transactionError) {
+          console.warn('Failed to create test transaction:', transactionError);
+          // Don't fail the whole operation for test data
+        }
       }
       
       // Remove from the list immediately for better UX
       setEmergencyJobs(prev => prev.filter(job => job.id !== jobId));
-      console.log('Emergency job accepted successfully');
+      console.log('Emergency job accepted successfully with provider assigned');
       return true;
     } catch (error) {
       console.error('Failed to accept emergency job:', error);
