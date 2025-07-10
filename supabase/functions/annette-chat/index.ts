@@ -97,6 +97,19 @@ serve(async (req) => {
       }
     }
 
+    // 🔍 Annette Credit Debug Logging
+    console.log('🔍 Annette Credit Debug:', {
+      userId,
+      inputText: message,
+      contextType: context?.type,
+      featureType,
+      actionName,
+      creditAmount,
+      hasContext: !!context,
+      hasPageContext: !!pageContext,
+      conversationLength: conversationHistory.length
+    });
+
     // Deduct AI credits with proper action name and amount
     const { data: deductResult, error: deductError } = await supabase.rpc('deduct_ai_credits', {
       user_uuid: userId,
@@ -107,13 +120,31 @@ serve(async (req) => {
     });
 
     if (deductError || !deductResult?.success) {
+      console.error('🚨 Credit Deduction Failed:', {
+        error: deductError,
+        result: deductResult,
+        actionName,
+        creditAmount,
+        userId
+      });
+
+      let errorResponse = "I'm sorry, but you need at least 1 AI credit to chat with me.";
+      if (deductResult?.reason === 'insufficient_credits') {
+        errorResponse = `This ${actionName} feature requires ${creditAmount} credits, but you only have ${deductResult.current_balance || 0}. You can earn more credits by completing services, participating in clusters, or through daily grants.`;
+      } else if (deductError) {
+        errorResponse = `Unable to process your request: ${deductError.message}. Please try again.`;
+      }
+
       return new Response(
         JSON.stringify({ 
           error: 'Insufficient credits',
-          response: deductResult?.reason === 'insufficient_credits' 
-            ? "I'm sorry, but you need at least 1 AI credit to chat with me. You can earn more credits by completing services, participating in clusters, or through daily grants."
-            : "Unable to process your request right now. Please try again.",
-          success: false
+          response: errorResponse,
+          success: false,
+          debug: {
+            actionName,
+            creditAmount,
+            reason: deductResult?.reason || deductError?.message
+          }
         }),
         {
           status: 402,

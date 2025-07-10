@@ -90,7 +90,16 @@ export const useAnnetteChat = () => {
 
   const sendMessage = useCallback(async (
     content: string, 
-    sessionId: string
+    sessionId: string,
+    context?: {
+      type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking' | 'opportunities';
+      data?: any;
+    },
+    pageContext?: {
+      pageType: string;
+      context: string;
+      annettePersonality: string;
+    }
   ) => {
     if (!user || !content.trim()) return;
 
@@ -186,6 +195,8 @@ export const useAnnetteChat = () => {
           sessionId,
           userId: user.id,
           conversationHistory,
+          context,
+          pageContext,
           featureType,
           maxTokens,
           creditsUsed: creditsConsumed

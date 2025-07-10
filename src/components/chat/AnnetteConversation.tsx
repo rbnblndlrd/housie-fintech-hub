@@ -95,7 +95,7 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
     if (!content || isTyping) return;
 
     // Use the proper useAnnetteChat hook which handles credits, rate limiting, and emergency controls
-    await sendAnnetteMessage(content, sessionId);
+    await sendAnnetteMessage(content, sessionId, context, pageContext);
     setInputValue('');
     refreshCredits();
   };
