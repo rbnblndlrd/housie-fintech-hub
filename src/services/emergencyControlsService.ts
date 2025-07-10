@@ -19,7 +19,7 @@ export class EmergencyControlsService {
 
     if (data) {
       console.log('✅ Emergency controls loaded:', data);
-      // Map existing fields to Claude API controls
+      // Map existing fields to Annette API controls
       const mappedData = {
         ...data,
         claude_api_killswitch: !data.claude_api_enabled,
@@ -89,7 +89,7 @@ export class EmergencyControlsService {
       activated_at: new Date().toISOString()
     };
     
-    // Map Claude API controls to existing database fields
+    // Map Annette API controls to existing database fields
     switch (controlName) {
       case 'claude_api_killswitch':
         updateData.claude_api_enabled = !value;
@@ -163,7 +163,7 @@ export class EmergencyControlsService {
       messaging_disabled: false,
       emergency_notification_active: false,
       provider_broadcast_active: false,
-      claude_api_enabled: true, // Restore Claude API
+      claude_api_enabled: true, // Restore Annette API
       deactivated_by: userId,
       deactivated_at: new Date().toISOString(),
       reason: reason || 'Normal operations restored'

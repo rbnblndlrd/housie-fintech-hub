@@ -15,7 +15,7 @@ export interface EmergencyControlsState {
   blocked_countries: string[];
   allowed_payment_methods: string[];
   
-  // Claude API Controls (mapping to existing fields)
+  // Annette API Controls (mapping to existing fields)
   claude_api_killswitch: boolean; // maps to !claude_api_enabled
   claude_api_rate_limiting: boolean; // derived from current_daily_spend vs daily_spend_limit
   claude_response_filtering: boolean; // frontend logic
@@ -30,7 +30,7 @@ export interface EmergencyControlsState {
   normal_operations: boolean;
   last_backup_triggered: string | null;
   
-  // Claude API existing fields
+  // Annette API existing fields
   claude_api_enabled?: boolean;
   daily_spend_limit?: number;
   current_daily_spend?: number;

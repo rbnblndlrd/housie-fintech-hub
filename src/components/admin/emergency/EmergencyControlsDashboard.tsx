@@ -79,7 +79,7 @@ const EmergencyControlsDashboard = () => {
                 </span>
                 <Badge variant="destructive">CRITICAL</Badge>
                 {controls.claude_api_killswitch && (
-                  <Badge variant="destructive" className="bg-red-700">CLAUDE API DOWN</Badge>
+                  <Badge variant="destructive" className="bg-red-700">ANNETTE API DOWN</Badge>
                 )}
               </div>
               <AlertDialog>
@@ -256,8 +256,8 @@ const EmergencyControlsDashboard = () => {
         </CardHeader>
         <CardContent className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <EmergencyControlCard
-            title="Claude API Killswitch"
-            description="Immediately disable all Claude API access platform-wide"
+            title="Annette API Killswitch"
+            description="Immediately disable all Annette API access platform-wide"
             icon={<Bot className="h-4 w-4" />}
             isActive={controls.claude_api_killswitch}
             onToggle={(reason) => updateControl('claude_api_killswitch', !controls.claude_api_killswitch, reason)}
@@ -269,7 +269,7 @@ const EmergencyControlsDashboard = () => {
           
           <EmergencyControlCard
             title="API Rate Limiting"
-            description="Enable aggressive rate limiting for Claude API"
+            description="Enable aggressive rate limiting for Annette API"
             icon={<Zap className="h-4 w-4" />}
             isActive={controls.claude_api_rate_limiting}
             onToggle={(reason) => updateControl('claude_api_rate_limiting', !controls.claude_api_rate_limiting, reason)}
@@ -293,7 +293,7 @@ const EmergencyControlsDashboard = () => {
           
           <EmergencyControlCard
             title="API Cost Monitor"
-            description="Monitor and control Claude API spending limits"
+            description="Monitor and control Annette API spending limits"
             icon={<DollarSign className="h-4 w-4" />}
             isActive={controls.claude_api_cost_monitor}
             onToggle={(reason) => updateControl('claude_api_cost_monitor', !controls.claude_api_cost_monitor, reason)}
@@ -394,7 +394,7 @@ const EmergencyControlsDashboard = () => {
                   <Badge className="bg-green-600 text-white">Operational</Badge>
                 </div>
                 <div className="flex justify-between text-xs">
-                  <span>Claude API:</span>
+                  <span>Annette API:</span>
                   <Badge className={controls.claude_api_killswitch ? "bg-red-600 text-white" : "bg-green-600 text-white"}>
                     {controls.claude_api_killswitch ? 'Disabled' : 'Active'}
                   </Badge>

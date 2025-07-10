@@ -3254,6 +3254,10 @@ export type Database = {
         Args: { p_provider_user_id: string; p_customer_user_id: string }
         Returns: undefined
       }
+      is_annette_api_enabled: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
       is_claude_api_enabled: {
         Args: Record<PropertyKey, never>
         Returns: boolean

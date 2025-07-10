@@ -50,10 +50,10 @@ export const useEmergencyControls = () => {
       );
       setControls(updatedControls);
       
-      // Special messaging for Claude API controls
-      const claudeControls = ['claude_api_killswitch', 'claude_api_rate_limiting', 'claude_response_filtering', 'claude_api_cost_monitor'];
-      if (claudeControls.includes(controlName)) {
-        toast.success(`Claude API ${controlName.replace('claude_api_', '').replace('_', ' ')} ${value ? 'activated' : 'deactivated'}`);
+      // Special messaging for Annette API controls
+      const annetteControls = ['claude_api_killswitch', 'claude_api_rate_limiting', 'claude_response_filtering', 'claude_api_cost_monitor'];
+      if (annetteControls.includes(controlName)) {
+        toast.success(`Annette API ${controlName.replace('claude_api_', '').replace('_', ' ')} ${value ? 'activated' : 'deactivated'}`);
       } else {
         toast.success(`Emergency control ${value ? 'activated' : 'deactivated'}`);
       }

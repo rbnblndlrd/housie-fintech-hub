@@ -82,7 +82,7 @@ serve(async (req) => {
     }
 
     // Check emergency controls
-    const { data: isEnabled, error: controlsError } = await supabase.rpc('is_claude_api_enabled');
+    const { data: isEnabled, error: controlsError } = await supabase.rpc('is_annette_api_enabled');
     
     if (controlsError) {
       console.error('Error checking emergency controls:', controlsError);

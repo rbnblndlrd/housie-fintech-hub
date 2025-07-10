@@ -74,7 +74,7 @@ export const useAnnetteChat = () => {
 
   const checkEmergencyControls = async (): Promise<boolean> => {
     try {
-      const { data, error } = await supabase.rpc('is_claude_api_enabled');
+      const { data, error } = await supabase.rpc('is_annette_api_enabled');
       
       if (error) {
         console.error('Error checking emergency controls:', error);
@@ -105,12 +105,12 @@ export const useAnnetteChat = () => {
           id: `system-${Date.now()}`,
           session_id: sessionId,
           message_type: 'assistant',
-          content: "🚫 **Claude AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
+          content: "🚫 **Annette AI is temporarily unavailable**\n\nOur AI assistant is currently disabled for maintenance or due to usage limits. Please try again later or contact our support team if you need immediate assistance.\n\n*This is an automated safety measure to ensure optimal service quality.*",
           created_at: new Date().toISOString()
         };
 
         setMessages(prev => [...prev, systemMessage]);
-        toast.error('Claude AI is temporarily unavailable');
+        toast.error('Annette AI is temporarily unavailable');
         return;
       }
 
