@@ -27,6 +27,9 @@ interface ChatRequest {
     context: string;
     annettePersonality: string;
   };
+  featureType?: string;
+  maxTokens?: number;
+  creditsUsed?: number;
 }
 
 // Estimate API cost based on token usage (approximate)
@@ -49,15 +52,58 @@ serve(async (req) => {
 
   try {
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
-    const { message, sessionId, userId, conversationHistory = [], context, pageContext }: ChatRequest = await req.json();
+    const { message, sessionId, userId, conversationHistory = [], context, pageContext, featureType, creditsUsed }: ChatRequest = await req.json();
 
-    // Deduct AI credits first
+    // Map context type to appropriate action name for credit deduction
+    let actionName = 'basic_customer_support';
+    let creditAmount = 1;
+    
+    if (featureType) {
+      actionName = featureType;
+      // Set credit amounts based on feature complexity
+      switch (featureType) {
+        case 'route_optimization':
+          creditAmount = 3;
+          break;
+        case 'business_insights':
+          creditAmount = 2;
+          break;
+        case 'advanced_scheduling':
+          creditAmount = 2;
+          break;
+        default:
+          creditAmount = 1;
+      }
+    } else if (context?.type) {
+      // Fallback context mapping
+      switch (context.type) {
+        case 'route':
+          actionName = 'route_optimization';
+          creditAmount = 3;
+          break;
+        case 'bid':
+        case 'opportunities':
+          actionName = 'business_insights';
+          creditAmount = 2;
+          break;
+        case 'profile':
+        case 'cluster':
+          actionName = 'advanced_scheduling';
+          creditAmount = 2;
+          break;
+        default:
+          actionName = 'basic_customer_support';
+          creditAmount = 1;
+      }
+    }
+
+    // Deduct AI credits with proper action name and amount
     const { data: deductResult, error: deductError } = await supabase.rpc('deduct_ai_credits', {
       user_uuid: userId,
-      amount: 1,
-      action_name: 'annette_chat',
+      amount: creditAmount,
+      action_name: actionName,
       result_text: null,
-      metadata_json: { sessionId, context: context || null }
+      metadata_json: { sessionId, context: context || null, feature: actionName }
     });
 
     if (deductError || !deductResult?.success) {

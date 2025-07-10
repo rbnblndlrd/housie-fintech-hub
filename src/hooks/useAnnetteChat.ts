@@ -167,37 +167,8 @@ export const useAnnetteChat = () => {
 
       setMessages(prev => [...prev, userMessage]);
 
-      // For paid features, consume credits before API call
+      // Note: Credit consumption is now handled by the backend annette-chat function
       let creditsConsumed = 0;
-      const feature = features.find(f => f.feature_name === featureType);
-      
-      if (feature && !feature.is_free_tier) {
-        const creditResult = await consumeCredits(featureType, 0, sessionId);
-        
-        if (!creditResult.success) {
-          let errorMessage = "Cannot process request. ";
-          
-          if (creditResult.reason === 'Insufficient credits') {
-            errorMessage += `This feature requires ${creditResult.required} credits, but you only have ${creditResult.available}. Please purchase more credits.`;
-          } else {
-            errorMessage += creditResult.reason;
-          }
-
-          const creditErrorMessage: AnnetteMessage = {
-            id: `credit-error-${Date.now()}`,
-            session_id: sessionId,
-            message_type: 'assistant',
-            content: `💳 **${errorMessage}**\n\n**Feature Pricing:**\n• ${feature?.description}: ${feature?.credit_cost} credits\n• Route Optimization: 3 credits\n• Business Insights: 2 credits\n\nPurchase credits to unlock these powerful AI features!`,
-            created_at: new Date().toISOString()
-          };
-
-          setMessages(prev => [...prev, creditErrorMessage]);
-          toast.error(errorMessage);
-          return;
-        }
-        
-        creditsConsumed = creditResult.credits_spent || 0;
-      }
 
       // Get conversation history for context
       const conversationHistory = messages.map(msg => ({
@@ -206,7 +177,7 @@ export const useAnnetteChat = () => {
       }));
 
       // Determine response token limit based on user tier
-      const maxTokens = rateLimitResult.daily_used !== undefined && feature?.is_free_tier ? 100 : 200;
+      const maxTokens = rateLimitResult.daily_used !== undefined && featureType === 'basic_customer_support' ? 100 : 200;
 
       // Call Annette API via Supabase Edge Function
       const { data, error } = await supabase.functions.invoke('annette-chat', {
