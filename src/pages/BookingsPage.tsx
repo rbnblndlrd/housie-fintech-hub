@@ -9,6 +9,7 @@ import DashboardNavigation from '@/components/dashboard/DashboardNavigation';
 import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
 import CalendarPreview from '@/components/calendar/CalendarPreview';
 import { ChatBubble } from '@/components/chat/ChatBubble';
+import { useBookings } from '@/hooks/useBookings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -18,40 +19,11 @@ const BookingsPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
+  const { bookings: upcomingBookings, loading } = useBookings();
 
   if (!user) {
     return null;
   }
-
-  const upcomingBookings = [
-    {
-      id: '1',
-      serviceName: 'Home Cleaning',
-      date: '2024-01-15',
-      time: '10:00 AM',
-      provider: 'CleanPro Services',
-      location: '123 Rue Saint-Catherine, Montreal',
-      status: 'confirmed'
-    },
-    {
-      id: '2',
-      serviceName: 'Plumbing Repair',
-      date: '2024-01-18',
-      time: '2:00 PM',
-      provider: 'Montreal Plumbers',
-      location: '456 Avenue Mont-Royal, Montreal',
-      status: 'pending'
-    },
-    {
-      id: '3',
-      serviceName: 'Electrical Work',
-      date: '2024-01-20',
-      time: '9:00 AM',
-      provider: 'Electric Solutions',
-      location: '789 Boulevard Saint-Laurent, Montreal',
-      status: 'confirmed'
-    }
-  ];
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -172,31 +144,42 @@ const BookingsPage = () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3 p-4">
-                    {upcomingBookings.map((booking) => (
-                      <div key={booking.id} className="fintech-inner-box p-3 hover:bg-gray-50 transition-colors">
-                        <div className="flex justify-between items-start mb-2">
-                          <h3 className="font-semibold text-black">{booking.serviceName}</h3>
-                          <Badge className={getStatusColor(booking.status)}>
-                            {booking.status}
-                          </Badge>
+                    {loading ? (
+                      <div className="text-center text-gray-500 py-4">Loading bookings...</div>
+                    ) : upcomingBookings.length === 0 ? (
+                      <div className="text-center text-gray-500 py-4">No bookings found</div>
+                    ) : (
+                      upcomingBookings.map((booking) => (
+                        <div key={booking.id} className="fintech-inner-box p-3 hover:bg-gray-50 transition-colors">
+                          <div className="flex justify-between items-start mb-2">
+                            <h3 className="font-semibold text-black">{booking.serviceName}</h3>
+                            <Badge className={getStatusColor(booking.status)}>
+                              {booking.status}
+                            </Badge>
+                          </div>
+                          
+                          <div className="space-y-1 text-sm text-gray-600">
+                            <div className="flex items-center gap-2">
+                              <Clock className="h-4 w-4" />
+                              {booking.date} at {booking.time}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4" />
+                              {booking.location}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <CheckCircle className="h-4 w-4" />
+                              {booking.provider}
+                            </div>
+                            {booking.total_amount && (
+                              <div className="text-sm font-medium text-green-600">
+                                ${booking.total_amount}
+                              </div>
+                            )}
+                          </div>
                         </div>
-                        
-                        <div className="space-y-1 text-sm text-gray-600">
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4" />
-                            {booking.date} at {booking.time}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4" />
-                            {booking.location}
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <CheckCircle className="h-4 w-4" />
-                            {booking.provider}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </CardContent>
                 </Card>
 
