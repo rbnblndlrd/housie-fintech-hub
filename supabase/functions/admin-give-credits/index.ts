@@ -35,16 +35,11 @@ serve(async (req) => {
       });
     }
     
-    // Give credits to user_credits table
-    const { error: creditsError } = await supabase
-      .from('user_credits')
-      .upsert({
-        user_id: user.id,
-        total_credits: credits,
-        used_credits: 0,
-        remaining_credits: credits,
-        updated_at: new Date().toISOString()
-      });
+    // Use the database function to safely give credits
+    const { error: creditsError } = await supabase.rpc('admin_give_credits', {
+      target_user_id: user.id,
+      credit_amount: credits
+    });
       
     if (creditsError) {
       console.error('Credits error:', creditsError);
@@ -52,19 +47,6 @@ serve(async (req) => {
         status: 500,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });
-    }
-    
-    // Also give AI credits
-    const { error: aiError } = await supabase
-      .from('ai_credits')
-      .upsert({
-        user_id: user.id,
-        balance: credits,
-        updated_at: new Date().toISOString()
-      });
-      
-    if (aiError) {
-      console.log('AI credits warning (may not exist):', aiError);
     }
     
     return new Response(JSON.stringify({ 
