@@ -180,7 +180,7 @@ const JobHubSidebar: React.FC<JobHubSidebarProps> = ({ isOpen, onClose }) => {
                   </Button>
                   <Button variant="outline" className="w-full border-orange-300 hover:bg-orange-50">
                     <MessageSquare className="h-4 w-4 mr-2" />
-                    💬 Ask Claude
+                    💬 Ask Annette
                   </Button>
                 </div>
               </div>

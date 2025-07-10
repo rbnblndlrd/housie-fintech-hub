@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useCredits } from './useCredits';
 import { toast } from 'sonner';
 
-export interface ClaudeMessage {
+export interface AnnetteMessage {
   id: string;
   session_id: string;
   message_type: 'user' | 'assistant';
@@ -34,10 +34,10 @@ interface CreditConsumptionResult {
   is_free?: boolean;
 }
 
-export const useEnhancedClaudeChat = () => {
+export const useEnhancedAnnetteChat = () => {
   const { user } = useAuth();
   const { checkRateLimit, consumeCredits, features } = useCredits();
-  const [messages, setMessages] = useState<ClaudeMessage[]>([]);
+  const [messages, setMessages] = useState<AnnetteMessage[]>([]);
   const [isTyping, setIsTyping] = useState(false);
 
   const classifyMessage = (content: string): string => {
@@ -101,7 +101,7 @@ export const useEnhancedClaudeChat = () => {
       const isEnabled = await checkEmergencyControls();
       
       if (!isEnabled) {
-        const systemMessage: ClaudeMessage = {
+        const systemMessage: AnnetteMessage = {
           id: `system-${Date.now()}`,
           session_id: sessionId,
           message_type: 'assistant',
@@ -148,7 +148,7 @@ export const useEnhancedClaudeChat = () => {
       }
 
       // Add user message to local state immediately
-      const userMessage: ClaudeMessage = {
+      const userMessage: AnnetteMessage = {
         id: `temp-${Date.now()}`,
         session_id: sessionId,
         message_type: 'user',
@@ -205,9 +205,9 @@ export const useEnhancedClaudeChat = () => {
 
       if (error) throw error;
 
-      // Add Claude's response to local state
-      const assistantMessage: ClaudeMessage = {
-        id: `claude-${Date.now()}`,
+      // Add Annette's response to local state
+      const assistantMessage: AnnetteMessage = {
+        id: `annette-${Date.now()}`,
         session_id: sessionId,
         message_type: 'assistant',
         content: data.response,
@@ -219,9 +219,9 @@ export const useEnhancedClaudeChat = () => {
       setMessages(prev => [...prev, assistantMessage]);
 
     } catch (error) {
-      console.error('Error sending message to Claude:', error);
+      console.error('Error sending message to Annette:', error);
       
-      const errorMessage: ClaudeMessage = {
+      const errorMessage: AnnetteMessage = {
         id: `error-${Date.now()}`,
         session_id: sessionId,
         message_type: 'assistant',
@@ -230,7 +230,7 @@ export const useEnhancedClaudeChat = () => {
       };
 
       setMessages(prev => [...prev, errorMessage]);
-      toast.error('Failed to send message to Claude AI');
+      toast.error('Failed to send message to Annette AI');
     } finally {
       setIsTyping(false);
     }

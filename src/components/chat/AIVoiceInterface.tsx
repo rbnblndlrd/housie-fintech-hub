@@ -62,7 +62,7 @@ const AIVoiceInterface: React.FC<AIVoiceInterfaceProps> = ({ isFleetMode = false
           )}
         </Button>
         <p className="text-sm text-gray-600 mt-2">
-          {isListening ? 'Listening...' : 'Ask Claude'}
+          {isListening ? 'Listening...' : 'Ask Annette'}
         </p>
       </div>
 

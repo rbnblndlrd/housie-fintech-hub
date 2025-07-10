@@ -98,7 +98,7 @@ const AIVoiceAssistantOverlay: React.FC<AIVoiceAssistantOverlayProps> = ({
               )}
             </Button>
             <p className="text-sm text-gray-600 mt-2">
-              {isListening ? 'Listening...' : 'Ask Claude'}
+              {isListening ? 'Listening...' : 'Ask Annette'}
             </p>
           </div>
 
