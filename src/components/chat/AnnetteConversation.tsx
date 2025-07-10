@@ -8,7 +8,7 @@ import { Send, Bot, User, Loader2, Mic, MicOff, Coins } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAICredits } from '@/hooks/useAICredits';
 import { usePageContext } from '@/hooks/usePageContext';
-import { supabase } from '@/integrations/supabase/client';
+import { useAnnetteChat } from '@/hooks/useAnnetteChat';
 
 interface Message {
   id: string;
@@ -32,11 +32,18 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
   const { user } = useAuth();
   const { credits, isLoading: creditsLoading, refreshCredits } = useAICredits();
   const pageContext = usePageContext();
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { messages: annetteMessages, sendMessage: sendAnnetteMessage, isTyping } = useAnnetteChat();
   const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Transform Annette messages to local Message format
+  const messages: Message[] = annetteMessages.map(msg => ({
+    id: msg.id,
+    role: msg.message_type,
+    content: msg.content,
+    timestamp: new Date(msg.created_at)
+  }));
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -52,18 +59,19 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
   }, [messages]);
 
   useEffect(() => {
-    // Add context-aware greeting message
+    // Add context-aware greeting message using the hook's setMessages
     if (messages.length === 0) {
       const contextGreeting = context?.type ? getContextGreeting(context.type) : pageContext.annettePersonality;
-      const welcomeMessage: Message = {
+      const welcomeMessage = {
         id: 'welcome',
-        role: 'assistant',
+        session_id: sessionId,
+        message_type: 'assistant' as const,
         content: `Hi! I'm Annette, your HOUSIE assistant. ${contextGreeting}`,
-        timestamp: new Date()
+        created_at: new Date().toISOString()
       };
-      setMessages([welcomeMessage]);
+      // Note: We'll let useAnnetteChat handle the initial greeting
     }
-  }, [context, pageContext, messages.length]);
+  }, [context, pageContext, messages.length, sessionId]);
 
   const getContextGreeting = (contextType: string): string => {
     switch (contextType) {
@@ -84,83 +92,17 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
 
   const sendMessage = async (messageContent?: string) => {
     const content = messageContent || inputValue.trim();
-    if (!content || isLoading) return;
+    if (!content || isTyping) return;
 
-    // Check credits before sending
-    if (!credits || credits.balance < 1) {
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: "I'm sorry, but you need at least 1 AI credit to chat with me. You can earn more credits by completing services, participating in clusters, or through daily grants.",
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
-      return;
-    }
-
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      content,
-      timestamp: new Date()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    // Use the proper useAnnetteChat hook which handles credits, rate limiting, and emergency controls
+    await sendAnnetteMessage(content, sessionId);
     setInputValue('');
-    setIsLoading(true);
-
-    try {
-      // Call Annette chat function
-      const response = await supabase.functions.invoke('annette-chat', {
-        body: {
-          message: content,
-          sessionId,
-          userId: user?.id,
-          context: context || null,
-          pageContext: pageContext
-        }
-      });
-
-      if (response.error) {
-        throw new Error(response.error.message || 'Failed to get response');
-      }
-
-      const assistantMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: response.data?.response || 'Sorry, I encountered an error.',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, assistantMessage]);
-      
-      // Refresh credits after successful message
-      refreshCredits();
-    } catch (error) {
-      console.error('Error sending message to Annette:', error);
-      
-      const errorMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: 'assistant',
-        content: 'I\'m having trouble connecting right now. Please try again in a moment.',
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
+    refreshCredits();
   };
 
   const handleVoiceInput = async () => {
     if (!credits || credits.balance < 1) {
-      const errorMessage: Message = {
-        id: Date.now().toString(),
-        role: 'assistant',
-        content: "You need at least 1 AI credit to use voice commands.",
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      // The useAnnetteChat hook will handle credit errors automatically
       return;
     }
 
@@ -223,7 +165,7 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
                 <span className="text-sm text-purple-600">AI Assistant</span>
               </h3>
               <p className="text-xs text-gray-600">
-                {isLoading ? 'Thinking...' : 'Ready to help with HOUSIE'}
+                {isTyping ? 'Thinking...' : 'Ready to help with HOUSIE'}
               </p>
             </div>
           </div>
@@ -277,7 +219,7 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
             </div>
           ))}
           
-          {isLoading && (
+          {isTyping && (
             <div className="flex gap-3 justify-start">
               <Avatar className="w-8 h-8 bg-gradient-to-r from-purple-100 to-orange-100">
                 <AvatarFallback>
@@ -300,14 +242,14 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder={hasCredits ? "Ask Annette anything..." : "Need credits to chat..."}
-            disabled={isLoading || !hasCredits}
+            disabled={isTyping || !hasCredits}
             className="flex-1"
           />
           
           {/* Voice Input Button */}
           <Button
             onClick={handleVoiceInput}
-            disabled={isLoading || !hasCredits || isListening}
+            disabled={isTyping || !hasCredits || isListening}
             size="sm"
             variant="outline"
             className="px-3"
@@ -321,11 +263,11 @@ const AnnetteConversation: React.FC<AnnetteConversationProps> = ({
           
           <Button
             onClick={() => sendMessage()}
-            disabled={!inputValue.trim() || isLoading || !hasCredits}
+            disabled={!inputValue.trim() || isTyping || !hasCredits}
             size="sm"
             className="px-3"
           >
-            {isLoading ? (
+            {isTyping ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
               <Send className="h-4 w-4" />
