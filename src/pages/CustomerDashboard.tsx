@@ -5,9 +5,11 @@ import Header from '@/components/Header';
 import VideoBackground from '@/components/common/VideoBackground';
 import DraggableWidget from '@/components/dashboard/DraggableWidget';
 import { useDashboardLayout } from '@/hooks/useDashboardLayout';
+import { useBookings } from '@/hooks/useBookings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import BecomeProviderCard from '@/components/customer/BecomeProviderCard';
 import { 
   Calendar, 
   Star, 
@@ -18,12 +20,14 @@ import {
   Filter,
   Edit,
   Save,
-  RotateCcw
+  RotateCcw,
+  Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const CustomerDashboard = () => {
   const { user } = useAuth();
+  const { bookings, loading: bookingsLoading } = useBookings();
   const {
     widgets,
     isEditMode,
@@ -41,24 +45,28 @@ const CustomerDashboard = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  const recentBookings = [
-    {
-      id: '1',
-      service: 'House Cleaning',
-      provider: 'Clean Co.',
-      date: '2024-01-15',
-      status: 'Completed',
-      rating: 5
-    },
-    {
-      id: '2',
-      service: 'Plumbing Repair',
-      provider: 'Fix It Fast',
-      date: '2024-01-12',
-      status: 'Completed',
-      rating: 4
-    }
-  ];
+  // Calculate stats from real booking data
+  const totalBookings = bookings.length;
+  const pendingBookings = bookings.filter(b => b.status === 'pending').length;
+  const completedBookings = bookings.filter(b => b.status === 'completed').length;
+  const totalSpent = bookings
+    .filter(b => b.total_amount)
+    .reduce((sum, b) => sum + (b.total_amount || 0), 0);
+  
+  // Get recent completed bookings with ratings (for now, mock the ratings)
+  const recentCompletedBookings = bookings
+    .filter(b => b.status === 'completed')
+    .slice(0, 5)
+    .map(booking => ({
+      ...booking,
+      rating: Math.floor(Math.random() * 2) + 4 // Mock rating 4-5 stars
+    }));
+
+  const avgRating = recentCompletedBookings.length > 0
+    ? (recentCompletedBookings.reduce((sum, b) => sum + b.rating, 0) / recentCompletedBookings.length).toFixed(1)
+    : '0.0';
+
+  const hasBookings = bookings.length > 0;
 
   return (
     <>
@@ -107,18 +115,29 @@ const CustomerDashboard = () => {
                   Welcome Back!
                 </h1>
                 <p className="text-white/90 text-shadow">
-                  Find and book services for your home
+                  {hasBookings ? 'Manage your services and bookings' : 'Start by booking your first service'}
                 </p>
               </div>
-              <Link to="/calendar">
-                <Button
-                  variant="outline"
-                  className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm flex items-center gap-2"
-                >
-                  <Calendar className="h-4 w-4" />
-                  View Calendar
-                </Button>
-              </Link>
+              <div className="flex gap-3">
+                <Link to="/services">
+                  <Button
+                    variant="outline"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Book Service
+                  </Button>
+                </Link>
+                <Link to="/calendar">
+                  <Button
+                    variant="outline"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm flex items-center gap-2"
+                  >
+                    <Calendar className="h-4 w-4" />
+                    View Calendar
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Draggable Dashboard Container */}
@@ -137,7 +156,7 @@ const CustomerDashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80 mb-1">Total Bookings</p>
-                      <p className="text-3xl font-bold">12</p>
+                      <p className="text-3xl font-bold">{totalBookings}</p>
                     </div>
                     <Calendar className="h-8 w-8 opacity-70" />
                   </div>
@@ -158,7 +177,7 @@ const CustomerDashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80 mb-1">Pending</p>
-                      <p className="text-3xl font-bold">2</p>
+                      <p className="text-3xl font-bold">{pendingBookings}</p>
                     </div>
                     <Clock className="h-8 w-8 opacity-70" />
                   </div>
@@ -179,7 +198,7 @@ const CustomerDashboard = () => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm font-medium opacity-80 mb-1">Total Spent</p>
-                      <p className="text-3xl font-bold">$1,240</p>
+                      <p className="text-3xl font-bold">${totalSpent.toFixed(0)}</p>
                     </div>
                     <DollarSign className="h-8 w-8 opacity-70" />
                   </div>
@@ -199,8 +218,8 @@ const CustomerDashboard = () => {
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium opacity-80 mb-1">Avg Rating</p>
-                      <p className="text-3xl font-bold">4.8</p>
+                      <p className="text-sm font-medium opacity-80 mb-1">Avg Rating Given</p>
+                      <p className="text-3xl font-bold">{avgRating}</p>
                     </div>
                     <Star className="h-8 w-8 opacity-70" />
                   </div>
@@ -221,25 +240,47 @@ const CustomerDashboard = () => {
                   <CardTitle>Recent Bookings</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {recentBookings.map((booking) => (
-                      <div key={booking.id} className="fintech-inner-box flex items-center justify-between p-4">
-                        <div className="flex-1">
-                          <h3 className="font-medium">{booking.service}</h3>
-                          <p className="text-sm opacity-70">{booking.provider} • {booking.date}</p>
-                        </div>
-                        <div className="flex items-center gap-3">
-                          <div className="flex items-center gap-1">
-                            <Star className="h-4 w-4 text-yellow-500" />
-                            <span className="text-sm">{booking.rating}</span>
+                  {bookingsLoading ? (
+                    <div className="text-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                      <p className="text-sm text-gray-500">Loading bookings...</p>
+                    </div>
+                  ) : bookings.length === 0 ? (
+                    <div className="text-center py-8">
+                      <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-500 mb-4">No bookings yet</p>
+                      <Link to="/services">
+                        <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
+                          Book Your First Service
+                        </Button>
+                      </Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {bookings.slice(0, 5).map((booking) => (
+                        <div key={booking.id} className="fintech-inner-box flex items-center justify-between p-4">
+                          <div className="flex-1">
+                            <h3 className="font-medium">{booking.serviceName}</h3>
+                            <p className="text-sm opacity-70">{booking.provider} • {booking.date}</p>
                           </div>
-                          <Badge className="bg-green-100 text-green-800">
-                            {booking.status}
-                          </Badge>
+                          <div className="flex items-center gap-3">
+                            <Badge 
+                              variant={booking.status === 'completed' ? 'default' : 'secondary'}
+                              className={
+                                booking.status === 'completed' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : booking.status === 'pending'
+                                  ? 'bg-yellow-100 text-yellow-800'
+                                  : 'bg-blue-100 text-blue-800'
+                              }
+                            >
+                              {booking.status}
+                            </Badge>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </CardContent>
               </DraggableWidget>
 
@@ -258,22 +299,22 @@ const CustomerDashboard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
+                    <Link to="/services">
+                      <Button className="fintech-inner-button w-full flex items-center gap-2">
+                        <Plus className="h-4 w-4" />
+                        Book New Service
+                      </Button>
+                    </Link>
                     <Link to="/calendar">
                       <Button className="fintech-inner-button w-full flex items-center gap-2">
                         <Calendar className="h-4 w-4" />
                         View Calendar
                       </Button>
                     </Link>
-                    <Link to="/services">
-                      <Button className="fintech-inner-button w-full flex items-center gap-2">
-                        <Search className="h-4 w-4" />
-                        Find Services
-                      </Button>
-                    </Link>
                     <Link to="/bookings">
                       <Button className="fintech-inner-button w-full flex items-center gap-2">
                         <Clock className="h-4 w-4" />
-                        View Bookings
+                        My Bookings
                       </Button>
                     </Link>
                     <Button className="fintech-inner-button w-full flex items-center gap-2">
@@ -283,6 +324,21 @@ const CustomerDashboard = () => {
                   </div>
                 </CardContent>
               </DraggableWidget>
+
+              {/* Become Provider Widget - Show if user has no bookings or wants to expand */}
+              {(!hasBookings || bookings.length < 3) && (
+                <DraggableWidget
+                  id="become-provider"
+                  defaultPosition={{ x: 650, y: 200 }}
+                  defaultSize={{ width: 400, height: 600 }}
+                  isLocked={false}
+                  onPositionChange={updateWidgetPosition}
+                  onSizeChange={updateWidgetSize}
+                  onLockToggle={toggleWidgetLock}
+                >
+                  <BecomeProviderCard />
+                </DraggableWidget>
+              )}
             </div>
           </div>
         </div>

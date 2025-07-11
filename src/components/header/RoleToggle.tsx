@@ -52,17 +52,21 @@ const RoleToggle = () => {
   };
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1 bg-gray-800 rounded-lg">
-      <span className={`text-xs ${currentRole === 'customer' ? 'font-medium text-white' : 'text-gray-400'}`}>
-        Client
+    <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm border border-white/20 rounded-lg">
+      <span className={`text-sm font-medium transition-colors ${
+        currentRole === 'customer' ? 'text-white' : 'text-white/60'
+      }`}>
+        Customer
       </span>
       <Switch
         checked={currentRole === 'provider'}
         onCheckedChange={handleRoleToggle}
-        className="data-[state=checked]:bg-blue-600 data-[state=unchecked]:bg-gray-600"
+        className="data-[state=checked]:bg-purple-600 data-[state=unchecked]:bg-blue-600 scale-110"
       />
-      <span className={`text-xs ${currentRole === 'provider' ? 'font-medium text-white' : 'text-gray-400'}`}>
-        Prestataire
+      <span className={`text-sm font-medium transition-colors ${
+        currentRole === 'provider' ? 'text-white' : 'text-white/60'
+      }`}>
+        Provider
       </span>
     </div>
   );

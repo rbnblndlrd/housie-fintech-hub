@@ -37,6 +37,7 @@ import TaxReports from './pages/TaxReports';
 import FinancialAnalytics from './pages/FinancialAnalytics';
 import InteractiveMapPage from './pages/InteractiveMapPage';
 import Pricing from './pages/Pricing';
+import ProviderSetup from './pages/ProviderSetup';
 import ClusterCreate from './pages/clusters/ClusterCreate';
 import ClusterView from './pages/clusters/ClusterView';
 import ClusterDashboard from './pages/clusters/ClusterDashboard';
@@ -104,6 +105,7 @@ function App() {
                   <Route path="/performance" element={<PerformanceDashboard />} />
                   <Route path="/financial-analytics" element={<FinancialAnalytics />} />
                   <Route path="/pricing" element={<Pricing />} />
+                  <Route path="/provider-setup" element={<ProviderSetup />} />
                   <Route path="/clusters/new" element={<ClusterCreate />} />
                   <Route path="/clusters/:id" element={<ClusterView />} />
                   <Route path="/clusters" element={<ClusterDashboard />} />
