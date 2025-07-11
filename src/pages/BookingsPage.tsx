@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useNavigate } from 'react-router-dom';
@@ -8,19 +8,21 @@ import VideoBackground from '@/components/common/VideoBackground';
 import DashboardNavigation from '@/components/dashboard/DashboardNavigation';
 import KanbanTicketList from '@/components/dashboard/KanbanTicketList';
 import CalendarPreview from '@/components/calendar/CalendarPreview';
+import BookingsCalendar from '@/components/bookings/BookingsCalendar';
 import { ChatBubble } from '@/components/chat/ChatBubble';
 import { useBookings } from '@/hooks/useBookings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, Clock, MapPin, CheckCircle, ArrowLeft } from 'lucide-react';
+import { Calendar, Clock, MapPin, CheckCircle, ArrowLeft, List, CalendarDays } from 'lucide-react';
 import JobParser from '@/components/shared/JobParser';
 
 const BookingsPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
-  const { bookings: upcomingBookings, loading } = useBookings();
+  const { bookings: upcomingBookings, loading, refetch } = useBookings();
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
   if (!user) {
     return null;
@@ -58,11 +60,35 @@ const BookingsPage = () => {
                 Back to Dashboard
               </Button>
               
-              <div className="flex items-center gap-3 mb-3">
-                <Calendar className="h-7 w-7 text-blue-400" />
-                <h1 className="text-3xl font-bold text-black">
-                  {currentRole === 'provider' ? 'Manage Bookings' : 'My Bookings'}
-                </h1>
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-3">
+                  <Calendar className="h-7 w-7 text-blue-400" />
+                  <h1 className="text-3xl font-bold text-black">
+                    {currentRole === 'provider' ? 'Manage Bookings' : 'My Bookings'}
+                  </h1>
+                </div>
+                {currentRole === 'provider' && (
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant={viewMode === 'list' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setViewMode('list')}
+                      className="flex items-center gap-2"
+                    >
+                      <List className="h-4 w-4" />
+                      List View
+                    </Button>
+                    <Button
+                      variant={viewMode === 'calendar' ? 'default' : 'outline'}
+                      size="sm"
+                      onClick={() => setViewMode('calendar')}
+                      className="flex items-center gap-2"
+                    >
+                      <CalendarDays className="h-4 w-4" />
+                      Calendar View
+                    </Button>
+                  </div>
+                )}
               </div>
               <p className="text-gray-700">
                 {currentRole === 'provider' 
@@ -72,67 +98,77 @@ const BookingsPage = () => {
             </div>
 
             {currentRole === 'provider' ? (
-              // Provider View - Full Kanban Board with fintech styling
+              // Provider View - Toggle between Kanban and Calendar
               <div className="space-y-6">
-                <div className="fintech-card">
-                  <div className="p-6">
-                    <KanbanTicketList />
-                  </div>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                  <Card className="fintech-metric-card">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                        New Requests
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="text-2xl font-bold text-blue-600 mb-1">3</div>
-                      <p className="text-sm text-gray-600">Pending acceptance</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="fintech-metric-card">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                        Today's Jobs
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
-                      <p className="text-sm text-gray-600">Scheduled for today</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="fintech-metric-card">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                        In Progress
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="text-2xl font-bold text-purple-600 mb-1">1</div>
-                      <p className="text-sm text-gray-600">Currently working</p>
-                    </CardContent>
-                  </Card>
-                  
-                  <Card className="fintech-metric-card">
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-lg flex items-center gap-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                        Completed
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="text-2xl font-bold text-green-600 mb-1">8</div>
-                      <p className="text-sm text-gray-600">This week</p>
-                    </CardContent>
-                  </Card>
-                </div>
+                {viewMode === 'list' ? (
+                  <>
+                    <div className="fintech-card">
+                      <div className="p-6">
+                        <KanbanTicketList />
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                      <Card className="fintech-metric-card">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                            New Requests
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <div className="text-2xl font-bold text-blue-600 mb-1">3</div>
+                          <p className="text-sm text-gray-600">Pending acceptance</p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="fintech-metric-card">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            Today's Jobs
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
+                          <p className="text-sm text-gray-600">Scheduled for today</p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="fintech-metric-card">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                            In Progress
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <div className="text-2xl font-bold text-purple-600 mb-1">1</div>
+                          <p className="text-sm text-gray-600">Currently working</p>
+                        </CardContent>
+                      </Card>
+                      
+                      <Card className="fintech-metric-card">
+                        <CardHeader className="pb-3">
+                          <CardTitle className="text-lg flex items-center gap-2">
+                            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                            Completed
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-4">
+                          <div className="text-2xl font-bold text-green-600 mb-1">8</div>
+                          <p className="text-sm text-gray-600">This week</p>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </>
+                ) : (
+                  <BookingsCalendar 
+                    bookings={upcomingBookings} 
+                    loading={loading}
+                    onBookingUpdate={refetch}
+                  />
+                )}
               </div>
             ) : (
               // Customer View - Simple Bookings List with Calendar using fintech styling
