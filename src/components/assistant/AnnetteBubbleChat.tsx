@@ -16,6 +16,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { registerAnnetteEventBus } from './AnnetteIntegration';
 
 interface ChatMessage {
   id: string;
@@ -60,6 +61,23 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // Register event bus for platform actions
+  useEffect(() => {
+    const handlePlatformEvent = (action: string, eventData?: any) => {
+      const systemMessage: ChatMessage = {
+        id: `system-${Date.now()}`,
+        type: 'system',
+        content: eventData?.response || "Platform action triggered",
+        timestamp: new Date(),
+        action
+      };
+      
+      setMessages(prev => [...prev, systemMessage]);
+    };
+
+    registerAnnetteEventBus(handlePlatformEvent);
+  }, []);
+
   useEffect(() => {
     if (scrollAreaRef.current) {
       const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
@@ -101,12 +119,25 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
       return "Ahhh... trying to crack the code, eh? Most badges unlock through specific job categories and milestones. Winter Services? That's the Winter track. Gotta survive 25 snow jobs first! ❄️";
     }
     
-    if (lowerMessage.includes('help') && lowerMessage.includes('annette')) {
-      return "I optimize jobs, track your cred, parse tasks, suggest connections, and occasionally give solid life advice. Think of me as your digital wingwoman with a PhD in Getting Stuff Done! 🎓";
+    if (lowerMessage.includes('help') && (lowerMessage.includes('annette') || lowerMessage === 'help')) {
+      return "You can click Parse, Optimize, Rebook — or just vibe. I'm always watching 👀 I optimize jobs, track your cred, parse tasks, suggest connections, and occasionally give solid life advice. Think of me as your digital wingwoman with a PhD in Getting Stuff Done! 🎓";
     }
     
     if (lowerMessage.includes('schedule') || lowerMessage.includes('calendar')) {
       return "Opening calendar assistant... *tap tap tap* You've got slots at 10 AM, 2 PM, and 4:30 PM tomorrow. Based on traffic and your usual groove, I'm feeling that 2 PM slot. Should I lock it in? 📅";
+    }
+
+    // New contextual queries
+    if (lowerMessage.includes('how many') && lowerMessage.includes('cred')) {
+      return "You've earned 12 so far. You're basically trust royalty. The community loves you, and your rep speaks louder than your horn ever could! 👑";
+    }
+
+    if (lowerMessage.includes('my prestige')) {
+      return "Technomancer, Level 3. Keep grinding, Sparkmaster's next. You're 13 jobs away from glory and I'm here for every single one! ⚡";
+    }
+
+    if (lowerMessage.includes('recommend someone') || lowerMessage.includes('who should i hire')) {
+      return "Based on your past bookings, Lisa's a fit. Landscaping? She's the GOAT. 4.9 stars, lives for the grind, and probably has dirt under her nails right now. Hire her! 🌱";
     }
 
     // Sassy fallback
@@ -217,13 +248,17 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                       message.type === 'user' ? 'justify-end' : 'justify-start'
                     )}
                   >
-                    {message.type === 'assistant' && (
-                      <Avatar className="w-6 h-6 bg-gradient-to-r from-purple-100 to-orange-100">
-                        <AvatarFallback>
-                          <Bot className="h-3 w-3 text-purple-600" />
-                        </AvatarFallback>
-                      </Avatar>
-                    )}
+                     {(message.type === 'assistant' || message.type === 'system') && (
+                       <Avatar className="w-6 h-6 bg-gradient-to-r from-purple-100 to-orange-100">
+                         <AvatarFallback>
+                           <img 
+                             src="/lovable-uploads/854d6f0c-9abe-4605-bb62-0a08d7ea62dc.png" 
+                             alt="Annette"
+                             className="w-full h-full object-cover rounded-full"
+                           />
+                         </AvatarFallback>
+                       </Avatar>
+                     )}
                     
                     <div
                       className={cn(

@@ -7,12 +7,14 @@ interface AnnetteAvatarProps {
   onClick: () => void;
   className?: string;
   isActive?: boolean;
+  hasNewMessage?: boolean;
 }
 
 export const AnnetteAvatar: React.FC<AnnetteAvatarProps> = ({
   onClick,
   className,
-  isActive = false
+  isActive = false,
+  hasNewMessage = false
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -53,10 +55,15 @@ export const AnnetteAvatar: React.FC<AnnetteAvatarProps> = ({
           <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse" />
         )}
         
+        {/* New Message Indicator */}
+        {hasNewMessage && !isActive && (
+          <div className="absolute -top-1 -right-1 w-4 h-4 bg-orange-500 rounded-full border-2 border-white animate-bounce" />
+        )}
+        
         {/* Sparkle Effect */}
         <Sparkles className={cn(
           "absolute -top-2 -right-2 h-5 w-5 text-yellow-400 transition-opacity duration-300",
-          isAnimating ? "opacity-100" : "opacity-0"
+          (isAnimating || hasNewMessage) ? "opacity-100" : "opacity-0"
         )} />
       </Button>
       
