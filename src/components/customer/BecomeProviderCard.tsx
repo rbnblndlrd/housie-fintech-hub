@@ -78,17 +78,17 @@ const BecomeProviderCard = () => {
   ];
 
   return (
-    <Card className="bg-gradient-to-br from-blue-50 to-purple-50 border-blue-200">
+    <Card className="bg-muted/30 backdrop-blur-md border-muted-foreground/20">
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
-          <div className="bg-blue-600 rounded-full p-3">
-            <Briefcase className="h-8 w-8 text-white" />
+          <div className="bg-primary rounded-full p-3">
+            <Briefcase className="h-8 w-8 text-primary-foreground" />
           </div>
         </div>
-        <CardTitle className="text-2xl text-blue-900">
+        <CardTitle className="text-2xl text-primary">
           Become a Service Provider
         </CardTitle>
-        <p className="text-blue-700">
+        <p className="text-muted-foreground">
           Turn your skills into income by offering services to customers in your area
         </p>
       </CardHeader>
@@ -97,21 +97,21 @@ const BecomeProviderCard = () => {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {features.map((feature, index) => (
-            <div key={index} className="flex items-start gap-3 p-3 bg-white/60 rounded-lg">
-              <div className="bg-blue-100 rounded-full p-2 flex-shrink-0">
-                <feature.icon className="h-4 w-4 text-blue-600" />
+            <div key={index} className="flex items-start gap-3 p-3 bg-muted/20 rounded-lg">
+              <div className="bg-primary/20 rounded-full p-2 flex-shrink-0">
+                <feature.icon className="h-4 w-4 text-primary" />
               </div>
               <div>
-                <h4 className="font-medium text-blue-900">{feature.title}</h4>
-                <p className="text-sm text-blue-700">{feature.description}</p>
+                <h4 className="font-medium text-foreground">{feature.title}</h4>
+                <p className="text-sm text-muted-foreground">{feature.description}</p>
               </div>
             </div>
           ))}
         </div>
 
         {/* Benefits */}
-        <div className="bg-white/80 rounded-lg p-4 space-y-3">
-          <h4 className="font-semibold text-blue-900 flex items-center gap-2">
+        <div className="bg-muted/20 rounded-lg p-4 space-y-3">
+          <h4 className="font-semibold text-foreground flex items-center gap-2">
             <CheckCircle className="h-5 w-5 text-green-600" />
             What you get:
           </h4>
@@ -124,7 +124,7 @@ const BecomeProviderCard = () => {
               "Marketing tools", 
               "Performance analytics"
             ].map((benefit, index) => (
-              <div key={index} className="flex items-center gap-2 text-blue-700">
+              <div key={index} className="flex items-center gap-2 text-muted-foreground">
                 <CheckCircle className="h-3 w-3 text-green-500" />
                 <span>{benefit}</span>
               </div>
@@ -138,7 +138,7 @@ const BecomeProviderCard = () => {
             onClick={handleEnableProvider}
             disabled={loading}
             size="lg"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="w-full"
           >
             {loading ? (
               'Enabling Provider Mode...'
@@ -150,7 +150,7 @@ const BecomeProviderCard = () => {
             )}
           </Button>
           
-          <div className="flex items-center justify-center gap-2 text-sm text-blue-600">
+          <div className="flex items-center justify-center gap-2 text-sm">
             <Badge variant="secondary" className="bg-green-100 text-green-700">
               Free Setup
             </Badge>

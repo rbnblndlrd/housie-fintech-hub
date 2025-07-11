@@ -11,8 +11,10 @@ import {
   Briefcase
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import PrivacySettingsCard from './PrivacySettingsCard';
 import PrestigeShowcaseCard from './PrestigeShowcaseCard';
+import BecomeProviderCard from '@/components/customer/BecomeProviderCard';
 
 interface ProfileMainContainerProps {
   profile: UnifiedUserProfile;
@@ -21,6 +23,7 @@ interface ProfileMainContainerProps {
 
 const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, isProvider }) => {
   const { toast } = useToast();
+  const { canSwitchToProvider } = useRoleSwitch();
   const [isEditing, setIsEditing] = useState(false);
 
   const handleEditDetails = () => {
@@ -123,6 +126,13 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
               isEditing={isEditing}
             />
           </div>
+
+          {/* Become Provider Card - Show for customers only */}
+          {!canSwitchToProvider && !isProvider && (
+            <div className="mt-6">
+              <BecomeProviderCard />
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

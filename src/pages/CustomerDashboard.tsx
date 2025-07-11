@@ -9,7 +9,7 @@ import { useBookings } from '@/hooks/useBookings';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import BecomeProviderCard from '@/components/customer/BecomeProviderCard';
+
 import { 
   Calendar, 
   Star, 
@@ -325,20 +325,6 @@ const CustomerDashboard = () => {
                 </CardContent>
               </DraggableWidget>
 
-              {/* Become Provider Widget - Show if user has no bookings or wants to expand */}
-              {(!hasBookings || bookings.length < 3) && (
-                <DraggableWidget
-                  id="become-provider"
-                  defaultPosition={{ x: 650, y: 200 }}
-                  defaultSize={{ width: 400, height: 600 }}
-                  isLocked={false}
-                  onPositionChange={updateWidgetPosition}
-                  onSizeChange={updateWidgetSize}
-                  onLockToggle={toggleWidgetLock}
-                >
-                  <BecomeProviderCard />
-                </DraggableWidget>
-              )}
             </div>
           </div>
         </div>
