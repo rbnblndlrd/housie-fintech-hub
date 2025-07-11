@@ -100,6 +100,31 @@ const BookingsPage = () => {
             {currentRole === 'provider' ? (
               // Provider View - Toggle between Kanban and Calendar
               <div className="space-y-6">
+                {/* Annette's Contextual Insight */}
+                <Card className="fintech-card border-purple-200 bg-purple-50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-bold">A</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-purple-700 font-medium mb-1">Annette says:</p>
+                        <p className="text-purple-600 text-sm">
+                          "Need help reviewing today's jobs? I've highlighted your most urgent one below. 
+                          You've got 3 active jobs and 2 scheduled for today."
+                        </p>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="mt-2 border-purple-300 text-purple-700 hover:bg-purple-100"
+                        >
+                          Get Recommendations
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {viewMode === 'list' ? (
                   <>
                     <div className="fintech-card">
@@ -172,8 +197,34 @@ const BookingsPage = () => {
               </div>
             ) : (
               // Customer View - Simple Bookings List with Calendar using fintech styling
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card className="fintech-card">
+              <div className="space-y-6">
+                {/* Annette's Customer Insight */}
+                <Card className="fintech-card border-purple-200 bg-purple-50">
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
+                        <span className="text-white font-bold">A</span>
+                      </div>
+                      <div className="flex-1">
+                        <p className="text-purple-700 font-medium mb-1">Annette says:</p>
+                        <p className="text-purple-600 text-sm">
+                          "Looking good! You have {upcomingBookings.length} upcoming bookings. 
+                          Want me to remind you about your next appointment or help you book something new?"
+                        </p>
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          className="mt-2 border-purple-300 text-purple-700 hover:bg-purple-100"
+                        >
+                          Ask Annette
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card className="fintech-card">
                   <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2">
                       <Calendar className="h-5 w-5" />
@@ -236,14 +287,15 @@ const BookingsPage = () => {
                   </CardContent>
                 </Card>
 
-                <Card className="fintech-card">
-                  <CardContent className="p-0">
-                    <CalendarPreview />
-                  </CardContent>
-                </Card>
-              </div>
-            )}
-          </div>
+                    <Card className="fintech-card">
+                      <CardContent className="p-0">
+                        <CalendarPreview />
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              )}
+            </div>
         </div>
 
         {/* Add Chat Bubble */}

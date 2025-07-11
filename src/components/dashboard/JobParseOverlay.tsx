@@ -19,6 +19,7 @@ import {
   CheckCircle,
   X
 } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface JobData {
   id: string;
@@ -49,6 +50,7 @@ interface JobParseOverlayProps {
 
 const JobParseOverlay: React.FC<JobParseOverlayProps> = ({ job, isOpen, onClose }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [analysis, setAnalysis] = useState<AIAnalysis | null>(null);
   const [whatYouTried, setWhatYouTried] = useState('');
   const [nextSteps, setNextSteps] = useState('');
@@ -97,6 +99,46 @@ const JobParseOverlay: React.FC<JobParseOverlayProps> = ({ job, isOpen, onClose 
       setReminders("Large dog on property\n• Prefers morning appointments\n• Narrow basement stairs");
     } finally {
       setIsAnalyzing(false);
+    }
+  };
+
+  const handleSaveAndSchedule = async () => {
+    if (!user || !analysis) return;
+    
+    setIsSaving(true);
+    
+    try {
+      // Get tomorrow's date as default
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const scheduledDate = tomorrow.toISOString().split('T')[0];
+      const scheduledTime = '09:00';
+
+      // Create calendar appointment
+      const { error: calendarError } = await supabase
+        .from('calendar_appointments')
+        .insert({
+          user_id: user.id,
+          title: `${job.service_type} - ${job.customer_name}`,
+          client_name: job.customer_name,
+          scheduled_date: scheduledDate,
+          scheduled_time: scheduledTime,
+          location: job.address,
+          appointment_type: 'service',
+          notes: `AI Analysis: ${analysis.timeEstimate}\nNext Steps: ${nextSteps}\nReminders: ${reminders}`,
+          amount: parseFloat(analysis.costEstimate.replace(/[^0-9.-]+/g, '')) || 0,
+          status: 'confirmed'
+        });
+
+      if (calendarError) throw calendarError;
+
+      toast.success('Job scheduled successfully! Added to your calendar for tomorrow at 9:00 AM.');
+      onClose();
+    } catch (error) {
+      console.error('Schedule job error:', error);
+      toast.error('Failed to schedule job. Please try again.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -282,9 +324,22 @@ const JobParseOverlay: React.FC<JobParseOverlayProps> = ({ job, isOpen, onClose 
           Back to List
         </Button>
         {analysis && (
-          <Button className="flex-1 bg-green-600 hover:bg-green-700">
-            <CheckCircle className="h-4 w-4 mr-2" />
-            Save & Schedule
+          <Button 
+            onClick={handleSaveAndSchedule}
+            disabled={isSaving}
+            className="flex-1 bg-green-600 hover:bg-green-700"
+          >
+            {isSaving ? (
+              <>
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                Scheduling...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-4 w-4 mr-2" />
+                Save & Schedule
+              </>
+            )}
           </Button>
         )}
       </div>
