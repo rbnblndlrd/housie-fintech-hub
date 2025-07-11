@@ -57,6 +57,7 @@ const JobParseOverlay: React.FC<JobParseOverlayProps> = ({ job, isOpen, onClose 
   const { user } = useAuth();
 
   const handleParseJob = async () => {
+    console.log("🧠 handleParseJob running for", job.id);
     if (!user) return;
     
     setIsAnalyzing(true);
