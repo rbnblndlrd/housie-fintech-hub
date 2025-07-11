@@ -3,12 +3,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Service } from '@/types/service';
-import { Sparkles, TrendingUp, MapPin, Users, Star, Clock } from 'lucide-react';
+import { Sparkles, TrendingUp, MapPin, Users, Star, Clock, DollarSign, Award } from 'lucide-react';
+import { 
+  getAnnetteSuggestionsForFilters, 
+  detectServiceClusters, 
+  FilterContext,
+  AnnetteInsight 
+} from '@/utils/annetteInsights';
 
 interface AnnetteMapInsightsProps {
   services: Service[];
   selectedLocation: string;
   activeFilters: number;
+  filters: FilterContext;
   onInsightClick?: (insight: string) => void;
 }
 
@@ -16,103 +23,50 @@ const AnnetteMapInsights: React.FC<AnnetteMapInsightsProps> = ({
   services,
   selectedLocation,
   activeFilters,
+  filters,
   onInsightClick
 }) => {
   const [currentInsight, setCurrentInsight] = useState(0);
-  const [insights, setInsights] = useState<Array<{
-    type: 'cluster' | 'hidden_gem' | 'price_tip' | 'availability' | 'trending';
-    title: string;
-    description: string;
-    action: string;
-    icon: React.ReactNode;
-    priority: number;
-  }>>([]);
+  const [insights, setInsights] = useState<AnnetteInsight[]>([]);
 
   useEffect(() => {
-    generateInsights();
-  }, [services, selectedLocation, activeFilters]);
+    generateSmartInsights();
+  }, [services, selectedLocation, activeFilters, filters]);
 
-  const generateInsights = () => {
-    const newInsights = [];
-
-    // Cluster detection
-    const locationGroups = services.reduce((acc, service) => {
-      const city = service.provider?.user?.city || 'Unknown';
-      acc[city] = (acc[city] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    const clusters = Object.entries(locationGroups).filter(([_, count]) => count >= 3);
-    if (clusters.length > 0) {
-      const [topCity, count] = clusters[0];
-      newInsights.push({
-        type: 'cluster' as const,
-        title: `${count} providers clustered in ${topCity}`,
-        description: "Group booking could save you 15-20% on total costs!",
-        action: "Explore cluster deals",
-        icon: <Users className="h-4 w-4" />,
-        priority: 1
-      });
-    }
-
-    // Hidden gems (high rating, low booking count)
-    const hiddenGems = services.filter(service => 
-      service.provider?.average_rating && service.provider.average_rating >= 4.8 &&
-      service.provider?.total_bookings && service.provider.total_bookings < 10
-    );
-
-    if (hiddenGems.length > 0) {
-      newInsights.push({
-        type: 'hidden_gem' as const,
-        title: `Found ${hiddenGems.length} hidden gem${hiddenGems.length !== 1 ? 's' : ''}`,
-        description: "New providers with perfect ratings and competitive rates!",
-        action: "Show hidden gems",
-        icon: <Star className="h-4 w-4" />,
-        priority: 2
-      });
-    }
-
-    // Price optimization
-    const avgPrice = services.reduce((sum, s) => sum + (s.provider?.hourly_rate || s.base_price || 0), 0) / services.length;
-    const budgetFriendly = services.filter(s => (s.provider?.hourly_rate || s.base_price || 0) < avgPrice * 0.8);
+  const generateSmartInsights = () => {
+    // Detect clusters by proximity and category
+    const clusters = detectServiceClusters(services);
     
-    if (budgetFriendly.length > 0) {
-      newInsights.push({
-        type: 'price_tip' as const,
-        title: `${budgetFriendly.length} budget-friendly options`,
-        description: `Average savings of $${Math.round(avgPrice * 0.2)}/hour compared to market average.`,
-        action: "Filter by best value",
-        icon: <TrendingUp className="h-4 w-4" />,
-        priority: 3
-      });
-    }
+    // Generate insights using centralized logic
+    const newInsights = getAnnetteSuggestionsForFilters(services, filters, clusters);
+    
+    // Add icons to insights
+    const insightsWithIcons = newInsights.map(insight => ({
+      ...insight,
+      icon: getIconForInsightType(insight.type)
+    }));
 
-    // Availability insights
-    const availableToday = services.filter(s => s.provider?.verified); // Mock availability
-    if (availableToday.length > 0) {
-      newInsights.push({
-        type: 'availability' as const,
-        title: `${availableToday.length} providers available today`,
-        description: "Need it done fast? These verified providers can start immediately.",
-        action: "Book for today",
-        icon: <Clock className="h-4 w-4" />,
-        priority: 4
-      });
-    }
+    setInsights(insightsWithIcons);
+    setCurrentInsight(0); // Reset to first insight when insights change
+  };
 
-    // Location-specific insights
-    if (selectedLocation !== 'all') {
-      newInsights.push({
-        type: 'trending' as const,
-        title: `Trending in ${selectedLocation}`,
-        description: "Most popular services this week: Cleaning, Handyman, Moving",
-        action: "See trending",
-        icon: <Sparkles className="h-4 w-4" />,
-        priority: 5
-      });
+  const getIconForInsightType = (type: string) => {
+    switch (type) {
+      case 'cluster':
+        return <Users className="h-4 w-4" />;
+      case 'hidden_gem':
+        return <Star className="h-4 w-4" />;
+      case 'price_tip':
+        return <DollarSign className="h-4 w-4" />;
+      case 'availability':
+        return <Clock className="h-4 w-4" />;
+      case 'trending':
+        return <TrendingUp className="h-4 w-4" />;
+      case 'category_specific':
+        return <Award className="h-4 w-4" />;
+      default:
+        return <Sparkles className="h-4 w-4" />;
     }
-
-    setInsights(newInsights.sort((a, b) => a.priority - b.priority));
   };
 
   const cycleInsights = () => {
@@ -121,9 +75,10 @@ const AnnetteMapInsights: React.FC<AnnetteMapInsightsProps> = ({
     }
   };
 
+  // Rotate insights every 8 seconds (increased from 5 seconds)
   useEffect(() => {
     if (insights.length > 1) {
-      const interval = setInterval(cycleInsights, 5000);
+      const interval = setInterval(cycleInsights, 8000);
       return () => clearInterval(interval);
     }
   }, [insights.length]);
@@ -138,12 +93,29 @@ const AnnetteMapInsights: React.FC<AnnetteMapInsightsProps> = ({
     }
   };
 
+  const getInsightColor = (type: string) => {
+    switch (type) {
+      case 'cluster':
+        return 'from-blue-50 to-indigo-50 border-blue-200';
+      case 'hidden_gem':
+        return 'from-yellow-50 to-amber-50 border-yellow-200';
+      case 'price_tip':
+        return 'from-green-50 to-emerald-50 border-green-200';
+      case 'availability':
+        return 'from-orange-50 to-red-50 border-orange-200';
+      case 'category_specific':
+        return 'from-purple-50 to-violet-50 border-purple-200';
+      default:
+        return 'from-purple-50 to-blue-50 border-purple-200';
+    }
+  };
+
   return (
-    <Card className="fintech-card mb-6 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+    <Card className={`fintech-card mb-6 bg-gradient-to-r ${getInsightColor(currentInsightData.type)} transition-all duration-500`}>
       <CardContent className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3 flex-1">
-            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600">
+            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 transition-all duration-300">
               {currentInsightData.icon}
             </div>
             <div className="flex-1">
@@ -154,6 +126,11 @@ const AnnetteMapInsights: React.FC<AnnetteMapInsightsProps> = ({
                 <Badge variant="secondary" className="bg-purple-100 text-purple-800 text-xs">
                   Annette's Insight
                 </Badge>
+                {currentInsightData.category && (
+                  <Badge variant="outline" className="text-xs">
+                    {currentInsightData.category}
+                  </Badge>
+                )}
               </div>
               <p className="text-gray-600 text-sm mb-2">
                 {currentInsightData.description}
@@ -162,24 +139,30 @@ const AnnetteMapInsights: React.FC<AnnetteMapInsightsProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={handleInsightClick}
-                className="text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400"
+                className="text-purple-600 border-purple-300 hover:bg-purple-50 hover:border-purple-400 transition-all duration-200"
               >
                 {currentInsightData.action}
               </Button>
             </div>
           </div>
           
-          {/* Insight counter */}
+          {/* Enhanced insight counter with progress indication */}
           {insights.length > 1 && (
-            <div className="flex items-center gap-1 ml-2">
-              {insights.map((_, index) => (
-                <div
-                  key={index}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    index === currentInsight ? 'bg-purple-600' : 'bg-purple-200'
-                  }`}
-                />
-              ))}
+            <div className="flex flex-col items-center gap-2 ml-2">
+              <div className="flex items-center gap-1">
+                {insights.map((_, index) => (
+                  <div
+                    key={index}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                      index === currentInsight ? 'bg-purple-600 scale-125' : 'bg-purple-200 hover:bg-purple-300'
+                    }`}
+                    onClick={() => setCurrentInsight(index)}
+                  />
+                ))}
+              </div>
+              <div className="text-xs text-gray-500 text-center">
+                {currentInsight + 1} of {insights.length}
+              </div>
             </div>
           )}
         </div>

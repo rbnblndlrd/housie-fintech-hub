@@ -167,6 +167,16 @@ const ServicesPage = () => {
               services={filteredServices}
               selectedLocation={selectedLocation}
               activeFilters={activeFiltersCount}
+              filters={{
+                category: selectedCategory,
+                subcategory: selectedSubcategory,
+                location: selectedLocation,
+                availability: selectedTime,
+                priceRange,
+                verifiedOnly,
+                minCredScore,
+                searchTerm
+              }}
               onInsightClick={handleTriggerAnnette}
             />
 
