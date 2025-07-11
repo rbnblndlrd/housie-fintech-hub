@@ -10,6 +10,7 @@ import {
   XCircle,
   Zap
 } from 'lucide-react';
+import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
 
 interface JobTicket {
   id: string;
@@ -98,13 +99,13 @@ const JobTicketTable = () => {
   };
 
   const handleParse = (ticketId: string) => {
-    console.log('AI parsing ticket:', ticketId);
-    // Future: trigger AI summary
+    const ticket = tickets.find(t => t.id === ticketId);
+    triggerAnnetteAction('parse_ticket', { ticket });
   };
 
   const handleSchedule = (ticketId: string) => {
-    console.log('Opening calendar for ticket:', ticketId);
-    // Future: open calendar modal
+    const ticket = tickets.find(t => t.id === ticketId);
+    triggerAnnetteAction('schedule_job', { ticket });
   };
 
   return (

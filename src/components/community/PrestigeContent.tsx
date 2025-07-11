@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Trophy, Crown, Award, Star, Zap, Lock } from 'lucide-react';
+import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
 
 const PrestigeContent = () => {
   const [selectedTitle, setSelectedTitle] = useState('Technomancer');
@@ -43,8 +44,8 @@ const PrestigeContent = () => {
               <Badge variant="secondary" className="text-sm">Prestige Level 3</Badge>
             </div>
             <p className="text-muted-foreground mb-4">Your current equipped title</p>
-            <Button variant="outline" onClick={() => {}}>
-              Change Title
+            <Button variant="outline" onClick={() => triggerAnnetteAction('lookup_achievement', { selectedTitle, rankProgress })}>
+              Ask Annette About Progress
             </Button>
           </div>
         </CardContent>

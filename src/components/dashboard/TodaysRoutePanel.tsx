@@ -9,6 +9,7 @@ import {
   Eye,
   GripVertical
 } from 'lucide-react';
+import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
 
 interface RouteJob {
   id: string;
@@ -60,13 +61,11 @@ const TodaysRoutePanel = () => {
   };
 
   const handleOptimize = () => {
-    console.log('AI optimizing route...');
-    // Future: trigger AI route optimization
+    triggerAnnetteAction('optimize_route', { jobs });
   };
 
   const handleStartGPS = () => {
-    console.log('Starting GPS navigation...');
-    // Future: open GPS/maps integration
+    triggerAnnetteAction('start_gps', { jobs: jobs.filter(j => j.status !== 'completed') });
   };
 
   const displayedJobs = isExpanded ? jobs : jobs.slice(0, 2);

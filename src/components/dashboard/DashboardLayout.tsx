@@ -18,8 +18,8 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 import autumnBg from '@/assets/autumn-dashboard-bg.jpg';
 
 interface DashboardLayoutProps {
@@ -57,7 +57,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [widgetsVisible, setWidgetsVisible] = useState(true);
   const [widgetsLocked, setWidgetsLocked] = useState(false);
-  const [assistantMessage, setAssistantMessage] = useState('');
 
   const navItems: NavItem[] = [
     { id: 'job-hub', label: 'Job Hub', icon: LayoutDashboard, path: '/dashboard' },
@@ -102,13 +101,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
     return location.pathname === path;
   };
 
-  const handleSendMessage = () => {
-    if (assistantMessage.trim()) {
-      console.log('Assistant message:', assistantMessage);
-      setAssistantMessage('');
-      // Future: Integrate with Annette AI
-    }
-  };
 
   return (
     <div 
@@ -298,42 +290,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </div>
 
-      {/* Assistant Chat Panel */}
-      <div className="fixed bottom-4 right-4 z-30">
-        <Card className="w-80 bg-card/95 backdrop-blur-md border-border/20 shadow-xl">
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm font-medium text-foreground flex items-center">
-              <MessageSquare className="h-4 w-4 mr-2 text-primary" />
-              AI Assistant
-              <Badge variant="outline" className="ml-auto text-xs">
-                Beta
-              </Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="flex space-x-2">
-              <Input
-                placeholder="Ask me anything..."
-                value={assistantMessage}
-                onChange={(e) => setAssistantMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                className="bg-muted/50 border-border/20 text-sm"
-              />
-              <Button
-                size="sm"
-                onClick={handleSendMessage}
-                disabled={!assistantMessage.trim()}
-                className="bg-primary hover:bg-primary/90"
-              >
-                Send
-              </Button>
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">
-              Future Annette AI integration
-            </p>
-          </CardContent>
-        </Card>
-      </div>
+      {/* Annette AI Assistant Integration */}
+      <AnnetteIntegration />
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { MapPin, Star, Users, Zap } from 'lucide-react';
+import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
 
 const DiscoverContent = () => {
   const featuredCategories = [
@@ -107,7 +108,13 @@ const DiscoverContent = () => {
                     </div>
                   </div>
                 </div>
-                <Button variant="outline" size="sm">Connect</Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => triggerAnnetteAction('recommend_provider', provider)}
+                >
+                  Ask Annette
+                </Button>
               </div>
             ))}
           </CardContent>
