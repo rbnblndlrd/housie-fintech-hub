@@ -15,6 +15,8 @@ import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import PrivacySettingsCard from './PrivacySettingsCard';
 import PrestigeShowcaseCard from './PrestigeShowcaseCard';
 import BecomeProviderCard from '@/components/customer/BecomeProviderCard';
+import ProviderDashboardPreview from './ProviderDashboardPreview';
+import CrewSuggestions from './CrewSuggestions';
 
 interface ProfileMainContainerProps {
   profile: UnifiedUserProfile;
@@ -127,12 +129,19 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
             />
           </div>
 
-          {/* Become Provider Card - Show for customers only */}
-          {!canSwitchToProvider && !isProvider && (
+          {/* Provider Status Section */}
+          {!canSwitchToProvider && !isProvider ? (
+            // Show conversion card for customers
             <div className="mt-6">
               <BecomeProviderCard />
             </div>
-          )}
+          ) : canSwitchToProvider && isProvider ? (
+            // Show provider dashboard and crew suggestions for providers
+            <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <ProviderDashboardPreview />
+              <CrewSuggestions />
+            </div>
+          ) : null}
         </CardContent>
       </Card>
     </div>

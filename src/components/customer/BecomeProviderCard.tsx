@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
-import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
+import { useProviderConversion } from '@/hooks/useProviderConversion';
 import { useNavigate } from 'react-router-dom';
 import { 
   Briefcase, 
@@ -18,36 +16,19 @@ import {
 } from 'lucide-react';
 
 const BecomeProviderCard = () => {
-  const { enableProviderMode } = useUnifiedProfile();
-  const { forceRefresh } = useRoleSwitch();
-  const { toast } = useToast();
+  const { convertToProvider, loading } = useProviderConversion();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
 
   const handleEnableProvider = async () => {
-    setLoading(true);
     try {
-      await enableProviderMode();
-      await forceRefresh?.();
-      
-      toast({
-        title: "Provider Mode Enabled!",
-        description: "Complete your profile setup to start earning.",
-      });
-
-      // Navigate to provider setup page
-      navigate('/provider-setup');
+      await convertToProvider();
+      // Navigate to provider setup after successful conversion
+      setTimeout(() => navigate('/provider-setup'), 1000);
     } catch (error) {
-      console.error('Error enabling provider mode:', error);
-      toast({
-        title: "Error",
-        description: "Failed to enable provider mode. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
+      console.error('Provider conversion failed:', error);
     }
   };
+
 
   const features = [
     {

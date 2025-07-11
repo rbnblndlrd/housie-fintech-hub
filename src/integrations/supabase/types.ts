@@ -2403,6 +2403,51 @@ export type Database = {
           },
         ]
       }
+      service_drafts: {
+        Row: {
+          category: string
+          created_at: string
+          description: string
+          duration_hours: number | null
+          id: string
+          price_per_hour: number | null
+          requirements: string | null
+          service_area: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration_hours?: number | null
+          id?: string
+          price_per_hour?: number | null
+          requirements?: string | null
+          service_area?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string
+          duration_hours?: number | null
+          id?: string
+          price_per_hour?: number | null
+          requirements?: string | null
+          service_area?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       service_subcategories: {
         Row: {
           background_check_required: boolean | null
@@ -2633,6 +2678,7 @@ export type Database = {
           can_provide_services: boolean | null
           ccq_license_number: string | null
           ccq_verified: boolean | null
+          comfort_km: number | null
           community_rating_points: number | null
           company: string | null
           courtesy_commendations: number | null
@@ -2686,6 +2732,7 @@ export type Database = {
           can_provide_services?: boolean | null
           ccq_license_number?: string | null
           ccq_verified?: boolean | null
+          comfort_km?: number | null
           community_rating_points?: number | null
           company?: string | null
           courtesy_commendations?: number | null
@@ -2739,6 +2786,7 @@ export type Database = {
           can_provide_services?: boolean | null
           ccq_license_number?: string | null
           ccq_verified?: boolean | null
+          comfort_km?: number | null
           community_rating_points?: number | null
           company?: string | null
           courtesy_commendations?: number | null

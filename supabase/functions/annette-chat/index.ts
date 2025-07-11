@@ -19,7 +19,7 @@ interface ChatRequest {
     content: string;
   }>;
   context?: {
-    type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking' | 'opportunities';
+    type?: 'route' | 'bid' | 'profile' | 'cluster' | 'booking' | 'opportunities' | 'provider_onboarding';
     data?: any;
   };
   pageContext?: {
@@ -231,6 +231,9 @@ serve(async (req) => {
           break;
         case 'opportunities':
           contextualPrompt = 'The user is viewing an opportunity with crew bids. Focus on explaining proposals, comparing crews, revenue splits, scheduling details, and helping them make informed decisions about which crew to select.';
+          break;
+        case 'provider_onboarding':
+          contextualPrompt = 'The user is a new provider starting their onboarding journey. Welcome them warmly, explain the next steps to complete their profile, and highlight key features like service setup, verification, and joining crews. Be encouraging and helpful.';
           break;
       }
     }
