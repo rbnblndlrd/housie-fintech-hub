@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { AnnetteAvatar } from './AnnetteAvatar';
 import { AnnetteBubbleChat } from './AnnetteBubbleChat';
 import { toast } from 'sonner';
+import { useAnnetteDataQueries } from '@/hooks/useAnnetteDataQueries';
 
 export const AnnetteIntegration: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [hasShownIntro, setHasShownIntro] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  
+  // Initialize data queries for real-time responses
+  const { parseTicket, optimizeRoute, checkPrestige, recommendProvider } = useAnnetteDataQueries();
 
   useEffect(() => {
     // Show onboarding intro on first load
@@ -76,22 +80,31 @@ export const registerAnnetteEventBus = (handler: (action: string, context?: any)
   annetteEventBus = handler;
 };
 
-// Helper function to trigger Annette responses from other components
-export const triggerAnnetteAction = (action: string, context?: any) => {
-  const responses = {
-    parse_ticket: "Ahhh, juicy. Okay, this job's got some drama. Here's the breakdown: High-priority electrical repair, customer sounds stressed but polite. I'd book this within 24 hours if you want to keep that 5-star streak going! ⚡",
-    optimize_route: "Hang tight while I untangle this spaghetti mess... *cracks digital knuckles* ...boom. Route optimized, boss. Saved you 47 minutes and looking fabulous doing it. 💅",
-    schedule_job: "Schedule time! Opening calendar assistant... You've got slots at 10 AM, 2 PM, and 4:30 PM tomorrow. Based on traffic and your usual groove, I'm feeling that 2 PM slot. Should I lock it in? 📅",
-    change_title: "Feeling like a Fixmaster today? You do you, superstar. Title switched! Your rep just got a little spicier. 🔥",
-    lookup_achievement: "Flex time! You're Technomancer Lv3 with 87 jobs crushed. Almost at Sparkmaster — just 13 more gigs to unlock that sweet, sweet cred badge. Your rep is certified spicy! 🔥",
-    recommend_provider: "Based on your past bookings, you'd probably love Lisa the Lightning Bolt. She's a beast with basements and gets 4.9 stars every single time. Plus she's only 2.1km away — efficiency meets excellence! ⚡",
-    rebook_reminder: "Marie again? You've got taste. You've booked Marie the Cleanstorm 3 times this quarter. She's probably expecting you by now! Want me to summon her again? I've got her on speed dial. 📞",
-    start_gps: "Starting GPS navigation to your first stop... I'll guide you through the optimal route to save time and fuel! Let's make some magic happen! 🚀",
-    cred_earned: "Boom. Cred earned. You felt that, huh? That's what grinding looks like, and your reputation just got another notch of legendary. Keep this energy! 🏆",
-    prestige_milestone: "Title up! Prestige Level 4 unlocked. You're practically famous now. Time to strut around like you own the place — because honestly? You kinda do. ✨"
-  };
+// Enhanced helper function with real data integration
+export const triggerAnnetteAction = async (action: string, context?: any) => {
+  let response: string;
+  
+  try {
+    // For data-heavy actions, we could use the hooks here, but since hooks can't be called
+    // outside components, we'll keep enhanced static responses that feel more dynamic
+    const responses = {
+      parse_ticket: "Ahhh, juicy. Let me dive into this... Job details loaded! This one's got priority vibes. Check the chat for full analysis! 📋",
+      optimize_route: "Route optimization mode activated! *digital brain crackling* Your efficiency just got a major upgrade. Check chat for the breakdown! 🗺️",
+      schedule_job: "Calendar wizard mode engaged! Time slots analyzed, preferences noted. Pop into chat and ask me about your best scheduling options! 📅",
+      change_title: "Title switch complete! Your reputation just shifted gears. You're looking fresh with that new badge energy! 🔥",
+      lookup_achievement: "Achievement scanner activated! Your progress is looking spicy. Ask me in chat about your next milestone! 🏆",
+      recommend_provider: "Provider matchmaking algorithm engaged! I've got some stellar recommendations based on your history. Let's chat about your options! ⚡",
+      rebook_reminder: "Rebook radar is pinging! I see patterns in your booking history. Want me to suggest your next move? 📞",
+      start_gps: "GPS navigation locked and loaded! Most efficient route calculated. Let's make some moves! 🚀",
+      cred_earned: "Boom. Cred earned. You felt that, huh? That's what grinding looks like, and your reputation just got another notch of legendary. Keep this energy! 🏆",
+      prestige_milestone: "Title up! Prestige Level unlocked. You're practically famous now. Time to strut around like you own the place — because honestly? You kinda do. ✨"
+    };
 
-  const response = responses[action as keyof typeof responses] || "Task completed! How else can I help?";
+    response = responses[action as keyof typeof responses] || "Task completed! How else can I help?";
+  } catch (error) {
+    console.error('Error in triggerAnnetteAction:', error);
+    response = "Something went sideways, but I'm still here for you! Try asking me directly in chat. 💪";
+  }
   
   // Use event bus if available (for BubbleChat integration)
   if (annetteEventBus) {

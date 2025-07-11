@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { registerAnnetteEventBus } from './AnnetteIntegration';
+import { useAnnetteDataQueries } from '@/hooks/useAnnetteDataQueries';
 
 interface ChatMessage {
   id: string;
@@ -60,6 +61,16 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Initialize data queries hook
+  const { 
+    parseTicket, 
+    optimizeRoute, 
+    checkPrestige, 
+    recommendProvider, 
+    lookupAchievement,
+    isLoading: dataLoading 
+  } = useAnnetteDataQueries();
 
   // Register event bus for platform actions
   useEffect(() => {
@@ -87,36 +98,40 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
     }
   }, [messages]);
 
-  const simulateAnnetteResponse = (userMessage: string): string => {
+  const handleAnnetteResponse = async (userMessage: string): Promise<string> => {
     const lowerMessage = userMessage.toLowerCase();
     
-    // Command matching with Annette's personality
-    if (lowerMessage.includes('optimize') && lowerMessage.includes('route')) {
-      return "Ooooh I love a good shuffle! Hang tight... *cracks digital knuckles* ...boom. Most efficient path, just for you 💅 Saved you 47 minutes and looking fabulous doing it.";
-    }
-    
+    // Real data-backed responses
     if (lowerMessage.includes('parse') && (lowerMessage.includes('ticket') || lowerMessage.includes('job'))) {
-      return "Okay, give me a sec while I crank the gears... *beep boop* Here's what's up with that job: High-priority electrical repair, customer sounds stressed but polite. I'd book this within 24 hours if you want to keep that 5-star streak going! ⚡";
+      return await parseTicket();
     }
     
-    if (lowerMessage.includes('achievement') || lowerMessage.includes('prestige') || lowerMessage.includes('title') || lowerMessage.includes('level')) {
-      return "Flex time! You're Technomancer Lv3 with 87 jobs crushed. Almost at Sparkmaster — just 13 more gigs to unlock that sweet, sweet cred badge. Your rep is certified spicy! 🔥";
+    if (lowerMessage.includes('optimize') && lowerMessage.includes('route')) {
+      return await optimizeRoute();
     }
     
-    if (lowerMessage.includes('cred') || lowerMessage.includes('badge')) {
-      return "You've got 12 Cred Badges and counting. Reputation status: absolutely legendary. That Winter Services badge though? That's the forbidden fruit — you gotta earn that one, hero! ❄️";
+    if (lowerMessage.includes('achievement') || lowerMessage.includes('prestige') || lowerMessage.includes('title') || lowerMessage.includes('level') || lowerMessage.includes('my prestige')) {
+      return await checkPrestige();
+    }
+    
+    if (lowerMessage.includes('hire') || lowerMessage.includes('recommend') || lowerMessage.includes('provider') || lowerMessage.includes('recommend someone') || lowerMessage.includes('who should i hire')) {
+      return await recommendProvider();
+    }
+    
+    if (lowerMessage.includes('unlock') || lowerMessage.includes('how do i get') || lowerMessage.includes('badge')) {
+      // Extract badge name from message
+      const badgeMatch = lowerMessage.match(/(?:how do i get|unlock|badge)\s+([a-zA-Z\s]+)/);
+      const badgeName = badgeMatch ? badgeMatch[1].trim() : 'winter services';
+      return await lookupAchievement(badgeName);
+    }
+    
+    // Mock responses for non-data queries
+    if (lowerMessage.includes('cred') && lowerMessage.includes('how many')) {
+      return "You've earned 12 so far. You're basically trust royalty. The community loves you, and your rep speaks louder than your horn ever could! 👑";
     }
     
     if (lowerMessage.includes('rebook') || lowerMessage.includes('reminder')) {
       return "You've booked Marie the Cleanstorm 3 times this quarter. She's probably expecting you by now! Want me to summon her again? I've got her on speed dial. 📞";
-    }
-    
-    if (lowerMessage.includes('hire') || lowerMessage.includes('recommend') || lowerMessage.includes('provider')) {
-      return "You'd probably love Lisa the Lightning Bolt. She's a beast with basements and gets 4.9 stars every single time. Plus she's only 2.1km away — efficiency meets excellence! ⚡";
-    }
-    
-    if (lowerMessage.includes('unlock') || lowerMessage.includes('how do i')) {
-      return "Ahhh... trying to crack the code, eh? Most badges unlock through specific job categories and milestones. Winter Services? That's the Winter track. Gotta survive 25 snow jobs first! ❄️";
     }
     
     if (lowerMessage.includes('help') && (lowerMessage.includes('annette') || lowerMessage === 'help')) {
@@ -125,19 +140,6 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
     
     if (lowerMessage.includes('schedule') || lowerMessage.includes('calendar')) {
       return "Opening calendar assistant... *tap tap tap* You've got slots at 10 AM, 2 PM, and 4:30 PM tomorrow. Based on traffic and your usual groove, I'm feeling that 2 PM slot. Should I lock it in? 📅";
-    }
-
-    // New contextual queries
-    if (lowerMessage.includes('how many') && lowerMessage.includes('cred')) {
-      return "You've earned 12 so far. You're basically trust royalty. The community loves you, and your rep speaks louder than your horn ever could! 👑";
-    }
-
-    if (lowerMessage.includes('my prestige')) {
-      return "Technomancer, Level 3. Keep grinding, Sparkmaster's next. You're 13 jobs away from glory and I'm here for every single one! ⚡";
-    }
-
-    if (lowerMessage.includes('recommend someone') || lowerMessage.includes('who should i hire')) {
-      return "Based on your past bookings, Lisa's a fit. Landscaping? She's the GOAT. 4.9 stars, lives for the grind, and probably has dirt under her nails right now. Hire her! 🌱";
     }
 
     // Sassy fallback
@@ -158,9 +160,9 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
     setInputValue('');
     setIsTyping(true);
 
-    // Simulate processing delay
-    setTimeout(() => {
-      const response = simulateAnnetteResponse(userMessage.content);
+    try {
+      // Get real data-driven response
+      const response = await handleAnnetteResponse(userMessage.content);
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: 'assistant',
@@ -169,8 +171,18 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
       };
 
       setMessages(prev => [...prev, assistantMessage]);
+    } catch (error) {
+      console.error('Error getting Annette response:', error);
+      const errorMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'assistant',
+        content: "Oops! My brain just had a little hiccup. Try asking me again? 🤖💔",
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
