@@ -20,6 +20,8 @@ import {
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { BookingCompletionButton } from '@/components/bookings/BookingCompletionButton';
+import { AnnetteCompletionNotification } from '@/components/annette/AnnetteCompletionNotification';
 
 interface BookingData {
   id: string;
@@ -40,13 +42,15 @@ interface BookingDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave?: (updatedBooking: BookingData) => void;
+  userRole?: 'provider' | 'customer';
 }
 
 const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   booking,
   isOpen,
   onClose,
-  onSave
+  onSave,
+  userRole = 'provider'
 }) => {
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
@@ -54,6 +58,7 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
   const [scheduledTime, setScheduledTime] = useState(booking.scheduled_time || '');
   const [instructions, setInstructions] = useState(booking.instructions || '');
   const [notes, setNotes] = useState('');
+  const [showAnnetteNotification, setShowAnnetteNotification] = useState(false);
 
   const getPriorityColor = (priority: string) => {
     switch (priority.toLowerCase()) {
@@ -311,24 +316,60 @@ const BookingDetailModal: React.FC<BookingDetailModalProps> = ({
           <Button variant="outline" onClick={onClose} className="flex-1">
             Cancel
           </Button>
-          <Button
-            onClick={onSaveToSchedule}
-            disabled={isLoading || !scheduledDate || !scheduledTime}
-            className="flex-1 bg-green-600 hover:bg-green-700"
-          >
-            {isLoading ? (
-              <>
-                <Save className="h-4 w-4 mr-2 animate-spin" />
-                Scheduling...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Save & Schedule
-              </>
-            )}
-          </Button>
+          
+          {/* Completion Button for active bookings */}
+          {(booking.status === 'scheduled' || booking.status === 'in_progress' || booking.status === 'completed') && (
+            <BookingCompletionButton
+              bookingId={booking.id}
+              status={booking.status}
+              userRole={userRole}
+              onStatusUpdate={() => {
+                if (onSave) {
+                  onSave({ ...booking, status: 'completed' });
+                }
+                setShowAnnetteNotification(true);
+              }}
+              requiresPhotos={booking.service_type?.toLowerCase().includes('cleaning')}
+            />
+          )}
+          
+          {/* Schedule Button for pending bookings */}
+          {booking.status === 'pending' && (
+            <Button
+              onClick={onSaveToSchedule}
+              disabled={isLoading || !scheduledDate || !scheduledTime}
+              className="flex-1 bg-green-600 hover:bg-green-700"
+            >
+              {isLoading ? (
+                <>
+                  <Save className="h-4 w-4 mr-2 animate-spin" />
+                  Scheduling...
+                </>
+              ) : (
+                <>
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Save & Schedule
+                </>
+              )}
+            </Button>
+          )}
         </div>
+        
+        {/* Annette Completion Notification */}
+        {showAnnetteNotification && (
+          <AnnetteCompletionNotification
+            bookingId={booking.id}
+            providerName={booking.customer_name}
+            serviceName={booking.service_type}
+            previousBookings={2} // This would be fetched from service_connections
+            averageRating={4.7} // This would be fetched from provider stats
+            onRebookSuggestion={() => {
+              // Handle rebooking suggestion
+              toast.success('Rebooking suggestion created!');
+            }}
+            onDismiss={() => setShowAnnetteNotification(false)}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

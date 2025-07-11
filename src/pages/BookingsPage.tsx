@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, CheckCircle, ArrowLeft, List, CalendarDays } from 'lucide-react';
 import JobParser from '@/components/shared/JobParser';
+import { toast } from 'sonner';
 
 const BookingsPage = () => {
   const { user } = useAuth();
@@ -266,7 +267,7 @@ const BookingsPage = () => {
                             )}
                           </div>
                           
-                          <div className="mt-3 pt-3 border-t">
+                          <div className="mt-3 pt-3 border-t flex gap-2">
                             <JobParser
                               job={{
                                 id: booking.id,
@@ -278,8 +279,22 @@ const BookingsPage = () => {
                               }}
                               size="sm"
                               variant="outline"
-                              className="w-full"
+                              className="flex-1"
                             />
+                            {booking.status === 'completed' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="border-purple-300 text-purple-700 hover:bg-purple-100"
+                                onClick={() => {
+                                  // Trigger review flow for customer
+                                  toast.success('Review flow coming soon!');
+                                }}
+                              >
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                Review
+                              </Button>
+                            )}
                           </div>
                         </div>
                       ))
