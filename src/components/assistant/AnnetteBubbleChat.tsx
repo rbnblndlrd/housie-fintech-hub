@@ -40,10 +40,21 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
     {
       id: '1',
       type: 'assistant',
-      content: "Hi! I'm Annette, your HOUSIE AI assistant. I can help you parse tickets, optimize routes, check achievements, and more. What can I do for you?",
+      content: getRandomWelcomeMessage(),
       timestamp: new Date()
     }
   ]);
+
+  function getRandomWelcomeMessage(): string {
+    const welcomeMessages = [
+      "Hi sugar! I'm Annette — your local job-sorting, route-taming, title-tracking AI wizard. Wanna parse a ticket? 💅",
+      "Need help? I've got button-clickin' fingers and achievement-tracking eyes. What's the mission?",
+      "Well look who showed up to work. You ready to run this dashboard or what? ✨",
+      "Ask me anything. I've got data, sass, and an extremely organized brain.",
+      "Hey there! I'm Annette, your crew coordinator & prestige whisperer. Let's make some magic happen! 🚀"
+    ];
+    return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+  }
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -61,32 +72,45 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
   const simulateAnnetteResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase();
     
-    if (lowerMessage.includes('parse') || lowerMessage.includes('ticket')) {
-      return "I'll analyze that ticket for you! Based on the details, this appears to be a high-priority repair job. The customer mentioned urgency, and I recommend scheduling it within the next 24 hours. Would you like me to suggest optimal time slots?";
+    // Command matching with Annette's personality
+    if (lowerMessage.includes('optimize') && lowerMessage.includes('route')) {
+      return "Ooooh I love a good shuffle! Hang tight... *cracks digital knuckles* ...boom. Most efficient path, just for you 💅 Saved you 47 minutes and looking fabulous doing it.";
     }
     
-    if (lowerMessage.includes('optimize') || lowerMessage.includes('route')) {
-      return "Great! I've analyzed your current route and found 3 optimizations that could save you 45 minutes and 12km of driving. The most efficient order would be: Marie Dubois (9:00 AM), then Jean-Paul Tremblay (10:30 AM), followed by Sophie Martin (1:30 PM). This accounts for traffic patterns and service duration.";
+    if (lowerMessage.includes('parse') && (lowerMessage.includes('ticket') || lowerMessage.includes('job'))) {
+      return "Okay, give me a sec while I crank the gears... *beep boop* Here's what's up with that job: High-priority electrical repair, customer sounds stressed but polite. I'd book this within 24 hours if you want to keep that 5-star streak going! ⚡";
     }
     
-    if (lowerMessage.includes('schedule') || lowerMessage.includes('calendar')) {
-      return "Opening your scheduling assistant... I can see you have availability tomorrow at 10:00 AM, 2:00 PM, and 4:30 PM. Based on the job type and location, I recommend the 2:00 PM slot for optimal travel time. Should I book it?";
+    if (lowerMessage.includes('achievement') || lowerMessage.includes('prestige') || lowerMessage.includes('title') || lowerMessage.includes('level')) {
+      return "Flex time! You're Technomancer Lv3 with 87 jobs crushed. Almost at Sparkmaster — just 13 more gigs to unlock that sweet, sweet cred badge. Your rep is certified spicy! 🔥";
     }
     
-    if (lowerMessage.includes('prestige') || lowerMessage.includes('achievement') || lowerMessage.includes('title')) {
-      return "You're currently at Technomancer ⚡ level with 87 completed jobs! You're 13 jobs away from reaching 'Crownbreaker' status. Your strongest category is Home Repairs (45 jobs), and you've maintained a 4.8-star rating. Keep up the excellent work!";
-    }
-    
-    if (lowerMessage.includes('provider') || lowerMessage.includes('recommend') || lowerMessage.includes('network')) {
-      return "Based on your location and service history, I recommend connecting with Alex Thompson (Sparkmate rank, 3.2km away) who specializes in electrical work, and Marie Claire (Cleanstorm rank, 1.8km away) for cleaning services. Both have excellent ratings and could complement your skill set for crew collaborations.";
+    if (lowerMessage.includes('cred') || lowerMessage.includes('badge')) {
+      return "You've got 12 Cred Badges and counting. Reputation status: absolutely legendary. That Winter Services badge though? That's the forbidden fruit — you gotta earn that one, hero! ❄️";
     }
     
     if (lowerMessage.includes('rebook') || lowerMessage.includes('reminder')) {
-      return "I noticed you typically service Marie Dubois every 3 weeks for furnace maintenance. It's been 18 days since her last appointment - would you like me to send her a friendly reminder about scheduling her next service?";
+      return "You've booked Marie the Cleanstorm 3 times this quarter. She's probably expecting you by now! Want me to summon her again? I've got her on speed dial. 📞";
+    }
+    
+    if (lowerMessage.includes('hire') || lowerMessage.includes('recommend') || lowerMessage.includes('provider')) {
+      return "You'd probably love Lisa the Lightning Bolt. She's a beast with basements and gets 4.9 stars every single time. Plus she's only 2.1km away — efficiency meets excellence! ⚡";
+    }
+    
+    if (lowerMessage.includes('unlock') || lowerMessage.includes('how do i')) {
+      return "Ahhh... trying to crack the code, eh? Most badges unlock through specific job categories and milestones. Winter Services? That's the Winter track. Gotta survive 25 snow jobs first! ❄️";
+    }
+    
+    if (lowerMessage.includes('help') && lowerMessage.includes('annette')) {
+      return "I optimize jobs, track your cred, parse tasks, suggest connections, and occasionally give solid life advice. Think of me as your digital wingwoman with a PhD in Getting Stuff Done! 🎓";
+    }
+    
+    if (lowerMessage.includes('schedule') || lowerMessage.includes('calendar')) {
+      return "Opening calendar assistant... *tap tap tap* You've got slots at 10 AM, 2 PM, and 4:30 PM tomorrow. Based on traffic and your usual groove, I'm feeling that 2 PM slot. Should I lock it in? 📅";
     }
 
-    // Default response
-    return "I understand you need help with that. As your AI assistant, I can help you with ticket parsing, route optimization, scheduling, achievement tracking, and network recommendations. Could you be more specific about what you'd like assistance with?";
+    // Sassy fallback
+    return "Hmm... not sure how to help with that one yet — but I'm probably smarter than I think! Try asking me to 'parse this ticket', 'optimize my route', or 'check my prestige'. I live for that stuff! ✨";
   };
 
   const handleSendMessage = async () => {
@@ -149,11 +173,11 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
               </Avatar>
               <div>
                 <CardTitle className="text-sm font-medium text-foreground flex items-center">
-                  Annette
+                  Annette 💅
                   <Sparkles className="h-3 w-3 ml-1 text-yellow-500" />
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  {isTyping ? 'Thinking...' : 'AI Assistant'}
+                  {isTyping ? 'Cranking the gears...' : 'Crew Coordinator & Prestige Whisperer'}
                 </p>
               </div>
             </div>
@@ -268,7 +292,7 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                 </Button>
               </div>
               <p className="text-xs text-muted-foreground mt-2">
-                Try asking: "Parse this ticket", "Optimize my route", or "Check my achievements"
+                Try: "optimize my route", "parse this ticket", "check my prestige", or "who should I hire?"
               </p>
             </CardContent>
           </>
