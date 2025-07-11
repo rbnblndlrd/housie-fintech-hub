@@ -17,6 +17,9 @@ import PrestigeShowcaseCard from './PrestigeShowcaseCard';
 import BecomeProviderCard from '@/components/customer/BecomeProviderCard';
 import ProviderDashboardPreview from './ProviderDashboardPreview';
 import CrewSuggestions from './CrewSuggestions';
+import AnnetteProfileAdvisor from './AnnetteProfileAdvisor';
+import ProfileActionsBar from './ProfileActionsBar';
+import CrewStatusCard from './CrewStatusCard';
 
 interface ProfileMainContainerProps {
   profile: UnifiedUserProfile;
@@ -40,6 +43,9 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
 
   return (
     <div className="space-y-6">
+      {/* Annette Profile Advisor - only for own profile */}
+      <AnnetteProfileAdvisor profile={profile} isProvider={isProvider} />
+      
       {/* Main Profile Container */}
       <Card className="relative overflow-hidden bg-muted/30 backdrop-blur-md border border-muted-foreground/20">
         {/* Background Image Placeholder */}
@@ -129,6 +135,13 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
             />
           </div>
 
+          {/* Profile Actions Bar - for providers */}
+          {isProvider && (
+            <div className="mt-6">
+              <ProfileActionsBar profile={profile} isProvider={isProvider} />
+            </div>
+          )}
+
           {/* Provider Status Section */}
           {!canSwitchToProvider && !isProvider ? (
             // Show conversion card for customers
@@ -136,10 +149,10 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
               <BecomeProviderCard />
             </div>
           ) : canSwitchToProvider && isProvider ? (
-            // Show provider dashboard and crew suggestions for providers
+            // Show provider dashboard and crew status for providers
             <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ProviderDashboardPreview />
-              <CrewSuggestions />
+              <CrewStatusCard profile={profile} />
             </div>
           ) : null}
         </CardContent>
