@@ -19,11 +19,11 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({ profile, isEd
   };
 
   return (
-    <Card className="bg-slate-50 border border-slate-200 shadow-md hover:shadow-lg transition-shadow">
+    <Card className="bg-muted/30 backdrop-blur-md border border-muted-foreground/20">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-lg">
           <Shield className="h-5 w-5 text-orange-600" />
-          Privacy Settings
+          Location Privacy
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
@@ -39,10 +39,10 @@ const PrivacySettingsCard: React.FC<PrivacySettingsCardProps> = ({ profile, isEd
             initialRadius={privacyRadius}
           />
           
-          <div className="p-3 bg-orange-50/50 border border-orange-200/50 rounded-lg">
-            <p className="text-xs text-orange-800">
+          <div className="p-3 bg-orange-500/20 border border-orange-500/30 rounded-lg">
+            <p className="text-xs text-orange-300">
               <Shield className="h-3 w-3 inline mr-1" />
-              Your exact location is never shown. Others see you within this fuzzy area for safety and privacy.
+              Your exact location is never shown. Others see you within this comfort radius for safety and privacy.
             </p>
           </div>
         </div>

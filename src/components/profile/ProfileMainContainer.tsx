@@ -41,9 +41,9 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
   return (
     <div className="space-y-6">
       {/* Main Profile Container */}
-      <Card className="relative overflow-hidden bg-slate-50 border border-slate-200 shadow-lg">
+      <Card className="relative overflow-hidden bg-muted/30 backdrop-blur-md border border-muted-foreground/20">
         {/* Background Image Placeholder */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/10 to-secondary/5 opacity-30" />
         
         <CardHeader className="relative z-10 pb-2">
           <div className="flex items-start justify-between">
@@ -88,7 +88,7 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
         <CardContent className="relative z-10 pt-0">
           {/* Bio/Description Section */}
           <div className="mb-6">
-            <div className="p-4 bg-slate-50/80 backdrop-blur-sm rounded-lg border border-slate-200">
+            <div className="p-4 bg-muted/20 backdrop-blur-sm rounded-lg border border-muted-foreground/20">
               <h3 className="font-medium text-foreground mb-2">About</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 {profile.bio || profile.description || 'No description provided yet. Click "Edit Details" to add one!'}
@@ -99,13 +99,13 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
           {/* Provider-specific fields integration */}
           {isProvider && (
             <div className="mb-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-3 bg-slate-50/80 rounded-lg border border-slate-200">
+              <div className="p-3 bg-muted/20 rounded-lg border border-muted-foreground/20">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Business</p>
                 <p className="font-medium text-foreground">
                   {profile.business_name || 'Individual Provider'}
                 </p>
               </div>
-              <div className="p-3 bg-slate-50/80 rounded-lg border border-slate-200">
+              <div className="p-3 bg-muted/20 rounded-lg border border-muted-foreground/20">
                 <p className="text-xs text-muted-foreground uppercase tracking-wide mb-1">Rate</p>
                 <p className="font-medium text-foreground">
                   ${profile.hourly_rate || 45}/hr

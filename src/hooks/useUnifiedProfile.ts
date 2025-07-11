@@ -181,7 +181,6 @@ export const useUnifiedProfile = () => {
         years_experience: 0,
         service_radius_km: 25,
         total_bookings: 0,
-        total_reviews: 0,
         community_rating_points: 0,
         shop_points: 0,
         quality_commendations: 0,
