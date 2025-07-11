@@ -11,6 +11,7 @@ import {
   Zap
 } from 'lucide-react';
 import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
+import JobParser from '@/components/shared/JobParser';
 
 interface JobTicket {
   id: string;
@@ -152,15 +153,19 @@ const JobTicketTable = () => {
             </div>
 
             <div className="flex items-center justify-end space-x-2">
-              <Button
-                variant="outline"
+              <JobParser
+                job={{
+                  id: ticket.id,
+                  service_type: ticket.title,
+                  customer_name: ticket.customer,
+                  address: 'Montreal, QC',
+                  priority: ticket.priority.toLowerCase(),
+                  status: ticket.status.toLowerCase()
+                }}
                 size="sm"
-                onClick={() => handleParse(ticket.id)}
+                variant="outline"
                 className="bg-muted/20 hover:bg-muted/40"
-              >
-                <FileText className="h-4 w-4 mr-2" />
-                Parse
-              </Button>
+              />
               <Button
                 variant="outline"
                 size="sm"

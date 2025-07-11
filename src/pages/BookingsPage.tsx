@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, CheckCircle, ArrowLeft } from 'lucide-react';
+import JobParser from '@/components/shared/JobParser';
 
 const BookingsPage = () => {
   const { user } = useAuth();
@@ -176,6 +177,22 @@ const BookingsPage = () => {
                                 ${booking.total_amount}
                               </div>
                             )}
+                          </div>
+                          
+                          <div className="mt-3 pt-3 border-t">
+                            <JobParser
+                              job={{
+                                id: booking.id,
+                                service_type: booking.serviceName,
+                                customer_name: 'Customer',
+                                address: booking.location,
+                                priority: 'medium',
+                                status: booking.status
+                              }}
+                              size="sm"
+                              variant="outline"
+                              className="w-full"
+                            />
                           </div>
                         </div>
                       ))

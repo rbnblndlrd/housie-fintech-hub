@@ -37,6 +37,7 @@ import Prestige from './pages/Prestige';
 import TaxReports from './pages/TaxReports';
 import FinancialAnalytics from './pages/FinancialAnalytics';
 import InteractiveMapPage from './pages/InteractiveMapPage';
+import MapView from './pages/MapView';
 import Pricing from './pages/Pricing';
 import ProviderSetup from './pages/ProviderSetup';
 import ClusterCreate from './pages/clusters/ClusterCreate';
@@ -95,6 +96,7 @@ function App() {
                   <Route path="/help" element={<Help />} />
                   <Route path="/calendar" element={<Calendar />} />
                   <Route path="/gps" element={<GPS />} />
+                  <Route path="/map" element={<MapView />} />
                   <Route path="/interactive-map" element={<InteractiveMapPage />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/services" element={<Services />} />
