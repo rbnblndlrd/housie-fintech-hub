@@ -77,8 +77,13 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
     markers.current.forEach(marker => marker.remove());
     markers.current = [];
 
+    // Deduplicate providers by ID to prevent pin duplication
+    const uniqueProviders = providers.filter((provider, index, self) => 
+      index === self.findIndex(p => p.id === provider.id)
+    );
+
     // Add new markers
-    providers.forEach(provider => {
+    uniqueProviders.forEach(provider => {
       const isHovered = hoveredProviderId === provider.id.toString();
       
       // Create marker element

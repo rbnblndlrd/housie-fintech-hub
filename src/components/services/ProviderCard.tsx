@@ -50,7 +50,9 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
       );
     }
     
-    if (service.provider?.average_rating && service.provider.average_rating >= 4.8) {
+    // Updated thresholds for Top Rated badge
+    if (service.provider?.average_rating && service.provider.average_rating >= 4.7 && 
+        service.provider?.total_bookings && service.provider.total_bookings >= 50) {
       indicators.push(
         <Badge key="toprated" className="bg-yellow-100 text-yellow-800 hover:bg-yellow-200">
           <Award className="w-3 h-3 mr-1" />
@@ -59,7 +61,8 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
       );
     }
 
-    if (service.provider?.total_bookings && service.provider.total_bookings >= 50) {
+    // Only show Repeat Provider for providers with multiple bookings from same customers
+    if (service.provider?.total_bookings && service.provider.total_bookings >= 10) {
       indicators.push(
         <Badge key="repeat" className="bg-purple-100 text-purple-800 hover:bg-purple-200">
           <CheckCircle className="w-3 h-3 mr-1" />
@@ -110,8 +113,14 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
 
   const handleViewProfile = (e: React.MouseEvent) => {
     e.stopPropagation();
-    // Open provider profile in new tab/modal
-    window.open(`/provider/${service.provider.id}`, '_blank');
+    // Gracefully handle missing profile route
+    const isProfileReady = false; // TODO: Check if provider profile exists
+    if (isProfileReady) {
+      window.open(`/profile/${service.provider.id}`, '_blank');
+    } else {
+      // Show tooltip or disable button for now
+      console.log('Provider profile coming soon');
+    }
   };
 
   return (
@@ -137,11 +146,13 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
                   <h3 className="font-semibold text-gray-900 text-xl">
                     {providerName}
                   </h3>
-                  <Button
+                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleViewProfile}
-                    className="h-6 w-6 p-0 hover:bg-gray-100"
+                    disabled={true}
+                    className="h-6 w-6 p-0 hover:bg-gray-100 disabled:opacity-50"
+                    title="Profile coming soon"
                   >
                     <ExternalLink className="h-3 w-3" />
                   </Button>
@@ -225,9 +236,11 @@ const ProviderCard: React.FC<ProviderCardProps> = ({
               <Button 
                 variant="outline"
                 onClick={handleViewProfile}
-                className="w-full text-sm border-gray-300 hover:border-gray-400"
+                disabled={true}
+                className="w-full text-sm border-gray-300 hover:border-gray-400 disabled:opacity-50"
+                title="Profile coming soon"
               >
-                View Profile
+                Profile Coming Soon
               </Button>
             </div>
           </div>
