@@ -331,6 +331,7 @@ export type Database = {
         Row: {
           accepted_at: string | null
           after_photos: Json | null
+          ai_analysis: Json | null
           before_photos: Json | null
           completed_at: string | null
           created_at: string | null
@@ -338,6 +339,8 @@ export type Database = {
           duration_hours: number | null
           id: string
           instructions: string | null
+          parsed: boolean | null
+          parsed_at: string | null
           payment_status: string | null
           photos_required: boolean | null
           priority: string | null
@@ -356,6 +359,7 @@ export type Database = {
         Insert: {
           accepted_at?: string | null
           after_photos?: Json | null
+          ai_analysis?: Json | null
           before_photos?: Json | null
           completed_at?: string | null
           created_at?: string | null
@@ -363,6 +367,8 @@ export type Database = {
           duration_hours?: number | null
           id?: string
           instructions?: string | null
+          parsed?: boolean | null
+          parsed_at?: string | null
           payment_status?: string | null
           photos_required?: boolean | null
           priority?: string | null
@@ -381,6 +387,7 @@ export type Database = {
         Update: {
           accepted_at?: string | null
           after_photos?: Json | null
+          ai_analysis?: Json | null
           before_photos?: Json | null
           completed_at?: string | null
           created_at?: string | null
@@ -388,6 +395,8 @@ export type Database = {
           duration_hours?: number | null
           id?: string
           instructions?: string | null
+          parsed?: boolean | null
+          parsed_at?: string | null
           payment_status?: string | null
           photos_required?: boolean | null
           priority?: string | null
@@ -1421,6 +1430,41 @@ export type Database = {
           violation_count?: number | null
         }
         Relationships: []
+      }
+      job_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          job_id: string
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          job_id: string
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          job_id?: string
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_events_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       messages: {
         Row: {

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { useIsMobile } from '@/hooks/use-mobile';
+import JobParseOverlay from './JobParseOverlay';
 import { 
   ArrowLeft, 
   Phone, 
@@ -18,6 +19,7 @@ import {
 
 interface JobDetailViewProps {
   job: {
+    id?: string;
     time: string;
     service: string;
     customer: string;
@@ -29,16 +31,23 @@ interface JobDetailViewProps {
 }
 
 const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
-  const [showAnalysis, setShowAnalysis] = useState(false);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [showParseOverlay, setShowParseOverlay] = useState(false);
   const isMobile = useIsMobile();
 
   const handleParseWithAI = () => {
-    if (isMobile) {
-      setIsSheetOpen(true);
-    } else {
-      setShowAnalysis(true);
-    }
+    setShowParseOverlay(true);
+  };
+
+  // Convert job data for JobParseOverlay
+  const jobData = {
+    id: job.id || 'demo-job-id',
+    service_type: job.service,
+    customer_name: job.customer,
+    address: job.address,
+    priority: 'medium',
+    status: job.status,
+    phone: job.phone,
+    scheduled_time: job.time
   };
 
   const analysisContent = (
@@ -182,20 +191,12 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
           </div>
         </div>
 
-        {/* Bottom Sheet for AI Analysis */}
-        <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-          <SheetContent side="bottom" className="h-auto max-h-[80vh]">
-            <SheetHeader>
-              <SheetTitle className="text-left flex items-center gap-2">
-                <Bot className="h-5 w-5 text-blue-600" />
-                AI Job Analysis
-              </SheetTitle>
-            </SheetHeader>
-            <div className="mt-4">
-              {analysisContent}
-            </div>
-          </SheetContent>
-        </Sheet>
+        {/* Job Parse Overlay */}
+        <JobParseOverlay 
+          job={jobData}
+          isOpen={showParseOverlay}
+          onClose={() => setShowParseOverlay(false)}
+        />
       </div>
     );
   }
@@ -272,17 +273,13 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {!showAnalysis ? (
-              <Button 
-                onClick={handleParseWithAI}
-                className="w-full h-14 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
-              >
-                <Bot className="h-6 w-6 mr-3" />
-                📋 Parse
-              </Button>
-            ) : (
-              analysisContent
-            )}
+            <Button 
+              onClick={handleParseWithAI}
+              className="w-full h-14 text-lg font-semibold bg-blue-600 hover:bg-blue-700"
+            >
+              <Bot className="h-6 w-6 mr-3" />
+              📋 Parse
+            </Button>
           </CardContent>
         </Card>
 
@@ -303,14 +300,22 @@ const JobDetailView: React.FC<JobDetailViewProps> = ({ job, onBack }) => {
   );
 
   return (
-    <Dialog open={true} onOpenChange={onBack}>
-      <DialogContent className="max-w-2xl w-[70%] max-h-[80vh] overflow-y-auto p-0">
-        <DialogHeader className="sr-only">
-          <DialogTitle>Job Details</DialogTitle>
-        </DialogHeader>
-        {jobContent}
-      </DialogContent>
-    </Dialog>
+    <>
+      <Dialog open={true} onOpenChange={onBack}>
+        <DialogContent className="max-w-2xl w-[70%] max-h-[80vh] overflow-y-auto p-0">
+          <DialogHeader className="sr-only">
+            <DialogTitle>Job Details</DialogTitle>
+          </DialogHeader>
+          {jobContent}
+        </DialogContent>
+      </Dialog>
+      
+      <JobParseOverlay 
+        job={jobData}
+        isOpen={showParseOverlay}
+        onClose={() => setShowParseOverlay(false)}
+      />
+    </>
   );
 };
 

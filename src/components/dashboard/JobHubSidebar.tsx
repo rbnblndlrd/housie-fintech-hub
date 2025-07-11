@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
+import JobParseOverlay from './JobParseOverlay';
 import { 
   ArrowLeft, 
   Clock, 
@@ -19,8 +20,8 @@ interface JobHubSidebarProps {
 }
 
 const JobHubSidebar: React.FC<JobHubSidebarProps> = ({ isOpen, onClose }) => {
-  const [currentView, setCurrentView] = useState<'main' | 'parse'>('main');
-  const [selectedTicket, setSelectedTicket] = useState<string | null>(null);
+  const [showParseOverlay, setShowParseOverlay] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
 
   const sampleTickets = [
     { id: '127', customer: 'Johnson', service: 'Furnace', priority: 'high' },
@@ -44,13 +45,17 @@ const JobHubSidebar: React.FC<JobHubSidebarProps> = ({ isOpen, onClose }) => {
   ];
 
   const handleParseTicket = (ticketId: string, customer: string, service: string) => {
-    setSelectedTicket(`${customer} ${service} #${ticketId}`);
-    setCurrentView('parse');
-  };
-
-  const handleBackToMain = () => {
-    setCurrentView('main');
-    setSelectedTicket(null);
+    const jobData = {
+      id: ticketId,
+      service_type: service,
+      customer_name: customer,
+      address: '123 Rue Saint-Denis, Montreal, QC',
+      priority: sampleTickets.find(t => t.id === ticketId)?.priority || 'medium',
+      status: 'pending',
+      phone: '(514) 555-0123'
+    };
+    setSelectedJob(jobData);
+    setShowParseOverlay(true);
   };
 
   const getPriorityColor = (priority: string) => {
@@ -78,8 +83,7 @@ const JobHubSidebar: React.FC<JobHubSidebarProps> = ({ isOpen, onClose }) => {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {currentView === 'main' ? (
-          <div className="h-full flex flex-col">
+        <div className="h-full flex flex-col">
             {/* Header */}
             <div className="p-4 border-b bg-gradient-to-r from-orange-50 to-yellow-50">
               <div className="flex items-center justify-between">
@@ -186,72 +190,17 @@ const JobHubSidebar: React.FC<JobHubSidebarProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
           </div>
-        ) : (
-          /* Parse Analysis View */
-          <div className="h-full flex flex-col">
-            {/* Parse Header */}
-            <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-purple-50">
-              <div className="flex items-center gap-3">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  onClick={handleBackToMain}
-                  className="hover:bg-white/50"
-                >
-                  <ArrowLeft className="h-4 w-4" />
-                </Button>
-                <h2 className="text-xl font-bold text-gray-800">
-                  🤖 AI Analysis
-                </h2>
-              </div>
-              <p className="text-sm text-gray-600 mt-1">{selectedTicket}</p>
-            </div>
-
-            {/* Analysis Content */}
-            <div className="flex-1 p-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="text-lg flex items-center gap-2">
-                    <Bot className="h-5 w-5 text-blue-600" />
-                    Detailed Analysis
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Problem Summary</h4>
-                    <p className="text-sm text-gray-600">
-                      Customer reports intermittent heating issues with their furnace system. 
-                      Initial diagnostics suggest potential thermostat malfunction or ductwork blockage.
-                    </p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Recommended Actions</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
-                      <li>• Check thermostat calibration and battery</li>
-                      <li>• Inspect air filter for blockages</li>
-                      <li>• Test heating element functionality</li>
-                      <li>• Verify proper airflow through vents</li>
-                    </ul>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Estimated Time</h4>
-                    <p className="text-sm text-gray-600">2-3 hours for complete diagnosis and repair</p>
-                  </div>
-                  
-                  <div>
-                    <h4 className="font-semibold text-gray-800 mb-2">Parts Needed</h4>
-                    <ul className="text-sm text-gray-600 space-y-1">
-                      <li>• Thermostat (backup - $75)</li>
-                      <li>• Air filter ($15)</li>
-                      <li>• Various small components ($25)</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+        
+        {/* Job Parse Overlay */}
+        {selectedJob && (
+          <JobParseOverlay 
+            job={selectedJob}
+            isOpen={showParseOverlay}
+            onClose={() => {
+              setShowParseOverlay(false);
+              setSelectedJob(null);
+            }}
+          />
         )}
       </div>
     </>

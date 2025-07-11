@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Settings, GripVertical, GripHorizontal } from 'lucide-react';
+import { Settings, GripVertical, GripHorizontal, Bot } from 'lucide-react';
+import JobParseOverlay from './JobParseOverlay';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,8 @@ interface ServiceTicket {
   date: string;
   customerName: string;
   duration: string;
+  address?: string;
+  phone?: string;
 }
 
 interface Column {
@@ -30,6 +33,8 @@ interface Column {
 }
 
 const KanbanTicketList = () => {
+  const [showParseOverlay, setShowParseOverlay] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<any>(null);
   const [columns, setColumns] = useState<Column[]>([
     { id: 'status', label: 'Status', field: 'status', visible: true },
     { id: 'service', label: 'Service', field: 'serviceType', visible: true },
@@ -51,7 +56,9 @@ const KanbanTicketList = () => {
       payout: 150,
       date: '2024-01-15',
       customerName: 'Marie Dubois',
-      duration: '2 hours'
+      duration: '2 hours',
+      address: '1234 Rue Saint-Denis, Montreal, QC',
+      phone: '(514) 555-0123'
     },
     {
       id: '2',
@@ -62,7 +69,9 @@ const KanbanTicketList = () => {
       payout: 200,
       date: '2024-01-16',
       customerName: 'Jean Tremblay',
-      duration: '3 hours'
+      duration: '3 hours',
+      address: '567 Av des Laurentides, Laval, QC',
+      phone: '(450) 555-0456'
     },
     {
       id: '3',
@@ -73,7 +82,9 @@ const KanbanTicketList = () => {
       payout: 80,
       date: '2024-01-14',
       customerName: 'Sophie Martin',
-      duration: '1.5 hours'
+      duration: '1.5 hours',
+      address: '890 Boul Roland-Therrien, Longueuil, QC',
+      phone: '(450) 555-0789'
     }
   ]);
 
@@ -109,6 +120,21 @@ const KanbanTicketList = () => {
     e.dataTransfer.setData('application/json', JSON.stringify(ticket));
   };
 
+  const handleParseTicket = (ticket: ServiceTicket) => {
+    const jobData = {
+      id: ticket.id,
+      service_type: ticket.serviceType,
+      customer_name: ticket.customerName,
+      address: ticket.address || `${ticket.city}, QC`,
+      priority: ticket.priority,
+      status: ticket.status,
+      phone: ticket.phone,
+      scheduled_date: ticket.date
+    };
+    setSelectedJob(jobData);
+    setShowParseOverlay(true);
+  };
+
   const renderCellValue = (ticket: ServiceTicket, field: keyof ServiceTicket) => {
     const value = ticket[field];
     
@@ -125,68 +151,94 @@ const KanbanTicketList = () => {
   };
 
   return (
-    <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg h-[400px]">
-      <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          My Service Tickets
-        </CardTitle>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            {columns.map((column) => (
-              <DropdownMenuCheckboxItem
-                key={column.id}
-                checked={column.visible}
-                onCheckedChange={(checked) => handleColumnVisibilityChange(column.id, checked)}
-              >
-                {column.label}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </CardHeader>
-      <CardContent className="p-0">
-        <div className="overflow-x-auto">
-          <div className="min-w-full">
-            {/* Column Headers */}
-            <div className="grid gap-2 p-4 border-b bg-gray-50/50" style={{ gridTemplateColumns: `repeat(${visibleColumns.length}, 1fr)` }}>
-              {visibleColumns.map((column) => (
-                <div key={column.id} className="flex items-center gap-2 font-medium text-sm text-gray-700">
-                  <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
-                  {column.label}
-                </div>
-              ))}
-            </div>
-            
-            {/* Ticket Rows */}
-            <div className="max-h-[280px] overflow-y-auto">
-              {tickets.map((ticket) => (
-                <div
-                  key={ticket.id}
-                  className="grid gap-2 p-3 border-b hover:bg-gray-50/50 cursor-move transition-colors"
-                  style={{ gridTemplateColumns: `repeat(${visibleColumns.length}, 1fr)` }}
-                  draggable
-                  onDragStart={(e) => handleTicketDragStart(e, ticket)}
+    <>
+      <Card className="fintech-card border-3 border-black bg-cream/95 shadow-lg h-[400px]">
+        <CardHeader className="flex flex-row items-center justify-between pb-4">
+          <CardTitle className="flex items-center gap-2 text-lg">
+            My Service Tickets
+          </CardTitle>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                <Settings className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
+              {columns.map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  checked={column.visible}
+                  onCheckedChange={(checked) => handleColumnVisibilityChange(column.id, checked)}
                 >
-                  <div className="flex items-center gap-2">
-                    <GripHorizontal className="h-3 w-3 text-gray-400" />
-                  </div>
-                  {visibleColumns.slice(1).map((column) => (
-                    <div key={column.id} className="flex items-center">
-                      {renderCellValue(ticket, column.field)}
-                    </div>
-                  ))}
-                </div>
+                  {column.label}
+                </DropdownMenuCheckboxItem>
               ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="overflow-x-auto">
+            <div className="min-w-full">
+              {/* Column Headers */}
+              <div className="grid gap-2 p-4 border-b bg-gray-50/50" style={{ gridTemplateColumns: `repeat(${visibleColumns.length}, 1fr) auto` }}>
+                {visibleColumns.map((column) => (
+                  <div key={column.id} className="flex items-center gap-2 font-medium text-sm text-gray-700">
+                    <GripVertical className="h-3 w-3 text-gray-400 cursor-move" />
+                    {column.label}
+                  </div>
+                ))}
+                <div className="flex items-center gap-2 font-medium text-sm text-gray-700">
+                  Actions
+                </div>
+              </div>
+              
+              {/* Ticket Rows */}
+              <div className="max-h-[280px] overflow-y-auto">
+                {tickets.map((ticket) => (
+                  <div
+                    key={ticket.id}
+                    className="grid gap-2 p-3 border-b hover:bg-gray-50/50 transition-colors"
+                    style={{ gridTemplateColumns: `repeat(${visibleColumns.length}, 1fr) auto` }}
+                  >
+                    <div className="flex items-center gap-2 cursor-move" draggable onDragStart={(e) => handleTicketDragStart(e, ticket)}>
+                      <GripHorizontal className="h-3 w-3 text-gray-400" />
+                    </div>
+                    {visibleColumns.slice(1).map((column) => (
+                      <div key={column.id} className="flex items-center">
+                        {renderCellValue(ticket, column.field)}
+                      </div>
+                    ))}
+                    <div className="flex items-center">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleParseTicket(ticket)}
+                        className="text-xs px-2 py-1 h-6 hover:bg-primary/10"
+                      >
+                        <Bot className="h-3 w-3 mr-1" />
+                        Parse
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Job Parse Overlay */}
+      {selectedJob && (
+        <JobParseOverlay 
+          job={selectedJob}
+          isOpen={showParseOverlay}
+          onClose={() => {
+            setShowParseOverlay(false);
+            setSelectedJob(null);
+          }}
+        />
+      )}
+    </>
   );
 };
 
