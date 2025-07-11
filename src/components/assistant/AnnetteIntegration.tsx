@@ -10,7 +10,7 @@ export const AnnetteIntegration: React.FC = () => {
   const [hasNewMessage, setHasNewMessage] = useState(false);
   
   // Initialize data queries for real-time responses
-  const { parseTicket, optimizeRoute, checkPrestige, recommendProvider } = useAnnetteDataQueries();
+  const { parseTicket, optimizeRoute, checkPrestige, recommendProvider, checkRebookingSuggestions } = useAnnetteDataQueries();
 
   useEffect(() => {
     // Show onboarding intro on first load

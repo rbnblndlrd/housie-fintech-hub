@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useServiceConnections } from './useServiceConnections';
 
 interface JobData {
   id: string;
@@ -34,6 +35,7 @@ interface PrestigeData {
 
 export const useAnnetteDataQueries = () => {
   const { user } = useAuth();
+  const { rebookingSuggestions, checkMessagingPermission } = useServiceConnections();
   const [isLoading, setIsLoading] = useState(false);
 
   // Parse specific job ticket
@@ -279,12 +281,41 @@ export const useAnnetteDataQueries = () => {
     }
   };
 
+  // Smart rebooking suggestions
+  const checkRebookingSuggestions = async (): Promise<string> => {
+    if (!user) return "You need to be logged in to check rebooking suggestions!";
+    
+    if (rebookingSuggestions.length === 0) {
+      return "No rebooking suggestions right now! When you work with providers regularly, I'll start noticing patterns and nudge you when it's time to book again. 📅";
+    }
+
+    const suggestion = rebookingSuggestions[0];
+    const timeSinceLast = Math.ceil((Date.now() - new Date(suggestion.last_booking_date).getTime()) / (1000 * 60 * 60 * 24));
+    
+    return `You booked ${suggestion.provider_name} for ${suggestion.service_type} ${timeSinceLast} days ago. ${suggestion.total_bookings > 1 ? `You've worked together ${suggestion.total_bookings} times` : 'First time was solid'} - want me to check their availability for a rebook? 💅`;
+  };
+
+  // Check messaging permissions  
+  const checkMessagingAccess = async (targetUserId: string): Promise<string> => {
+    if (!user) return "You need to be logged in!";
+    
+    const canMessage = await checkMessagingPermission(targetUserId);
+    
+    if (canMessage) {
+      return "You can message this person! You've built up service history together. 💬";
+    } else {
+      return "Messaging locked - you need to complete at least one job together first. Book a service to unlock direct messaging! 🔒";
+    }
+  };
+
   return {
     parseTicket,
     optimizeRoute,
     checkPrestige,
     recommendProvider,
     lookupAchievement,
+    checkRebookingSuggestions,
+    checkMessagingAccess,
     isLoading
   };
 };

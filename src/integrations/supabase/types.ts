@@ -335,10 +335,12 @@ export type Database = {
           before_photos: Json | null
           completed_at: string | null
           created_at: string | null
+          creates_service_connection: boolean | null
           customer_id: string
           duration_hours: number | null
           id: string
           instructions: string | null
+          messaging_tier_unlocked: string | null
           parsed: boolean | null
           parsed_at: string | null
           payment_status: string | null
@@ -363,10 +365,12 @@ export type Database = {
           before_photos?: Json | null
           completed_at?: string | null
           created_at?: string | null
+          creates_service_connection?: boolean | null
           customer_id: string
           duration_hours?: number | null
           id?: string
           instructions?: string | null
+          messaging_tier_unlocked?: string | null
           parsed?: boolean | null
           parsed_at?: string | null
           payment_status?: string | null
@@ -391,10 +395,12 @@ export type Database = {
           before_photos?: Json | null
           completed_at?: string | null
           created_at?: string | null
+          creates_service_connection?: boolean | null
           customer_id?: string
           duration_hours?: number | null
           id?: string
           instructions?: string | null
+          messaging_tier_unlocked?: string | null
           parsed?: boolean | null
           parsed_at?: string | null
           payment_status?: string | null
@@ -2151,6 +2157,48 @@ export type Database = {
         }
         Relationships: []
       }
+      rebooking_suggestions: {
+        Row: {
+          created_at: string | null
+          frequency_pattern: string | null
+          id: string
+          last_booking_date: string | null
+          provider_user_id: string
+          service_type: string
+          suggested_date: string | null
+          suggestion_acted_on: boolean | null
+          suggestion_shown: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          frequency_pattern?: string | null
+          id?: string
+          last_booking_date?: string | null
+          provider_user_id: string
+          service_type: string
+          suggested_date?: string | null
+          suggestion_acted_on?: boolean | null
+          suggestion_shown?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          frequency_pattern?: string | null
+          id?: string
+          last_booking_date?: string | null
+          provider_user_id?: string
+          service_type?: string
+          suggested_date?: string | null
+          suggestion_acted_on?: boolean | null
+          suggestion_shown?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       review_commendations: {
         Row: {
           commendation_type: string
@@ -2402,6 +2450,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      service_connections: {
+        Row: {
+          auto_rebook_suggested: boolean | null
+          can_message: boolean | null
+          connection_tier: string
+          created_at: string | null
+          cred_connection_established: boolean | null
+          id: string
+          last_booked_date: string | null
+          service_connection_count: number | null
+          updated_at: string | null
+          user_one_id: string
+          user_two_id: string
+        }
+        Insert: {
+          auto_rebook_suggested?: boolean | null
+          can_message?: boolean | null
+          connection_tier?: string
+          created_at?: string | null
+          cred_connection_established?: boolean | null
+          id?: string
+          last_booked_date?: string | null
+          service_connection_count?: number | null
+          updated_at?: string | null
+          user_one_id: string
+          user_two_id: string
+        }
+        Update: {
+          auto_rebook_suggested?: boolean | null
+          can_message?: boolean | null
+          connection_tier?: string
+          created_at?: string | null
+          cred_connection_established?: boolean | null
+          id?: string
+          last_booked_date?: string | null
+          service_connection_count?: number | null
+          updated_at?: string | null
+          user_one_id?: string
+          user_two_id?: string
+        }
+        Relationships: []
       }
       service_drafts: {
         Row: {
@@ -3245,6 +3335,10 @@ export type Database = {
         Args: { community_points: number }
         Returns: number
       }
+      can_message_user: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
       check_rate_limit: {
         Args: {
           user_uuid: string
@@ -3337,6 +3431,18 @@ export type Database = {
           p_booking_id?: string
         }
         Returns: string
+      }
+      get_rebooking_suggestions: {
+        Args: { user_uuid: string }
+        Returns: {
+          provider_name: string
+          provider_user_id: string
+          service_type: string
+          last_booking_date: string
+          suggested_date: string
+          frequency_pattern: string
+          total_bookings: number
+        }[]
       }
       get_user_ai_credits: {
         Args: { user_uuid: string }

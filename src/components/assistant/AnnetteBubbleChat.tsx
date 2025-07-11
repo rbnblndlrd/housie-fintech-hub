@@ -69,6 +69,8 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
     checkPrestige, 
     recommendProvider, 
     lookupAchievement,
+    checkRebookingSuggestions,
+    checkMessagingAccess,
     isLoading: dataLoading 
   } = useAnnetteDataQueries();
 
@@ -130,8 +132,13 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
       return "You've earned 12 so far. You're basically trust royalty. The community loves you, and your rep speaks louder than your horn ever could! 👑";
     }
     
-    if (lowerMessage.includes('rebook') || lowerMessage.includes('reminder')) {
-      return "You've booked Marie the Cleanstorm 3 times this quarter. She's probably expecting you by now! Want me to summon her again? I've got her on speed dial. 📞";
+    if (lowerMessage.includes('rebook') || lowerMessage.includes('reminder') || lowerMessage.includes('suggestions')) {
+      return await checkRebookingSuggestions();
+    }
+    
+    if (lowerMessage.includes('message') || lowerMessage.includes('can i message') || lowerMessage.includes('messaging')) {
+      // Extract user ID or name if possible, otherwise give general info
+      return "Need to check if you can message someone? Give me their name or ID and I'll tell you if you've earned messaging privileges with them! 💬";
     }
     
     if (lowerMessage.includes('help') && (lowerMessage.includes('annette') || lowerMessage === 'help')) {
