@@ -88,7 +88,7 @@ const JobHubSidebar: React.FC<JobHubSidebarProps> = ({ isOpen, onClose }) => {
             <div className="p-4 border-b bg-gradient-to-r from-orange-50 to-yellow-50">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                  📋 Job Hub
+                  📋 Dashboard
                 </h2>
                 <Button 
                   variant="ghost" 

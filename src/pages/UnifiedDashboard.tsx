@@ -50,7 +50,7 @@ const UnifiedDashboard = () => {
   if (currentRole === 'provider') {
     return (
       <>
-        {/* Back Navigation - Above Job Hub tab */}
+        {/* Back Navigation - Above Dashboard tab */}
         <div className="fixed top-[94px] left-[22px] z-50">
           <Button
             variant="outline"

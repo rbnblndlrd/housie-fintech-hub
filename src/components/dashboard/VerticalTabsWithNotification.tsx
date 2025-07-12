@@ -18,13 +18,13 @@ const VerticalTabsWithNotification: React.FC<VerticalTabsWithNotificationProps> 
         <div className="h-full w-full flex items-center justify-start">
           <Tabs value={activeTab} onValueChange={onTabChange} className="w-full">
             <TabsList className="bg-transparent border-none shadow-none p-0 flex-col h-auto gap-3">
-              {/* Job Hub tab with notification bell */}
+              {/* Dashboard tab with notification bell */}
               <TabsTrigger 
                 value="job-hub" 
                 className="w-full justify-start bg-white/10 backdrop-blur-sm border border-white/20 text-white font-medium hover:bg-white/20 data-[state=active]:bg-orange-500 data-[state=active]:text-white data-[state=active]:border-orange-600 transition-all duration-200 rounded-lg h-12"
               >
                 <Briefcase className="h-4 w-4 mr-3 drop-shadow-sm" />
-                <span className="drop-shadow-sm">Job Hub</span>
+                <span className="drop-shadow-sm">Dashboard</span>
               </TabsTrigger>
               
               <TabsTrigger 

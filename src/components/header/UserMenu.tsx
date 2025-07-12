@@ -280,7 +280,7 @@ const UserMenu = () => {
           >
             <Home className="h-5 w-5 text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
             <span className="text-white font-medium">
-              {currentRole === 'customer' ? 'Board' : 'Job Hub'}
+              {currentRole === 'customer' ? 'Board' : 'Dashboard'}
             </span>
           </DropdownMenuItem>
 

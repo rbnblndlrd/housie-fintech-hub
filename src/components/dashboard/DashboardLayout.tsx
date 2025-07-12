@@ -61,7 +61,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   const [widgetsLocked, setWidgetsLocked] = useState(false);
 
   const navItems: NavItem[] = [
-    { id: 'job-hub', label: 'Job Hub', icon: LayoutDashboard, path: '/dashboard' },
+    { id: 'job-hub', label: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
     { id: 'bookings', label: 'Bookings', icon: Calendar, path: '/bookings' },
     { id: 'map', label: 'Map View', icon: Map, path: '/map' },
     { id: 'community', label: 'Community', icon: MessageSquare, path: '/community-dashboard' },

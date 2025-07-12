@@ -15,7 +15,7 @@ const DashboardNavigation = () => {
   const navItems = [
     { 
       id: 'dashboard', 
-      label: 'Job Hub', 
+      label: 'Dashboard', 
       icon: Briefcase, 
       emoji: '📋',
       path: '/dashboard'

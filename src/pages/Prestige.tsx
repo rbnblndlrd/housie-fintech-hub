@@ -24,7 +24,7 @@ const Prestige = () => {
     <>
       <VideoBackground />
       <div className="relative z-10 min-h-screen">
-        {/* Mobile: Compact Back Button - Above Job Hub tab */}
+        {/* Mobile: Compact Back Button - Above Dashboard tab */}
         <div className="md:hidden fixed top-[94px] left-[22px] z-50">
           <Button
             variant="outline"

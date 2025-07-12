@@ -58,7 +58,7 @@ const JobAcceptedOverlay: React.FC<JobAcceptedOverlayProps> = ({
                 </button>
               </div>
               <p className="text-sm text-green-700 mb-2">
-                ✅ Added to Job Hub and Bookings
+                ✅ Added to Dashboard and Bookings
               </p>
               <div className="text-sm font-medium text-green-800">
                 <span className="text-green-600">{jobPrice}</span> - {jobTitle}

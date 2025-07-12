@@ -29,7 +29,7 @@ export const customerNav: NavigationItem[] = [
 
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
-  { label: "Job Hub", href: "/dashboard", icon: "🛠️" },
+  { label: "Dashboard", href: "/dashboard", icon: "🛠️" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Community", href: "/community", icon: "👥" },
@@ -57,7 +57,7 @@ export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provid
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
 
-  const dashboardLabel = currentRole === 'provider' ? 'Job Hub' : 'Board';
+  const dashboardLabel = currentRole === 'provider' ? 'Dashboard' : 'Board';
   const dashboardHref = currentRole === 'provider' ? '/dashboard' : '/service-board';
   
   return [

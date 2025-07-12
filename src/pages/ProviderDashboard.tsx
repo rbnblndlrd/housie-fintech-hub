@@ -439,7 +439,7 @@ const ProviderDashboard = () => {
             <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border">
               <div className="flex items-center justify-around py-2">
                 {[
-                  { id: 'job-hub', label: 'Job Hub', emoji: '🏠' },
+                  { id: 'job-hub', label: 'Dashboard', emoji: '🏠' },
                   { id: 'bookings', label: 'Bookings', emoji: '📅' },
                   { id: 'map', label: 'Map', emoji: '🗺️' },
                   { id: 'messages', label: 'Assistant', emoji: '💬' }
@@ -468,7 +468,7 @@ const ProviderDashboard = () => {
           <Tabs value={activeTab} onValueChange={setActiveTab} className={activeTab === 'map' ? "" : "space-y-5"}>
 
                 <TabsContent value="job-hub" className="space-y-8">
-                  {/* Mobile Job Hub - Dynamic Job Icon Grid */}
+                  {/* Mobile Dashboard - Dynamic Job Icon Grid */}
                   <div className="md:hidden space-y-4">
                     <div className="px-4 py-2">
                       <h1 className="text-xl font-bold text-white/90 drop-shadow-md mb-2">Welcome back!</h1>
@@ -587,7 +587,7 @@ const ProviderDashboard = () => {
                     </div>
                   </div>
 
-                  {/* Desktop Job Hub - Full Layout with Widgets */}
+                  {/* Desktop Dashboard - Full Layout with Widgets */}
                   <div className="hidden md:block">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Professional Ticket Management Table */}

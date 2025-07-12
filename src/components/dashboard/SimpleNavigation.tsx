@@ -20,7 +20,7 @@ const SimpleNavigation: React.FC<SimpleNavigationProps> = ({
   const navItems = [
     { 
       id: 'job-hub', 
-      label: 'Job Hub', 
+      label: 'Dashboard', 
       icon: ClipboardList, 
       emoji: '📋'
     },

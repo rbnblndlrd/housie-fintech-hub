@@ -44,7 +44,7 @@ const Dashboard = () => {
 
   return (
     <DashboardLayout
-      title="Job Hub"
+      title="Dashboard"
       rightPanelTitle="Today's Route"
       rightPanelContent={<TodaysRoutePanel />}
       bottomWidgets={<PerformanceWidgets />}

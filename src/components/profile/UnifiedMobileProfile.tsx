@@ -14,7 +14,7 @@ import ProfileMainContainer from './ProfileMainContainer';
 const UnifiedMobileProfile = () => {
   const { user } = useAuth();
   const { profile, loading, error } = useUnifiedProfile();
-  const { currentRole, isLoading: roleLoading } = useRoleSwitch();
+  const { currentRole, switchRole, isLoading: roleLoading } = useRoleSwitch();
   
   // Initialize activeTab based on currentRole from RoleSwitchContext
   const [activeTab, setActiveTab] = useState<ProfileTab>('personal');
@@ -28,6 +28,29 @@ const UnifiedMobileProfile = () => {
       setActiveTab(tabFromRole);
     }
   }, [currentRole, roleLoading]);
+
+  // Handle tab changes by actually switching roles
+  const handleTabChange = async (tab: ProfileTab) => {
+    console.log('🎭 UnifiedMobileProfile: Tab change requested:', { from: activeTab, to: tab });
+    
+    try {
+      // Determine the new role based on tab selection
+      const newRole = tab === 'provider' ? 'provider' : 'customer';
+      
+      // Only switch if it's actually different
+      if (newRole !== currentRole) {
+        console.log('🔄 UnifiedMobileProfile: Switching role:', { from: currentRole, to: newRole });
+        await switchRole(newRole);
+      }
+      
+      // Update local state
+      setActiveTab(tab);
+    } catch (error) {
+      console.error('❌ UnifiedMobileProfile: Error switching role:', error);
+      // Revert tab to current role on error
+      setActiveTab(currentRole === 'provider' ? 'provider' : 'personal');
+    }
+  };
 
   if (loading) {
     return (
@@ -87,7 +110,7 @@ const UnifiedMobileProfile = () => {
         {/* Mobile: Full screen layout, Desktop: Normal padding */}
         <div className="p-2 md:p-8">
           <div className="max-w-6xl mx-auto">
-            {/* Mobile Navigation - Above Job Hub tab */}
+            {/* Mobile Navigation - Above Dashboard tab */}
             <div className="md:hidden fixed top-[94px] left-[22px] z-50">
               <Button
                 variant="outline"
@@ -102,7 +125,7 @@ const UnifiedMobileProfile = () => {
             <div className="mb-6">
               <ProfileTabNavigation
                 activeTab={activeTab}
-                onTabChange={setActiveTab}
+                onTabChange={handleTabChange}
                 profile={profile}
               />
             </div>
