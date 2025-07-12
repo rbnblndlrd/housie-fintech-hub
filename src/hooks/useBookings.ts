@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -19,6 +19,7 @@ export const useBookings = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const subscriptionRef = useRef<any>(null);
 
   const fetchBookings = async () => {
     if (!user) {
@@ -105,33 +106,39 @@ export const useBookings = () => {
 
     fetchBookings();
 
-    // Set up real-time subscription for bookings with a unique channel name
-    const channelName = `bookings_changes_${user.id}_${Date.now()}`;
-    const channel = supabase
-      .channel(channelName)
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'bookings',
-          filter: `customer_id=eq.${user.id},provider_id=eq.${user.id}`
-        },
-        (payload) => {
-          console.log('Booking change detected:', payload);
-          // Use setTimeout to avoid potential state conflicts
-          setTimeout(() => {
-            fetchBookings();
-          }, 100);
-        }
-      )
-      .subscribe();
+    // Set up real-time subscription only if we don't have one already
+    if (!subscriptionRef.current) {
+      const channel = supabase
+        .channel('bookings_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'bookings',
+            filter: `customer_id=eq.${user.id},provider_id=eq.${user.id}`
+          },
+          (payload) => {
+            console.log('Booking change detected:', payload);
+            setTimeout(() => {
+              fetchBookings();
+            }, 100);
+          }
+        )
+        .subscribe();
+
+      console.log('Subscribed to bookings_changes');
+      subscriptionRef.current = channel;
+    }
 
     return () => {
-      console.log('Cleaning up bookings subscription:', channelName);
-      supabase.removeChannel(channel);
+      if (subscriptionRef.current) {
+        supabase.removeChannel(subscriptionRef.current);
+        console.log('Unsubscribed from bookings_changes');
+        subscriptionRef.current = null;
+      }
     };
-  }, [user?.id]); // Use user.id instead of user object to reduce re-renders
+  }, [user?.id]);
 
   return {
     bookings,
