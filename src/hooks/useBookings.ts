@@ -48,7 +48,7 @@ export const useBookings = () => {
             users!provider_profiles_user_id_fkey(full_name)
           )
         `)
-        .or(`customer_id.eq.${user.id},provider_id.in.(select id from provider_profiles where user_id = '${user.id}')`)
+        .or(`customer_id.eq.${user.id},provider_id.eq.${user.id}`)
         .order('scheduled_date', { ascending: false })
         .limit(20);
 

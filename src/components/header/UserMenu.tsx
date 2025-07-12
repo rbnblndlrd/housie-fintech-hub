@@ -224,41 +224,41 @@ const UserMenu = () => {
         {/* Status Management with Modern Design */}
         <div className="px-2 mb-2">
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger className="cursor-pointer p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50">
-              <div className="flex items-center gap-3">
+            <DropdownMenuSubTrigger className="cursor-pointer p-3 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600/50 data-[state=open]:bg-slate-700/50">
+              <div className="flex items-center gap-3 w-full">
                 {getStatusIcon(currentStatus)}
                 <UserCheck className="h-4 w-4 text-emerald-400" />
-                <div>
+                <div className="flex-1">
                   <span className="text-white font-medium">{currentStatus}</span>
                   <p className="text-emerald-400 text-xs">Verified Account</p>
                 </div>
               </div>
             </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className="bg-slate-900 border-slate-700">
+            <DropdownMenuSubContent className="bg-slate-900 border-slate-700 w-48" sideOffset={8} alignOffset={-4}>
               <DropdownMenuItem
                 onClick={() => handleStatusChange('Available')}
-                className="cursor-pointer text-white hover:bg-slate-800"
+                className="cursor-pointer text-white hover:bg-slate-800 focus:bg-slate-800"
               >
                 <CheckCircle className="h-4 w-4 text-green-500 mr-3" />
                 <span>Available</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusChange('Busy')}
-                className="cursor-pointer text-white hover:bg-slate-800"
+                className="cursor-pointer text-white hover:bg-slate-800 focus:bg-slate-800"
               >
                 <Minus className="h-4 w-4 text-red-500 mr-3" />
                 <span>Busy</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusChange('Away')}
-                className="cursor-pointer text-white hover:bg-slate-800"
+                className="cursor-pointer text-white hover:bg-slate-800 focus:bg-slate-800"
               >
                 <Clock className="h-4 w-4 text-yellow-500 mr-3" />
                 <span>Away</span>
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => handleStatusChange('Do Not Disturb')}
-                className="cursor-pointer text-white hover:bg-slate-800"
+                className="cursor-pointer text-white hover:bg-slate-800 focus:bg-slate-800"
               >
                 <AlertTriangle className="h-4 w-4 text-gray-500 mr-3" />
                 <span>Do Not Disturb</span>
@@ -272,11 +272,11 @@ const UserMenu = () => {
         {/* Main Navigation Items with Modern Icons and Gradients */}
         <div className="px-2 space-y-1">
           <DropdownMenuItem
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate(currentRole === 'customer' ? '/service-board' : '/dashboard')}
             className="cursor-pointer p-3 rounded-lg hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 transition-all duration-200 group"
           >
             <Home className="h-5 w-5 text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
-            <span className="text-white font-medium">Dashboard</span>
+            <span className="text-white font-medium">{currentRole === 'customer' ? 'Board' : 'Dashboard'}</span>
           </DropdownMenuItem>
 
           <DropdownMenuItem
