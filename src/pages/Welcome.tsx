@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Search, User, ArrowRight, MapPin, Heart, Bell, UserCircle, Truck, Wrench } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "@/components/Header";
+import { AnnetteQuoteRotator } from "@/components/AnnetteQuoteRotator";
 
 export const Welcome = () => {
   const navigate = useNavigate();
@@ -186,6 +187,9 @@ export const Welcome = () => {
               </Card>
             </div>
           )}
+
+          {/* Annette Quote Rotator */}
+          <AnnetteQuoteRotator />
 
           {/* Skip Option */}
           <div className="text-center mt-8">
