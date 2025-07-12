@@ -88,6 +88,36 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_fallback_settings: {
+        Row: {
+          allow_retroactive_photo_unlocks: boolean | null
+          auto_remind_client_before_service: boolean | null
+          created_at: string | null
+          enable_checklist_fallback_flow: boolean | null
+          fallback_approval_timeout_hours: number | null
+          id: string
+          updated_at: string | null
+        }
+        Insert: {
+          allow_retroactive_photo_unlocks?: boolean | null
+          auto_remind_client_before_service?: boolean | null
+          created_at?: string | null
+          enable_checklist_fallback_flow?: boolean | null
+          fallback_approval_timeout_hours?: number | null
+          id?: string
+          updated_at?: string | null
+        }
+        Update: {
+          allow_retroactive_photo_unlocks?: boolean | null
+          auto_remind_client_before_service?: boolean | null
+          created_at?: string | null
+          enable_checklist_fallback_flow?: boolean | null
+          fallback_approval_timeout_hours?: number | null
+          id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       admin_users: {
         Row: {
           created_at: string | null
@@ -1960,6 +1990,73 @@ export type Database = {
         }
         Relationships: []
       }
+      photo_checklist_fallbacks: {
+        Row: {
+          admin_override: boolean | null
+          approved_at: string | null
+          approved_by: string | null
+          booking_id: string | null
+          checklist_item_id: string
+          client_approved: boolean | null
+          created_at: string | null
+          fallback_photo_url: string
+          id: string
+          reason: string
+          submitted_by: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          admin_override?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          booking_id?: string | null
+          checklist_item_id: string
+          client_approved?: boolean | null
+          created_at?: string | null
+          fallback_photo_url: string
+          id?: string
+          reason: string
+          submitted_by?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          admin_override?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          booking_id?: string | null
+          checklist_item_id?: string
+          client_approved?: boolean | null
+          created_at?: string | null
+          fallback_photo_url?: string
+          id?: string
+          reason?: string
+          submitted_by?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "photo_checklist_fallbacks_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photo_checklist_fallbacks_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "photo_checklist_fallbacks_submitted_by_fkey"
+            columns: ["submitted_by"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       point_transactions: {
         Row: {
           created_at: string | null
@@ -3327,6 +3424,10 @@ export type Database = {
         Args: { target_user_id: string; credit_amount: number }
         Returns: undefined
       }
+      approve_checklist_fallback: {
+        Args: { fallback_id: string; is_approved: boolean }
+        Returns: boolean
+      }
       award_community_rating_points: {
         Args: { p_user_id: string; p_points: number; p_reason: string }
         Returns: undefined
@@ -3469,6 +3570,10 @@ export type Database = {
         Returns: boolean
       }
       is_claude_api_enabled: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_fallback_flow_enabled: {
         Args: Record<PropertyKey, never>
         Returns: boolean
       }
