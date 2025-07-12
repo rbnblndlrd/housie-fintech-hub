@@ -18,6 +18,7 @@ export const visitorNav: NavigationItem[] = [
 
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
+  { label: "My Dashboard", href: "/customer-dashboard", icon: "📊" },
   { label: "Service Board", href: "/service-board", icon: "📋" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
