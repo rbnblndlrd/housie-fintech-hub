@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { useBookings } from '@/hooks/useBookings';
+import { useBookingsContext } from '@/contexts/BookingsContext';
 import { Calendar, Clock, MapPin, Eye, X, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import CreateTicketModal from '@/components/modals/CreateTicketModal';
 
 const CustomerJobTicketList = () => {
-  const { bookings, loading } = useBookings();
+  const { bookings, loading } = useBookingsContext();
   const [filter, setFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
 

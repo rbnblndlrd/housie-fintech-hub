@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { useBookings } from '@/hooks/useBookings';
+import { useBookingsContext } from '@/contexts/BookingsContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { DollarSign, TrendingUp, Calendar } from 'lucide-react';
 
 const SpendingSummaryChart = () => {
-  const { bookings } = useBookings();
+  const { bookings } = useBookingsContext();
   const [viewMode, setViewMode] = useState<'total' | 'category' | 'timeline'>('total');
 
   const totalSpent = bookings
