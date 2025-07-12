@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
@@ -53,6 +54,7 @@ import {
   MessageSquareQuote 
 } from "lucide-react";
 import Header from "@/components/Header";
+import QuoteGenerator from "@/components/QuoteGenerator";
 
 interface Quote {
   id: string;
@@ -334,6 +336,19 @@ export const QuoteVaultManager = () => {
           </div>
         </div>
 
+        {/* Main Content Tabs */}
+        <Tabs defaultValue="manage" className="w-full">
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="manage">Manage Quotes</TabsTrigger>
+            <TabsTrigger value="generate">Generate with AI</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="generate" className="space-y-6">
+            <QuoteGenerator />
+          </TabsContent>
+
+          <TabsContent value="manage" className="space-y-6">
+
         {/* Filters */}
         <Card className="mb-6 bg-card/50 border-border">
           <CardHeader className="pb-4">
@@ -527,94 +542,99 @@ export const QuoteVaultManager = () => {
           </div>
         )}
 
+          </TabsContent>
+        </Tabs>
+
         {/* Add/Edit Dialog */}
-        <DialogContent className="bg-card border-border max-w-2xl">
-          <DialogHeader>
-            <DialogTitle className="text-white">
-              {editingQuote ? 'Edit Quote' : 'Add New Quote'}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="quote-text" className="text-white">Quote Text</Label>
-              <Textarea
-                id="quote-text"
-                placeholder="Enter Annette's witty quote..."
-                value={formData.text}
-                onChange={(e) => setFormData({ ...formData, text: e.target.value })}
-                className="bg-background/50 text-white"
-                rows={3}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
+        <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <DialogContent className="bg-card border-border max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="text-white">
+                {editingQuote ? 'Edit Quote' : 'Add New Quote'}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
               <div>
-                <Label className="text-white">Page Context</Label>
-                <Select 
-                  value={formData.page} 
-                  onValueChange={(value) => setFormData({ ...formData, page: value })}
-                >
-                  <SelectTrigger className="bg-background/50">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAGE_CONTEXTS.filter(p => p !== 'all').map((page) => (
-                      <SelectItem key={page} value={page}>
-                        {page.charAt(0).toUpperCase() + page.slice(1)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="quote-text" className="text-white">Quote Text</Label>
+                <Textarea
+                  id="quote-text"
+                  placeholder="Enter Annette's witty quote..."
+                  value={formData.text}
+                  onChange={(e) => setFormData({ ...formData, text: e.target.value })}
+                  className="bg-background/50 text-white"
+                  rows={3}
+                />
               </div>
-              <div>
-                <Label className="text-white">Category</Label>
-                <Select 
-                  value={formData.category} 
-                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-white">Page Context</Label>
+                  <Select 
+                    value={formData.page} 
+                    onValueChange={(value) => setFormData({ ...formData, page: value })}
+                  >
+                    <SelectTrigger className="bg-background/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAGE_CONTEXTS.filter(p => p !== 'all').map((page) => (
+                        <SelectItem key={page} value={page}>
+                          {page.charAt(0).toUpperCase() + page.slice(1)}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label className="text-white">Category</Label>
+                  <Select 
+                    value={formData.category} 
+                    onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  >
+                    <SelectTrigger className="bg-background/50">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {CATEGORIES.map((category) => (
+                        <SelectItem key={category} value={category}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="is-active"
+                  checked={formData.is_active}
+                  onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
+                />
+                <Label htmlFor="is-active" className="text-white">
+                  Active (will appear in rotation)
+                </Label>
+              </div>
+              <div className="flex justify-end gap-2 pt-4">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsAddDialogOpen(false);
+                    setEditingQuote(null);
+                    resetForm();
+                  }}
                 >
-                  <SelectTrigger className="bg-background/50">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleSaveQuote}
+                  disabled={!formData.text.trim()}
+                  className="bg-orange-500 hover:bg-orange-600"
+                >
+                  {editingQuote ? 'Update Quote' : 'Add Quote'}
+                </Button>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="is-active"
-                checked={formData.is_active}
-                onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked })}
-              />
-              <Label htmlFor="is-active" className="text-white">
-                Active (will appear in rotation)
-              </Label>
-            </div>
-            <div className="flex justify-end gap-2 pt-4">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsAddDialogOpen(false);
-                  setEditingQuote(null);
-                  resetForm();
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                onClick={handleSaveQuote}
-                disabled={!formData.text.trim()}
-                className="bg-orange-500 hover:bg-orange-600"
-              >
-                {editingQuote ? 'Update Quote' : 'Add Quote'}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
+          </DialogContent>
+        </Dialog>
 
         {/* Preview Dialog */}
         <Dialog open={!!previewQuote} onOpenChange={() => setPreviewQuote(null)}>

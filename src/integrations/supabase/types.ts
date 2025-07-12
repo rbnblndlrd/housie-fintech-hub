@@ -331,8 +331,11 @@ export type Database = {
           created_by: string | null
           id: string
           is_active: boolean
+          locked: boolean | null
           page: string
+          source: string | null
           text: string
+          tier: string | null
           updated_at: string
         }
         Insert: {
@@ -341,8 +344,11 @@ export type Database = {
           created_by?: string | null
           id?: string
           is_active?: boolean
+          locked?: boolean | null
           page?: string
+          source?: string | null
           text: string
+          tier?: string | null
           updated_at?: string
         }
         Update: {
@@ -351,8 +357,11 @@ export type Database = {
           created_by?: string | null
           id?: string
           is_active?: boolean
+          locked?: boolean | null
           page?: string
+          source?: string | null
           text?: string
+          tier?: string | null
           updated_at?: string
         }
         Relationships: []
