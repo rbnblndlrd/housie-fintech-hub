@@ -7,6 +7,7 @@ import JobHub from '@/components/dashboard/JobHub';
 import { AnnetteInboxNotifications } from '@/components/annette/AnnetteInboxNotifications';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
 
 const Dashboard = () => {
   const handleAnnetteRecommendation = () => {
@@ -47,6 +48,7 @@ const Dashboard = () => {
       rightPanelTitle="Today's Route"
       rightPanelContent={<TodaysRoutePanel />}
       bottomWidgets={<PerformanceWidgets />}
+      headerAction={<CreateJobTicketButton size="sm" />}
     >
       {annetteCard}
       <AnnetteInboxNotifications className="mb-6" />

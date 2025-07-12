@@ -28,6 +28,7 @@ interface DashboardLayoutProps {
   rightPanelTitle?: string;
   rightPanelContent?: ReactNode;
   bottomWidgets?: ReactNode;
+  headerAction?: ReactNode;
 }
 
 interface NavItem {
@@ -50,7 +51,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
   title = "Dashboard Module",
   rightPanelTitle = "Today's Route",
   rightPanelContent,
-  bottomWidgets
+  bottomWidgets,
+  headerAction
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -194,10 +196,13 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             <Card className="xl:col-span-3 bg-card/95 backdrop-blur-md border-border/20 shadow-xl">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-foreground flex items-center justify-between">
-                  {title}
-                  <Badge variant="secondary" className="bg-muted/50">
-                    Active
-                  </Badge>
+                  <div className="flex items-center space-x-3">
+                    {title}
+                    <Badge variant="secondary" className="bg-muted/50">
+                      Active
+                    </Badge>
+                  </div>
+                  {headerAction}
                 </CardTitle>
               </CardHeader>
               <CardContent>

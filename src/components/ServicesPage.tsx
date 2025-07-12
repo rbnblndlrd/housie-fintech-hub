@@ -11,6 +11,7 @@ import MiniMapContainer from '@/components/services/MiniMapContainer';
 import BrowseFilterPanel from '@/components/services/BrowseFilterPanel';
 import ProviderCard from '@/components/services/ProviderCard';
 import AnnetteMapInsights from '@/components/services/AnnetteMapInsights';
+import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
 
 const ServicesPage = () => {
   const { services, isLoading } = useServices();
@@ -161,6 +162,11 @@ const ServicesPage = () => {
         <div className="pt-16 pl-[188px] pr-8 pb-8">
           <div className="max-w-7xl mx-auto">
             <ModernServicesHeader />
+            
+            {/* Create Job Ticket Button */}
+            <div className="flex justify-end mb-6">
+              <CreateJobTicketButton />
+            </div>
             
             {/* Annette's Map Insights */}
             <AnnetteMapInsights
