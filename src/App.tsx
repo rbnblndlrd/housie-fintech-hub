@@ -51,6 +51,7 @@ import OpportunityDetail from './pages/opportunities/OpportunityDetail';
 import CrewOpportunities from './pages/crews/CrewOpportunities';
 import CrewBids from './pages/crews/CrewBids';
 import OpportunityBidPlannerPage from './pages/opportunities/OpportunityBidPlanner';
+import { QuoteVaultManager } from './pages/QuoteVaultManager';
 
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
@@ -123,6 +124,7 @@ function App() {
                   <Route path="/opportunities/:id/bid" element={<OpportunityBidPlannerPage />} />
                   <Route path="/crews/opportunities" element={<CrewOpportunities />} />
                   <Route path="/crews/bids" element={<CrewBids />} />
+                  <Route path="/quote-vault" element={<QuoteVaultManager />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                               </ConditionalSpacingWrapper>

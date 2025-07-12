@@ -1,42 +1,16 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
-const QUOTE_VAULT = {
-  welcome: {
-    category: "Power Humblebrags",
-    quotes: [
-      "Try not to be intimidated. I make this look easy.",
-      "You found HOUSIE. Already smarter than most.",
-      "This is where the journey begins — and where I get all the credit."
-    ]
-  },
-  booking: {
-    category: "Onboarding Lies",
-    quotes: [
-      "You touch this, people show up. Wild, right?",
-      "This button confirms the job. Big commitment. Bigger payoff.",
-      "Remember to smile. It helps your rating. Even if it's fake."
-    ]
-  },
-  calendar: {
-    category: "Calendar Roasts",
-    quotes: [
-      "Oh look, you scheduled something. That's cute.",
-      "Dragging that job across the week won't delay time, sweetie.",
-      "This is where 'organized' people live. Welcome."
-    ]
-  },
-  dashboard: {
-    category: "Power Humblebrags",
-    quotes: [
-      "Everything's working exactly how I planned. You're just catching up.",
-      "Dashboard's not broken. You just haven't earned anything yet.",
-      "Your numbers look… present."
-    ]
-  }
-};
+interface Quote {
+  id: string;
+  text: string;
+  page: string;
+  category: string;
+  is_active: boolean;
+}
 
-// Fallback quotes for unknown pages
+// Fallback quotes for when database is unavailable
 const DEFAULT_QUOTES = [
   "No offense, but I'll be the brains here.",
   "I'm like a GPS for humans who don't know where they're going… yet.",
@@ -48,19 +22,52 @@ const DEFAULT_QUOTES = [
 ];
 
 interface AnnetteQuoteRotatorProps {
-  currentPage?: keyof typeof QUOTE_VAULT;
+  currentPage?: string;
   className?: string;
 }
 
 export const AnnetteQuoteRotator = ({ currentPage = "welcome", className = "" }: AnnetteQuoteRotatorProps) => {
-  const currentQuotes = QUOTE_VAULT[currentPage]?.quotes || DEFAULT_QUOTES;
-  const currentCategory = QUOTE_VAULT[currentPage]?.category || "Sass Collection";
-  
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [currentQuotes, setCurrentQuotes] = useState<string[]>(DEFAULT_QUOTES);
+  const [currentCategory, setCurrentCategory] = useState("Sass Collection");
   const [currentQuoteIndex, setCurrentQuoteIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
   const [showMoreQuotes, setShowMoreQuotes] = useState(false);
   const [randomQuote, setRandomQuote] = useState("");
+
+  // Fetch quotes from database
+  useEffect(() => {
+    const fetchQuotes = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('annette_quotes')
+          .select('*')
+          .eq('is_active', true)
+          .eq('page', currentPage);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const quotesForPage = data.map(q => q.text);
+          setCurrentQuotes(quotesForPage);
+          setCurrentCategory(data[0].category || "Sass Collection");
+          setQuotes(data);
+        } else {
+          // Fallback to default quotes if no data found for this page
+          setCurrentQuotes(DEFAULT_QUOTES);
+          setCurrentCategory("Sass Collection");
+        }
+      } catch (error) {
+        console.error('Error fetching quotes:', error);
+        // Fallback to default quotes on error
+        setCurrentQuotes(DEFAULT_QUOTES);
+        setCurrentCategory("Sass Collection");
+      }
+    };
+
+    fetchQuotes();
+  }, [currentPage]);
 
   useEffect(() => {
     if (isPaused) return;
@@ -87,12 +94,31 @@ export const AnnetteQuoteRotator = ({ currentPage = "welcome", className = "" }:
     }
   };
 
-  const handleMoreQuotes = () => {
+  const handleMoreQuotes = async () => {
     if (!showMoreQuotes) {
-      // Get random quote from any category
-      const allQuotes = Object.values(QUOTE_VAULT).flatMap(vault => vault.quotes);
-      const randomIndex = Math.floor(Math.random() * allQuotes.length);
-      setRandomQuote(allQuotes[randomIndex]);
+      try {
+        // Get random quote from database
+        const { data, error } = await supabase
+          .from('annette_quotes')
+          .select('text')
+          .eq('is_active', true);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          const randomIndex = Math.floor(Math.random() * data.length);
+          setRandomQuote(data[randomIndex].text);
+        } else {
+          // Fallback to default quotes
+          const randomIndex = Math.floor(Math.random() * DEFAULT_QUOTES.length);
+          setRandomQuote(DEFAULT_QUOTES[randomIndex]);
+        }
+      } catch (error) {
+        console.error('Error fetching random quote:', error);
+        // Fallback to default quotes
+        const randomIndex = Math.floor(Math.random() * DEFAULT_QUOTES.length);
+        setRandomQuote(DEFAULT_QUOTES[randomIndex]);
+      }
     }
     setShowMoreQuotes(!showMoreQuotes);
   };

@@ -324,6 +324,39 @@ export type Database = {
           },
         ]
       }
+      annette_quotes: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          page: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          page?: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          page?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       api_usage_logs: {
         Row: {
           created_at: string | null
