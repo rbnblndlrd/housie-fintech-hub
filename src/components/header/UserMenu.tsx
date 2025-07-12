@@ -50,7 +50,7 @@ const UserMenu = () => {
   const { toast } = useToast();
 
   // Debug logging
-  console.log('🎭 UserMenu: currentRole =', currentRole);
+  console.log('🎭 UserMenu: currentRole =', currentRole, 'user profile active_role =', user?.user_metadata?.active_role);
 
   const handleLogout = async () => {
     try {
@@ -279,7 +279,9 @@ const UserMenu = () => {
             className="cursor-pointer p-3 rounded-lg hover:bg-gradient-to-r hover:from-blue-600/20 hover:to-purple-600/20 transition-all duration-200 group"
           >
             <Home className="h-5 w-5 text-blue-400 mr-3 group-hover:scale-110 transition-transform" />
-            <span className="text-white font-medium">{currentRole === 'customer' ? 'Board' : 'Job Hub'}</span>
+            <span className="text-white font-medium">
+              {currentRole === 'customer' ? 'Board' : 'Job Hub'}
+            </span>
           </DropdownMenuItem>
 
           <DropdownMenuItem

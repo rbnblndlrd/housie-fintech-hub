@@ -77,7 +77,9 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
         canBookServices: profile.can_book_services
       });
       
-      const activeRole = profile.active_role === 'provider' ? 'provider' : 'customer';
+      // Determine the current role from profile data
+      const activeRole = (profile.active_role === 'provider' && profile.can_provide_services) ? 'provider' : 'customer';
+      console.log('🎭 RoleSwitch: Setting role to:', activeRole, 'based on active_role:', profile.active_role, 'and can_provide_services:', profile.can_provide_services);
       setCurrentRole(activeRole);
       
       const roles = ['customer'];

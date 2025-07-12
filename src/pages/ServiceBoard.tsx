@@ -31,8 +31,9 @@ const ServiceBoard = () => {
     );
   }
 
-  // Only show for customers
+  // Only show for customers - redirect providers to their dashboard
   if (currentRole !== 'customer') {
+    console.log('🔄 ServiceBoard: Non-customer role detected, redirecting to dashboard');
     return <Navigate to="/dashboard" replace />;
   }
 

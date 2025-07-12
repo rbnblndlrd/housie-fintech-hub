@@ -89,13 +89,8 @@ const Header = () => {
             ) : (
               <div className="flex items-center space-x-3">
                 <Link to="/auth">
-                  <Button variant="ghost" size="sm" className="text-white hover:bg-gray-800">
-                    <AutoTranslate>Log in</AutoTranslate>
-                  </Button>
-                </Link>
-                <Link to="/auth">
                   <Button size="sm" className="bg-white text-black hover:bg-gray-200">
-                    <AutoTranslate>Sign up</AutoTranslate>
+                    <AutoTranslate>Sign In</AutoTranslate>
                   </Button>
                 </Link>
                 <LanguageToggle />

@@ -46,70 +46,32 @@ const HeroSearchSection = () => {
 
   // Render different UI based on authentication state
   if (!user) {
-    // LOGGED OUT STATE - Polished Sign In Card
+    // LOGGED OUT STATE - Show welcome message without search
     return (
       <div className="relative min-h-screen flex items-center justify-center px-4">
-        {/* Elegant Sign In Card - Birthday Card Style */}
-        <Card className="w-full max-w-md mx-auto shadow-2xl border-2 border-orange-200/30 bg-white/95 backdrop-blur-sm">
-          <CardHeader className="text-center pb-6">
-            <div className="w-16 h-16 bg-gradient-to-br from-orange-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl mx-auto mb-4">
-              H
-            </div>
-            <CardTitle className="text-2xl font-bold text-gray-800">Welcome to HOUSIE</CardTitle>
-            <p className="text-gray-600">Sign in to access local services</p>
-          </CardHeader>
+        <div className="text-center max-w-2xl mx-auto">
+          <h1 className="text-6xl md:text-7xl lg:text-8xl font-black text-white mb-8 drop-shadow-2xl" 
+              style={{ 
+                textShadow: '3px 3px 0px rgba(0,0,0,0.8), -1px -1px 0px rgba(0,0,0,0.8), 1px -1px 0px rgba(0,0,0,0.8), -1px 1px 0px rgba(0,0,0,0.8), 6px 6px 12px rgba(0,0,0,0.5)' 
+              }}>
+            Welcome to HOUSIE
+          </h1>
+          <p className="text-xl text-white/90 mb-12 drop-shadow-lg">
+            Your trusted home services platform
+          </p>
           
-          {/* Certn Banner - Integrated into card */}
-          <div className="mx-6 mb-6 p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200/50">
-            <div className="flex items-center space-x-3">
-              <img src="/CERTN.png" alt="Certn" className="h-5 w-auto flex-shrink-0" />
-              <span className="text-sm font-medium text-gray-700">
-                Free background check with annual premium!
-              </span>
-            </div>
-          </div>
-
-          <CardContent className="space-y-6">
-            <form onSubmit={handleSignIn} className="space-y-4">
-              <div>
-                <Input
-                  type="email"
-                  placeholder="Email address"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 text-lg border-gray-200 focus:border-orange-400 focus:ring-orange-400/20"
-                  required
-                />
-              </div>
-              <div>
-                <Input
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 text-lg border-gray-200 focus:border-orange-400 focus:ring-orange-400/20"
-                  required
-                />
-              </div>
-              <Button
-                type="submit"
-                className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-orange-500 to-purple-600 hover:from-orange-600 hover:to-purple-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
-                disabled={isLoading}
+          {/* Sign In Button */}
+          <div className="flex justify-center">
+            <Link to="/auth">
+              <Button 
+                size="lg" 
+                className="bg-white text-black hover:bg-gray-200 px-8 py-4 text-lg font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-200"
               >
-                {isLoading ? 'Signing In...' : 'Sign In'}
+                Sign In to Get Started
               </Button>
-            </form>
-            
-            <div className="text-center">
-              <p className="text-gray-600">
-                Don't have an account?{' '}
-                <Link to="/auth" className="text-orange-600 hover:text-orange-700 font-semibold underline">
-                  Sign Up
-                </Link>
-              </p>
-            </div>
-          </CardContent>
-        </Card>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
