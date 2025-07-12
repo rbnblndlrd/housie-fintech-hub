@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Star, Calendar, MessageCircle } from 'lucide-react';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Star, Calendar, MessageCircle, Heart } from 'lucide-react';
+import RebookingModal from '@/components/modals/RebookingModal';
 
 const RebookingSuggestionPanel = () => {
+  const [hoveredProvider, setHoveredProvider] = useState<string | null>(null);
   // Mock data - in real app this would come from service_connections table
   const trustedProviders = [
     {
@@ -54,7 +57,7 @@ const RebookingSuggestionPanel = () => {
     <Card className="fintech-card">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
+          <Heart className="h-5 w-5 text-primary" />
           Trusted Providers
         </CardTitle>
       </CardHeader>
@@ -94,13 +97,43 @@ const RebookingSuggestionPanel = () => {
                     </div>
                     
                     <div className="flex gap-2">
-                      <Button size="sm" className="flex-1">
-                        Book Again
-                      </Button>
-                      {provider.canMessage && (
+                      <RebookingModal 
+                        provider={provider}
+                        lastJobData={{
+                          category: provider.lastJobType,
+                          address: '123 Previous Address', // Would come from last booking
+                          checklist: null // Previous checklist if exists
+                        }}
+                        onSuccess={() => window.location.reload()}
+                      >
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onMouseEnter={() => setHoveredProvider(provider.id)}
+                          onMouseLeave={() => setHoveredProvider(null)}
+                        >
+                          <Heart className="h-4 w-4 mr-1" />
+                          Book Again
+                        </Button>
+                      </RebookingModal>
+                      
+                      {provider.canMessage ? (
                         <Button variant="outline" size="sm">
                           <MessageCircle className="h-4 w-4" />
                         </Button>
+                      ) : (
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button variant="outline" size="sm" disabled>
+                                <MessageCircle className="h-4 w-4" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="text-xs">Complete a job and review each other to unlock messaging!</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
                     </div>
                   </div>
@@ -111,6 +144,15 @@ const RebookingSuggestionPanel = () => {
             <Button variant="outline" className="w-full">
               View All Connections
             </Button>
+          </div>
+        )}
+        
+        {/* Hover tooltip for Annette commentary */}
+        {hoveredProvider && (
+          <div className="mt-4 p-3 bg-primary/5 rounded-lg border border-primary/20">
+            <p className="text-xs text-primary">
+              💕 Annette: "You and {trustedProviders.find(p => p.id === hoveredProvider)?.name}? Match made in booking heaven!"
+            </p>
           </div>
         )}
       </CardContent>

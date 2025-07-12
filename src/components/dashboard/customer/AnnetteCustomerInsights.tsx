@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Sparkles, MessageCircle, TrendingUp, Heart } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Sparkles, MessageCircle, TrendingUp, Heart, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const AnnetteCustomerInsights = () => {
   const [currentInsight, setCurrentInsight] = useState(0);
   const [showJoke, setShowJoke] = useState(false);
+  const [autoRotate, setAutoRotate] = useState(true);
 
   // Smart rotating insights based on customer data
   const insights = [
@@ -58,8 +60,10 @@ const AnnetteCustomerInsights = () => {
     }
   ];
 
-  // Rotate insights every 8 seconds
+  // Rotate insights every 8 seconds (only if auto-rotate is enabled)
   useEffect(() => {
+    if (!autoRotate) return;
+    
     const interval = setInterval(() => {
       // Very rare chance (1%) to show a long joke instead
       if (Math.random() < 0.01) {
@@ -71,7 +75,17 @@ const AnnetteCustomerInsights = () => {
     }, 8000);
 
     return () => clearInterval(interval);
-  }, [insights.length]);
+  }, [insights.length, autoRotate]);
+
+  const nextInsight = () => {
+    setAutoRotate(false); // Stop auto-rotation when user manually navigates
+    setCurrentInsight((prev) => (prev + 1) % insights.length);
+  };
+
+  const prevInsight = () => {
+    setAutoRotate(false); // Stop auto-rotation when user manually navigates
+    setCurrentInsight((prev) => (prev - 1 + insights.length) % insights.length);
+  };
 
   const currentJoke = longJokes[Math.floor(Math.random() * longJokes.length)];
   const currentInsightData = insights[currentInsight];
@@ -81,16 +95,28 @@ const AnnetteCustomerInsights = () => {
   return (
     <Card className="fintech-card border-primary/20">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/avatars/annette.jpg" alt="Annette" />
-            <AvatarFallback className="bg-primary text-primary-foreground">A</AvatarFallback>
-          </Avatar>
-          <div>
-            <span className="text-primary">Annette</span>
-            <span className="text-muted-foreground text-sm ml-2">
-              {showJoke ? '🎭 Comedy Hour' : 'Smart Insights'}
-            </span>
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src="/avatars/annette.jpg" alt="Annette" />
+              <AvatarFallback className="bg-primary text-primary-foreground">A</AvatarFallback>
+            </Avatar>
+            <div>
+              <span className="text-primary">Annette</span>
+              <span className="text-muted-foreground text-sm ml-2">
+                {showJoke ? '🎭 Comedy Hour' : 'Smart Insights'}
+              </span>
+            </div>
+          </div>
+          
+          {/* Navigation Controls */}
+          <div className="flex gap-1">
+            <Button variant="ghost" size="sm" onClick={prevInsight}>
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="sm" onClick={nextInsight}>
+              <ChevronRight className="h-4 w-4" />
+            </Button>
           </div>
         </CardTitle>
       </CardHeader>
@@ -142,7 +168,7 @@ const AnnetteCustomerInsights = () => {
         {/* Status indicator */}
         <div className="text-center">
           <div className="text-xs text-muted-foreground">
-            {showJoke ? '🎭 Rare joke mode activated!' : 'Smart insights updating...'}
+            {showJoke ? '🎭 Rare joke mode activated!' : autoRotate ? 'Smart insights updating...' : 'Manual mode - use arrows to navigate'}
           </div>
         </div>
       </CardContent>

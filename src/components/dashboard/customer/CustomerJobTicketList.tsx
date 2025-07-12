@@ -3,8 +3,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useBookings } from '@/hooks/useBookings';
-import { Calendar, Clock, MapPin, Eye, X } from 'lucide-react';
+import { Calendar, Clock, MapPin, Eye, X, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import CreateTicketModal from '@/components/modals/CreateTicketModal';
 
 const CustomerJobTicketList = () => {
   const { bookings, loading } = useBookings();
@@ -54,45 +55,65 @@ const CustomerJobTicketList = () => {
       <Card className="fintech-card">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
-            My Job Tickets
+            <div className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              My Job Tickets
+            </div>
             <div className="flex gap-2">
-              <Button
-                variant={filter === 'all' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilter('all')}
-              >
-                All
-              </Button>
-              <Button
-                variant={filter === 'pending' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilter('pending')}
-              >
-                Pending
-              </Button>
-              <Button
-                variant={filter === 'scheduled' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilter('scheduled')}
-              >
-                Scheduled
-              </Button>
-              <Button
-                variant={filter === 'completed' ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => setFilter('completed')}
-              >
-                Completed
-              </Button>
+              <CreateTicketModal onSuccess={() => window.location.reload()}>
+                <Button size="sm">
+                  <Plus className="h-4 w-4 mr-1" />
+                  Create New Ticket
+                </Button>
+              </CreateTicketModal>
             </div>
           </CardTitle>
+          
+          {/* Filter Buttons */}
+          <div className="flex gap-2 mt-4">
+            <Button
+              variant={filter === 'all' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('all')}
+            >
+              All ({bookings.length})
+            </Button>
+            <Button
+              variant={filter === 'pending' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('pending')}
+            >
+              Pending ({bookings.filter(b => b.status === 'pending').length})
+            </Button>
+            <Button
+              variant={filter === 'scheduled' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('scheduled')}
+            >
+              Scheduled ({bookings.filter(b => b.status === 'scheduled').length})
+            </Button>
+            <Button
+              variant={filter === 'completed' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setFilter('completed')}
+            >
+              Completed ({bookings.filter(b => b.status === 'completed').length})
+            </Button>
+          </div>
         </CardHeader>
         <CardContent>
           {filteredBookings.length === 0 ? (
             <div className="text-center py-8">
               <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground mb-4">No tickets found</p>
-              <Button>Create New Ticket</Button>
+              <p className="text-muted-foreground mb-4">
+                {filter === 'all' ? 'No tickets found' : `No ${filter} tickets`}
+              </p>
+              <CreateTicketModal onSuccess={() => window.location.reload()}>
+                <Button>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create New Ticket
+                </Button>
+              </CreateTicketModal>
             </div>
           ) : (
             <div className="space-y-4">

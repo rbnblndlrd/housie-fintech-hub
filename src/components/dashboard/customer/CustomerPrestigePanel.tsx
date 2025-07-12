@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Crown, Star, Trophy, Shield, Users } from 'lucide-react';
+import PrestigeDetailsModal from '@/components/modals/PrestigeDetailsModal';
 
 const CustomerPrestigePanel = () => {
   // Mock data - in real app this would come from user profile/prestige tables
@@ -39,14 +40,22 @@ const CustomerPrestigePanel = () => {
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Current Status */}
-        <div className="text-center space-y-2">
-          <Badge variant="secondary" className="text-lg px-3 py-1">
-            {customerPrestige.currentTitle}
-          </Badge>
-          <div className="text-2xl font-bold text-primary">
-            {customerPrestige.credScore} Cred Score
+        <PrestigeDetailsModal
+          currentTitle={customerPrestige.currentTitle}
+          credScore={customerPrestige.credScore}
+          proofOfWorth={customerPrestige.proofOfWorth}
+          nextMilestone={customerPrestige.nextMilestone}
+        >
+          <div className="text-center space-y-2 cursor-pointer hover:bg-primary/5 p-4 rounded-lg transition-colors">
+            <Badge variant="secondary" className="text-lg px-3 py-1">
+              {customerPrestige.currentTitle}
+            </Badge>
+            <div className="text-2xl font-bold text-primary">
+              {customerPrestige.credScore} Cred Score
+            </div>
+            <p className="text-xs text-muted-foreground">Click to see how to level up!</p>
           </div>
-        </div>
+        </PrestigeDetailsModal>
 
         {/* Progress to Next Title */}
         <div className="space-y-2">
