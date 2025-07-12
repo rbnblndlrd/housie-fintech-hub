@@ -119,6 +119,13 @@ export const RoleSwitchProvider: React.FC<{ children: React.ReactNode }> = ({ ch
 
       setCurrentRole(newRole);
       console.log('✅ RoleSwitch: Role switched successfully to:', newRole);
+      console.log('🎭 RoleSwitch: Current role state is now:', newRole);
+      
+      // Force a re-render by updating the context
+      setTimeout(() => {
+        console.log('🔄 RoleSwitch: Verifying role after switch:', currentRole);
+      }, 100);
+      
     } catch (error) {
       console.error('❌ RoleSwitch: Error switching role:', error);
       throw error;
