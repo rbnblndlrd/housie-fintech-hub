@@ -7,6 +7,7 @@ import { Star, Award, MessageCircle, CheckCircle } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { PostReviewPanel } from './PostReviewPanel';
 
 interface EnhancedReviewFlowProps {
   bookingId: string;
@@ -34,6 +35,8 @@ export const EnhancedReviewFlow: React.FC<EnhancedReviewFlowProps> = ({
   const [selectedCommendations, setSelectedCommendations] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [booking, setBooking] = useState<any>(null);
+  const [showPostReviewPanel, setShowPostReviewPanel] = useState(false);
+  const [submittedCommendations, setSubmittedCommendations] = useState<string[]>([]);
 
   useEffect(() => {
     fetchBookingDetails();
@@ -123,13 +126,15 @@ export const EnhancedReviewFlow: React.FC<EnhancedReviewFlowProps> = ({
 
       const bothReviewed = existingReviews && existingReviews.length >= 2;
 
-      toast.success(
-        bothReviewed 
-          ? 'Review submitted! Messaging unlocked and credibility connection established!'
-          : 'Review submitted! Thank you for your feedback.'
-      );
-
-      onComplete();
+      if (bothReviewed) {
+        // Show post-review panel with rewards
+        setSubmittedCommendations(selectedCommendations);
+        setShowPostReviewPanel(true);
+        toast.success('Review submitted! Calculating your rewards...');
+      } else {
+        toast.success('Review submitted! Thank you for your feedback.');
+        onComplete();
+      }
 
     } catch (error) {
       console.error('Error submitting review:', error);
@@ -141,6 +146,21 @@ export const EnhancedReviewFlow: React.FC<EnhancedReviewFlowProps> = ({
 
   if (!booking) {
     return <div className="p-4">Loading...</div>;
+  }
+
+  if (showPostReviewPanel) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <PostReviewPanel
+          bookingId={bookingId}
+          userCommendations={submittedCommendations}
+          onClose={() => {
+            setShowPostReviewPanel(false);
+            onComplete();
+          }}
+        />
+      </div>
+    );
   }
 
   const providerName = booking.provider_profiles?.business_name || 
