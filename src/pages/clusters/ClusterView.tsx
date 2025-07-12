@@ -12,6 +12,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { AlertTriangle } from 'lucide-react';
 import { ChatBubble } from '@/components/chat/ChatBubble';
 import { AnnetteButton } from '@/components/chat/AnnetteButton';
+import BackNavigation from '@/components/navigation/BackNavigation';
 
 const ClusterView = () => {
   const { id } = useParams<{ id: string }>();
@@ -111,6 +112,7 @@ const ClusterView = () => {
     return (
       <>
         <VideoBackground />
+        <BackNavigation />
         <div className="relative z-10 min-h-screen">
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-4xl mx-auto space-y-6">
@@ -127,6 +129,7 @@ const ClusterView = () => {
     return (
       <>
         <VideoBackground />
+        <BackNavigation />
         <div className="relative z-10 min-h-screen">
           <div className="container mx-auto px-4 py-8">
             <div className="max-w-2xl mx-auto">
@@ -146,6 +149,7 @@ const ClusterView = () => {
   return (
     <>
       <VideoBackground />
+      <BackNavigation />
       <div className="relative z-10 min-h-screen">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-6xl mx-auto space-y-8">

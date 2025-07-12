@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import UnifiedMobileProfile from '@/components/profile/UnifiedMobileProfile';
 import ProfileErrorBoundary from '@/components/profile/ProfileErrorBoundary';
+import BackNavigation from '@/components/navigation/BackNavigation';
 
 const Profile = () => {
   const { user, loading: authLoading } = useAuth();
@@ -34,6 +35,7 @@ const Profile = () => {
 
   return (
     <ProfileErrorBoundary>
+      <BackNavigation />
       <UnifiedMobileProfile />
     </ProfileErrorBoundary>
   );

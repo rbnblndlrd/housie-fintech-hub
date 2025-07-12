@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { Check, Star, AlertTriangle, Crown, Zap, Sparkles } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import BackNavigation from '@/components/navigation/BackNavigation';
 
 const Pricing = () => {
   const { toast } = useToast();
@@ -122,6 +123,7 @@ const Pricing = () => {
   return (
     <>
       <VideoBackground />
+      <BackNavigation />
       <div className="relative z-10 min-h-screen">
         <div className="pt-20 px-4 pb-8">
           <div className="max-w-7xl mx-auto">

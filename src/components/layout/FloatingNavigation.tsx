@@ -19,7 +19,6 @@ const FloatingNavigation = () => {
     '/competitive-advantage',
     '/help',
     '/help-center',
-    '/profile',
     '/services'
   ];
   

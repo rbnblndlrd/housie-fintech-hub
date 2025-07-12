@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import BackNavigation from "@/components/navigation/BackNavigation";
 
 interface ServiceSlot {
   service_type: string;
@@ -113,6 +114,7 @@ export default function OpportunityCreate() {
 
   return (
     <div className="container mx-auto max-w-4xl p-6">
+      <BackNavigation />
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Create Multi-Service Opportunity</CardTitle>

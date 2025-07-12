@@ -6,6 +6,7 @@ import GamificationAnalytics from '@/components/gamification/GamificationAnalyti
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { GamepadIcon, Trophy, Star, Crown, TrendingUp, BarChart3 } from 'lucide-react';
+import BackNavigation from '@/components/navigation/BackNavigation';
 
 const GamificationPage: React.FC = () => {
   const { user } = useAuth();
@@ -34,6 +35,7 @@ const GamificationPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
+      <BackNavigation />
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
