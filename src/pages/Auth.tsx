@@ -22,6 +22,8 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  console.log('🔐 Auth component rendering, user:', user);
+
   useEffect(() => {
     if (user) {
       navigate('/', { replace: true });
