@@ -38,10 +38,14 @@ const Home = () => {
           
           {/* Call to Action Button */}
           <div className="flex flex-col items-center space-y-4 md:space-y-6">
-            <Link to="/auth">
+            <Link to="/auth" onClick={(e) => {
+              console.log('🔗 Link clicked, navigating to /auth');
+              // Let the default Link behavior handle navigation
+            }}>
               <Button 
                 size="lg" 
                 className="bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold px-8 py-4 md:px-12 md:py-6 text-lg md:text-xl rounded-full shadow-2xl hover:shadow-orange-500/25 transition-all duration-300 transform hover:scale-105 backdrop-blur-sm border-2 border-orange-400/20"
+                onClick={() => console.log('🔘 Button clicked')}
               >
                 Sign In to Join the Network
               </Button>
