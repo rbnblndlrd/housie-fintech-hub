@@ -97,29 +97,41 @@ export const useBookings = () => {
   };
 
   useEffect(() => {
+    if (!user) {
+      setBookings([]);
+      setLoading(false);
+      return;
+    }
+
     fetchBookings();
 
-    // Set up real-time subscription for bookings
+    // Set up real-time subscription for bookings with a unique channel name
+    const channelName = `bookings_changes_${user.id}_${Date.now()}`;
     const channel = supabase
-      .channel('bookings_changes')
+      .channel(channelName)
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'bookings'
+          table: 'bookings',
+          filter: `customer_id=eq.${user.id},provider_id=eq.${user.id}`
         },
         (payload) => {
           console.log('Booking change detected:', payload);
-          fetchBookings(); // Refetch on any change
+          // Use setTimeout to avoid potential state conflicts
+          setTimeout(() => {
+            fetchBookings();
+          }, 100);
         }
       )
       .subscribe();
 
     return () => {
+      console.log('Cleaning up bookings subscription:', channelName);
       supabase.removeChannel(channel);
     };
-  }, [user]);
+  }, [user?.id]); // Use user.id instead of user object to reduce re-renders
 
   return {
     bookings,
