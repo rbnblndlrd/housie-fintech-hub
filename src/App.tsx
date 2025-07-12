@@ -36,6 +36,7 @@ import CommunityDashboard from './pages/CommunityDashboard';
 import Prestige from './pages/Prestige';
 import TaxReports from './pages/TaxReports';
 import FinancialAnalytics from './pages/FinancialAnalytics';
+import ServiceBoard from './pages/ServiceBoard';
 import InteractiveMapPage from './pages/InteractiveMapPage';
 import MapView from './pages/MapView';
 import Pricing from './pages/Pricing';
@@ -83,7 +84,8 @@ function App() {
                 <Routes>
                   <Route path="/" element={<Home />} />
                   <Route path="/auth" element={<AuthPage />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/dashboard" element={<UnifiedDashboard />} />
+                  <Route path="/service-board" element={<ServiceBoard />} />
                   <Route path="/customer-dashboard" element={<UnifiedDashboard />} />
                   <Route path="/bookings" element={<BookingsPage />} />
                   <Route path="/provider-profile/:id" element={<ProviderProfile />} />

@@ -40,28 +40,37 @@ const UnifiedDashboard = () => {
     );
   }
 
-  // Render the appropriate dashboard based on current role
-  console.log('🎯 Rendering dashboard for role:', currentRole);
+  // Redirect based on role
+  console.log('🎯 Routing based on role:', currentRole);
   
-  return (
-    <>
-      {/* Back Navigation - Above Job Hub tab */}
-      <div className="fixed top-[94px] left-[22px] z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => navigate('/')}
-          className="bg-white border-slate-300 shadow-lg text-slate-800 hover:bg-slate-50"
-        >
-          <ArrowLeft className="h-4 w-4 mr-2" />
-          Back
-        </Button>
-      </div>
-      
-      {currentRole === 'provider' ? <ProviderDashboard /> : <CustomerDashboard />}
-      <ChatBubble />
-    </>
-  );
+  if (currentRole === 'customer') {
+    return <Navigate to="/service-board" replace />;
+  }
+  
+  if (currentRole === 'provider') {
+    return (
+      <>
+        {/* Back Navigation - Above Job Hub tab */}
+        <div className="fixed top-[94px] left-[22px] z-50">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="bg-white border-slate-300 shadow-lg text-slate-800 hover:bg-slate-50"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back
+          </Button>
+        </div>
+        
+        <ProviderDashboard />
+        <ChatBubble />
+      </>
+    );
+  }
+  
+  // Fallback
+  return <Navigate to="/service-board" replace />;
 };
 
 export default UnifiedDashboard;
