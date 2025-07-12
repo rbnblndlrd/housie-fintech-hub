@@ -97,227 +97,160 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left side - Video Background */}
-      <div className="w-1/2 relative">
-        <ContainedVideoBackground />
-        <div className="absolute inset-0 bg-black/20 z-10"></div>
-        <div className="absolute inset-0 z-20 flex items-center justify-center px-8">
-          <div className="auth-hero-text text-center">
-            <h1 
-              className="text-5xl font-extrabold mb-3 drop-shadow-2xl"
-              style={{ color: '#48594B' }}
-            >
-              Welcome to HOUSIE
-            </h1>
-            <p className="text-xl text-white drop-shadow-lg">Your trusted home services platform</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Right side - Winchester Green Background with Authentication Form */}
-      <div 
-        className="w-1/2 flex items-center justify-center p-8"
-        style={{ backgroundColor: '#48594B' }}
-      >
-        <Card className="w-full max-w-md bg-white shadow-2xl border-0 rounded-xl">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-gray-800">
-              Get Started
-            </CardTitle>
-            <p className="text-gray-600">Sign in to your account or create a new one</p>
-          </CardHeader>
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8"
+      style={{
+        background: 'linear-gradient(to top, #a84300, #35283b)'
+      }}
+    >
+      {/* Centered Auth Card */}
+      <Card className="w-full max-w-md bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl">
+        <CardHeader className="text-center pt-8 pb-6">
+          <CardTitle className="text-3xl font-bold text-white mb-2">
+            Get Started
+          </CardTitle>
+          <p className="text-orange-100/80 text-base">Sign in to your account or create a new one</p>
+        </CardHeader>
+        
+        <CardContent className="px-8 pb-8 space-y-6">
+          <GoogleSignInButton />
           
-          <CardContent className="space-y-6">
-            <GoogleSignInButton />
-            
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-white px-2 text-gray-500">Or continue with email</span>
-              </div>
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-white/30" />
             </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-white/10 backdrop-blur px-3 py-1 rounded-full text-orange-100/70">
+                Or continue with email
+              </span>
+            </div>
+          </div>
 
-            <Tabs value={activeTab} onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2 bg-gray-100">
-                <TabsTrigger value="signin" className="text-gray-700">Sign In</TabsTrigger>
-                <TabsTrigger value="signup" className="text-gray-700">Sign Up</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="signin">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email" className="text-gray-700 font-medium">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signin-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                        style={{
-                          borderColor: 'rgb(209 213 219)',
-                        } as React.CSSProperties}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#48594B';
-                          e.target.style.boxShadow = `0 0 0 1px #48594B`;
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = 'rgb(209 213 219)';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password" className="text-gray-700 font-medium">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signin-password"
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                        style={{
-                          borderColor: 'rgb(209 213 219)',
-                        } as React.CSSProperties}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#48594B';
-                          e.target.style.boxShadow = `0 0 0 1px #48594B`;
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = 'rgb(209 213 219)';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <Button
-                    type="submit"
-                    className="w-full text-white font-medium py-2 px-4 rounded-md transition-colors"
-                    style={{ 
-                      backgroundColor: '#48594B'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#3d4a3f';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#48594B';
-                    }}
-                    disabled={loading || !email || !password}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Signing in...
-                      </>
-                    ) : (
-                      'Sign In'
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="signup">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email" className="text-gray-700 font-medium">Email</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-email"
-                        type="email"
-                        placeholder="Enter your email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                        style={{
-                          borderColor: 'rgb(209 213 219)',
-                        } as React.CSSProperties}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#48594B';
-                          e.target.style.boxShadow = `0 0 0 1px #48594B`;
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = 'rgb(209 213 219)';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                        required
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password" className="text-gray-700 font-medium">Password</Label>
-                    <div className="relative">
-                      <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                      <Input
-                        id="signup-password"
-                        type="password"
-                        placeholder="Choose a password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        className="pl-10 bg-white border-gray-300 text-gray-900 placeholder-gray-500"
-                        style={{
-                          borderColor: 'rgb(209 213 219)',
-                        } as React.CSSProperties}
-                        onFocus={(e) => {
-                          e.target.style.borderColor = '#48594B';
-                          e.target.style.boxShadow = `0 0 0 1px #48594B`;
-                        }}
-                        onBlur={(e) => {
-                          e.target.style.borderColor = 'rgb(209 213 219)';
-                          e.target.style.boxShadow = 'none';
-                        }}
-                        required
-                        minLength={6}
-                      />
-                    </div>
-                  </div>
-                  
-                  <Button
-                    type="submit"
-                    className="w-full text-white font-medium py-2 px-4 rounded-md transition-colors"
-                    style={{ 
-                      backgroundColor: '#48594B'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = '#3d4a3f';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = '#48594B';
-                    }}
-                    disabled={loading || !email || !password}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating account...
-                      </>
-                    ) : (
-                      'Create Account'
-                    )}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="grid w-full grid-cols-2 bg-black/20 backdrop-blur p-1 rounded-xl">
+              <TabsTrigger 
+                value="signin" 
+                className="text-white/70 data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg transition-all"
+              >
+                Sign In
+              </TabsTrigger>
+              <TabsTrigger 
+                value="signup" 
+                className="text-white/70 data-[state=active]:bg-orange-500 data-[state=active]:text-white rounded-lg transition-all"
+              >
+                Sign Up
+              </TabsTrigger>
+            </TabsList>
             
-            <div className="text-center text-sm text-gray-600">
-              <p>By continuing, you agree to our Terms of Service and Privacy Policy</p>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            <TabsContent value="signin">
+              <form onSubmit={handleSignIn} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signin-email" className="text-white/90 font-medium">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-orange-200/60" />
+                    <Input
+                      id="signin-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 bg-white/10 backdrop-blur border-white/30 text-white placeholder:text-orange-100/50 focus:border-orange-400 focus:ring-orange-400/20 rounded-xl"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="signin-password" className="text-white/90 font-medium">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-orange-200/60" />
+                    <Input
+                      id="signin-password"
+                      type="password"
+                      placeholder="Enter your password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 bg-white/10 backdrop-blur border-white/30 text-white placeholder:text-orange-100/50 focus:border-orange-400 focus:ring-orange-400/20 rounded-xl"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-orange-500/25"
+                  disabled={loading || !email || !password}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Signing in...
+                    </>
+                  ) : (
+                    'Sign In'
+                  )}
+                </Button>
+              </form>
+            </TabsContent>
+            
+            <TabsContent value="signup">
+              <form onSubmit={handleSignUp} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="signup-email" className="text-white/90 font-medium">Email</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-3 h-4 w-4 text-orange-200/60" />
+                    <Input
+                      id="signup-email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="pl-10 bg-white/10 backdrop-blur border-white/30 text-white placeholder:text-orange-100/50 focus:border-orange-400 focus:ring-orange-400/20 rounded-xl"
+                      required
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="signup-password" className="text-white/90 font-medium">Password</Label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-3 h-4 w-4 text-orange-200/60" />
+                    <Input
+                      id="signup-password"
+                      type="password"
+                      placeholder="Choose a password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="pl-10 bg-white/10 backdrop-blur border-white/30 text-white placeholder:text-orange-100/50 focus:border-orange-400 focus:ring-orange-400/20 rounded-xl"
+                      required
+                      minLength={6}
+                    />
+                  </div>
+                </div>
+                
+                <Button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-semibold py-3 rounded-xl transition-all duration-200 transform hover:scale-[1.02] shadow-lg hover:shadow-orange-500/25"
+                  disabled={loading || !email || !password}
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Creating account...
+                    </>
+                  ) : (
+                    'Join the Network'
+                  )}
+                </Button>
+              </form>
+            </TabsContent>
+          </Tabs>
+          
+          <div className="text-center text-sm text-orange-100/60">
+            <p>By continuing, you agree to our Terms of Service and Privacy Policy</p>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };
