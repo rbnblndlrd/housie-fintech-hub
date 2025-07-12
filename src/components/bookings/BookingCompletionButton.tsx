@@ -5,6 +5,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { ReviewFlow } from '@/components/reviews/ReviewFlow';
+import { ProviderSmartChecklist } from '@/components/trust/ProviderSmartChecklist';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
 interface BookingCompletionButtonProps {
   bookingId: string;
@@ -12,6 +14,8 @@ interface BookingCompletionButtonProps {
   userRole: 'provider' | 'customer';
   onStatusUpdate: () => void;
   requiresPhotos?: boolean;
+  smartChecklistEnabled?: boolean;
+  checklistSteps?: any[];
 }
 
 export const BookingCompletionButton: React.FC<BookingCompletionButtonProps> = ({
@@ -19,15 +23,25 @@ export const BookingCompletionButton: React.FC<BookingCompletionButtonProps> = (
   status,
   userRole,
   onStatusUpdate,
-  requiresPhotos = false
+  requiresPhotos = false,
+  smartChecklistEnabled = false,
+  checklistSteps = []
 }) => {
   const { user } = useAuth();
   const [isCompleting, setIsCompleting] = useState(false);
   const [showReviewFlow, setShowReviewFlow] = useState(false);
   const [showPhotoFlow, setShowPhotoFlow] = useState(false);
+  const [showSmartChecklist, setShowSmartChecklist] = useState(false);
+  const [currentChecklistSteps, setCurrentChecklistSteps] = useState(checklistSteps);
 
   const handleMarkComplete = async () => {
     if (!user) return;
+
+    // Check if smart checklist is enabled first
+    if (smartChecklistEnabled && userRole === 'provider' && status !== 'completed') {
+      setShowSmartChecklist(true);
+      return;
+    }
 
     // Check if photos are required first
     if (requiresPhotos && status !== 'completed') {
@@ -130,6 +144,9 @@ export const BookingCompletionButton: React.FC<BookingCompletionButtonProps> = (
     }
     
     if (userRole === 'provider') {
+      if (smartChecklistEnabled) {
+        return 'Complete Verification';
+      }
       return requiresPhotos ? 'Complete & Upload Photos' : 'Mark as Complete';
     }
     
@@ -163,6 +180,42 @@ export const BookingCompletionButton: React.FC<BookingCompletionButtonProps> = (
           </>
         )}
       </Button>
+
+      {/* Smart Checklist Flow */}
+      {showSmartChecklist && (
+        <Dialog open={showSmartChecklist} onOpenChange={setShowSmartChecklist}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Photo Verification Checklist</DialogTitle>
+            </DialogHeader>
+            <ProviderSmartChecklist
+              bookingId={bookingId}
+              steps={currentChecklistSteps}
+              onStepsUpdate={setCurrentChecklistSteps}
+              canCustomerApprove={false}
+            />
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" onClick={() => setShowSmartChecklist(false)} className="flex-1">
+                Save & Continue Later
+              </Button>
+              <Button 
+                onClick={() => {
+                  setShowSmartChecklist(false);
+                  handleMarkComplete();
+                }} 
+                className="flex-1"
+                disabled={currentChecklistSteps.some(step => {
+                  const beforeComplete = !step.requiresBefore || step.beforePhotoUploaded;
+                  const afterComplete = !step.requiresAfter || step.afterPhotoUploaded;
+                  return !(beforeComplete && afterComplete && (step.isValidated || step.customerApproved));
+                })}
+              >
+                Complete Job
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
 
       {/* Photo Upload Flow */}
       {showPhotoFlow && (

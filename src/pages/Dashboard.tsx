@@ -4,6 +4,7 @@ import JobTicketTable from '@/components/dashboard/JobTicketTable';
 import TodaysRoutePanel from '@/components/dashboard/TodaysRoutePanel';
 import PerformanceWidgets from '@/components/dashboard/PerformanceWidgets';
 import JobHub from '@/components/dashboard/JobHub';
+import { AnnetteInboxNotifications } from '@/components/annette/AnnetteInboxNotifications';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -48,6 +49,7 @@ const Dashboard = () => {
       bottomWidgets={<PerformanceWidgets />}
     >
       {annetteCard}
+      <AnnetteInboxNotifications className="mb-6" />
       <JobHub />
     </DashboardLayout>
   );

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MessageSquare, Calendar, Star, Users } from 'lucide-react';
 import { ServiceConnection } from '@/hooks/useServiceConnections';
+import { TrustIndicator } from '@/components/trust/TrustIndicator';
 import { cn } from '@/lib/utils';
 
 interface ServiceNetworkCardProps {
@@ -61,8 +62,14 @@ export const ServiceNetworkCard: React.FC<ServiceNetworkCardProps> = ({
               </AvatarFallback>
             </Avatar>
             <div>
-              <CardTitle className="text-lg font-semibold">
-                {connection.other_user?.full_name || 'Unknown User'}
+              <CardTitle className="text-lg font-semibold flex items-center space-x-2">
+                <span>{connection.other_user?.full_name || 'Unknown User'}</span>
+                <TrustIndicator 
+                  isConnected={true}
+                  canMessage={connection.can_message}
+                  connectionTier={connection.connection_tier}
+                  size="sm"
+                />
               </CardTitle>
               <Badge 
                 variant="outline" 
@@ -118,7 +125,9 @@ export const ServiceNetworkCard: React.FC<ServiceNetworkCardProps> = ({
                 className="flex items-center space-x-1"
               >
                 <Calendar className="h-4 w-4" />
-                <span>Rebook</span>
+                <span>
+                  {connection.cred_connection_established ? 'Book Again' : 'Rebook'}
+                </span>
               </Button>
             )}
           </div>
