@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Crown, Briefcase, User } from 'lucide-react';
 import { useUnifiedProfile } from '@/hooks/useUnifiedProfile';
 import { useAuth } from '@/contexts/AuthContext';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -13,8 +14,20 @@ import ProfileMainContainer from './ProfileMainContainer';
 const UnifiedMobileProfile = () => {
   const { user } = useAuth();
   const { profile, loading, error } = useUnifiedProfile();
+  const { currentRole, isLoading: roleLoading } = useRoleSwitch();
+  
+  // Initialize activeTab based on currentRole from RoleSwitchContext
   const [activeTab, setActiveTab] = useState<ProfileTab>('personal');
   const navigate = useNavigate();
+
+  // Sync activeTab with currentRole when RoleSwitchContext loads
+  useEffect(() => {
+    if (!roleLoading) {
+      const tabFromRole: ProfileTab = currentRole === 'provider' ? 'provider' : 'personal';
+      console.log('🔄 UnifiedMobileProfile: Syncing tab with role:', { currentRole, tabFromRole });
+      setActiveTab(tabFromRole);
+    }
+  }, [currentRole, roleLoading]);
 
   if (loading) {
     return (
