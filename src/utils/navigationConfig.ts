@@ -18,8 +18,7 @@ export const visitorNav: NavigationItem[] = [
 
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
-  { label: "My Dashboard", href: "/customer-dashboard", icon: "📊" },
-  { label: "Service Board", href: "/service-board", icon: "📋" },
+  { label: "Board", href: "/service-board", icon: "📋" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Community", href: "/community", icon: "👥" },
@@ -58,7 +57,7 @@ export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provid
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
 
-  const dashboardLabel = currentRole === 'provider' ? 'Job Hub' : 'Service Board';
+  const dashboardLabel = currentRole === 'provider' ? 'Job Hub' : 'Board';
   const dashboardHref = currentRole === 'provider' ? '/dashboard' : '/service-board';
   
   return [

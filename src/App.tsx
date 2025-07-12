@@ -51,7 +51,7 @@ import OpportunityDetail from './pages/opportunities/OpportunityDetail';
 import CrewOpportunities from './pages/crews/CrewOpportunities';
 import CrewBids from './pages/crews/CrewBids';
 import OpportunityBidPlannerPage from './pages/opportunities/OpportunityBidPlanner';
-import CustomerDashboardPage from './pages/CustomerDashboardPage';
+
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -87,7 +87,7 @@ function App() {
                   <Route path="/auth" element={<AuthPage />} />
                   <Route path="/dashboard" element={<UnifiedDashboard />} />
                   <Route path="/service-board" element={<ServiceBoard />} />
-                  <Route path="/customer-dashboard" element={<CustomerDashboardPage />} />
+                  
                   <Route path="/bookings" element={<BookingsPage />} />
                   <Route path="/provider-profile/:id" element={<ProviderProfile />} />
                   <Route path="/notifications" element={<NotificationsPage />} />
