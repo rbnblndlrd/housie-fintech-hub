@@ -1,31 +1,27 @@
 
 import React from 'react';
 import Header from '@/components/Header';
-import HeroSearchSection from '@/components/home/HeroSearchSection';
+import FallHeroSection from '@/components/home/FallHeroSection';
 import OnboardingCards from '@/components/home/OnboardingCards';
 import { PricingSection } from '@/components/PricingSection';
 import HousieFooter from '@/components/home/HousieFooter';
-import VideoBackground from '@/components/common/VideoBackground';
 import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
 
 const Index = () => {
-  console.log('🏠 Index page rendering with video background...');
+  console.log('🏠 Index page rendering with fall hero section...');
 
   return (
     <>
-      {/* Video Background */}
-      <VideoBackground />
-      
       {/* Header */}
       <Header />
       
+      {/* Fall Hero Section */}
+      <FallHeroSection />
+      
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen w-full">
-        {/* Hero Search Section */}
-        <HeroSearchSection />
-        
+      <div className="relative z-10 w-full">
         {/* Create Job Ticket Button for logged in users */}
-        <div className="flex justify-center mb-8">
+        <div className="flex justify-center mb-8 pt-8">
           <CreateJobTicketButton size="lg" />
         </div>
         
