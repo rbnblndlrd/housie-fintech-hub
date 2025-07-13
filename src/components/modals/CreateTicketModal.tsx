@@ -406,9 +406,9 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
             </div>
           )}
 
-          {/* Service Title */}
+          {/* Ticket Title */}
           <div className="space-y-2">
-            <Label htmlFor="title">Service Title</Label>
+            <Label htmlFor="title">Ticket Title</Label>
             <Input
               id="title"
               value={formData.title}
