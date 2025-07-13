@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { UnifiedUserProfile } from '@/types/userProfile';
@@ -11,7 +11,7 @@ import CustomerProfileView from './CustomerProfileView';
 import ProviderProfileView from './ProviderProfileView';
 
 const UnifiedProfilePage = () => {
-  const user = useUser();
+  const { user } = useAuth();
   const { currentRole, isLoading: roleLoading } = useRoleSwitch();
   const [profile, setProfile] = useState<UnifiedUserProfile | null>(null);
   const [loading, setLoading] = useState(true);

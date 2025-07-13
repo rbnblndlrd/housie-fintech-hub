@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
-import { useUser } from '@supabase/auth-helpers-react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const RoleDebugger = () => {
   const { currentRole, availableRoles, canSwitchToProvider, forceRefresh } = useRoleSwitch();
-  const user = useUser();
+  const { user } = useAuth();
 
   const checkDatabaseDirectly = async () => {
     if (!user) return;
