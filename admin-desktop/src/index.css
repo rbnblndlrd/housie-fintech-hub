@@ -58,3 +58,25 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Safe modal stability - only for specific non-dialog elements */
+.modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 50 !important;
+}
+
+/* Allow Radix Dialog to handle its own positioning */
+[data-radix-dialog-overlay] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 50 !important;
+}
+
+[data-radix-dialog-content] {
+  position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 51 !important;
+}
