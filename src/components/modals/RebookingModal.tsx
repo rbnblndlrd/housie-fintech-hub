@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -75,12 +75,13 @@ const RebookingModal: React.FC<RebookingModalProps> = ({
 
     setLoading(true);
     try {
-      // Create the rebooking
+      // Create the rebooking without provider_id since we're using mock data
+      // In production, this would lookup actual provider_profiles
       const { data, error } = await supabase
         .from('bookings')
         .insert({
           customer_id: user.id,
-          provider_id: provider.id,
+          // provider_id: null, // Don't assign provider for mock rebookings
           service_id: null, // Will be determined by category
           scheduled_date: formData.scheduledDate,
           scheduled_time: formData.scheduledTime,
@@ -120,12 +121,15 @@ const RebookingModal: React.FC<RebookingModalProps> = ({
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="fintech-card max-w-2xl">
+      <DialogContent className="fintech-card max-w-2xl z-50">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Heart className="h-5 w-5 text-primary" />
             Rebook with {provider.name}
           </DialogTitle>
+          <DialogDescription>
+            Book the same service again with your trusted provider. All details from your previous booking will be pre-filled.
+          </DialogDescription>
         </DialogHeader>
         
         {/* Provider Info */}
