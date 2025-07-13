@@ -96,7 +96,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       // Get user data
       const { data: userData, error: userError } = await supabase
         .from('users')
-        .select('id, email, first_name, last_name')
+        .select('id, email, full_name')
         .eq('id', user.id)
         .single();
 
