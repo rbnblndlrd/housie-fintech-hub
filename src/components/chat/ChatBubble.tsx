@@ -89,17 +89,27 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
           <Button
             onClick={handleOpen}
             className={cn(
-              "relative rounded-full w-14 h-14 shadow-lg transition-all duration-200 hover:scale-105",
-              "border-2 border-orange-600 text-black"
+              "relative rounded-full w-16 h-16 shadow-xl transition-all duration-300 group",
+              "bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600",
+              "border-2 border-white/20 backdrop-blur-sm hover:scale-105 hover:shadow-2xl",
+              "hover:shadow-purple-500/20"
             )}
-            style={{ backgroundColor: '#f5d478' }}
-            variant="ghost"
           >
-            {useMicIcon ? (
-              <Mic className="h-6 w-6 text-black" />
-            ) : (
-              <MessageCircle className="h-6 w-6 text-black" />
+            {/* Annette Avatar Image */}
+            <img 
+              src="/lovable-uploads/APPLOGOPNG (1) (3).png" 
+              alt="Annette AI Assistant"
+              className="w-12 h-12 rounded-full object-cover transition-transform duration-200 group-hover:scale-110"
+            />
+            
+            {/* Mic Icon Overlay for Voice Mode */}
+            {useMicIcon && (
+              <div className="absolute inset-0 bg-black/20 rounded-full flex items-center justify-center">
+                <Mic className="h-6 w-6 text-white" />
+              </div>
             )}
+            
+            {/* Unread Message Badge */}
             {totalUnreadCount > 0 && !useMicIcon && hasMessagesAccess && (
               <Badge
                 variant="destructive"

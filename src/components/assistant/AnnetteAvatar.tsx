@@ -45,7 +45,7 @@ export const AnnetteAvatar: React.FC<AnnetteAvatarProps> = ({
       >
         {/* Annette Avatar Image */}
         <img 
-          src="/lovable-uploads/854d6f0c-9abe-4605-bb62-0a08d7ea62dc.png" 
+          src="/lovable-uploads/APPLOGOPNG (1) (3).png" 
           alt="Annette AI Assistant"
           className="w-12 h-12 rounded-full object-cover transition-transform duration-200 group-hover:scale-110"
         />
