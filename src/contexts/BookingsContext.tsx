@@ -53,12 +53,18 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         .from('bookings')
         .select(`
           id,
+          service_category,
+          title,
+          preferred_date,
+          preferred_time,
+          location,
+          description,
+          status,
           scheduled_date,
           scheduled_time,
-          status,
-          total_amount,
           service_address,
           instructions,
+          total_amount,
           services!inner(title),
           provider_profiles!inner(
             business_name,
@@ -86,12 +92,18 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           .from('bookings')
           .select(`
             id,
+            service_category,
+            title,
+            preferred_date,
+            preferred_time,
+            location,
+            description,
+            status,
             scheduled_date,
             scheduled_time,
-            status,
-            total_amount,
             service_address,
             instructions,
+            total_amount,
             services!inner(title),
             users!inner(full_name)
           `)

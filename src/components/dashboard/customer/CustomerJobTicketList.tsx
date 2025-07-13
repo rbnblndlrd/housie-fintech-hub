@@ -29,11 +29,16 @@ const CustomerJobTicketList = () => {
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+    if (!dateString) return 'Flexible';
+    try {
+      return new Date(dateString).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } catch (error) {
+      return 'Flexible';
+    }
   };
 
   if (loading) {
@@ -152,7 +157,7 @@ const CustomerJobTicketList = () => {
                             View
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="fintech-card max-w-2xl">
+                        <DialogContent className="fintech-card max-w-2xl data-[state=open]:translate-y-0 data-[state=closed]:translate-y-0 transition-none">
                           <DialogHeader>
                             <DialogTitle>Ticket Details</DialogTitle>
                           </DialogHeader>
@@ -171,25 +176,21 @@ const CustomerJobTicketList = () => {
                                 </div>
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Date</label>
-                                  <p>{formatDate(selectedBooking.scheduled_date)}</p>
+                                  <p>{selectedBooking.preferred_date ? formatDate(selectedBooking.preferred_date) : selectedBooking.scheduled_date ? formatDate(selectedBooking.scheduled_date) : 'Flexible'}</p>
                                 </div>
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Time</label>
-                                  <p>{selectedBooking.scheduled_time}</p>
+                                  <p>{selectedBooking.preferred_time || selectedBooking.scheduled_time || 'Flexible'}</p>
                                 </div>
                               </div>
-                              {selectedBooking.service_address && (
-                                <div>
-                                  <label className="text-sm font-medium text-muted-foreground">Address</label>
-                                  <p>{selectedBooking.service_address}</p>
-                                </div>
-                              )}
-                              {selectedBooking.instructions && (
-                                <div>
-                                  <label className="text-sm font-medium text-muted-foreground">Instructions</label>
-                                  <p>{selectedBooking.instructions}</p>
-                                </div>
-                              )}
+                              <div>
+                                <label className="text-sm font-medium text-muted-foreground">Location</label>
+                                <p>{selectedBooking.location || selectedBooking.service_address || 'Not specified'}</p>
+                              </div>
+                              <div>
+                                <label className="text-sm font-medium text-muted-foreground">Description</label>
+                                <p>{selectedBooking.description || selectedBooking.instructions || 'No description provided'}</p>
+                              </div>
                               <div className="flex gap-2 pt-4">
                                 {selectedBooking.status === 'pending' && (
                                   <Button variant="outline" className="text-red-600">
