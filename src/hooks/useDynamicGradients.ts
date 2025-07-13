@@ -22,6 +22,14 @@ export const useDynamicGradients = () => {
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
         
+        // Skip modal elements to prevent dodging behavior
+        if (htmlCard.closest('[data-state="open"]') || 
+            htmlCard.classList.contains('modal-stable') || 
+            htmlCard.closest('.modal-stable') ||
+            htmlCard.closest('[role="dialog"]')) {
+          return;
+        }
+        
         // Apply strategic positioning to avoid watermark zones
         applyWatermarkAvoidancePositioning(htmlCard, index);
       });
