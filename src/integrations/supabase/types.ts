@@ -423,7 +423,7 @@ export type Database = {
           scheduled_date: string
           scheduled_time: string
           service_address: string | null
-          service_id: string
+          service_id: string | null
           service_radius: number | null
           status: string | null
           stripe_payment_intent_id: string | null
@@ -453,7 +453,7 @@ export type Database = {
           scheduled_date: string
           scheduled_time: string
           service_address?: string | null
-          service_id: string
+          service_id?: string | null
           service_radius?: number | null
           status?: string | null
           stripe_payment_intent_id?: string | null
@@ -483,7 +483,7 @@ export type Database = {
           scheduled_date?: string
           scheduled_time?: string
           service_address?: string | null
-          service_id?: string
+          service_id?: string | null
           service_radius?: number | null
           status?: string | null
           stripe_payment_intent_id?: string | null

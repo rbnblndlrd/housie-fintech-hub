@@ -208,21 +208,36 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       
       const serviceTitle = selectedSubcategory?.label || selectedCategory?.label || formData.title;
 
-      // Find or create a generic service (not tied to specific providers)
-      let { data: services, error: serviceError } = await supabase
+      // Try to find existing service - first by exact subcategory match, then by category
+      let serviceId: string | null = null;
+      
+      // First try exact subcategory match
+      let { data: services } = await supabase
         .from('services')
-        .select('*')
+        .select('id')
         .eq('category', formData.category)
+        .eq('subcategory', formData.subcategory)
         .eq('active', true)
         .limit(1);
 
-      let serviceId: string | null = null;
-
       if (services && services.length > 0) {
         serviceId = services[0].id;
+        console.log('Found exact subcategory match:', serviceId);
       } else {
-        // Skip service creation for now - we'll handle this separately
-        console.log('No existing service found, proceeding without service_id');
+        // Try category-only match as fallback
+        const { data: categoryServices } = await supabase
+          .from('services')
+          .select('id')
+          .eq('category', formData.category)
+          .eq('active', true)
+          .limit(1);
+
+        if (categoryServices && categoryServices.length > 0) {
+          serviceId = categoryServices[0].id;
+          console.log('Found category match:', serviceId);
+        } else {
+          console.log('No matching service found, proceeding with service_id: null');
+        }
       }
 
       // Create the booking WITHOUT assigning a provider (they'll claim it later)
