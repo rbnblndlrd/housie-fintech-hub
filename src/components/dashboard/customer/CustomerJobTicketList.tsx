@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useBookingsContext } from '@/contexts/BookingsContext';
 import { Calendar, Clock, MapPin, Eye, X, Plus, AlertTriangle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import CreateTicketModal from '@/components/modals/CreateTicketModal';
+import AnnetteBanner from './AnnetteBanner';
 import { getDisplayNameForBooking } from '@/utils/serviceCategories';
+import { detectServiceFromKeywords } from '@/utils/mysteryJobDetector';
 
 const CustomerJobTicketList = () => {
   const { bookings, loading } = useBookingsContext();
@@ -18,6 +21,11 @@ const CustomerJobTicketList = () => {
     if (filter === 'all') return true;
     return booking.status === filter;
   });
+
+  // Count mystery jobs in filtered results
+  const mysteryJobCount = useMemo(() => {
+    return filteredBookings.filter(booking => !booking.hasLinkedService).length;
+  }, [filteredBookings]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -58,7 +66,10 @@ const CustomerJobTicketList = () => {
   }
 
   return (
-    <>
+    <TooltipProvider>
+      {/* Show Annette Banner if multiple mystery jobs */}
+      {mysteryJobCount > 1 && <AnnetteBanner mysteryJobCount={mysteryJobCount} />}
+      
       <Card className="fintech-card">
         <CardHeader>
           <CardTitle className="flex items-center justify-between">
@@ -120,51 +131,68 @@ const CustomerJobTicketList = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {filteredBookings.map((booking) => (
-                <div key={booking.id} className="fintech-inner-box p-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-medium">
-                          {getDisplayNameForBooking(booking)}
-                        </h3>
-                        {!booking.hasLinkedService && (
-                          <div className="inline-flex" title="No formal service template - custom request">
-                            <AlertTriangle className="h-4 w-4 text-orange-500" />
-                          </div>
-                        )}
-                        {booking.status === 'pending' && !booking.provider && (
-                          <div className="inline-flex" title="Needs routing to provider">
-                            <span className="text-xs text-muted-foreground">💬 Needs routing</span>
-                          </div>
-                        )}
-                        <Badge className={getStatusColor(booking.status)}>
-                          {booking.status}
-                        </Badge>
-                      </div>
-                      {!booking.hasLinkedService && (
-                        <div className="text-xs text-muted-foreground italic mb-2">
-                          💬 Annette: "Hmm… this one's a little mysterious! No service template, but someone still wants it done. Must be urgent!"
-                        </div>
-                      )}
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          {formatDate(booking.date || new Date().toISOString())}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {booking.time || 'TBD'}
-                        </div>
-                        {booking.location && (
-                          <div className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4" />
-                            {booking.location.substring(0, 30)}...
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
+              {filteredBookings.map((booking) => {
+                const detection = detectServiceFromKeywords(booking.custom_title, booking.instructions);
+                
+                return (
+                  <div key={booking.id} className="fintech-inner-box p-4 relative">
+                    {/* Mystery Job Badge */}
+                    {!booking.hasLinkedService && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Badge 
+                            variant="outline" 
+                            className="absolute top-2 right-2 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100"
+                          >
+                            ⚠️ Mystery Job
+                          </Badge>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p className="max-w-xs">
+                            💬 Annette: "{detection.annetteMessage}"
+                            {detection.suggestion && (
+                              <span className="block mt-1 font-medium text-orange-600">
+                                Suggestion: {detection.suggestion}
+                              </span>
+                            )}
+                          </p>
+                        </TooltipContent>
+                      </Tooltip>
+                    )}
+
+                     <div className="flex items-center justify-between">
+                       <div className="flex-1 pr-20"> {/* Add padding to avoid badge overlap */}
+                         <div className="flex items-center gap-3 mb-2">
+                           <h3 className="font-medium">
+                             {getDisplayNameForBooking(booking)}
+                           </h3>
+                           {booking.status === 'pending' && !booking.provider && (
+                             <div className="inline-flex" title="Needs routing to provider">
+                               <span className="text-xs text-muted-foreground">💬 Needs routing</span>
+                             </div>
+                           )}
+                           <Badge className={getStatusColor(booking.status)}>
+                             {booking.status}
+                           </Badge>
+                         </div>
+                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                           <div className="flex items-center gap-1">
+                             <Calendar className="h-4 w-4" />
+                             {formatDate(booking.date || new Date().toISOString())}
+                           </div>
+                           <div className="flex items-center gap-1">
+                             <Clock className="h-4 w-4" />
+                             {booking.time || 'TBD'}
+                           </div>
+                           {booking.location && (
+                             <div className="flex items-center gap-1">
+                               <MapPin className="h-4 w-4" />
+                               {booking.location.substring(0, 30)}...
+                             </div>
+                           )}
+                         </div>
+                       </div>
+                       <div className="flex items-center gap-2">
                       {booking.total_amount && (
                         <span className="font-medium">${booking.total_amount}</span>
                       )}
@@ -233,11 +261,12 @@ const CustomerJobTicketList = () => {
                             </div>
                           )}
                         </DialogContent>
-                      </Dialog>
-                    </div>
+                       </Dialog>
+                       </div>
+                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>
@@ -254,7 +283,7 @@ const CustomerJobTicketList = () => {
           }}
         />
       )}
-    </>
+    </TooltipProvider>
   );
 };
 
