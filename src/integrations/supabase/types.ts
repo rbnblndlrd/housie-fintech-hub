@@ -409,6 +409,7 @@ export type Database = {
           completed_at: string | null
           created_at: string | null
           creates_service_connection: boolean | null
+          custom_title: string | null
           customer_id: string
           duration_hours: number | null
           id: string
@@ -442,6 +443,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string | null
           creates_service_connection?: boolean | null
+          custom_title?: string | null
           customer_id: string
           duration_hours?: number | null
           id?: string
@@ -475,6 +477,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string | null
           creates_service_connection?: boolean | null
+          custom_title?: string | null
           customer_id?: string
           duration_hours?: number | null
           id?: string

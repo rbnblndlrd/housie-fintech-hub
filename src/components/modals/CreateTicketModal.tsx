@@ -267,7 +267,8 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
         // Add new metadata fields for fallback handling
         category: CATEGORY_VALUE_MAP[formData.category] || formData.category,
         subcategory: formData.subcategory,
-        service_title: serviceTitle
+        service_title: serviceTitle,
+        custom_title: formData.title || serviceTitle
       };
 
       const { data: booking, error: bookingError } = await supabase
@@ -414,6 +415,8 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
               value={formData.title}
               onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
               placeholder="Brief description of what you need..."
+              className="bg-background border-border"
+              autoComplete="off"
               required
             />
           </div>

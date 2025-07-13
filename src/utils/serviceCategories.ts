@@ -130,11 +130,26 @@ export const getSubcategoryByValue = (categoryValue: string, subcategoryValue: s
   return category?.subcategories.find(sub => sub.value === subcategoryValue);
 };
 
-export const getDisplayNameForBooking = (category?: string, subcategory?: string, serviceTitle?: string): string => {
-  // If we have a formal service title, use it
-  if (serviceTitle) return serviceTitle;
+export const getDisplayNameForBooking = (booking: any): string => {
+  // Prioritize user's custom title first
+  if (booking.custom_title && booking.custom_title.trim()) {
+    return booking.custom_title.trim();
+  }
+  
+  // If serviceName is available, use it
+  if (booking.serviceName) {
+    return booking.serviceName;
+  }
+  
+  // If service_title is available, use it
+  if (booking.service_title) {
+    return booking.service_title;
+  }
   
   // Try to build a name from category/subcategory metadata
+  const category = booking.category;
+  const subcategory = booking.subcategory;
+  
   if (category && subcategory) {
     const displayCategory = DB_CATEGORY_DISPLAY_MAP[category] || category;
     const categoryObj = getCategoryByValue(displayCategory);

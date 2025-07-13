@@ -126,7 +126,7 @@ const CustomerJobTicketList = () => {
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="font-medium">
-                          {getDisplayNameForBooking(booking.category, booking.subcategory, booking.serviceName)}
+                          {getDisplayNameForBooking(booking)}
                         </h3>
                         {!booking.hasLinkedService && (
                           <div className="inline-flex" title="No formal service template - custom request">
@@ -185,7 +185,7 @@ const CustomerJobTicketList = () => {
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Service</label>
                                   <div className="flex items-center gap-2">
-                                    <p>{getDisplayNameForBooking(selectedBooking.category, selectedBooking.subcategory, selectedBooking.serviceName)}</p>
+                                    <p>{getDisplayNameForBooking(selectedBooking)}</p>
                                     {!selectedBooking.hasLinkedService && (
                                       <div className="inline-flex" title="Custom request - no template">
                                         <AlertTriangle className="h-4 w-4 text-orange-500" />

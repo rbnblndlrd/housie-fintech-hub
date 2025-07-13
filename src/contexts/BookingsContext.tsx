@@ -22,6 +22,8 @@ export interface Booking {
   preferred_time?: string;
   service_address?: string;
   instructions?: string;
+  custom_title?: string;
+  service_title?: string;
 }
 
 interface BookingsContextType {
@@ -73,8 +75,9 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           category,
           subcategory,
           service_title,
+          custom_title,
           services(title, category),
-          provider_profiles(
+          provider_profiles!left(
             business_name,
             users(full_name)
           )
@@ -109,6 +112,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             category,
             subcategory,
             service_title,
+            custom_title,
             services(title, category),
             users!inner(full_name)
           `)
@@ -126,12 +130,12 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const allBookings = [
         ...(customerBookings || []).map((booking: any) => ({
           id: booking.id,
-          serviceName: booking.services?.title || booking.service_title || 
+          serviceName: booking.custom_title || booking.services?.title || booking.service_title || 
                       (booking.subcategory ? `Generic ${booking.subcategory}` : 'Service Request'),
           date: booking.scheduled_date,
           time: booking.scheduled_time,
-           provider: booking.provider_profiles?.business_name || 
-                    booking.provider_profiles?.users?.full_name || 'Awaiting Assignment',
+          provider: booking.provider_profiles?.business_name || 
+                   booking.provider_profiles?.users?.full_name || 'Awaiting Assignment',
           location: booking.service_address || 'No address provided',
           status: booking.status || 'pending',
           customer_name: 'You', // Since this is the customer's booking
@@ -139,6 +143,8 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           category: booking.category || booking.services?.category,
           subcategory: booking.subcategory,
           hasLinkedService: !!booking.services?.title,
+          custom_title: booking.custom_title,
+          service_title: booking.service_title,
           // Additional fields for detailed view
           description: booking.instructions,
           scheduled_date: booking.scheduled_date,
@@ -148,7 +154,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         })),
         ...providerBookings.map((booking: any) => ({
           id: booking.id,
-          serviceName: booking.services?.title || booking.service_title || 
+          serviceName: booking.custom_title || booking.services?.title || booking.service_title || 
                       (booking.subcategory ? `Generic ${booking.subcategory}` : 'Service Request'),
           date: booking.scheduled_date,
           time: booking.scheduled_time,
@@ -160,6 +166,8 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           category: booking.category || booking.services?.category,
           subcategory: booking.subcategory,
           hasLinkedService: !!booking.services?.title,
+          custom_title: booking.custom_title,
+          service_title: booking.service_title,
           // Additional fields for detailed view
           description: booking.instructions,
           scheduled_date: booking.scheduled_date,
