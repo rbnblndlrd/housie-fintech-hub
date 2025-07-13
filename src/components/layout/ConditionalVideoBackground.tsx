@@ -12,7 +12,8 @@ const ConditionalVideoBackground = () => {
     '/profile',
     '/notifications',
     '/performance',
-    '/business-insights'
+    '/business-insights',
+    '/service-board'
   ];
   
   const shouldShowVideoBackground = pagesWithVideoBackground.some(path => {

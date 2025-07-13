@@ -95,7 +95,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         .from('provider_profiles')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       let providerBookings: any[] = [];
       if (providerProfile) {

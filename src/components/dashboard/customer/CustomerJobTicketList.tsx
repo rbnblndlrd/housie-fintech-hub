@@ -67,8 +67,8 @@ const CustomerJobTicketList = () => {
 
   return (
     <TooltipProvider>
-      {/* Show Annette Banner if multiple mystery jobs */}
-      {mysteryJobCount > 1 && <AnnetteBanner mysteryJobCount={mysteryJobCount} />}
+      {/* Show Annette Banner if any mystery jobs exist */}
+      {mysteryJobCount > 0 && <AnnetteBanner mysteryJobCount={mysteryJobCount} />}
       
       <Card className="fintech-card">
         <CardHeader>
