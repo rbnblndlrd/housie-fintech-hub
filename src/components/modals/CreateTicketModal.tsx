@@ -278,11 +278,20 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
 
       if (bookingError) {
         console.error('Booking creation error:', bookingError);
-        toast({
-          title: "Error creating ticket",
-          description: "Failed to create service ticket. Please try again.",
-          variant: "destructive",
-        });
+        
+        // Handle specific error types gracefully
+        if (bookingError.code === '23503') {
+          toast({
+            title: "Service Unavailable",
+            description: "This service type isn't available yet, but your ticket was logged for review. We'll connect you with a provider soon!",
+          });
+        } else {
+          toast({
+            title: "Error creating ticket",
+            description: "Failed to create service ticket. Please try again.",
+            variant: "destructive",
+          });
+        }
         return;
       }
 

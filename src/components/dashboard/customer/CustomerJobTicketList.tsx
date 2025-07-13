@@ -133,6 +133,11 @@ const CustomerJobTicketList = () => {
                             <AlertTriangle className="h-4 w-4 text-orange-500" />
                           </div>
                         )}
+                        {booking.status === 'pending' && !booking.provider && (
+                          <div className="inline-flex" title="Needs routing to provider">
+                            <span className="text-xs text-muted-foreground">💬 Needs routing</span>
+                          </div>
+                        )}
                         <Badge className={getStatusColor(booking.status)}>
                           {booking.status}
                         </Badge>

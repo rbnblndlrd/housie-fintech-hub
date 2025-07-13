@@ -131,8 +131,10 @@ export const getSubcategoryByValue = (categoryValue: string, subcategoryValue: s
 };
 
 export const getDisplayNameForBooking = (category?: string, subcategory?: string, serviceTitle?: string): string => {
+  // If we have a formal service title, use it
   if (serviceTitle) return serviceTitle;
   
+  // Try to build a name from category/subcategory metadata
   if (category && subcategory) {
     const displayCategory = DB_CATEGORY_DISPLAY_MAP[category] || category;
     const categoryObj = getCategoryByValue(displayCategory);
@@ -143,9 +145,25 @@ export const getDisplayNameForBooking = (category?: string, subcategory?: string
     }
     
     if (categoryObj) {
-      return `${categoryObj.label} Service`;
+      return `${categoryObj.label} Request`;
     }
+    
+    // Handle unknown subcategories gracefully
+    return `${subcategory.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`;
   }
   
-  return 'Service Request';
+  // If we only have category
+  if (category) {
+    const displayCategory = DB_CATEGORY_DISPLAY_MAP[category] || category;
+    const categoryObj = getCategoryByValue(displayCategory);
+    
+    if (categoryObj) {
+      return `${categoryObj.label} Request`;
+    }
+    
+    return `${category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())} Service`;
+  }
+  
+  // Ultimate fallback for completely uncategorized requests
+  return 'Custom Service Request';
 };

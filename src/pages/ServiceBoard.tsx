@@ -12,6 +12,9 @@ import CustomerPrestigePanel from '@/components/dashboard/customer/CustomerPrest
 import SmartVerificationReview from '@/components/dashboard/customer/SmartVerificationReview';
 import AnnetteCustomerInsights from '@/components/dashboard/customer/AnnetteCustomerInsights';
 
+// Import seeding functionality for development/admin use
+import '@/lib/seed/runSeeding';
+
 const ServiceBoard = () => {
   const { user, loading: authLoading } = useAuth();
   const { currentRole, isLoading } = useRoleSwitch();
