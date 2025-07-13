@@ -93,22 +93,21 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
     setLoading(true);
 
     try {
-      // Get user data
+      // Get user data with fallback to auth.user
       const { data: userData, error: userError } = await supabase
         .from('users')
         .select('id, email, full_name')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
-      if (userError) {
-        console.error('User fetch error:', userError);
-        toast({
-          title: "Error",
-          description: "Failed to get user information. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Use auth user data as fallback if database user doesn't exist
+      const userInfo = userData || {
+        id: user.id,
+        email: user.email || '',
+        full_name: user.user_metadata?.full_name || user.email || 'User'
+      };
+
+      console.log('📨 Using user info:', userInfo);
 
       // Find service provider (simplified logic)
       const { data: providers, error: providerError } = await supabase
