@@ -2,20 +2,26 @@ import React, { useState, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { useBookingsContext } from '@/contexts/BookingsContext';
-import { Calendar, Clock, MapPin, Eye, X, Plus, AlertTriangle } from 'lucide-react';
+import { Calendar, Clock, MapPin, Eye, X, Plus, AlertTriangle, Edit, Save } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import CreateTicketModal from '@/components/modals/CreateTicketModal';
 import AnnetteBanner from './AnnetteBanner';
 import { getDisplayNameForBooking } from '@/utils/serviceCategories';
 import { detectServiceFromKeywords } from '@/utils/mysteryJobDetector';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const CustomerJobTicketList = () => {
-  const { bookings, loading } = useBookingsContext();
+  const { bookings, loading, refetch } = useBookingsContext();
+  const { toast } = useToast();
   const [filter, setFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isEditingInstructions, setIsEditingInstructions] = useState(false);
+  const [editedInstructions, setEditedInstructions] = useState('');
 
   const filteredBookings = bookings.filter(booking => {
     if (filter === 'all') return true;
@@ -48,6 +54,79 @@ const CustomerJobTicketList = () => {
     } catch (error) {
       return 'Flexible';
     }
+  };
+
+  const handleCancelRequest = async (bookingId: string) => {
+    if (!confirm('Are you sure you want to cancel this request? This action cannot be undone.')) {
+      return;
+    }
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'cancelled' })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Request Cancelled",
+        description: "Your booking request has been successfully cancelled.",
+      });
+
+      // Refresh bookings and close modal
+      await refetch();
+      setSelectedBooking(null);
+    } catch (error) {
+      console.error('Error cancelling booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to cancel the request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleEditInstructions = () => {
+    setEditedInstructions(selectedBooking?.instructions || selectedBooking?.description || '');
+    setIsEditingInstructions(true);
+  };
+
+  const handleSaveInstructions = async () => {
+    if (!selectedBooking) return;
+
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ instructions: editedInstructions })
+        .eq('id', selectedBooking.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Instructions Updated",
+        description: "Your booking instructions have been successfully updated.",
+      });
+
+      // Update the selected booking in local state
+      setSelectedBooking({ ...selectedBooking, instructions: editedInstructions });
+      setIsEditingInstructions(false);
+      
+      // Refresh bookings
+      await refetch();
+    } catch (error) {
+      console.error('Error updating instructions:', error);
+      toast({
+        title: "Error",
+        description: "Failed to update instructions. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditingInstructions(false);
+    setEditedInstructions('');
   };
 
   if (loading) {
@@ -246,17 +325,46 @@ const CustomerJobTicketList = () => {
                                 <p>{selectedBooking.location || selectedBooking.service_address || 'Not specified'}</p>
                               </div>
                               <div>
-                                <label className="text-sm font-medium text-muted-foreground">Description</label>
-                                <p>{selectedBooking.description || selectedBooking.instructions || 'No description provided'}</p>
+                                <label className="text-sm font-medium text-muted-foreground">Instructions</label>
+                                {isEditingInstructions ? (
+                                  <div className="space-y-2">
+                                    <Textarea
+                                      value={editedInstructions}
+                                      onChange={(e) => setEditedInstructions(e.target.value)}
+                                      placeholder="Enter instructions for this booking..."
+                                      rows={4}
+                                    />
+                                    <div className="flex gap-2">
+                                      <Button size="sm" onClick={handleSaveInstructions}>
+                                        <Save className="h-4 w-4 mr-1" />
+                                        Save
+                                      </Button>
+                                      <Button size="sm" variant="outline" onClick={handleCancelEdit}>
+                                        Cancel
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <p>{selectedBooking.description || selectedBooking.instructions || 'No instructions provided'}</p>
+                                )}
                               </div>
                               <div className="flex gap-2 pt-4">
                                 {selectedBooking.status === 'pending' && (
-                                  <Button variant="outline" className="text-red-600">
+                                  <Button 
+                                    variant="outline" 
+                                    className="text-red-600"
+                                    onClick={() => handleCancelRequest(selectedBooking.id)}
+                                  >
                                     <X className="h-4 w-4 mr-1" />
                                     Cancel Request
                                   </Button>
                                 )}
-                                <Button variant="outline">Edit Instructions</Button>
+                                {!isEditingInstructions && (
+                                  <Button variant="outline" onClick={handleEditInstructions}>
+                                    <Edit className="h-4 w-4 mr-1" />
+                                    Edit Instructions
+                                  </Button>
+                                )}
                               </div>
                             </div>
                           )}
