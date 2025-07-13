@@ -11,23 +11,41 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
 interface CreateTicketModalProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   prefillData?: {
     category?: string;
     location?: string;
     providerId?: string;
   };
   onSuccess?: () => void;
+  open?: boolean;
+  onClose?: () => void;
 }
 
 const CreateTicketModal: React.FC<CreateTicketModalProps> = ({ 
   children, 
   prefillData, 
-  onSuccess 
+  onSuccess,
+  open: externalOpen,
+  onClose 
 }) => {
   const { user } = useAuth();
   const { toast } = useToast();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  
+  // Use external open state if provided, otherwise use internal state
+  const isOpen = externalOpen !== undefined ? externalOpen : internalOpen;
+  const handleOpenChange = (newOpen: boolean) => {
+    if (externalOpen !== undefined) {
+      // External control - call onClose when closing
+      if (!newOpen && onClose) {
+        onClose();
+      }
+    } else {
+      // Internal control
+      setInternalOpen(newOpen);
+    }
+  };
   const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState({
@@ -107,7 +125,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
         description: "Nice one! Ticket created. I'll keep my eyes peeled for top-rated providers near you 👀"
       });
 
-      setOpen(false);
+      handleOpenChange(false);
       setFormData({
         category: '',
         title: '',
@@ -133,10 +151,12 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        {children}
-      </DialogTrigger>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+      {children && (
+        <DialogTrigger asChild>
+          {children}
+        </DialogTrigger>
+      )}
       <DialogContent className="modal-stable modal-content-stable bg-background border border-border max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -271,7 +291,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setOpen(false)}
+              onClick={() => handleOpenChange(false)}
               className="flex-1"
             >
               Cancel

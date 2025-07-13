@@ -104,18 +104,34 @@ const ServiceBoard = () => {
         
         {/* Mobile FAB for Create Ticket */}
         <div className="lg:hidden fixed bottom-6 right-6 z-20">
-          <CreateTicketModal onSuccess={() => window.location.reload()}>
-            <button 
-              id="create-ticket-button" 
-              onClick={() => console.log("Modal trigger clicked")}
-              className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 animate-pulse"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
-            </button>
-          </CreateTicketModal>
+          <button 
+            id="create-ticket-button" 
+            onClick={() => {
+              console.log('🧪 Create ticket button clicked');
+              setShowCreateTicketModal(true);
+            }}
+            className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 animate-pulse"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+            </svg>
+          </button>
         </div>
+
+        {/* Create Ticket Modal */}
+        {showCreateTicketModal && (
+          <CreateTicketModal
+            open={showCreateTicketModal}
+            onClose={() => {
+              console.log('🧼 Closing ticket modal');
+              setShowCreateTicketModal(false);
+            }}
+            onSuccess={() => {
+              setShowCreateTicketModal(false);
+              window.location.reload();
+            }}
+          />
+        )}
         
         <ChatBubble />
       </div>
