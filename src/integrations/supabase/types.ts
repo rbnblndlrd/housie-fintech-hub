@@ -418,7 +418,7 @@ export type Database = {
           payment_status: string | null
           photos_required: boolean | null
           priority: string | null
-          provider_id: string
+          provider_id: string | null
           response_time_minutes: number | null
           scheduled_date: string
           scheduled_time: string
@@ -448,7 +448,7 @@ export type Database = {
           payment_status?: string | null
           photos_required?: boolean | null
           priority?: string | null
-          provider_id: string
+          provider_id?: string | null
           response_time_minutes?: number | null
           scheduled_date: string
           scheduled_time: string
@@ -478,7 +478,7 @@ export type Database = {
           payment_status?: string | null
           photos_required?: boolean | null
           priority?: string | null
-          provider_id?: string
+          provider_id?: string | null
           response_time_minutes?: number | null
           scheduled_date?: string
           scheduled_time?: string

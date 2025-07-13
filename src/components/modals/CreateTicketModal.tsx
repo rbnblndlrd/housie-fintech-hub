@@ -202,73 +202,34 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
 
       console.log('📨 Using user info:', userInfo);
 
-      // Find service providers - improved logic with category matching
-      const { data: providers, error: providerError } = await supabase
-        .from('provider_profiles')
-        .select(`
-          *,
-          users!inner(full_name, email)
-        `)
-        .eq('verified', true)
-        .limit(5);
-
-      console.log('🔍 Found providers:', providers?.length || 0);
-
       // Get the category and subcategory labels for the service
       const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === formData.category);
       const selectedSubcategory = selectedCategory?.subcategories.find(sub => sub.value === formData.subcategory);
       
       const serviceTitle = selectedSubcategory?.label || selectedCategory?.label || formData.title;
-      const serviceCategoryValue = formData.category;
 
-      // Find or create service - use the updated category structure
+      // Find or create a generic service (not tied to specific providers)
       let { data: services, error: serviceError } = await supabase
         .from('services')
         .select('*')
-        .eq('category', serviceCategoryValue)
+        .eq('category', formData.category)
+        .eq('active', true)
         .limit(1);
 
-      if (serviceError) {
-        console.error('Service fetch error:', serviceError);
-      }
-
-      let serviceId: string;
-      let selectedProvider = providers?.[0]; // Default to first provider
+      let serviceId: string | null = null;
 
       if (services && services.length > 0) {
         serviceId = services[0].id;
-      } else if (selectedProvider) {
-        // Create a new service entry if we have a provider
-        const { data: newService, error: newServiceError } = await supabase
-          .from('services')
-          .insert({
-            title: serviceTitle,
-            category: serviceCategoryValue,
-            description: `${serviceTitle} - ${formData.description}`,
-            base_price: parseFloat(formData.budget) || 50,
-            provider_id: selectedProvider.id,
-            active: true
-          })
-          .select()
-          .single();
-
-        if (newServiceError || !newService) {
-          console.error('Service creation error:', newServiceError);
-          // Continue anyway - we'll create the booking without a perfect service match
-          serviceId = 'temp-service-id';
-        } else {
-          serviceId = newService.id;
-        }
       } else {
-        // No providers available, but still create the ticket
-        serviceId = 'pending-service-id';
+        // Skip service creation for now - we'll handle this separately
+        console.log('No existing service found, proceeding without service_id');
       }
 
-      // Create the booking regardless of provider availability
+      // Create the booking WITHOUT assigning a provider (they'll claim it later)
       const bookingData = {
         customer_id: user.id,
-        provider_id: selectedProvider?.id || null,
-        service_id: serviceId === 'temp-service-id' || serviceId === 'pending-service-id' ? null : serviceId,
+        // provider_id: null, // Remove this - let it be null by default
+        service_id: serviceId,
         scheduled_date: formData.scheduledDate,
         scheduled_time: formData.scheduledTime,
         service_address: formData.location,
@@ -302,8 +263,6 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       
       if (isOutOfSeason) {
         successMessage = "Planning for December in July? Now that's what I call proactive. ✨ Ticket created!";
-      } else if (!providers || providers.length === 0) {
-        successMessage = "No providers currently match, but your request has been saved and Annette is on it! 🚀";
       }
 
       toast({
