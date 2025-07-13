@@ -115,7 +115,17 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
         .select('*')
         .limit(1);
 
-      if (providerError || !providers || providers.length === 0) {
+      if (providerError) {
+        console.error('Provider fetch error:', providerError);
+        toast({
+          title: "Error finding providers",
+          description: "Failed to find service providers. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      if (!providers || providers.length === 0) {
         toast({
           title: "No providers available",
           description: "No service providers are available at this time.",
