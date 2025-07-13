@@ -137,7 +137,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       <DialogTrigger asChild>
         {children}
       </DialogTrigger>
-      <DialogContent className="fintech-card max-w-2xl">
+      <DialogContent className="modal-stable modal-content-stable bg-background border border-border max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />

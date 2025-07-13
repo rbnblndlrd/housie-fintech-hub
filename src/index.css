@@ -114,6 +114,25 @@
     z-index: 2;
   }
 
+  /* Modal stability overrides - prevents dodging behavior */
+  .modal-stable {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    pointer-events: auto !important;
+  }
+
+  .modal-stable * {
+    pointer-events: auto !important;
+  }
+
+  /* Stable modal content with proper interaction */
+  .modal-content-stable {
+    pointer-events: auto !important;
+    position: relative !important;
+  }
+
   .fintech-card {
     @apply fintech-card-base;
     @apply bg-white/50;
