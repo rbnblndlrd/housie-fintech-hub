@@ -11,6 +11,7 @@ const CustomerJobTicketList = () => {
   const { bookings, loading } = useBookingsContext();
   const [filter, setFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<any>(null);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const filteredBookings = bookings.filter(booking => {
     if (filter === 'all') return true;
@@ -60,12 +61,10 @@ const CustomerJobTicketList = () => {
               My Job Tickets
             </div>
             <div className="flex gap-2">
-              <CreateTicketModal onSuccess={() => window.location.reload()}>
-                <Button size="sm">
-                  <Plus className="h-4 w-4 mr-1" />
-                  Create New Ticket
-                </Button>
-              </CreateTicketModal>
+              <Button size="sm" onClick={() => setShowCreateModal(true)}>
+                <Plus className="h-4 w-4 mr-1" />
+                Create New Ticket
+              </Button>
             </div>
           </CardTitle>
           
@@ -108,12 +107,10 @@ const CustomerJobTicketList = () => {
               <p className="text-muted-foreground mb-4">
                 {filter === 'all' ? 'No tickets found' : `No ${filter} tickets`}
               </p>
-              <CreateTicketModal onSuccess={() => window.location.reload()}>
-                <Button>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create New Ticket
-                </Button>
-              </CreateTicketModal>
+              <Button onClick={() => setShowCreateModal(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create New Ticket
+              </Button>
             </div>
           ) : (
             <div className="space-y-4">
@@ -214,6 +211,18 @@ const CustomerJobTicketList = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Create Ticket Modal */}
+      {showCreateModal && (
+        <CreateTicketModal
+          open={showCreateModal}
+          onClose={() => setShowCreateModal(false)}
+          onSuccess={() => {
+            setShowCreateModal(false);
+            window.location.reload();
+          }}
+        />
+      )}
     </>
   );
 };
