@@ -33,11 +33,17 @@ export const useSubscriptionData = () => {
         .from('users')
         .select('subscription_tier, subscription_status')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        console.error('Error loading subscription data:', error);
-        setSubscriptionData(prev => ({ ...prev, loading: false }));
+        console.warn('Subscription data query failed, using fallback:', error);
+        // Use safe defaults instead of blocking
+        setSubscriptionData({
+          subscribed: false,
+          subscription_tier: 'free',
+          subscription_end: null,
+          loading: false
+        });
         return;
       }
 
@@ -49,8 +55,14 @@ export const useSubscriptionData = () => {
         loading: false
       });
     } catch (error) {
-      console.error('Error in loadSubscriptionData:', error);
-      setSubscriptionData(prev => ({ ...prev, loading: false }));
+      console.warn('Subscription data loading failed, using fallback:', error);
+      // Always provide safe defaults
+      setSubscriptionData({
+        subscribed: false,
+        subscription_tier: 'free',
+        subscription_end: null,
+        loading: false
+      });
     }
   };
 

@@ -43,16 +43,21 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
     }
 
     try {
-      // Read subscription data directly from the users table
+      // Read subscription data directly from the users table with fallback
       const { data, error } = await supabase
         .from('users')
         .select('subscription_tier, subscription_status')
         .eq('id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) {
-        console.error('Error checking subscription:', error);
-        setSubscriptionData({ subscribed: false, subscription_tier: null, subscription_end: null });
+        console.warn('Subscription query failed, using fallback:', error);
+        // Don't block the app - use safe defaults
+        setSubscriptionData({ 
+          subscribed: false, 
+          subscription_tier: 'free', 
+          subscription_end: null 
+        });
       } else {
         const isSubscribed = data?.subscription_tier && data.subscription_tier !== 'free';
         setSubscriptionData({
@@ -62,8 +67,13 @@ export const SubscriptionProvider: React.FC<{ children: React.ReactNode }> = ({ 
         });
       }
     } catch (error) {
-      console.error('Error in checkSubscription:', error);
-      setSubscriptionData({ subscribed: false, subscription_tier: null, subscription_end: null });
+      console.warn('Subscription check failed, using fallback:', error);
+      // Always provide safe defaults to prevent app blocking
+      setSubscriptionData({ 
+        subscribed: false, 
+        subscription_tier: 'free', 
+        subscription_end: null 
+      });
     } finally {
       setLoading(false);
     }

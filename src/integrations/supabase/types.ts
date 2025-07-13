@@ -3525,6 +3525,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      get_current_user_role: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
       get_emergency_status: {
         Args: Record<PropertyKey, never>
         Returns: Json
