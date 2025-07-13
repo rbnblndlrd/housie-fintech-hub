@@ -3,9 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useBookingsContext } from '@/contexts/BookingsContext';
-import { Calendar, Clock, MapPin, Eye, X, Plus } from 'lucide-react';
+import { Calendar, Clock, MapPin, Eye, X, Plus, AlertTriangle } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import CreateTicketModal from '@/components/modals/CreateTicketModal';
+import { getDisplayNameForBooking } from '@/utils/serviceCategories';
 
 const CustomerJobTicketList = () => {
   const { bookings, loading } = useBookingsContext();
@@ -124,11 +125,23 @@ const CustomerJobTicketList = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <h3 className="font-medium">{booking.serviceName || 'Service Request'}</h3>
+                        <h3 className="font-medium">
+                          {getDisplayNameForBooking(booking.category, booking.subcategory, booking.serviceName)}
+                        </h3>
+                        {!booking.hasLinkedService && (
+                          <div className="inline-flex" title="No formal service template - custom request">
+                            <AlertTriangle className="h-4 w-4 text-orange-500" />
+                          </div>
+                        )}
                         <Badge className={getStatusColor(booking.status)}>
                           {booking.status}
                         </Badge>
                       </div>
+                      {!booking.hasLinkedService && (
+                        <div className="text-xs text-muted-foreground italic mb-2">
+                          💬 Annette: "Hmm… this one's a little mysterious! No service template, but someone still wants it done. Must be urgent!"
+                        </div>
+                      )}
                       <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
@@ -166,7 +179,19 @@ const CustomerJobTicketList = () => {
                               <div className="grid grid-cols-2 gap-4">
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Service</label>
-                                  <p>{selectedBooking.serviceName || 'Service Request'}</p>
+                                  <div className="flex items-center gap-2">
+                                    <p>{getDisplayNameForBooking(selectedBooking.category, selectedBooking.subcategory, selectedBooking.serviceName)}</p>
+                                    {!selectedBooking.hasLinkedService && (
+                                      <div className="inline-flex" title="Custom request - no template">
+                                        <AlertTriangle className="h-4 w-4 text-orange-500" />
+                                      </div>
+                                    )}
+                                  </div>
+                                  {!selectedBooking.hasLinkedService && (
+                                    <p className="text-xs text-muted-foreground italic mt-1">
+                                      Custom service request (no formal template)
+                                    </p>
+                                  )}
                                 </div>
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Status</label>

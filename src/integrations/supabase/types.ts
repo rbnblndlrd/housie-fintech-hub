@@ -405,6 +405,7 @@ export type Database = {
           after_photos: Json | null
           ai_analysis: Json | null
           before_photos: Json | null
+          category: string | null
           completed_at: string | null
           created_at: string | null
           creates_service_connection: boolean | null
@@ -425,8 +426,10 @@ export type Database = {
           service_address: string | null
           service_id: string | null
           service_radius: number | null
+          service_title: string | null
           status: string | null
           stripe_payment_intent_id: string | null
+          subcategory: string | null
           total_amount: number | null
           updated_at: string | null
         }
@@ -435,6 +438,7 @@ export type Database = {
           after_photos?: Json | null
           ai_analysis?: Json | null
           before_photos?: Json | null
+          category?: string | null
           completed_at?: string | null
           created_at?: string | null
           creates_service_connection?: boolean | null
@@ -455,8 +459,10 @@ export type Database = {
           service_address?: string | null
           service_id?: string | null
           service_radius?: number | null
+          service_title?: string | null
           status?: string | null
           stripe_payment_intent_id?: string | null
+          subcategory?: string | null
           total_amount?: number | null
           updated_at?: string | null
         }
@@ -465,6 +471,7 @@ export type Database = {
           after_photos?: Json | null
           ai_analysis?: Json | null
           before_photos?: Json | null
+          category?: string | null
           completed_at?: string | null
           created_at?: string | null
           creates_service_connection?: boolean | null
@@ -485,8 +492,10 @@ export type Database = {
           service_address?: string | null
           service_id?: string | null
           service_radius?: number | null
+          service_title?: string | null
           status?: string | null
           stripe_payment_intent_id?: string | null
+          subcategory?: string | null
           total_amount?: number | null
           updated_at?: string | null
         }

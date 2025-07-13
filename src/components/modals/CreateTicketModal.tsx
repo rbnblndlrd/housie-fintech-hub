@@ -138,6 +138,17 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
     }
   ];
 
+  // Map frontend category values to database category names
+  const CATEGORY_VALUE_MAP: Record<string, string> = {
+    'wellness': 'personal_wellness',
+    'cleaning': 'cleaning',
+    'exterior': 'exterior_grounds',
+    'petcare': 'pet_care',
+    'repairs': 'appliance_tech',
+    'events': 'event_services',
+    'moving': 'moving_services'
+  };
+
   // Check if it's snow season (Nov-Mar) for seasonal awareness
   const isSnowSeason = () => {
     const month = new Date().getMonth();
@@ -211,11 +222,12 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       // Try to find existing service - first by exact subcategory match, then by category
       let serviceId: string | null = null;
       
-      // First try exact subcategory match
+      // First try exact subcategory match using the database category name
+      const dbCategoryName = CATEGORY_VALUE_MAP[formData.category] || formData.category;
       let { data: services } = await supabase
         .from('services')
         .select('id')
-        .eq('category', formData.category)
+        .eq('category', dbCategoryName)
         .eq('subcategory', formData.subcategory)
         .eq('active', true)
         .limit(1);
@@ -228,7 +240,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
         const { data: categoryServices } = await supabase
           .from('services')
           .select('id')
-          .eq('category', formData.category)
+          .eq('category', dbCategoryName)
           .eq('active', true)
           .limit(1);
 
@@ -251,7 +263,11 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
         instructions: `${serviceTitle}\n\n${formData.description}`,
         total_amount: parseFloat(formData.budget) || null,
         priority: formData.priority,
-        status: 'pending'
+        status: 'pending',
+        // Add new metadata fields for fallback handling
+        category: CATEGORY_VALUE_MAP[formData.category] || formData.category,
+        subcategory: formData.subcategory,
+        service_title: serviceTitle
       };
 
       const { data: booking, error: bookingError } = await supabase

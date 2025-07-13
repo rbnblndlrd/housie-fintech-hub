@@ -12,6 +12,16 @@ export interface Booking {
   status: string;
   customer_name: string;
   total_amount: number;
+  category?: string;
+  subcategory?: string;
+  hasLinkedService?: boolean;
+  description?: string;
+  scheduled_date?: string;
+  scheduled_time?: string;
+  preferred_date?: string;
+  preferred_time?: string;
+  service_address?: string;
+  instructions?: string;
 }
 
 interface BookingsContextType {
@@ -49,6 +59,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       setError(null);
       
       // First, get bookings where user is the customer
+      // Use LEFT JOIN for services to handle nullable service_id
       const { data: customerBookings, error: customerError } = await supabase
         .from('bookings')
         .select(`
@@ -59,7 +70,10 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           instructions,
           total_amount,
           status,
-          services!inner(title, category),
+          category,
+          subcategory,
+          service_title,
+          services(title, category),
           provider_profiles!inner(
             business_name,
             users!inner(full_name)
@@ -92,7 +106,10 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             instructions,
             total_amount,
             status,
-            services!inner(title, category),
+            category,
+            subcategory,
+            service_title,
+            services(title, category),
             users!inner(full_name)
           `)
           .eq('provider_id', providerProfile.id)
@@ -109,7 +126,8 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const allBookings = [
         ...(customerBookings || []).map((booking: any) => ({
           id: booking.id,
-          serviceName: booking.services?.title || 'Unknown Service',
+          serviceName: booking.services?.title || booking.service_title || 
+                      (booking.subcategory ? `Generic ${booking.subcategory}` : 'Service Request'),
           date: booking.scheduled_date,
           time: booking.scheduled_time,
           provider: booking.provider_profiles?.business_name || 
@@ -117,18 +135,37 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           location: booking.service_address || 'No address provided',
           status: booking.status || 'pending',
           customer_name: 'You', // Since this is the customer's booking
-          total_amount: booking.total_amount || 0
+          total_amount: booking.total_amount || 0,
+          category: booking.category || booking.services?.category,
+          subcategory: booking.subcategory,
+          hasLinkedService: !!booking.services?.title,
+          // Additional fields for detailed view
+          description: booking.instructions,
+          scheduled_date: booking.scheduled_date,
+          scheduled_time: booking.scheduled_time,
+          preferred_date: booking.scheduled_date,
+          preferred_time: booking.scheduled_time
         })),
         ...providerBookings.map((booking: any) => ({
           id: booking.id,
-          serviceName: booking.services?.title || 'Unknown Service',
+          serviceName: booking.services?.title || booking.service_title || 
+                      (booking.subcategory ? `Generic ${booking.subcategory}` : 'Service Request'),
           date: booking.scheduled_date,
           time: booking.scheduled_time,
           provider: 'You', // Since this is the provider's booking
           location: booking.service_address || 'No address provided',
           status: booking.status || 'pending',
           customer_name: booking.users?.full_name || 'Unknown Customer',
-          total_amount: booking.total_amount || 0
+          total_amount: booking.total_amount || 0,
+          category: booking.category || booking.services?.category,
+          subcategory: booking.subcategory,
+          hasLinkedService: !!booking.services?.title,
+          // Additional fields for detailed view
+          description: booking.instructions,
+          scheduled_date: booking.scheduled_date,
+          scheduled_time: booking.scheduled_time,
+          preferred_date: booking.scheduled_date,
+          preferred_time: booking.scheduled_time
         }))
       ];
 
