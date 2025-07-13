@@ -1,9 +1,45 @@
 
 import { useEffect } from 'react';
 
+// Global modal state tracking
+let isModalOpen = false;
+let modalCheckInterval: NodeJS.Timeout | null = null;
+
 export const useDynamicGradients = () => {
   useEffect(() => {
+    // Enhanced modal detection function
+    const checkModalState = () => {
+      const modals = document.querySelectorAll('[data-state="open"]');
+      const dialogs = document.querySelectorAll('[role="dialog"]');
+      const portals = document.querySelectorAll('[data-radix-portal]');
+      const fixedElements = Array.from(document.querySelectorAll('*')).filter(el => {
+        const style = window.getComputedStyle(el as HTMLElement);
+        return style.position === 'fixed' && parseInt(style.zIndex) > 50;
+      });
+      
+      const wasModalOpen = isModalOpen;
+      isModalOpen = modals.length > 0 || dialogs.length > 0 || portals.length > 0 || fixedElements.length > 2;
+      
+      if (wasModalOpen !== isModalOpen) {
+        console.log('🎨 Modal state changed:', isModalOpen ? 'OPENED' : 'CLOSED');
+        console.log('🎨 Detection details:', {
+          modals: modals.length,
+          dialogs: dialogs.length,
+          portals: portals.length,
+          fixedElements: fixedElements.length
+        });
+      }
+      
+      return isModalOpen;
+    };
+
     const applyStrategicOverlayPositioning = () => {
+      // Check modal state before any positioning
+      if (checkModalState()) {
+        console.log('🎨 ABORTING: Modal is open, skipping all positioning');
+        return;
+      }
+      
       console.log('🎨 Applying strategic overlay method for watermark concealment...');
       
       // Get all fintech card elements
@@ -19,20 +55,35 @@ export const useDynamicGradients = () => {
       const cards = document.querySelectorAll(cardSelectors.join(', '));
       console.log(`🎨 Found ${cards.length} cards to style with strategic overlay positioning`);
       
+      let processedCount = 0;
+      
       cards.forEach((card: Element, index: number) => {
         const htmlCard = card as HTMLElement;
         
-        // Skip modal elements to prevent dodging behavior
-        if (htmlCard.closest('[data-state="open"]') || 
-            htmlCard.classList.contains('modal-stable') || 
-            htmlCard.closest('.modal-stable') ||
-            htmlCard.closest('[role="dialog"]')) {
+        // Enhanced modal element detection
+        const isInModal = (
+          htmlCard.closest('[data-state="open"]') ||
+          htmlCard.closest('[data-radix-portal]') ||
+          htmlCard.closest('[role="dialog"]') ||
+          htmlCard.classList.contains('modal-stable') ||
+          htmlCard.closest('.modal-stable') ||
+          htmlCard.closest('[data-radix-dialog-content]') ||
+          htmlCard.closest('[data-radix-dialog-overlay]') ||
+          window.getComputedStyle(htmlCard).position === 'fixed' ||
+          parseInt(window.getComputedStyle(htmlCard).zIndex || '0') > 50
+        );
+        
+        if (isInModal) {
+          console.log('🎨 SKIPPING modal element:', htmlCard.className);
           return;
         }
         
+        processedCount++;
         // Apply strategic positioning to avoid watermark zones
         applyWatermarkAvoidancePositioning(htmlCard, index);
       });
+      
+      console.log(`🎨 Processed ${processedCount} elements (skipped ${cards.length - processedCount} modal elements)`);
     };
 
     const applyWatermarkAvoidancePositioning = (card: HTMLElement, index: number) => {
@@ -95,14 +146,34 @@ export const useDynamicGradients = () => {
       }
     };
 
-    // Apply positioning immediately
-    setTimeout(applyStrategicOverlayPositioning, 100);
+    // Start modal state monitoring
+    modalCheckInterval = setInterval(checkModalState, 100);
+    
+    // Apply positioning after initial delay
+    setTimeout(applyStrategicOverlayPositioning, 200);
 
-    // Reapply when new elements are added to the DOM
+    // Enhanced mutation observer with modal awareness
     const observer = new MutationObserver((mutations) => {
+      // Always check modal state first
+      if (checkModalState()) {
+        console.log('🎨 Mutations detected but modal is open - skipping positioning');
+        return;
+      }
+      
       let shouldReapply = false;
       
       mutations.forEach((mutation) => {
+        // Check for attribute changes that might indicate modal state
+        if (mutation.type === 'attributes') {
+          const target = mutation.target as HTMLElement;
+          if (mutation.attributeName === 'data-state' || 
+              mutation.attributeName === 'role' ||
+              mutation.attributeName === 'class') {
+            console.log('🎨 Modal-related attribute changed, rechecking state');
+            return; // State will be checked at start of next cycle
+          }
+        }
+        
         if (mutation.type === 'childList') {
           mutation.addedNodes.forEach((node) => {
             if (node instanceof Element) {
@@ -123,18 +194,28 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
-        console.log('🎨 DOM changed, reapplying strategic overlay positioning...');
-        setTimeout(applyStrategicOverlayPositioning, 100);
+        console.log('🎨 DOM changed, checking modal state before repositioning...');
+        setTimeout(() => {
+          if (!checkModalState()) {
+            applyStrategicOverlayPositioning();
+          }
+        }, 150);
       }
     });
 
     observer.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-state', 'role', 'class', 'style']
     });
 
     return () => {
       observer.disconnect();
+      if (modalCheckInterval) {
+        clearInterval(modalCheckInterval);
+        modalCheckInterval = null;
+      }
     };
   }, []);
 };
