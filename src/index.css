@@ -71,24 +71,19 @@
   }
 }
 
-/* Modal stability overrides - prevent dynamic positioning interference */
-[data-radix-portal] *,
-[data-state="open"] *,
-[role="dialog"] *,
-.modal-stable * {
-  transform: none !important;
-  position: static !important;
+/* Allow Radix Dialog to handle its own positioning */
+[data-radix-dialog-overlay] {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 50 !important;
 }
 
 [data-radix-dialog-content] {
   position: fixed !important;
+  left: 50% !important;
+  top: 50% !important;
   transform: translate(-50%, -50%) !important;
-}
-
-[data-radix-dialog-overlay] {
-  position: fixed !important;
-  inset: 0 !important;
-  transform: none !important;
+  z-index: 51 !important;
 }
 
 /* Enhanced Fintech Card System with Strategic Overlay Watermark Concealment */
