@@ -33,6 +33,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
   
   const [formData, setFormData] = useState({
     category: '',
+    subcategory: '',
     title: '',
     description: '',
     location: '',
@@ -42,20 +43,109 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
     priority: 'normal'
   });
 
-  const serviceCategories = [
-    'Cleaning',
-    'Gardening',
-    'Home Repairs',
-    'Maintenance',
-    'Moving',
-    'Plumbing',
-    'Electrical',
-    'Carpentry',
-    'Painting',
-    'Tech Support',
-    'Pet Care',
-    'Other'
+  type ServiceCategory = {
+    emoji: string;
+    label: string;
+    value: string;
+    subcategories: {
+      label: string;
+      value: string;
+      requiresCertification?: boolean;
+    }[];
+  };
+
+  const SERVICE_CATEGORIES: ServiceCategory[] = [
+    {
+      emoji: "💆",
+      label: "Personal Wellness",
+      value: "wellness",
+      subcategories: [
+        { label: "Massage Therapy", value: "massage", requiresCertification: true },
+        { label: "Acupuncture", value: "acupuncture", requiresCertification: true },
+        { label: "Tattooing", value: "tattoo" },
+        { label: "Haircut / Hairstyling", value: "haircut" },
+        { label: "Makeup / Beauty Services", value: "beauty" },
+        { label: "Cosmetic Tattoo / Piercing", value: "cosmetic_bodywork" }
+      ]
+    },
+    {
+      emoji: "🧹",
+      label: "Cleaning Services",
+      value: "cleaning",
+      subcategories: [
+        { label: "Home Cleaning", value: "home_cleaning" },
+        { label: "Deep Cleaning", value: "deep_cleaning" },
+        { label: "Post-Reno Cleanup", value: "reno_cleanup" },
+        { label: "Office Cleaning", value: "office_cleaning" },
+        { label: "Eco-Friendly Cleaning", value: "eco_cleaning" },
+        { label: "Laundry / Linen Services", value: "laundry" }
+      ]
+    },
+    {
+      emoji: "🌿",
+      label: "Exterior & Grounds",
+      value: "groundskeeping",
+      subcategories: [
+        { label: "Lawn Mowing", value: "lawn_mowing" },
+        { label: "Snow Removal", value: "snow_removal" },
+        { label: "Leaf Removal", value: "leaf_removal" },
+        { label: "Hedge Trimming", value: "hedge_trimming" },
+        { label: "Pressure Washing", value: "pressure_washing" },
+        { label: "Gutter Cleaning", value: "gutter_cleaning" }
+      ]
+    },
+    {
+      emoji: "🐕",
+      label: "Pet Care Services",
+      value: "petcare",
+      subcategories: [
+        { label: "Dog Walking", value: "dog_walking" },
+        { label: "Pet Sitting", value: "pet_sitting" },
+        { label: "Litter / Cage Cleaning", value: "pet_cleaning" },
+        { label: "Basic Grooming", value: "grooming" }
+      ]
+    },
+    {
+      emoji: "🔧",
+      label: "Appliance & Tech Repair",
+      value: "repairs",
+      subcategories: [
+        { label: "Appliance Repair", value: "appliance_repair" },
+        { label: "Phone Repair", value: "phone_repair" },
+        { label: "Computer Repair", value: "computer_repair" },
+        { label: "Network Setup / Cabling", value: "networking" }
+      ]
+    },
+    {
+      emoji: "🎪",
+      label: "Event Services",
+      value: "events",
+      subcategories: [
+        { label: "Furniture Setup", value: "furniture_setup" },
+        { label: "Decor / Balloons", value: "decor" },
+        { label: "Lighting / Sound", value: "audio_lighting" },
+        { label: "DJ / Performer Help", value: "dj_support" },
+        { label: "Cleanup Crew", value: "event_cleanup" }
+      ]
+    },
+    {
+      emoji: "🚚",
+      label: "Moving & Delivery",
+      value: "moving",
+      subcategories: [
+        { label: "Furniture Moving", value: "furniture_moving" },
+        { label: "Item Pickup / Dropoff", value: "item_delivery" },
+        { label: "Packing Help", value: "packing" },
+        { label: "Heavy Lifting", value: "heavy_lifting" }
+      ]
+    }
   ];
+
+  // Get available subcategories based on selected category
+  const getSubcategories = () => {
+    const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === formData.category);
+    return selectedCategory?.subcategories || [];
+  };
 
   // Prefill form data when modal opens or prefillData changes
   useEffect(() => {
@@ -208,6 +298,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       // Reset form
       setFormData({
         category: '',
+        subcategory: '',
         title: '',
         description: '',
         location: '',
@@ -256,19 +347,48 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           {/* Service Category */}
           <div className="space-y-2">
             <Label htmlFor="category">Service Category</Label>
-            <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}>
+            <Select value={formData.category} onValueChange={(value) => setFormData(prev => ({ ...prev, category: value, subcategory: '' }))}>
               <SelectTrigger>
-                <SelectValue placeholder="Select service type..." />
+                <SelectValue placeholder="Select service category..." />
               </SelectTrigger>
               <SelectContent>
-                {serviceCategories.map((category) => (
-                  <SelectItem key={category} value={category.toLowerCase()}>
-                    {category}
+                {SERVICE_CATEGORIES.map((category) => (
+                  <SelectItem key={category.value} value={category.value}>
+                    <span className="flex items-center gap-2">
+                      <span>{category.emoji}</span>
+                      <span>{category.label}</span>
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
+
+          {/* Service Subcategory */}
+          {formData.category && (
+            <div className="space-y-2">
+              <Label htmlFor="subcategory">Service Type</Label>
+              <Select value={formData.subcategory} onValueChange={(value) => setFormData(prev => ({ ...prev, subcategory: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select specific service..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {getSubcategories().map((subcategory) => (
+                    <SelectItem key={subcategory.value} value={subcategory.value}>
+                      <span className="flex items-center gap-2">
+                        <span>{subcategory.label}</span>
+                        {subcategory.requiresCertification && (
+                          <span className="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">
+                            Cert Required
+                          </span>
+                        )}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* Service Title */}
           <div className="space-y-2">
@@ -383,7 +503,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
             </Button>
             <Button
               type="submit"
-              disabled={loading || !formData.category || !formData.title || !formData.description}
+              disabled={loading || !formData.category || !formData.subcategory || !formData.title || !formData.description}
               className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700"
             >
               {loading ? 'Creating...' : 'Create Ticket'}
