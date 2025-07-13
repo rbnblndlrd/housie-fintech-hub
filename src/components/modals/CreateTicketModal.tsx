@@ -235,6 +235,11 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           </DialogTitle>
         </DialogHeader>
         
+        {/* Test element to confirm modal renders */}
+        <div className="text-white bg-red-500 p-4 rounded text-center">
+          🎉 MODAL IS ALIVE - If you can see this, the modal is working!
+        </div>
+        
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Service Category */}
           <div className="space-y-2">
