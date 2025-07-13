@@ -61,11 +61,9 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       value: "wellness",
       subcategories: [
         { label: "Massage Therapy", value: "massage", requiresCertification: true },
-        { label: "Acupuncture", value: "acupuncture", requiresCertification: true },
         { label: "Tattooing", value: "tattoo" },
-        { label: "Haircut / Hairstyling", value: "haircut" },
-        { label: "Makeup / Beauty Services", value: "beauty" },
-        { label: "Cosmetic Tattoo / Piercing", value: "cosmetic_bodywork" }
+        { label: "Haircuts / Styling", value: "haircuts" },
+        { label: "Makeup Services", value: "makeup" }
       ]
     },
     {
@@ -73,18 +71,16 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       label: "Cleaning Services",
       value: "cleaning",
       subcategories: [
-        { label: "Home Cleaning", value: "home_cleaning" },
+        { label: "House Cleaning", value: "house_cleaning" },
         { label: "Deep Cleaning", value: "deep_cleaning" },
-        { label: "Post-Reno Cleanup", value: "reno_cleanup" },
-        { label: "Office Cleaning", value: "office_cleaning" },
-        { label: "Eco-Friendly Cleaning", value: "eco_cleaning" },
-        { label: "Laundry / Linen Services", value: "laundry" }
+        { label: "Move-in / Move-out Cleaning", value: "move_cleaning" },
+        { label: "Post-Renovation Cleanup", value: "post_reno_cleanup" }
       ]
     },
     {
       emoji: "🌿",
       label: "Exterior & Grounds",
-      value: "groundskeeping",
+      value: "exterior",
       subcategories: [
         { label: "Lawn Mowing", value: "lawn_mowing" },
         { label: "Snow Removal", value: "snow_removal" },
@@ -101,8 +97,8 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       subcategories: [
         { label: "Dog Walking", value: "dog_walking" },
         { label: "Pet Sitting", value: "pet_sitting" },
-        { label: "Litter / Cage Cleaning", value: "pet_cleaning" },
-        { label: "Basic Grooming", value: "grooming" }
+        { label: "Litter Change", value: "litter_change" },
+        { label: "Pet Feeding", value: "pet_feeding" }
       ]
     },
     {
@@ -110,10 +106,11 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       label: "Appliance & Tech Repair",
       value: "repairs",
       subcategories: [
-        { label: "Appliance Repair", value: "appliance_repair" },
-        { label: "Phone Repair", value: "phone_repair" },
-        { label: "Computer Repair", value: "computer_repair" },
-        { label: "Network Setup / Cabling", value: "networking" }
+        { label: "Washer / Dryer Repair", value: "washer_dryer_repair" },
+        { label: "Fridge / Freezer Repair", value: "fridge_repair" },
+        { label: "Dishwasher Repair", value: "dishwasher_repair" },
+        { label: "Smart TV / Device Setup", value: "tv_setup" },
+        { label: "Computer / Tech Support", value: "computer_support" }
       ]
     },
     {
@@ -121,11 +118,11 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       label: "Event Services",
       value: "events",
       subcategories: [
-        { label: "Furniture Setup", value: "furniture_setup" },
-        { label: "Decor / Balloons", value: "decor" },
-        { label: "Lighting / Sound", value: "audio_lighting" },
-        { label: "DJ / Performer Help", value: "dj_support" },
-        { label: "Cleanup Crew", value: "event_cleanup" }
+        { label: "Event Setup / Teardown", value: "event_setup" },
+        { label: "Furniture Moving", value: "furniture_moving" },
+        { label: "Balloon / Decor", value: "decor" },
+        { label: "On-site Cleaning", value: "event_cleaning" },
+        { label: "Bartending", value: "bartending" }
       ]
     },
     {
@@ -134,12 +131,18 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
       value: "moving",
       subcategories: [
         { label: "Furniture Moving", value: "furniture_moving" },
-        { label: "Item Pickup / Dropoff", value: "item_delivery" },
-        { label: "Packing Help", value: "packing" },
-        { label: "Heavy Lifting", value: "heavy_lifting" }
+        { label: "Small Truck Delivery", value: "truck_delivery" },
+        { label: "Packing Help", value: "packing_help" },
+        { label: "Box Drop-off / Return", value: "box_service" }
       ]
     }
   ];
+
+  // Check if it's snow season (Nov-Mar) for seasonal awareness
+  const isSnowSeason = () => {
+    const month = new Date().getMonth();
+    return month >= 10 || month <= 2; // Nov (10) through Mar (2)
+  };
 
   // Get available subcategories based on selected category
   const getSubcategories = () => {
@@ -199,84 +202,85 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
 
       console.log('📨 Using user info:', userInfo);
 
-      // Find service provider (simplified logic)
+      // Find service providers - improved logic with category matching
       const { data: providers, error: providerError } = await supabase
         .from('provider_profiles')
-        .select('*')
-        .limit(1);
+        .select(`
+          *,
+          users!inner(full_name, email)
+        `)
+        .eq('verified', true)
+        .limit(5);
 
-      if (providerError) {
-        console.error('Provider fetch error:', providerError);
-        toast({
-          title: "Error finding providers",
-          description: "Failed to find service providers. Please try again.",
-          variant: "destructive",
-        });
-        return;
-      }
+      console.log('🔍 Found providers:', providers?.length || 0);
 
-      if (!providers || providers.length === 0) {
-        toast({
-          title: "No providers available",
-          description: "No service providers are available at this time.",
-          variant: "destructive",
-        });
-        return;
-      }
+      // Get the category and subcategory labels for the service
+      const selectedCategory = SERVICE_CATEGORIES.find(cat => cat.value === formData.category);
+      const selectedSubcategory = selectedCategory?.subcategories.find(sub => sub.value === formData.subcategory);
+      
+      const serviceTitle = selectedSubcategory?.label || selectedCategory?.label || formData.title;
+      const serviceCategoryValue = formData.category;
 
-      const selectedProvider = providers[0];
-
-      // Find or create service
+      // Find or create service - use the updated category structure
       let { data: services, error: serviceError } = await supabase
         .from('services')
         .select('*')
-        .eq('category', formData.category.toLowerCase())
+        .eq('category', serviceCategoryValue)
         .limit(1);
 
       if (serviceError) {
         console.error('Service fetch error:', serviceError);
-        return;
       }
 
       let serviceId: string;
+      let selectedProvider = providers?.[0]; // Default to first provider
+
       if (services && services.length > 0) {
         serviceId = services[0].id;
-      } else {
-        // Create a new service entry
+      } else if (selectedProvider) {
+        // Create a new service entry if we have a provider
         const { data: newService, error: newServiceError } = await supabase
           .from('services')
           .insert({
-            title: formData.category,
-            category: formData.category.toLowerCase(),
-            description: `${formData.category} service`,
+            title: serviceTitle,
+            category: serviceCategoryValue,
+            description: `${serviceTitle} - ${formData.description}`,
             base_price: parseFloat(formData.budget) || 50,
-            provider_id: selectedProvider.id
+            provider_id: selectedProvider.id,
+            active: true
           })
           .select()
           .single();
 
         if (newServiceError || !newService) {
           console.error('Service creation error:', newServiceError);
-          return;
+          // Continue anyway - we'll create the booking without a perfect service match
+          serviceId = 'temp-service-id';
+        } else {
+          serviceId = newService.id;
         }
-        serviceId = newService.id;
+      } else {
+        // No providers available, but still create the ticket
+        serviceId = 'pending-service-id';
       }
 
-      // Create the booking
+      // Create the booking regardless of provider availability
+      const bookingData = {
+        customer_id: user.id,
+        provider_id: selectedProvider?.id || null,
+        service_id: serviceId === 'temp-service-id' || serviceId === 'pending-service-id' ? null : serviceId,
+        scheduled_date: formData.scheduledDate,
+        scheduled_time: formData.scheduledTime,
+        service_address: formData.location,
+        instructions: `${serviceTitle}\n\n${formData.description}`,
+        total_amount: parseFloat(formData.budget) || null,
+        priority: formData.priority,
+        status: 'pending'
+      };
+
       const { data: booking, error: bookingError } = await supabase
         .from('bookings')
-        .insert({
-          customer_id: user.id,
-          provider_id: selectedProvider.id,
-          service_id: serviceId,
-          scheduled_date: formData.scheduledDate,
-          scheduled_time: formData.scheduledTime,
-          service_address: formData.location,
-          instructions: formData.description,
-          total_amount: parseFloat(formData.budget) || null,
-          priority: formData.priority,
-          status: 'pending'
-        })
+        .insert(bookingData)
         .select()
         .single();
 
@@ -290,9 +294,21 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
         return;
       }
 
+      // Show success message with Annette-style confirmation
+      const isSnowService = formData.subcategory === 'snow_removal';
+      const isOutOfSeason = isSnowService && !isSnowSeason();
+      
+      let successMessage = "✨ All done! Your ticket's live. I'll keep an eye out for someone qualified. 🕵️‍♀️";
+      
+      if (isOutOfSeason) {
+        successMessage = "Planning for December in July? Now that's what I call proactive. ✨ Ticket created!";
+      } else if (!providers || providers.length === 0) {
+        successMessage = "No providers currently match, but your request has been saved and Annette is on it! 🚀";
+      }
+
       toast({
         title: "Ticket created successfully!",
-        description: "Your service request has been submitted and will be reviewed by providers.",
+        description: successMessage,
       });
 
       // Reset form
@@ -338,10 +354,6 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
           </DialogDescription>
         </DialogHeader>
         
-        {/* Test element to confirm modal renders */}
-        <div className="text-white bg-red-500 p-4 rounded text-center">
-          🎉 MODAL IS ALIVE - If you can see this, the modal is working!
-        </div>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Service Category */}
@@ -372,20 +384,25 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
                 <SelectTrigger>
                   <SelectValue placeholder="Select specific service..." />
                 </SelectTrigger>
-                <SelectContent>
-                  {getSubcategories().map((subcategory) => (
-                    <SelectItem key={subcategory.value} value={subcategory.value}>
-                      <span className="flex items-center gap-2">
-                        <span>{subcategory.label}</span>
-                        {subcategory.requiresCertification && (
-                          <span className="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">
-                            Cert Required
-                          </span>
-                        )}
-                      </span>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
+                 <SelectContent>
+                   {getSubcategories().map((subcategory) => (
+                     <SelectItem key={subcategory.value} value={subcategory.value}>
+                       <span className="flex items-center gap-2">
+                         <span>{subcategory.label}</span>
+                         {subcategory.value === 'snow_removal' && isSnowSeason() && (
+                           <span className="text-xs bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded">
+                             🏔️ Seasonal
+                           </span>
+                         )}
+                         {subcategory.requiresCertification && (
+                           <span className="text-xs bg-amber-100 text-amber-800 px-1.5 py-0.5 rounded">
+                             Cert Required
+                           </span>
+                         )}
+                       </span>
+                     </SelectItem>
+                   ))}
+                 </SelectContent>
               </Select>
             </div>
           )}
