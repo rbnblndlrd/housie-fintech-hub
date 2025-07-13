@@ -59,7 +59,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           total_amount,
           service_address,
           instructions,
-          services!inner(name),
+          services!inner(title),
           provider_profiles!inner(
             business_name,
             users!inner(full_name)
@@ -92,7 +92,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             total_amount,
             service_address,
             instructions,
-            services!inner(name),
+            services!inner(title),
             users!inner(full_name)
           `)
           .eq('provider_id', providerProfile.id)
@@ -109,7 +109,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const allBookings = [
         ...(customerBookings || []).map((booking: any) => ({
           id: booking.id,
-          serviceName: booking.services?.name || 'Unknown Service',
+          serviceName: booking.services?.title || 'Unknown Service',
           date: booking.scheduled_date,
           time: booking.scheduled_time,
           provider: booking.provider_profiles?.business_name || 
@@ -121,7 +121,7 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         })),
         ...providerBookings.map((booking: any) => ({
           id: booking.id,
-          serviceName: booking.services?.name || 'Unknown Service',
+          serviceName: booking.services?.title || 'Unknown Service',
           date: booking.scheduled_date,
           time: booking.scheduled_time,
           provider: 'You', // Since this is the provider's booking

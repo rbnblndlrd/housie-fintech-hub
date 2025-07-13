@@ -20,15 +20,7 @@ export const useDynamicGradients = () => {
       const wasModalOpen = isModalOpen;
       isModalOpen = modals.length > 0 || dialogs.length > 0 || portals.length > 0 || fixedElements.length > 2;
       
-      if (wasModalOpen !== isModalOpen) {
-        console.log('🎨 Modal state changed:', isModalOpen ? 'OPENED' : 'CLOSED');
-        console.log('🎨 Detection details:', {
-          modals: modals.length,
-          dialogs: dialogs.length,
-          portals: portals.length,
-          fixedElements: fixedElements.length
-        });
-      }
+      // Modal state changed - reduced logging
       
       return isModalOpen;
     };
@@ -36,11 +28,8 @@ export const useDynamicGradients = () => {
     const applyStrategicOverlayPositioning = () => {
       // Check modal state before any positioning
       if (checkModalState()) {
-        console.log('🎨 ABORTING: Modal is open, skipping all positioning');
         return;
       }
-      
-      console.log('🎨 Applying strategic overlay method for watermark concealment...');
       
       // Get all fintech card elements
       const cardSelectors = [
@@ -53,7 +42,6 @@ export const useDynamicGradients = () => {
       ];
       
       const cards = document.querySelectorAll(cardSelectors.join(', '));
-      console.log(`🎨 Found ${cards.length} cards to style with strategic overlay positioning`);
       
       let processedCount = 0;
       
@@ -74,7 +62,6 @@ export const useDynamicGradients = () => {
         );
         
         if (isInModal) {
-          console.log('🎨 SKIPPING modal element:', htmlCard.className);
           return;
         }
         
@@ -83,7 +70,7 @@ export const useDynamicGradients = () => {
         applyWatermarkAvoidancePositioning(htmlCard, index);
       });
       
-      console.log(`🎨 Processed ${processedCount} elements (skipped ${cards.length - processedCount} modal elements)`);
+      
     };
 
     const applyWatermarkAvoidancePositioning = (card: HTMLElement, index: number) => {
@@ -126,11 +113,6 @@ export const useDynamicGradients = () => {
       const randomPattern = marblePatterns[index % marblePatterns.length];
       card.classList.add(randomPattern);
       
-      console.log(`🎨 Applied strategic overlay positioning to card ${index}:`, {
-        pattern: randomPattern,
-        position: `${bgPositionX.toFixed(1)}%, ${bgPositionY.toFixed(1)}%`,
-        scale: scale.toFixed(2)
-      });
       
       // Enhanced text contrast for content readability
       const textElements = card.querySelectorAll('h1, h2, h3, h4, h5, h6, p, span, .fintech-text-header');
@@ -142,7 +124,6 @@ export const useDynamicGradients = () => {
       // Apply text-aware positioning for cards with multiple text elements
       if (textElements.length > 2) {
         card.classList.add('fintech-text-aware');
-        console.log(`🎨 Applied text-aware positioning to card ${index}`);
       }
     };
 
@@ -156,7 +137,6 @@ export const useDynamicGradients = () => {
     const observer = new MutationObserver((mutations) => {
       // Always check modal state first
       if (checkModalState()) {
-        console.log('🎨 Mutations detected but modal is open - skipping positioning');
         return;
       }
       
@@ -169,7 +149,6 @@ export const useDynamicGradients = () => {
           if (mutation.attributeName === 'data-state' || 
               mutation.attributeName === 'role' ||
               mutation.attributeName === 'class') {
-            console.log('🎨 Modal-related attribute changed, rechecking state');
             return; // State will be checked at start of next cycle
           }
         }
@@ -194,7 +173,6 @@ export const useDynamicGradients = () => {
       });
       
       if (shouldReapply) {
-        console.log('🎨 DOM changed, checking modal state before repositioning...');
         setTimeout(() => {
           if (!checkModalState()) {
             applyStrategicOverlayPositioning();
