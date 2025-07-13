@@ -74,9 +74,9 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           subcategory,
           service_title,
           services(title, category),
-          provider_profiles!inner(
+          provider_profiles(
             business_name,
-            users!inner(full_name)
+            users(full_name)
           )
         `)
         .eq('customer_id', user.id)
@@ -130,8 +130,8 @@ export const BookingsProvider: React.FC<{ children: React.ReactNode }> = ({ chil
                       (booking.subcategory ? `Generic ${booking.subcategory}` : 'Service Request'),
           date: booking.scheduled_date,
           time: booking.scheduled_time,
-          provider: booking.provider_profiles?.business_name || 
-                   booking.provider_profiles?.users?.full_name || 'Unknown Provider',
+           provider: booking.provider_profiles?.business_name || 
+                    booking.provider_profiles?.users?.full_name || 'Awaiting Assignment',
           location: booking.service_address || 'No address provided',
           status: booking.status || 'pending',
           customer_name: 'You', // Since this is the customer's booking
