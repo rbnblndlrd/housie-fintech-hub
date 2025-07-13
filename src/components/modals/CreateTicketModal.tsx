@@ -227,7 +227,7 @@ const CreateTicketModal: React.FC<CreateTicketModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={(newOpen) => !newOpen && onClose()}>
-      <DialogContent className="modal-stable modal-content-stable bg-background border border-border max-w-2xl">
+      <DialogContent className="bg-background border border-border max-w-2xl z-50">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Plus className="h-5 w-5" />
