@@ -35,11 +35,23 @@ const CustomerJobTicketList = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'scheduled': return 'bg-blue-100 text-blue-800';
-      case 'in_progress': return 'bg-purple-100 text-purple-800';
-      case 'completed': return 'bg-green-100 text-green-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pending': return 'secondary';
+      case 'scheduled': return 'default';
+      case 'in_progress': return 'secondary';
+      case 'completed': return 'default';
+      case 'cancelled': return 'destructive';
+      default: return 'outline';
+    }
+  };
+
+  const getStatusColorClass = (status: string) => {
+    switch (status) {
+      case 'pending': return 'bg-yellow-50 text-yellow-700 border-yellow-200';
+      case 'scheduled': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'in_progress': return 'bg-purple-50 text-purple-700 border-purple-200';
+      case 'completed': return 'bg-green-50 text-green-700 border-green-200';
+      case 'cancelled': return 'bg-red-50 text-red-700 border-red-200';
+      default: return 'bg-gray-50 text-gray-700 border-gray-200';
     }
   };
 
@@ -209,86 +221,143 @@ const CustomerJobTicketList = () => {
               </Button>
             </div>
           ) : (
-            <div className="space-y-4">
-              {filteredBookings.map((booking) => {
+            <div className="space-y-3">
+              {filteredBookings.map((booking, index) => {
                 const detection = detectServiceFromKeywords(booking.custom_title, booking.instructions);
+                const title = getDisplayNameForBooking(booking) || 'Service Request';
+                const description = booking.description || booking.instructions;
+                const truncatedDescription = description ? 
+                  (description.length > 100 ? description.substring(0, 100) + '...' : description) : null;
                 
                 return (
-                  <div key={booking.id} className="fintech-inner-box p-4 relative">
-                    {/* Mystery Job Badge */}
-                    {!booking.hasLinkedService && (
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Badge 
-                            variant="outline" 
-                            className="absolute top-2 right-2 bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100"
-                          >
-                            ⚠️ Mystery Job
+                  <div 
+                    key={booking.id} 
+                    className={`rounded-xl bg-card p-4 sm:p-5 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm border transition-all duration-300 hover:shadow-md animate-fade-in ${
+                      booking.status === 'scheduled' ? 'border-blue-200 bg-blue-50/30' : 'border-border'
+                    }`}
+                    style={{
+                      animationDelay: `${index * 0.1}s`,
+                    }}
+                  >
+                    {/* Left Section - Main Info */}
+                    <div className="flex flex-col gap-2 w-full">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <h3 className="text-base font-semibold text-foreground truncate max-w-[200px] sm:max-w-[300px]">
+                              {title}
+                            </h3>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p>{title}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                        
+                        {!booking.hasLinkedService && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Badge variant="outline" className="bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100 text-xs">
+                                ⚠️ Mystery Job
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p className="max-w-xs">
+                                💬 Annette: "{detection.annetteMessage}"
+                                {detection.suggestion && (
+                                  <span className="block mt-1 font-medium text-orange-600">
+                                    Suggestion: {detection.suggestion}
+                                  </span>
+                                )}
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        )}
+                        
+                        <Badge variant="outline" className={`text-xs ${getStatusColorClass(booking.status)}`}>
+                          {booking.status.replace('_', ' ')}
+                        </Badge>
+                        
+                        {booking.status === 'pending' && !booking.provider && (
+                          <Badge variant="outline" className="text-xs bg-amber-50 text-amber-700 border-amber-200">
+                            💬 Needs routing
                           </Badge>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p className="max-w-xs">
-                            💬 Annette: "{detection.annetteMessage}"
-                            {detection.suggestion && (
-                              <span className="block mt-1 font-medium text-orange-600">
-                                Suggestion: {detection.suggestion}
-                              </span>
-                            )}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    )}
-
-                     <div className="flex items-center justify-between">
-                       <div className="flex-1 pr-20"> {/* Add padding to avoid badge overlap */}
-                         <div className="flex items-center gap-3 mb-2">
-                           <h3 className="font-medium">
-                             {getDisplayNameForBooking(booking)}
-                           </h3>
-                           {booking.status === 'pending' && !booking.provider && (
-                             <div className="inline-flex" title="Needs routing to provider">
-                               <span className="text-xs text-muted-foreground">💬 Needs routing</span>
-                             </div>
-                           )}
-                           <Badge className={getStatusColor(booking.status)}>
-                             {booking.status}
-                           </Badge>
-                         </div>
-                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                           <div className="flex items-center gap-1">
-                             <Calendar className="h-4 w-4" />
-                             {formatDate(booking.date || new Date().toISOString())}
-                           </div>
-                           <div className="flex items-center gap-1">
-                             <Clock className="h-4 w-4" />
-                             {booking.time || 'TBD'}
-                           </div>
-                           {booking.location && (
-                             <div className="flex items-center gap-1">
-                               <MapPin className="h-4 w-4" />
-                               {booking.location.substring(0, 30)}...
-                             </div>
-                           )}
-                         </div>
-                       </div>
-                       <div className="flex items-center gap-2">
-                      {booking.total_amount && (
-                        <span className="font-medium">${booking.total_amount}</span>
+                        )}
+                      </div>
+                      
+                      {/* Meta Information */}
+                      <div className="flex items-center gap-x-4 gap-y-2 text-sm text-muted-foreground flex-wrap">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="w-4 h-4 flex-shrink-0" />
+                          <span className="truncate">
+                            {formatDate(booking.date || booking.scheduled_date || new Date().toISOString())}
+                          </span>
+                        </div>
+                        
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-4 h-4 flex-shrink-0" />
+                          <span>{booking.time || booking.scheduled_time || 'TBD'}</span>
+                        </div>
+                        
+                        {(booking.location || booking.service_address) && (
+                          <div className="flex items-center gap-1 max-w-[200px]">
+                            <MapPin className="w-4 h-4 flex-shrink-0" />
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="truncate">
+                                  {(booking.location || booking.service_address)?.substring(0, 25)}
+                                  {(booking.location || booking.service_address)?.length > 25 && '...'}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p className="max-w-xs">{booking.location || booking.service_address}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {/* Description Preview */}
+                      {truncatedDescription && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <p className="text-sm text-muted-foreground italic">
+                              {truncatedDescription}
+                            </p>
+                          </TooltipTrigger>
+                          <TooltipContent>
+                            <p className="max-w-xs">{description}</p>
+                          </TooltipContent>
+                        </Tooltip>
                       )}
+                    </div>
+                    
+                    {/* Right Section - Actions */}
+                    <div className="w-full md:w-auto flex items-center justify-between md:justify-end gap-3">
+                      {booking.total_amount && (
+                        <span className="font-semibold text-lg text-foreground">
+                          ${booking.total_amount}
+                        </span>
+                      )}
+                      
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="outline" size="sm" onClick={() => setSelectedBooking(booking)}>
+                          <Button 
+                            variant="secondary" 
+                            size="sm" 
+                            onClick={() => setSelectedBooking(booking)}
+                            className="whitespace-nowrap"
+                          >
                             <Eye className="h-4 w-4 mr-1" />
                             View
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="fintech-card max-w-2xl data-[state=open]:translate-y-0 data-[state=closed]:translate-y-0 transition-none">
+                        <DialogContent className="fintech-card max-w-2xl">
                           <DialogHeader>
                             <DialogTitle>Ticket Details</DialogTitle>
                           </DialogHeader>
                           {selectedBooking && (
                             <div className="space-y-4">
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Service</label>
                                   <div className="flex items-center gap-2">
@@ -307,8 +376,8 @@ const CustomerJobTicketList = () => {
                                 </div>
                                 <div>
                                   <label className="text-sm font-medium text-muted-foreground">Status</label>
-                                  <Badge className={getStatusColor(selectedBooking.status)}>
-                                    {selectedBooking.status}
+                                  <Badge variant="outline" className={getStatusColorClass(selectedBooking.status)}>
+                                    {selectedBooking.status.replace('_', ' ')}
                                   </Badge>
                                 </div>
                                 <div>
@@ -352,7 +421,7 @@ const CustomerJobTicketList = () => {
                                 {selectedBooking.status === 'pending' && (
                                   <Button 
                                     variant="outline" 
-                                    className="text-red-600"
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
                                     onClick={() => handleCancelRequest(selectedBooking.id)}
                                   >
                                     <X className="h-4 w-4 mr-1" />
@@ -369,9 +438,8 @@ const CustomerJobTicketList = () => {
                             </div>
                           )}
                         </DialogContent>
-                       </Dialog>
-                       </div>
-                     </div>
+                      </Dialog>
+                    </div>
                   </div>
                 );
               })}
@@ -391,6 +459,7 @@ const CustomerJobTicketList = () => {
           }}
         />
       )}
+      
     </TooltipProvider>
   );
 };
