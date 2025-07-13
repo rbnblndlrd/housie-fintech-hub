@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { Navigate } from 'react-router-dom';
@@ -15,6 +15,7 @@ import AnnetteCustomerInsights from '@/components/dashboard/customer/AnnetteCust
 const ServiceBoard = () => {
   const { user, loading: authLoading } = useAuth();
   const { currentRole, isLoading } = useRoleSwitch();
+  const [showCreateTicketModal, setShowCreateTicketModal] = useState(false);
 
   // Redirect to auth if not authenticated
   if (!authLoading && !user) {
@@ -106,6 +107,7 @@ const ServiceBoard = () => {
           <CreateTicketModal onSuccess={() => window.location.reload()}>
             <button 
               id="create-ticket-button" 
+              onClick={() => console.log("Modal trigger clicked")}
               className="bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all duration-200 animate-pulse"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
