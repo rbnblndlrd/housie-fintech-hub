@@ -4,7 +4,7 @@ import { MessageCircle, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface AnnetteAvatarProps {
-  onClick: () => void;
+  onClick: (e?: React.MouseEvent) => void;
   className?: string;
   isActive?: boolean;
   hasNewMessage?: boolean;
@@ -34,6 +34,10 @@ export const AnnetteAvatar: React.FC<AnnetteAvatarProps> = ({
     <div className={cn("fixed bottom-6 right-6 z-50", className)}>
       <Button
         onClick={onClick}
+        onContextMenu={(e) => {
+          e.preventDefault();
+          onClick(e);
+        }}
         className={cn(
           "relative rounded-full w-16 h-16 shadow-xl transition-all duration-300 group",
           "bg-gradient-to-r from-purple-600 to-orange-500 hover:from-purple-700 hover:to-orange-600",
@@ -75,9 +79,12 @@ export const AnnetteAvatar: React.FC<AnnetteAvatarProps> = ({
         "group-hover:opacity-100 group-hover:translate-y-0",
         "opacity-0 translate-y-1"
       )}>
-        <div className="flex items-center space-x-1">
-          <span>Ask Annette anything</span>
-          <Sparkles className="h-3 w-3 text-yellow-400" />
+        <div className="flex flex-col items-center space-y-1">
+          <div className="flex items-center space-x-1">
+            <span>Click me, sugar</span>
+            <Sparkles className="h-3 w-3 text-yellow-400" />
+          </div>
+          <span className="text-xs opacity-75">Right-click for Revollver™</span>
         </div>
       </div>
     </div>
