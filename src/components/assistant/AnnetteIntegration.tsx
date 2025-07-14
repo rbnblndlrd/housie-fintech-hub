@@ -11,8 +11,9 @@ export const AnnetteIntegration: React.FC = () => {
   const [hasShownIntro, setHasShownIntro] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
   
-  // DEBUG MODE: Force render toggle
-  const [debugMode, setDebugMode] = useState(true);
+  // DEBUG MODE: Only in development
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const [debugMode, setDebugMode] = useState(isDevelopment);
   const [showRevollverDebug, setShowRevollverDebug] = useState(false);
   
   // Initialize data queries for real-time responses
@@ -60,9 +61,19 @@ export const AnnetteIntegration: React.FC = () => {
       // Right-click opens Revollver
       e.preventDefault();
       setIsRevollverOpen(true);
+      setIsChatOpen(false); // Close chat if open
+    } else if (e?.shiftKey || e?.ctrlKey) {
+      // Shift+click or Ctrl+click also opens Revollver (alternative)
+      setIsRevollverOpen(!isRevollverOpen);
+      setIsChatOpen(false);
     } else {
-      // Regular click opens chat
-      setIsChatOpen(true);
+      // Regular click opens chat (but also toggles Revollver if chat is already open)
+      if (isChatOpen) {
+        setIsRevollverOpen(!isRevollverOpen);
+      } else {
+        setIsChatOpen(true);
+        setIsRevollverOpen(false);
+      }
       setHasNewMessage(false);
     }
   };
@@ -100,8 +111,8 @@ export const AnnetteIntegration: React.FC = () => {
 
   return (
     <>
-      {/* Debug Controls - Top Right */}
-      {debugMode && (
+      {/* Debug Controls - Only in Development */}
+      {isDevelopment && debugMode && (
         <div className="fixed top-4 right-4 z-[200] bg-black/80 backdrop-blur-sm rounded-lg p-3 text-white text-xs space-y-2">
           <div className="font-bold text-orange-400">🔧 ANNETTE DEBUG</div>
           <div>Revollver Open: {isRevollverOpen ? '✅' : '❌'}</div>
@@ -133,8 +144,8 @@ export const AnnetteIntegration: React.FC = () => {
         </div>
       )}
 
-      {/* Debug Status Indicator */}
-      {debugMode && (
+      {/* Debug Status Indicator - Only in Development */}
+      {isDevelopment && debugMode && (
         <div className="fixed bottom-20 right-5 z-[60] bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
           Revollver is mounted! {isRevollverOpen || showRevollverDebug ? '🎯' : '💤'}
         </div>
@@ -150,15 +161,15 @@ export const AnnetteIntegration: React.FC = () => {
         onClose={handleChatClose}
       />
       
-      {/* Regular Revollver */}
+      {/* Main Revollver */}
       <AnnetteRevollver
         isOpen={isRevollverOpen}
         onClose={handleRevollverClose}
         onCommandSelect={handleRevollverCommand}
       />
       
-      {/* Debug Force-Rendered Revollver */}
-      {debugMode && showRevollverDebug && (
+      {/* Debug Force-Rendered Revollver - Only in Development */}
+      {isDevelopment && debugMode && showRevollverDebug && (
         <AnnetteRevollver
           isOpen={true}
           onClose={handleRevollverClose}
