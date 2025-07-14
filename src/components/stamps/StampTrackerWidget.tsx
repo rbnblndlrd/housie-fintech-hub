@@ -8,14 +8,17 @@ import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { triggerManualStampScan, type ScanResult } from '@/utils/canonStampScanner';
-import { Scan, Award, Star, Clock, Users, Heart, Shield } from 'lucide-react';
+import { Scan, Award, Star, Clock, Users, Heart, Shield, Settings, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { StampInspectorPanel } from './StampInspectorPanel';
+import { BroadcastControlsCard } from './BroadcastControlsCard';
 
 interface StampTrackerWidgetProps {
   className?: string;
+  showBroadcastControls?: boolean;
 }
 
-export function StampTrackerWidget({ className }: StampTrackerWidgetProps) {
+export function StampTrackerWidget({ className, showBroadcastControls = false }: StampTrackerWidgetProps) {
   const { user } = useAuth();
   const { stamps, stats, loading, refreshStamps } = useStamps();
   const { toast } = useToast();
@@ -162,26 +165,29 @@ export function StampTrackerWidget({ className }: StampTrackerWidgetProps) {
             <ScrollArea className="h-48">
               <div className="space-y-3">
                 {stats.recentStamps.map((userStamp) => (
-                  <div key={userStamp.id} className="flex items-start gap-3 p-3 rounded-lg border bg-card">
-                    <div className="text-2xl">{userStamp.stamp?.icon || '🏆'}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h5 className="font-medium truncate">
-                          {userStamp.stamp?.name || 'Unknown Stamp'}
-                        </h5>
-                        {userStamp.stamp?.canonLevel && getCanonBadge(userStamp.stamp.canonLevel)}
-                      </div>
-                      <p className="text-xs text-muted-foreground mb-2">
-                        {userStamp.stamp?.flavorText}
-                      </p>
-                      <div className="flex items-center gap-2">
-                        {getCategoryIcon(userStamp.stamp?.category || 'Performance')}
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(userStamp.earnedAt).toLocaleDateString()}
-                        </span>
+                  <StampInspectorPanel key={userStamp.id} userStamp={userStamp}>
+                    <div className="flex items-start gap-3 p-3 rounded-lg border bg-card hover:bg-muted/20 cursor-pointer transition-colors">
+                      <div className="text-2xl">{userStamp.stamp?.icon || '🏆'}</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h5 className="font-medium truncate">
+                            {userStamp.stamp?.name || 'Unknown Stamp'}
+                          </h5>
+                          {userStamp.stamp?.canonLevel && getCanonBadge(userStamp.stamp.canonLevel)}
+                          <Search className="h-3 w-3 text-muted-foreground ml-auto" />
+                        </div>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          {userStamp.stamp?.flavorText}
+                        </p>
+                        <div className="flex items-center gap-2">
+                          {getCategoryIcon(userStamp.stamp?.category || 'Performance')}
+                          <span className="text-xs text-muted-foreground">
+                            {new Date(userStamp.earnedAt).toLocaleDateString()}
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  </StampInspectorPanel>
                 ))}
               </div>
             </ScrollArea>
@@ -211,6 +217,13 @@ export function StampTrackerWidget({ className }: StampTrackerWidgetProps) {
             <p className="text-sm text-muted-foreground italic">
               "{lastScanResult.annetteResponse}"
             </p>
+          </div>
+        )}
+
+        {/* Broadcast Controls */}
+        {showBroadcastControls && (
+          <div className="mt-4">
+            <BroadcastControlsCard />
           </div>
         )}
       </CardContent>
