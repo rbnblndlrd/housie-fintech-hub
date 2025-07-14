@@ -6,6 +6,7 @@ import PerformanceWidgets from '@/components/dashboard/PerformanceWidgets';
 import JobHub from '@/components/dashboard/JobHub';
 import { AnnetteInboxNotifications } from '@/components/annette/AnnetteInboxNotifications';
 import { TodaysRouteAnchor } from '@/components/dashboard/TacticalHUD/TodaysRouteAnchor';
+import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
@@ -49,7 +50,12 @@ const Dashboard = () => {
         title="Dashboard"
         rightPanelTitle="Today's Route"
         rightPanelContent={<TodaysRoutePanel />}
-        bottomWidgets={<PerformanceWidgets />}
+        bottomWidgets={
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <PerformanceWidgets />
+            <StampTrackerWidget className="h-fit" />
+          </div>
+        }
         headerAction={<CreateJobTicketButton size="sm" />}
       >
         {annetteCard}

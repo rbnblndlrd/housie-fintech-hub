@@ -54,6 +54,7 @@ import OpportunityBidPlannerPage from './pages/opportunities/OpportunityBidPlann
 import { QuoteVaultManager } from './pages/QuoteVaultManager';
 
 import { Toaster } from '@/components/ui/toaster';
+import { CanonBroadcast } from '@/components/broadcast/CanonBroadcast';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { CBSProvider } from '@/components/cbs/CBSProvider';
@@ -131,6 +132,10 @@ function App() {
                 </Routes>
                               </ConditionalSpacingWrapper>
                             </main>
+                            
+                            {/* Global Canon Broadcast System */}
+                            <CanonBroadcast position="bottom-left" />
+                            
                             <Toaster />
                           </div>
                         </Router>

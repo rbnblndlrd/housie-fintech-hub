@@ -15,6 +15,7 @@ import {
   Zap
 } from 'lucide-react';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
+import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 import CommunityEchoesWidget from '@/components/broadcast/CommunityEchoesWidget';
 import RecentStampsWall from '@/components/stamps/RecentStampsWall';
 
@@ -49,6 +50,7 @@ const CommunityDashboard = () => {
         rightPanelContent={
           <div className="space-y-4">
             <ProgressPreviewCards onProgressClick={handleProgressClick} />
+            <StampTrackerWidget className="mb-4" />
             <RecentStampsWall limit={5} />
             <CommunityEchoesWidget limit={8} showControls={true} />
           </div>

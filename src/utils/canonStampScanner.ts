@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { awardStamp, generateStampVoiceLine, type Stamp } from './stampEngine';
 import { getCanonContext, type UserContext } from './contextAwareEngine';
 import { logAnnetteCanonInsight } from './annetteCanonLog';
+import { trackCanonStreak, getEnhancedVoiceLine } from './canonMemory';
 
 // Forward declaration to avoid circular dependency
 export interface StampDefinition {
@@ -84,8 +85,10 @@ export async function scanJobForStamps(userId: string, jobId?: string): Promise<
       }
     }
 
-    // Generate Annette's response
-    const annetteResponse = generateAnnetteStampResponse(awardedStamps, context);
+    // Generate enhanced Annette response with Canon memory
+    const canonChain = await trackCanonStreak(userId);
+    const baseResponse = generateAnnetteStampResponse(awardedStamps, context);
+    const annetteResponse = baseResponse ? getEnhancedVoiceLine('stamp_scan', baseResponse, canonChain) : undefined;
     
     // Log Canon insight
     await logAnnetteCanonInsight({

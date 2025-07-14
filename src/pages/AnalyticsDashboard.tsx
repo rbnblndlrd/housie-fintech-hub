@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
+import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 
 const AnalyticsDashboard = () => {
   const [activeTab, setActiveTab] = useState('financial');
@@ -427,6 +428,7 @@ const AnalyticsDashboard = () => {
 
   const rightPanelContent = (
     <div className="space-y-4">
+      <StampTrackerWidget className="mb-4" />
       <Card className="bg-card/95 backdrop-blur-md border-border/20">
         <CardHeader>
           <CardTitle className="text-lg">Quick Actions</CardTitle>

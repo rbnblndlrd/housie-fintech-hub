@@ -3704,30 +3704,42 @@ export type Database = {
       }
       user_stamps: {
         Row: {
+          canon_status: string | null
           context_data: Json | null
           created_at: string
           earned_at: string
           id: string
+          is_displayed: boolean | null
           job_id: string | null
+          location: unknown | null
           stamp_id: string
+          trigger_context: Json | null
           user_id: string
         }
         Insert: {
+          canon_status?: string | null
           context_data?: Json | null
           created_at?: string
           earned_at?: string
           id?: string
+          is_displayed?: boolean | null
           job_id?: string | null
+          location?: unknown | null
           stamp_id: string
+          trigger_context?: Json | null
           user_id: string
         }
         Update: {
+          canon_status?: string | null
           context_data?: Json | null
           created_at?: string
           earned_at?: string
           id?: string
+          is_displayed?: boolean | null
           job_id?: string | null
+          location?: unknown | null
           stamp_id?: string
+          trigger_context?: Json | null
           user_id?: string
         }
         Relationships: [
