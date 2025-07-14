@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Trophy, Crown, Award, Star, Zap, Lock } from 'lucide-react';
 import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
+import { FusionTitleTracker } from '@/components/stamps/FusionTitleTracker';
 
 const PrestigeContent = () => {
   const [selectedTitle, setSelectedTitle] = useState('Technomancer');
@@ -154,6 +155,11 @@ const PrestigeContent = () => {
           ))}
         </CardContent>
       </Card>
+
+      {/* Fusion Title Tracker */}
+      <div className="mt-8">
+        <FusionTitleTracker />
+      </div>
     </div>
   );
 };

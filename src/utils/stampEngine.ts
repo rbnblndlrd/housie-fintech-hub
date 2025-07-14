@@ -99,6 +99,14 @@ export async function awardStamp(
 
     if (error) throw error;
 
+    // Check if this should trigger stamp evolution
+    if (data) {
+      await evolveStampIfReady(userId, stampId);
+      
+      // Check for fusion title eligibility after stamp award
+      await checkFusionTitleEligibility(userId);
+    }
+
     // Check if this stamp should trigger a broadcast
     await tryCreateStampBroadcast(userId, stampId, contextData);
 
@@ -392,6 +400,65 @@ export async function getUserStampStats(userId: string): Promise<{
       stampsByCategory: {},
       recentStamps: []
     };
+  }
+}
+
+/**
+ * Evolve stamp if conditions are met
+ */
+async function evolveStampIfReady(userId: string, stampId: string) {
+  try {
+    const { data, error } = await supabase.rpc('evolve_stamp', {
+      p_user_id: userId,
+      p_stamp_id: stampId
+    });
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Error evolving stamp:', error);
+    return null;
+  }
+}
+
+/**
+ * Check and award fusion titles if eligible
+ */
+async function checkFusionTitleEligibility(userId: string) {
+  try {
+    // Get all fusion titles
+    const { data: fusionTitles, error: titlesError } = await supabase
+      .from('fusion_titles')
+      .select('id')
+      .eq('is_active', true);
+
+    if (titlesError) throw titlesError;
+
+    // Check eligibility for each title
+    for (const title of fusionTitles || []) {
+      try {
+        const { data: eligible, error: checkError } = await supabase
+          .rpc('check_fusion_title_eligibility', {
+            p_user_id: userId,
+            p_title_id: title.id
+          });
+
+        if (checkError) continue; // Skip on error
+
+        if (eligible) {
+          // Award the fusion title
+          await supabase.rpc('award_fusion_title', {
+            p_user_id: userId,
+            p_title_id: title.id,
+            p_context: { auto_awarded: true, timestamp: new Date().toISOString() }
+          });
+        }
+      } catch (err) {
+        console.warn(`Error checking fusion title ${title.id}:`, err);
+      }
+    }
+  } catch (error) {
+    console.error('Error checking fusion title eligibility:', error);
   }
 }
 

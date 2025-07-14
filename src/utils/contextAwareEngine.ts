@@ -34,6 +34,14 @@ export interface UserContext {
     echo_visibility: 'public' | 'local' | 'hidden';
     location_sharing_enabled: boolean;
   };
+
+  // Fusion Title
+  fusionTitle?: {
+    name: string;
+    icon: string;
+    flavorLines: string[];
+    rarity: string;
+  };
 }
 
 export interface EquippedStamp {
@@ -114,6 +122,17 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       .eq('completed_at', null)
       .single();
 
+    // Get equipped fusion title for enhanced context
+    const { data: equippedFusionTitle } = await supabase
+      .from('user_fusion_titles')
+      .select(`
+        title_id,
+        fusion_title:fusion_titles(name, icon, flavor_lines, rarity)
+      `)
+      .eq('user_id', userId)
+      .eq('is_equipped', true)
+      .maybeSingle();
+
     // Get user's primary role
     const { data: roleData } = await supabase
       .from('user_role_preferences')
@@ -162,6 +181,13 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       tier: equippedTitleData.prestige_titles.tier
     } : undefined;
 
+    const fusionTitle = equippedFusionTitle?.fusion_title ? {
+      name: equippedFusionTitle.fusion_title.name,
+      icon: equippedFusionTitle.fusion_title.icon,
+      flavorLines: equippedFusionTitle.fusion_title.flavor_lines || [],
+      rarity: equippedFusionTitle.fusion_title.rarity
+    } : undefined;
+
     const equippedStamps: EquippedStamp[] = equippedStampsData?.map((stamp: any) => ({
       stampId: stamp.stamp_id,
       position: stamp.display_position,
@@ -186,7 +212,8 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       recentJobTypes: recentBookings?.map(b => b.category).filter(Boolean) || [],
       currentLocation: 'Montreal', // Default for now
       activeRadius: 5000, // 5km default
-      canonPreferences
+      canonPreferences,
+      fusionTitle
     };
   } catch (error) {
     console.error('Error fetching Canon context:', error);

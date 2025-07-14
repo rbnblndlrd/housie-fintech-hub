@@ -1714,6 +1714,48 @@ export type Database = {
           },
         ]
       }
+      fusion_titles: {
+        Row: {
+          created_at: string
+          description: string | null
+          flavor_lines: string[]
+          icon: string
+          id: string
+          is_active: boolean
+          name: string
+          rarity: string
+          required_prestige_tier: number
+          required_stamps: string[]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          flavor_lines?: string[]
+          icon?: string
+          id: string
+          is_active?: boolean
+          name: string
+          rarity?: string
+          required_prestige_tier?: number
+          required_stamps?: string[]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          flavor_lines?: string[]
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          rarity?: string
+          required_prestige_tier?: number
+          required_stamps?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       google_calendar_tokens: {
         Row: {
           access_token: string
@@ -3138,6 +3180,39 @@ export type Database = {
           },
         ]
       }
+      stamp_evolutions: {
+        Row: {
+          base_stamp_id: string
+          created_at: string
+          evolution_tier: string
+          evolved_flavor_text: string | null
+          evolved_icon: string
+          evolved_name: string
+          id: string
+          required_count: number
+        }
+        Insert: {
+          base_stamp_id: string
+          created_at?: string
+          evolution_tier: string
+          evolved_flavor_text?: string | null
+          evolved_icon: string
+          evolved_name: string
+          id?: string
+          required_count: number
+        }
+        Update: {
+          base_stamp_id?: string
+          created_at?: string
+          evolution_tier?: string
+          evolved_flavor_text?: string | null
+          evolved_icon?: string
+          evolved_name?: string
+          id?: string
+          required_count?: number
+        }
+        Relationships: []
+      }
       stamp_imprints: {
         Row: {
           context_summary: string | null
@@ -3421,6 +3496,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_fusion_titles: {
+        Row: {
+          created_at: string
+          id: string
+          is_equipped: boolean
+          title_id: string
+          unlock_context: Json | null
+          unlocked_at: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_equipped?: boolean
+          title_id: string
+          unlock_context?: Json | null
+          unlocked_at?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_equipped?: boolean
+          title_id?: string
+          unlock_context?: Json | null
+          unlocked_at?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_fusion_titles_title_id_fkey"
+            columns: ["title_id"]
+            isOneToOne: false
+            referencedRelation: "fusion_titles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_profiles: {
         Row: {
@@ -3792,6 +3908,8 @@ export type Database = {
           context_data: Json | null
           created_at: string
           earned_at: string
+          evolution_count: number
+          evolution_tier: string | null
           id: string
           is_displayed: boolean | null
           job_id: string | null
@@ -3805,6 +3923,8 @@ export type Database = {
           context_data?: Json | null
           created_at?: string
           earned_at?: string
+          evolution_count?: number
+          evolution_tier?: string | null
           id?: string
           is_displayed?: boolean | null
           job_id?: string | null
@@ -3818,6 +3938,8 @@ export type Database = {
           context_data?: Json | null
           created_at?: string
           earned_at?: string
+          evolution_count?: number
+          evolution_tier?: string | null
           id?: string
           is_displayed?: boolean | null
           job_id?: string | null
@@ -4058,6 +4180,10 @@ export type Database = {
         Args: { p_user_id: string; p_points: number; p_reason: string }
         Returns: undefined
       }
+      award_fusion_title: {
+        Args: { p_user_id: string; p_title_id: string; p_context?: Json }
+        Returns: string
+      }
       award_stamp: {
         Args: {
           p_user_id: string
@@ -4088,6 +4214,10 @@ export type Database = {
       }
       can_message_user: {
         Args: { target_user_id: string }
+        Returns: boolean
+      }
+      check_fusion_title_eligibility: {
+        Args: { p_user_id: string; p_title_id: string }
         Returns: boolean
       }
       check_rate_limit: {
@@ -4148,6 +4278,10 @@ export type Database = {
           eligible: boolean
           context_data: Json
         }[]
+      }
+      evolve_stamp: {
+        Args: { p_user_id: string; p_stamp_id: string }
+        Returns: string
       }
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }
