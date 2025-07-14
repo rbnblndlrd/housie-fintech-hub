@@ -11,9 +11,9 @@ export const AnnetteIntegration: React.FC = () => {
   const [hasShownIntro, setHasShownIntro] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
   
-  // DEBUG MODE: Only in development
-  const isDevelopment = process.env.NODE_ENV === 'development';
-  const [debugMode, setDebugMode] = useState(isDevelopment);
+  // DEBUG MODE: Temporarily enabled to fix visibility issue
+  const isDevelopment = true; // Force enable for debugging
+  const [debugMode, setDebugMode] = useState(true);
   const [showRevollverDebug, setShowRevollverDebug] = useState(false);
   
   // Initialize data queries for real-time responses
@@ -196,37 +196,36 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
     // For data-heavy actions, we could use the hooks here, but since hooks can't be called
     // outside components, we'll keep enhanced static responses that feel more dynamic
     const responses = {
-      // Core Assistant Tools
-      parse_ticket: "Ahhh, juicy. Let me dive into this... Job details loaded! This one's got priority vibes. Check the chat for full analysis! 📋",
-      optimize_route: "Route optimization mode activated! *digital brain crackling* Your efficiency just got a major upgrade. Check chat for the breakdown! 🗺️",
-      check_prestige: "Lemme pull up your glory chart, sugar... ✨ You're closer than you think. Your prestige is looking spicy!",
-      show_map: "Map mode engaged! Today's territory is laid out nice. Time to claim your domain! 🗺️",
+      // 🎡 1st Cylinder — Core Actions
+      optimize_route: "One click and your whole day falls in line. *route optimization activated* Check your map — efficiency just got sexy! 🗺️",
+      parse_ticket: "Mmm... juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
+      check_prestige: "Flex check: incoming. *scanning prestige metrics* Sugar, you're climbing those ranks like a boss! ✨",
+      recommend_provider: "Let me find someone who won't ghost you. *provider matching algorithm engaged* I've got stellar recommendations based on your history! ⚡",
+      show_map: "Zooming in on your destiny... *map overlay activated* Today's territory is laid out nice. Time to claim your domain! 🗺️",
+      estimate_eta: "If I had wheels, you'd be there by now. *calculating optimal route* ETA calculated with traffic patterns and your style! ⏱️",
+      
+      // 🔄 2nd Cylinder — Community & Broadcast
+      city_broadcast: "Here's what's echoing across town... *accessing city broadcast feed* The pulse of the city, delivered fresh! 📡",
+      view_stamps: "Look at all that recognition, darling. *loading achievement stamps* Your reputation is literally stamped with approval! 🔖",
+      loyalty_stats: "Faithful ones come back fast — here's proof. *analyzing loyalty patterns* These numbers tell a beautiful story! 🫂",
+      map_history: "Let's retrace those glorious steps. *loading footprint analysis* Every move mapped, every achievement tracked! 🔎",
+      read_reviews: "What do the people say? Let's eavesdrop. *scanning review database* The verdict is in, and it's looking good! 💬",
+      canon_log: "This is all confirmed — stamped and sacred. *accessing verified Canon entries* Every entry here is gospel truth! 🔐",
+      
+      // Legacy actions (backwards compatibility)
       view_bookings: "Calendar wizard mode engaged! Time slots analyzed, preferences noted. Pop into chat and ask me about your best scheduling options! 📅",
       rebooking_suggestions: "Rebook radar is pinging! I see patterns in your booking history. Want me to suggest your next move? 📞",
-      
-      // Community / Social
       view_commendations: "Trophy case time! Your commendations are stacking up beautifully. Someone's been earning their respect! 🏆",
       view_crew: "Squad check! Your crew's looking solid. These are the people who've got your back in the game! 👥",
       community_rank: "Rank scanner activated! You're climbing the leaderboard like a boss. Check your standing! 👑",
       network_stats: "Network analysis complete! Your connections are growing strong. Quality over quantity, as always! 📊",
       daily_boost: "Daily boost claimed! Your grind just got a little extra juice. Keep that momentum rolling! ⚡",
       prestige_goals: "Goal tracker loaded! Your next milestone is within reach. Time to make it happen! 🎯",
-      
-      // Settings & Meta
       annette_settings: "Settings panel activated! Time to fine-tune this gorgeous AI experience. What needs adjusting? ⚙️",
       check_credits: "Credit check complete! Your balance is looking good for more AI adventures. Spend wisely! 💳",
       unlock_features: "Feature unlock scanner engaged! Ready to level up your HOUSIE experience? Let's see what's available! 🔓",
       language_settings: "Language preference center! Because I speak fluent sass in multiple languages! 🌍",
-      show_help: "Help mode activated! I'm here to guide you through everything. What's got you puzzled? 💡",
-      
-      // Legacy actions
-      schedule_job: "Calendar wizard mode engaged! Time slots analyzed, preferences noted. Pop into chat and ask me about your best scheduling options! 📅",
-      change_title: "Title switch complete! Your reputation just shifted gears. You're looking fresh with that new badge energy! 🔥",
-      lookup_achievement: "Achievement scanner activated! Your progress is looking spicy. Ask me in chat about your next milestone! 🏆",
-      recommend_provider: "Provider matchmaking algorithm engaged! I've got some stellar recommendations based on your history. Let's chat about your options! ⚡",
-      start_gps: "GPS navigation locked and loaded! Most efficient route calculated. Let's make some moves! 🚀",
-      cred_earned: "Boom. Cred earned. You felt that, huh? That's what grinding looks like, and your reputation just got another notch of legendary. Keep this energy! 🏆",
-      prestige_milestone: "Title up! Prestige Level unlocked. You're practically famous now. Time to strut around like you own the place — because honestly? You kinda do. ✨"
+      show_help: "Help mode activated! I'm here to guide you through everything. What's got you puzzled? 💡"
     };
 
     response = responses[action as keyof typeof responses] || "Task completed! How else can I help?";

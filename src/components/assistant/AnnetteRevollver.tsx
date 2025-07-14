@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  MapPin, Route, Trophy, Calendar, RefreshCw, Users, 
-  Crown, Network, TrendingUp, Gift, Settings, CreditCard, 
-  Unlock, Globe, HelpCircle
+  Compass, FileText, Star, Users, MapPin, Clock,
+  Radio, Bookmark, Users2, Search, MessageSquare, Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -13,43 +12,108 @@ interface AnnetteRevollverProps {
   className?: string;
 }
 
-interface Command {
+interface ClipAction {
   id: string;
-  label: string;
   icon: React.ComponentType<any>;
+  label: string;
+  voiceLine: string;
   action: string;
   context?: any;
-  isCanon?: boolean; // Canon-verified actions
 }
 
-const clips: Command[][] = [
-  // Clip 1: Daily Ops
-  [
-    { id: 'parse-ticket', label: 'Parse Ticket', icon: MapPin, action: 'parse_ticket', isCanon: true },
-    { id: 'optimize-route', label: 'Optimize Route', icon: Route, action: 'optimize_route', isCanon: true },
-    { id: 'todays-map', label: "Today's Map", icon: MapPin, action: 'show_map', isCanon: true },
-    { id: 'view-bookings', label: 'View Bookings', icon: Calendar, action: 'view_bookings', isCanon: true },
-    { id: 'rebooking', label: 'Rebooking Suggestions', icon: RefreshCw, action: 'rebooking_suggestions', isCanon: false },
-    { id: 'check-prestige', label: 'Check My Prestige', icon: Trophy, action: 'check_prestige', isCanon: true },
-  ],
-  // Clip 2: Social
-  [
-    { id: 'my-crew', label: 'My Crew', icon: Users, action: 'view_crew', isCanon: true },
-    { id: 'commendations', label: 'View Commendations', icon: Trophy, action: 'view_commendations', isCanon: true },
-    { id: 'network-stats', label: 'Network Stats', icon: Network, action: 'network_stats', isCanon: true },
-    { id: 'community-rank', label: 'Community Rank', icon: Crown, action: 'community_rank', isCanon: false },
-    { id: 'daily-boost', label: 'Claim Daily Boost', icon: Gift, action: 'daily_boost', isCanon: false },
-    { id: 'prestige-goals', label: 'Prestige Goals', icon: TrendingUp, action: 'prestige_goals', isCanon: false },
-  ],
-  // Clip 3: Settings
-  [
-    { id: 'settings', label: 'Annette Settings', icon: Settings, action: 'annette_settings', isCanon: true },
-    { id: 'credits', label: 'Credits Left', icon: CreditCard, action: 'check_credits', isCanon: true },
-    { id: 'help', label: 'Help', icon: HelpCircle, action: 'show_help', isCanon: true },
-    { id: 'unlock-features', label: 'Unlock Features', icon: Unlock, action: 'unlock_features', isCanon: false },
-    { id: 'language', label: 'Language Preference', icon: Globe, action: 'language_settings', isCanon: false },
-  ]
+// 🎡 CLIP DECK: 1st Cylinder — Core Actions
+const cylinder1: ClipAction[] = [
+  {
+    id: 'optimize-route',
+    icon: Compass,
+    label: 'Optimize Route',
+    voiceLine: "One click and your whole day falls in line.",
+    action: 'optimize_route'
+  },
+  {
+    id: 'parse-ticket',
+    icon: FileText,
+    label: 'Parse Ticket',
+    voiceLine: "Mmm... juicy. Let's dissect this one.",
+    action: 'parse_ticket'
+  },
+  {
+    id: 'check-prestige',
+    icon: Star,
+    label: 'Check My Prestige',
+    voiceLine: "Flex check: incoming.",
+    action: 'check_prestige'
+  },
+  {
+    id: 'recommend-provider',
+    icon: Users,
+    label: 'Who Should I Hire?',
+    voiceLine: "Let me find someone who won't ghost you.",
+    action: 'recommend_provider'
+  },
+  {
+    id: 'show-route',
+    icon: MapPin,
+    label: 'Show My Route',
+    voiceLine: "Zooming in on your destiny...",
+    action: 'show_map'
+  },
+  {
+    id: 'estimate-eta',
+    icon: Clock,
+    label: "What's My ETA?",
+    voiceLine: "If I had wheels, you'd be there by now.",
+    action: 'estimate_eta'
+  }
 ];
+
+// 🔄 CLIP DECK: 2nd Cylinder — Community & Broadcast  
+const cylinder2: ClipAction[] = [
+  {
+    id: 'city-broadcast',
+    icon: Radio,
+    label: 'City Broadcast',
+    voiceLine: "Here's what's echoing across town...",
+    action: 'city_broadcast'
+  },
+  {
+    id: 'view-stamps',
+    icon: Bookmark,
+    label: 'View My Stamps',
+    voiceLine: "Look at all that recognition, darling.",
+    action: 'view_stamps'
+  },
+  {
+    id: 'loyalty-intel',
+    icon: Users2,
+    label: 'Loyalty Intel',
+    voiceLine: "Faithful ones come back fast — here's proof.",
+    action: 'loyalty_stats'
+  },
+  {
+    id: 'review-footprint',
+    icon: Search,
+    label: 'Review My Footprint',
+    voiceLine: "Let's retrace those glorious steps.",
+    action: 'map_history'
+  },
+  {
+    id: 'read-reviews',
+    icon: MessageSquare,
+    label: 'Read My Reviews',
+    voiceLine: "What do the people say? Let's eavesdrop.",
+    action: 'read_reviews'
+  },
+  {
+    id: 'canon-log',
+    icon: Shield,
+    label: 'My Canon Log',
+    voiceLine: "This is all confirmed — stamped and sacred.",
+    action: 'canon_log'
+  }
+];
+
+const cylinders = [cylinder1, cylinder2];
 
 export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   isOpen,
@@ -57,30 +121,35 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   onCommandSelect,
   className
 }) => {
-  const [currentClip, setCurrentClip] = useState(0);
+  const [currentCylinder, setCurrentCylinder] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [hoveredClip, setHoveredClip] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true);
-      const timer = setTimeout(() => setIsAnimating(false), 500);
+      const timer = setTimeout(() => setIsAnimating(false), 600);
       return () => clearTimeout(timer);
     }
   }, [isOpen]);
 
   const handleRightClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    spinClip();
+    spinCylinder();
   };
 
-  const spinClip = () => {
-    setCurrentClip((prev) => (prev + 1) % clips.length);
+  const spinCylinder = () => {
+    setCurrentCylinder((prev) => (prev + 1) % cylinders.length);
+    setIsAnimating(true);
+    setTimeout(() => setIsAnimating(false), 400);
+    
     // Voice line on spin
     console.log("🎯 Annette: Spinning the clip... ready for your next move?");
   };
 
-  const handleCommandClick = (command: Command) => {
-    onCommandSelect(command.action, command.context);
+  const handleClipClick = (clip: ClipAction) => {
+    console.log(`🎤 Annette: "${clip.voiceLine}"`);
+    onCommandSelect(clip.action, clip.context);
     onClose();
   };
 
@@ -92,100 +161,113 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
 
   if (!isOpen) return null;
 
-  const currentCommands = clips[currentClip];
-  const radius = 120;
-  const angleStep = (2 * Math.PI) / currentCommands.length;
+  const currentClips = cylinders[currentCylinder];
+  const radius = 140;
+  const angleStep = (2 * Math.PI) / currentClips.length;
 
   return (
     <div 
       className={cn(
-        "fixed inset-0 z-[100] flex items-center justify-center",
+        "fixed inset-0 z-50 flex items-center justify-center",
         className
       )}
       onClick={handleBackgroundClick}
       onContextMenu={handleRightClick}
     >
       {/* Background overlay */}
-      <div className="absolute inset-0 bg-black/20 backdrop-blur-sm animate-fade-in" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm animate-fade-in" />
       
-      {/* Central Annette Avatar */}
+      {/* Central Annette Hub */}
       <div className="relative">
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg flex items-center justify-center border-4 border-white/20">
-          <span className="text-white font-bold text-sm">A</span>
+        {/* Central Avatar */}
+        <div className={cn(
+          "w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-2xl",
+          "flex items-center justify-center border-4 border-white/30 relative z-10",
+          "transition-all duration-300",
+          isAnimating && "animate-pulse scale-110"
+        )}>
+          <img 
+            src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
+            alt="Annette"
+            className="w-14 h-14 rounded-full object-cover"
+          />
         </div>
         
-        {/* Clip indicator */}
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
-          <div className="bg-white/10 backdrop-blur-sm rounded-full px-3 py-1 text-xs text-white font-medium">
-            Clip {currentClip + 1}/3
+        {/* Cylinder indicator */}
+        <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 z-10">
+          <div className="bg-black/70 backdrop-blur-sm rounded-full px-4 py-2 text-white font-medium text-sm">
+            Cylinder {currentCylinder + 1}/2
           </div>
         </div>
 
-        {/* Command Options */}
-        {currentCommands.map((command, index) => {
+        {/* Clip Actions */}
+        {currentClips.map((clip, index) => {
           const angle = index * angleStep - Math.PI / 2; // Start from top
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
+          const isHovered = hoveredClip === clip.id;
           
           return (
             <div
-              key={command.id}
+              key={clip.id}
               className={cn(
-                "absolute group cursor-pointer transition-all duration-300",
-                isAnimating ? "animate-scale-in" : "",
-                "hover:scale-110"
+                "absolute group cursor-pointer transition-all duration-300 ease-out",
+                isAnimating && "animate-scale-in",
+                isHovered && "scale-110 z-20"
               )}
               style={{
                 left: `calc(50% + ${x}px)`,
                 top: `calc(50% + ${y}px)`,
                 transform: 'translate(-50%, -50%)',
-                animationDelay: `${index * 50}ms`
+                animationDelay: `${index * 80}ms`
               }}
-              onClick={() => handleCommandClick(command)}
+              onMouseEnter={() => setHoveredClip(clip.id)}
+              onMouseLeave={() => setHoveredClip(null)}
+              onClick={() => handleClipClick(clip)}
             >
-              {/* Command Icon */}
+              {/* Clip Icon */}
               <div className={cn(
-                "w-12 h-12 rounded-full backdrop-blur-md shadow-lg flex items-center justify-center border transition-all duration-200",
-                command.isCanon 
-                  ? "bg-white/10 border-white/20 group-hover:bg-white/20 group-hover:border-white/40 group-hover:shadow-primary/20" 
-                  : "bg-white/5 border-white/10 group-hover:bg-white/15 group-hover:border-white/30 animate-pulse"
+                "w-14 h-14 rounded-full backdrop-blur-md shadow-xl",
+                "flex items-center justify-center border-2 transition-all duration-200",
+                "bg-white/15 border-white/30 hover:bg-white/25 hover:border-white/50",
+                "hover:shadow-2xl hover:shadow-orange-500/20",
+                isHovered && "bg-white/30 border-white/60 shadow-2xl shadow-orange-500/30"
               )}>
-                <command.icon className={cn(
-                  "w-6 h-6 transition-colors duration-200",
-                  command.isCanon ? "text-white" : "text-white/70"
+                <clip.icon className={cn(
+                  "w-7 h-7 transition-all duration-200",
+                  "text-white",
+                  isHovered && "text-orange-100 scale-110"
                 )} />
-                {/* Canon verification glow */}
-                {command.isCanon && (
-                  <div className="absolute inset-0 rounded-full bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-                )}
-                {/* Non-canon shimmer indicator */}
-                {!command.isCanon && (
-                  <div className="absolute -top-1 -right-1 w-3 h-3 text-white/50">
-                    💭
-                  </div>
+                
+                {/* Glow effect on hover */}
+                {isHovered && (
+                  <div className="absolute inset-0 rounded-full bg-orange-400/20 animate-pulse" />
                 )}
               </div>
               
-              {/* Command Label with Canon indicator */}
-              <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-black/90 backdrop-blur-sm rounded-lg px-3 py-1 text-xs text-white font-medium whitespace-nowrap">
-                  {command.label}
-                  <div className={cn(
-                    "text-xs mt-1",
-                    command.isCanon ? "text-green-400" : "text-yellow-400"
-                  )}>
-                    {command.isCanon ? "Based on your usage history" : "AI-generated suggestion — not Canon"}
+              {/* Clip Label with Voice Line Preview */}
+              {isHovered && (
+                <div className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 animate-fade-in pointer-events-none z-30">
+                  <div className="bg-black/90 backdrop-blur-sm rounded-lg px-4 py-3 text-white text-center shadow-2xl border border-white/20 min-w-[200px]">
+                    <div className="font-bold text-orange-300 text-sm mb-1">
+                      {clip.label}
+                    </div>
+                    <div className="text-xs text-white/80 italic leading-relaxed">
+                      "{clip.voiceLine}"
+                    </div>
                   </div>
+                  {/* Arrow pointer */}
+                  <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-black/90 rotate-45 border-l border-t border-white/20" />
                 </div>
-              </div>
+              )}
             </div>
           );
         })}
       </div>
 
       {/* Instructions */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
-        <div className="bg-white/10 backdrop-blur-sm rounded-lg px-4 py-2 text-sm text-white/80 text-center">
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
+        <div className="bg-black/70 backdrop-blur-sm rounded-lg px-6 py-3 text-white/90 text-center text-sm">
           Right-click to spin the clip • Click outside to close
         </div>
       </div>
