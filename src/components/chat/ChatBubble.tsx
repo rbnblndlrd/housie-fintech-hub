@@ -90,9 +90,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             onClick={handleOpen}
             className={cn(
               "relative rounded-full w-14 h-14 shadow-lg transition-all duration-200 hover:scale-105",
-              "border-2 border-orange-600 text-black"
+              "border-2 border-slate-600 text-white bg-slate-800"
             )}
-            style={{ backgroundColor: '#f5d478' }}
             variant="ghost"
           >
             {/* Annette Avatar Image */}
@@ -122,10 +121,10 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         </div>
       ) : (
         <div className="fixed z-50" style={{ bottom: '100px', right: '16px' }}>
-          <div className="bg-yellow-50 border-2 border-yellow-300 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden">
+          <div className="bg-slate-800 border-2 border-slate-600 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden">
             {/* Clean Header */}
-            <div className="bg-yellow-200 border-b-2 border-yellow-300 p-4 flex items-center justify-between">
-              <h3 className="font-semibold text-yellow-900">
+            <div className="bg-slate-700 border-b-2 border-slate-600 p-4 flex items-center justify-between">
+              <h3 className="font-semibold text-white">
                 {useMicIcon ? 'Voice Assistant' : 'Assistant'}
               </h3>
               <div className="flex items-center gap-2">
@@ -133,7 +132,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={handleNotificationClick}
-                  className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
+                  className="h-8 w-8 p-0 hover:bg-slate-600 text-gray-200"
                 >
                   <Bell className="h-4 w-4" />
                 </Button>
@@ -141,7 +140,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                   variant="ghost"
                   size="sm"
                   onClick={() => setIsOpen(false)}
-                  className="h-8 w-8 p-0 hover:bg-yellow-300 text-yellow-800"
+                  className="h-8 w-8 p-0 hover:bg-slate-600 text-gray-200"
                 >
                   <X className="h-4 w-4" />
                 </Button>
@@ -149,7 +148,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             </div>
 
             {/* Clean Tab Navigation */}
-            <div className="bg-yellow-50 border-b-2 border-yellow-300">
+            <div className="bg-slate-800 border-b-2 border-slate-600">
               <div className="flex">
                 {/* AI Assistant Tab (Annette) */}
                 <button
@@ -157,13 +156,13 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                   className={cn(
                     "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                     activeTab === 'ai'
-                      ? "text-purple-600 bg-yellow-100"
-                      : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                      ? "text-purple-400 bg-slate-700"
+                      : "text-gray-300 hover:text-white hover:bg-slate-700"
                   )}
                 >
                   Ask Annette
                   {activeTab === 'ai' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-600" />
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-400" />
                   )}
                 </button>
 
@@ -174,8 +173,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                     className={cn(
                       "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
                       activeTab === 'messages'
-                        ? "text-blue-600 bg-yellow-100"
-                        : "text-yellow-700 hover:text-yellow-900 hover:bg-yellow-100"
+                        ? "text-blue-400 bg-slate-700"
+                        : "text-gray-300 hover:text-white hover:bg-slate-700"
                     )}
                   >
                     Messages
@@ -185,7 +184,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                       </Badge>
                     )}
                     {activeTab === 'messages' && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-400" />
                     )}
                   </button>
                 )}
@@ -208,8 +207,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             onClick={closeNotification}
           />
           <div className="fixed z-40 w-80" style={{ bottom: '720px', right: '16px' }}>
-            <div className="bg-gradient-to-br from-white to-yellow-50 rounded-xl shadow-xl border border-yellow-200 p-4 animate-scale-in backdrop-blur-sm">
-              <div className="bg-yellow-100 rounded-lg p-3 border border-yellow-300">
+            <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-xl border border-slate-600 p-4 animate-scale-in backdrop-blur-sm">
+              <div className="bg-slate-600 rounded-lg p-3 border border-slate-500">
                 <DashboardNotificationDropdown />
               </div>
             </div>
