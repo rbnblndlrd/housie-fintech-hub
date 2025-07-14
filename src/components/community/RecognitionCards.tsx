@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Trophy, Award, Settings } from 'lucide-react';
+import { Trophy, Award, Settings, Stamp } from 'lucide-react';
 import PrestigeProfilePreview from './PrestigeProfilePreview';
+import RecentStampsWall from '@/components/stamps/RecentStampsWall';
 
 interface RecognitionCardsProps {
   onRecognitionClick: (type: string) => void;
@@ -102,6 +103,11 @@ const RecognitionCards = ({ onRecognitionClick, onRankClick, onCustomizeClick }:
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Recent Stamps Showcase */}
+      <div className="mt-6">
+        <RecentStampsWall limit={6} />
       </div>
 
       {/* Prestige Profile Preview Modal */}

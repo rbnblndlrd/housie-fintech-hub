@@ -2885,6 +2885,92 @@ export type Database = {
           },
         ]
       }
+      stamp_imprints: {
+        Row: {
+          context_summary: string | null
+          created_at: string
+          id: string
+          is_pinned: boolean | null
+          location: string | null
+          narrative: string
+          updated_at: string
+          user_id: string
+          user_stamp_id: string
+        }
+        Insert: {
+          context_summary?: string | null
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          location?: string | null
+          narrative: string
+          updated_at?: string
+          user_id: string
+          user_stamp_id: string
+        }
+        Update: {
+          context_summary?: string | null
+          created_at?: string
+          id?: string
+          is_pinned?: boolean | null
+          location?: string | null
+          narrative?: string
+          updated_at?: string
+          user_id?: string
+          user_stamp_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stamp_imprints_user_stamp_id_fkey"
+            columns: ["user_stamp_id"]
+            isOneToOne: false
+            referencedRelation: "user_stamps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      stamps: {
+        Row: {
+          canon_level: string
+          category: string
+          created_at: string
+          flavor_text: string
+          icon: string
+          id: string
+          is_public: boolean
+          name: string
+          requirements: Json
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          canon_level?: string
+          category?: string
+          created_at?: string
+          flavor_text: string
+          icon?: string
+          id: string
+          is_public?: boolean
+          name: string
+          requirements?: Json
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          canon_level?: string
+          category?: string
+          created_at?: string
+          flavor_text?: string
+          icon?: string
+          id?: string
+          is_public?: boolean
+          name?: string
+          requirements?: Json
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_blocks: {
         Row: {
           block_type: string
@@ -3390,6 +3476,51 @@ export type Database = {
           },
         ]
       }
+      user_stamps: {
+        Row: {
+          context_data: Json | null
+          created_at: string
+          earned_at: string
+          id: string
+          job_id: string | null
+          stamp_id: string
+          user_id: string
+        }
+        Insert: {
+          context_data?: Json | null
+          created_at?: string
+          earned_at?: string
+          id?: string
+          job_id?: string | null
+          stamp_id: string
+          user_id: string
+        }
+        Update: {
+          context_data?: Json | null
+          created_at?: string
+          earned_at?: string
+          id?: string
+          job_id?: string | null
+          stamp_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_stamps_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_stamps_stamp_id_fkey"
+            columns: ["stamp_id"]
+            isOneToOne: false
+            referencedRelation: "stamps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           accessibility_needs: string | null
@@ -3605,6 +3736,15 @@ export type Database = {
         Args: { p_user_id: string; p_points: number; p_reason: string }
         Returns: undefined
       }
+      award_stamp: {
+        Args: {
+          p_user_id: string
+          p_stamp_id: string
+          p_context_data?: Json
+          p_job_id?: string
+        }
+        Returns: string
+      }
       broadcast_canon_event: {
         Args: {
           p_event_type: string
@@ -3662,6 +3802,14 @@ export type Database = {
           metadata_json?: Json
         }
         Returns: Json
+      }
+      evaluate_stamp_triggers: {
+        Args: { p_user_id: string; p_job_id: string }
+        Returns: {
+          stamp_id: string
+          eligible: boolean
+          context_data: Json
+        }[]
       }
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }

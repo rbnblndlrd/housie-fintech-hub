@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 import CommunityEchoesWidget from '@/components/broadcast/CommunityEchoesWidget';
+import RecentStampsWall from '@/components/stamps/RecentStampsWall';
 
 const CommunityDashboard = () => {
   const [activeTab, setActiveTab] = useState('discover');
@@ -48,6 +49,7 @@ const CommunityDashboard = () => {
         rightPanelContent={
           <div className="space-y-4">
             <ProgressPreviewCards onProgressClick={handleProgressClick} />
+            <RecentStampsWall limit={5} />
             <CommunityEchoesWidget limit={8} showControls={true} />
           </div>
         }

@@ -212,6 +212,10 @@ async function tryCreateBroadcastEvent(canonMetadata: CanonMetadata, result: str
         eventType = 'booking_streak';
         scope = 'local';
         break;
+      case 'stamp_evaluation':
+        eventType = 'stamp';
+        scope = 'local';
+        break;
       default:
         // Only broadcast certain types of insights
         return;
@@ -222,6 +226,61 @@ async function tryCreateBroadcastEvent(canonMetadata: CanonMetadata, result: str
     
   } catch (error) {
     console.error('Error creating broadcast event:', error);
+  }
+}
+
+/**
+ * Evaluates and awards stamps for a completed job - integrates with Canon system
+ */
+export async function evaluateJobStamps(userId: string, jobId: string): Promise<string[]> {
+  try {
+    // Import stamp engine to avoid circular dependency
+    const { processJobCompletionStamps, generateStampVoiceLine } = await import('./stampEngine');
+    
+    // Process stamps for the completed job
+    const awardedStamps = await processJobCompletionStamps(userId, jobId);
+    
+    // Generate Canon entries for each awarded stamp
+    const voiceLines: string[] = [];
+    for (const awardedStamp of awardedStamps) {
+      // Get stamp details for voice line
+      const { data: stamp } = await supabase.from('stamps').select('*').eq('id', awardedStamp.stampId).single();
+      
+      if (stamp) {
+        // Transform database stamp to interface format
+        const transformedStamp = {
+          id: stamp.id,
+          name: stamp.name,
+          category: stamp.category as 'Performance' | 'Loyalty' | 'Crew' | 'Behavior' | 'Reputation',
+          canonLevel: stamp.canon_level as 'canon' | 'non_canon',
+          flavorText: stamp.flavor_text,
+          icon: stamp.icon,
+          isPublic: stamp.is_public,
+          tags: stamp.tags || [],
+          requirements: (stamp.requirements as any) || [],
+          createdAt: stamp.created_at,
+          updatedAt: stamp.updated_at
+        };
+        
+        const voiceLine = generateStampVoiceLine(transformedStamp, awardedStamp.contextData);
+        voiceLines.push(voiceLine);
+        
+        // Create Canon metadata for stamp
+        const canonMetadata = createCanonMetadata('stamp_evaluation', {
+          fromDatabase: true,
+          stamp: stamp,
+          contextData: awardedStamp.contextData
+        });
+        
+        // Log to Canon system
+        await logCanonEntry(canonMetadata, voiceLine);
+      }
+    }
+    
+    return voiceLines;
+  } catch (error) {
+    console.error('Error evaluating job stamps:', error);
+    return [];
   }
 }
 
