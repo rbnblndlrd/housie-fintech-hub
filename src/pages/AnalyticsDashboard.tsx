@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { AnalyticsToggleWidgets } from '@/components/dashboard/TacticalHUD/AnalyticsToggleWidgets';
+import { RevenueSparklineAnchor } from '@/components/dashboard/TacticalHUD/RevenueSparklineAnchor';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -623,13 +625,19 @@ const AnalyticsDashboard = () => {
   );
 
   return (
-    <DashboardLayout 
-      title="Analytics Dashboard"
-      rightPanelTitle="Analytics Tools"
-      rightPanelContent={rightPanelContent}
-    >
-      {mainContent}
-    </DashboardLayout>
+    <>
+      <DashboardLayout 
+        title="Analytics Dashboard"
+        rightPanelTitle="Analytics Tools"
+        rightPanelContent={rightPanelContent}
+        bottomWidgets={<AnalyticsToggleWidgets />}
+      >
+        {mainContent}
+      </DashboardLayout>
+      
+      {/* Tactical HUD Anchor Card */}
+      <RevenueSparklineAnchor />
+    </>
   );
 };
 

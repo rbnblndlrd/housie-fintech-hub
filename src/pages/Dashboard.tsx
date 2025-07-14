@@ -5,6 +5,7 @@ import TodaysRoutePanel from '@/components/dashboard/TodaysRoutePanel';
 import PerformanceWidgets from '@/components/dashboard/PerformanceWidgets';
 import JobHub from '@/components/dashboard/JobHub';
 import { AnnetteInboxNotifications } from '@/components/annette/AnnetteInboxNotifications';
+import { TodaysRouteAnchor } from '@/components/dashboard/TacticalHUD/TodaysRouteAnchor';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
@@ -43,17 +44,22 @@ const Dashboard = () => {
   );
 
   return (
-    <DashboardLayout
-      title="Dashboard"
-      rightPanelTitle="Today's Route"
-      rightPanelContent={<TodaysRoutePanel />}
-      bottomWidgets={<PerformanceWidgets />}
-      headerAction={<CreateJobTicketButton size="sm" />}
-    >
-      {annetteCard}
-      <AnnetteInboxNotifications className="mb-6" />
-      <JobHub />
-    </DashboardLayout>
+    <>
+      <DashboardLayout
+        title="Dashboard"
+        rightPanelTitle="Today's Route"
+        rightPanelContent={<TodaysRoutePanel />}
+        bottomWidgets={<PerformanceWidgets />}
+        headerAction={<CreateJobTicketButton size="sm" />}
+      >
+        {annetteCard}
+        <AnnetteInboxNotifications className="mb-6" />
+        <JobHub />
+      </DashboardLayout>
+      
+      {/* Tactical HUD Anchor Card */}
+      <TodaysRouteAnchor />
+    </>
   );
 };
 
