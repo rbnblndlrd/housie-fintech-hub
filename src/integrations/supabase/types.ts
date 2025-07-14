@@ -727,6 +727,48 @@ export type Database = {
         }
         Relationships: []
       }
+      canon_rank_snapshots: {
+        Row: {
+          canon_ratio: number
+          city: string
+          created_at: string
+          date: string
+          id: string
+          prestige_tier: number
+          rank_change: number | null
+          rank_position: number | null
+          score: number
+          streak_days: number
+          user_id: string
+        }
+        Insert: {
+          canon_ratio?: number
+          city?: string
+          created_at?: string
+          date?: string
+          id?: string
+          prestige_tier?: number
+          rank_change?: number | null
+          rank_position?: number | null
+          score?: number
+          streak_days?: number
+          user_id: string
+        }
+        Update: {
+          canon_ratio?: number
+          city?: string
+          created_at?: string
+          date?: string
+          id?: string
+          prestige_tier?: number
+          rank_change?: number | null
+          rank_position?: number | null
+          score?: number
+          streak_days?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       canon_user_preferences: {
         Row: {
           canon_event_history_visible: boolean
@@ -4294,6 +4336,10 @@ export type Database = {
         }
         Returns: string
       }
+      calculate_canon_score: {
+        Args: { p_user_id: string }
+        Returns: number
+      }
       calculate_shop_points: {
         Args: { community_points: number }
         Returns: number
@@ -4581,6 +4627,10 @@ export type Database = {
       }
       refresh_fuzzy_locations: {
         Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      update_canon_rankings: {
+        Args: { target_city?: string }
         Returns: number
       }
       update_daily_spend: {
