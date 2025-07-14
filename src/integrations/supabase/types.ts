@@ -724,6 +724,51 @@ export type Database = {
         }
         Relationships: []
       }
+      canon_user_preferences: {
+        Row: {
+          canon_event_history_visible: boolean
+          created_at: string
+          echo_visibility: string
+          id: string
+          location_sharing_enabled: boolean
+          manual_stamp_review_enabled: boolean
+          sassiness_intensity: number
+          show_canon_badge_on_profile: boolean
+          stamp_visibility: string
+          updated_at: string
+          user_id: string
+          voice_style: string
+        }
+        Insert: {
+          canon_event_history_visible?: boolean
+          created_at?: string
+          echo_visibility?: string
+          id?: string
+          location_sharing_enabled?: boolean
+          manual_stamp_review_enabled?: boolean
+          sassiness_intensity?: number
+          show_canon_badge_on_profile?: boolean
+          stamp_visibility?: string
+          updated_at?: string
+          user_id: string
+          voice_style?: string
+        }
+        Update: {
+          canon_event_history_visible?: boolean
+          created_at?: string
+          echo_visibility?: string
+          id?: string
+          location_sharing_enabled?: boolean
+          manual_stamp_review_enabled?: boolean
+          sassiness_intensity?: number
+          show_canon_badge_on_profile?: boolean
+          stamp_visibility?: string
+          updated_at?: string
+          user_id?: string
+          voice_style?: string
+        }
+        Relationships: []
+      }
       canonical_broadcast_events: {
         Row: {
           broadcast_scope: string
@@ -4087,6 +4132,19 @@ export type Database = {
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }
         Returns: unknown
+      }
+      get_canon_preferences: {
+        Args: { p_user_id: string }
+        Returns: {
+          echo_visibility: string
+          location_sharing_enabled: boolean
+          voice_style: string
+          sassiness_intensity: number
+          show_canon_badge_on_profile: boolean
+          stamp_visibility: string
+          manual_stamp_review_enabled: boolean
+          canon_event_history_visible: boolean
+        }[]
       }
       get_current_daily_spend: {
         Args: Record<PropertyKey, never>

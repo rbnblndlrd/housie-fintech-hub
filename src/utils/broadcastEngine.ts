@@ -41,14 +41,21 @@ export async function createBroadcastEvent(
     if (!user) return null;
 
     // Check user preferences
-    const { data: preferences } = await supabase
-      .from('user_broadcast_preferences')
-      .select('*')
-      .eq('user_id', user.id)
-      .single();
+    const { data: preferences } = await supabase.rpc('get_canon_preferences', {
+      p_user_id: user.id
+    });
 
-    const shouldPublish = preferences?.public_echo_participation ?? true;
-    const showLocation = preferences?.show_location ?? true;
+    const canonPrefs = preferences?.[0];
+    const shouldPublish = canonPrefs?.echo_visibility !== 'hidden';
+    const showLocation = canonPrefs?.location_sharing_enabled ?? true;
+    
+    // Respect visibility scope
+    let effectiveScope = scope;
+    if (canonPrefs?.echo_visibility === 'local') {
+      effectiveScope = 'local';
+    } else if (canonPrefs?.echo_visibility === 'public') {
+      effectiveScope = 'global';
+    }
 
     const broadcastData = {
       event_type: eventType,
@@ -56,7 +63,7 @@ export async function createBroadcastEvent(
       source_table: 'system',
       source_id: crypto.randomUUID(),
       verified: canonMetadata.trust === 'canon',
-      broadcast_scope: scope,
+      broadcast_scope: effectiveScope,
       visible_to_public: shouldPublish,
       canon_confidence: canonMetadata.confidence || 0.8,
       metadata: {

@@ -209,21 +209,69 @@ function generateAnnetteStampResponse(awards: StampAward[], context: UserContext
     return undefined;
   }
 
+  // Apply voice style preferences
+  const voiceStyle = context.canonPreferences?.voice_style || 'default';
+  const sassiness = context.canonPreferences?.sassiness_intensity || 2;
+
   if (awards.length === 1) {
     const award = awards[0];
-    return award.voiceLine;
+    return applyVoiceStyleToLine(award.voiceLine, voiceStyle, sassiness);
   }
 
   // Multiple stamps awarded
   const canonCount = awards.filter(a => a.canonLevel === 'canon').length;
   const totalCount = awards.length;
   
+  let response = '';
   if (canonCount === totalCount) {
-    return `🔥 STAMP BONANZA! ${totalCount} stamps earned in one go — every single one Canon verified! You're absolutely crushing it, sugar!`;
+    response = `🔥 STAMP BONANZA! ${totalCount} stamps earned in one go — every single one Canon verified! You're absolutely crushing it, sugar!`;
   } else if (canonCount > 0) {
-    return `✨ Multi-stamp achievement! ${totalCount} stamps earned (${canonCount} Canon verified). That's the kind of performance I love to see!`;
+    response = `✨ Multi-stamp achievement! ${totalCount} stamps earned (${canonCount} Canon verified). That's the kind of performance I love to see!`;
   } else {
-    return `💫 Look at you collecting stamps like Pokemon! ${totalCount} achievements earned. Keep that momentum flowing!`;
+    response = `💫 Look at you collecting stamps like Pokemon! ${totalCount} achievements earned. Keep that momentum flowing!`;
+  }
+  
+  return applyVoiceStyleToLine(response, voiceStyle, sassiness);
+}
+
+/**
+ * Applies voice style preferences to a voice line
+ */
+function applyVoiceStyleToLine(line: string, style: string, intensity: number): string {
+  switch (style) {
+    case 'professional':
+      return line
+        .replace(/sugar/g, 'professional')
+        .replace(/baby/g, 'colleague')
+        .replace(/🔥/g, '✓')
+        .replace(/!/g, '.');
+        
+    case 'warm':
+      return line
+        .replace(/sugar/g, 'friend')
+        .replace(/baby/g, 'dear')
+        .replace(/crushing it/g, 'doing wonderfully');
+        
+    case 'sassy':
+      const sassinessMultiplier = Math.max(1, intensity);
+      let sassyLine = line;
+      if (sassinessMultiplier >= 2) {
+        sassyLine = sassyLine.replace(/!/g, '!!');
+      }
+      if (sassinessMultiplier >= 3) {
+        sassyLine = sassyLine + ' 💅';
+      }
+      return sassyLine;
+      
+    case 'softspoken':
+      return line
+        .replace(/!/g, '.')
+        .replace(/🔥/g, '✨')
+        .replace(/BONANZA/g, 'achievement')
+        .replace(/crushing it/g, 'doing great');
+        
+    default:
+      return line;
   }
 }
 

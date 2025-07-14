@@ -26,6 +26,14 @@ export interface UserContext {
   // Location & Activity
   currentLocation?: string;
   activeRadius: number;
+  
+  // Canon Preferences
+  canonPreferences?: {
+    voice_style: 'professional' | 'warm' | 'sassy' | 'softspoken' | 'default';
+    sassiness_intensity: number;
+    echo_visibility: 'public' | 'local' | 'hidden';
+    location_sharing_enabled: boolean;
+  };
 }
 
 export interface EquippedStamp {
@@ -126,6 +134,11 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
     const { data: equippedStampsData } = await supabase
       .rpc('get_user_equipped_stamps', { p_user_id: userId });
 
+    // Get canon preferences
+    const { data: canonPrefsData } = await supabase.rpc('get_canon_preferences', {
+      p_user_id: userId
+    });
+
     // Calculate prestige rank (simplified)
     const { data: prestigeProgress } = await supabase
       .from('prestige_progress')
@@ -155,6 +168,13 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       equippedAt: stamp.equipped_at
     })) || [];
 
+    const canonPreferences = canonPrefsData?.[0] ? {
+      voice_style: canonPrefsData[0].voice_style as 'professional' | 'warm' | 'sassy' | 'softspoken' | 'default',
+      sassiness_intensity: canonPrefsData[0].sassiness_intensity as number,
+      echo_visibility: canonPrefsData[0].echo_visibility as 'public' | 'local' | 'hidden',
+      location_sharing_enabled: canonPrefsData[0].location_sharing_enabled as boolean
+    } : undefined;
+
     return {
       totalBookingsToday: todayBookings?.length || 0,
       upcomingSlots,
@@ -165,7 +185,8 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       lastJobType: recentBookings?.[0]?.category,
       recentJobTypes: recentBookings?.map(b => b.category).filter(Boolean) || [],
       currentLocation: 'Montreal', // Default for now
-      activeRadius: 5000 // 5km default
+      activeRadius: 5000, // 5km default
+      canonPreferences
     };
   } catch (error) {
     console.error('Error fetching Canon context:', error);

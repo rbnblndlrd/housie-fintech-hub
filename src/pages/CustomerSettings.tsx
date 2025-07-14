@@ -7,7 +7,8 @@ import RoleSwitcher from '@/components/profile/RoleSwitcher';
 import { BroadcastControlsCard } from '@/components/stamps/BroadcastControlsCard';
 import { CanonIdentitySettings } from '@/components/stamps/CanonIdentitySettings';
 import { StampEquipMenu } from '@/components/stamps/StampEquipMenu';
-import { Settings, Radio, Sparkles, Medal } from 'lucide-react';
+import { CanonPreferencesPanel } from '@/components/stamps/CanonPreferencesPanel';
+import { Settings, Radio, Sparkles, Medal, Sliders } from 'lucide-react';
 
 const CustomerSettings = () => {
   return (
@@ -18,7 +19,7 @@ const CustomerSettings = () => {
       <RoleDebugger />
       
       <Tabs defaultValue="account" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="account" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
             Account
@@ -30,6 +31,10 @@ const CustomerSettings = () => {
           <TabsTrigger value="canon" className="flex items-center gap-2">
             <Sparkles className="h-4 w-4" />
             Canon Identity
+          </TabsTrigger>
+          <TabsTrigger value="preferences" className="flex items-center gap-2">
+            <Sliders className="h-4 w-4" />
+            Canon Prefs
           </TabsTrigger>
           <TabsTrigger value="stamps" className="flex items-center gap-2">
             <Medal className="h-4 w-4" />
@@ -63,6 +68,10 @@ const CustomerSettings = () => {
         
         <TabsContent value="canon" className="space-y-6">
           <CanonIdentitySettings />
+        </TabsContent>
+
+        <TabsContent value="preferences" className="space-y-6">
+          <CanonPreferencesPanel />
         </TabsContent>
         
         <TabsContent value="stamps" className="space-y-6">
