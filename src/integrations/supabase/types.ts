@@ -582,6 +582,60 @@ export type Database = {
           },
         ]
       }
+      canonical_broadcast_events: {
+        Row: {
+          broadcast_scope: string
+          canon_confidence: number | null
+          city: string | null
+          created_at: string
+          event_type: string
+          geographic_location: unknown | null
+          id: string
+          metadata: Json | null
+          processed_at: string | null
+          source_id: string
+          source_table: string
+          updated_at: string
+          user_id: string
+          verified: boolean
+          visible_to_public: boolean
+        }
+        Insert: {
+          broadcast_scope?: string
+          canon_confidence?: number | null
+          city?: string | null
+          created_at?: string
+          event_type: string
+          geographic_location?: unknown | null
+          id?: string
+          metadata?: Json | null
+          processed_at?: string | null
+          source_id: string
+          source_table: string
+          updated_at?: string
+          user_id: string
+          verified?: boolean
+          visible_to_public?: boolean
+        }
+        Update: {
+          broadcast_scope?: string
+          canon_confidence?: number | null
+          city?: string | null
+          created_at?: string
+          event_type?: string
+          geographic_location?: unknown | null
+          id?: string
+          metadata?: Json | null
+          processed_at?: string | null
+          source_id?: string
+          source_table?: string
+          updated_at?: string
+          user_id?: string
+          verified?: boolean
+          visible_to_public?: boolean
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           booking_id: string | null
@@ -3485,6 +3539,21 @@ export type Database = {
       award_community_rating_points: {
         Args: { p_user_id: string; p_points: number; p_reason: string }
         Returns: undefined
+      }
+      broadcast_canon_event: {
+        Args: {
+          p_event_type: string
+          p_user_id: string
+          p_source_table: string
+          p_source_id: string
+          p_verified?: boolean
+          p_broadcast_scope?: string
+          p_visible_to_public?: boolean
+          p_canon_confidence?: number
+          p_metadata?: Json
+          p_city?: string
+        }
+        Returns: string
       }
       calculate_shop_points: {
         Args: { community_points: number }

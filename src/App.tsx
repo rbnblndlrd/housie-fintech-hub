@@ -56,6 +56,7 @@ import { QuoteVaultManager } from './pages/QuoteVaultManager';
 import { Toaster } from '@/components/ui/toaster';
 import DynamicGradientProvider from '@/components/common/DynamicGradientProvider';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import { CBSProvider } from '@/components/cbs/CBSProvider';
 
 function App() {
   return (
@@ -67,8 +68,9 @@ function App() {
             <RoleSwitchProvider>
               <ThemeProvider>
                 <QueryClient>
-                  <MapProvider>
-                      <DynamicGradientProvider>
+                  <CBSProvider enableForGuests={true}>
+                    <MapProvider>
+                        <DynamicGradientProvider>
                         <Router>
                           <div className="App min-h-screen">
                             {/* Conditional Video Background - only shows on specific pages */}
@@ -133,8 +135,9 @@ function App() {
                           </div>
                         </Router>
                        </DynamicGradientProvider>
-                   </MapProvider>
-                 </QueryClient>
+                    </MapProvider>
+                  </CBSProvider>
+                </QueryClient>
                </ThemeProvider>
              </RoleSwitchProvider>
            </SubscriptionProvider>
