@@ -72,9 +72,9 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full bg-card/95 backdrop-blur-md border-r border-border/20 z-50 transition-transform duration-300
+        fixed top-0 left-0 h-full bg-white/5 backdrop-blur-sm text-white z-50 transition-transform duration-300
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        w-64 lg:w-72
+        w-64
       `}>
         <div className="p-6">
           {/* Logo */}
@@ -83,7 +83,7 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
               <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-lg">H</span>
               </div>
-              <span className="text-xl font-bold text-foreground">HOUSIE</span>
+              <span className="text-xl font-bold text-white">HOUSIE</span>
             </div>
             <Button
               variant="ghost"
@@ -97,7 +97,7 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
 
           {/* Analytics Navigation */}
           <div className="space-y-4">
-            <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
               Analytics
             </h3>
             <div className="space-y-2">
@@ -108,15 +108,16 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
                 return (
                   <Button
                     key={item.id}
-                    variant={isActive ? "default" : "outline"}
+                    variant="ghost"
                     onClick={() => onTabChange(item.id)}
                     className={`
-                      w-full justify-start h-14 px-5 text-left transition-all duration-300 ease-in-out
+                      w-full justify-start h-14 px-5 text-left transition-all duration-200 ease-in-out relative
                       ${isActive 
-                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg border-primary' 
-                        : 'bg-background hover:bg-muted border-border text-foreground hover:text-primary hover:border-primary/50'
+                        ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-500/30' 
+                        : 'bg-white/5 text-gray-300 hover:bg-blue-500/30 hover:text-white'
                       }
                       rounded-lg font-medium
+                      ${isActive ? 'active-tab' : ''}
                     `}
                   >
                     <div className="flex items-center gap-3">
@@ -131,8 +132,8 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
         </div>
       </aside>
 
-      {/* Main Content */}
-      <div className="lg:ml-72">
+        {/* Main Content */}
+        <div className="lg:ml-64">
         {/* Mobile Header */}
         <header className="lg:hidden sticky top-0 bg-card/95 backdrop-blur-md border-b border-border/20 z-30 p-4">
           <div className="flex items-center justify-between">
@@ -150,9 +151,9 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
 
         {/* Dashboard Content */}
         <div className="p-4 lg:p-6 relative z-10">
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 mb-6">
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-5 mb-6">
             {/* Main Card Block */}
-            <Card className="xl:col-span-3 bg-card/95 backdrop-blur-md border-border/20 shadow-xl">
+            <Card className="xl:col-span-3 rounded-xl bg-white/10 backdrop-blur-md shadow-md border-white/20">
               <CardHeader>
                 <CardTitle className="text-2xl font-bold text-foreground flex items-center justify-between">
                   <div className="flex items-center space-x-3">
@@ -169,7 +170,7 @@ const AnalyticsLayout: React.FC<AnalyticsLayoutProps> = ({
             </Card>
 
             {/* Right Panel */}
-            <Card className="bg-card/95 backdrop-blur-md border-border/20 shadow-xl">
+            <Card className="rounded-xl bg-white/10 backdrop-blur-md shadow-md border-white/20">
               <CardHeader>
                 <CardTitle className="text-lg font-semibold text-foreground">
                   {rightPanelTitle}
