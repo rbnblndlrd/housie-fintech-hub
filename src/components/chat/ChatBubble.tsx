@@ -89,7 +89,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
           <Button
             onClick={handleOpen}
             className={cn(
-              "relative rounded-full w-16 h-16 shadow-lg transition-all duration-200 hover:scale-105",
+              "relative rounded-full w-20 h-20 shadow-lg transition-all duration-200 hover:scale-105",
               "border-2 border-slate-600 text-white bg-slate-800"
             )}
             variant="ghost"
@@ -98,7 +98,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             <img 
               src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
               alt="Annette AI Assistant"
-              className="w-12 h-12 rounded-full object-cover"
+              className="w-16 h-16 rounded-full object-cover"
             />
             
             {/* Mic Icon Overlay for Voice Mode */}

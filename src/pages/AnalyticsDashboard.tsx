@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { AnalyticsToggleWidgets } from '@/components/dashboard/TacticalHUD/AnalyticsToggleWidgets';
 import { RevenueSparklineAnchor } from '@/components/dashboard/TacticalHUD/RevenueSparklineAnchor';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import AnalyticsNavigation from '@/components/analytics/AnalyticsNavigation';
+import FinancialAnalyticsContent from '@/components/analytics/FinancialAnalyticsContent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,17 +25,9 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 
 const AnalyticsDashboard = () => {
-  // Mock data for charts
-  const dailyRevenueData = [
-    { day: 'Mon', revenue: 1200 },
-    { day: 'Tue', revenue: 1800 },
-    { day: 'Wed', revenue: 1600 },
-    { day: 'Thu', revenue: 2100 },
-    { day: 'Fri', revenue: 2400 },
-    { day: 'Sat', revenue: 2800 },
-    { day: 'Sun', revenue: 2200 }
-  ];
+  const [activeTab, setActiveTab] = useState('financial');
 
+  // Mock data for charts
   const serviceDistributionData = [
     { name: 'Cleaning', value: 35, color: '#8B5CF6' },
     { name: 'Handyman', value: 25, color: '#06B6D4' },
@@ -52,8 +45,11 @@ const AnalyticsDashboard = () => {
     { month: 'Jun', bookings: 67 }
   ];
 
-  // Financial Analytics Tab Content
-  const FinancialAnalyticsContent = () => (
+  // Financial Analytics Tab Content (Using imported component)
+  const renderFinancialContent = () => <FinancialAnalyticsContent />;
+
+  // Business Insights Tab Content - updated to avoid conflict
+  const BusinessInsightsContent = () => (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-card/95 backdrop-blur-md border-border/20">
@@ -106,28 +102,8 @@ const AnalyticsDashboard = () => {
             Daily Revenue Graph
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <AreaChart data={dailyRevenueData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-              <XAxis dataKey="day" stroke="hsl(var(--muted-foreground))" />
-              <YAxis stroke="hsl(var(--muted-foreground))" />
-              <Tooltip 
-                contentStyle={{ 
-                  backgroundColor: 'hsl(var(--card))', 
-                  border: '1px solid hsl(var(--border))',
-                  borderRadius: '8px'
-                }} 
-              />
-              <Area 
-                type="monotone" 
-                dataKey="revenue" 
-                stroke="hsl(var(--primary))" 
-                fill="hsl(var(--primary))" 
-                fillOpacity={0.3}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
+          <CardContent>
+            <div className="text-center text-muted-foreground">Chart would go here</div>
         </CardContent>
       </Card>
 
@@ -175,134 +151,6 @@ const AnalyticsDashboard = () => {
               <div className="flex justify-between">
                 <span>Cash</span>
                 <span className="font-bold">10%</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-
-  // Business Insights Tab Content
-  const BusinessInsightsContent = () => (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-card/95 backdrop-blur-md border-border/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <PieChartIcon className="h-5 w-5" />
-              Job Distribution
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={serviceDistributionData}
-                  cx="50%"
-                  cy="50%"
-                  innerRadius={60}
-                  outerRadius={120}
-                  paddingAngle={5}
-                  dataKey="value"
-                >
-                  {serviceDistributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="mt-4 space-y-2">
-              {serviceDistributionData.map((item, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div 
-                      className="w-3 h-3 rounded-full" 
-                      style={{ backgroundColor: item.color }}
-                    />
-                    <span className="text-sm">{item.name}</span>
-                  </div>
-                  <span className="text-sm font-medium">{item.value}%</span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/95 backdrop-blur-md border-border/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Calendar className="h-5 w-5" />
-              Monthly Booking Volume
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={monthlyBookingData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                <XAxis dataKey="month" stroke="hsl(var(--muted-foreground))" />
-                <YAxis stroke="hsl(var(--muted-foreground))" />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: 'hsl(var(--card))', 
-                    border: '1px solid hsl(var(--border))',
-                    borderRadius: '8px'
-                  }} 
-                />
-                <Bar dataKey="bookings" fill="hsl(var(--primary))" />
-              </BarChart>
-            </ResponsiveContainer>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <Card className="bg-card/95 backdrop-blur-md border-border/20">
-          <CardHeader>
-            <CardTitle>Repeat vs New Clients</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span>Repeat Clients</span>
-                  <span className="font-bold">68%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-green-500 h-2 rounded-full" style={{ width: '68%' }}></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span>New Clients</span>
-                  <span className="font-bold">32%</span>
-                </div>
-                <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-blue-500 h-2 rounded-full" style={{ width: '32%' }}></div>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-card/95 backdrop-blur-md border-border/20">
-          <CardHeader>
-            <CardTitle>Peak Hours Analysis</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span>Morning (8-12 PM)</span>
-                <span className="font-bold">25%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Afternoon (12-6 PM)</span>
-                <span className="font-bold">45%</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Evening (6-10 PM)</span>
-                <span className="font-bold">30%</span>
               </div>
             </div>
           </CardContent>
@@ -561,6 +409,30 @@ const AnalyticsDashboard = () => {
     </div>
   );
 
+  // Tab navigation content
+  const tabNavigation = (
+    <AnalyticsNavigation 
+      activeTab={activeTab} 
+      onTabChange={setActiveTab} 
+    />
+  );
+
+  // Main content based on active tab
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case 'financial':
+        return renderFinancialContent();
+      case 'business':
+        return <BusinessInsightsContent />;
+      case 'performance':
+        return <PerformanceMetricsContent />;
+      case 'tax':
+        return <TaxReportsContent />;
+      default:
+        return renderFinancialContent();
+    }
+  };
+
   const rightPanelContent = (
     <div className="space-y-4">
       <Card className="bg-card/95 backdrop-blur-md border-border/20">
@@ -585,45 +457,6 @@ const AnalyticsDashboard = () => {
     </div>
   );
 
-  const mainContent = (
-    <Tabs defaultValue="financial" className="w-full">
-      <TabsList className="grid w-full grid-cols-4 mb-6 bg-muted/50">
-        <TabsTrigger value="financial" className="flex items-center gap-2">
-          <DollarSign className="h-4 w-4" />
-          Financial Analytics
-        </TabsTrigger>
-        <TabsTrigger value="insights" className="flex items-center gap-2">
-          <Brain className="h-4 w-4" />
-          Business Insights
-        </TabsTrigger>
-        <TabsTrigger value="performance" className="flex items-center gap-2">
-          <Zap className="h-4 w-4" />
-          Performance Metrics
-        </TabsTrigger>
-        <TabsTrigger value="tax" className="flex items-center gap-2">
-          <Receipt className="h-4 w-4" />
-          Tax Reports
-        </TabsTrigger>
-      </TabsList>
-
-      <TabsContent value="financial">
-        <FinancialAnalyticsContent />
-      </TabsContent>
-
-      <TabsContent value="insights">
-        <BusinessInsightsContent />
-      </TabsContent>
-
-      <TabsContent value="performance">
-        <PerformanceMetricsContent />
-      </TabsContent>
-
-      <TabsContent value="tax">
-        <TaxReportsContent />
-      </TabsContent>
-    </Tabs>
-  );
-
   return (
     <>
       <DashboardLayout 
@@ -632,7 +465,10 @@ const AnalyticsDashboard = () => {
         rightPanelContent={rightPanelContent}
         bottomWidgets={<AnalyticsToggleWidgets />}
       >
-        {mainContent}
+        <div className="space-y-6">
+          {tabNavigation}
+          {renderTabContent()}
+        </div>
       </DashboardLayout>
       
       {/* Tactical HUD Anchor Card */}

@@ -8,6 +8,8 @@ const ConditionalVideoBackground = () => {
   // Pages that should have the video background
   const pagesWithVideoBackground = [
     '/dashboard',
+    '/community-dashboard',
+    '/analytics-dashboard',
     '/bookings',
     '/profile',
     '/notifications',
