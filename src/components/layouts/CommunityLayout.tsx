@@ -72,7 +72,7 @@ const CommunityLayout: React.FC<CommunityLayoutProps> = ({
 
       {/* Sidebar */}
       <aside className={`
-        fixed top-0 left-0 h-full bg-white/5 backdrop-blur-sm text-white z-50 transition-transform duration-300
+        fixed top-0 left-0 h-full bg-transparent text-white z-50 transition-transform duration-300
         ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
         w-64
       `}>
