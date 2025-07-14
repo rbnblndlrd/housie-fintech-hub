@@ -97,7 +97,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
           >
             {/* Annette Avatar Image */}
             <img 
-              src="/lovable-uploads/APPLOGOPNG (1) (3).png" 
+              src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
               alt="Annette AI Assistant"
               className="w-10 h-10 rounded-full object-cover"
             />
