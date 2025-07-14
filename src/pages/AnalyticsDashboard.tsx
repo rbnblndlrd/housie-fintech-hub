@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import AnalyticsLayout from '@/components/layouts/AnalyticsLayout';
 import { AnalyticsToggleWidgets } from '@/components/dashboard/TacticalHUD/AnalyticsToggleWidgets';
 import { RevenueSparklineAnchor } from '@/components/dashboard/TacticalHUD/RevenueSparklineAnchor';
-import AnalyticsNavigation from '@/components/analytics/AnalyticsNavigation';
 import FinancialAnalyticsContent from '@/components/analytics/FinancialAnalyticsContent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -409,14 +408,6 @@ const AnalyticsDashboard = () => {
     </div>
   );
 
-  // Tab navigation content
-  const tabNavigation = (
-    <AnalyticsNavigation 
-      activeTab={activeTab} 
-      onTabChange={setActiveTab} 
-    />
-  );
-
   // Main content based on active tab
   const renderTabContent = () => {
     switch (activeTab) {
@@ -459,17 +450,16 @@ const AnalyticsDashboard = () => {
 
   return (
     <>
-      <DashboardLayout 
+      <AnalyticsLayout 
         title="Analytics Dashboard"
         rightPanelTitle="Analytics Tools"
         rightPanelContent={rightPanelContent}
         bottomWidgets={<AnalyticsToggleWidgets />}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       >
-        <div className="space-y-6">
-          {tabNavigation}
-          {renderTabContent()}
-        </div>
-      </DashboardLayout>
+        {renderTabContent()}
+      </AnalyticsLayout>
       
       {/* Tactical HUD Anchor Card */}
       <RevenueSparklineAnchor />

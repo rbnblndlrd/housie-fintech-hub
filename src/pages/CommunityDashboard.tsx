@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import CommunityNavigation from '@/components/dashboard/CommunityNavigation';
+import CommunityLayout from '@/components/layouts/CommunityLayout';
 import ProgressPreviewCards from '@/components/community/ProgressPreviewCards';
 import DiscoverContent from '@/components/community/DiscoverContent';
 import NetworkContent from '@/components/community/NetworkContent';
@@ -23,14 +22,6 @@ const CommunityDashboard = () => {
     console.log('Progress clicked:', type);
   };
 
-  // Tab navigation content
-  const tabNavigation = (
-    <CommunityNavigation 
-      activeTab={activeTab} 
-      onTabChange={setActiveTab} 
-    />
-  );
-
   // Main content based on active tab
   const renderTabContent = () => {
     switch (activeTab) {
@@ -49,7 +40,7 @@ const CommunityDashboard = () => {
 
   return (
     <>
-      <DashboardLayout
+      <CommunityLayout
         title="Hall of Prestige"
         rightPanelTitle="Community Hub"
         rightPanelContent={
@@ -58,12 +49,11 @@ const CommunityDashboard = () => {
           </div>
         }
         bottomWidgets={<CommunityToggleWidgets />}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       >
-        <div className="space-y-6">
-          {tabNavigation}
-          {renderTabContent()}
-        </div>
-      </DashboardLayout>
+        {renderTabContent()}
+      </CommunityLayout>
       
       {/* Tactical HUD Anchor Card */}
       <NetworkMapAnchor />
