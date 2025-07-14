@@ -15,6 +15,7 @@ import {
   Zap
 } from 'lucide-react';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
+import CommunityEchoesWidget from '@/components/broadcast/CommunityEchoesWidget';
 
 const CommunityDashboard = () => {
   const [activeTab, setActiveTab] = useState('discover');
@@ -47,6 +48,7 @@ const CommunityDashboard = () => {
         rightPanelContent={
           <div className="space-y-4">
             <ProgressPreviewCards onProgressClick={handleProgressClick} />
+            <CommunityEchoesWidget limit={8} showControls={true} />
           </div>
         }
         bottomWidgets={<CommunityToggleWidgets />}

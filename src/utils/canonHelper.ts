@@ -157,6 +157,9 @@ export async function logCanonEntry(canonMetadata: CanonMetadata, result: string
       metadata: canonMetadata
     });
     
+    // Check if this insight is broadcast-worthy
+    await tryCreateBroadcastEvent(canonMetadata, result);
+    
     // Future: Store in Supabase
     // await supabase.from('canon_logs').insert({
     //   user_id: auth.user?.id,
@@ -169,6 +172,56 @@ export async function logCanonEntry(canonMetadata: CanonMetadata, result: string
     
   } catch (error) {
     console.error('Error logging Canon entry:', error);
+  }
+}
+
+/**
+ * Attempts to create a broadcast event for significant insights
+ */
+async function tryCreateBroadcastEvent(canonMetadata: CanonMetadata, result: string) {
+  try {
+    // Only broadcast Canon-level insights with high significance
+    if (canonMetadata.trust !== 'canon' || (canonMetadata.confidence || 0) < 0.8) {
+      return;
+    }
+
+    // Import here to avoid circular dependency
+    const { createBroadcastEvent, getBroadcastPreferences } = await import('./broadcastEngine');
+    
+    // Check if user has auto-broadcast enabled
+    const preferences = await getBroadcastPreferences();
+    if (!preferences?.auto_broadcast_achievements) {
+      return;
+    }
+
+    // Determine broadcast type and content based on command
+    let eventType: 'title_earned' | 'stamp' | 'booking_streak' | 'achievement' | 'prestige_milestone' | 'service_milestone' = 'achievement';
+    let broadcastContent = result;
+    let scope: 'local' | 'city' | 'global' = 'local';
+
+    switch (canonMetadata.command) {
+      case 'check_prestige':
+        eventType = 'prestige_milestone';
+        scope = 'city';
+        break;
+      case 'top_connections':
+        eventType = 'service_milestone';
+        scope = 'local';
+        break;
+      case 'loyalty_stats':
+        eventType = 'booking_streak';
+        scope = 'local';
+        break;
+      default:
+        // Only broadcast certain types of insights
+        return;
+    }
+
+    // Create the broadcast event
+    await createBroadcastEvent(eventType, broadcastContent, canonMetadata, scope);
+    
+  } catch (error) {
+    console.error('Error creating broadcast event:', error);
   }
 }
 

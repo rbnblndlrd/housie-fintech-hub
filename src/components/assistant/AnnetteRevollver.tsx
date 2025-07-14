@@ -5,6 +5,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
+import { useBroadcastConsent } from '@/hooks/useBroadcastConsent';
+import BroadcastConsentModal from '@/components/broadcast/BroadcastConsentModal';
 
 interface AnnetteRevollverProps {
   isOpen: boolean;
@@ -126,6 +128,15 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   const [currentCylinder, setCurrentCylinder] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [hoveredClip, setHoveredClip] = useState<string | null>(null);
+  
+  // Broadcast consent functionality
+  const {
+    showConsentModal,
+    pendingBroadcast,
+    requestBroadcastConsent,
+    handleConsent,
+    closeConsentModal
+  } = useBroadcastConsent();
 
   useEffect(() => {
     if (isOpen) {
@@ -169,6 +180,12 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     
     // Log the Canon entry
     await logCanonEntry(canonMetadata, enhancedVoiceLine);
+    
+    // Check if we should request broadcast consent for Canon achievements
+    if (canonMetadata.trust === 'canon' && ['check_prestige', 'top_connections', 'loyalty_stats'].includes(clip.action)) {
+      const eventType = clip.action === 'check_prestige' ? 'prestige_milestone' : 'service_milestone';
+      requestBroadcastConsent(eventType, enhancedVoiceLine, canonMetadata);
+    }
     
     // Auto-launch Annette bubble with enhanced context
     onCommandSelect(clip.action, { 
@@ -332,6 +349,18 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
           Right-click to spin the clip • Click outside to close
         </div>
       </div>
+
+      {/* Broadcast Consent Modal */}
+      {pendingBroadcast && (
+        <BroadcastConsentModal
+          isOpen={showConsentModal}
+          onClose={closeConsentModal}
+          onConsent={handleConsent}
+          eventType={pendingBroadcast.eventType}
+          content={pendingBroadcast.content}
+          canonLevel={pendingBroadcast.canonMetadata.trust}
+        />
+      )}
     </div>
   );
 };

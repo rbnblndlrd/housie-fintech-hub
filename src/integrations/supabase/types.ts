@@ -526,6 +526,38 @@ export type Database = {
           },
         ]
       }
+      broadcast_reactions: {
+        Row: {
+          broadcast_id: string
+          created_at: string
+          id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          broadcast_id: string
+          created_at?: string
+          id?: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          broadcast_id?: string
+          created_at?: string
+          id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "broadcast_reactions_broadcast_id_fkey"
+            columns: ["broadcast_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_broadcast_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       calendar_appointments: {
         Row: {
           amount: number | null
@@ -588,6 +620,7 @@ export type Database = {
           canon_confidence: number | null
           city: string | null
           created_at: string
+          engagement_count: number | null
           event_type: string
           geographic_location: unknown | null
           id: string
@@ -605,6 +638,7 @@ export type Database = {
           canon_confidence?: number | null
           city?: string | null
           created_at?: string
+          engagement_count?: number | null
           event_type: string
           geographic_location?: unknown | null
           id?: string
@@ -622,6 +656,7 @@ export type Database = {
           canon_confidence?: number | null
           city?: string | null
           created_at?: string
+          engagement_count?: number | null
           event_type?: string
           geographic_location?: unknown | null
           id?: string
@@ -2916,6 +2951,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_broadcast_preferences: {
+        Row: {
+          auto_broadcast_achievements: boolean
+          created_at: string
+          id: string
+          public_echo_participation: boolean
+          show_location: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_broadcast_achievements?: boolean
+          created_at?: string
+          id?: string
+          public_echo_participation?: boolean
+          show_location?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_broadcast_achievements?: boolean
+          created_at?: string
+          id?: string
+          public_echo_participation?: boolean
+          show_location?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_credits: {
         Row: {
