@@ -11,6 +11,10 @@ export const AnnetteIntegration: React.FC = () => {
   const [hasShownIntro, setHasShownIntro] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
   
+  // DEBUG MODE: Force render toggle
+  const [debugMode, setDebugMode] = useState(true);
+  const [showRevollverDebug, setShowRevollverDebug] = useState(false);
+  
   // Initialize data queries for real-time responses
   const { parseTicket, optimizeRoute, checkPrestige, recommendProvider, checkRebookingSuggestions } = useAnnetteDataQueries();
 
@@ -79,10 +83,63 @@ export const AnnetteIntegration: React.FC = () => {
 
   const handleRevollverClose = () => {
     setIsRevollverOpen(false);
+    setShowRevollverDebug(false);
   };
+
+  // Debug effect to log states
+  useEffect(() => {
+    if (debugMode) {
+      console.log('🐛 ANNETTE DEBUG:', {
+        isRevollverOpen,
+        showRevollverDebug,
+        isChatOpen,
+        hasNewMessage
+      });
+    }
+  }, [isRevollverOpen, showRevollverDebug, isChatOpen, hasNewMessage, debugMode]);
 
   return (
     <>
+      {/* Debug Controls - Top Right */}
+      {debugMode && (
+        <div className="fixed top-4 right-4 z-[200] bg-black/80 backdrop-blur-sm rounded-lg p-3 text-white text-xs space-y-2">
+          <div className="font-bold text-orange-400">🔧 ANNETTE DEBUG</div>
+          <div>Revollver Open: {isRevollverOpen ? '✅' : '❌'}</div>
+          <div>Chat Open: {isChatOpen ? '✅' : '❌'}</div>
+          <div>
+            <button 
+              onClick={() => setShowRevollverDebug(!showRevollverDebug)}
+              className="bg-orange-500 hover:bg-orange-600 px-2 py-1 rounded text-xs"
+            >
+              {showRevollverDebug ? 'Hide' : 'Show'} Debug Revollver
+            </button>
+          </div>
+          <div>
+            <button 
+              onClick={() => setIsRevollverOpen(!isRevollverOpen)}
+              className="bg-blue-500 hover:bg-blue-600 px-2 py-1 rounded text-xs"
+            >
+              Toggle Real Revollver
+            </button>
+          </div>
+          <div>
+            <button 
+              onClick={() => setDebugMode(false)}
+              className="bg-red-500 hover:bg-red-600 px-2 py-1 rounded text-xs"
+            >
+              Disable Debug
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Debug Status Indicator */}
+      {debugMode && (
+        <div className="fixed bottom-20 right-5 z-[60] bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+          Revollver is mounted! {isRevollverOpen || showRevollverDebug ? '🎯' : '💤'}
+        </div>
+      )}
+
       <AnnetteAvatar 
         onClick={handleAvatarClick}
         isActive={isChatOpen || isRevollverOpen}
@@ -92,11 +149,23 @@ export const AnnetteIntegration: React.FC = () => {
         isOpen={isChatOpen}
         onClose={handleChatClose}
       />
+      
+      {/* Regular Revollver */}
       <AnnetteRevollver
         isOpen={isRevollverOpen}
         onClose={handleRevollverClose}
         onCommandSelect={handleRevollverCommand}
       />
+      
+      {/* Debug Force-Rendered Revollver */}
+      {debugMode && showRevollverDebug && (
+        <AnnetteRevollver
+          isOpen={true}
+          onClose={handleRevollverClose}
+          onCommandSelect={handleRevollverCommand}
+          className="border-4 border-red-500/50"
+        />
+      )}
     </>
   );
 };

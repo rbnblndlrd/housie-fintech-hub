@@ -108,6 +108,11 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
       {/* Background overlay */}
       <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" />
       
+      {/* Debug indicator */}
+      <div className="absolute top-4 left-4 bg-red-500 text-white px-2 py-1 rounded text-xs font-bold z-10">
+        🎯 REVOLLVER ACTIVE
+      </div>
+      
       {/* Central Annette Avatar */}
       <div className="relative">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-lg flex items-center justify-center border-4 border-white/20">
