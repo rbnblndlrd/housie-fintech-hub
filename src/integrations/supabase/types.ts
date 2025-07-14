@@ -614,6 +614,116 @@ export type Database = {
           },
         ]
       }
+      canon_echo_reactions: {
+        Row: {
+          created_at: string
+          echo_id: string
+          id: string
+          reaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          echo_id: string
+          id?: string
+          reaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          echo_id?: string
+          id?: string
+          reaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "canon_echo_reactions_echo_id_fkey"
+            columns: ["echo_id"]
+            isOneToOne: false
+            referencedRelation: "canon_echoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      canon_echoes: {
+        Row: {
+          canon_confidence: number | null
+          canonical: boolean
+          city: string | null
+          command: string | null
+          created_at: string
+          engagement_count: number | null
+          expires_at: string | null
+          generated_by: string | null
+          geographic_location: unknown | null
+          id: string
+          is_active: boolean | null
+          job_id: string | null
+          location: string
+          message: string
+          prestige_title_id: string | null
+          reactions_count: number | null
+          source: string
+          stamp_id: string | null
+          tags: string[] | null
+          updated_at: string
+          user_id: string
+          verified_data: boolean | null
+          visibility: string
+        }
+        Insert: {
+          canon_confidence?: number | null
+          canonical?: boolean
+          city?: string | null
+          command?: string | null
+          created_at?: string
+          engagement_count?: number | null
+          expires_at?: string | null
+          generated_by?: string | null
+          geographic_location?: unknown | null
+          id?: string
+          is_active?: boolean | null
+          job_id?: string | null
+          location?: string
+          message: string
+          prestige_title_id?: string | null
+          reactions_count?: number | null
+          source?: string
+          stamp_id?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id: string
+          verified_data?: boolean | null
+          visibility?: string
+        }
+        Update: {
+          canon_confidence?: number | null
+          canonical?: boolean
+          city?: string | null
+          command?: string | null
+          created_at?: string
+          engagement_count?: number | null
+          expires_at?: string | null
+          generated_by?: string | null
+          geographic_location?: unknown | null
+          id?: string
+          is_active?: boolean | null
+          job_id?: string | null
+          location?: string
+          message?: string
+          prestige_title_id?: string | null
+          reactions_count?: number | null
+          source?: string
+          stamp_id?: string | null
+          tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+          verified_data?: boolean | null
+          visibility?: string
+        }
+        Relationships: []
+      }
       canonical_broadcast_events: {
         Row: {
           broadcast_scope: string
@@ -3861,6 +3971,10 @@ export type Database = {
           message_length?: number
         }
         Returns: Json
+      }
+      cleanup_expired_canon_echoes: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       cleanup_inactive_sessions: {
         Args: Record<PropertyKey, never>

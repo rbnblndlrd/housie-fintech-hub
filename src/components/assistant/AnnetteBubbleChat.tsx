@@ -20,6 +20,7 @@ import { registerAnnetteEventBus } from './AnnetteIntegration';
 import { useAnnetteDataQueries } from '@/hooks/useAnnetteDataQueries';
 import { type CanonMetadata } from '@/utils/canonHelper';
 import { CanonLogPanel } from './CanonLogPanel';
+import { CanonEchoPanel } from '@/components/canon/CanonEchoPanel';
 
 interface ChatMessage {
   id: string;
@@ -64,6 +65,7 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
   const [isTyping, setIsTyping] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isCanonLogOpen, setIsCanonLogOpen] = useState(false);
+  const [isEchoPanelOpen, setIsEchoPanelOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
   // Initialize data queries hook
@@ -119,6 +121,11 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
       // Auto-open Canon Log if it's a canon_log action
       if (action === 'canon_log') {
         setIsCanonLogOpen(true);
+      }
+      
+      // Auto-open Echo Panel if it's a city_broadcast action
+      if (action === 'city_broadcast') {
+        setIsEchoPanelOpen(true);
       }
     };
 
@@ -402,9 +409,19 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                   )}
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-2">
-                Try: "optimize my route", "parse this ticket", "check my prestige", or "who should I hire?"
-              </p>
+              <div className="flex items-center justify-between mt-2">
+                <p className="text-xs text-muted-foreground">
+                  Try: "optimize my route", "parse this ticket", "check my prestige"
+                </p>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEchoPanelOpen(true)}
+                  className="text-xs h-5 px-2"
+                >
+                  📡 Echoes
+                </Button>
+              </div>
             </CardContent>
           </>
         )}
@@ -414,6 +431,12 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
       <CanonLogPanel 
         isOpen={isCanonLogOpen}
         onClose={() => setIsCanonLogOpen(false)}
+      />
+      
+      {/* Canon Echo Panel */}
+      <CanonEchoPanel 
+        isOpen={isEchoPanelOpen}
+        onClose={() => setIsEchoPanelOpen(false)}
       />
     </div>
   );

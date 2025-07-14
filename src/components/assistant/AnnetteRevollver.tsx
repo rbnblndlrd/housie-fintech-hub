@@ -6,7 +6,9 @@ import {
 import { cn } from '@/lib/utils';
 import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
 import { useBroadcastConsent } from '@/hooks/useBroadcastConsent';
+import { useEchoBroadcast } from '@/hooks/useEchoBroadcast';
 import BroadcastConsentModal from '@/components/broadcast/BroadcastConsentModal';
+import { EchoBroadcastModal } from '@/components/canon/EchoBroadcastModal';
 
 interface AnnetteRevollverProps {
   isOpen: boolean;
@@ -138,6 +140,15 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     closeConsentModal
   } = useBroadcastConsent();
 
+  // Echo broadcast functionality
+  const {
+    showBroadcastModal,
+    pendingBroadcast: pendingEcho,
+    requestEchoBroadcast,
+    handleBroadcastConfirm,
+    closeBroadcastModal
+  } = useEchoBroadcast();
+
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true);
@@ -181,10 +192,19 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     // Log the Canon entry
     await logCanonEntry(canonMetadata, enhancedVoiceLine);
     
-    // Check if we should request broadcast consent for Canon achievements
-    if (canonMetadata.trust === 'canon' && ['check_prestige', 'top_connections', 'loyalty_stats'].includes(clip.action)) {
-      const eventType = clip.action === 'check_prestige' ? 'prestige_milestone' : 'service_milestone';
-      requestBroadcastConsent(eventType, enhancedVoiceLine, canonMetadata);
+    // Request Echo broadcast for Canon achievements
+    if (canonMetadata.trust === 'canon' && ['check_prestige', 'top_connections', 'loyalty_stats', 'view_stamps'].includes(clip.action)) {
+      const sourceMap = {
+        'check_prestige': 'prestige' as const,
+        'top_connections': 'job' as const,
+        'loyalty_stats': 'job' as const,
+        'view_stamps': 'stamp' as const
+      };
+      
+      requestEchoBroadcast(enhancedVoiceLine, canonMetadata, {
+        source: sourceMap[clip.action as keyof typeof sourceMap] || 'custom',
+        suggestedLocation: clip.action === 'check_prestige' ? 'profile' : 'city-board'
+      });
     }
     
     // Auto-launch Annette bubble with enhanced context
@@ -359,6 +379,18 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
           eventType={pendingBroadcast.eventType}
           content={pendingBroadcast.content}
           canonLevel={pendingBroadcast.canonMetadata.trust}
+        />
+      )}
+
+      {/* Echo Broadcast Modal */}
+      {pendingEcho && (
+        <EchoBroadcastModal
+          isOpen={showBroadcastModal}
+          onClose={closeBroadcastModal}
+          onConfirm={handleBroadcastConfirm}
+          message={pendingEcho.message}
+          canonMetadata={pendingEcho.canonMetadata}
+          suggestedLocation={pendingEcho.suggestedLocation}
         />
       )}
     </div>
