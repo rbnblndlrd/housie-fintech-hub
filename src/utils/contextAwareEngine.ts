@@ -238,6 +238,17 @@ export async function generateContextAwareResponse(
     }
   }
   
+  // Apply voice style preferences to the voice line
+  if (context.canonPreferences?.voice_style) {
+    voiceLine = applyVoiceStyleToVoiceLine(voiceLine, context.canonPreferences);
+  }
+  
+  // Add broadcast transmission style for enhanced immersion
+  const broadcastRange = determineBroadcastRange(clipId, canonStatus, context);
+  if (broadcastRange !== 'local') {
+    voiceLine = addTransmissionFlair(voiceLine, broadcastRange, context);
+  }
+  
   const sourceData = {
     fromDatabase: canonStatus === 'canon',
     verified_data: canonStatus === 'canon',
@@ -553,6 +564,83 @@ function findBestContextMatch(variants: ContextVariant[], context: UserContext):
   }
   
   return bestMatch;
+}
+
+/**
+ * Apply voice style preferences to voice lines
+ */
+function applyVoiceStyleToVoiceLine(line: string, canonPreferences: any): string {
+  const { voice_style, sassiness_intensity = 2 } = canonPreferences;
+  
+  switch (voice_style) {
+    case 'professional':
+      return line
+        .replace(/sugar/g, 'professional')
+        .replace(/baby/g, 'colleague')
+        .replace(/honey/g, 'associate')
+        .replace(/🔥/g, '✓')
+        .replace(/!/g, '.');
+        
+    case 'warm':
+      return line
+        .replace(/sugar/g, 'friend')
+        .replace(/baby/g, 'dear')
+        .replace(/crushing it/g, 'doing wonderfully');
+        
+    case 'sassy':
+      let sassyLine = line;
+      if (sassiness_intensity >= 2) {
+        sassyLine = sassyLine.replace(/!/g, '!!');
+      }
+      if (sassiness_intensity >= 3) {
+        sassyLine = sassyLine + ' 💅';
+      }
+      return sassyLine;
+      
+    case 'softspoken':
+      return line
+        .replace(/!/g, '.')
+        .replace(/🔥/g, '✨')
+        .replace(/BONANZA/g, 'achievement')
+        .replace(/crushing it/g, 'doing great');
+        
+    default:
+      return line;
+  }
+}
+
+/**
+ * Determine broadcast range based on context and canon status
+ */
+function determineBroadcastRange(clipId: string | undefined, canonStatus: string, context: UserContext): 'local' | 'city' | 'global' {
+  const prestigeRank = context.prestigeRank || 0;
+  const equippedStamps = context.equippedStamps?.length || 0;
+  
+  // Global events
+  if (canonStatus === 'canon' && prestigeRank >= 5) return 'global';
+  if (equippedStamps >= 10) return 'global';
+  
+  // City events
+  if (canonStatus === 'canon' && prestigeRank >= 3) return 'city';
+  if (equippedStamps >= 5) return 'city';
+  
+  return 'local';
+}
+
+/**
+ * Add transmission flair to voice lines based on broadcast range
+ */
+function addTransmissionFlair(line: string, range: 'city' | 'global', context: UserContext): string {
+  const location = context.currentLocation || 'Montreal';
+  
+  switch (range) {
+    case 'global':
+      return `🌍 GLOBAL TRANSMISSION: ${line} — Broadcasting grid-wide.`;
+    case 'city':
+      return `🏙️ ${location} broadcast: ${line} — This one's making waves across the city.`;
+    default:
+      return line;
+  }
 }
 
 /**

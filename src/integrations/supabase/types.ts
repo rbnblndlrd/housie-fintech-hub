@@ -648,6 +648,7 @@ export type Database = {
       }
       canon_echoes: {
         Row: {
+          broadcast_range: string | null
           canon_confidence: number | null
           canonical: boolean
           city: string | null
@@ -673,6 +674,7 @@ export type Database = {
           visibility: string
         }
         Insert: {
+          broadcast_range?: string | null
           canon_confidence?: number | null
           canonical?: boolean
           city?: string | null
@@ -698,6 +700,7 @@ export type Database = {
           visibility?: string
         }
         Update: {
+          broadcast_range?: string | null
           canon_confidence?: number | null
           canonical?: boolean
           city?: string | null
@@ -771,6 +774,7 @@ export type Database = {
       }
       canonical_broadcast_events: {
         Row: {
+          broadcast_range: string | null
           broadcast_scope: string
           canon_confidence: number | null
           city: string | null
@@ -779,8 +783,10 @@ export type Database = {
           event_type: string
           geographic_location: unknown | null
           id: string
+          is_unread: boolean | null
           metadata: Json | null
           processed_at: string | null
+          pulse_active: boolean | null
           source_id: string
           source_table: string
           updated_at: string
@@ -789,6 +795,7 @@ export type Database = {
           visible_to_public: boolean
         }
         Insert: {
+          broadcast_range?: string | null
           broadcast_scope?: string
           canon_confidence?: number | null
           city?: string | null
@@ -797,8 +804,10 @@ export type Database = {
           event_type: string
           geographic_location?: unknown | null
           id?: string
+          is_unread?: boolean | null
           metadata?: Json | null
           processed_at?: string | null
+          pulse_active?: boolean | null
           source_id: string
           source_table: string
           updated_at?: string
@@ -807,6 +816,7 @@ export type Database = {
           visible_to_public?: boolean
         }
         Update: {
+          broadcast_range?: string | null
           broadcast_scope?: string
           canon_confidence?: number | null
           city?: string | null
@@ -815,8 +825,10 @@ export type Database = {
           event_type?: string
           geographic_location?: unknown | null
           id?: string
+          is_unread?: boolean | null
           metadata?: Json | null
           processed_at?: string | null
+          pulse_active?: boolean | null
           source_id?: string
           source_table?: string
           updated_at?: string
@@ -4117,6 +4129,14 @@ export type Database = {
         }
         Returns: Json
       }
+      determine_broadcast_range: {
+        Args: {
+          p_event_type: string
+          p_canon_confidence: number
+          p_user_context?: Json
+        }
+        Returns: string
+      }
       equip_title: {
         Args: { p_user_id: string; p_title_id: string }
         Returns: boolean
@@ -4165,6 +4185,28 @@ export type Database = {
           title_name: string
           icon: string
           flavor_text: string
+        }[]
+      }
+      get_filtered_canon_echoes: {
+        Args: {
+          p_user_id: string
+          p_range_filter?: string
+          p_limit?: number
+          p_offset?: number
+        }
+        Returns: {
+          id: string
+          user_id: string
+          message: string
+          broadcast_range: string
+          canon_confidence: number
+          location: string
+          city: string
+          created_at: string
+          is_unread: boolean
+          pulse_active: boolean
+          tags: string[]
+          engagement_count: number
         }[]
       }
       get_latest_emergency_controls: {
@@ -4284,6 +4326,10 @@ export type Database = {
           p_user_agent?: string
         }
         Returns: string
+      }
+      mark_echoes_read: {
+        Args: { p_user_id: string; p_echo_ids: string[] }
+        Returns: boolean
       }
       mark_messages_as_read: {
         Args: { p_conversation_id: string; p_user_id: string }

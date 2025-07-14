@@ -19,6 +19,8 @@ import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 import CommunityEchoesWidget from '@/components/broadcast/CommunityEchoesWidget';
 import RecentStampsWall from '@/components/stamps/RecentStampsWall';
 import { BroadcastDashboardPanel } from '@/components/stamps/BroadcastDashboardPanel';
+import { CanonEchoFeedBeacon } from '@/components/stamps/CanonEchoFeedBeacon';
+import { AnnetteTransmissionCenter } from '@/components/stamps/AnnetteTransmissionCenter';
 import { useAuth } from '@/contexts/AuthContext';
 
 const CommunityDashboard = () => {
@@ -59,6 +61,8 @@ const CommunityDashboard = () => {
             <StampTrackerWidget className="mb-4" showBroadcastControls={true} />
             <RecentStampsWall limit={5} />
             {isAdmin && <BroadcastDashboardPanel />}
+            <CanonEchoFeedBeacon />
+            <AnnetteTransmissionCenter />
             <CommunityEchoesWidget limit={8} showControls={true} />
           </div>
         }
