@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Crown, Star, Trophy, Shield, Users } from 'lucide-react';
+import { Crown, Star, Trophy, Shield, Users, ChevronDown, ChevronUp } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import PrestigeDetailsModal from '@/components/modals/PrestigeDetailsModal';
 
 const CustomerPrestigePanel = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  
   // Mock data - in real app this would come from user profile/prestige tables
   const customerPrestige = {
     currentTitle: 'Trusted Patron',
@@ -27,11 +30,62 @@ const CustomerPrestigePanel = () => {
   };
 
   const progressToNext = (customerPrestige.proofOfWorth / customerPrestige.nextMilestone) * 100;
-
   const getTitleIcon = (IconComponent: any) => <IconComponent className="h-4 w-4" />;
 
-  return (
-    <Card className="fintech-card">
+  // Mobile accordion version
+  const mobileVersion = (
+    <Collapsible open={isOpen} onOpenChange={setIsOpen} className="lg:hidden">
+      <Card className="fintech-card">
+        <CollapsibleTrigger asChild>
+          <CardHeader className="cursor-pointer hover:bg-muted/10 transition-colors">
+            <CardTitle className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Crown className="h-5 w-5" />
+                Customer Prestige
+                <Badge variant="secondary" className="ml-2">
+                  {customerPrestige.credScore}
+                </Badge>
+              </div>
+              {isOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </CardTitle>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="space-y-4">
+            {/* Compact prestige content for mobile */}
+            <PrestigeDetailsModal
+              currentTitle={customerPrestige.currentTitle}
+              credScore={customerPrestige.credScore}
+              proofOfWorth={customerPrestige.proofOfWorth}
+              nextMilestone={customerPrestige.nextMilestone}
+            >
+              <div className="text-center space-y-2 cursor-pointer hover:bg-primary/5 p-3 rounded-lg transition-colors">
+                <Badge variant="secondary" className="text-sm px-2 py-1">
+                  {customerPrestige.currentTitle}
+                </Badge>
+                <div className="text-xl font-bold text-primary">
+                  {customerPrestige.credScore} Cred Score
+                </div>
+              </div>
+            </PrestigeDetailsModal>
+            
+            {/* Simplified progress for mobile */}
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Next title</span>
+                <span>{customerPrestige.proofOfWorth}/{customerPrestige.nextMilestone}</span>
+              </div>
+              <Progress value={progressToNext} className="h-2" />
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  );
+
+  // Desktop version (unchanged)
+  const desktopVersion = (
+    <Card className="fintech-card hidden lg:block">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Crown className="h-5 w-5" />
@@ -131,6 +185,13 @@ const CustomerPrestigePanel = () => {
         </div>
       </CardContent>
     </Card>
+  );
+
+  return (
+    <>
+      {mobileVersion}
+      {desktopVersion}
+    </>
   );
 };
 

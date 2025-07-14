@@ -32,6 +32,58 @@ interface ChatRequest {
   creditsUsed?: number;
 }
 
+// Helper functions to get user data for commands
+async function getUserBookings(userId: string, supabase: any) {
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('customer_id', userId)
+    .order('created_at', { ascending: false })
+    .limit(5);
+  
+  if (error) {
+    console.error('Error fetching user bookings:', error);
+    return [];
+  }
+  return data || [];
+}
+
+async function getUserProfile(userId: string, supabase: any) {
+  const { data: providerProfile } = await supabase
+    .from('provider_profiles')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+  
+  if (providerProfile) return providerProfile;
+  
+  // Fallback to user credits for customers
+  const { data: userCredits } = await supabase
+    .from('user_credits')
+    .select('*')
+    .eq('user_id', userId)
+    .single();
+  
+  return userCredits || {};
+}
+
+async function getUpcomingBookings(userId: string, supabase: any) {
+  const today = new Date().toISOString().split('T')[0];
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .eq('customer_id', userId)
+    .gte('scheduled_date', today)
+    .order('scheduled_date', { ascending: true })
+    .limit(10);
+  
+  if (error) {
+    console.error('Error fetching upcoming bookings:', error);
+    return [];
+  }
+  return data || [];
+}
+
 // Estimate API cost based on token usage (approximate)
 const estimateAPICost = (inputTokens: number, outputTokens: number): number => {
   // OpenAI GPT-4o pricing: $2.50 per 1M input tokens, $10 per 1M output tokens
@@ -256,9 +308,16 @@ Your capabilities include:
 - Crew management and coordination tips
 
 Special commands you recognize:
+- "parse my ticket" - Analyze user's latest service ticket for issues or categorization
+- "optimize my route" - Provide route optimization and scheduling suggestions  
+- "check my prestige" - Show user's current HOUSIE credibility and ratings
+- "plan my day" - Review upcoming bookings and suggest daily planning
 - "/route" - Focus on route optimization and scheduling
 - "/split" - Help with dividing jobs or crews
 - "/profile" - Provide profile improvement suggestions
+
+Command fallback responses (when commands don't work):
+- For any unrecognized commands, respond with personality: "Honey, either you broke me or you're asking the wrong assistant... again. Try 'parse my ticket', 'optimize my route', 'check my prestige', or 'plan my day' instead!"
 
 Key guidelines:
 - Provide specific, actionable advice
@@ -267,12 +326,61 @@ Key guidelines:
 - Include cost estimates when discussing services
 - Prioritize user safety and platform best practices
 - Help users maximize their earnings and efficiency
+- Be sassy but helpful when users hit command limits or errors
 
 ${contextualPrompt ? `Current context: ${contextualPrompt}` : 'Ready to help with any HOUSIE-related questions.'}`;
 
+    // Add command-specific data to system prompt for enhanced responses
+    let commandSpecificData = '';
+    
+    // Handle specific HOUSIE commands with real data
+    if (featureType === 'parse_ticket') {
+      const userBookings = await getUserBookings(userId, supabase);
+      if (userBookings.length > 0) {
+        const latestBooking = userBookings[0];
+        commandSpecificData += `\n\nCURRENT TICKET DATA FOR PARSING:\n`;
+        commandSpecificData += `- Service: "${latestBooking.service_title || 'Service Request'}"\n`;
+        commandSpecificData += `- Date: ${latestBooking.scheduled_date}\n`;
+        commandSpecificData += `- Status: ${latestBooking.status}\n`;
+        commandSpecificData += `- Mystery Job: ${!latestBooking.service_id ? 'YES - needs categorization' : 'NO - standard service'}\n`;
+        if (latestBooking.instructions) {
+          commandSpecificData += `- Instructions: "${latestBooking.instructions.substring(0, 200)}${latestBooking.instructions.length > 200 ? '...' : ''}"\n`;
+        }
+        commandSpecificData += `Provide parsing analysis and suggestions for improvement.`;
+      } else {
+        commandSpecificData += `\n\nNo tickets found for parsing. Suggest creating a service request first.`;
+      }
+    }
+    
+    if (featureType === 'check_prestige') {
+      const userProfile = await getUserProfile(userId, supabase);
+      commandSpecificData += `\n\nCURRENT PRESTIGE DATA:\n`;
+      commandSpecificData += `- Community Rating: ${userProfile.community_rating_points || 0} points\n`;
+      commandSpecificData += `- Shop Points: ${userProfile.shop_points || 0}\n`;
+      commandSpecificData += `- Network Connections: ${userProfile.network_connections || 0}\n`;
+      commandSpecificData += `- Total Reviews: ${userProfile.total_reviews || 0}\n`;
+      commandSpecificData += `- Average Rating: ${userProfile.average_rating || 'N/A'}\n`;
+      commandSpecificData += `Provide encouragement and next steps for improvement.`;
+    }
+    
+    if (featureType === 'plan_day') {
+      const upcomingBookings = await getUpcomingBookings(userId, supabase);
+      commandSpecificData += `\n\nTODAY'S SCHEDULE DATA:\n`;
+      if (upcomingBookings.length > 0) {
+        upcomingBookings.forEach((booking, index) => {
+          commandSpecificData += `${index + 1}. ${booking.service_title || 'Service'} at ${booking.scheduled_time} (${booking.service_address || 'Location TBD'})\n`;
+        });
+        commandSpecificData += `Provide optimization suggestions and time management tips.`;
+      } else {
+        commandSpecificData += `No bookings scheduled for today. Suggest productivity activities or service opportunities.`;
+      }
+    }
+    
+    const enhancedSystemPrompt = systemPrompt + commandSpecificData;
+
     // Build proper message history for OpenAI
     const messages = [
-      { role: 'system', content: systemPrompt },
+      { role: 'system', content: enhancedSystemPrompt },
       ...conversationHistory.map(entry => ({
         role: entry.role,
         content: entry.content

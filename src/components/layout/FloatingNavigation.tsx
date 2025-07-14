@@ -36,10 +36,10 @@ const FloatingNavigation = () => {
 
   return (
     <>
-      {/* Original HOUSIE Logo - Even Larger */}
+      {/* HOUSIE Logo - Hidden on mobile to avoid conflicts with Annette */}
       <Link 
         to="/" 
-        className="fixed top-5 left-5 z-[1000] cursor-pointer hover:scale-105 transition-transform duration-300"
+        className="fixed top-5 left-5 z-[1000] cursor-pointer hover:scale-105 transition-transform duration-300 hidden md:block"
         style={{ 
           width: '180px',
           height: '80px',
@@ -53,10 +53,31 @@ const FloatingNavigation = () => {
         />
       </Link>
 
-      {/* Hamburger Menu Button - Smaller and properly spaced */}
+      {/* Hamburger Menu Button - Responsive positioning */}
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="fixed z-[1000] text-white flex items-center justify-center"
+        className="fixed z-[1000] text-white flex items-center justify-center md:hidden"
+        style={{ 
+          top: '20px',
+          left: '20px',
+          width: '40px',
+          height: '40px',
+          filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          borderRadius: '8px'
+        }}
+      >
+        {isMenuOpen ? (
+          <X className="h-6 w-6" />
+        ) : (
+          <Menu className="h-6 w-6" />
+        )}
+      </button>
+
+      {/* Desktop hamburger menu - positioned after logo */}
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="fixed z-[1000] text-white items-center justify-center hidden md:flex"
         style={{ 
           top: '35px',
           left: '210px',
@@ -72,12 +93,11 @@ const FloatingNavigation = () => {
         )}
       </button>
 
-      {/* Dropdown Menu */}
+      {/* Dropdown Menu - Responsive positioning */}
       {isMenuOpen && (
-        <div className="fixed w-56 bg-black/95 backdrop-blur-sm shadow-lg rounded-lg border border-gray-800 z-[950]"
+        <div className="fixed w-56 bg-black/95 backdrop-blur-sm shadow-lg rounded-lg border border-gray-800 z-[950] md:left-[210px] left-5"
              style={{ 
-               top: '75px',
-               left: '210px'
+               top: '75px'
              }}>
           <div className="py-2">
             {menuItems.map((item, index) => (

@@ -41,13 +41,30 @@ export const useAnnetteChat = () => {
   const [isTyping, setIsTyping] = useState(false);
 
   const classifyMessage = (content: string): string => {
-    const lowerContent = content.toLowerCase();
+    const lowerContent = content.toLowerCase().trim();
+    
+    // Detect specific HOUSIE commands first
+    if (lowerContent.includes('parse') && (lowerContent.includes('ticket') || lowerContent.includes('job') || lowerContent.includes('my'))) {
+      return 'parse_ticket';
+    }
+    
+    if (lowerContent.includes('optimize') && (lowerContent.includes('route') || lowerContent.includes('my route'))) {
+      return 'route_optimization';
+    }
+    
+    if (lowerContent.includes('check') && (lowerContent.includes('prestige') || lowerContent.includes('my prestige'))) {
+      return 'check_prestige';
+    }
+    
+    if (lowerContent.includes('plan') && (lowerContent.includes('day') || lowerContent.includes('my day'))) {
+      return 'plan_day';
+    }
     
     // Free tier messages (basic support)
     const freeKeywords = [
       'how do i', 'what are', 'where is', 'when does', 'password', 'login',
       'sign up', 'book', 'cancel', 'refund', 'contact', 'help', 'support',
-      'verification', 'payment', 'fees', 'schedule'
+      'verification', 'payment', 'fees', 'schedule', 'hello', 'hi', 'hey'
     ];
     
     // Premium features requiring credits
@@ -57,7 +74,7 @@ export const useAnnetteChat = () => {
       'competitive', 'marketing', 'pricing', 'growth', 'profit'
     ];
 
-    // Check for premium features first
+    // Check for premium features
     if (premiumKeywords.some(keyword => lowerContent.includes(keyword))) {
       if (lowerContent.includes('route') || lowerContent.includes('optimize') || lowerContent.includes('efficient')) {
         return 'route_optimization';
