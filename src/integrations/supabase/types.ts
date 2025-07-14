@@ -1324,6 +1324,42 @@ export type Database = {
         }
         Relationships: []
       }
+      drop_points: {
+        Row: {
+          active: boolean
+          bonus_stamp_id: string | null
+          coordinates: unknown
+          created_at: string
+          id: string
+          name: string
+          radius_m: number
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          bonus_stamp_id?: string | null
+          coordinates: unknown
+          created_at?: string
+          id?: string
+          name: string
+          radius_m?: number
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          bonus_stamp_id?: string | null
+          coordinates?: unknown
+          created_at?: string
+          id?: string
+          name?: string
+          radius_m?: number
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       emergency_actions_log: {
         Row: {
           action_details: Json | null
@@ -3538,6 +3574,56 @@ export type Database = {
           },
         ]
       }
+      user_imprints: {
+        Row: {
+          action_type: string
+          canonical: boolean
+          coordinates: unknown | null
+          created_at: string
+          drop_point_id: string
+          id: string
+          optional_note: string | null
+          service_type: string | null
+          stamp_triggered_id: string | null
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          action_type?: string
+          canonical?: boolean
+          coordinates?: unknown | null
+          created_at?: string
+          drop_point_id: string
+          id?: string
+          optional_note?: string | null
+          service_type?: string | null
+          stamp_triggered_id?: string | null
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          canonical?: boolean
+          coordinates?: unknown | null
+          created_at?: string
+          drop_point_id?: string
+          id?: string
+          optional_note?: string | null
+          service_type?: string | null
+          stamp_triggered_id?: string | null
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_imprints_drop_point_id_fkey"
+            columns: ["drop_point_id"]
+            isOneToOne: false
+            referencedRelation: "drop_points"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
           achievement_badges: Json | null
@@ -4283,6 +4369,16 @@ export type Database = {
         Args: { p_user_id: string; p_stamp_id: string }
         Returns: string
       }
+      find_nearby_drop_points: {
+        Args: { p_coordinates: unknown; p_max_distance_m?: number }
+        Returns: {
+          drop_point_id: string
+          name: string
+          type: string
+          distance_m: number
+          bonus_stamp_id: string
+        }[]
+      }
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }
         Returns: unknown
@@ -4449,6 +4545,10 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: boolean
       }
+      is_within_drop_point: {
+        Args: { p_coordinates: unknown; p_drop_point_id: string }
+        Returns: boolean
+      }
       log_emergency_action: {
         Args: {
           p_admin_id: string
@@ -4460,6 +4560,16 @@ export type Database = {
           p_user_agent?: string
         }
         Returns: string
+      }
+      log_imprint: {
+        Args: {
+          p_user_id: string
+          p_coordinates: unknown
+          p_action_type: string
+          p_service_type?: string
+          p_note?: string
+        }
+        Returns: Json
       }
       mark_echoes_read: {
         Args: { p_user_id: string; p_echo_ids: string[] }

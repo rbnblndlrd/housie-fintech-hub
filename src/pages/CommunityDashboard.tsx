@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import CommunityLayout from '@/components/layouts/CommunityLayout';
 import ProgressPreviewCards from '@/components/community/ProgressPreviewCards';
-import DiscoverContent from '@/components/community/DiscoverContent';
+import { DiscoverContent } from '@/components/discover/DiscoverContent';
 import NetworkContent from '@/components/community/NetworkContent';
 import PrestigeContent from '@/components/community/PrestigeContent';
 import SocialContent from '@/components/community/SocialContent';
