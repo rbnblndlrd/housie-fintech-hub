@@ -4,6 +4,7 @@ import {
   Radio, Bookmark, Users2, Search, MessageSquare, Shield
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
 
 interface AnnetteRevollverProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ interface ClipAction {
   voiceLine: string;
   action: string;
   context?: any;
+  canonMetadata?: CanonMetadata;
 }
 
 // 🧠 CLIP DECK: 1st Cylinder — Core Actions
@@ -147,14 +149,34 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     console.log("🎯 Annette: Spinning the clip... ready for your next move?");
   };
 
-  const handleClipClick = (clip: ClipAction) => {
-    console.log(`🎤 Annette: "${clip.voiceLine}"`);
+  const handleClipClick = async (clip: ClipAction) => {
+    // Create Canon metadata for this action
+    const sourceData = { 
+      fromDatabase: ['top_connections', 'check_prestige', 'loyalty_stats'].includes(clip.action),
+      verified_data: true 
+    };
+    const canonMetadata = createCanonMetadata(clip.action, sourceData);
     
-    // Auto-launch Annette bubble with the voice line and trigger action
+    // Enhance voice line with Canon context
+    const enhancedVoiceLine = getCanonEnhancedVoiceLine(
+      clip.voiceLine, 
+      canonMetadata,
+      // Mock specific data - in real implementation, this would come from actual queries
+      { topClient: 'Maria G.', earnedCount: 3, loyalClients: 'Your top 5', radius: '5km' }
+    );
+    
+    console.log(`🎤 Annette (${canonMetadata.trust}): "${enhancedVoiceLine}"`);
+    
+    // Log the Canon entry
+    await logCanonEntry(canonMetadata, enhancedVoiceLine);
+    
+    // Auto-launch Annette bubble with enhanced context
     onCommandSelect(clip.action, { 
-      voiceLine: clip.voiceLine,
+      voiceLine: enhancedVoiceLine,
+      originalVoiceLine: clip.voiceLine,
       label: clip.label,
-      clipId: clip.id
+      clipId: clip.id,
+      canonMetadata
     });
     onClose();
   };

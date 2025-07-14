@@ -18,6 +18,8 @@ import {
 import { cn } from '@/lib/utils';
 import { registerAnnetteEventBus } from './AnnetteIntegration';
 import { useAnnetteDataQueries } from '@/hooks/useAnnetteDataQueries';
+import { type CanonMetadata } from '@/utils/canonHelper';
+import { CanonLogPanel } from './CanonLogPanel';
 
 interface ChatMessage {
   id: string;
@@ -25,6 +27,7 @@ interface ChatMessage {
   content: string;
   timestamp: Date;
   action?: string;
+  canonMetadata?: CanonMetadata;
 }
 
 interface AnnetteBubbleChatProps {
@@ -60,6 +63,7 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
   const [inputValue, setInputValue] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [isCanonLogOpen, setIsCanonLogOpen] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   
   // Initialize data queries hook
@@ -77,14 +81,15 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
   // Register event bus for platform actions (including Revollver)
   useEffect(() => {
     const handlePlatformEvent = (action: string, eventData?: any) => {
-      // If triggered from Revollver, show the voice line immediately
+      // If triggered from Revollver, show the voice line immediately with Canon metadata
       if (eventData?.fromRevollver && eventData?.voiceLine) {
         const voiceLineMessage: ChatMessage = {
           id: `voice-${Date.now()}`,
           type: 'assistant',
           content: eventData.voiceLine,
           timestamp: new Date(),
-          action
+          action,
+          canonMetadata: eventData.canonMetadata
         };
         setMessages(prev => [...prev, voiceLineMessage]);
         
@@ -95,7 +100,8 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
             type: 'assistant',
             content: eventData?.response || "Action completed!",
             timestamp: new Date(),
-            action
+            action,
+            canonMetadata: eventData.canonMetadata
           };
           setMessages(prev => [...prev, systemMessage]);
         }, 1000);
@@ -108,6 +114,11 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
           action
         };
         setMessages(prev => [...prev, systemMessage]);
+      }
+      
+      // Auto-open Canon Log if it's a canon_log action
+      if (action === 'canon_log') {
+        setIsCanonLogOpen(true);
       }
     };
 
@@ -302,7 +313,7 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                        </Avatar>
                      )}
                     
-                    <div
+                     <div
                       className={cn(
                         "max-w-[75%] rounded-lg px-3 py-2 text-sm",
                         message.type === 'user'
@@ -310,6 +321,29 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                           : 'bg-muted/50 text-foreground'
                       )}
                     >
+                      {/* Canon Badge for Assistant Messages */}
+                      {(message.type === 'assistant' || message.type === 'system') && message.canonMetadata && (
+                        <div className="flex items-center space-x-2 mb-2">
+                          {message.canonMetadata.trust === 'canon' ? (
+                            <div 
+                              className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-green-500/10 text-green-700 border border-green-500/20 text-xs cursor-pointer hover:bg-green-500/20 transition-colors"
+                              onClick={() => setIsCanonLogOpen(true)}
+                              title="Click to view Canon Log"
+                            >
+                              ✅ <span>Canon</span>
+                            </div>
+                          ) : (
+                            <div 
+                              className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-orange-500/10 text-orange-700 border border-orange-500/20 text-xs cursor-pointer hover:bg-orange-500/20 transition-colors"
+                              onClick={() => setIsCanonLogOpen(true)}
+                              title="Click to view Canon Log"
+                            >
+                              🌀 <span>Non-Canon</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      
                       <p className="whitespace-pre-wrap">{message.content}</p>
                       <p className="text-xs opacity-70 mt-1">
                         {message.timestamp.toLocaleTimeString([], { 
@@ -375,6 +409,12 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
           </>
         )}
       </Card>
+      
+      {/* Canon Log Panel */}
+      <CanonLogPanel 
+        isOpen={isCanonLogOpen}
+        onClose={() => setIsCanonLogOpen(false)}
+      />
     </div>
   );
 };
