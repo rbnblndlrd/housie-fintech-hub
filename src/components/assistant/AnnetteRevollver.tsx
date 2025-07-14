@@ -19,34 +19,35 @@ interface Command {
   icon: React.ComponentType<any>;
   action: string;
   context?: any;
+  isCanon?: boolean; // Canon-verified actions
 }
 
 const clips: Command[][] = [
-  // Clip 1: Core Assistant Tools
+  // Clip 1: Daily Ops
   [
-    { id: 'parse-ticket', label: 'Parse Ticket', icon: MapPin, action: 'parse_ticket' },
-    { id: 'optimize-route', label: 'Optimize Route', icon: Route, action: 'optimize_route' },
-    { id: 'check-prestige', label: 'Check My Prestige', icon: Trophy, action: 'check_prestige' },
-    { id: 'todays-map', label: "Today's Map", icon: MapPin, action: 'show_map' },
-    { id: 'view-bookings', label: 'View Bookings', icon: Calendar, action: 'view_bookings' },
-    { id: 'rebooking', label: 'Rebooking Suggestions', icon: RefreshCw, action: 'rebooking_suggestions' },
+    { id: 'parse-ticket', label: 'Parse Ticket', icon: MapPin, action: 'parse_ticket', isCanon: true },
+    { id: 'optimize-route', label: 'Optimize Route', icon: Route, action: 'optimize_route', isCanon: true },
+    { id: 'todays-map', label: "Today's Map", icon: MapPin, action: 'show_map', isCanon: true },
+    { id: 'view-bookings', label: 'View Bookings', icon: Calendar, action: 'view_bookings', isCanon: true },
+    { id: 'rebooking', label: 'Rebooking Suggestions', icon: RefreshCw, action: 'rebooking_suggestions', isCanon: false },
+    { id: 'check-prestige', label: 'Check My Prestige', icon: Trophy, action: 'check_prestige', isCanon: true },
   ],
-  // Clip 2: Community / Social
+  // Clip 2: Social
   [
-    { id: 'commendations', label: 'View Commendations', icon: Trophy, action: 'view_commendations' },
-    { id: 'my-crew', label: 'My Crew', icon: Users, action: 'view_crew' },
-    { id: 'community-rank', label: 'Community Rank', icon: Crown, action: 'community_rank' },
-    { id: 'network-stats', label: 'Network Stats', icon: Network, action: 'network_stats' },
-    { id: 'daily-boost', label: 'Claim Daily Boost', icon: Gift, action: 'daily_boost' },
-    { id: 'prestige-goals', label: 'Prestige Goals', icon: TrendingUp, action: 'prestige_goals' },
+    { id: 'my-crew', label: 'My Crew', icon: Users, action: 'view_crew', isCanon: true },
+    { id: 'commendations', label: 'View Commendations', icon: Trophy, action: 'view_commendations', isCanon: true },
+    { id: 'network-stats', label: 'Network Stats', icon: Network, action: 'network_stats', isCanon: true },
+    { id: 'community-rank', label: 'Community Rank', icon: Crown, action: 'community_rank', isCanon: false },
+    { id: 'daily-boost', label: 'Claim Daily Boost', icon: Gift, action: 'daily_boost', isCanon: false },
+    { id: 'prestige-goals', label: 'Prestige Goals', icon: TrendingUp, action: 'prestige_goals', isCanon: false },
   ],
-  // Clip 3: Settings & Meta
+  // Clip 3: Settings
   [
-    { id: 'settings', label: 'Annette Settings', icon: Settings, action: 'annette_settings' },
-    { id: 'credits', label: 'Credits Left', icon: CreditCard, action: 'check_credits' },
-    { id: 'unlock-features', label: 'Unlock Features', icon: Unlock, action: 'unlock_features' },
-    { id: 'language', label: 'Language Preference', icon: Globe, action: 'language_settings' },
-    { id: 'help', label: 'Help', icon: HelpCircle, action: 'show_help' },
+    { id: 'settings', label: 'Annette Settings', icon: Settings, action: 'annette_settings', isCanon: true },
+    { id: 'credits', label: 'Credits Left', icon: CreditCard, action: 'check_credits', isCanon: true },
+    { id: 'help', label: 'Help', icon: HelpCircle, action: 'show_help', isCanon: true },
+    { id: 'unlock-features', label: 'Unlock Features', icon: Unlock, action: 'unlock_features', isCanon: false },
+    { id: 'language', label: 'Language Preference', icon: Globe, action: 'language_settings', isCanon: false },
   ]
 ];
 
@@ -74,6 +75,8 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
 
   const spinClip = () => {
     setCurrentClip((prev) => (prev + 1) % clips.length);
+    // Voice line on spin
+    console.log("🎯 Annette: Spinning the clip... ready for your next move?");
   };
 
   const handleCommandClick = (command: Command) => {
@@ -141,14 +144,38 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
               onClick={() => handleCommandClick(command)}
             >
               {/* Command Icon */}
-              <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md shadow-lg flex items-center justify-center border border-white/20 group-hover:bg-white/20 group-hover:border-white/40 transition-all duration-200">
-                <command.icon className="w-6 h-6 text-white" />
+              <div className={cn(
+                "w-12 h-12 rounded-full backdrop-blur-md shadow-lg flex items-center justify-center border transition-all duration-200",
+                command.isCanon 
+                  ? "bg-white/10 border-white/20 group-hover:bg-white/20 group-hover:border-white/40 group-hover:shadow-primary/20" 
+                  : "bg-white/5 border-white/10 group-hover:bg-white/15 group-hover:border-white/30 animate-pulse"
+              )}>
+                <command.icon className={cn(
+                  "w-6 h-6 transition-colors duration-200",
+                  command.isCanon ? "text-white" : "text-white/70"
+                )} />
+                {/* Canon verification glow */}
+                {command.isCanon && (
+                  <div className="absolute inset-0 rounded-full bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
+                )}
+                {/* Non-canon shimmer indicator */}
+                {!command.isCanon && (
+                  <div className="absolute -top-1 -right-1 w-3 h-3 text-white/50">
+                    💭
+                  </div>
+                )}
               </div>
               
-              {/* Command Label */}
+              {/* Command Label with Canon indicator */}
               <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-                <div className="bg-black/80 backdrop-blur-sm rounded-lg px-3 py-1 text-xs text-white font-medium whitespace-nowrap">
+                <div className="bg-black/90 backdrop-blur-sm rounded-lg px-3 py-1 text-xs text-white font-medium whitespace-nowrap">
                   {command.label}
+                  <div className={cn(
+                    "text-xs mt-1",
+                    command.isCanon ? "text-green-400" : "text-yellow-400"
+                  )}>
+                    {command.isCanon ? "Based on your usage history" : "AI-generated suggestion — not Canon"}
+                  </div>
                 </div>
               </div>
             </div>
