@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ const AnnetteCustomerInsights = () => {
   const [currentInsight, setCurrentInsight] = useState(0);
   const [showJoke, setShowJoke] = useState(false);
   const [autoRotate, setAutoRotate] = useState(true);
+  const touchStartRef = useRef<number>(0);
+  const touchEndRef = useRef<number>(0);
 
   // Smart rotating insights based on customer data
   const insights = [
@@ -87,6 +89,30 @@ const AnnetteCustomerInsights = () => {
     setCurrentInsight((prev) => (prev - 1 + insights.length) % insights.length);
   };
 
+  // Touch handlers for mobile swipe
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndRef.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStartRef.current || !touchEndRef.current) return;
+    
+    const distance = touchStartRef.current - touchEndRef.current;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      nextInsight();
+    }
+    if (isRightSwipe) {
+      prevInsight();
+    }
+  };
+
   const currentJoke = longJokes[Math.floor(Math.random() * longJokes.length)];
   const currentInsightData = insights[currentInsight];
   
@@ -121,7 +147,12 @@ const AnnetteCustomerInsights = () => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="fintech-inner-box p-4 bg-primary/5">
+        <div 
+          className="fintech-inner-box p-4 bg-primary/5 touch-pan-y select-none"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <div className="flex items-start gap-3 mb-3">
             <div className="p-2 rounded-lg bg-primary/10">
               <InsightIcon className="h-4 w-4 text-primary" />
