@@ -4,12 +4,14 @@ import { AnnetteBubbleChat } from './AnnetteBubbleChat';
 import { AnnetteRevollver } from './AnnetteRevollver';
 import { toast } from 'sonner';
 import { useAnnetteDataQueries } from '@/hooks/useAnnetteDataQueries';
+import { getCanonContext, generateContextAwareResponse, type UserContext } from '@/utils/contextAwareEngine';
 
 export const AnnetteIntegration: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isRevollverOpen, setIsRevollverOpen] = useState(false);
   const [hasShownIntro, setHasShownIntro] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
+  const [userContext, setUserContext] = useState<UserContext | null>(null);
   
   // DEBUG MODE: Temporarily enabled to fix visibility issue
   const isDevelopment = true; // Force enable for debugging
@@ -20,6 +22,18 @@ export const AnnetteIntegration: React.FC = () => {
   const { parseTicket, optimizeRoute, checkPrestige, recommendProvider, checkRebookingSuggestions } = useAnnetteDataQueries();
 
   useEffect(() => {
+    // Load user context on mount
+    const loadUserContext = async () => {
+      try {
+        const context = await getCanonContext();
+        setUserContext(context);
+      } catch (error) {
+        console.error('Error loading user context:', error);
+      }
+    };
+    
+    loadUserContext();
+    
     // Show onboarding intro on first load
     if (!hasShownIntro) {
       setTimeout(() => {
@@ -170,6 +184,7 @@ export const AnnetteIntegration: React.FC = () => {
         isOpen={isRevollverOpen}
         onClose={handleRevollverClose}
         onCommandSelect={handleRevollverCommand}
+        userContext={userContext}
       />
       
       {/* Debug Force-Rendered Revollver - Only in Development */}
@@ -178,6 +193,7 @@ export const AnnetteIntegration: React.FC = () => {
           isOpen={true}
           onClose={handleRevollverClose}
           onCommandSelect={handleRevollverCommand}
+          userContext={userContext}
           className="border-4 border-red-500/50"
         />
       )}
@@ -192,14 +208,17 @@ export const registerAnnetteEventBus = (handler: (action: string, context?: any)
   annetteEventBus = handler;
 };
 
-// Enhanced helper function with real data integration
+// Enhanced helper function with real data integration and context awareness
 export const triggerAnnetteAction = async (action: string, context?: any) => {
   let response: string;
   
   try {
-    // For data-heavy actions, we could use the hooks here, but since hooks can't be called
-    // outside components, we'll keep enhanced static responses that feel more dynamic
-    const responses = {
+    // Check if we have context-aware response available
+    if (context?.voiceLine) {
+      response = context.voiceLine;
+    } else {
+      // Fallback to static responses
+      const responses = {
       // 🧠 1st Cylinder — Core Actions
       parse_ticket: "Mmm… juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
       optimize_route: "Let's get strategic, sugar. Optimizing your steps! *route optimization activated* Efficiency just got a whole lot sexier! 🗺️",
@@ -232,15 +251,23 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
       show_help: "Help mode activated! I'm here to guide you through everything. What's got you puzzled? 💡"
     };
 
-    response = responses[action as keyof typeof responses] || "Task completed! How else can I help?";
+      response = responses[action as keyof typeof responses] || "Task completed! How else can I help?";
+    }
   } catch (error) {
     console.error('Error in triggerAnnetteAction:', error);
-    response = "Something went sideways, but I'm still here for you! Try asking me directly in chat. 💪";
+    response = context?.voiceLine || "Something went sideways, but I'm still here for you! Try asking me directly in chat. 💪";
   }
   
   // Use event bus if available (for BubbleChat integration)
   if (annetteEventBus) {
-    annetteEventBus(action, { response, context });
+    annetteEventBus(action, { 
+      response, 
+      context,
+      voiceLine: context?.voiceLine || response,
+      canonMetadata: context?.canonMetadata,
+      contextTags: context?.contextTags,
+      fromRevollver: context?.fromRevollver
+    });
   } else {
     // Fallback to toast
     toast("🤖 Annette says:", {

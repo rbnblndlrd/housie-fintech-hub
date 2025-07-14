@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
+import { generateContextAwareResponse, enhanceClipWithContext, type UserContext } from '@/utils/contextAwareEngine';
 import { useBroadcastConsent } from '@/hooks/useBroadcastConsent';
 import { useEchoBroadcast } from '@/hooks/useEchoBroadcast';
 import { useClipPreferences } from '@/hooks/useClipPreferences';
@@ -17,6 +18,7 @@ interface AnnetteRevollverProps {
   isOpen: boolean;
   onClose: () => void;
   onCommandSelect: (command: string, context?: any) => void;
+  userContext?: UserContext | null;
   className?: string;
 }
 
@@ -128,6 +130,7 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   isOpen,
   onClose,
   onCommandSelect,
+  userContext,
   className
 }) => {
   const [currentCylinder, setCurrentCylinder] = useState(0);
@@ -197,28 +200,41 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   };
 
   const handleClipClick = async (clip: ClipAction) => {
-    // Create Canon metadata for this action
-    const sourceData = { 
-      fromDatabase: ['top_connections', 'check_prestige', 'loyalty_stats'].includes(clip.action),
-      verified_data: true 
-    };
-    const canonMetadata = createCanonMetadata(clip.action, sourceData);
+    let contextAwareResponse;
     
-    // Enhance voice line with Canon context
-    const enhancedVoiceLine = getCanonEnhancedVoiceLine(
-      clip.voiceLine, 
-      canonMetadata,
-      // Mock specific data - in real implementation, this would come from actual queries
-      { topClient: 'Maria G.', earnedCount: 3, loyalClients: 'Your top 5', radius: '5km' }
-    );
+    // Use context-aware response if user context is available
+    if (userContext) {
+      contextAwareResponse = generateContextAwareResponse(clip.action, clip.voiceLine, userContext);
+    } else {
+      // Fallback to traditional Canon system
+      const sourceData = { 
+        fromDatabase: ['top_connections', 'check_prestige', 'loyalty_stats'].includes(clip.action),
+        verified_data: true 
+      };
+      const canonMetadata = createCanonMetadata(clip.action, sourceData);
+      
+      const enhancedVoiceLine = getCanonEnhancedVoiceLine(
+        clip.voiceLine, 
+        canonMetadata,
+        { topClient: 'Maria G.', earnedCount: 3, loyalClients: 'Your top 5', radius: '5km' }
+      );
+      
+      contextAwareResponse = {
+        voiceLine: enhancedVoiceLine,
+        canonMetadata,
+        contextTags: [],
+        flavorType: canonMetadata.trust
+      };
+    }
     
-    console.log(`🎤 Annette (${canonMetadata.trust}): "${enhancedVoiceLine}"`);
+    console.log(`🎤 Annette (${contextAwareResponse.flavorType}): "${contextAwareResponse.voiceLine}"`);
+    console.log(`📝 Context Tags: ${contextAwareResponse.contextTags.join(', ')}`);
     
     // Log the Canon entry
-    await logCanonEntry(canonMetadata, enhancedVoiceLine);
+    await logCanonEntry(contextAwareResponse.canonMetadata, contextAwareResponse.voiceLine);
     
     // Request Echo broadcast for Canon achievements
-    if (canonMetadata.trust === 'canon' && ['check_prestige', 'top_connections', 'loyalty_stats', 'view_stamps'].includes(clip.action)) {
+    if (contextAwareResponse.canonMetadata.trust === 'canon' && ['check_prestige', 'top_connections', 'loyalty_stats', 'view_stamps'].includes(clip.action)) {
       const sourceMap = {
         'check_prestige': 'prestige' as const,
         'top_connections': 'job' as const,
@@ -226,7 +242,7 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
         'view_stamps': 'stamp' as const
       };
       
-      requestEchoBroadcast(enhancedVoiceLine, canonMetadata, {
+      requestEchoBroadcast(contextAwareResponse.voiceLine, contextAwareResponse.canonMetadata, {
         source: sourceMap[clip.action as keyof typeof sourceMap] || 'custom',
         suggestedLocation: clip.action === 'check_prestige' ? 'profile' : 'city-board'
       });
@@ -234,11 +250,13 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     
     // Auto-launch Annette bubble with enhanced context
     onCommandSelect(clip.action, { 
-      voiceLine: enhancedVoiceLine,
+      voiceLine: contextAwareResponse.voiceLine,
       originalVoiceLine: clip.voiceLine,
       label: clip.label,
       clipId: clip.id,
-      canonMetadata
+      canonMetadata: contextAwareResponse.canonMetadata,
+      contextTags: contextAwareResponse.contextTags,
+      userContext
     });
     onClose();
   };

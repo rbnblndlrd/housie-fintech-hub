@@ -29,6 +29,7 @@ interface ChatMessage {
   timestamp: Date;
   action?: string;
   canonMetadata?: CanonMetadata;
+  contextTags?: string[];
 }
 
 interface AnnetteBubbleChatProps {
@@ -91,7 +92,8 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
           content: eventData.voiceLine,
           timestamp: new Date(),
           action,
-          canonMetadata: eventData.canonMetadata
+          canonMetadata: eventData.canonMetadata,
+          contextTags: eventData.contextTags
         };
         setMessages(prev => [...prev, voiceLineMessage]);
         
@@ -103,7 +105,8 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
             content: eventData?.response || "Action completed!",
             timestamp: new Date(),
             action,
-            canonMetadata: eventData.canonMetadata
+            canonMetadata: eventData.canonMetadata,
+            contextTags: eventData.contextTags
           };
           setMessages(prev => [...prev, systemMessage]);
         }, 1000);
@@ -328,28 +331,48 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                           : 'bg-muted/50 text-foreground'
                       )}
                     >
-                      {/* Canon Badge for Assistant Messages */}
-                      {(message.type === 'assistant' || message.type === 'system') && message.canonMetadata && (
-                        <div className="flex items-center space-x-2 mb-2">
-                          {message.canonMetadata.trust === 'canon' ? (
-                            <div 
-                              className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-green-500/10 text-green-700 border border-green-500/20 text-xs cursor-pointer hover:bg-green-500/20 transition-colors"
-                              onClick={() => setIsCanonLogOpen(true)}
-                              title="Click to view Canon Log"
-                            >
-                              ✅ <span>Canon</span>
-                            </div>
-                          ) : (
-                            <div 
-                              className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-orange-500/10 text-orange-700 border border-orange-500/20 text-xs cursor-pointer hover:bg-orange-500/20 transition-colors"
-                              onClick={() => setIsCanonLogOpen(true)}
-                              title="Click to view Canon Log"
-                            >
-                              🌀 <span>Non-Canon</span>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                       {/* Canon Badge and Context Tags for Assistant Messages */}
+                       {(message.type === 'assistant' || message.type === 'system') && message.canonMetadata && (
+                         <div className="flex items-center flex-wrap gap-1 mb-2">
+                           {message.canonMetadata.trust === 'canon' ? (
+                             <div 
+                               className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-green-500/10 text-green-700 border border-green-500/20 text-xs cursor-pointer hover:bg-green-500/20 transition-colors"
+                               onClick={() => setIsCanonLogOpen(true)}
+                               title="Click to view Canon Log"
+                             >
+                               ✅ <span>Canon</span>
+                             </div>
+                           ) : (
+                             <div 
+                               className="inline-flex items-center space-x-1 px-2 py-1 rounded-full bg-orange-500/10 text-orange-700 border border-orange-500/20 text-xs cursor-pointer hover:bg-orange-500/20 transition-colors"
+                               onClick={() => setIsCanonLogOpen(true)}
+                               title="Click to view Canon Log"
+                             >
+                               🌀 <span>Non-Canon</span>
+                             </div>
+                           )}
+                           
+                           {/* Context Tags */}
+                           {message.contextTags && message.contextTags.length > 0 && (
+                             <>
+                               {message.contextTags.slice(0, 3).map((tag, index) => (
+                                 <div 
+                                   key={index}
+                                   className="inline-flex items-center px-2 py-1 rounded-full bg-blue-500/10 text-blue-700 border border-blue-500/20 text-xs"
+                                   title={`Context: ${tag}`}
+                                 >
+                                   🏷️ {tag.replace(/_/g, ' ')}
+                                 </div>
+                               ))}
+                               {message.contextTags.length > 3 && (
+                                 <div className="inline-flex items-center px-2 py-1 rounded-full bg-gray-500/10 text-gray-700 border border-gray-500/20 text-xs">
+                                   +{message.contextTags.length - 3} more
+                                 </div>
+                               )}
+                             </>
+                           )}
+                         </div>
+                       )}
                       
                       <p className="whitespace-pre-wrap">{message.content}</p>
                       <p className="text-xs opacity-70 mt-1">
