@@ -52,8 +52,9 @@ export const AnnetteIntegration: React.FC = () => {
   }, [isChatOpen]);
 
   const handleAvatarClick = (e?: React.MouseEvent) => {
-    if (e?.ctrlKey || e?.metaKey || e?.type === 'contextmenu') {
-      // Long press or right-click opens Revollver
+    if (e?.type === 'contextmenu') {
+      // Right-click opens Revollver
+      e.preventDefault();
       setIsRevollverOpen(true);
     } else {
       // Regular click opens chat

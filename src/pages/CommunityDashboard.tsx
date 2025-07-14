@@ -14,6 +14,7 @@ import {
   Network as NetworkIcon,
   Zap
 } from 'lucide-react';
+import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 
 const CommunityDashboard = () => {
   const [activeTab, setActiveTab] = useState('discover');
@@ -57,6 +58,9 @@ const CommunityDashboard = () => {
       
       {/* Tactical HUD Anchor Card */}
       <NetworkMapAnchor />
+      
+      {/* Annette Assistant */}
+      <AnnetteIntegration />
     </>
   );
 };

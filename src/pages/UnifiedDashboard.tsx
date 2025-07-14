@@ -64,7 +64,6 @@ const UnifiedDashboard = () => {
         </div>
         
         <ProviderDashboard />
-        <ChatBubble />
       </>
     );
   }

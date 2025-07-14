@@ -22,6 +22,7 @@ import {
   Zap
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 
 const AnalyticsDashboard = () => {
   const [activeTab, setActiveTab] = useState('financial');
@@ -463,6 +464,9 @@ const AnalyticsDashboard = () => {
       
       {/* Tactical HUD Anchor Card */}
       <RevenueSparklineAnchor />
+      
+      {/* Annette Assistant */}
+      <AnnetteIntegration />
     </>
   );
 };

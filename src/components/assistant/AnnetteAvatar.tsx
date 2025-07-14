@@ -81,7 +81,7 @@ export const AnnetteAvatar: React.FC<AnnetteAvatarProps> = ({
       )}>
         <div className="flex flex-col items-center space-y-1">
           <div className="flex items-center space-x-1">
-            <span>Click me, sugar</span>
+            <span>Click for chat</span>
             <Sparkles className="h-3 w-3 text-yellow-400" />
           </div>
           <span className="text-xs opacity-75">Right-click for Revollver™</span>
