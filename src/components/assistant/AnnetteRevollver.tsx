@@ -21,54 +21,61 @@ interface ClipAction {
   context?: any;
 }
 
-// 🎡 CLIP DECK: 1st Cylinder — Core Actions
+// 🧠 CLIP DECK: 1st Cylinder — Core Actions
 const cylinder1: ClipAction[] = [
-  {
-    id: 'optimize-route',
-    icon: Compass,
-    label: 'Optimize Route',
-    voiceLine: "One click and your whole day falls in line.",
-    action: 'optimize_route'
-  },
   {
     id: 'parse-ticket',
     icon: FileText,
     label: 'Parse Ticket',
-    voiceLine: "Mmm... juicy. Let's dissect this one.",
+    voiceLine: "Mmm… juicy. Let's dissect this one.",
     action: 'parse_ticket'
+  },
+  {
+    id: 'optimize-route',
+    icon: Compass,
+    label: 'Optimize Route',
+    voiceLine: "Let's get strategic, sugar. Optimizing your steps!",
+    action: 'optimize_route'
   },
   {
     id: 'check-prestige',
     icon: Star,
-    label: 'Check My Prestige',
-    voiceLine: "Flex check: incoming.",
+    label: 'Check Prestige',
+    voiceLine: "Flex check: incoming. ✨ You're climbing like a boss!",
     action: 'check_prestige'
   },
   {
-    id: 'recommend-provider',
-    icon: Users,
-    label: 'Who Should I Hire?',
-    voiceLine: "Let me find someone who won't ghost you.",
-    action: 'recommend_provider'
-  },
-  {
-    id: 'show-route',
+    id: 'job-radar',
     icon: MapPin,
-    label: 'Show My Route',
-    voiceLine: "Zooming in on your destiny...",
-    action: 'show_map'
+    label: 'Job Radar',
+    voiceLine: "Ping ping. Canon says these are worth a peek.",
+    action: 'job_radar'
   },
   {
-    id: 'estimate-eta',
+    id: 'time-machine',
     icon: Clock,
-    label: "What's My ETA?",
-    voiceLine: "If I had wheels, you'd be there by now.",
-    action: 'estimate_eta'
+    label: 'Time Machine',
+    voiceLine: "Here's your time trail. You've been busy, haven't you?",
+    action: 'time_machine'
+  },
+  {
+    id: 'canon-log',
+    icon: Shield,
+    label: 'Canon Log',
+    voiceLine: "Want the truth, the whole truth, and nothing but Canon?",
+    action: 'canon_log'
   }
 ];
 
-// 🔄 CLIP DECK: 2nd Cylinder — Community & Broadcast  
+// 🤝 CLIP DECK: 2nd Cylinder — Community & Connections
 const cylinder2: ClipAction[] = [
+  {
+    id: 'top-connections',
+    icon: Users,
+    label: 'Top Connections',
+    voiceLine: "These folks adore you. And honestly, same.",
+    action: 'top_connections'
+  },
   {
     id: 'city-broadcast',
     icon: Radio,
@@ -103,13 +110,6 @@ const cylinder2: ClipAction[] = [
     label: 'Read My Reviews',
     voiceLine: "What do the people say? Let's eavesdrop.",
     action: 'read_reviews'
-  },
-  {
-    id: 'canon-log',
-    icon: Shield,
-    label: 'My Canon Log',
-    voiceLine: "This is all confirmed — stamped and sacred.",
-    action: 'canon_log'
   }
 ];
 
@@ -149,7 +149,13 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
 
   const handleClipClick = (clip: ClipAction) => {
     console.log(`🎤 Annette: "${clip.voiceLine}"`);
-    onCommandSelect(clip.action, clip.context);
+    
+    // Auto-launch Annette bubble with the voice line and trigger action
+    onCommandSelect(clip.action, { 
+      voiceLine: clip.voiceLine,
+      label: clip.label,
+      clipId: clip.id
+    });
     onClose();
   };
 
@@ -179,11 +185,15 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
       
       {/* Central Annette Hub */}
       <div className="relative">
-        {/* Central Avatar */}
+        {/* Central Avatar with dynamic glow */}
         <div className={cn(
-          "w-20 h-20 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 shadow-2xl",
+          "w-20 h-20 rounded-full shadow-2xl",
           "flex items-center justify-center border-4 border-white/30 relative z-10",
           "transition-all duration-300",
+          // Dynamic cylinder theming
+          currentCylinder === 0 
+            ? "bg-gradient-to-br from-orange-400 to-orange-600" 
+            : "bg-gradient-to-br from-purple-400 to-blue-600",
           isAnimating && "animate-pulse scale-110"
         )}>
           <img 
@@ -191,12 +201,25 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
             alt="Annette"
             className="w-14 h-14 rounded-full object-cover"
           />
+          
+          {/* Optional glow effect when active */}
+          <div className={cn(
+            "absolute inset-0 rounded-full opacity-30 animate-pulse",
+            currentCylinder === 0 
+              ? "bg-orange-400/40" 
+              : "bg-purple-400/40"
+          )} />
         </div>
         
-        {/* Cylinder indicator */}
+        {/* Cylinder indicator with theme */}
         <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 z-10">
-          <div className="bg-black/70 backdrop-blur-sm rounded-full px-4 py-2 text-white font-medium text-sm">
-            Cylinder {currentCylinder + 1}/2
+          <div className={cn(
+            "backdrop-blur-sm rounded-full px-4 py-2 text-white font-medium text-sm transition-all duration-300",
+            currentCylinder === 0 
+              ? "bg-orange-500/80" 
+              : "bg-purple-500/80"
+          )}>
+            {currentCylinder === 0 ? "🧠 Core Actions" : "🤝 Community"} ({currentCylinder + 1}/2)
           </div>
         </div>
 
@@ -230,8 +253,16 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
                 "w-14 h-14 rounded-full backdrop-blur-md shadow-xl",
                 "flex items-center justify-center border-2 transition-all duration-200",
                 "bg-white/15 border-white/30 hover:bg-white/25 hover:border-white/50",
-                "hover:shadow-2xl hover:shadow-orange-500/20",
-                isHovered && "bg-white/30 border-white/60 shadow-2xl shadow-orange-500/30"
+                // Dynamic hover glow based on cylinder
+                currentCylinder === 0 
+                  ? "hover:shadow-2xl hover:shadow-orange-500/20" 
+                  : "hover:shadow-2xl hover:shadow-purple-500/20",
+                isHovered && cn(
+                  "bg-white/30 border-white/60 shadow-2xl",
+                  currentCylinder === 0 
+                    ? "shadow-orange-500/30" 
+                    : "shadow-purple-500/30"
+                )
               )}>
                 <clip.icon className={cn(
                   "w-7 h-7 transition-all duration-200",
@@ -239,9 +270,14 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
                   isHovered && "text-orange-100 scale-110"
                 )} />
                 
-                {/* Glow effect on hover */}
+                {/* Dynamic glow effect on hover */}
                 {isHovered && (
-                  <div className="absolute inset-0 rounded-full bg-orange-400/20 animate-pulse" />
+                  <div className={cn(
+                    "absolute inset-0 rounded-full animate-pulse",
+                    currentCylinder === 0 
+                      ? "bg-orange-400/20" 
+                      : "bg-purple-400/20"
+                  )} />
                 )}
               </div>
               
@@ -249,7 +285,10 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
               {isHovered && (
                 <div className="absolute top-full mt-3 left-1/2 transform -translate-x-1/2 animate-fade-in pointer-events-none z-30">
                   <div className="bg-black/90 backdrop-blur-sm rounded-lg px-4 py-3 text-white text-center shadow-2xl border border-white/20 min-w-[200px]">
-                    <div className="font-bold text-orange-300 text-sm mb-1">
+                    <div className={cn(
+                      "font-bold text-sm mb-1",
+                      currentCylinder === 0 ? "text-orange-300" : "text-purple-300"
+                    )}>
                       {clip.label}
                     </div>
                     <div className="text-xs text-white/80 italic leading-relaxed">

@@ -83,13 +83,17 @@ export const AnnetteIntegration: React.FC = () => {
   };
 
   const handleRevollverCommand = async (command: string, context?: any) => {
-    // Close Revollver and open chat with the command
+    // Close Revollver and auto-launch chat
     setIsRevollverOpen(false);
     setIsChatOpen(true);
     setHasNewMessage(false);
     
-    // Trigger the action and open chat with response
-    await triggerAnnetteAction(command, context);
+    // Trigger the action with enhanced context
+    await triggerAnnetteAction(command, {
+      ...context,
+      fromRevollver: true,
+      autoLaunched: true
+    });
   };
 
   const handleRevollverClose = () => {
@@ -196,21 +200,21 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
     // For data-heavy actions, we could use the hooks here, but since hooks can't be called
     // outside components, we'll keep enhanced static responses that feel more dynamic
     const responses = {
-      // 🎡 1st Cylinder — Core Actions
-      optimize_route: "One click and your whole day falls in line. *route optimization activated* Check your map — efficiency just got sexy! 🗺️",
-      parse_ticket: "Mmm... juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
-      check_prestige: "Flex check: incoming. *scanning prestige metrics* Sugar, you're climbing those ranks like a boss! ✨",
-      recommend_provider: "Let me find someone who won't ghost you. *provider matching algorithm engaged* I've got stellar recommendations based on your history! ⚡",
-      show_map: "Zooming in on your destiny... *map overlay activated* Today's territory is laid out nice. Time to claim your domain! 🗺️",
-      estimate_eta: "If I had wheels, you'd be there by now. *calculating optimal route* ETA calculated with traffic patterns and your style! ⏱️",
+      // 🧠 1st Cylinder — Core Actions
+      parse_ticket: "Mmm… juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
+      optimize_route: "Let's get strategic, sugar. Optimizing your steps! *route optimization activated* Efficiency just got a whole lot sexier! 🗺️",
+      check_prestige: "Flex check: incoming. ✨ You're climbing like a boss! *scanning prestige metrics* Those achievements are looking absolutely gorgeous! ⭐",
+      job_radar: "Ping ping. Canon says these are worth a peek. *scanning nearby opportunities* Fresh jobs detected in your radius! 📍",
+      time_machine: "Here's your time trail. You've been busy, haven't you? *loading performance history* Your productivity graph is looking stellar! ⏰",
+      canon_log: "Want the truth, the whole truth, and nothing but Canon? *accessing verified Canon entries* Every entry here is gospel truth! 🔐",
       
-      // 🔄 2nd Cylinder — Community & Broadcast
+      // 🤝 2nd Cylinder — Community & Connections
+      top_connections: "These folks adore you. And honestly, same. *analyzing repeat client data* Your VIP list is looking absolutely gorgeous! 👥",
       city_broadcast: "Here's what's echoing across town... *accessing city broadcast feed* The pulse of the city, delivered fresh! 📡",
       view_stamps: "Look at all that recognition, darling. *loading achievement stamps* Your reputation is literally stamped with approval! 🔖",
       loyalty_stats: "Faithful ones come back fast — here's proof. *analyzing loyalty patterns* These numbers tell a beautiful story! 🫂",
       map_history: "Let's retrace those glorious steps. *loading footprint analysis* Every move mapped, every achievement tracked! 🔎",
       read_reviews: "What do the people say? Let's eavesdrop. *scanning review database* The verdict is in, and it's looking good! 💬",
-      canon_log: "This is all confirmed — stamped and sacred. *accessing verified Canon entries* Every entry here is gospel truth! 🔐",
       
       // Legacy actions (backwards compatibility)
       view_bookings: "Calendar wizard mode engaged! Time slots analyzed, preferences noted. Pop into chat and ask me about your best scheduling options! 📅",

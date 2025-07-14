@@ -74,18 +74,41 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
     isLoading: dataLoading 
   } = useAnnetteDataQueries();
 
-  // Register event bus for platform actions
+  // Register event bus for platform actions (including Revollver)
   useEffect(() => {
     const handlePlatformEvent = (action: string, eventData?: any) => {
-      const systemMessage: ChatMessage = {
-        id: `system-${Date.now()}`,
-        type: 'system',
-        content: eventData?.response || "Platform action triggered",
-        timestamp: new Date(),
-        action
-      };
-      
-      setMessages(prev => [...prev, systemMessage]);
+      // If triggered from Revollver, show the voice line immediately
+      if (eventData?.fromRevollver && eventData?.voiceLine) {
+        const voiceLineMessage: ChatMessage = {
+          id: `voice-${Date.now()}`,
+          type: 'assistant',
+          content: eventData.voiceLine,
+          timestamp: new Date(),
+          action
+        };
+        setMessages(prev => [...prev, voiceLineMessage]);
+        
+        // Follow up with the system response after a brief delay
+        setTimeout(() => {
+          const systemMessage: ChatMessage = {
+            id: `system-${Date.now()}`,
+            type: 'assistant',
+            content: eventData?.response || "Action completed!",
+            timestamp: new Date(),
+            action
+          };
+          setMessages(prev => [...prev, systemMessage]);
+        }, 1000);
+      } else {
+        const systemMessage: ChatMessage = {
+          id: `system-${Date.now()}`,
+          type: 'assistant',
+          content: eventData?.response || "Platform action triggered",
+          timestamp: new Date(),
+          action
+        };
+        setMessages(prev => [...prev, systemMessage]);
+      }
     };
 
     registerAnnetteEventBus(handlePlatformEvent);
