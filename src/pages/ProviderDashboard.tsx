@@ -51,6 +51,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
 import JobDetailView from '@/components/dashboard/JobDetailView';
+import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
@@ -1570,6 +1571,9 @@ const ProviderDashboard = () => {
           onBack={() => setShowJobDetail(false)}
         />
       )}
+      
+      {/* Annette Assistant */}
+      <AnnetteIntegration />
     </>
   );
 };

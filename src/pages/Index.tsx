@@ -6,6 +6,7 @@ import OnboardingCards from '@/components/home/OnboardingCards';
 import { PricingSection } from '@/components/PricingSection';
 import HousieFooter from '@/components/home/HousieFooter';
 import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
+import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 
 const Index = () => {
   console.log('🏠 Index page rendering with fall hero section...');
@@ -34,6 +35,9 @@ const Index = () => {
         {/* Footer */}
         <HousieFooter />
       </div>
+      
+      {/* Annette Assistant */}
+      <AnnetteIntegration />
     </>
   );
 };
