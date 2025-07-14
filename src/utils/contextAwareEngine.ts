@@ -1,6 +1,8 @@
 // Context-Aware Revollver™ Intelligence Engine
 import { supabase } from '@/integrations/supabase/client';
 import { type CanonMetadata, createCanonMetadata, getCanonEnhancedVoiceLine } from './canonHelper';
+import { type ClipDefinition, type ContextVariant, getClipDefinition } from '@/types/clipDefinitions';
+import { logAnnetteCanonInsight } from './annetteCanonLog';
 
 export interface UserContext {
   // Booking Activity
@@ -167,9 +169,66 @@ function getDefaultContext(): UserContext {
 }
 
 /**
- * Generates context-aware voice lines and responses
+ * Enhanced context-aware response generation using structured clip definitions
  */
-export function generateContextAwareResponse(
+export async function generateContextAwareResponse(
+  command: string,
+  originalVoiceLine: string,
+  context: UserContext,
+  clipId?: string
+): Promise<ContextAwareResponse> {
+  const contextTags = buildContextTags(context);
+  
+  // Try to use enhanced clip definition if available
+  let voiceLine = originalVoiceLine;
+  let canonStatus: 'canon' | 'non_canon' = 'non_canon';
+  
+  if (clipId) {
+    const clipDefinition = getClipDefinition(clipId);
+    if (clipDefinition) {
+      const matchedVariant = findBestContextMatch(clipDefinition.contextVariants, context);
+      if (matchedVariant) {
+        voiceLine = matchedVariant.line;
+        canonStatus = matchedVariant.canonStatus || 'non_canon';
+      } else {
+        voiceLine = clipDefinition.defaultLine;
+      }
+    }
+  }
+  
+  const sourceData = {
+    fromDatabase: canonStatus === 'canon',
+    verified_data: canonStatus === 'canon',
+    context
+  };
+  
+  const canonMetadata = createCanonMetadata(command, sourceData);
+  canonMetadata.trust = canonStatus; // Override with context-determined status
+  
+  // Log the Canon insight
+  if (clipId) {
+    await logAnnetteCanonInsight({
+      userId: '', // Will be filled by the logging function
+      clipId,
+      canonStatus,
+      triggeredContext: context,
+      voiceLine,
+      contextTags
+    });
+  }
+  
+  return {
+    voiceLine,
+    canonMetadata,
+    contextTags,
+    flavorType: canonStatus
+  };
+}
+
+/**
+ * Legacy context-aware response generation (for backward compatibility)
+ */
+export function generateContextAwareResponseSync(
   command: string,
   originalVoiceLine: string,
   context: UserContext
@@ -376,6 +435,82 @@ function getJobTypeResponse(command: string, jobType: string, canonLevel: 'canon
   }
   
   return null;
+}
+
+/**
+ * Finds the best matching context variant for a clip
+ */
+function findBestContextMatch(variants: ContextVariant[], context: UserContext): ContextVariant | null {
+  if (!variants.length) return null;
+  
+  let bestMatch: ContextVariant | null = null;
+  let bestScore = 0;
+  
+  for (const variant of variants) {
+    let score = 0;
+    let totalChecks = 0;
+    
+    // Check prestige tier match
+    if (variant.match.prestigeTier !== undefined) {
+      totalChecks++;
+      if (variant.match.prestigeTier === context.prestigeRank) {
+        score += 2; // High weight for exact prestige match
+      } else if (Math.abs(variant.match.prestigeTier - context.prestigeRank) <= 1) {
+        score += 1; // Partial match for nearby tiers
+      }
+    }
+    
+    // Check user mode match
+    if (variant.match.userMode) {
+      totalChecks++;
+      if (variant.match.userMode === context.userMode) {
+        score += 2;
+      }
+    }
+    
+    // Check equipped title match
+    if (variant.match.equippedTitle) {
+      totalChecks++;
+      if (context.equippedTitle?.name.toLowerCase().includes(variant.match.equippedTitle.toLowerCase())) {
+        score += 3; // Very high weight for title match
+      }
+    }
+    
+    // Check upcoming jobs
+    if (variant.match.upcomingJobsToday !== undefined) {
+      totalChecks++;
+      if (variant.match.upcomingJobsToday === context.upcomingSlots.length) {
+        score += 2;
+      }
+    }
+    
+    // Check total bookings today
+    if (variant.match.totalBookingsToday !== undefined) {
+      totalChecks++;
+      if (variant.match.totalBookingsToday <= context.totalBookingsToday) {
+        score += 1;
+      }
+    }
+    
+    // Check last job type
+    if (variant.match.lastJobType) {
+      totalChecks++;
+      if (context.lastJobType?.toLowerCase().includes(variant.match.lastJobType.toLowerCase())) {
+        score += 2;
+      }
+    }
+    
+    // Calculate match percentage
+    const matchPercentage = totalChecks > 0 ? score / (totalChecks * 2) : 0;
+    
+    // Update best match if this is better (require at least 50% match)
+    if (matchPercentage >= 0.5 && score > bestScore) {
+      bestMatch = variant;
+      bestScore = score;
+    }
+  }
+  
+  return bestMatch;
 }
 
 /**

@@ -4,7 +4,7 @@ import { AnnetteBubbleChat } from './AnnetteBubbleChat';
 import { AnnetteRevollver } from './AnnetteRevollver';
 import { toast } from 'sonner';
 import { useAnnetteDataQueries } from '@/hooks/useAnnetteDataQueries';
-import { getCanonContext, generateContextAwareResponse, type UserContext } from '@/utils/contextAwareEngine';
+import { getCanonContext, generateContextAwareResponse, generateContextAwareResponseSync, type UserContext } from '@/utils/contextAwareEngine';
 
 export const AnnetteIntegration: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);

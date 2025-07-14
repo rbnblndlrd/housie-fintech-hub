@@ -7,6 +7,7 @@ import {
 import { cn } from '@/lib/utils';
 import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
 import { generateContextAwareResponse, enhanceClipWithContext, type UserContext } from '@/utils/contextAwareEngine';
+import { getClipDefinition, enhancedClipDefinitions } from '@/types/clipDefinitions';
 import { useBroadcastConsent } from '@/hooks/useBroadcastConsent';
 import { useEchoBroadcast } from '@/hooks/useEchoBroadcast';
 import { useClipPreferences } from '@/hooks/useClipPreferences';
@@ -202,9 +203,14 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   const handleClipClick = async (clip: ClipAction) => {
     let contextAwareResponse;
     
-    // Use context-aware response if user context is available
+    // Use enhanced context-aware response if user context is available
     if (userContext) {
-      contextAwareResponse = generateContextAwareResponse(clip.action, clip.voiceLine, userContext);
+      contextAwareResponse = await generateContextAwareResponse(
+        clip.action, 
+        clip.voiceLine, 
+        userContext, 
+        clip.id // Pass clip ID for enhanced definition lookup
+      );
     } else {
       // Fallback to traditional Canon system
       const sourceData = { 
@@ -227,8 +233,9 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
       };
     }
     
-    console.log(`🎤 Annette (${contextAwareResponse.flavorType}): "${contextAwareResponse.voiceLine}"`);
+    console.log(`🎤 Annette (${contextAwareResponse.flavorType.toUpperCase()}): "${contextAwareResponse.voiceLine}"`);
     console.log(`📝 Context Tags: ${contextAwareResponse.contextTags.join(', ')}`);
+    console.log(`🎯 Clip Definition: ${getClipDefinition(clip.id) ? 'Enhanced' : 'Legacy'}`);
     
     // Log the Canon entry
     await logCanonEntry(contextAwareResponse.canonMetadata, contextAwareResponse.voiceLine);
@@ -256,7 +263,8 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
       clipId: clip.id,
       canonMetadata: contextAwareResponse.canonMetadata,
       contextTags: contextAwareResponse.contextTags,
-      userContext
+      userContext,
+      fromRevollver: true // Flag for enhanced integration
     });
     onClose();
   };
