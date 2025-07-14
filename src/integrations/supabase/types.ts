@@ -3264,6 +3264,36 @@ export type Database = {
         }
         Relationships: []
       }
+      user_clip_preferences: {
+        Row: {
+          clip_id: string
+          created_at: string
+          id: string
+          is_favorited: boolean
+          order_index: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          clip_id: string
+          created_at?: string
+          id?: string
+          is_favorited?: boolean
+          order_index?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          clip_id?: string
+          created_at?: string
+          id?: string
+          is_favorited?: boolean
+          order_index?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_credits: {
         Row: {
           created_at: string | null

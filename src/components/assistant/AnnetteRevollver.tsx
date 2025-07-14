@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Compass, FileText, Star, Users, MapPin, Clock,
-  Radio, Bookmark, Users2, Search, MessageSquare, Shield
+  Radio, Bookmark, Users2, Search, MessageSquare, Shield,
+  Settings, Heart
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
 import { useBroadcastConsent } from '@/hooks/useBroadcastConsent';
 import { useEchoBroadcast } from '@/hooks/useEchoBroadcast';
+import { useClipPreferences } from '@/hooks/useClipPreferences';
 import BroadcastConsentModal from '@/components/broadcast/BroadcastConsentModal';
 import { EchoBroadcastModal } from '@/components/canon/EchoBroadcastModal';
+import { ClipManagerModal } from '@/components/revollver/ClipManagerModal';
 
 interface AnnetteRevollverProps {
   isOpen: boolean;
@@ -119,7 +122,7 @@ const cylinder2: ClipAction[] = [
   }
 ];
 
-const cylinders = [cylinder1, cylinder2];
+const allClips = [...cylinder1, ...cylinder2];
 
 export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   isOpen,
@@ -130,6 +133,8 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
   const [currentCylinder, setCurrentCylinder] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const [hoveredClip, setHoveredClip] = useState<string | null>(null);
+  const [showClipManager, setShowClipManager] = useState(false);
+  const [showFavoriteAction, setShowFavoriteAction] = useState<string | null>(null);
   
   // Broadcast consent functionality
   const {
@@ -149,6 +154,15 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     closeBroadcastModal
   } = useEchoBroadcast();
 
+  // Clip preferences functionality
+  const {
+    favorites,
+    isLoading: preferencesLoading,
+    toggleFavorite,
+    updateOrder,
+    isFavorited
+  } = useClipPreferences();
+
   useEffect(() => {
     if (isOpen) {
       setIsAnimating(true);
@@ -162,13 +176,24 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     spinCylinder();
   };
 
+  const getCylinders = () => {
+    // Create custom cylinder from favorites
+    const customCylinder = favorites
+      .map(fav => allClips.find(clip => clip.id === fav.clip_id))
+      .filter(Boolean) as ClipAction[];
+    
+    return [cylinder1, cylinder2, customCylinder];
+  };
+
   const spinCylinder = () => {
+    const cylinders = getCylinders();
     setCurrentCylinder((prev) => (prev + 1) % cylinders.length);
     setIsAnimating(true);
     setTimeout(() => setIsAnimating(false), 400);
     
     // Voice line on spin
-    console.log("🎯 Annette: Spinning the clip... ready for your next move?");
+    const cylinderNames = ["Core Actions", "Community", "Custom"];
+    console.log(`🎯 Annette: Spinning to ${cylinderNames[currentCylinder]}... ready for your next move?`);
   };
 
   const handleClipClick = async (clip: ClipAction) => {
@@ -224,9 +249,23 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
     }
   };
 
+  const handleClipRightClick = (e: React.MouseEvent, clipId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowFavoriteAction(clipId);
+    setTimeout(() => setShowFavoriteAction(null), 2000);
+  };
+
+  const handleCenterClick = () => {
+    if (currentCylinder === 2) {
+      setShowClipManager(true);
+    }
+  };
+
   if (!isOpen) return null;
 
-  const currentClips = cylinders[currentCylinder];
+  const cylinders = getCylinders();
+  const currentClips = cylinders[currentCylinder] || [];
   const radius = 140;
   const angleStep = (2 * Math.PI) / currentClips.length;
 
@@ -245,28 +284,43 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
       {/* Central Annette Hub */}
       <div className="relative">
         {/* Central Avatar with dynamic glow */}
-        <div className={cn(
-          "w-20 h-20 rounded-full shadow-2xl",
-          "flex items-center justify-center border-4 border-white/30 relative z-10",
-          "transition-all duration-300",
-          // Dynamic cylinder theming
-          currentCylinder === 0 
-            ? "bg-gradient-to-br from-orange-400 to-orange-600" 
-            : "bg-gradient-to-br from-purple-400 to-blue-600",
-          isAnimating && "animate-pulse scale-110"
-        )}>
+        <div 
+          className={cn(
+            "w-20 h-20 rounded-full shadow-2xl cursor-pointer",
+            "flex items-center justify-center border-4 border-white/30 relative z-10",
+            "transition-all duration-300",
+            // Dynamic cylinder theming
+            currentCylinder === 0 
+              ? "bg-gradient-to-br from-orange-400 to-orange-600" 
+              : currentCylinder === 1
+              ? "bg-gradient-to-br from-purple-400 to-blue-600"
+              : "bg-gradient-to-br from-yellow-400 to-purple-600",
+            isAnimating && "animate-pulse scale-110",
+            currentCylinder === 2 && "hover:scale-105"
+          )}
+          onClick={handleCenterClick}
+        >
           <img 
             src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
             alt="Annette"
             className="w-14 h-14 rounded-full object-cover"
           />
           
+          {/* Settings icon for custom cylinder */}
+          {currentCylinder === 2 && (
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full flex items-center justify-center shadow-lg">
+              <Settings className="w-3 h-3 text-purple-600" />
+            </div>
+          )}
+          
           {/* Optional glow effect when active */}
           <div className={cn(
             "absolute inset-0 rounded-full opacity-30 animate-pulse",
             currentCylinder === 0 
               ? "bg-orange-400/40" 
-              : "bg-purple-400/40"
+              : currentCylinder === 1
+              ? "bg-purple-400/40"
+              : "bg-yellow-400/40"
           )} />
         </div>
         
@@ -276,11 +330,29 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
             "backdrop-blur-sm rounded-full px-4 py-2 text-white font-medium text-sm transition-all duration-300",
             currentCylinder === 0 
               ? "bg-orange-500/80" 
-              : "bg-purple-500/80"
+              : currentCylinder === 1
+              ? "bg-purple-500/80"
+              : "bg-yellow-500/80"
           )}>
-            {currentCylinder === 0 ? "🧠 Core Actions" : "🤝 Community"} ({currentCylinder + 1}/2)
+            {currentCylinder === 0 
+              ? "🧠 Core Actions" 
+              : currentCylinder === 1 
+              ? "🤝 Community" 
+              : `⭐️ Custom (${currentClips.length}/7)`
+            } ({currentCylinder + 1}/3)
           </div>
         </div>
+
+        {/* Empty state for custom cylinder */}
+        {currentCylinder === 2 && currentClips.length === 0 && (
+          <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center z-20">
+            <div className="bg-black/70 backdrop-blur-sm rounded-lg px-6 py-4 text-white">
+              <Star className="w-8 h-8 mx-auto mb-2 text-yellow-400" />
+              <p className="text-sm font-medium mb-1">Customize your Revollver™</p>
+              <p className="text-xs text-white/80">Right-click any clip to favorite it</p>
+            </div>
+          </div>
+        )}
 
         {/* Clip Actions */}
         {currentClips.map((clip, index) => {
@@ -288,6 +360,8 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
           const x = Math.cos(angle) * radius;
           const y = Math.sin(angle) * radius;
           const isHovered = hoveredClip === clip.id;
+          const isFav = isFavorited(clip.id);
+          const showFavAction = showFavoriteAction === clip.id;
           
           return (
             <div
@@ -306,28 +380,43 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
               onMouseEnter={() => setHoveredClip(clip.id)}
               onMouseLeave={() => setHoveredClip(null)}
               onClick={() => handleClipClick(clip)}
+              onContextMenu={(e) => handleClipRightClick(e, clip.id)}
             >
               {/* Clip Icon */}
               <div className={cn(
-                "w-14 h-14 rounded-full backdrop-blur-md shadow-xl",
+                "w-14 h-14 rounded-full backdrop-blur-md shadow-xl relative",
                 "flex items-center justify-center border-2 transition-all duration-200",
                 "bg-white/15 border-white/30 hover:bg-white/25 hover:border-white/50",
                 // Dynamic hover glow based on cylinder
                 currentCylinder === 0 
                   ? "hover:shadow-2xl hover:shadow-orange-500/20" 
-                  : "hover:shadow-2xl hover:shadow-purple-500/20",
+                  : currentCylinder === 1
+                  ? "hover:shadow-2xl hover:shadow-purple-500/20"
+                  : "hover:shadow-2xl hover:shadow-yellow-500/20",
                 isHovered && cn(
                   "bg-white/30 border-white/60 shadow-2xl",
                   currentCylinder === 0 
                     ? "shadow-orange-500/30" 
-                    : "shadow-purple-500/30"
-                )
+                    : currentCylinder === 1
+                    ? "shadow-purple-500/30"
+                    : "shadow-yellow-500/30"
+                ),
+                // Favorite glow
+                isFav && "ring-2 ring-yellow-400/50 bg-yellow-100/20"
               )}>
                 <clip.icon className={cn(
                   "w-7 h-7 transition-all duration-200",
                   "text-white",
-                  isHovered && "text-orange-100 scale-110"
+                  isHovered && "text-orange-100 scale-110",
+                  isFav && "text-yellow-200"
                 )} />
+                
+                {/* Favorite star indicator */}
+                {isFav && (
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <Star className="w-2 h-2 text-yellow-900 fill-current" />
+                  </div>
+                )}
                 
                 {/* Dynamic glow effect on hover */}
                 {isHovered && (
@@ -335,10 +424,40 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
                     "absolute inset-0 rounded-full animate-pulse",
                     currentCylinder === 0 
                       ? "bg-orange-400/20" 
-                      : "bg-purple-400/20"
+                      : currentCylinder === 1
+                      ? "bg-purple-400/20"
+                      : "bg-yellow-400/20"
                   )} />
                 )}
               </div>
+              
+              {/* Favorite action popup */}
+              {showFavAction && (
+                <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 animate-fade-in z-30">
+                  <div 
+                    className="bg-black/90 backdrop-blur-sm rounded-lg px-3 py-2 text-white text-xs cursor-pointer hover:bg-black/95 transition-colors border border-yellow-400/50"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleFavorite(clip.id);
+                      setShowFavoriteAction(null);
+                    }}
+                  >
+                    <div className="flex items-center gap-2">
+                      {isFav ? (
+                        <>
+                          <Heart className="w-3 h-3 text-red-400" />
+                          <span>Unfavorite</span>
+                        </>
+                      ) : (
+                        <>
+                          <Star className="w-3 h-3 text-yellow-400" />
+                          <span>Favorite</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
               
               {/* Clip Label with Voice Line Preview */}
               {isHovered && (
@@ -366,7 +485,7 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
       {/* Instructions */}
       <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-10">
         <div className="bg-black/70 backdrop-blur-sm rounded-lg px-6 py-3 text-white/90 text-center text-sm">
-          Right-click to spin the clip • Click outside to close
+          Right-click to spin • Right-click clips to ⭐️ • {currentCylinder === 2 ? "Click center to manage" : "Click outside to close"}
         </div>
       </div>
 
@@ -393,6 +512,17 @@ export const AnnetteRevollver: React.FC<AnnetteRevollverProps> = ({
           suggestedLocation={pendingEcho.suggestedLocation}
         />
       )}
+
+      {/* Clip Manager Modal */}
+      <ClipManagerModal
+        isOpen={showClipManager}
+        onClose={() => setShowClipManager(false)}
+        favorites={favorites}
+        allClips={allClips}
+        onToggleFavorite={toggleFavorite}
+        onUpdateOrder={updateOrder}
+        isFavorited={isFavorited}
+      />
     </div>
   );
 };
