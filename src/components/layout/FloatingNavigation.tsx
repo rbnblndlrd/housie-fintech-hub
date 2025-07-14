@@ -8,7 +8,7 @@ const FloatingNavigation = () => {
 
   const menuItems = [
     { label: 'Services', href: '/services' },
-    { label: 'Community', href: '/community' },
+    { label: 'Community', href: '/community-dashboard' },
     { label: 'Us vs Them', href: '/competitive-advantage' },
     { label: 'Help Center', href: '/help' },
   ];

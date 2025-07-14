@@ -40,7 +40,7 @@ export const usePageContext = (): PageContext => {
     }
 
     // Community Dashboard - Prestige Mentor
-    if (path === '/community-dashboard' || path === '/community') {
+    if (path === '/community-dashboard') {
       return {
         pageType: 'community-dashboard',
         context: "You're viewing the community dashboard. I can help with title progress, network connections, and prestige tracking.",

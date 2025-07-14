@@ -105,7 +105,7 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/services" element={<Services />} />
                   <Route path="/analytics" element={<AnalyticsDashboard />} />
-                  <Route path="/community" element={<CommunityDashboard />} />
+                  
                   <Route path="/community-dashboard" element={<CommunityDashboard />} />
                   <Route path="/prestige" element={<Prestige />} />
                   <Route path="/business-insights" element={<BusinessInsights />} />

@@ -21,7 +21,7 @@ export const customerNav: NavigationItem[] = [
   { label: "Board", href: "/service-board", icon: "📋" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
-  { label: "Community", href: "/community", icon: "👥" },
+  { label: "Community", href: "/community-dashboard", icon: "👥" },
   { label: "Map", href: "/gps", icon: "🗺️" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
   { label: "Help Center", href: "/help", icon: "❓" }
@@ -32,7 +32,7 @@ export const providerNav: NavigationItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: "🛠️" },
   { label: "Find Services", href: "/services", icon: "🔍" },
   { label: "Calendar", href: "/calendar", icon: "📅" },
-  { label: "Community", href: "/community", icon: "👥" },
+  { label: "Community", href: "/community-dashboard", icon: "👥" },
   { label: "Map", href: "/gps", icon: "🗺️" },
   { label: "Analytics", href: "/analytics-dashboard", icon: "📈" },
   { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
