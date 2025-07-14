@@ -2227,6 +2227,92 @@ export type Database = {
         }
         Relationships: []
       }
+      prestige_progress: {
+        Row: {
+          canon_verified: boolean
+          completed_at: string | null
+          created_at: string
+          equipped: boolean
+          id: string
+          progress_data: Json
+          title_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          canon_verified?: boolean
+          completed_at?: string | null
+          created_at?: string
+          equipped?: boolean
+          id?: string
+          progress_data?: Json
+          title_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          canon_verified?: boolean
+          completed_at?: string | null
+          created_at?: string
+          equipped?: boolean
+          id?: string
+          progress_data?: Json
+          title_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prestige_progress_title_id_fkey"
+            columns: ["title_id"]
+            isOneToOne: false
+            referencedRelation: "prestige_titles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prestige_titles: {
+        Row: {
+          canon_sources: string[]
+          category: string
+          created_at: string
+          flavor_text: string
+          icon: string
+          id: string
+          is_active: boolean
+          name: string
+          requirements: Json
+          tier: number
+          updated_at: string
+        }
+        Insert: {
+          canon_sources?: string[]
+          category: string
+          created_at?: string
+          flavor_text: string
+          icon: string
+          id: string
+          is_active?: boolean
+          name: string
+          requirements?: Json
+          tier?: number
+          updated_at?: string
+        }
+        Update: {
+          canon_sources?: string[]
+          category?: string
+          created_at?: string
+          flavor_text?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          requirements?: Json
+          tier?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       provider_profiles: {
         Row: {
           achievement_badges: Json | null
@@ -3803,6 +3889,10 @@ export type Database = {
         }
         Returns: Json
       }
+      equip_title: {
+        Args: { p_user_id: string; p_title_id: string }
+        Returns: boolean
+      }
       evaluate_stamp_triggers: {
         Args: { p_user_id: string; p_job_id: string }
         Returns: {
@@ -3826,6 +3916,15 @@ export type Database = {
       get_emergency_status: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_equipped_title: {
+        Args: { p_user_id: string }
+        Returns: {
+          title_id: string
+          title_name: string
+          icon: string
+          flavor_text: string
+        }[]
       }
       get_latest_emergency_controls: {
         Args: Record<PropertyKey, never>
@@ -3948,6 +4047,15 @@ export type Database = {
       update_daily_spend: {
         Args: { spend_amount: number }
         Returns: boolean
+      }
+      update_prestige_progress: {
+        Args: {
+          p_user_id: string
+          p_title_id: string
+          p_progress_data: Json
+          p_canon_verified?: boolean
+        }
+        Returns: string
       }
       update_shop_points: {
         Args: { p_user_id: string }
