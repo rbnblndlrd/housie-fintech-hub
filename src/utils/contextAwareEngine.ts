@@ -13,6 +13,9 @@ export interface UserContext {
   equippedTitle?: PrestigeTitle;
   prestigeRank: number;
   
+  // Equipped Stamps (Medal Display)
+  equippedStamps: EquippedStamp[];
+  
   // User Mode
   userMode: 'provider' | 'crew_leader' | 'customer' | 'coordinator';
   
@@ -23,6 +26,12 @@ export interface UserContext {
   // Location & Activity
   currentLocation?: string;
   activeRadius: number;
+}
+
+export interface EquippedStamp {
+  stampId: string;
+  position: number;
+  equippedAt: string;
 }
 
 export interface BookingSlot {
@@ -113,6 +122,10 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       .order('completed_at', { ascending: false })
       .limit(10);
 
+    // Get equipped stamps
+    const { data: equippedStampsData } = await supabase
+      .rpc('get_user_equipped_stamps', { p_user_id: userId });
+
     // Calculate prestige rank (simplified)
     const { data: prestigeProgress } = await supabase
       .from('prestige_progress')
@@ -136,10 +149,17 @@ export async function getCanonContext(userId?: string): Promise<UserContext> {
       tier: equippedTitleData.prestige_titles.tier
     } : undefined;
 
+    const equippedStamps: EquippedStamp[] = equippedStampsData?.map((stamp: any) => ({
+      stampId: stamp.stamp_id,
+      position: stamp.display_position,
+      equippedAt: stamp.equipped_at
+    })) || [];
+
     return {
       totalBookingsToday: todayBookings?.length || 0,
       upcomingSlots,
       equippedTitle,
+      equippedStamps,
       prestigeRank: prestigeProgress?.length || 0,
       userMode: (roleData?.primary_role as any) || 'customer',
       lastJobType: recentBookings?.[0]?.category,
@@ -160,6 +180,7 @@ function getDefaultContext(): UserContext {
   return {
     totalBookingsToday: 0,
     upcomingSlots: [],
+    equippedStamps: [],
     prestigeRank: 0,
     userMode: 'customer',
     recentJobTypes: [],

@@ -20,6 +20,7 @@ import CrewSuggestions from './CrewSuggestions';
 import AnnetteProfileAdvisor from './AnnetteProfileAdvisor';
 import ProfileActionsBar from './ProfileActionsBar';
 import CrewStatusCard from './CrewStatusCard';
+import { EquippedStampRow } from '@/components/stamps/EquippedStampRow';
 
 interface ProfileMainContainerProps {
   profile: UnifiedUserProfile;
@@ -66,6 +67,10 @@ const ProfileMainContainer: React.FC<ProfileMainContainerProps> = ({ profile, is
                   {profile.verified && <Crown className="h-5 w-5 text-yellow-500" />}
                 </div>
                 <p className="text-sm text-muted-foreground mb-2">@{profile.username}</p>
+                
+                {/* Equipped Stamps Medal Row */}
+                <EquippedStampRow userId={profile.user_id} className="mb-3" />
+                
                 <div className="flex flex-wrap gap-2">
                   <Badge variant="secondary" className="flex items-center gap-1">
                     {isProvider ? <Briefcase className="h-3 w-3" /> : <User className="h-3 w-3" />}

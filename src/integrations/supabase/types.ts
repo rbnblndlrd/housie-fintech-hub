@@ -3338,6 +3338,33 @@ export type Database = {
           },
         ]
       }
+      user_equipped_stamps: {
+        Row: {
+          created_at: string
+          display_position: number
+          equipped_at: string
+          id: string
+          stamp_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_position: number
+          equipped_at?: string
+          id?: string
+          stamp_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          display_position?: number
+          equipped_at?: string
+          id?: string
+          stamp_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           achievement_badges: Json | null
@@ -4147,6 +4174,14 @@ export type Database = {
       get_user_current_role: {
         Args: { target_user_id: string }
         Returns: string
+      }
+      get_user_equipped_stamps: {
+        Args: { p_user_id: string }
+        Returns: {
+          stamp_id: string
+          display_position: number
+          equipped_at: string
+        }[]
       }
       get_user_risk_level: {
         Args: { user_uuid: string }

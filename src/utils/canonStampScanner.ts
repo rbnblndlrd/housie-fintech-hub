@@ -168,8 +168,26 @@ async function awardStampWithVoiceLine(
       return null;
     }
 
-    // Generate context-aware voice line
-    const voiceLine = stampDef.voiceLine(context, contextData);
+    // Generate enhanced voice line with equipped stamp flavor
+    let voiceLine = stampDef.voiceLine(context, contextData);
+    
+    // Add equipped stamp flavor to voice lines
+    const hasRoadWarrior = context.equippedStamps.some(s => s.stampId === 'road-warrior');
+    const hasOneWomanArmy = context.equippedStamps.some(s => s.stampId === 'one-woman-army');
+    const hasCrewCommander = context.equippedStamps.some(s => s.stampId === 'crew-commander');
+    
+    if (hasRoadWarrior && stampDef.id !== 'road-warrior') {
+      voiceLine += " With Road Warrior pinned to your chest, sugar, I trust you're ready to roam even further!";
+    } else if (hasOneWomanArmy && stampDef.id !== 'one-woman-army') {
+      voiceLine += " That One-Woman Army medal suits you perfectly — solo strength personified!";
+    } else if (hasCrewCommander && stampDef.id !== 'crew-commander') {
+      voiceLine += " Commander energy confirmed with that medal display! Leadership is your superpower!";
+    }
+    
+    // Add special flair for users with multiple equipped stamps
+    if (context.equippedStamps.length >= 3) {
+      voiceLine += " 🏅 Equipped Medalist — that one's going next to your others, baby. Frame-worthy!";
+    }
 
     return {
       stampId: stampDef.id,
