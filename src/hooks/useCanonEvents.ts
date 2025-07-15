@@ -17,6 +17,8 @@ export interface CanonEvent {
   stamp_id?: string;
   annette_commentary?: string;
   echo_score: number;
+  vote_score?: number;
+  vote_count?: number;
   created_at: string;
   updated_at: string;
   followed_user_name?: string; // For subscribed events

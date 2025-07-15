@@ -756,6 +756,8 @@ export type Database = {
           title: string
           updated_at: string
           user_id: string
+          vote_count: number | null
+          vote_score: number | null
         }
         Insert: {
           annette_commentary?: string | null
@@ -774,6 +776,8 @@ export type Database = {
           title: string
           updated_at?: string
           user_id: string
+          vote_count?: number | null
+          vote_score?: number | null
         }
         Update: {
           annette_commentary?: string | null
@@ -792,6 +796,8 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+          vote_count?: number | null
+          vote_score?: number | null
         }
         Relationships: [
           {
@@ -1073,6 +1079,41 @@ export type Database = {
           voice_style?: string
         }
         Relationships: []
+      }
+      canon_votes: {
+        Row: {
+          event_id: string
+          id: string
+          timestamp: string | null
+          user_id: string
+          vote_type: string
+          weight: number | null
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          timestamp?: string | null
+          user_id: string
+          vote_type: string
+          weight?: number | null
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          timestamp?: string | null
+          user_id?: string
+          vote_type?: string
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "canon_votes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "canon_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       canonical_broadcast_events: {
         Row: {
@@ -5445,6 +5486,10 @@ export type Database = {
       mark_messages_as_read: {
         Args: { p_conversation_id: string; p_user_id: string }
         Returns: number
+      }
+      recalculate_vote_weight: {
+        Args: { p_event_id: string }
+        Returns: undefined
       }
       refresh_fuzzy_locations: {
         Args: Record<PropertyKey, never>
