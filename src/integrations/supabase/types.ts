@@ -1792,6 +1792,45 @@ export type Database = {
           },
         ]
       }
+      fusion_stamp_definitions: {
+        Row: {
+          annette_voice_lines: string[] | null
+          canon_multiplier: number | null
+          created_at: string | null
+          flavor_text: string
+          icon_url: string | null
+          id: string
+          name: string
+          required_stamp_ids: string[]
+          unlockable_at_tier: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          annette_voice_lines?: string[] | null
+          canon_multiplier?: number | null
+          created_at?: string | null
+          flavor_text: string
+          icon_url?: string | null
+          id: string
+          name: string
+          required_stamp_ids: string[]
+          unlockable_at_tier?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          annette_voice_lines?: string[] | null
+          canon_multiplier?: number | null
+          created_at?: string | null
+          flavor_text?: string
+          icon_url?: string | null
+          id?: string
+          name?: string
+          required_stamp_ids?: string[]
+          unlockable_at_tier?: number | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       fusion_titles: {
         Row: {
           created_at: string
@@ -3575,6 +3614,47 @@ export type Database = {
         }
         Relationships: []
       }
+      user_fusion_stamps: {
+        Row: {
+          crafted_at: string | null
+          created_at: string | null
+          display_position: number | null
+          fusion_stamp_id: string
+          id: string
+          is_equipped: boolean | null
+          source_stamp_ids: string[]
+          user_id: string
+        }
+        Insert: {
+          crafted_at?: string | null
+          created_at?: string | null
+          display_position?: number | null
+          fusion_stamp_id: string
+          id?: string
+          is_equipped?: boolean | null
+          source_stamp_ids: string[]
+          user_id: string
+        }
+        Update: {
+          crafted_at?: string | null
+          created_at?: string | null
+          display_position?: number | null
+          fusion_stamp_id?: string
+          id?: string
+          is_equipped?: boolean | null
+          source_stamp_ids?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_fusion_stamps_fusion_stamp_id_fkey"
+            columns: ["fusion_stamp_id"]
+            isOneToOne: false
+            referencedRelation: "fusion_stamp_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_fusion_titles: {
         Row: {
           created_at: string
@@ -4030,6 +4110,45 @@ export type Database = {
           },
         ]
       }
+      user_showcase_settings: {
+        Row: {
+          annette_intro_line: string | null
+          created_at: string | null
+          featured_stamp_ids: string[] | null
+          id: string
+          is_public: boolean | null
+          room_theme: string | null
+          room_title: string | null
+          updated_at: string | null
+          user_id: string
+          widget_layout: Json | null
+        }
+        Insert: {
+          annette_intro_line?: string | null
+          created_at?: string | null
+          featured_stamp_ids?: string[] | null
+          id?: string
+          is_public?: boolean | null
+          room_theme?: string | null
+          room_title?: string | null
+          updated_at?: string | null
+          user_id: string
+          widget_layout?: Json | null
+        }
+        Update: {
+          annette_intro_line?: string | null
+          created_at?: string | null
+          featured_stamp_ids?: string[] | null
+          id?: string
+          is_public?: boolean | null
+          room_theme?: string | null
+          room_title?: string | null
+          updated_at?: string | null
+          user_id?: string
+          widget_layout?: Json | null
+        }
+        Relationships: []
+      }
       user_stamps: {
         Row: {
           canon_status: string | null
@@ -4348,6 +4467,10 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: boolean
       }
+      check_fusion_eligibility: {
+        Args: { p_user_id: string; p_fusion_id: string }
+        Returns: boolean
+      }
       check_fusion_title_eligibility: {
         Args: { p_user_id: string; p_title_id: string }
         Returns: boolean
@@ -4375,6 +4498,10 @@ export type Database = {
           api_cost_estimate?: number
           session_uuid?: string
         }
+        Returns: Json
+      }
+      craft_fusion_stamp: {
+        Args: { p_user_id: string; p_fusion_id: string }
         Returns: Json
       }
       create_review_notification: {

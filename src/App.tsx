@@ -52,6 +52,8 @@ import CrewOpportunities from './pages/crews/CrewOpportunities';
 import CrewBids from './pages/crews/CrewBids';
 import OpportunityBidPlannerPage from './pages/opportunities/OpportunityBidPlanner';
 import { QuoteVaultManager } from './pages/QuoteVaultManager';
+import FusionLab from './pages/FusionLab';
+import ShowcaseRoom from './pages/ShowcaseRoom';
 
 import { Toaster } from '@/components/ui/toaster';
 import { CanonBroadcast } from '@/components/broadcast/CanonBroadcast';
