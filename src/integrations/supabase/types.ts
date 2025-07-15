@@ -2114,6 +2114,36 @@ export type Database = {
           },
         ]
       }
+      network_visibility_settings: {
+        Row: {
+          anonymize_connections: boolean | null
+          created_at: string | null
+          id: string
+          is_public: boolean | null
+          show_partial_graph: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          anonymize_connections?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          show_partial_graph?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          anonymize_connections?: boolean | null
+          created_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          show_partial_graph?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           booking_id: string | null
@@ -4212,6 +4242,33 @@ export type Database = {
           },
         ]
       }
+      user_trust_graph_snapshots: {
+        Row: {
+          connections: Json
+          created_at: string | null
+          graph_date: string
+          id: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          connections?: Json
+          created_at?: string | null
+          graph_date?: string
+          id?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          connections?: Json
+          created_at?: string | null
+          graph_date?: string
+          id?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           accessibility_needs: string | null
@@ -4463,6 +4520,10 @@ export type Database = {
         Args: { community_points: number }
         Returns: number
       }
+      calculate_trust_score: {
+        Args: { p_user_one_id: string; p_user_two_id: string }
+        Returns: number
+      }
       can_message_user: {
         Args: { target_user_id: string }
         Returns: boolean
@@ -4555,6 +4616,10 @@ export type Database = {
       generate_fuzzy_location: {
         Args: { original_point: unknown; radius_meters?: number }
         Returns: unknown
+      }
+      generate_user_trust_graph: {
+        Args: { p_user_id: string }
+        Returns: Json
       }
       get_canon_preferences: {
         Args: { p_user_id: string }
@@ -4776,6 +4841,10 @@ export type Database = {
       update_shop_points: {
         Args: { p_user_id: string }
         Returns: undefined
+      }
+      update_trust_graph_snapshots: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
     }
     Enums: {
