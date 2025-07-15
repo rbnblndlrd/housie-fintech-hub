@@ -12,10 +12,11 @@ import { useToast } from '@/hooks/use-toast';
 
 export const BroadcastDashboard: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
+  const [sortBy, setSortBy] = useState<string>('recent');
   const [selectedEvent, setSelectedEvent] = useState<CanonEvent | null>(null);
   const [inspectorOpen, setInspectorOpen] = useState(false);
   
-  const { events, loading, error, updateEventScope } = useCanonEvents(filter);
+  const { events, loading, error, updateEventScope } = useCanonEvents(filter, sortBy);
   const { toast } = useToast();
 
   const handleInspectEvent = (event: CanonEvent) => {
@@ -92,7 +93,7 @@ export const BroadcastDashboard: React.FC = () => {
           {/* Filters */}
           <Card>
             <CardContent className="p-4">
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-4 flex-wrap">
                 <Filter className="w-4 h-4 text-muted-foreground" />
                 <Select value={filter} onValueChange={setFilter}>
                   <SelectTrigger className="w-48">
@@ -104,6 +105,16 @@ export const BroadcastDashboard: React.FC = () => {
                     <SelectItem value="friends">Friends</SelectItem>
                     <SelectItem value="local">Local</SelectItem>
                     <SelectItem value="global">Global</SelectItem>
+                  </SelectContent>
+                </Select>
+                
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="recent">Most Recent</SelectItem>
+                    <SelectItem value="echo-depth">Echo Depth</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

@@ -745,6 +745,7 @@ export type Database = {
           created_at: string
           description: string | null
           echo_scope: string
+          echo_score: number
           event_source_type: string | null
           event_type: string
           id: string
@@ -762,6 +763,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           echo_scope?: string
+          echo_score?: number
           event_source_type?: string | null
           event_type: string
           id?: string
@@ -779,6 +781,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           echo_scope?: string
+          echo_score?: number
           event_source_type?: string | null
           event_type?: string
           id?: string
@@ -841,6 +844,38 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      canon_reactions: {
+        Row: {
+          event_id: string
+          id: string
+          reaction_type: string
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          event_id: string
+          id?: string
+          reaction_type: string
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          event_id?: string
+          id?: string
+          reaction_type?: string
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "canon_reactions_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "canon_events"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       canon_seasons: {
         Row: {
@@ -4954,6 +4989,10 @@ export type Database = {
       }
       calculate_canon_score: {
         Args: { p_user_id: string }
+        Returns: number
+      }
+      calculate_echo_score: {
+        Args: { p_event_id: string }
         Returns: number
       }
       calculate_shop_points: {

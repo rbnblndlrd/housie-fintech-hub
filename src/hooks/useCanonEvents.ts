@@ -16,6 +16,7 @@ export interface CanonEvent {
   event_source_type?: string;
   stamp_id?: string;
   annette_commentary?: string;
+  echo_score: number;
   created_at: string;
   updated_at: string;
   followed_user_name?: string; // For subscribed events
@@ -40,7 +41,7 @@ export interface StampDefinition {
   description?: string;
 }
 
-export const useCanonEvents = (filter?: string) => {
+export const useCanonEvents = (filter?: string, sortBy?: string) => {
   const [events, setEvents] = useState<CanonEvent[]>([]);
   const [stamps, setStamps] = useState<StampDefinition[]>([]);
   const [loading, setLoading] = useState(true);
@@ -89,6 +90,7 @@ export const useCanonEvents = (filter?: string) => {
               canon_rank: event.canon_rank,
               echo_scope: event.echo_scope,
               annette_commentary: event.annette_commentary,
+              echo_score: 0, // Default score for subscribed events
               related_user_ids: null,
               origin_dashboard: null,
               event_source_type: null,
@@ -136,15 +138,22 @@ export const useCanonEvents = (filter?: string) => {
         );
       }
 
-      // Sort by timestamp and remove duplicates
+      // Remove duplicates first
       const uniqueEvents = allEvents
         .filter((event, index, self) => 
           index === self.findIndex(e => e.id === event.id)
-        )
-        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
-        .slice(0, 50);
+        );
 
-      setEvents(uniqueEvents);
+      // Apply sorting
+      let sortedEvents = uniqueEvents;
+      if (sortBy === 'echo-depth') {
+        sortedEvents = uniqueEvents.sort((a, b) => b.echo_score - a.echo_score);
+      } else {
+        // Default: sort by timestamp
+        sortedEvents = uniqueEvents.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+      }
+
+      setEvents(sortedEvents.slice(0, 50));
     } catch (err) {
       console.error('Error fetching canon events:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch events');
@@ -239,7 +248,7 @@ export const useCanonEvents = (filter?: string) => {
   useEffect(() => {
     fetchEvents();
     fetchStamps();
-  }, [user, filter]);
+  }, [user, filter, sortBy]);
 
   return {
     events,

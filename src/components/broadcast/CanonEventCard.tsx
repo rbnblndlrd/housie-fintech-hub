@@ -3,8 +3,9 @@ import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Share2, MoreHorizontal, UserPlus } from 'lucide-react';
+import { Eye, Share2, MoreHorizontal, UserPlus, Zap } from 'lucide-react';
 import { CanonEvent } from '@/hooks/useCanonEvents';
+import { CanonReactionButtons } from './CanonReactionButtons';
 import { useCanonSubscriptions } from '@/hooks/useCanonSubscriptions';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -72,9 +73,17 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
               <span className="text-lg">{event.stamp_definitions.icon_url}</span>
             )}
           </div>
-          <Badge variant={getScopeBadgeVariant(event.echo_scope)}>
-            {event.echo_scope}
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant={getScopeBadgeVariant(event.echo_scope)}>
+              {event.echo_scope}
+            </Badge>
+            {event.echo_score > 0 && (
+              <Badge variant="outline" className="flex items-center gap-1">
+                <Zap className="w-3 h-3" />
+                {event.echo_score}
+              </Badge>
+            )}
+          </div>
         </div>
 
         <h3 className="font-semibold text-foreground mb-2 leading-tight">
@@ -95,6 +104,11 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
             <p className="text-xs text-muted-foreground mt-1">— Annette</p>
           </div>
         )}
+
+        {/* Reaction Buttons */}
+        <div className="mb-3">
+          <CanonReactionButtons eventId={event.id} compact={!isHovered} />
+        </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
