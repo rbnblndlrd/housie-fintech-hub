@@ -3152,6 +3152,53 @@ export type Database = {
         }
         Relationships: []
       }
+      replay_fragments: {
+        Row: {
+          audio_url: string | null
+          content: string | null
+          created_at: string
+          event_id: string
+          id: string
+          image_url: string | null
+          step_order: number
+          timestamp: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          event_id: string
+          id?: string
+          image_url?: string | null
+          step_order?: number
+          timestamp?: string
+          type: string
+          updated_at?: string
+        }
+        Update: {
+          audio_url?: string | null
+          content?: string | null
+          created_at?: string
+          event_id?: string
+          id?: string
+          image_url?: string | null
+          step_order?: number
+          timestamp?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "replay_fragments_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "canon_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       review_commendations: {
         Row: {
           commendation_type: string

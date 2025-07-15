@@ -3,13 +3,15 @@ import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Share2, MoreHorizontal, UserPlus, Zap } from 'lucide-react';
+import { Eye, Share2, MoreHorizontal, UserPlus, Zap, Play } from 'lucide-react';
 import { CanonEvent } from '@/hooks/useCanonEvents';
 import { CanonReactionButtons } from './CanonReactionButtons';
 import { useCanonSubscriptions } from '@/hooks/useCanonSubscriptions';
 import { useAuth } from '@/contexts/AuthContext';
 import { StampSelector } from '@/components/stamps/StampSelector';
 import { EventStampDisplay } from '@/components/stamps/EventStampDisplay';
+import { CanonReplayPlayer } from '@/components/replays/CanonReplayPlayer';
+import { ReplayEditor } from '@/components/replays/ReplayEditor';
 
 interface CanonEventCardProps {
   event: CanonEvent;
@@ -23,6 +25,8 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
   onShare 
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showReplayPlayer, setShowReplayPlayer] = useState(false);
+  const [showReplayEditor, setShowReplayEditor] = useState(false);
   const { user } = useAuth();
   const { followUser, isFollowing } = useCanonSubscriptions();
 
@@ -163,6 +167,17 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
                 size="sm"
                 onClick={(e) => {
                   e.stopPropagation();
+                  setShowReplayPlayer(true);
+                }}
+                title="View Replay"
+              >
+                <Play className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
                   onInspect(event);
                 }}
               >
@@ -186,7 +201,24 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
             </div>
           )}
         </div>
+
       </CardContent>
+
+      {/* Replay Player */}
+      <CanonReplayPlayer 
+        eventId={event.id}
+        eventTitle={event.title}
+        isOpen={showReplayPlayer}
+        onClose={() => setShowReplayPlayer(false)}
+      />
+
+      {/* Replay Editor */}
+      <ReplayEditor 
+        eventId={event.id}
+        eventTitle={event.title}
+        isOpen={showReplayEditor}
+        onClose={() => setShowReplayEditor(false)}
+      />
     </Card>
   );
 };
