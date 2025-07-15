@@ -881,6 +881,33 @@ export type Database = {
         }
         Relationships: []
       }
+      canon_subscriptions: {
+        Row: {
+          created_at: string
+          followed_id: string
+          follower_id: string
+          id: string
+          minimum_rank: string
+          subscribed_event_types: string[] | null
+        }
+        Insert: {
+          created_at?: string
+          followed_id: string
+          follower_id: string
+          id?: string
+          minimum_rank?: string
+          subscribed_event_types?: string[] | null
+        }
+        Update: {
+          created_at?: string
+          followed_id?: string
+          follower_id?: string
+          id?: string
+          minimum_rank?: string
+          subscribed_event_types?: string[] | null
+        }
+        Relationships: []
+      }
       canon_thread_entries: {
         Row: {
           canon_level: string
@@ -5189,6 +5216,21 @@ export type Database = {
           suggested_date: string
           frequency_pattern: string
           total_bookings: number
+        }[]
+      }
+      get_subscribed_canon_events: {
+        Args: { p_user_id: string }
+        Returns: {
+          id: string
+          user_id: string
+          event_type: string
+          title: string
+          description: string
+          event_timestamp: string
+          canon_rank: string
+          echo_scope: string
+          annette_commentary: string
+          followed_user_name: string
         }[]
       }
       get_user_ai_credits: {

@@ -18,6 +18,7 @@ export interface CanonEvent {
   annette_commentary?: string;
   created_at: string;
   updated_at: string;
+  followed_user_name?: string; // For subscribed events
   users?: {
     full_name?: string;
     email: string;
@@ -51,31 +52,99 @@ export const useCanonEvents = (filter?: string) => {
 
     try {
       setLoading(true);
-      let query = supabase
+      setError(null);
+
+      let ownEvents: CanonEvent[] = [];
+      let subscribedEvents: CanonEvent[] = [];
+
+      // Fetch own events
+      let ownQuery = supabase
         .from('canon_events')
         .select(`
           *,
           users:user_id (full_name, email),
           stamp_definitions:stamp_id (name, icon_url, rarity, emotion_flavor)
         `)
+        .eq('user_id', user.id)
         .order('timestamp', { ascending: false });
 
-      // Apply filters
-      if (filter === 'my-stamps') {
-        query = query.eq('user_id', user.id);
-      } else if (filter === 'friends') {
-        query = query.eq('echo_scope', 'friends');
-      } else if (filter === 'local') {
-        query = query.in('canon_rank', ['local']);
-      } else if (filter === 'global') {
-        query = query.in('canon_rank', ['global', 'legendary']);
+      const { data: ownData } = await ownQuery.limit(25);
+      ownEvents = (ownData as any) || [];
+
+      // Fetch subscribed events if not filtering to own stamps only
+      if (filter !== 'my-stamps') {
+        try {
+          const { data: subscriptionsData } = await supabase.rpc('get_subscribed_canon_events', {
+            p_user_id: user.id
+          });
+
+          if (subscriptionsData) {
+            subscribedEvents = subscriptionsData.map((event: any) => ({
+              id: event.id,
+              user_id: event.user_id,
+              event_type: event.event_type,
+              title: event.title,
+              description: event.description,
+              timestamp: event.event_timestamp,
+              canon_rank: event.canon_rank,
+              echo_scope: event.echo_scope,
+              annette_commentary: event.annette_commentary,
+              related_user_ids: null,
+              origin_dashboard: null,
+              event_source_type: null,
+              stamp_id: null,
+              created_at: event.event_timestamp,
+              updated_at: event.event_timestamp,
+              followed_user_name: event.followed_user_name
+            }));
+          }
+        } catch (subError) {
+          console.warn('Failed to fetch subscribed events:', subError);
+        }
       }
 
-      const { data, error: fetchError } = await query.limit(50);
+      // Combine and filter events
+      let allEvents = [...ownEvents, ...subscribedEvents];
 
-      if (fetchError) throw fetchError;
+      // Apply additional filters
+      if (filter === 'friends') {
+        // Get user's service connections
+        const { data: connections } = await supabase
+          .from('service_connections')
+          .select('user_one_id, user_two_id')
+          .or(`user_one_id.eq.${user.id},user_two_id.eq.${user.id}`)
+          .eq('cred_connection_established', true);
 
-      setEvents((data as any) || []);
+        if (connections && connections.length > 0) {
+          const friendIds = connections.map(conn => 
+            conn.user_one_id === user.id ? conn.user_two_id : conn.user_one_id
+          );
+          allEvents = allEvents.filter(event => 
+            event.user_id === user.id || friendIds.includes(event.user_id)
+          );
+        } else {
+          // No friends, show only own events
+          allEvents = ownEvents;
+        }
+      } else if (filter === 'local') {
+        allEvents = allEvents.filter(event => 
+          ['local', 'regional'].includes(event.canon_rank)
+        );
+      } else if (filter === 'global') {
+        allEvents = allEvents.filter(event => 
+          ['global', 'legendary'].includes(event.canon_rank)
+        );
+      }
+
+      // Sort by timestamp and remove duplicates
+      const uniqueEvents = allEvents
+        .filter((event, index, self) => 
+          index === self.findIndex(e => e.id === event.id)
+        )
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+        .slice(0, 50);
+
+      setEvents(uniqueEvents);
     } catch (err) {
       console.error('Error fetching canon events:', err);
       setError(err instanceof Error ? err.message : 'Failed to fetch events');

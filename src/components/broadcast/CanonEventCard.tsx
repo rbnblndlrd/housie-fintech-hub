@@ -3,8 +3,10 @@ import { formatDistanceToNow } from 'date-fns';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, Share2, MoreHorizontal } from 'lucide-react';
+import { Eye, Share2, MoreHorizontal, UserPlus } from 'lucide-react';
 import { CanonEvent } from '@/hooks/useCanonEvents';
+import { useCanonSubscriptions } from '@/hooks/useCanonSubscriptions';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface CanonEventCardProps {
   event: CanonEvent;
@@ -18,6 +20,8 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
   onShare 
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const { user } = useAuth();
+  const { followUser, isFollowing } = useCanonSubscriptions();
 
   const getRankBadgeVariant = (rank: string) => {
     switch (rank) {
@@ -94,13 +98,28 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span>{event.users?.full_name || event.users?.email}</span>
+            <span>
+              {event.followed_user_name || event.users?.full_name || event.users?.email}
+              {event.followed_user_name && <Badge variant="outline" className="ml-1 text-xs">Following</Badge>}
+            </span>
             <span>•</span>
             <span>{formatDistanceToNow(new Date(event.timestamp))} ago</span>
           </div>
 
           {isHovered && (
             <div className="flex items-center gap-1">
+              {event.user_id !== user?.id && !isFollowing(event.user_id) && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    followUser(event.user_id);
+                  }}
+                >
+                  <UserPlus className="w-4 h-4" />
+                </Button>
+              )}
               <Button
                 variant="ghost"
                 size="sm"
