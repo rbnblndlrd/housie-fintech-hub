@@ -21,6 +21,8 @@ import RecentStampsWall from '@/components/stamps/RecentStampsWall';
 import { BroadcastDashboardPanel } from '@/components/stamps/BroadcastDashboardPanel';
 import { CanonEchoFeedBeacon } from '@/components/stamps/CanonEchoFeedBeacon';
 import { AnnetteTransmissionCenter } from '@/components/stamps/AnnetteTransmissionCenter';
+import { SeasonalDashboard } from '@/components/seasonal/SeasonalDashboard';
+import { SeasonalLeaderboard } from '@/components/seasonal/SeasonalLeaderboard';
 import { useAuth } from '@/contexts/AuthContext';
 
 const CommunityDashboard = () => {
@@ -42,7 +44,13 @@ const CommunityDashboard = () => {
       case 'network':
         return <NetworkContent />;
       case 'recognition':
-        return <PrestigeContent />;
+        return (
+          <div className="space-y-6">
+            <SeasonalDashboard />
+            <SeasonalLeaderboard />
+            <PrestigeContent />
+          </div>
+        );
       case 'social':
         return <SocialContent />;
       default:

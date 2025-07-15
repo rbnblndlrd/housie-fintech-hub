@@ -665,6 +665,7 @@ export type Database = {
           message: string
           prestige_title_id: string | null
           reactions_count: number | null
+          season_id: string | null
           source: string
           stamp_id: string | null
           tags: string[] | null
@@ -691,6 +692,7 @@ export type Database = {
           message: string
           prestige_title_id?: string | null
           reactions_count?: number | null
+          season_id?: string | null
           source?: string
           stamp_id?: string | null
           tags?: string[] | null
@@ -717,6 +719,7 @@ export type Database = {
           message?: string
           prestige_title_id?: string | null
           reactions_count?: number | null
+          season_id?: string | null
           source?: string
           stamp_id?: string | null
           tags?: string[] | null
@@ -725,7 +728,15 @@ export type Database = {
           verified_data?: boolean | null
           visibility?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "canon_echoes_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       canon_rank_snapshots: {
         Row: {
@@ -766,6 +777,45 @@ export type Database = {
           score?: number
           streak_days?: number
           user_id?: string
+        }
+        Relationships: []
+      }
+      canon_seasons: {
+        Row: {
+          active: boolean
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          seasonal_stamp_variants: string[] | null
+          seasonal_title_rewards: string[] | null
+          start_date: string
+          theme: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          end_date: string
+          id?: string
+          name: string
+          seasonal_stamp_variants?: string[] | null
+          seasonal_title_rewards?: string[] | null
+          start_date: string
+          theme: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          end_date?: string
+          id?: string
+          name?: string
+          seasonal_stamp_variants?: string[] | null
+          seasonal_title_rewards?: string[] | null
+          start_date?: string
+          theme?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -829,6 +879,7 @@ export type Database = {
           metadata: Json | null
           processed_at: string | null
           pulse_active: boolean | null
+          season_id: string | null
           source_id: string
           source_table: string
           updated_at: string
@@ -850,6 +901,7 @@ export type Database = {
           metadata?: Json | null
           processed_at?: string | null
           pulse_active?: boolean | null
+          season_id?: string | null
           source_id: string
           source_table: string
           updated_at?: string
@@ -871,6 +923,7 @@ export type Database = {
           metadata?: Json | null
           processed_at?: string | null
           pulse_active?: boolean | null
+          season_id?: string | null
           source_id?: string
           source_table?: string
           updated_at?: string
@@ -878,7 +931,15 @@ export type Database = {
           verified?: boolean
           visible_to_public?: boolean
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "canonical_broadcast_events_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       chat_messages: {
         Row: {
@@ -3133,6 +3194,53 @@ export type Database = {
           },
         ]
       }
+      seasonal_title_rewards: {
+        Row: {
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_limited_time: boolean
+          name: string
+          rarity: string
+          requirements: Json
+          season_id: string
+          title_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_limited_time?: boolean
+          name: string
+          rarity?: string
+          requirements?: Json
+          season_id: string
+          title_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_limited_time?: boolean
+          name?: string
+          rarity?: string
+          requirements?: Json
+          season_id?: string
+          title_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seasonal_title_rewards_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       service_connections: {
         Row: {
           auto_rebook_suggested: boolean | null
@@ -3415,6 +3523,7 @@ export type Database = {
           is_public: boolean
           name: string
           requirements: Json
+          season_id: string | null
           tags: string[] | null
           updated_at: string
         }
@@ -3428,6 +3537,7 @@ export type Database = {
           is_public?: boolean
           name: string
           requirements?: Json
+          season_id?: string | null
           tags?: string[] | null
           updated_at?: string
         }
@@ -3441,10 +3551,19 @@ export type Database = {
           is_public?: boolean
           name?: string
           requirements?: Json
+          season_id?: string | null
           tags?: string[] | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "stamps_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_blocks: {
         Row: {
@@ -4039,6 +4158,94 @@ export type Database = {
         }
         Relationships: []
       }
+      user_seasonal_stats: {
+        Row: {
+          broadcasts_triggered: number
+          canon_earned: number
+          created_at: string
+          fusion_titles_earned: number
+          id: string
+          season_id: string
+          stamps_earned: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          broadcasts_triggered?: number
+          canon_earned?: number
+          created_at?: string
+          fusion_titles_earned?: number
+          id?: string
+          season_id: string
+          stamps_earned?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          broadcasts_triggered?: number
+          canon_earned?: number
+          created_at?: string
+          fusion_titles_earned?: number
+          id?: string
+          season_id?: string
+          stamps_earned?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_seasonal_stats_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_seasonal_title_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          equipped: boolean
+          id: string
+          progress_data: Json
+          season_id: string
+          title_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          equipped?: boolean
+          id?: string
+          progress_data?: Json
+          season_id: string
+          title_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          equipped?: boolean
+          id?: string
+          progress_data?: Json
+          season_id?: string
+          title_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_seasonal_title_progress_season_id_fkey"
+            columns: ["season_id"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_security_status: {
         Row: {
           claude_access_level: string | null
@@ -4191,6 +4398,7 @@ export type Database = {
           is_displayed: boolean | null
           job_id: string | null
           location: unknown | null
+          season_earned: string | null
           stamp_id: string
           trigger_context: Json | null
           user_id: string
@@ -4206,6 +4414,7 @@ export type Database = {
           is_displayed?: boolean | null
           job_id?: string | null
           location?: unknown | null
+          season_earned?: string | null
           stamp_id: string
           trigger_context?: Json | null
           user_id: string
@@ -4221,6 +4430,7 @@ export type Database = {
           is_displayed?: boolean | null
           job_id?: string | null
           location?: unknown | null
+          season_earned?: string | null
           stamp_id?: string
           trigger_context?: Json | null
           user_id?: string
@@ -4231,6 +4441,13 @@ export type Database = {
             columns: ["job_id"]
             isOneToOne: false
             referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_stamps_season_earned_fkey"
+            columns: ["season_earned"]
+            isOneToOne: false
+            referencedRelation: "canon_seasons"
             referencedColumns: ["id"]
           },
           {
@@ -4544,6 +4761,10 @@ export type Database = {
         }
         Returns: Json
       }
+      check_seasonal_title_eligibility: {
+        Args: { p_user_id: string; p_title_id: string }
+        Returns: boolean
+      }
       cleanup_expired_canon_echoes: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -4637,6 +4858,21 @@ export type Database = {
       get_current_daily_spend: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      get_current_season: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          active: boolean
+          created_at: string
+          end_date: string
+          id: string
+          name: string
+          seasonal_stamp_variants: string[] | null
+          seasonal_title_rewards: string[] | null
+          start_date: string
+          theme: string
+          updated_at: string
+        }
       }
       get_current_user_role: {
         Args: Record<PropertyKey, never>
@@ -4837,6 +5073,10 @@ export type Database = {
           p_canon_verified?: boolean
         }
         Returns: string
+      }
+      update_seasonal_stats: {
+        Args: { p_user_id: string; p_stat_type: string; p_increment?: number }
+        Returns: undefined
       }
       update_shop_points: {
         Args: { p_user_id: string }

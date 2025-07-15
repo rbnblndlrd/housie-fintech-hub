@@ -12,6 +12,7 @@ import { Settings, Eye, EyeOff, Crown, Sparkles, Map, Radio } from 'lucide-react
 import { ShowcaseCard } from '@/components/showcase/ShowcaseCard';
 import { RoomBuilder } from '@/components/showcase/RoomBuilder';
 import { CanonAuraEffect } from '@/components/showcase/CanonAuraEffect';
+import { SeasonalTimeline } from '@/components/seasonal/SeasonalTimeline';
 
 export default function ShowcaseRoom() {
   const { username } = useParams<{ username: string }>();
@@ -201,22 +202,18 @@ export default function ShowcaseRoom() {
               </Card>
             </section>
 
-            {/* Global Broadcast Moments */}
+            {/* Seasonal Canon Timeline */}
             <section>
               <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2 text-foreground">
                 <Radio className="h-5 w-5 text-green-500" />
-                Canon Echo History
+                Temporal Canon Timeline
               </h2>
-              <Card className="bg-card/30 border-border/20">
-                <CardContent className="p-6">
-                  <div className="text-center py-8">
-                    <Radio className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <p className="text-muted-foreground">
-                      Notable Canon broadcasts and echo moments will be displayed here.
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
+              <SeasonalTimeline
+                userId={username}
+                stamps={userStamps}
+                fusionTitles={userFusionStamps}
+                imprints={[]}
+              />
             </section>
           </div>
         )}
