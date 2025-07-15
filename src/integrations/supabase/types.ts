@@ -738,6 +738,68 @@ export type Database = {
           },
         ]
       }
+      canon_events: {
+        Row: {
+          annette_commentary: string | null
+          canon_rank: string
+          created_at: string
+          description: string | null
+          echo_scope: string
+          event_source_type: string | null
+          event_type: string
+          id: string
+          origin_dashboard: string | null
+          related_user_ids: string[] | null
+          stamp_id: string | null
+          timestamp: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          annette_commentary?: string | null
+          canon_rank?: string
+          created_at?: string
+          description?: string | null
+          echo_scope?: string
+          event_source_type?: string | null
+          event_type: string
+          id?: string
+          origin_dashboard?: string | null
+          related_user_ids?: string[] | null
+          stamp_id?: string | null
+          timestamp?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          annette_commentary?: string | null
+          canon_rank?: string
+          created_at?: string
+          description?: string | null
+          echo_scope?: string
+          event_source_type?: string | null
+          event_type?: string
+          id?: string
+          origin_dashboard?: string | null
+          related_user_ids?: string[] | null
+          stamp_id?: string | null
+          timestamp?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "canon_events_stamp_id_fkey"
+            columns: ["stamp_id"]
+            isOneToOne: false
+            referencedRelation: "stamp_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       canon_rank_snapshots: {
         Row: {
           canon_ratio: number
@@ -3521,6 +3583,42 @@ export type Database = {
           },
         ]
       }
+      stamp_definitions: {
+        Row: {
+          created_at: string
+          description: string | null
+          emotion_flavor: string | null
+          icon_url: string | null
+          id: string
+          is_enabled: boolean
+          name: string
+          rarity: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          emotion_flavor?: string | null
+          icon_url?: string | null
+          id?: string
+          is_enabled?: boolean
+          name: string
+          rarity?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          emotion_flavor?: string | null
+          icon_url?: string | null
+          id?: string
+          is_enabled?: boolean
+          name?: string
+          rarity?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stamp_evolutions: {
         Row: {
           base_stamp_id: string
@@ -4883,6 +4981,20 @@ export type Database = {
       craft_fusion_stamp: {
         Args: { p_user_id: string; p_fusion_id: string }
         Returns: Json
+      }
+      create_canon_event: {
+        Args: {
+          p_event_type: string
+          p_title: string
+          p_description?: string
+          p_canon_rank?: string
+          p_echo_scope?: string
+          p_origin_dashboard?: string
+          p_event_source_type?: string
+          p_stamp_id?: string
+          p_related_user_ids?: string[]
+        }
+        Returns: string
       }
       create_canon_thread: {
         Args: {
