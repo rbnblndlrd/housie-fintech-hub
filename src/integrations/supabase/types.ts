@@ -819,6 +819,92 @@ export type Database = {
         }
         Relationships: []
       }
+      canon_thread_entries: {
+        Row: {
+          canon_level: string
+          entry_id: string
+          id: string
+          linked_event_id: string | null
+          message: string
+          metadata: Json | null
+          source_type: string
+          thread_id: string
+          timestamp: string
+        }
+        Insert: {
+          canon_level?: string
+          entry_id: string
+          id?: string
+          linked_event_id?: string | null
+          message: string
+          metadata?: Json | null
+          source_type?: string
+          thread_id: string
+          timestamp?: string
+        }
+        Update: {
+          canon_level?: string
+          entry_id?: string
+          id?: string
+          linked_event_id?: string | null
+          message?: string
+          metadata?: Json | null
+          source_type?: string
+          thread_id?: string
+          timestamp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "canon_thread_entries_thread_id_fkey"
+            columns: ["thread_id"]
+            isOneToOne: false
+            referencedRelation: "canon_threads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      canon_threads: {
+        Row: {
+          created_at: string
+          emoji_tag: string | null
+          id: string
+          is_public: boolean | null
+          is_starred: boolean | null
+          root_message: string
+          summary: string | null
+          tags: string[] | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji_tag?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_starred?: boolean | null
+          root_message: string
+          summary?: string | null
+          tags?: string[] | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji_tag?: string | null
+          id?: string
+          is_public?: boolean | null
+          is_starred?: boolean | null
+          root_message?: string
+          summary?: string | null
+          tags?: string[] | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       canon_user_preferences: {
         Row: {
           canon_event_history_visible: boolean
@@ -4676,6 +4762,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      add_canon_thread_entry: {
+        Args: {
+          p_thread_id: string
+          p_entry_id: string
+          p_message: string
+          p_source_type?: string
+          p_canon_level?: string
+          p_linked_event_id?: string
+          p_metadata?: Json
+        }
+        Returns: string
+      }
       admin_add_commendation: {
         Args: { p_provider_user_id: string; p_commendation_type: string }
         Returns: Json
@@ -4785,6 +4883,16 @@ export type Database = {
       craft_fusion_stamp: {
         Args: { p_user_id: string; p_fusion_id: string }
         Returns: Json
+      }
+      create_canon_thread: {
+        Args: {
+          p_user_id: string
+          p_title: string
+          p_root_message: string
+          p_tags?: string[]
+          p_is_public?: boolean
+        }
+        Returns: string
       }
       create_review_notification: {
         Args: Record<PropertyKey, never>
@@ -5056,6 +5164,17 @@ export type Database = {
       refresh_fuzzy_locations: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      search_canon_threads: {
+        Args: { p_user_id: string; p_query: string; p_limit?: number }
+        Returns: {
+          thread_id: string
+          title: string
+          root_message: string
+          created_at: string
+          tags: string[]
+          entry_count: number
+        }[]
       }
       update_canon_rankings: {
         Args: { target_city?: string }

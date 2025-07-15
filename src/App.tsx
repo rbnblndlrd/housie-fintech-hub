@@ -54,6 +54,9 @@ import OpportunityBidPlannerPage from './pages/opportunities/OpportunityBidPlann
 import { QuoteVaultManager } from './pages/QuoteVaultManager';
 import FusionLab from './pages/FusionLab';
 import ShowcaseRoom from './pages/ShowcaseRoom';
+import { CanonThreads } from './pages/CanonThreads';
+import { CanonThreadViewer } from './pages/CanonThreadViewer';
+import { CreateCanonThread } from './pages/CreateCanonThread';
 
 import { Toaster } from '@/components/ui/toaster';
 import { CanonBroadcast } from '@/components/broadcast/CanonBroadcast';
@@ -130,6 +133,11 @@ function App() {
                   <Route path="/crews/opportunities" element={<CrewOpportunities />} />
                   <Route path="/crews/bids" element={<CrewBids />} />
                   <Route path="/quote-vault" element={<QuoteVaultManager />} />
+                  <Route path="/fusion-lab" element={<FusionLab />} />
+                  <Route path="/showcase/:username" element={<ShowcaseRoom />} />
+                  <Route path="/canon-threads" element={<CanonThreads />} />
+                  <Route path="/canon-threads/new" element={<CreateCanonThread />} />
+                  <Route path="/canon-threads/:threadId" element={<CanonThreadViewer />} />
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                               </ConditionalSpacingWrapper>
