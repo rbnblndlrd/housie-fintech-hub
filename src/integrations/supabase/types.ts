@@ -3758,6 +3758,51 @@ export type Database = {
           },
         ]
       }
+      stamp_usages: {
+        Row: {
+          assigned_by: string | null
+          canon_event_id: string
+          id: string
+          metadata: Json | null
+          stamp_id: string
+          timestamp: string
+          user_id: string
+        }
+        Insert: {
+          assigned_by?: string | null
+          canon_event_id: string
+          id?: string
+          metadata?: Json | null
+          stamp_id: string
+          timestamp?: string
+          user_id: string
+        }
+        Update: {
+          assigned_by?: string | null
+          canon_event_id?: string
+          id?: string
+          metadata?: Json | null
+          stamp_id?: string
+          timestamp?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stamp_usages_canon_event_id_fkey"
+            columns: ["canon_event_id"]
+            isOneToOne: false
+            referencedRelation: "canon_events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stamp_usages_stamp_id_fkey"
+            columns: ["stamp_id"]
+            isOneToOne: false
+            referencedRelation: "stamp_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       stamps: {
         Row: {
           canon_level: string

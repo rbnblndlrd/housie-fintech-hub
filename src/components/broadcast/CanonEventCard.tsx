@@ -8,6 +8,8 @@ import { CanonEvent } from '@/hooks/useCanonEvents';
 import { CanonReactionButtons } from './CanonReactionButtons';
 import { useCanonSubscriptions } from '@/hooks/useCanonSubscriptions';
 import { useAuth } from '@/contexts/AuthContext';
+import { StampSelector } from '@/components/stamps/StampSelector';
+import { EventStampDisplay } from '@/components/stamps/EventStampDisplay';
 
 interface CanonEventCardProps {
   event: CanonEvent;
@@ -105,6 +107,13 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
           </div>
         )}
 
+        {/* Stamps Display */}
+        <EventStampDisplay 
+          eventId={event.id} 
+          eventUserId={event.user_id}
+          compact={true}
+        />
+
         {/* Reaction Buttons */}
         <div className="mb-3">
           <CanonReactionButtons eventId={event.id} compact={!isHovered} />
@@ -133,6 +142,21 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
                 >
                   <UserPlus className="w-4 h-4" />
                 </Button>
+              )}
+              {event.user_id === user?.id && (
+                <StampSelector 
+                  eventId={event.id}
+                  eventType={event.event_type}
+                  eventTitle={event.title}
+                  onStampAssigned={() => {
+                    // Force re-render to show new stamp
+                    window.location.reload();
+                  }}
+                >
+                  <Button variant="ghost" size="sm" title="Add Stamp">
+                    <Zap className="w-4 h-4" />
+                  </Button>
+                </StampSelector>
               )}
               <Button
                 variant="ghost"
