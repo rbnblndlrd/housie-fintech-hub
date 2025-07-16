@@ -14,6 +14,8 @@ import PrestigeVisibilitySettings from '@/components/profile/PrestigeVisibilityS
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { StorylinesManager } from '@/components/storylines/StorylinesManager';
 import { ArrowLeft } from 'lucide-react';
 
 interface PrestigeProfileData {
@@ -176,34 +178,60 @@ const PrestigeProfile = () => {
                 prestigeTier={Math.floor(stats.totalStamps / 10) + 1}
               />
 
-              {/* Equipped Stamps Row */}
-              {settings.show_equipped_titles && (
-                <StampShowcaseRow
-                  userId={profileData.user_id}
-                  stamps={stamps.slice(0, 5)}
-                  showCanonGlow={true}
-                />
-              )}
+              {/* Prestige Profile Tabs */}
+              <Tabs defaultValue="overview" className="w-full">
+                <TabsList className="grid w-full grid-cols-4">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="stamps">Stamps</TabsTrigger>
+                  <TabsTrigger value="storylines">📜 Storylines</TabsTrigger>
+                  <TabsTrigger value="timeline">Timeline</TabsTrigger>
+                </TabsList>
 
-              {/* Canon Event Timeline */}
-              {settings.show_stamp_history && (
-                <CanonTimeline
-                  userId={profileData.user_id}
-                  stamps={stamps}
-                  fusionTitles={userFusionTitles}
-                  imprints={dropPointImprints}
-                  limit={10}
-                />
-              )}
+                <TabsContent value="overview" className="space-y-6">
+                  {/* Equipped Stamps Row */}
+                  {settings.show_equipped_titles && (
+                    <StampShowcaseRow
+                      userId={profileData.user_id}
+                      stamps={stamps.slice(0, 5)}
+                      showCanonGlow={true}
+                    />
+                  )}
 
-              {/* Profile Interaction Panel */}
-              <ProfileInteractionPanel
-                profileId={profileData.id}
-                userId={profileData.user_id}
-                username={profileData.username}
-                canCommend={true} // Would check if user has booked before
-                canonRatio={canonRatio}
-              />
+                  {/* Profile Interaction Panel */}
+                  <ProfileInteractionPanel
+                    profileId={profileData.id}
+                    userId={profileData.user_id}
+                    username={profileData.username}
+                    canCommend={true} // Would check if user has booked before
+                    canonRatio={canonRatio}
+                  />
+                </TabsContent>
+
+                <TabsContent value="stamps" className="space-y-6">
+                  <StampShowcaseRow
+                    userId={profileData.user_id}
+                    stamps={stamps}
+                    showCanonGlow={true}
+                  />
+                </TabsContent>
+
+                <TabsContent value="storylines" className="space-y-6">
+                  <StorylinesManager />
+                </TabsContent>
+
+                <TabsContent value="timeline" className="space-y-6">
+                  {/* Canon Event Timeline */}
+                  {settings.show_stamp_history && (
+                    <CanonTimeline
+                      userId={profileData.user_id}
+                      stamps={stamps}
+                      fusionTitles={userFusionTitles}
+                      imprints={dropPointImprints}
+                      limit={10}
+                    />
+                  )}
+                </TabsContent>
+              </Tabs>
             </div>
 
             {/* Prestige Stats Sidebar */}

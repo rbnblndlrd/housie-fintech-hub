@@ -1192,6 +1192,60 @@ export type Database = {
           },
         ]
       }
+      canonical_chains: {
+        Row: {
+          annotations: Json | null
+          chain_sequence: number[] | null
+          created_at: string
+          description: string | null
+          id: string
+          is_public: boolean
+          last_stamp_added_at: string | null
+          metadata: Json | null
+          prestige_score: number
+          storyline_ids: string[] | null
+          theme: string | null
+          title: string
+          updated_at: string
+          user_id: string
+          visual_style: string | null
+        }
+        Insert: {
+          annotations?: Json | null
+          chain_sequence?: number[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          last_stamp_added_at?: string | null
+          metadata?: Json | null
+          prestige_score?: number
+          storyline_ids?: string[] | null
+          theme?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+          visual_style?: string | null
+        }
+        Update: {
+          annotations?: Json | null
+          chain_sequence?: number[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_public?: boolean
+          last_stamp_added_at?: string | null
+          metadata?: Json | null
+          prestige_score?: number
+          storyline_ids?: string[] | null
+          theme?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          visual_style?: string | null
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           booking_id: string | null
@@ -3888,6 +3942,57 @@ export type Database = {
           },
         ]
       }
+      stamp_storylines: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          is_complete: boolean
+          metadata: Json | null
+          progression_stage: number
+          storyline_type: string
+          theme_color: string | null
+          title: string
+          total_stages: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_complete?: boolean
+          metadata?: Json | null
+          progression_stage?: number
+          storyline_type: string
+          theme_color?: string | null
+          title: string
+          total_stages?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          is_complete?: boolean
+          metadata?: Json | null
+          progression_stage?: number
+          storyline_type?: string
+          theme_color?: string | null
+          title?: string
+          total_stages?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       stamp_usages: {
         Row: {
           assigned_by: string | null
@@ -3982,6 +4087,44 @@ export type Database = {
             columns: ["season_id"]
             isOneToOne: false
             referencedRelation: "canon_seasons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      storyline_progressions: {
+        Row: {
+          created_at: string
+          id: string
+          narrative_text: string | null
+          stage_number: number
+          storyline_id: string
+          trigger_context: Json | null
+          user_stamp_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          narrative_text?: string | null
+          stage_number: number
+          storyline_id: string
+          trigger_context?: Json | null
+          user_stamp_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          narrative_text?: string | null
+          stage_number?: number
+          storyline_id?: string
+          trigger_context?: Json | null
+          user_stamp_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "storyline_progressions_storyline_id_fkey"
+            columns: ["storyline_id"]
+            isOneToOne: false
+            referencedRelation: "stamp_storylines"
             referencedColumns: ["id"]
           },
         ]
@@ -5281,6 +5424,14 @@ export type Database = {
           context_data: Json
         }[]
       }
+      evaluate_storyline_progression: {
+        Args: { p_user_id: string; p_stamp_id: string; p_context_data: Json }
+        Returns: {
+          storyline_id: string
+          stage_advanced: boolean
+          storyline_complete: boolean
+        }[]
+      }
       evolve_stamp: {
         Args: { p_user_id: string; p_stamp_id: string }
         Returns: string
@@ -5551,6 +5702,10 @@ export type Database = {
       update_canon_rankings: {
         Args: { target_city?: string }
         Returns: number
+      }
+      update_canonical_chain: {
+        Args: { p_user_id: string }
+        Returns: undefined
       }
       update_daily_spend: {
         Args: { spend_amount: number }

@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { CanonMetadata } from './canonHelper';
 
 export type BroadcastScope = 'local' | 'city' | 'global';
-export type BroadcastEventType = 'title_earned' | 'stamp' | 'booking_streak' | 'achievement' | 'prestige_milestone' | 'service_milestone';
+export type BroadcastEventType = 'title_earned' | 'stamp' | 'booking_streak' | 'achievement' | 'prestige_milestone' | 'service_milestone' | 'storyline_completion';
 
 export interface BroadcastEvent {
   id?: string;

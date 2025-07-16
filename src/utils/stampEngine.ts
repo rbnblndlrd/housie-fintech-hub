@@ -105,6 +105,12 @@ export async function awardStamp(
       
       // Check for fusion title eligibility after stamp award
       await checkFusionTitleEligibility(userId);
+      
+      // Evaluate storyline progression
+      await evaluateStorylineProgression(userId, stampId, contextData);
+      
+      // Update canonical chain
+      await updateCanonicalChain(userId);
     }
 
     // Check if this stamp should trigger a broadcast
@@ -502,4 +508,117 @@ export async function processJobCompletionStamps(userId: string, jobId: string) 
     console.error('Error processing job completion stamps:', error);
     return [];
   }
+}
+
+/**
+ * Evaluates storyline progression when a stamp is awarded
+ */
+async function evaluateStorylineProgression(
+  userId: string,
+  stampId: string,
+  contextData: Record<string, any>
+) {
+  try {
+    const { data, error } = await supabase
+      .rpc('evaluate_storyline_progression', {
+        p_user_id: userId,
+        p_stamp_id: stampId,
+        p_context_data: contextData
+      });
+
+    if (error) throw error;
+
+    // Log storyline progression results
+    if (data && data.length > 0) {
+      console.log('📖 Storyline progression:', data);
+      
+      // Check for completed storylines and trigger special voice lines
+      const completedStorylines = data.filter((result: any) => result.storyline_complete);
+      
+      for (const completed of completedStorylines) {
+        await triggerStorylineCompletionBroadcast(userId, completed.storyline_id);
+      }
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error evaluating storyline progression:', error);
+    return [];
+  }
+}
+
+/**
+ * Updates the user's canonical chain
+ */
+async function updateCanonicalChain(userId: string) {
+  try {
+    const { error } = await supabase
+      .rpc('update_canonical_chain', {
+        p_user_id: userId
+      });
+
+    if (error) throw error;
+    
+    console.log('🔗 Canonical chain updated for user:', userId);
+  } catch (error) {
+    console.error('Error updating canonical chain:', error);
+  }
+}
+
+/**
+ * Triggers a broadcast when a storyline is completed
+ */
+async function triggerStorylineCompletionBroadcast(userId: string, storylineId: string) {
+  try {
+    // Get storyline details
+    const { data: storyline } = await supabase
+      .from('stamp_storylines')
+      .select('*')
+      .eq('id', storylineId)
+      .single();
+
+    if (!storyline) return;
+
+    // Create special broadcast for storyline completion
+    const broadcastContent = `${storyline.icon} Storyline Complete: ${storyline.title} - A true testament to dedication and growth.`;
+
+    await createBroadcastEvent(
+      'storyline_completion',
+      broadcastContent,
+      {
+        source: 'storyline_system',
+        trust: 'canon',
+        generatedBy: 'Annette',
+        command: 'storyline_completed',
+        confidence: 0.98,
+        dataPoints: [`Storyline: ${storyline.title}`, `Type: ${storyline.storyline_type}`]
+      },
+      'city' // Storyline completions are significant enough for city-wide broadcast
+    );
+
+    console.log('📡 Storyline completion broadcast created:', storyline.title);
+  } catch (error) {
+    console.error('Error creating storyline completion broadcast:', error);
+  }
+}
+
+/**
+ * Generates Annette's voice line for storyline completion
+ */
+export function generateStorylineCompletionVoiceLine(storylineType: string, storylineTitle: string): string {
+  const completionVoiceLines: Record<string, string> = {
+    'neighborhood_hero': "Look who's become the local legend! That storyline's going in the vault, sugar. Stamped, sealed... Canonical.",
+    'wellness_whisperer': "Mastery achieved, darling. Your wellness journey is now Canonical truth — every chapter earned.",
+    'road_warrior': "Distance conquered, weather defeated, time mastered. That's a complete Road Warrior saga, love. Canonical.",
+    'excellence_pursuit': "Excellence isn't an act, it's a habit — and honey, you just proved it. Storyline complete, Canonical status: earned."
+  };
+
+  const voiceLine = completionVoiceLines[storylineType];
+  
+  if (voiceLine) {
+    return voiceLine;
+  }
+
+  // Generic storyline completion line
+  return `That storyline's complete, sugar. ${storylineTitle} — every chapter stamped, every moment verified. Canonical.`;
 }
