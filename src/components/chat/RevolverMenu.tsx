@@ -108,20 +108,23 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   }, [isOpen, emitRevolverStateChange]);
 
   return (
-    <div className={cn("revollver-trigger fixed bottom-6 right-6 z-[999] transition-all duration-300 ease-out", className)}>
+    <div className={cn("revollver-trigger fixed bottom-10 right-10 z-[999] transition-all duration-300 ease-out", className)}>
       {/* Radial Menu Items - Tactical Clip Layout */}
       {isOpen && (
-        <div className="absolute bottom-0 right-0 animate-scale-in">
+        <div className="absolute bottom-0 right-0">
           {menuItems.map((item, index) => {
             // Revolver cylinder positioning - clips expand upward and inward
             const angle = (index * 45) - 135; // 6 items, 45 degrees apart, starting upper-left
-            const radius = Math.min(90, window.innerWidth < 768 ? 70 : 90); // Responsive radius
+            const radius = Math.min(90, window.innerWidth < 768 ? 70 : 90);
             const x = Math.cos(angle * Math.PI / 180) * radius;
             const y = Math.sin(angle * Math.PI / 180) * radius;
             
-            // Ensure clips stay within viewport bounds
-            const safeX = Math.max(-x, -(window.innerWidth - 120));
-            const safeY = Math.max(-y, -(window.innerHeight - 120));
+            // Ensure clips stay within viewport bounds with safe margins
+            const minPadding = 20;
+            const maxX = Math.min(-x, -(minPadding));
+            const maxY = Math.min(-y, -(minPadding));
+            const safeX = Math.max(maxX, -(window.innerWidth - 120));
+            const safeY = Math.max(maxY, -(window.innerHeight - 120));
             
             return (
               <Button
@@ -131,16 +134,16 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 onClick={() => handleItemClick(item)}
                 className={cn(
                   "absolute w-14 h-14 rounded-full border-2 border-slate-400/60",
-                  "backdrop-blur-sm transition-all duration-300 shadow-lg",
-                  "hover:scale-110 hover:shadow-xl hover:border-primary/60",
-                  "animate-revolver-clip",
+                  "backdrop-blur-sm transition-all duration-300 shadow-lg drop-shadow-lg",
+                  "hover:scale-110 hover:shadow-xl hover:drop-shadow-xl hover:border-primary/60",
+                  "animate-scale-in",
                   item.color,
                   item.bg
                 )}
                 style={{
                   right: `${safeX}px`,
                   bottom: `${safeY}px`,
-                  animationDelay: `${index * 80}ms`,
+                  animationDelay: `${index * 100}ms`,
                   transformOrigin: 'bottom right'
                 }}
                 title={item.label}
@@ -158,19 +161,21 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
         onDoubleClick={handleDoubleClick}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onContextMenu={(e) => e.preventDefault()} // Disable right-click menu
         className={cn(
-          "relative w-16 h-16 rounded-full shadow-xl transition-all duration-300 ease-out",
+          "relative w-16 h-16 rounded-full shadow-xl drop-shadow-xl transition-all duration-300 ease-out",
           "border-2 border-slate-400 text-white bg-gradient-to-br from-slate-700 to-slate-900",
-          "hover:scale-105 hover:shadow-2xl hover:border-primary/60",
+          "hover:scale-105 hover:shadow-2xl hover:drop-shadow-2xl hover:border-primary/60",
           "ring-2 ring-slate-500/20",
-          isOpen && "rotate-45 bg-gradient-to-br from-red-600 to-red-800 border-red-400 ring-red-500/30"
+          "active:scale-95", // Feedback on press
+          isOpen && "rotate-45 bg-gradient-to-br from-red-600 to-red-800 border-red-400 ring-red-500/30 shadow-red-500/20"
         )}
         variant="ghost"
       >
         {isOpen ? (
-          <span className="material-symbols-outlined text-3xl text-white">close</span>
+          <span className="material-symbols-outlined text-3xl text-white animate-fade-in">close</span>
         ) : (
-          <span className="material-symbols-outlined text-3xl text-white">apps</span>
+          <span className="material-symbols-outlined text-3xl text-white animate-fade-in">apps</span>
         )}
       </Button>
     </div>
