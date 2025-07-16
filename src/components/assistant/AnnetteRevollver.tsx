@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Compass, FileText, Star, Users, MapPin, Clock,
   Radio, Bookmark, Users2, Search, MessageSquare, Shield,
-  Settings, Heart
+  Settings, Heart, Crown
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { createCanonMetadata, getCanonEnhancedVoiceLine, logCanonEntry, type CanonMetadata } from '@/utils/canonHelper';
@@ -76,6 +76,13 @@ const cylinder1: ClipAction[] = [
     label: 'Verification Log',
     voiceLine: "That one's going in the vault, sugar. Stamped, sealed… Canonical.",
     action: 'canon_log'
+  },
+  {
+    id: 'customer-storylines',
+    icon: Crown,
+    label: 'Patron Chronicles',
+    voiceLine: "Trust like yours? That builds civilizations.",
+    action: 'view_storylines'
   }
 ];
 

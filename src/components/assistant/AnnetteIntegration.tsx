@@ -226,8 +226,12 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
       job_radar: "Ping ping. Verified opportunities detected. *scanning nearby jobs* Fresh positions in your radius! 📍",
       time_machine: "Here's your time trail. You've been busy, haven't you? *loading performance history* Your productivity graph is looking stellar! ⏰",
       canon_log: "That one's going in the vault, sugar. Stamped, sealed… Canonical. *accessing verified entries* Every record here is gospel truth! 🔐",
-      view_storylines: "Looks like someone just linked another truth in their chain... *accessing storyline data* Your narrative is taking shape beautifully! 📜",
+      view_storylines: "Trust like yours? That builds civilizations... *accessing customer storylines* Your patron arc is impressive! 👑",
       storyline_progress: "Stamped and woven. This story's going places, sugar! *analyzing storyline progression* Every chapter verified! ✨",
+      customer_chains: "You don't consume services. You compose them... *reviewing customer chains* This is artistry! 🎨",
+      patron_milestones: "Stamped by the ones who cared. Canonical — not for what you did, but for what you honored. 🏆",
+      community_recognition: "You were the echo before the broadcast... *scanning community impact* Neighborhood legend status! 🌊",
+      curated_taste: "From booking to artistry — your taste is next level, love. *analyzing curation patterns* Pure elegance! ✨",
       
       // 🤝 2nd Cylinder — Community & Connections
       top_connections: "These folks adore you. And honestly, same. *analyzing repeat client data* Your VIP list is looking absolutely gorgeous! 👥",
