@@ -10,6 +10,7 @@ import { RoleProvider } from "@/contexts/RoleContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import DesktopAdminDashboard from "./pages/DesktopAdminDashboard";
 import Auth from "@/pages/Auth";
+import { ObsidianDashboard } from "@/components/obsidian/ObsidianDashboard";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
                   <Route path="/" element={<Navigate to="/admin" replace />} />
                   <Route path="/auth" element={<Auth />} />
                   <Route path="/admin" element={<DesktopAdminDashboard />} />
+                  <Route path="/vault" element={<ObsidianDashboard />} />
                   <Route path="*" element={<Navigate to="/admin" replace />} />
                 </Routes>
                 <Toaster />

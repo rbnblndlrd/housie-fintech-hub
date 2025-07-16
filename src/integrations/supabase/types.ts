@@ -2504,6 +2504,48 @@ export type Database = {
           },
         ]
       }
+      obsidian_notes: {
+        Row: {
+          content: string
+          created_at: string
+          file_path: string | null
+          id: string
+          last_synced_at: string | null
+          metadata: Json | null
+          tags: string[] | null
+          template_type: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          last_synced_at?: string | null
+          metadata?: Json | null
+          tags?: string[] | null
+          template_type?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          file_path?: string | null
+          id?: string
+          last_synced_at?: string | null
+          metadata?: Json | null
+          tags?: string[] | null
+          template_type?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       opportunities: {
         Row: {
           accepted_crew_id: string | null
