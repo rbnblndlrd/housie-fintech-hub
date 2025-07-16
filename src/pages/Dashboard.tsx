@@ -16,6 +16,7 @@ import { useUXMode } from '@/hooks/useUXMode';
 import DashboardLayoutController from '@/components/dashboard/DashboardLayoutController';
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
+import { SharedDashboardOverlay } from '@/components/shared/SharedDashboardOverlay';
 
 const Dashboard = () => {
   // Mock jobs data for UX mode detection
@@ -114,6 +115,9 @@ const Dashboard = () => {
       
       {/* Tactical HUD Anchor Card */}
       <TodaysRouteAnchor />
+      
+      {/* Shared Dashboard Overlay - BubbleChat + RevolverMenu */}
+      <SharedDashboardOverlay />
     </>
   );
 };

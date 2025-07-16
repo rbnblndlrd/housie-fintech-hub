@@ -13,7 +13,7 @@ import ConditionalHeader from './components/layout/ConditionalHeader';
 import FloatingNavigation from './components/layout/FloatingNavigation';
 import ConditionalSpacingWrapper from './components/layout/ConditionalSpacingWrapper';
 import ConditionalVideoBackground from './components/layout/ConditionalVideoBackground';
-import { RevolverMenu } from './components/chat/RevolverMenu';
+
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
@@ -148,9 +148,6 @@ function App() {
                             
                             {/* Global Canon Broadcast System */}
                             <CanonBroadcast position="bottom-left" />
-                            
-                            {/* Global Revolver Menu - Bottom Right */}
-                            <RevolverMenu />
                             
                             <Toaster />
                           </div>

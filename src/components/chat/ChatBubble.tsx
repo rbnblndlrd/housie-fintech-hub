@@ -12,6 +12,7 @@ import { CrewThreadsPanel } from './CrewThreadsPanel';
 import DashboardNotificationDropdown from '@/components/dashboard/DashboardNotificationDropdown';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
+import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 
 interface ChatBubbleProps {
   defaultTab?: 'messages' | 'ai' | 'voice';
@@ -23,6 +24,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   showMicIcon 
 }) => {
   const { user } = useAuth();
+  const { currentRole } = useRoleSwitch();
   const location = useLocation();
   const isInteractiveMap = location.pathname === '/interactive-map';
   
@@ -46,7 +48,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [previousTab, setPreviousTab] = useState<'messages' | 'ai' | 'voice'>('ai');
   const { totalUnreadCount } = useChat();
 
-  // Voice lines arrays - updated with user-specified quotes
+  // Role-based voice lines - updated with user-specified quotes
   const echoVoiceLines = [
     "Echoes never lie, sugar. Let's see what the network remembers…",
     "The Canon's stirring. Let's see who made history today.",
@@ -64,6 +66,23 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     "Crew status: online. Collectives? Buzzing.",
     "If teamwork had a group chat… this would be it."
   ];
+
+  // Role-aware greeting lines
+  const getGreetingForRole = () => {
+    if (currentRole === 'provider') {
+      return [
+        "Ready to optimize your route, sugar? I've got logistics and sass.",
+        "Provider mode activated. Let's parse some jobs and stack that paper.",
+        "Time to coordinate your crew and maximize efficiency. You got this!"
+      ];
+    } else {
+      return [
+        "Ask me anything. I've got data, sass, and an extremely organized brain.",
+        "Need help? I've got button-clickin' fingers and achievement-tracking eyes.",
+        "Customer mode online. Ready to track your prestige and manage bookings."
+      ];
+    }
+  };
 
   // Session memory for sub-panels
   useEffect(() => {
@@ -108,6 +127,13 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     if (savedSubPanel && (savedSubPanel === 'echo' || savedSubPanel === 'threads')) {
       setActiveSubPanel(savedSubPanel);
     }
+
+    // Show role-aware greeting when opening
+    const greetingLines = getGreetingForRole();
+    const randomGreeting = greetingLines[Math.floor(Math.random() * greetingLines.length)];
+    toast("🧠 Annette", {
+      description: randomGreeting
+    });
   };
 
   const handleTabChange = (tab: 'messages' | 'ai' | 'voice') => {

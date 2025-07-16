@@ -24,6 +24,7 @@ import {
   Plus
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SharedDashboardOverlay } from '@/components/shared/SharedDashboardOverlay';
 
 const CustomerDashboard = () => {
   const { user } = useAuth();
@@ -329,6 +330,9 @@ const CustomerDashboard = () => {
           </div>
         </div>
       </div>
+      
+      {/* Shared Dashboard Overlay - BubbleChat + RevolverMenu */}
+      <SharedDashboardOverlay />
     </>
   );
 };
