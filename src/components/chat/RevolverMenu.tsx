@@ -109,9 +109,9 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
   return (
     <div className={cn(
-      "revollver-trigger fixed z-[999] transition-all duration-300 ease-out",
-      // Position in bottom-right corner as indicated in red square
-      "bottom-8 right-8",
+      "revollver-trigger fixed z-[9999] transition-all duration-300 ease-out",
+      // Phase 12.4.3 – "Revolver: Red Dot Lock-On" - Precise positioning per red square target
+      "bottom-20 right-24 sm:bottom-16 sm:right-16", // 80px from bottom, 96px from right, responsive for mobile
       className
     )}>
       {/* Radial Menu Items - Tactical Clip Layout */}
