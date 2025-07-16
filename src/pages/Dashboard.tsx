@@ -141,9 +141,7 @@ const Dashboard = () => {
           showMicIcon={false}
         />
         
-        <div className="fixed z-50 bottom-6 right-6">
-          <RevolverMenu />
-        </div>
+        <RevolverMenu />
 
         {/* Global Job Acceptance Overlay */}
         <GlobalJobAcceptanceOverlay />

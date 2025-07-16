@@ -571,6 +571,25 @@
   transition: all 0.25s ease;
 }
 
+/* Tactical Revolver Clip Animation */
+@keyframes revolver-clip {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.animate-revolver-clip {
+  animation: revolver-clip 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
 /* Desktop (≥1280px wide) */
 @media (min-width: 1280px) {
   .annette-open .main-pane {

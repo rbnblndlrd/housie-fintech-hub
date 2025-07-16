@@ -72,66 +72,62 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   };
 
   return (
-    <div className={cn("relative", className)}>
-      {/* Radial Menu Items */}
+    <div className={cn("revollver-trigger fixed bottom-6 right-6 z-[999]", className)}>
+      {/* Radial Menu Items - Tactical Clip Layout */}
       {isOpen && (
-        <>
-          {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/10 backdrop-blur-sm"
-            onClick={() => setIsOpen(false)}
-          />
-          
-          {/* Menu Items in Radial Layout */}
-          <div className="relative">
-            {menuItems.map((item, index) => {
-              const angle = (index * 60) - 90; // 6 items, 60 degrees apart, starting at top
-              const radius = 80;
-              const x = Math.cos(angle * Math.PI / 180) * radius;
-              const y = Math.sin(angle * Math.PI / 180) * radius;
-              
-              return (
-                <Button
-                  key={item.label}
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleItemClick(item)}
-                  className={cn(
-                    "absolute w-12 h-12 rounded-full border-2 border-slate-500",
-                    "backdrop-blur-md transition-all duration-300 animate-scale-in",
-                    item.color,
-                    item.bg
-                  )}
-                  style={{
-                    left: `calc(50% + ${x}px - 24px)`,
-                    top: `calc(50% + ${y}px - 24px)`,
-                    animationDelay: `${index * 50}ms`
-                  }}
-                  title={item.label}
-                >
-                  <item.icon className="h-5 w-5" />
-                </Button>
-              );
-            })}
-          </div>
-        </>
+        <div className="absolute bottom-0 right-0">
+          {menuItems.map((item, index) => {
+            // Revolver cylinder positioning - clips expand upward and inward
+            const angle = (index * 45) - 135; // 6 items, 45 degrees apart, starting upper-left
+            const radius = Math.min(90, window.innerWidth < 768 ? 70 : 90); // Responsive radius
+            const x = Math.cos(angle * Math.PI / 180) * radius;
+            const y = Math.sin(angle * Math.PI / 180) * radius;
+            
+            return (
+              <Button
+                key={item.label}
+                variant="ghost"
+                size="sm"
+                onClick={() => handleItemClick(item)}
+                className={cn(
+                  "absolute w-14 h-14 rounded-full border-2 border-slate-400/60",
+                  "backdrop-blur-sm transition-all duration-300 shadow-lg",
+                  "hover:scale-110 hover:shadow-xl hover:border-primary/60",
+                  "animate-revolver-clip",
+                  item.color,
+                  item.bg
+                )}
+                style={{
+                  right: `${-x}px`,
+                  bottom: `${-y}px`,
+                  animationDelay: `${index * 80}ms`,
+                  transformOrigin: 'bottom right'
+                }}
+                title={item.label}
+              >
+                <item.icon className="h-6 w-6" />
+              </Button>
+            );
+          })}
+        </div>
       )}
 
-      {/* Central Trigger Button */}
+      {/* Central Trigger Button - Tactical Revolver */}
       <Button
         onClick={toggleRevolver}
         className={cn(
-          "relative w-14 h-14 rounded-full shadow-lg transition-all duration-300",
-          "border-2 border-slate-500 text-white bg-gradient-to-br from-slate-600 to-slate-800",
-          "hover:scale-105 hover:shadow-xl",
-          isOpen && "rotate-45 bg-gradient-to-br from-red-500 to-red-700 border-red-400"
+          "relative w-16 h-16 rounded-full shadow-xl transition-all duration-300",
+          "border-2 border-slate-400 text-white bg-gradient-to-br from-slate-700 to-slate-900",
+          "hover:scale-105 hover:shadow-2xl hover:border-primary/60",
+          "ring-2 ring-slate-500/20",
+          isOpen && "rotate-45 bg-gradient-to-br from-red-600 to-red-800 border-red-400 ring-red-500/30"
         )}
         variant="ghost"
       >
         {isOpen ? (
-          <Plus className="h-6 w-6 text-white" />
+          <Plus className="h-7 w-7 text-white" />
         ) : (
-          <Zap className="h-6 w-6 text-white" />
+          <Zap className="h-7 w-7 text-white" />
         )}
       </Button>
     </div>
