@@ -71,7 +71,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   };
 
   return (
-    <div className={cn("revollver-trigger fixed bottom-6 right-6 z-[999]", className)}>
+    <div className={cn("revollver-trigger fixed bottom-20 right-20 z-[999]", className)}>
       {/* Radial Menu Items - Tactical Clip Layout */}
       {isOpen && (
         <div className="absolute bottom-0 right-0">
