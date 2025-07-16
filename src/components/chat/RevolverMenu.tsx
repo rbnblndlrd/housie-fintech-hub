@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
@@ -12,6 +12,8 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { emitRevolverStateChange } = useRevolverVisibility();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const longPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const menuItems = [
     { 
@@ -70,17 +72,56 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
     emitRevolverStateChange(newState);
   };
 
+  const handleDoubleClick = () => {
+    toggleRevolver();
+  };
+
+  const handleTouchStart = () => {
+    longPressTimeoutRef.current = setTimeout(() => {
+      toggleRevolver();
+    }, 500); // 500ms long press
+  };
+
+  const handleTouchEnd = () => {
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current);
+      longPressTimeoutRef.current = null;
+    }
+  };
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && triggerRef.current && !triggerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+        emitRevolverStateChange(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, emitRevolverStateChange]);
+
   return (
-    <div className={cn("revollver-trigger fixed bottom-20 right-20 z-[999]", className)}>
+    <div className={cn("revollver-trigger fixed bottom-6 right-6 z-[999] transition-all duration-300 ease-out", className)}>
       {/* Radial Menu Items - Tactical Clip Layout */}
       {isOpen && (
-        <div className="absolute bottom-0 right-0">
+        <div className="absolute bottom-0 right-0 animate-scale-in">
           {menuItems.map((item, index) => {
             // Revolver cylinder positioning - clips expand upward and inward
             const angle = (index * 45) - 135; // 6 items, 45 degrees apart, starting upper-left
             const radius = Math.min(90, window.innerWidth < 768 ? 70 : 90); // Responsive radius
             const x = Math.cos(angle * Math.PI / 180) * radius;
             const y = Math.sin(angle * Math.PI / 180) * radius;
+            
+            // Ensure clips stay within viewport bounds
+            const safeX = Math.max(-x, -(window.innerWidth - 120));
+            const safeY = Math.max(-y, -(window.innerHeight - 120));
             
             return (
               <Button
@@ -97,8 +138,8 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                   item.bg
                 )}
                 style={{
-                  right: `${-x}px`,
-                  bottom: `${-y}px`,
+                  right: `${safeX}px`,
+                  bottom: `${safeY}px`,
                   animationDelay: `${index * 80}ms`,
                   transformOrigin: 'bottom right'
                 }}
@@ -113,9 +154,12 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
       {/* Central Trigger Button - Tactical Revolver */}
       <Button
-        onClick={toggleRevolver}
+        ref={triggerRef}
+        onDoubleClick={handleDoubleClick}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
         className={cn(
-          "relative w-16 h-16 rounded-full shadow-xl transition-all duration-300",
+          "relative w-16 h-16 rounded-full shadow-xl transition-all duration-300 ease-out",
           "border-2 border-slate-400 text-white bg-gradient-to-br from-slate-700 to-slate-900",
           "hover:scale-105 hover:shadow-2xl hover:border-primary/60",
           "ring-2 ring-slate-500/20",
