@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils';
 import { useChat } from '@/hooks/useChat';
 import { useAuth } from '@/contexts/AuthContext';
 import ChatPanel from './ChatPanel';
+import { EchoFeedPanel } from './EchoFeedPanel';
+import { CrewThreadsPanel } from './CrewThreadsPanel';
 import DashboardNotificationDropdown from '@/components/dashboard/DashboardNotificationDropdown';
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -44,19 +46,23 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [previousTab, setPreviousTab] = useState<'messages' | 'ai' | 'voice'>('ai');
   const { totalUnreadCount } = useChat();
 
-  // Voice lines arrays
+  // Voice lines arrays - updated with user-specified quotes
   const echoVoiceLines = [
-    "Echo stream loaded. Time to trace the ripples, sugar! 📡",
-    "Let's see who's making waves in the canon feed! 🌊",
-    "Time to see what's echoing across town, sugar! Your achievements are ready to make some noise! 📡✨",
-    "Canon broadcasts incoming - this is where legends are made! ⭐"
+    "Echoes never lie, sugar. Let's see what the network remembers…",
+    "The Canon's stirring. Let's see who made history today.",
+    "This isn't gossip — this is verified prestige, baby.",
+    "Let me tune into the local signal… scanning nodes…",
+    "What's loud, proud, and carved in the blockchain? These.",
+    "Echo stream loaded. Time to trace the ripples."
   ];
 
   const crewVoiceLines = [
-    "Crew coordination mode activated. Let's see who needs backup! 👥",
-    "Time to check in with your collective, sugar! 🤝",
-    "Flying solo, are we? Let's see what crews are forming! 👥✨",
-    "Group chat central - where teams become legends! 💪"
+    "Crew chatter coming in hot. Don't leave 'em hanging.",
+    "Nothing like a good cluster of chaos to brighten the day.",
+    "You've got team threads, sugar. Let's stitch some history.",
+    "Every gig has a rhythm — and this is where the beat starts.",
+    "Crew status: online. Collectives? Buzzing.",
+    "If teamwork had a group chat… this would be it."
   ];
 
   // Session memory for sub-panels
@@ -293,6 +299,58 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                 activeSubPanel={activeSubPanel}
                 onSubPanelToggle={handleSubPanelToggle}
               />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Echo Feed Dock - Bottom Left (only show when in Echo sub-panel) */}
+      {isOpen && activeSubPanel === 'echo' && (
+        <div className="fixed bottom-6 left-6 z-40">
+          <div className="w-80 h-96 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    📡 Echo Feed
+                  </h3>
+                  <button
+                    onClick={() => setActiveSubPanel('main')}
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <EchoFeedPanel onBack={() => setActiveSubPanel('main')} />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Crew Threads Dock - Bottom Left (only show when in threads sub-panel) */}
+      {isOpen && activeSubPanel === 'threads' && (
+        <div className="fixed bottom-6 left-6 z-40">
+          <div className="w-80 h-96 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in">
+            <div className="h-full flex flex-col">
+              <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+                    👥 Crew Threads
+                  </h3>
+                  <button
+                    onClick={() => setActiveSubPanel('main')}
+                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  >
+                    ✕
+                  </button>
+                </div>
+              </div>
+              <div className="flex-1 overflow-hidden">
+                <CrewThreadsPanel onBack={() => setActiveSubPanel('main')} />
+              </div>
             </div>
           </div>
         </div>
