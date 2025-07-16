@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Settings, Map, Calendar, BarChart3, Users, Bot, Plus, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
@@ -16,42 +15,42 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
   const menuItems = [
     { 
-      icon: Map, 
+      icon: 'map', 
       label: 'Interactive Map', 
       action: () => navigate('/interactive-map'),
       color: 'text-green-400 hover:text-green-300',
       bg: 'bg-green-500/20 hover:bg-green-500/30'
     },
     { 
-      icon: Calendar, 
+      icon: 'calendar_today', 
       label: 'Schedule', 
       action: () => navigate('/dashboard'),
       color: 'text-blue-400 hover:text-blue-300',
       bg: 'bg-blue-500/20 hover:bg-blue-500/30'
     },
     { 
-      icon: BarChart3, 
+      icon: 'analytics', 
       label: 'Analytics', 
       action: () => navigate('/analytics-dashboard'),
       color: 'text-purple-400 hover:text-purple-300',
       bg: 'bg-purple-500/20 hover:bg-purple-500/30'
     },
     { 
-      icon: Users, 
+      icon: 'groups', 
       label: 'Community', 
       action: () => navigate('/community-dashboard'),
       color: 'text-orange-400 hover:text-orange-300',
       bg: 'bg-orange-500/20 hover:bg-orange-500/30'
     },
     { 
-      icon: Bot, 
+      icon: 'psychology_alt', 
       label: 'Annette AI', 
       action: () => {/* Opens BubbleChat - could emit event */},
       color: 'text-cyan-400 hover:text-cyan-300',
       bg: 'bg-cyan-500/20 hover:bg-cyan-500/30'
     },
     { 
-      icon: Settings, 
+      icon: 'settings', 
       label: 'Settings', 
       action: () => navigate('/settings'),
       color: 'text-gray-400 hover:text-gray-300',
@@ -105,7 +104,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 }}
                 title={item.label}
               >
-                <item.icon className="h-6 w-6" />
+                <span className="material-symbols-outlined text-2xl">{item.icon}</span>
               </Button>
             );
           })}
@@ -125,9 +124,9 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
         variant="ghost"
       >
         {isOpen ? (
-          <Plus className="h-7 w-7 text-white" />
+          <span className="material-symbols-outlined text-3xl text-white">close</span>
         ) : (
-          <Zap className="h-7 w-7 text-white" />
+          <span className="material-symbols-outlined text-3xl text-white">apps</span>
         )}
       </Button>
     </div>
