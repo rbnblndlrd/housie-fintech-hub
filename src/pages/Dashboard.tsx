@@ -1,6 +1,6 @@
 import React from 'react';
 import { UnifiedDashboardLayout } from '@/components/layout/UnifiedDashboardLayout';
-import { ChatBubble } from '@/components/chat/ChatBubble';
+import { AnnetteHalo } from '@/components/chat/AnnetteHalo';
 import { RevolverMenu } from '@/components/chat/RevolverMenu';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import JobTicketTable from '@/components/dashboard/JobTicketTable';
@@ -20,7 +20,7 @@ import DashboardLayoutController from '@/components/dashboard/DashboardLayoutCon
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
 import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
-import { useBubbleChatVisibility } from '@/hooks/useBubbleChatVisibility';
+
 import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
 import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
 import { BookingsProvider } from '@/contexts/BookingsContext';
@@ -53,7 +53,6 @@ const Dashboard = () => {
   } = useServiceLayout(mockJobs);
 
   const { isRevolverOpen } = useRevolverVisibility();
-  const { isBubbleChatOpen } = useBubbleChatVisibility();
 
   const handleAnnetteRecommendation = () => {
     // This would open the chat bubble with a specific context
@@ -109,11 +108,7 @@ const Dashboard = () => {
           bottomRow={bottomRowContent}
         >
           {/* Main Pane Content */}
-          <div className={cn(
-            "space-y-6 transition-all duration-300",
-            // Add left padding when BubbleChat is open
-            isBubbleChatOpen && "lg:pl-80"
-          )}>
+          <div className="space-y-6">
             {/* Header Actions */}
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
@@ -140,13 +135,11 @@ const Dashboard = () => {
         {/* Tactical HUD Anchor Card */}
         <TodaysRouteAnchor />
         
-        {/* Floating Overlays */}
-        <div className="fixed z-50 bottom-6 left-6">
-          <ChatBubble 
-            defaultTab="ai"
-            showMicIcon={false}
-          />
-        </div>
+        {/* Annette Halo Protocol Widget */}
+        <AnnetteHalo 
+          defaultTab="ai"
+          showMicIcon={false}
+        />
         
         <div className="fixed z-50 bottom-6 right-6">
           <RevolverMenu />
