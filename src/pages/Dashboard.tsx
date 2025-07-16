@@ -108,7 +108,7 @@ const Dashboard = () => {
           bottomRow={bottomRowContent}
         >
           {/* Main Pane Content */}
-          <div className="space-y-6">
+          <div className="main-pane space-y-6">
             {/* Header Actions */}
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>

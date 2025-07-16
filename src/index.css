@@ -564,3 +564,45 @@
 .animate-scale-in {
   animation: scale-in 0.3s ease-out forwards;
 }
+
+/* Annette Halo Layout Reflow System */
+.main-pane,
+.annette-chat-shell {
+  transition: all 0.25s ease;
+}
+
+/* Desktop (≥1280px wide) */
+@media (min-width: 1280px) {
+  .annette-open .main-pane {
+    margin-left: 360px;
+  }
+  
+  .annette-chat-shell {
+    width: 360px;
+  }
+}
+
+/* Tablet / Medium Screens (768px–1279px) */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .annette-open .main-pane {
+    margin-left: 300px;
+  }
+  
+  .annette-chat-shell {
+    width: 300px;
+  }
+}
+
+/* Small Screens (<768px) - No shift, overlay mode */
+@media (max-width: 767px) {
+  .annette-chat-shell {
+    width: 95vw;
+    left: 2.5vw !important;
+    right: auto;
+  }
+  
+  /* Prevent any margin shifts on mobile */
+  .annette-open .main-pane {
+    margin-left: 0;
+  }
+}

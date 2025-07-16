@@ -188,6 +188,21 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
 
+  // Add/remove layout class for dashboard reflow
+  useEffect(() => {
+    const mainPaneWrapper = document.querySelector('.main-pane-wrapper') || document.querySelector('.dashboard-container') || document.body;
+    
+    if (isOpen) {
+      mainPaneWrapper.classList.add('annette-open');
+    } else {
+      mainPaneWrapper.classList.remove('annette-open');
+    }
+
+    return () => {
+      mainPaneWrapper.classList.remove('annette-open');
+    };
+  }, [isOpen]);
+
   // Handle click to open chat
   const handleClick = () => {
     if (isDragging) return;
@@ -318,7 +333,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
           // Expanded Chat Shell
           <div className={cn(
             "bg-slate-800 border-2 border-slate-600 shadow-2xl flex flex-col overflow-hidden",
-            "w-96 h-[500px] transition-all duration-500 animate-scale-in",
+            "annette-chat-shell h-[500px] transition-all duration-300 animate-scale-in",
             "rounded-3xl ring-2 ring-purple-400/20"
           )}>
             {/* Header */}
