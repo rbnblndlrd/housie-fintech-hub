@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, X, Mic, Bell } from 'lucide-react';
+import { MessageCircle, X, Mic, Bell, Radio, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import ChatPanel from './ChatPanel';
 import DashboardNotificationDropdown from '@/components/dashboard/DashboardNotificationDropdown';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 
 interface ChatBubbleProps {
   defaultTab?: 'messages' | 'ai' | 'voice';
@@ -39,7 +40,20 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>(initialTab);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [activeSubPanel, setActiveSubPanel] = useState<'main' | 'echo' | 'threads'>('main');
   const { totalUnreadCount } = useChat();
+
+  // Session memory for sub-panels
+  useEffect(() => {
+    const savedSubPanel = sessionStorage.getItem('chatBubble-lastSubPanel');
+    if (savedSubPanel && (savedSubPanel === 'echo' || savedSubPanel === 'threads')) {
+      setActiveSubPanel(savedSubPanel);
+    }
+  }, []);
+
+  useEffect(() => {
+    sessionStorage.setItem('chatBubble-lastSubPanel', activeSubPanel);
+  }, [activeSubPanel]);
 
   // Persistent tab memory
   useEffect(() => {
@@ -59,7 +73,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   const handleOpen = () => {
     setIsOpen(true);
-    // Reset to initial tab when opening
+    // Reset to initial tab when opening, but preserve sub-panel if returning quickly
     setActiveTab(initialTab);
   };
 
@@ -68,6 +82,31 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     if (tab === 'voice' && !hasVoiceAccess) return;
     if (tab === 'messages' && !hasMessagesAccess) return;
     setActiveTab(tab);
+    // Reset to main panel when switching tabs
+    setActiveSubPanel('main');
+  };
+
+  const handleSubPanelToggle = () => {
+    if (activeTab === 'ai') {
+      const newPanel = activeSubPanel === 'main' ? 'echo' : 'main';
+      setActiveSubPanel(newPanel);
+      
+      // Annette's voice line when switching to Echo Feed
+      if (newPanel === 'echo') {
+        toast("🧠 Annette", {
+          description: "Time to see what's echoing across town, sugar! Your achievements are ready to make some noise! 📡✨"
+        });
+      }
+    } else if (activeTab === 'messages') {
+      setActiveSubPanel(activeSubPanel === 'main' ? 'threads' : 'main');
+    }
+  };
+
+  // Get current icon for the floating button based on active panel
+  const getCurrentIcon = () => {
+    if (activeTab === 'ai' && activeSubPanel === 'echo') return <Radio className="h-5 w-5 text-white" />;
+    if (activeTab === 'messages' && activeSubPanel === 'threads') return <Users className="h-5 w-5 text-white" />;
+    return null; // Use default Annette avatar
   };
 
   const handleNotificationClick = () => {
@@ -94,12 +133,18 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             )}
             variant="ghost"
           >
-            {/* Annette Avatar Image */}
-            <img 
-              src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
-              alt="Annette AI Assistant"
-              className="w-16 h-16 rounded-full object-cover"
-            />
+            {/* Dynamic Icon or Annette Avatar */}
+            {getCurrentIcon() ? (
+              <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
+                {getCurrentIcon()}
+              </div>
+            ) : (
+              <img 
+                src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
+                alt="Annette AI Assistant"
+                className="w-16 h-16 rounded-full object-cover"
+              />
+            )}
             
             {/* Mic Icon Overlay for Voice Mode */}
             {useMicIcon && (
@@ -125,7 +170,9 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
             {/* Clean Header */}
             <div className="bg-slate-700 border-b-2 border-slate-600 p-4 flex items-center justify-between">
               <h3 className="font-semibold text-white">
-                {useMicIcon ? 'Voice Assistant' : 'Assistant'}
+                {activeSubPanel === 'echo' ? 'Echo Feed' : 
+                 activeSubPanel === 'threads' ? 'Crew Threads' :
+                 useMicIcon ? 'Voice Assistant' : 'Assistant'}
               </h3>
               <div className="flex items-center gap-2">
                 <Button
@@ -193,7 +240,11 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
             {/* Chat Content */}
             <div className="flex-1 overflow-hidden">
-              <ChatPanel activeTab={activeTab} />
+              <ChatPanel 
+                activeTab={activeTab} 
+                activeSubPanel={activeSubPanel}
+                onSubPanelToggle={handleSubPanelToggle}
+              />
             </div>
           </div>
         </div>
