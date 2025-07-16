@@ -18,6 +18,9 @@ import { Calendar, Clock, MapPin, CheckCircle, ArrowLeft, List, CalendarDays } f
 import { UXModeSelector } from '@/components/dashboard/UXModeSelector';
 import { UXModeJobCard } from '@/components/dashboard/UXModeJobCard';
 import { useUXMode } from '@/hooks/useUXMode';
+import BookingsLayoutController from '@/components/dashboard/BookingsLayoutController';
+import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
+import { useServiceLayout } from '@/hooks/useServiceLayout';
 import JobParser from '@/components/shared/JobParser';
 import { toast } from 'sonner';
 
@@ -28,28 +31,28 @@ const BookingsPage = () => {
   const { bookings: upcomingBookings, loading, refetch } = useBookings();
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
 
-  // Convert bookings to jobs format for UX mode detection
-  const jobsForUXMode = upcomingBookings.map(booking => ({
+  // Convert bookings to jobs format for service layout detection
+  const jobsForServiceLayout = upcomingBookings.map(booking => ({
     id: booking.id,
     title: booking.serviceName,
     service_subcategory: booking.serviceName?.toLowerCase().includes('clean') ? 'cleaning' : 
-                        booking.serviceName?.toLowerCase().includes('repair') ? 'home_repairs' : 'general',
+                        booking.serviceName?.toLowerCase().includes('tattoo') ? 'tattoo' : 'general',
     customer: booking.provider,
     priority: 'medium'
   }));
 
-  const { 
-    currentMode, 
-    currentModeDefinition, 
-    setUXMode, 
-    availableModes, 
-    isAutoDetected,
-    detectedMode 
-  } = useUXMode(jobsForUXMode);
+  const {
+    currentLayout,
+    layoutDefinition,
+    detectedLayout,
+    isManualOverride,
+    setLayoutOverride,
+    availableLayouts
+  } = useServiceLayout(jobsForServiceLayout);
 
   const handleJobAction = (jobId: string, action: string) => {
     console.log(`🎯 Booking action: ${action} for booking ${jobId}`);
-    // Handle different actions based on UX mode
+    // Handle different actions based on service layout
   };
 
   if (!user) {
@@ -96,12 +99,12 @@ const BookingsPage = () => {
                   </h1>
                 </div>
                 <div className="flex items-center gap-3">
-                  <UXModeSelector
-                    currentMode={currentMode}
-                    isAutoDetected={isAutoDetected}
-                    detectedMode={detectedMode}
-                    onModeChange={setUXMode}
-                    availableModes={availableModes}
+                  <ServiceLayoutSelector
+                    currentLayout={currentLayout}
+                    detectedLayout={detectedLayout}
+                    isManualOverride={isManualOverride}
+                    onLayoutChange={setLayoutOverride}
+                    availableLayouts={availableLayouts}
                   />
                   {currentRole === 'provider' && (
                     <div className="flex items-center gap-2">
@@ -135,9 +138,9 @@ const BookingsPage = () => {
             </div>
 
             {currentRole === 'provider' ? (
-              // Provider View - Toggle between Kanban and Calendar
+              // Provider View - Service Layout Based Interface
               <div className="space-y-6">
-                {/* Annette's Contextual Insight */}
+                {/* Annette's Contextual Insight with Service Layout */}
                 <Card className="fintech-card border-purple-200 bg-purple-50">
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
@@ -147,15 +150,14 @@ const BookingsPage = () => {
                       <div className="flex-1">
                         <p className="text-purple-700 font-medium mb-1">Annette says:</p>
                         <p className="text-purple-600 text-sm">
-                          "Need help reviewing today's jobs? I've highlighted your most urgent one below. 
-                          You've got 3 active jobs and 2 scheduled for today."
+                          {layoutDefinition.annetteVoiceLine}
                         </p>
                         <Button 
                           size="sm" 
                           variant="outline" 
                           className="mt-2 border-purple-300 text-purple-700 hover:bg-purple-100"
                         >
-                          Get Recommendations
+                          Get Layout Tips
                         </Button>
                       </div>
                     </div>
@@ -163,102 +165,12 @@ const BookingsPage = () => {
                 </Card>
 
                 {viewMode === 'list' ? (
-                  <>
-                    {/* UX Mode Jobs Section */}
-                    <div className="space-y-4 mb-6">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-lg font-semibold text-foreground">
-                          Active Bookings - {currentModeDefinition.name} Mode
-                        </h3>
-                        <div className="text-sm text-muted-foreground">
-                          {currentModeDefinition.features.length} features active
-                        </div>
-                      </div>
-                      
-                      {upcomingBookings.length > 0 ? (
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                          {upcomingBookings.map(booking => (
-                            <UXModeJobCard
-                              key={booking.id}
-                              job={{
-                                id: booking.id,
-                                title: booking.serviceName,
-                                customer: booking.provider,
-                                scheduledTime: booking.time,
-                                estimatedDuration: '2h',
-                                total_amount: booking.total_amount,
-                                address: booking.location,
-                                priority: 'medium',
-                                status: booking.status
-                              }}
-                              mode={currentModeDefinition}
-                              onAction={handleJobAction}
-                            />
-                          ))}
-                        </div>
-                      ) : (
-                        <div className="fintech-card">
-                          <div className="p-6">
-                            <KanbanTicketList />
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                      <Card className="fintech-metric-card">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                            New Requests
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4">
-                          <div className="text-2xl font-bold text-blue-600 mb-1">3</div>
-                          <p className="text-sm text-gray-600">Pending acceptance</p>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className="fintech-metric-card">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
-                            Today's Jobs
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4">
-                          <div className="text-2xl font-bold text-yellow-600 mb-1">2</div>
-                          <p className="text-sm text-gray-600">Scheduled for today</p>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className="fintech-metric-card">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                            In Progress
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4">
-                          <div className="text-2xl font-bold text-purple-600 mb-1">1</div>
-                          <p className="text-sm text-gray-600">Currently working</p>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card className="fintech-metric-card">
-                        <CardHeader className="pb-3">
-                          <CardTitle className="text-lg flex items-center gap-2">
-                            <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                            Completed
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="p-4">
-                          <div className="text-2xl font-bold text-green-600 mb-1">8</div>
-                          <p className="text-sm text-gray-600">This week</p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </>
+                  <BookingsLayoutController
+                    layoutType={currentLayout}
+                    bookings={upcomingBookings}
+                    loading={loading}
+                    onBookingUpdate={refetch}
+                  />
                 ) : (
                   <BookingsCalendar 
                     bookings={upcomingBookings} 
