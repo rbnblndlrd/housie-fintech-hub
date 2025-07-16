@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Settings, Map, Calendar, BarChart3, Users, Bot, Plus, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
 
 interface RevolverMenuProps {
   className?: string;
@@ -11,6 +12,7 @@ interface RevolverMenuProps {
 export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { emitRevolverStateChange } = useRevolverVisibility();
 
   const menuItems = [
     { 
@@ -60,6 +62,13 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const handleItemClick = (item: typeof menuItems[0]) => {
     item.action();
     setIsOpen(false);
+    emitRevolverStateChange(false);
+  };
+
+  const toggleRevolver = () => {
+    const newState = !isOpen;
+    setIsOpen(newState);
+    emitRevolverStateChange(newState);
   };
 
   return (
@@ -110,7 +119,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
       {/* Central Trigger Button */}
       <Button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={toggleRevolver}
         className={cn(
           "relative w-14 h-14 rounded-full shadow-lg transition-all duration-300",
           "border-2 border-slate-500 text-white bg-gradient-to-br from-slate-600 to-slate-800",

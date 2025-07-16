@@ -7,14 +7,13 @@ import { montrealProviders } from '@/data/montrealProviders';
 import LiveStatsCard from './map/LiveStatsCard';
 import SelectedJobCard from './map/SelectedJobCard';
 import LoadingOverlay from './map/LoadingOverlay';
-import JobAcceptedOverlay from './feedback/JobAcceptedOverlay';
+import { useJobAcceptance } from '@/contexts/JobAcceptanceContext';
 
 const InteractiveJobsMap: React.FC = () => {
   const { emergencyJobs, liveStats, loading, acceptEmergencyJob } = useEmergencyJobsData();
   const { currentRole } = useRole();
+  const { showJobAccepted } = useJobAcceptance();
   const [selectedJob, setSelectedJob] = useState<any>(null);
-  const [showAcceptedOverlay, setShowAcceptedOverlay] = useState(false);
-  const [lastAcceptedJob, setLastAcceptedJob] = useState<any>(null);
 
   const handleJobSelect = (job: any) => {
     setSelectedJob(job);
@@ -25,8 +24,16 @@ const InteractiveJobsMap: React.FC = () => {
       const jobToAccept = selectedJob || emergencyJobs.find(job => job.id === jobId);
       const success = await acceptEmergencyJob(jobId);
       if (success && jobToAccept) {
-        setLastAcceptedJob(jobToAccept);
-        setShowAcceptedOverlay(true);
+        // Use the global job acceptance system
+        showJobAccepted({
+          id: jobToAccept.id,
+          title: jobToAccept.title || `${jobToAccept.serviceType} – ${jobToAccept.location || 'Location'}`,
+          price: jobToAccept.price || '$0',
+          customer: jobToAccept.customerName || 'Emergency Service',
+          priority: jobToAccept.priority || 'high',
+          dueDate: jobToAccept.scheduledTime || 'ASAP',
+          location: jobToAccept.location
+        });
         setSelectedJob(null);
       }
     }
@@ -61,13 +68,7 @@ const InteractiveJobsMap: React.FC = () => {
       {/* Loading Overlay */}
       <LoadingOverlay loading={loading} />
 
-      {/* Job Accepted Overlay */}
-      <JobAcceptedOverlay
-        visible={showAcceptedOverlay}
-        jobTitle={lastAcceptedJob?.title || 'Emergency Job'}
-        jobPrice={lastAcceptedJob?.price || '$0'}
-        onClose={() => setShowAcceptedOverlay(false)}
-      />
+      {/* Job acceptance now handled by GlobalJobAcceptanceOverlay */}
     </div>
   );
 };

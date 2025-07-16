@@ -45,7 +45,9 @@ const SelectedJobCard: React.FC<SelectedJobCardProps> = ({
             </Button>
           </div>
           
-          <h3 className="font-bold text-lg mb-2">{selectedJob.title}</h3>
+          <h3 className="font-bold text-lg mb-2">
+            {selectedJob.title || `${selectedJob.serviceType || 'Service'} – ${selectedJob.location || 'Location'}`}
+          </h3>
           <p className="text-gray-600 text-sm mb-3">{selectedJob.description}</p>
           
           <div className="flex items-center justify-between mb-4">

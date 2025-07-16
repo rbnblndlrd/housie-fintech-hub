@@ -1,4 +1,7 @@
 import React from 'react';
+import { UnifiedDashboardLayout } from '@/components/layout/UnifiedDashboardLayout';
+import { ChatBubble } from '@/components/chat/ChatBubble';
+import { RevolverMenu } from '@/components/chat/RevolverMenu';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import JobTicketTable from '@/components/dashboard/JobTicketTable';
 import TodaysRoutePanel from '@/components/dashboard/TodaysRoutePanel';
@@ -16,7 +19,9 @@ import { useUXMode } from '@/hooks/useUXMode';
 import DashboardLayoutController from '@/components/dashboard/DashboardLayoutController';
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
-import { SharedDashboardOverlay } from '@/components/shared/SharedDashboardOverlay';
+import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
+import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
+import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
 import { BookingsProvider } from '@/contexts/BookingsContext';
 
 const Dashboard = () => {
@@ -45,6 +50,8 @@ const Dashboard = () => {
     availableLayouts
   } = useServiceLayout(mockJobs);
 
+  const { isRevolverOpen } = useRevolverVisibility();
+
   const handleAnnetteRecommendation = () => {
     // This would open the chat bubble with a specific context
     console.log('Opening Annette recommendations...');
@@ -55,71 +62,93 @@ const Dashboard = () => {
     // Handle different actions based on UX mode
   };
 
-  const annetteCard = (
-    <Card className="fintech-card border-purple-200 bg-purple-50 mb-6">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center flex-shrink-0">
-            <span className="text-white font-bold">A</span>
-          </div>
-          <div className="flex-1">
-            <p className="text-purple-700 font-medium mb-1">Annette says:</p>
-            <p className="text-purple-600 text-sm mb-3">
-              "You've got 3 active jobs and 2 scheduled for today. Want me to recommend your next move? 
-              I'd suggest prioritizing the high-priority job on Rue Saint-Denis first!"
-            </p>
-            <Button 
-              onClick={handleAnnetteRecommendation}
-              size="sm" 
-              variant="outline" 
-              className="border-purple-300 text-purple-700 hover:bg-purple-100"
-            >
-              Get Recommendations
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+  // Left Dock Content - Annette's BubbleChat (invisible but space reserved)
+  const leftDockContent = (
+    <div className="w-0 h-0 opacity-0 pointer-events-none">
+      {/* Space reserved for floating Annette BubbleChat */}
+    </div>
+  );
+
+  // Right Dock Content - Today's Route + Space for RevolverMenu
+  const rightDockContent = (
+    <div className="space-y-4">
+      {/* Today's Route Panel */}
+      <Card className="fintech-card">
+        <CardContent className="p-4">
+          <h3 className="font-semibold mb-4 text-slate-800">Today's Route</h3>
+          <TodaysRoutePanel />
+        </CardContent>
+      </Card>
+      
+      {/* Space reserved for RevolverMenu */}
+      <div className="w-0 h-0 opacity-0 pointer-events-none">
+        {/* Space reserved for floating RevolverMenu */}
+      </div>
+    </div>
+  );
+
+  // Bottom Row Content - Performance Metrics (auto-hide when revolver open)
+  const bottomRowContent = (
+    <div className={`transition-all duration-500 ${isRevolverOpen ? 'opacity-50 scale-95' : 'opacity-100 scale-100'}`}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <PerformanceWidgets />
+        <StampTrackerWidget className="h-fit" />
+      </div>
+    </div>
   );
 
   return (
-    <BookingsProvider>
-      <DashboardLayout
-        title="Dashboard"
-        rightPanelTitle="Today's Route"
-        rightPanelContent={<TodaysRoutePanel />}
-        bottomWidgets={
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <PerformanceWidgets />
-            <StampTrackerWidget className="h-fit" />
-          </div>
-        }
-        headerAction={
-          <div className="flex items-center gap-3">
-            <ServiceLayoutSelector
-              currentLayout={currentLayout}
-              detectedLayout={detectedLayout}
-              isManualOverride={isManualOverride}
-              onLayoutChange={setLayoutOverride}
-              availableLayouts={availableLayouts}
+    <JobAcceptanceProvider>
+      <BookingsProvider>
+        <UnifiedDashboardLayout
+          leftDock={leftDockContent}
+          rightDock={rightDockContent}
+          bottomRow={bottomRowContent}
+        >
+          {/* Main Pane Content */}
+          <div className="space-y-6">
+            {/* Header Actions */}
+            <div className="flex items-center justify-between">
+              <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
+              <div className="flex items-center gap-3">
+                <ServiceLayoutSelector
+                  currentLayout={currentLayout}
+                  detectedLayout={detectedLayout}
+                  isManualOverride={isManualOverride}
+                  onLayoutChange={setLayoutOverride}
+                  availableLayouts={availableLayouts}
+                />
+                <CreateJobTicketButton size="sm" />
+              </div>
+            </div>
+
+            {/* Main Dashboard Content */}
+            <DashboardLayoutController
+              layoutType={currentLayout}
+              jobs={mockJobs}
             />
-            <CreateJobTicketButton size="sm" />
           </div>
-        }
-      >
-        {annetteCard}
-        <DashboardLayoutController
-          layoutType={currentLayout}
-          jobs={mockJobs}
-        />
-      </DashboardLayout>
-      
-      {/* Tactical HUD Anchor Card */}
-      <TodaysRouteAnchor />
-      
-      {/* Shared Dashboard Overlay - BubbleChat + RevolverMenu */}
-      <SharedDashboardOverlay />
-    </BookingsProvider>
+        </UnifiedDashboardLayout>
+        
+        {/* Tactical HUD Anchor Card */}
+        <TodaysRouteAnchor />
+        
+        {/* Floating Overlays */}
+        <div className="fixed z-50 bottom-6 left-6">
+          <ChatBubble 
+            defaultTab="ai"
+            showMicIcon={false}
+          />
+        </div>
+        
+        <div className="fixed z-50 bottom-6 right-6">
+          <RevolverMenu />
+        </div>
+
+        {/* Global Job Acceptance Overlay */}
+        <GlobalJobAcceptanceOverlay />
+      </BookingsProvider>
+    </JobAcceptanceProvider>
   );
 };
 
