@@ -20,18 +20,15 @@ export const SharedDashboardOverlay: React.FC = () => {
 
   return (
     <>
-      {/* Annette BubbleChat - positioned bottom-left, adjusted for sidebar on provider dashboard */}
-      <div 
-        className="fixed z-50 bottom-6"
-        style={{ 
-          left: isProviderDashboard ? 'calc(18rem + 1.5rem)' : '1.5rem' // sidebar width + margin
-        }}
-      >
-        <ChatBubble 
-          defaultTab="ai"
-          showMicIcon={false}
-        />
-      </div>
+      {/* Annette BubbleChat - only render on customer dashboard, not provider dashboard */}
+      {!isProviderDashboard && (
+        <div className="fixed z-50 bottom-6 left-6">
+          <ChatBubble 
+            defaultTab="ai"
+            showMicIcon={false}
+          />
+        </div>
+      )}
       
       {/* RevolverMenu - positioned bottom-right with higher z-index */}
       <div className="fixed bottom-6 right-6 z-50">

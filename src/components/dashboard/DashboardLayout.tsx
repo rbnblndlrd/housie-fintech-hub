@@ -19,7 +19,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
+import { ChatBubble } from '@/components/chat/ChatBubble';
 import autumnBg from '@/assets/autumn-dashboard-bg.jpg';
 
 interface DashboardLayoutProps {
@@ -292,6 +292,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
               </Button>
             </div>
           )}
+
+          {/* Annette Assistant Widget - positioned below stats */}
+          <div className="mb-6">
+            <div className="flex items-start">
+              <div className="w-80 max-w-[90vw]">
+                <ChatBubble 
+                  defaultTab="ai"
+                  showMicIcon={false}
+                />
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
