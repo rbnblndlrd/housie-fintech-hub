@@ -111,9 +111,9 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
     <div className={cn(
       "revollver-trigger fixed transition-all duration-300 ease-out",
       // Fixed to window positioning - bottom-right control zone
-      "bottom-[100px] right-[160px]",
+      "bottom-[100px] right-[116px]",
       // Responsive adjustments
-      "max-h-[700px]:bottom-[80px] max-w-[1024px]:right-[80px]",
+      "max-h-[700px]:bottom-[80px] max-w-[1024px]:right-[36px]",
       // Ensure highest z-index for visibility
       "z-[9999]",
       className
