@@ -63,7 +63,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   };
 
   return (
-    <div className={cn("fixed bottom-6 right-6 z-40", className)}>
+    <div className={cn("relative", className)}>
       {/* Radial Menu Items */}
       {isOpen && (
         <>

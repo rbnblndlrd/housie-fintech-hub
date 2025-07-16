@@ -22,10 +22,9 @@ export const SharedDashboardOverlay: React.FC = () => {
     <>
       {/* Annette BubbleChat - positioned bottom-left, adjusted for sidebar on provider dashboard */}
       <div 
-        className={`fixed z-50 ${isProviderDashboard ? 'bottom-6 left-80' : 'bottom-6 left-6'}`}
+        className="fixed z-50 bottom-6"
         style={{ 
-          // Ensure it doesn't get hidden behind sidebar on provider dashboard
-          ...(isProviderDashboard && { left: 'calc(18rem + 1.5rem)' }) // sidebar width + margin
+          left: isProviderDashboard ? 'calc(18rem + 1.5rem)' : '1.5rem' // sidebar width + margin
         }}
       >
         <ChatBubble 
@@ -34,8 +33,10 @@ export const SharedDashboardOverlay: React.FC = () => {
         />
       </div>
       
-      {/* RevolverMenu - positioned bottom-right */}
-      <RevolverMenu />
+      {/* RevolverMenu - positioned bottom-right with higher z-index */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <RevolverMenu />
+      </div>
     </>
   );
 };
