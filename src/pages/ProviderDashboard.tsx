@@ -371,25 +371,6 @@ const ProviderDashboard = () => {
 
   return (
     <>
-      {/* Draggable Welcome Text - Desktop Only */}
-      <div className="hidden md:block fixed top-0 left-0 z-40">
-        <DraggableWidget
-          id="welcome-text"
-          defaultPosition={getWidgetConfig('welcome-text').position}
-          defaultSize={getWidgetConfig('welcome-text').size}
-          isLocked={getWidgetConfig('welcome-text').isLocked}
-          showCard={false}
-          onPositionChange={updateWidgetPosition}
-          onSizeChange={updateWidgetSize}
-          onLockToggle={toggleWidgetLock}
-        >
-          <div className="h-full w-full flex items-center justify-center text-center pointer-events-none">
-            <p className="text-white/90 drop-shadow-md">
-              Welcome back! Here&apos;s your performance overview
-            </p>
-          </div>
-        </DraggableWidget>
-      </div>
       
       <div className="relative z-10 min-h-screen">
         <div className="pb-2">

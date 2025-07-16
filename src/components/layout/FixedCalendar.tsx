@@ -95,8 +95,8 @@ const FixedCalendar = () => {
             <div className="h-full flex flex-col">
               {/* Day Headers - 25px height */}
               <div className="h-[25px] grid grid-cols-7 gap-1 mb-2">
-                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map(day => (
-                  <div key={day} className="flex items-center justify-center text-[10px] font-medium text-gray-500">
+                {['M', 'T', 'W', 'T', 'F', 'S', 'S'].map((day, index) => (
+                  <div key={`day-${index}`} className="flex items-center justify-center text-[10px] font-medium text-gray-500">
                     {day}
                   </div>
                 ))}
