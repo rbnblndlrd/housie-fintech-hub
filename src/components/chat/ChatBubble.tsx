@@ -41,7 +41,23 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
   const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>(initialTab);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [activeSubPanel, setActiveSubPanel] = useState<'main' | 'echo' | 'threads'>('main');
+  const [previousTab, setPreviousTab] = useState<'messages' | 'ai' | 'voice'>('ai');
   const { totalUnreadCount } = useChat();
+
+  // Voice lines arrays
+  const echoVoiceLines = [
+    "Echo stream loaded. Time to trace the ripples, sugar! 📡",
+    "Let's see who's making waves in the canon feed! 🌊",
+    "Time to see what's echoing across town, sugar! Your achievements are ready to make some noise! 📡✨",
+    "Canon broadcasts incoming - this is where legends are made! ⭐"
+  ];
+
+  const crewVoiceLines = [
+    "Crew coordination mode activated. Let's see who needs backup! 👥",
+    "Time to check in with your collective, sugar! 🤝",
+    "Flying solo, are we? Let's see what crews are forming! 👥✨",
+    "Group chat central - where teams become legends! 💪"
+  ];
 
   // Session memory for sub-panels
   useEffect(() => {
@@ -73,14 +89,27 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   const handleOpen = () => {
     setIsOpen(true);
-    // Reset to initial tab when opening, but preserve sub-panel if returning quickly
-    setActiveTab(initialTab);
+    // Restore last viewed tab and sub-panel
+    const savedTab = localStorage.getItem('chatBubble-lastTab');
+    const savedSubPanel = sessionStorage.getItem('chatBubble-lastSubPanel');
+    
+    if (savedTab && (savedTab === 'messages' || savedTab === 'ai' || savedTab === 'voice')) {
+      if (savedTab === 'voice' && !hasVoiceAccess) return;
+      if (savedTab === 'messages' && !hasMessagesAccess) return;
+      setActiveTab(savedTab);
+    }
+    
+    if (savedSubPanel && (savedSubPanel === 'echo' || savedSubPanel === 'threads')) {
+      setActiveSubPanel(savedSubPanel);
+    }
   };
 
   const handleTabChange = (tab: 'messages' | 'ai' | 'voice') => {
     // Validate access before switching
     if (tab === 'voice' && !hasVoiceAccess) return;
     if (tab === 'messages' && !hasMessagesAccess) return;
+    
+    setPreviousTab(activeTab);
     setActiveTab(tab);
     // Reset to main panel when switching tabs
     setActiveSubPanel('main');
@@ -91,14 +120,33 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
       const newPanel = activeSubPanel === 'main' ? 'echo' : 'main';
       setActiveSubPanel(newPanel);
       
-      // Annette's voice line when switching to Echo Feed
+      // Random Annette voice line for Echo Feed
       if (newPanel === 'echo') {
+        const randomLine = echoVoiceLines[Math.floor(Math.random() * echoVoiceLines.length)];
         toast("🧠 Annette", {
-          description: "Time to see what's echoing across town, sugar! Your achievements are ready to make some noise! 📡✨"
+          description: randomLine
         });
       }
     } else if (activeTab === 'messages') {
-      setActiveSubPanel(activeSubPanel === 'main' ? 'threads' : 'main');
+      const newPanel = activeSubPanel === 'main' ? 'threads' : 'main';
+      setActiveSubPanel(newPanel);
+      
+      // Random Annette voice line for Crew Threads
+      if (newPanel === 'threads') {
+        const randomLine = crewVoiceLines[Math.floor(Math.random() * crewVoiceLines.length)];
+        toast("🧠 Annette", {
+          description: randomLine
+        });
+      }
+    }
+  };
+
+  const handleGoBack = () => {
+    if (activeSubPanel !== 'main') {
+      setActiveSubPanel('main');
+    } else {
+      // Go back to previous tab
+      setActiveTab(previousTab);
     }
   };
 
