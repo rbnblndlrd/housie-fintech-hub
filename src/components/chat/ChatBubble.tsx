@@ -203,9 +203,9 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   return (
     <>
-      {/* BubbleChat positioned at bottom-left */}
+      {/* BubbleChat - positioning handled by parent container */}
       {!isOpen ? (
-        <div className="fixed z-50 bottom-6 left-6">
+        <div>
           <Button
             onClick={handleOpen}
             className={cn(
@@ -248,7 +248,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
           </Button>
         </div>
       ) : (
-        <div className="fixed z-50 bottom-6 left-6">
+        <div>
           <div className="bg-slate-800 border-2 border-slate-600 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden"
                style={{ minHeight: '400px' }}>
             {/* Header with Navigation Arrow */}

@@ -295,8 +295,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
         </div>
       </div>
 
-      {/* Annette AI Assistant Integration */}
-      <AnnetteIntegration />
     </div>
   );
 };
