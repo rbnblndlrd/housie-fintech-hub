@@ -110,17 +110,17 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   return (
     <div className={cn(
       "revollver-trigger fixed z-[999] transition-all duration-300 ease-out",
-      // Lower position and center horizontally under Today's Route
-      "bottom-16 left-1/2 transform -translate-x-1/2 translate-x-6",
+      // Position in bottom-right corner as indicated in red square
+      "bottom-8 right-8",
       className
     )}>
       {/* Radial Menu Items - Tactical Clip Layout */}
       {isOpen && (
-        <div className="absolute bottom-0 left-0">
+        <div className="absolute bottom-0 right-0">
           {menuItems.map((item, index) => {
-            // Fixed angle calculation - semicircle spread, all clips visible
-            const angle = (index * 36) - 90; // 6 items, 36 degrees apart (180°/5), starting from left (-90°)
-            const radius = 65; // Optimal radius for centered position
+            // Fixed angle calculation - 6 items in 150° spread to ensure all are visible
+            const angle = (index * 30) - 75; // 6 items, 30 degrees apart, from -75° to +75°
+            const radius = 60; // Reduced radius to fit in corner
             
             let x = Math.cos(angle * Math.PI / 180) * radius;
             let y = Math.sin(angle * Math.PI / 180) * radius;
@@ -140,10 +140,10 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                   item.bg
                 )}
                 style={{
-                  left: `${x}px`,
+                  right: `${-x}px`,
                   bottom: `${-y}px`,
-                  animationDelay: `${index * 80}ms`,
-                  transformOrigin: 'bottom left'
+                  animationDelay: `${index * 100}ms`,
+                  transformOrigin: 'bottom right'
                 }}
                 title={item.label}
               >
