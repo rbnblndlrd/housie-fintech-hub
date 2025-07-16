@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { Navigate } from 'react-router-dom';
-import { ChatBubble } from '@/components/chat/ChatBubble';
 import { BookingsProvider } from '@/contexts/BookingsContext';
+import { SharedDashboardOverlay } from '@/components/shared/SharedDashboardOverlay';
 import CreateTicketModal from '@/components/modals/CreateTicketModal';
 import CustomerJobTicketList from '@/components/dashboard/customer/CustomerJobTicketList';
 import SpendingSummaryChart from '@/components/dashboard/customer/SpendingSummaryChart';
@@ -136,9 +136,10 @@ const ServiceBoard = () => {
             }}
           />
         )}
-        
-        <ChatBubble />
       </div>
+      
+      {/* Shared Dashboard Overlay - BubbleChat + RevolverMenu */}
+      <SharedDashboardOverlay />
     </BookingsProvider>
   );
 };
