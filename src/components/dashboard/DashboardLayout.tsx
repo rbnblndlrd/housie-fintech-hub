@@ -293,17 +293,6 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
             </div>
           )}
 
-          {/* Annette Assistant Widget - positioned below stats */}
-          <div className="mb-6">
-            <div className="flex items-start">
-              <div className="w-80 max-w-[90vw]">
-                <ChatBubble 
-                  defaultTab="ai"
-                  showMicIcon={false}
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
