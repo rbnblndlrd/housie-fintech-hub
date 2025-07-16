@@ -21,7 +21,7 @@ import { useUXMode } from '@/hooks/useUXMode';
 import BookingsLayoutController from '@/components/dashboard/BookingsLayoutController';
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
-import JobParser from '@/components/shared/JobParser';
+// JobParser removed - only appears on Dashboard post-acceptance
 import { toast } from 'sonner';
 
 const BookingsPage = () => {
@@ -192,8 +192,8 @@ const BookingsPage = () => {
                       <div className="flex-1">
                         <p className="text-purple-700 font-medium mb-1">Annette says:</p>
                         <p className="text-purple-600 text-sm">
-                          "Looking good! You have {upcomingBookings.length} upcoming bookings. 
-                          Want me to remind you about your next appointment or help you book something new?"
+                          "Pre-flight check! You have {upcomingBookings.length} pending decisions. 
+                          I can help you evaluate which jobs are worth accepting based on your schedule and goals."
                         </p>
                         <Button 
                           size="sm" 
@@ -251,19 +251,20 @@ const BookingsPage = () => {
                           </div>
                           
                           <div className="mt-3 pt-3 border-t flex gap-2">
-                            <JobParser
-                              job={{
-                                id: booking.id,
-                                service_type: booking.serviceName,
-                                customer_name: 'Customer',
-                                address: booking.location,
-                                priority: 'medium',
-                                status: booking.status
-                              }}
-                              size="sm"
-                              variant="outline"
-                              className="flex-1"
-                            />
+                            {booking.status === 'pending' && (
+                              <Button
+                                size="sm"
+                                variant="default"
+                                className="flex-1"
+                                onClick={() => {
+                                  // Accept booking and redirect to Dashboard for Parse
+                                  toast.success('Booking accepted! Redirecting to Dashboard for job prep...');
+                                  setTimeout(() => navigate('/dashboard'), 1500);
+                                }}
+                              >
+                                Accept Booking
+                              </Button>
+                            )}
                             {booking.status === 'completed' && (
                               <Button
                                 size="sm"
@@ -276,6 +277,16 @@ const BookingsPage = () => {
                               >
                                 <CheckCircle className="h-4 w-4 mr-1" />
                                 Review
+                              </Button>
+                            )}
+                            {booking.status === 'confirmed' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => navigate('/dashboard')}
+                              >
+                                View in Dashboard
                               </Button>
                             )}
                           </div>
