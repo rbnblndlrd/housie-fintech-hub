@@ -377,38 +377,6 @@ const ProviderDashboard = () => {
         <div className="pb-2">
           <div className="max-w-full">
 
-            {/* Dashboard Controls */}
-            <div className="fixed top-4 right-4 z-30 flex gap-2">
-              <Button
-                onClick={() => setIsEditMode(!isEditMode)}
-                variant={isEditMode ? "default" : "outline"}
-                className="fintech-card"
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                {isEditMode ? 'Exit Edit' : 'Edit Layout'}
-              </Button>
-              
-              {isEditMode && (
-                <>
-                  <Button
-                    onClick={lockAllWidgets}
-                    variant="outline"
-                    className="fintech-card"
-                  >
-                    <Save className="h-4 w-4 mr-2" />
-                    Lock All
-                  </Button>
-                  <Button
-                    onClick={resetLayout}
-                    variant="outline"
-                    className="fintech-card"
-                  >
-                    <RotateCcw className="h-4 w-4 mr-2" />
-                    Reset
-                  </Button>
-                </>
-              )}
-            </div>
 
             {/* Simple Navigation - Left Side - Desktop Only */}
             <div className="hidden md:block fixed top-80 left-12 z-40 w-52">

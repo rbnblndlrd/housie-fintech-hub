@@ -75,38 +75,6 @@ const CustomerDashboard = () => {
       <div className="relative z-10 min-h-screen">
         <Header />
         
-        {/* Dashboard Controls */}
-        <div className="fixed top-20 right-4 z-30 flex gap-2">
-          <Button
-            onClick={() => setIsEditMode(!isEditMode)}
-            variant={isEditMode ? "default" : "outline"}
-            className="fintech-card"
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            {isEditMode ? 'Exit Edit' : 'Edit Layout'}
-          </Button>
-          
-          {isEditMode && (
-            <>
-              <Button
-                onClick={lockAllWidgets}
-                variant="outline"
-                className="fintech-card"
-              >
-                <Save className="h-4 w-4 mr-2" />
-                Lock All
-              </Button>
-              <Button
-                onClick={resetLayout}
-                variant="outline"
-                className="fintech-card"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </>
-          )}
-        </div>
 
         <div className="pt-16 pl-[188px] pr-[188px] pb-8">
           <div className="max-w-full">
