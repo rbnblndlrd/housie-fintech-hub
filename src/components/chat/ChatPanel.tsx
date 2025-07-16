@@ -46,41 +46,17 @@ const ChatPanel: React.FC<ChatPanelProps> = ({
 
   // Don't render sub-panels here - they're handled in ChatBubble as docked widgets
 
-  // Render based on active tab (main panels)
+  // Render based on active tab (main panels only)
   if (externalActiveTab === 'ai') {
     return (
-      <div className="h-full flex flex-col bg-white dark:bg-gray-900 relative">
-        {/* Navigation Arrow - swipe to Echo Feed */}
-        <div className="absolute top-4 right-4 z-10">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onSubPanelToggle}
-            className="h-8 w-8 p-0 bg-purple-100 hover:bg-purple-200 text-purple-600 shadow-lg border border-purple-200"
-            title="Swipe to Echo Feed (📡)"
-          >
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
+      <div className="h-full flex flex-col bg-white dark:bg-gray-900">
         <AnnetteConversation sessionId={`annette-${user.id}-${Date.now()}`} />
       </div>
     );
   }
 
   return (
-    <div className="h-full flex flex-col bg-white dark:bg-gray-900 relative">
-      {/* Navigation Arrow - swipe to Crew Threads */}
-      <div className="absolute top-4 right-4 z-10">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onSubPanelToggle}
-          className="h-8 w-8 p-0 bg-blue-100 hover:bg-blue-200 text-blue-600 shadow-lg border border-blue-200"
-          title="Swipe to Crew Threads (👥)"
-        >
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </div>
+    <div className="h-full flex flex-col bg-white dark:bg-gray-900">
       {/* Messages Content */}
       <div className="flex-1 overflow-hidden">
         <MessagesTab />

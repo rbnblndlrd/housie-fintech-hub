@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { MessageCircle, X, Mic, Bell, Radio, Users } from 'lucide-react';
+import { MessageCircle, X, Mic, Bell, Radio, Users, ArrowLeft, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -177,26 +177,29 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   return (
     <>
+      {/* BubbleChat positioned at bottom-left */}
       {!isOpen ? (
-        <div className="fixed z-50" style={{ bottom: '100px', right: '16px' }}>
+        <div className="fixed z-50 bottom-6 left-6">
           <Button
             onClick={handleOpen}
             className={cn(
-              "relative rounded-full w-20 h-20 shadow-lg transition-all duration-200 hover:scale-105",
-              "border-2 border-slate-600 text-white bg-slate-800"
+              "relative rounded-full w-16 h-16 shadow-lg transition-all duration-200 hover:scale-105",
+              "border-2 border-purple-400 text-white bg-gradient-to-br from-purple-500 to-blue-600"
             )}
             variant="ghost"
           >
-            {/* Dynamic Icon or Annette Avatar */}
-            {getCurrentIcon() ? (
-              <div className="w-16 h-16 rounded-full bg-slate-700 flex items-center justify-center">
-                {getCurrentIcon()}
-              </div>
+            {/* Dynamic Icon based on current view */}
+            {activeSubPanel === 'echo' ? (
+              <Radio className="h-6 w-6 text-white" />
+            ) : activeSubPanel === 'threads' ? (
+              <Users className="h-6 w-6 text-white" />
+            ) : activeTab === 'messages' ? (
+              <MessageCircle className="h-6 w-6 text-white" />
             ) : (
               <img 
                 src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
                 alt="Annette AI Assistant"
-                className="w-16 h-16 rounded-full object-cover"
+                className="w-12 h-12 rounded-full object-cover"
               />
             )}
             
@@ -219,15 +222,45 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
           </Button>
         </div>
       ) : (
-        <div className="fixed z-50" style={{ bottom: '100px', right: '16px' }}>
-          <div className="bg-slate-800 border-2 border-slate-600 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden">
-            {/* Clean Header */}
+        <div className="fixed z-50 bottom-6 left-6">
+          <div className="bg-slate-800 border-2 border-slate-600 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden"
+               style={{ minHeight: '400px' }}>
+            {/* Header with Navigation Arrow */}
             <div className="bg-slate-700 border-b-2 border-slate-600 p-4 flex items-center justify-between">
-              <h3 className="font-semibold text-white">
-                {activeSubPanel === 'echo' ? 'Echo Feed' : 
-                 activeSubPanel === 'threads' ? 'Crew Threads' :
-                 useMicIcon ? 'Voice Assistant' : 'Assistant'}
-              </h3>
+              {/* Left Navigation Arrow */}
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSubPanelToggle}
+                  className={cn(
+                    "h-8 w-8 p-0 rounded-full transition-all duration-200",
+                    activeSubPanel === 'main' 
+                      ? "hover:bg-slate-600 text-gray-300 hover:text-white"
+                      : "hover:bg-slate-600 text-purple-400 hover:text-purple-300"
+                  )}
+                  title={
+                    activeSubPanel === 'main' 
+                      ? (activeTab === 'ai' ? 'View Echo Feed' : 'View Crew Threads')
+                      : 'Back to Chat'
+                  }
+                >
+                  {activeSubPanel === 'main' ? (
+                    <ArrowLeft className="h-4 w-4" />
+                  ) : (
+                    <ArrowRight className="h-4 w-4" />
+                  )}
+                </Button>
+                
+                <h3 className="font-semibold text-white">
+                  {activeSubPanel === 'echo' ? '📡 Echo Feed' : 
+                   activeSubPanel === 'threads' ? '👥 Crew Threads' :
+                   activeTab === 'messages' ? '💬 Messages' :
+                   useMicIcon ? '🎤 Voice Assistant' : '🧠 Annette'}
+                </h3>
+              </div>
+              
+              {/* Right Controls */}
               <div className="flex items-center gap-2">
                 <Button
                   variant="ghost"
@@ -248,122 +281,78 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
               </div>
             </div>
 
-            {/* Clean Tab Navigation */}
-            <div className="bg-slate-800 border-b-2 border-slate-600">
-              <div className="flex">
-                {/* AI Assistant Tab (Annette) */}
-                <button
-                  onClick={() => handleTabChange('ai')}
-                  className={cn(
-                    "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                    activeTab === 'ai'
-                      ? "text-purple-400 bg-slate-700"
-                      : "text-gray-300 hover:text-white hover:bg-slate-700"
-                  )}
-                >
-                  Ask Annette
-                  {activeTab === 'ai' && (
-                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-400" />
-                  )}
-                </button>
-
-                {/* Messages Tab (second position) */}
-                {hasMessagesAccess && (
+            {/* Tab Navigation - only show when in main panel */}
+            {activeSubPanel === 'main' && (
+              <div className="bg-slate-800 border-b-2 border-slate-600">
+                <div className="flex">
+                  {/* AI Assistant Tab (Annette) */}
                   <button
-                    onClick={() => handleTabChange('messages')}
+                    onClick={() => handleTabChange('ai')}
                     className={cn(
                       "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
-                      activeTab === 'messages'
-                        ? "text-blue-400 bg-slate-700"
+                      activeTab === 'ai'
+                        ? "text-purple-400 bg-slate-700"
                         : "text-gray-300 hover:text-white hover:bg-slate-700"
                     )}
                   >
-                    Messages
-                    {totalUnreadCount > 0 && (
-                      <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
-                        {totalUnreadCount}
-                      </Badge>
-                    )}
-                    {activeTab === 'messages' && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-400" />
+                    Ask Annette
+                    {activeTab === 'ai' && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-400" />
                     )}
                   </button>
-                )}
-              </div>
-            </div>
 
-            {/* Chat Content */}
+                  {/* Messages Tab */}
+                  {hasMessagesAccess && (
+                    <button
+                      onClick={() => handleTabChange('messages')}
+                      className={cn(
+                        "flex-1 py-3 px-4 text-sm font-medium transition-colors relative",
+                        activeTab === 'messages'
+                          ? "text-blue-400 bg-slate-700"
+                          : "text-gray-300 hover:text-white hover:bg-slate-700"
+                      )}
+                    >
+                      Messages
+                      {totalUnreadCount > 0 && (
+                        <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
+                          {totalUnreadCount}
+                        </Badge>
+                      )}
+                      {activeTab === 'messages' && (
+                        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-400" />
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Content Area - handles different panels inline */}
             <div className="flex-1 overflow-hidden">
-              <ChatPanel 
-                activeTab={activeTab} 
-                activeSubPanel={activeSubPanel}
-                onSubPanelToggle={handleSubPanelToggle}
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Echo Feed Dock - Bottom Left (only show when in Echo sub-panel) */}
-      {isOpen && activeSubPanel === 'echo' && (
-        <div className="fixed bottom-6 left-6 z-40">
-          <div className="w-80 h-96 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in">
-            <div className="h-full flex flex-col">
-              <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-purple-50 dark:bg-purple-900/20">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    📡 Echo Feed
-                  </h3>
-                  <button
-                    onClick={() => setActiveSubPanel('main')}
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-              <div className="flex-1 overflow-hidden">
+              {activeSubPanel === 'echo' ? (
                 <EchoFeedPanel onBack={() => setActiveSubPanel('main')} />
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Crew Threads Dock - Bottom Left (only show when in threads sub-panel) */}
-      {isOpen && activeSubPanel === 'threads' && (
-        <div className="fixed bottom-6 left-6 z-40">
-          <div className="w-80 h-96 bg-white dark:bg-gray-900 rounded-lg shadow-2xl border border-gray-200 dark:border-gray-700 overflow-hidden animate-fade-in">
-            <div className="h-full flex flex-col">
-              <div className="p-3 border-b border-gray-200 dark:border-gray-700 bg-blue-50 dark:bg-blue-900/20">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900 dark:text-white flex items-center gap-2">
-                    👥 Crew Threads
-                  </h3>
-                  <button
-                    onClick={() => setActiveSubPanel('main')}
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-                  >
-                    ✕
-                  </button>
-                </div>
-              </div>
-              <div className="flex-1 overflow-hidden">
+              ) : activeSubPanel === 'threads' ? (
                 <CrewThreadsPanel onBack={() => setActiveSubPanel('main')} />
-              </div>
+              ) : (
+                <ChatPanel 
+                  activeTab={activeTab} 
+                  activeSubPanel={activeSubPanel}
+                  onSubPanelToggle={handleSubPanelToggle}
+                />
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {/* Notification Popup - Bottom Right Corner */}
+      {/* Notification Popup */}
       {isNotificationOpen && (
         <>
           <div 
             className="fixed inset-0 z-30" 
             onClick={closeNotification}
           />
-          <div className="fixed z-40 w-80" style={{ bottom: '720px', right: '16px' }}>
+          <div className="fixed z-40 w-80 bottom-72 left-8">
             <div className="bg-gradient-to-br from-slate-700 to-slate-800 rounded-xl shadow-xl border border-slate-600 p-4 animate-scale-in backdrop-blur-sm">
               <div className="bg-slate-600 rounded-lg p-3 border border-slate-500">
                 <DashboardNotificationDropdown />
@@ -375,8 +364,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
       {/* Minimal Side Indicators */}
       {!isOpen && totalUnreadCount > 0 && !useMicIcon && hasMessagesAccess && (
-        <div className="fixed right-0 top-1/2 transform -translate-y-1/2 z-40">
-          <div className="w-1 h-8 bg-red-500 rounded-l-full shadow-lg animate-pulse" />
+        <div className="fixed left-0 top-1/2 transform -translate-y-1/2 z-40">
+          <div className="w-1 h-8 bg-red-500 rounded-r-full shadow-lg animate-pulse" />
         </div>
       )}
     </>
