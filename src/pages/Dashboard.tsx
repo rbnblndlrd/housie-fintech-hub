@@ -17,6 +17,7 @@ import DashboardLayoutController from '@/components/dashboard/DashboardLayoutCon
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
 import { SharedDashboardOverlay } from '@/components/shared/SharedDashboardOverlay';
+import { BookingsProvider } from '@/contexts/BookingsContext';
 
 const Dashboard = () => {
   // Mock jobs data for UX mode detection
@@ -82,7 +83,7 @@ const Dashboard = () => {
   );
 
   return (
-    <>
+    <BookingsProvider>
       <DashboardLayout
         title="Dashboard"
         rightPanelTitle="Today's Route"
@@ -118,7 +119,7 @@ const Dashboard = () => {
       
       {/* Shared Dashboard Overlay - BubbleChat + RevolverMenu */}
       <SharedDashboardOverlay />
-    </>
+    </BookingsProvider>
   );
 };
 
