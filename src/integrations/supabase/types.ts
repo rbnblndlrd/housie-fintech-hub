@@ -1264,6 +1264,56 @@ export type Database = {
         }
         Relationships: []
       }
+      chain_seal_timeline: {
+        Row: {
+          chain_id: string
+          chain_theme: string | null
+          chain_title: string
+          created_at: string
+          id: string
+          meta_significance: string | null
+          prestige_title_awarded: string | null
+          seal_annotation: string | null
+          sealed_at: string
+          sequence_position: number
+          user_id: string
+        }
+        Insert: {
+          chain_id: string
+          chain_theme?: string | null
+          chain_title: string
+          created_at?: string
+          id?: string
+          meta_significance?: string | null
+          prestige_title_awarded?: string | null
+          seal_annotation?: string | null
+          sealed_at?: string
+          sequence_position: number
+          user_id: string
+        }
+        Update: {
+          chain_id?: string
+          chain_theme?: string | null
+          chain_title?: string
+          created_at?: string
+          id?: string
+          meta_significance?: string | null
+          prestige_title_awarded?: string | null
+          seal_annotation?: string | null
+          sealed_at?: string
+          sequence_position?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chain_seal_timeline_chain_id_fkey"
+            columns: ["chain_id"]
+            isOneToOne: false
+            referencedRelation: "canonical_chains"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           booking_id: string | null
@@ -2448,6 +2498,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      meta_chain_definitions: {
+        Row: {
+          annette_voice_line: string | null
+          created_at: string
+          description: string
+          id: string
+          is_active: boolean
+          name: string
+          prestige_title: string | null
+          required_chain_count: number
+          required_chain_types: Json | null
+          reward_data: Json | null
+          reward_type: string
+          special_conditions: Json | null
+          trigger_requirements: Json
+          updated_at: string
+        }
+        Insert: {
+          annette_voice_line?: string | null
+          created_at?: string
+          description: string
+          id: string
+          is_active?: boolean
+          name: string
+          prestige_title?: string | null
+          required_chain_count?: number
+          required_chain_types?: Json | null
+          reward_data?: Json | null
+          reward_type?: string
+          special_conditions?: Json | null
+          trigger_requirements?: Json
+          updated_at?: string
+        }
+        Update: {
+          annette_voice_line?: string | null
+          created_at?: string
+          description?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          prestige_title?: string | null
+          required_chain_count?: number
+          required_chain_types?: Json | null
+          reward_data?: Json | null
+          reward_type?: string
+          special_conditions?: Json | null
+          trigger_requirements?: Json
+          updated_at?: string
+        }
+        Relationships: []
       }
       network_connections: {
         Row: {
@@ -4477,10 +4578,49 @@ export type Database = {
           },
         ]
       }
+      user_meta_chains: {
+        Row: {
+          achieved_at: string
+          achievement_context: Json | null
+          created_at: string
+          id: string
+          meta_chain_id: string
+          sealed_chain_sequence: string[]
+          user_id: string
+        }
+        Insert: {
+          achieved_at?: string
+          achievement_context?: Json | null
+          created_at?: string
+          id?: string
+          meta_chain_id: string
+          sealed_chain_sequence?: string[]
+          user_id: string
+        }
+        Update: {
+          achieved_at?: string
+          achievement_context?: Json | null
+          created_at?: string
+          id?: string
+          meta_chain_id?: string
+          sealed_chain_sequence?: string[]
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_meta_chains_meta_chain_id_fkey"
+            columns: ["meta_chain_id"]
+            isOneToOne: false
+            referencedRelation: "meta_chain_definitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_profiles: {
         Row: {
           achievement_badges: Json | null
           active_role: string | null
+          allow_public_timeline: boolean
           average_rating: number | null
           background_check_verified: boolean | null
           bio: string | null
@@ -4535,6 +4675,7 @@ export type Database = {
         Insert: {
           achievement_badges?: Json | null
           active_role?: string | null
+          allow_public_timeline?: boolean
           average_rating?: number | null
           background_check_verified?: boolean | null
           bio?: string | null
@@ -4589,6 +4730,7 @@ export type Database = {
         Update: {
           achievement_badges?: Json | null
           active_role?: string | null
+          allow_public_timeline?: boolean
           average_rating?: number | null
           background_check_verified?: boolean | null
           bio?: string | null
@@ -5422,6 +5564,14 @@ export type Database = {
         }
         Returns: Json
       }
+      detect_meta_chain_achievements: {
+        Args: { p_user_id: string; p_chain_id: string }
+        Returns: {
+          meta_chain_awarded: string
+          title_earned: string
+          voice_line: string
+        }[]
+      }
       determine_broadcast_range: {
         Args: {
           p_event_type: string
@@ -5620,6 +5770,23 @@ export type Database = {
         Args: { user_uuid: string }
         Returns: number
       }
+      get_user_chain_browser_data: {
+        Args: { p_user_id: string }
+        Returns: {
+          chain_id: string
+          title: string
+          theme: string
+          progression_stage: number
+          total_stages: number
+          is_complete: boolean
+          is_public: boolean
+          sealed_at: string
+          prestige_title_awarded: string
+          seal_annotation: string
+          category: string
+          role_type: string
+        }[]
+      }
       get_user_current_role: {
         Args: { target_user_id: string }
         Returns: string
@@ -5707,12 +5874,18 @@ export type Database = {
         Returns: number
       }
       seal_canonical_chain: {
-        Args: {
-          p_chain_id: string
-          p_user_id: string
-          p_final_stamp_id?: string
-          p_annotation?: string
-        }
+        Args:
+          | {
+              p_chain_id: string
+              p_final_stamp_id?: string
+              p_annotation?: string
+            }
+          | {
+              p_chain_id: string
+              p_user_id: string
+              p_final_stamp_id?: string
+              p_annotation?: string
+            }
         Returns: Json
       }
       search_canon_threads: {

@@ -12,6 +12,7 @@ import ServiceSpecificTracks from '@/components/prestige/ServiceSpecificTracks';
 import RecognitionTracks from '@/components/prestige/RecognitionTracks';
 import CustomerTracks from '@/components/prestige/CustomerTracks';
 import PlatformMasteryTracks from '@/components/prestige/PlatformMasteryTracks';
+import CanonicalChainBrowser from '@/components/prestige/CanonicalChainBrowser';
 
 const Prestige = () => {
   const navigate = useNavigate();
@@ -76,8 +77,9 @@ const Prestige = () => {
 
             {/* Prestige Track Sections */}
             <Tabs defaultValue="overview" className="space-y-6">
-              <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 bg-slate-800/90 backdrop-blur-sm border border-slate-700">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 bg-slate-800/90 backdrop-blur-sm border border-slate-700">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
+                <TabsTrigger value="chains">Chain Browser</TabsTrigger>
                 <TabsTrigger value="service">Service</TabsTrigger>
                 <TabsTrigger value="recognition">Recognition</TabsTrigger>
                 <TabsTrigger value="customer">Customer</TabsTrigger>
@@ -123,6 +125,10 @@ const Prestige = () => {
                     viewMode="preview"
                   />
                 </div>
+              </TabsContent>
+
+              <TabsContent value="chains">
+                <CanonicalChainBrowser />
               </TabsContent>
 
               <TabsContent value="service">

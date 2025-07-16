@@ -233,6 +233,11 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
       community_recognition: "You were the echo before the broadcast... *scanning community impact* Neighborhood legend status! 🌊",
       curated_taste: "From booking to artistry — your taste is next level, love. *analyzing curation patterns* Pure elegance! ✨",
       
+      // 🏆 Meta-Chain Achievement voice lines
+      'Meta-Chain achieved - Kind of a Big Deal': "Five Chains. One reality-bender. Kind of a big deal, aren't we?",
+      'Meta-Chain achieved - Legend in Motion': "Three zones. One legend. Motion itself bows to your will.",
+      'Meta-Chain achieved - Storybound': "Words become legend when you're the one writing the story.",
+      
       // 🤝 2nd Cylinder — Community & Connections
       top_connections: "These folks adore you. And honestly, same. *analyzing repeat client data* Your VIP list is looking absolutely gorgeous! 👥",
       city_broadcast: "Here's what's echoing across town... *accessing city broadcast feed* The pulse of the city, delivered fresh! 📡",
