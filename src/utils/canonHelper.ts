@@ -96,13 +96,13 @@ export function getAnnetteVoiceStyle(canonLevel: CanonLevel): {
   if (canonLevel === 'canon') {
     return {
       style: 'confident, grounded, playful',
-      prefix: '✅ Canon verified:',
+      prefix: '✅ Canonical verified:',
       confidence: 'This is gospel truth, darling.'
     };
   } else {
     return {
       style: 'flirty, hypothetical, cheeky',
-      prefix: '🌀 Non-canon vibes:',
+      prefix: '🌀 Pending verification:',
       confidence: 'Just my educated guess, sugar.'
     };
   }
@@ -119,23 +119,23 @@ export function getCanonEnhancedVoiceLine(
   const voiceStyle = getAnnetteVoiceStyle(canonMetadata.trust);
   
   if (canonMetadata.trust === 'canon') {
-    // Canon-style responses
+    // Canonical-style responses
     const canonEnhancements = {
-      top_connections: `Your most reliable client is ${specificData?.topClient || 'someone special'} — that's Canon, sugar.`,
-      check_prestige: `You've officially earned ${specificData?.earnedCount || 'multiple'} achievements — Canon verified! ✨`,
-      loyalty_stats: `${specificData?.loyalClients || 'Your regulars'} come back every ${specificData?.averageFrequency || '2 weeks'} — Canon truth!`,
-      job_radar: `${specificData?.nearbyJobs || 'Fresh opportunities'} in your ${specificData?.radius || '5km'} radius — Canon confirmed!`
+      top_connections: `Your most reliable client is ${specificData?.topClient || 'someone special'} — that's Canonical, sugar.`,
+      check_prestige: `You've officially earned ${specificData?.earnedCount || 'multiple'} achievements — Canonical verified! ✨`,
+      loyalty_stats: `${specificData?.loyalClients || 'Your regulars'} come back every ${specificData?.averageFrequency || '2 weeks'} — Canonical truth!`,
+      job_radar: `${specificData?.nearbyJobs || 'Fresh opportunities'} in your ${specificData?.radius || '5km'} radius — Canonical confirmed!`
     };
     
     return canonEnhancements[canonMetadata.command as keyof typeof canonEnhancements] || 
            `${voiceStyle.prefix} ${originalVoiceLine}`;
   } else {
-    // Non-canon style responses  
+    // Pending verification style responses  
     const nonCanonEnhancements = {
-      top_connections: `You haven't worked with them yet… but they give me good vibes. Non-canon, but hey — risk it?`,
-      check_prestige: `Your potential is through the roof — just gotta make it official! Non-canon prediction, but I believe in you. 🌟`,
-      loyalty_stats: `Based on patterns, these folks will probably love you. Non-canon intuition, but my gut's usually right! 😉`,
-      job_radar: `These jobs feel like your vibe — non-canon recommendation based on pure instinct!`
+      top_connections: `You haven't worked with them yet… but they give me good vibes. Pending verification, but hey — risk it?`,
+      check_prestige: `Your potential is through the roof — just gotta make it official! Pending verification, but I believe in you. 🌟`,
+      loyalty_stats: `Based on patterns, these folks will probably love you. Pending verification, but my gut's usually right! 😉`,
+      job_radar: `These jobs feel like your vibe — pending verification, but pure instinct!`
     };
     
     return nonCanonEnhancements[canonMetadata.command as keyof typeof nonCanonEnhancements] || 
@@ -303,7 +303,7 @@ export function getRecentCanonEntries(): Array<{
       timestamp: new Date(Date.now() - 30000), // 30 seconds ago
       command: 'top_connections',
       trust: 'canon',
-      result: 'Your most reliable client is Maria G. from Laval — that\'s Canon, sugar.',
+      result: 'Your most reliable client is Maria G. from Laval — that\'s Canonical, sugar.',
       metadata: {
         source: 'supabase',
         trust: 'canon',
@@ -319,7 +319,7 @@ export function getRecentCanonEntries(): Array<{
       timestamp: new Date(Date.now() - 120000), // 2 minutes ago
       command: 'check_prestige',
       trust: 'non_canon',
-      result: 'Your potential is through the roof — just gotta make it official! Non-canon prediction, but I believe in you. 🌟',
+      result: 'Your potential is through the roof — just gotta make it official! Pending verification, but I believe in you. 🌟',
       metadata: {
         source: 'ai_analysis',
         trust: 'non_canon',

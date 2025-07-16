@@ -35,7 +35,7 @@ export function CanonBroadcast({
     const mockBroadcasts: CanonBroadcastEntry[] = [
       {
         id: '1',
-        message: "📡 Canon Echo: Lamarre just earned 'Road Warrior' for crossing 50km. Stamp ID: canon-734.",
+        message: "📡 Broadcast: Lamarre just earned 'Road Warrior' for crossing 50km. Stamp #734 – Canonical",
         userName: 'Lamarre',
         stampName: 'Road Warrior',
         canonStatus: 'canon',
@@ -52,7 +52,7 @@ export function CanonBroadcast({
       },
       {
         id: '3',
-        message: "📡 Canon Echo: Chen achieved 'Clockwork' - perfect punctuality streak. Stamp ID: canon-891.",
+        message: "📡 Broadcast: Chen achieved 'Clockwork' - perfect punctuality streak. Stamp #891 – Canonical",
         userName: 'Chen',
         stampName: 'Clockwork',
         canonStatus: 'canon',
@@ -61,7 +61,7 @@ export function CanonBroadcast({
       },
       {
         id: '4',
-        message: "📡 Canon Echo: Taylor earned 'Loyal Return' - client rebooked within 7 days. Stamp ID: canon-456.",
+        message: "📡 Broadcast: Taylor earned 'Loyal Return' - client rebooked within 7 days. Stamp #456 – Canonical",
         userName: 'Taylor',
         stampName: 'Loyal Return',
         canonStatus: 'canon',
@@ -69,7 +69,7 @@ export function CanonBroadcast({
       },
       {
         id: '5',
-        message: "🌀 Echo: Rodriguez earned 'Crew Commander' - team leadership detected. Canon review pending.",
+        message: "🌀 Echo: Rodriguez earned 'Crew Commander' - team leadership detected. Verification pending.",
         userName: 'Rodriguez',
         stampName: 'Crew Commander',
         canonStatus: 'non-canon',
@@ -83,7 +83,7 @@ export function CanonBroadcast({
     const interval = setInterval(() => {
       const newBroadcast: CanonBroadcastEntry = {
         id: Date.now().toString(),
-        message: `📡 Canon Echo: Provider${Math.floor(Math.random() * 100)} earned 'Performance Stamp' - verified achievement.`,
+        message: `📡 Broadcast: Provider${Math.floor(Math.random() * 100)} earned 'Performance Stamp' - verified achievement.`,
         userName: `Provider${Math.floor(Math.random() * 100)}`,
         stampName: 'Performance Stamp',
         canonStatus: Math.random() > 0.3 ? 'canon' : 'non-canon',
@@ -133,7 +133,7 @@ export function CanonBroadcast({
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-sm">
               <Radio className="h-4 w-4 text-green-500 animate-pulse" />
-              Canon Echo Feed
+              📡 Echo Feed
             </CardTitle>
             <div className="flex items-center gap-1">
               <Button
@@ -172,7 +172,7 @@ export function CanonBroadcast({
                             variant={broadcast.canonStatus === 'canon' ? 'default' : 'secondary'}
                             className="text-xs"
                           >
-                            {broadcast.canonStatus === 'canon' ? '✅ Canon' : '🌀 Non-Canon'}
+                            {broadcast.canonStatus === 'canon' ? '✅ Canonical' : '🌀 Pending'}
                           </Badge>
                           <span className="text-xs text-muted-foreground">
                             {formatTimeAgo(broadcast.timestamp)}
@@ -223,7 +223,7 @@ export function CanonBroadcastToggle() {
           className="fixed bottom-4 left-4 z-40 gap-2"
         >
           <Radio className="h-4 w-4" />
-          Canon Feed
+          📡 Echo Feed
         </Button>
       )}
       {isVisible && <CanonBroadcast />}

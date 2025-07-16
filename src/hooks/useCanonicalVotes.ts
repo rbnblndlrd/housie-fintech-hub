@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 
-export interface CanonVote {
+export interface VerificationVote {
   id: string;
   event_id: string;
   user_id: string;
@@ -11,9 +11,9 @@ export interface CanonVote {
   timestamp: string;
 }
 
-export const useCanonVotes = (eventId: string) => {
-  const [votes, setVotes] = useState<CanonVote[]>([]);
-  const [userVote, setUserVote] = useState<CanonVote | null>(null);
+export const useCanonicalVotes = (eventId: string) => {
+  const [votes, setVotes] = useState<VerificationVote[]>([]);
+  const [userVote, setUserVote] = useState<VerificationVote | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user } = useAuth();
@@ -30,10 +30,10 @@ export const useCanonVotes = (eventId: string) => {
 
       if (error) throw error;
 
-      setVotes((data as CanonVote[]) || []);
+      setVotes((data as VerificationVote[]) || []);
       
       // Find current user's vote
-      const currentUserVote = (data as CanonVote[])?.find(vote => vote.user_id === user?.id);
+      const currentUserVote = (data as VerificationVote[])?.find(vote => vote.user_id === user?.id);
       setUserVote(currentUserVote || null);
       
     } catch (err) {
@@ -85,7 +85,7 @@ export const useCanonVotes = (eventId: string) => {
           .single();
         
         if (error) throw error;
-        setUserVote(data as CanonVote);
+        setUserVote(data as VerificationVote);
       }
       
       // Refresh votes to get updated counts

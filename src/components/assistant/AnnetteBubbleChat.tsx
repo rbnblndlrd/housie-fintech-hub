@@ -450,13 +450,13 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
         )}
       </Card>
       
-      {/* Canon Log Panel */}
+      {/* Verification Log Panel */}
       <CanonLogPanel 
         isOpen={isCanonLogOpen}
         onClose={() => setIsCanonLogOpen(false)}
       />
-      
-      {/* Canon Echo Panel */}
+
+      {/* Echo Feed Panel */}
       <CanonEchoPanel 
         isOpen={isEchoPanelOpen}
         onClose={() => setIsEchoPanelOpen(false)}

@@ -60,7 +60,7 @@ const cylinder1: ClipAction[] = [
     id: 'job-radar',
     icon: MapPin,
     label: 'Job Radar',
-    voiceLine: "Ping ping. Canon says these are worth a peek.",
+    voiceLine: "Ping ping. Verified opportunities detected.",
     action: 'job_radar'
   },
   {
@@ -73,8 +73,8 @@ const cylinder1: ClipAction[] = [
   {
     id: 'canon-log',
     icon: Shield,
-    label: 'Canon Log',
-    voiceLine: "Want the truth, the whole truth, and nothing but Canon?",
+    label: 'Verification Log',
+    voiceLine: "That one's going in the vault, sugar. Stamped, sealed… Canonical.",
     action: 'canon_log'
   }
 ];

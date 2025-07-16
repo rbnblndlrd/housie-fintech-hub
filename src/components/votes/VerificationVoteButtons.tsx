@@ -1,26 +1,26 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
-import { useCanonVotes } from '@/hooks/useCanonVotes';
+import { useCanonicalVotes } from '@/hooks/useCanonicalVotes';
 import { useAuth } from '@/contexts/AuthContext';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-interface CanonVoteButtonsProps {
+interface VerificationVoteButtonsProps {
   eventId: string;
   voteScore?: number;
   voteCount?: number;
   compact?: boolean;
 }
 
-export const CanonVoteButtons: React.FC<CanonVoteButtonsProps> = ({ 
+export const VerificationVoteButtons: React.FC<VerificationVoteButtonsProps> = ({ 
   eventId, 
   voteScore = 0, 
   voteCount = 0,
   compact = false 
 }) => {
   const { user } = useAuth();
-  const { userVote, loading, castVote } = useCanonVotes(eventId);
+  const { userVote, loading, castVote } = useCanonicalVotes(eventId);
 
   if (!user) return null;
 
@@ -43,7 +43,7 @@ export const CanonVoteButtons: React.FC<CanonVoteButtonsProps> = ({
             </Button>
           </TooltipTrigger>
           <TooltipContent>
-            <p>Vote to boost this event's legacy</p>
+            <p>Verify this achievement's impact</p>
           </TooltipContent>
         </Tooltip>
 
@@ -61,7 +61,7 @@ export const CanonVoteButtons: React.FC<CanonVoteButtonsProps> = ({
               </Button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>This event doesn't deserve the attention</p>
+              <p>This achievement lacks verification</p>
             </TooltipContent>
           </Tooltip>
         )}

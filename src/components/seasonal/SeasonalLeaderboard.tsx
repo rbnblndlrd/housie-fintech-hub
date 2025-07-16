@@ -109,7 +109,7 @@ export function SeasonalLeaderboard() {
                 </div>
                 
                 <div className="text-xs text-muted-foreground text-center pt-4">
-                  Rankings update every 6 hours based on Canon activity
+                  Rankings update every 6 hours based on verified achievements
                 </div>
               </div>
             ) : (
@@ -156,7 +156,7 @@ export function SeasonalLeaderboard() {
               {/* Placeholder for lifetime leaderboard */}
               <div className="space-y-2">
                 {[
-                  { rank: 1, name: "Canon Legend", score: 1547, seasons: 8 },
+                  { rank: 1, name: "Verification Legend", score: 1547, seasons: 8 },
                   { rank: 2, name: "Echo Master", score: 1289, seasons: 6 },
                   { rank: 3, name: "Prestige Elite", score: 1156, seasons: 7 },
                 ].map((entry) => (

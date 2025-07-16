@@ -55,14 +55,14 @@ export const ObsidianDashboard = () => {
 - [ ] Witness verification
 - [ ] GPS coordinates
 
-## Canon Ranking
+## Verification Status
 - **Tier**: Local/Regional/Global
 - **Confidence**: /10
 
 ## Notes
 
 ---
-*Generated with HOUSIE Canon System*`;
+*Generated with HOUSIE Verification System*`;
 
       case 'Agent':
         return `# AI Agent Profile

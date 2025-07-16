@@ -255,7 +255,7 @@ const SubscriptionEditor: React.FC<SubscriptionEditorProps> = ({ subscription, o
     <div className="space-y-6">
       <div className="space-y-4">
         <div>
-          <h4 className="font-medium mb-2">Minimum Canon Rank</h4>
+          <h4 className="font-medium mb-2">Minimum Verification Rank</h4>
           <Select value={minimumRank} onValueChange={(value: any) => setMinimumRank(value)}>
             <SelectTrigger>
               <SelectValue />

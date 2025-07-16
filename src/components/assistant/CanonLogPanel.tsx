@@ -81,7 +81,7 @@ export const CanonLogPanel: React.FC<CanonLogPanelProps> = ({
               </div>
               <div>
                 <CardTitle className="text-lg font-semibold text-foreground flex items-center">
-                  Canon Log 
+                  🔐 Verification Log
                   <span className="ml-2 text-sm font-normal text-muted-foreground">
                     Truth & Verification Center
                   </span>
@@ -193,10 +193,10 @@ export const CanonLogPanel: React.FC<CanonLogPanelProps> = ({
                 <div className="text-center py-12">
                   <Shield className="h-12 w-12 text-muted-foreground/50 mx-auto mb-4" />
                   <h3 className="text-lg font-medium text-foreground mb-2">
-                    No Canon Entries Yet
+                    No Verification Entries Yet
                   </h3>
                   <p className="text-sm text-muted-foreground">
-                    Use the Revollver to trigger actions and build your Canon log
+                    Use the Revollver to trigger actions and build your verification log
                   </p>
                 </div>
               )}

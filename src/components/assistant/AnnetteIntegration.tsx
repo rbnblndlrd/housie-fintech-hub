@@ -223,9 +223,9 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
       parse_ticket: "Mmm… juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
       optimize_route: "Let's get strategic, sugar. Optimizing your steps! *route optimization activated* Efficiency just got a whole lot sexier! 🗺️",
       check_prestige: "Flex check: incoming. ✨ You're climbing like a boss! *scanning prestige metrics* Those achievements are looking absolutely gorgeous! ⭐",
-      job_radar: "Ping ping. Canon says these are worth a peek. *scanning nearby opportunities* Fresh jobs detected in your radius! 📍",
+      job_radar: "Ping ping. Verified opportunities detected. *scanning nearby jobs* Fresh positions in your radius! 📍",
       time_machine: "Here's your time trail. You've been busy, haven't you? *loading performance history* Your productivity graph is looking stellar! ⏰",
-      canon_log: "Want the truth, the whole truth, and nothing but Canon? *accessing verified Canon entries* Every entry here is gospel truth! 🔐",
+      canon_log: "That one's going in the vault, sugar. Stamped, sealed… Canonical. *accessing verified entries* Every record here is gospel truth! 🔐",
       
       // 🤝 2nd Cylinder — Community & Connections
       top_connections: "These folks adore you. And honestly, same. *analyzing repeat client data* Your VIP list is looking absolutely gorgeous! 👥",

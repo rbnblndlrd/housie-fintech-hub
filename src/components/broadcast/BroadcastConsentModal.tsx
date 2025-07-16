@@ -99,7 +99,7 @@ const BroadcastConsentModal: React.FC<BroadcastConsentModalProps> = ({
                 {getEventDescription(eventType)}
               </Badge>
               <Badge variant={canonLevel === 'canon' ? 'default' : 'secondary'} className="text-xs">
-                {canonLevel === 'canon' ? '✅ Canon' : '🌀 Non-Canon'}
+                {canonLevel === 'canon' ? '✅ Canonical' : '🌀 Pending'}
               </Badge>
             </div>
             <p className="text-sm text-foreground/90 font-mono">

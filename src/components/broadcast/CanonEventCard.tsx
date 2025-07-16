@@ -12,7 +12,7 @@ import { StampSelector } from '@/components/stamps/StampSelector';
 import { EventStampDisplay } from '@/components/stamps/EventStampDisplay';
 import { CanonReplayPlayer } from '@/components/replays/CanonReplayPlayer';
 import { ReplayEditor } from '@/components/replays/ReplayEditor';
-import { CanonVoteButtons } from '@/components/votes/CanonVoteButtons';
+import { VerificationVoteButtons } from '@/components/votes/VerificationVoteButtons';
 
 interface CanonEventCardProps {
   event: CanonEvent;
@@ -126,11 +126,11 @@ export const CanonEventCard: React.FC<CanonEventCardProps> = ({
 
         {/* Vote Buttons */}
         <div className="mb-3">
-          <CanonVoteButtons 
+          <VerificationVoteButtons 
             eventId={event.id} 
             voteScore={event.vote_score} 
             voteCount={event.vote_count}
-            compact={!isHovered} 
+            compact={!isHovered}
           />
         </div>
 

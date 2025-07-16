@@ -73,7 +73,7 @@ serve(async (req) => {
       }
 
       // Generate Annette commentary for the surge
-      const prompt = `You are Annette, HOUSIE's sassy AI assistant. A Canon event just received a major vote surge (+${voteScore} votes in 10 minutes)!
+      const prompt = `You are Annette, HOUSIE's sassy AI assistant. A verification event just received a major vote surge (+${voteScore} votes in 10 minutes)!
 
 Event Details:
 - Title: "${event.title}"

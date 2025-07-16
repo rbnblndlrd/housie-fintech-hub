@@ -92,7 +92,7 @@ export const CanonStampInspector: React.FC<CanonStampInspectorProps> = ({
           {/* Badges */}
           <div className="flex flex-wrap gap-2">
             <Badge variant="outline" className={getRankColor(event.canon_rank)}>
-              {event.canon_rank.toUpperCase()} CANON
+              {event.canon_rank.toUpperCase()} VERIFIED
             </Badge>
             <Badge variant="secondary" className="flex items-center gap-1">
               {getScopeIcon(event.echo_scope)}
@@ -209,7 +209,7 @@ export const CanonStampInspector: React.FC<CanonStampInspectorProps> = ({
                   Edit Commentary
                 </Button>
                 <Button variant="outline" size="sm">
-                  Appeal Canon Rank
+                  Appeal Verification Rank
                 </Button>
               </div>
             </div>

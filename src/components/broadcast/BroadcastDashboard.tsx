@@ -25,7 +25,7 @@ export const BroadcastDashboard: React.FC = () => {
   };
 
   const handleShareEvent = (event: CanonEvent) => {
-    navigator.clipboard.writeText(`Check out this Canon event: ${event.title}`);
+    navigator.clipboard.writeText(`Check out this verified achievement: ${event.title}`);
     toast({
       title: "Shared!",
       description: "Event details copied to clipboard.",
@@ -81,7 +81,7 @@ export const BroadcastDashboard: React.FC = () => {
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="feed" className="flex items-center gap-2">
             <Radio className="w-4 h-4" />
-            Canon Feed
+            📡 Echo Feed
           </TabsTrigger>
           <TabsTrigger value="subscriptions" className="flex items-center gap-2">
             <Settings className="w-4 h-4" />
@@ -137,9 +137,9 @@ export const BroadcastDashboard: React.FC = () => {
               <Card>
                 <CardContent className="p-12 text-center">
                   <Radio className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No Canon Events Yet</h3>
+                  <h3 className="text-lg font-semibold mb-2">No Echo Events Yet</h3>
                   <p className="text-muted-foreground mb-4">
-                    Start achieving milestones to broadcast your Canon events!
+                    Start achieving milestones to broadcast your verified events!
                   </p>
                   <Button>Create First Event</Button>
                 </CardContent>
