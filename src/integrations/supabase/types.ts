@@ -1196,13 +1196,19 @@ export type Database = {
         Row: {
           annotations: Json | null
           chain_sequence: number[] | null
+          completed_stamp_id: string | null
+          completion_annotation: string | null
+          completion_timestamp: string | null
           created_at: string
           description: string | null
           id: string
+          is_complete: boolean
           is_public: boolean
           last_stamp_added_at: string | null
           metadata: Json | null
+          mint_token_id: string | null
           prestige_score: number
+          sealed_by_user_id: string | null
           storyline_ids: string[] | null
           theme: string | null
           title: string
@@ -1213,13 +1219,19 @@ export type Database = {
         Insert: {
           annotations?: Json | null
           chain_sequence?: number[] | null
+          completed_stamp_id?: string | null
+          completion_annotation?: string | null
+          completion_timestamp?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          is_complete?: boolean
           is_public?: boolean
           last_stamp_added_at?: string | null
           metadata?: Json | null
+          mint_token_id?: string | null
           prestige_score?: number
+          sealed_by_user_id?: string | null
           storyline_ids?: string[] | null
           theme?: string | null
           title: string
@@ -1230,13 +1242,19 @@ export type Database = {
         Update: {
           annotations?: Json | null
           chain_sequence?: number[] | null
+          completed_stamp_id?: string | null
+          completion_annotation?: string | null
+          completion_timestamp?: string | null
           created_at?: string
           description?: string | null
           id?: string
+          is_complete?: boolean
           is_public?: boolean
           last_stamp_added_at?: string | null
           metadata?: Json | null
+          mint_token_id?: string | null
           prestige_score?: number
+          sealed_by_user_id?: string | null
           storyline_ids?: string[] | null
           theme?: string | null
           title?: string
@@ -5687,6 +5705,15 @@ export type Database = {
       refresh_fuzzy_locations: {
         Args: Record<PropertyKey, never>
         Returns: number
+      }
+      seal_canonical_chain: {
+        Args: {
+          p_chain_id: string
+          p_user_id: string
+          p_final_stamp_id?: string
+          p_annotation?: string
+        }
+        Returns: Json
       }
       search_canon_threads: {
         Args: { p_user_id: string; p_query: string; p_limit?: number }

@@ -45,6 +45,12 @@ export interface CanonicalChain {
   updated_at: string;
   last_stamp_added_at?: string;
   metadata: any;
+  is_complete: boolean;
+  completion_timestamp?: string;
+  sealed_by_user_id?: string;
+  completed_stamp_id?: string;
+  mint_token_id?: string;
+  completion_annotation?: string;
 }
 
 export function useStorylines() {
@@ -207,6 +213,30 @@ export function useStorylines() {
     return storylines.filter(s => !s.is_complete);
   };
 
+  const sealCanonicalChain = async (finalStampId?: string, annotation?: string): Promise<{ success: boolean; error?: string; prestige_title?: string; broadcast_created?: boolean }> => {
+    if (!user?.id || !canonicalChain || canonicalChain.is_complete) return { success: false, error: 'Invalid chain state' };
+
+    try {
+      const { data, error } = await supabase
+        .rpc('seal_canonical_chain', {
+          p_chain_id: canonicalChain.id,
+          p_user_id: user.id,
+          p_final_stamp_id: finalStampId,
+          p_annotation: annotation
+        });
+
+      if (error) throw error;
+
+      // Refresh the chain data
+      await loadStorylineData();
+      
+      return data as { success: boolean; error?: string; prestige_title?: string; broadcast_created?: boolean };
+    } catch (err) {
+      console.error('Error sealing chain:', err);
+      return { success: false, error: err instanceof Error ? err.message : 'Failed to seal chain' };
+    }
+  };
+
   useEffect(() => {
     if (user?.id) {
       loadStorylineData();
@@ -222,6 +252,7 @@ export function useStorylines() {
     updateChainTitle,
     toggleChainPublic,
     addAnnotation,
+    sealCanonicalChain,
     getStorylineProgressions,
     getCompletedStorylines,
     getActiveStorylines,

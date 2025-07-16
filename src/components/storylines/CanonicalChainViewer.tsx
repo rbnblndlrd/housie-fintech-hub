@@ -8,7 +8,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { CanonicalChain } from '@/hooks/useStorylines';
 import { useStorylines } from '@/hooks/useStorylines';
 import { useStamps } from '@/hooks/useStamps';
-import { Edit2, Eye, EyeOff, Share2, MessageSquare, Clock, Star } from 'lucide-react';
+import { ChainSealingDialog } from './ChainSealingDialog';
+import { Edit2, Eye, EyeOff, Share2, MessageSquare, Clock, Star, Lock, CheckCircle, Gem } from 'lucide-react';
 import { format } from 'date-fns';
 import { toast } from 'sonner';
 
@@ -18,11 +19,12 @@ interface CanonicalChainViewerProps {
 
 export const CanonicalChainViewer: React.FC<CanonicalChainViewerProps> = ({ chain }) => {
   const { stamps } = useStamps();
-  const { updateChainTitle, toggleChainPublic, addAnnotation } = useStorylines();
+  const { updateChainTitle, toggleChainPublic, addAnnotation, sealCanonicalChain } = useStorylines();
   const [editingTitle, setEditingTitle] = useState(false);
   const [newTitle, setNewTitle] = useState(chain.title);
   const [selectedStamp, setSelectedStamp] = useState<string | null>(null);
   const [annotationText, setAnnotationText] = useState('');
+  const [showSealDialog, setShowSealDialog] = useState(false);
 
   const handleTitleUpdate = async () => {
     if (newTitle.trim() === chain.title) {
@@ -69,14 +71,36 @@ export const CanonicalChainViewer: React.FC<CanonicalChainViewerProps> = ({ chai
     return chain.annotations?.find(a => a.stamp_id === stampId)?.note;
   };
 
+  const handleSealChain = async (finalStampId?: string, annotation?: string) => {
+    const result = await sealCanonicalChain(finalStampId, annotation);
+    
+    if (result.success) {
+      toast.success(`Chain sealed! Title "${result.prestige_title}" unlocked!`);
+      setShowSealDialog(false);
+    } else {
+      toast.error(result.error || 'Failed to seal chain');
+    }
+    
+    return result;
+  };
+
+  const getLatestStampId = () => {
+    if (!chain.chain_sequence || chain.chain_sequence.length === 0) return undefined;
+    return chain.chain_sequence[chain.chain_sequence.length - 1];
+  };
+
   return (
     <div className="space-y-6">
       {/* Chain Header */}
-      <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+      <Card className={`border-2 ${
+        chain.is_complete 
+          ? 'border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20'
+          : 'border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5'
+      }`}>
         <CardHeader>
           <div className="flex items-start justify-between">
             <div className="space-y-2 flex-1">
-              {editingTitle ? (
+              {editingTitle && !chain.is_complete ? (
                 <div className="flex gap-2">
                   <Input
                     value={newTitle}
@@ -95,14 +119,30 @@ export const CanonicalChainViewer: React.FC<CanonicalChainViewerProps> = ({ chai
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <CardTitle className="text-xl">📜 {chain.title}</CardTitle>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setEditingTitle(true)}
-                  >
-                    <Edit2 className="h-4 w-4" />
-                  </Button>
+                  <CardTitle className="text-xl">
+                    {chain.is_complete ? '🏆' : '📜'} {chain.title}
+                  </CardTitle>
+                  {chain.is_complete && (
+                    <Badge className="bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-200">
+                      <CheckCircle className="h-3 w-3 mr-1" />
+                      Sealed
+                    </Badge>
+                  )}
+                  {chain.mint_token_id && (
+                    <Badge className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 dark:from-purple-900/20 dark:to-pink-900/20 dark:text-purple-200">
+                      <Gem className="h-3 w-3 mr-1" />
+                      Minted
+                    </Badge>
+                  )}
+                  {!chain.is_complete && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setEditingTitle(true)}
+                    >
+                      <Edit2 className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               )}
               
@@ -117,24 +157,51 @@ export const CanonicalChainViewer: React.FC<CanonicalChainViewerProps> = ({ chai
                   <Clock className="h-4 w-4" />
                   {chain.chain_sequence?.length || 0} Stamps
                 </div>
-                {chain.last_stamp_added_at && (
+                {chain.last_stamp_added_at && !chain.is_complete && (
                   <div>
                     Last updated {format(new Date(chain.last_stamp_added_at), 'MMM d, yyyy')}
                   </div>
                 )}
+                {chain.completion_timestamp && (
+                  <div className="flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
+                    <CheckCircle className="h-4 w-4" />
+                    Sealed {format(new Date(chain.completion_timestamp), 'MMM d, yyyy')}
+                  </div>
+                )}
               </div>
+
+              {chain.completion_annotation && (
+                <div className="mt-3 p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                  <p className="text-sm text-amber-700 dark:text-amber-300 italic">
+                    "{chain.completion_annotation}"
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleTogglePublic}
-                className="flex items-center gap-2"
-              >
-                {chain.is_public ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
-                {chain.is_public ? 'Public' : 'Private'}
-              </Button>
+              {!chain.is_complete && (
+                <>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleTogglePublic}
+                    className="flex items-center gap-2"
+                  >
+                    {chain.is_public ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                    {chain.is_public ? 'Public' : 'Private'}
+                  </Button>
+                  
+                  <Button
+                    onClick={() => setShowSealDialog(true)}
+                    className="bg-amber-600 hover:bg-amber-700 text-white flex items-center gap-2"
+                    size="sm"
+                  >
+                    <Lock className="h-4 w-4" />
+                    Seal Chain
+                  </Button>
+                </>
+              )}
               
               {chain.is_public && (
                 <Button variant="outline" size="sm">
@@ -259,6 +326,15 @@ export const CanonicalChainViewer: React.FC<CanonicalChainViewerProps> = ({ chai
           )}
         </CardContent>
       </Card>
+
+      {/* Chain Sealing Dialog */}
+      <ChainSealingDialog
+        chain={chain}
+        open={showSealDialog}
+        onOpenChange={setShowSealDialog}
+        onSeal={handleSealChain}
+        finalStampId={getLatestStampId()}
+      />
     </div>
   );
 };
