@@ -13,6 +13,7 @@ import DashboardNotificationDropdown from '@/components/dashboard/DashboardNotif
 import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
+import { useBubbleChatVisibility } from '@/hooks/useBubbleChatVisibility';
 
 interface ChatBubbleProps {
   defaultTab?: 'messages' | 'ai' | 'voice';
@@ -25,6 +26,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 }) => {
   const { user } = useAuth();
   const { currentRole } = useRoleSwitch();
+  const { emitBubbleChatStateChange } = useBubbleChatVisibility();
   const location = useLocation();
   const isInteractiveMap = location.pathname === '/interactive-map';
   
@@ -114,6 +116,8 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
 
   const handleOpen = () => {
     setIsOpen(true);
+    emitBubbleChatStateChange(true);
+    
     // Restore last viewed tab and sub-panel
     const savedTab = localStorage.getItem('chatBubble-lastTab');
     const savedSubPanel = sessionStorage.getItem('chatBubble-lastSubPanel');
@@ -134,6 +138,14 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
     toast("🧠 Annette", {
       description: randomGreeting
     });
+
+    // Auto-focus chat input after 1 second
+    setTimeout(() => {
+      const chatInput = document.querySelector('input[placeholder*="Ask"], textarea[placeholder*="Ask"]') as HTMLElement;
+      if (chatInput) {
+        chatInput.focus();
+      }
+    }, 1000);
   };
 
   const handleTabChange = (tab: 'messages' | 'ai' | 'voice') => {
@@ -249,8 +261,14 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
         </div>
       ) : (
         <div>
-          <div className="bg-slate-800 border-2 border-slate-600 rounded-lg shadow-xl max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px] flex flex-col overflow-hidden"
-               style={{ minHeight: '400px' }}>
+          <div className={cn(
+            "bg-slate-800 border-2 border-slate-600 rounded-lg shadow-xl flex flex-col overflow-hidden",
+            "max-w-[90vw] w-80 md:w-96 h-[60vh] max-h-[600px]",
+            "transition-all duration-300",
+            // Add subtle glow when active
+            "ring-2 ring-purple-400/20 shadow-purple-400/10"
+          )}
+               style={{ minHeight: '400px', maxWidth: '340px' }}>
             {/* Header with Navigation Arrow */}
             <div className="bg-slate-700 border-b-2 border-slate-600 p-4 flex items-center justify-between">
               {/* Left Navigation Arrow */}
@@ -299,7 +317,10 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => {
+                    setIsOpen(false);
+                    emitBubbleChatStateChange(false);
+                  }}
                   className="h-8 w-8 p-0 hover:bg-slate-600 text-gray-200"
                 >
                   <X className="h-4 w-4" />

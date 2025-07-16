@@ -20,9 +20,11 @@ import DashboardLayoutController from '@/components/dashboard/DashboardLayoutCon
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
 import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
+import { useBubbleChatVisibility } from '@/hooks/useBubbleChatVisibility';
 import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
 import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
 import { BookingsProvider } from '@/contexts/BookingsContext';
+import { cn } from '@/lib/utils';
 
 const Dashboard = () => {
   // Mock jobs data for UX mode detection
@@ -51,6 +53,7 @@ const Dashboard = () => {
   } = useServiceLayout(mockJobs);
 
   const { isRevolverOpen } = useRevolverVisibility();
+  const { isBubbleChatOpen } = useBubbleChatVisibility();
 
   const handleAnnetteRecommendation = () => {
     // This would open the chat bubble with a specific context
@@ -106,7 +109,11 @@ const Dashboard = () => {
           bottomRow={bottomRowContent}
         >
           {/* Main Pane Content */}
-          <div className="space-y-6">
+          <div className={cn(
+            "space-y-6 transition-all duration-300",
+            // Add left padding when BubbleChat is open
+            isBubbleChatOpen && "lg:pl-80"
+          )}>
             {/* Header Actions */}
             <div className="flex items-center justify-between">
               <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
