@@ -15,6 +15,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, CheckCircle, ArrowLeft, List, CalendarDays } from 'lucide-react';
+import { UXModeSelector } from '@/components/dashboard/UXModeSelector';
+import { UXModeJobCard } from '@/components/dashboard/UXModeJobCard';
+import { useUXMode } from '@/hooks/useUXMode';
 import JobParser from '@/components/shared/JobParser';
 import { toast } from 'sonner';
 
@@ -24,6 +27,30 @@ const BookingsPage = () => {
   const navigate = useNavigate();
   const { bookings: upcomingBookings, loading, refetch } = useBookings();
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+
+  // Convert bookings to jobs format for UX mode detection
+  const jobsForUXMode = upcomingBookings.map(booking => ({
+    id: booking.id,
+    title: booking.serviceName,
+    service_subcategory: booking.serviceName?.toLowerCase().includes('clean') ? 'cleaning' : 
+                        booking.serviceName?.toLowerCase().includes('repair') ? 'home_repairs' : 'general',
+    customer: booking.provider,
+    priority: 'medium'
+  }));
+
+  const { 
+    currentMode, 
+    currentModeDefinition, 
+    setUXMode, 
+    availableModes, 
+    isAutoDetected,
+    detectedMode 
+  } = useUXMode(jobsForUXMode);
+
+  const handleJobAction = (jobId: string, action: string) => {
+    console.log(`🎯 Booking action: ${action} for booking ${jobId}`);
+    // Handle different actions based on UX mode
+  };
 
   if (!user) {
     return null;
@@ -68,28 +95,37 @@ const BookingsPage = () => {
                     {currentRole === 'provider' ? 'Manage Bookings' : 'My Bookings'}
                   </h1>
                 </div>
-                {currentRole === 'provider' && (
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant={viewMode === 'list' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setViewMode('list')}
-                      className="flex items-center gap-2"
-                    >
-                      <List className="h-4 w-4" />
-                      List View
-                    </Button>
-                    <Button
-                      variant={viewMode === 'calendar' ? 'default' : 'outline'}
-                      size="sm"
-                      onClick={() => setViewMode('calendar')}
-                      className="flex items-center gap-2"
-                    >
-                      <CalendarDays className="h-4 w-4" />
-                      Calendar View
-                    </Button>
-                  </div>
-                )}
+                <div className="flex items-center gap-3">
+                  <UXModeSelector
+                    currentMode={currentMode}
+                    isAutoDetected={isAutoDetected}
+                    detectedMode={detectedMode}
+                    onModeChange={setUXMode}
+                    availableModes={availableModes}
+                  />
+                  {currentRole === 'provider' && (
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant={viewMode === 'list' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setViewMode('list')}
+                        className="flex items-center gap-2"
+                      >
+                        <List className="h-4 w-4" />
+                        List View
+                      </Button>
+                      <Button
+                        variant={viewMode === 'calendar' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setViewMode('calendar')}
+                        className="flex items-center gap-2"
+                      >
+                        <CalendarDays className="h-4 w-4" />
+                        Calendar View
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
               <p className="text-gray-700">
                 {currentRole === 'provider' 
@@ -128,10 +164,45 @@ const BookingsPage = () => {
 
                 {viewMode === 'list' ? (
                   <>
-                    <div className="fintech-card">
-                      <div className="p-6">
-                        <KanbanTicketList />
+                    {/* UX Mode Jobs Section */}
+                    <div className="space-y-4 mb-6">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold text-foreground">
+                          Active Bookings - {currentModeDefinition.name} Mode
+                        </h3>
+                        <div className="text-sm text-muted-foreground">
+                          {currentModeDefinition.features.length} features active
+                        </div>
                       </div>
+                      
+                      {upcomingBookings.length > 0 ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          {upcomingBookings.map(booking => (
+                            <UXModeJobCard
+                              key={booking.id}
+                              job={{
+                                id: booking.id,
+                                title: booking.serviceName,
+                                customer: booking.provider,
+                                scheduledTime: booking.time,
+                                estimatedDuration: '2h',
+                                total_amount: booking.total_amount,
+                                address: booking.location,
+                                priority: 'medium',
+                                status: booking.status
+                              }}
+                              mode={currentModeDefinition}
+                              onAction={handleJobAction}
+                            />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="fintech-card">
+                          <div className="p-6">
+                            <KanbanTicketList />
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -10,11 +10,35 @@ import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
+import { UXModeSelector } from '@/components/dashboard/UXModeSelector';
+import { UXModeJobCard } from '@/components/dashboard/UXModeJobCard';
+import { useUXMode } from '@/hooks/useUXMode';
 
 const Dashboard = () => {
+  // Mock jobs data for UX mode detection
+  const mockJobs = [
+    { id: '1', title: 'Kitchen Sink Repair', service_subcategory: 'plumbing', customer: 'Marie Dubois', priority: 'high' },
+    { id: '2', title: 'Electrical Outlet Install', service_subcategory: 'electrical', customer: 'Jean Tremblay', priority: 'medium' },
+    { id: '3', title: 'Bathroom Cleaning', service_subcategory: 'cleaning', customer: 'Sophie Martin', priority: 'low' }
+  ];
+
+  const { 
+    currentMode, 
+    currentModeDefinition, 
+    setUXMode, 
+    availableModes, 
+    isAutoDetected,
+    detectedMode 
+  } = useUXMode(mockJobs);
+
   const handleAnnetteRecommendation = () => {
     // This would open the chat bubble with a specific context
     console.log('Opening Annette recommendations...');
+  };
+
+  const handleJobAction = (jobId: string, action: string) => {
+    console.log(`🎯 Job action: ${action} for job ${jobId}`);
+    // Handle different actions based on UX mode
   };
 
   const annetteCard = (
@@ -56,10 +80,49 @@ const Dashboard = () => {
             <StampTrackerWidget className="h-fit" />
           </div>
         }
-        headerAction={<CreateJobTicketButton size="sm" />}
+        headerAction={
+          <div className="flex items-center gap-3">
+            <UXModeSelector
+              currentMode={currentMode}
+              isAutoDetected={isAutoDetected}
+              detectedMode={detectedMode}
+              onModeChange={setUXMode}
+              availableModes={availableModes}
+            />
+            <CreateJobTicketButton size="sm" />
+          </div>
+        }
       >
         {annetteCard}
         <AnnetteInboxNotifications className="mb-6" />
+        
+        {/* UX Mode Jobs Section */}
+        <div className="space-y-4 mb-6">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold">Today's Jobs - {currentModeDefinition.name} Mode</h3>
+            <div className="text-sm text-muted-foreground">
+              {currentModeDefinition.features.length} features active
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {mockJobs.map(job => (
+              <UXModeJobCard
+                key={job.id}
+                job={{
+                  ...job,
+                  scheduledTime: '9:00 AM',
+                  estimatedDuration: '2h',
+                  total_amount: 150,
+                  address: '1234 Rue Saint-Denis, Montreal'
+                }}
+                mode={currentModeDefinition}
+                onAction={handleJobAction}
+              />
+            ))}
+          </div>
+        </div>
+        
         <JobHub />
       </DashboardLayout>
       
