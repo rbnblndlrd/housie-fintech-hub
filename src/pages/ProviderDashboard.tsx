@@ -416,6 +416,11 @@ const ProviderDashboard = () => {
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
               />
+              
+              {/* Annette Widget - Below Navigation Tabs */}
+              <div className="mt-6">
+                <AnnetteIntegration />
+              </div>
             </div>
 
             {/* Bottom Tab Bar - Mobile Only */}
@@ -1330,92 +1335,6 @@ const ProviderDashboard = () => {
                       <FixedCalendar />
                     </div>
                     
-                    {/* Desktop Analytics Dashboard */}
-                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                      <Card 
-                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
-                        onClick={() => {
-                          // Show revenue breakdown
-                          console.log('Revenue breakdown clicked');
-                        }}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 bg-green-500 rounded-full flex items-center justify-center">
-                              <DollarSign className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">This Week's Revenue</p>
-                              <p className="text-2xl font-bold text-green-600">$2,450</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card 
-                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
-                        onClick={() => {
-                          setFilterPeriod('pending');
-                          console.log('Filter to pending requests');
-                        }}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 bg-orange-500 rounded-full flex items-center justify-center">
-                              <Clock className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">Pending Requests</p>
-                              <p className="text-2xl font-bold text-orange-600">{pendingRequests.length}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card 
-                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
-                        onClick={() => {
-                          setFilterPeriod('confirmed');
-                          console.log('Filter to confirmed jobs');
-                        }}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 bg-blue-500 rounded-full flex items-center justify-center">
-                              <CheckCircle className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">Confirmed Jobs</p>
-                              <p className="text-2xl font-bold text-blue-600">8</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                      
-                      <Card 
-                        className="fintech-card cursor-pointer hover:shadow-lg transition-all duration-200 hover:scale-105"
-                        onClick={() => {
-                          console.log('Show rating details');
-                        }}
-                      >
-                        <CardContent className="p-6">
-                          <div className="flex items-center gap-3">
-                            <div className="h-12 w-12 bg-yellow-500 rounded-full flex items-center justify-center">
-                              <Star className="h-6 w-6 text-white" />
-                            </div>
-                            <div>
-                              <p className="text-sm font-medium text-gray-600">Average Rating</p>
-                              <p className="text-2xl font-bold text-yellow-600">4.8 ⭐</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-
-                    {/* Annette Assistant Widget - positioned below performance stats */}
-                    <div className="flex justify-start mb-6">
-                      <AnnetteIntegration />
-                    </div>
 
                     {/* Desktop Incoming Requests Table */}
                     <Card className="fintech-card relative z-10">
@@ -1559,8 +1478,6 @@ const ProviderDashboard = () => {
         />
       )}
       
-      {/* Annette Assistant */}
-      <AnnetteIntegration />
     </>
   );
 };
