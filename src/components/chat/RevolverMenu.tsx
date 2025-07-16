@@ -108,23 +108,53 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   }, [isOpen, emitRevolverStateChange]);
 
   return (
-    <div className={cn("revollver-trigger fixed bottom-10 right-10 z-[999] transition-all duration-300 ease-out", className)}>
+    <div className={cn(
+      "revollver-trigger fixed z-[999] transition-all duration-300 ease-out",
+      // Responsive positioning with safe margins
+      "bottom-6 right-6 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10",
+      // Safe area support for iOS
+      "pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)]",
+      className
+    )}>
       {/* Radial Menu Items - Tactical Clip Layout */}
       {isOpen && (
         <div className="absolute bottom-0 right-0">
           {menuItems.map((item, index) => {
             // Revolver cylinder positioning - clips expand upward and inward
             const angle = (index * 45) - 135; // 6 items, 45 degrees apart, starting upper-left
-            const radius = Math.min(90, window.innerWidth < 768 ? 70 : 90);
-            const x = Math.cos(angle * Math.PI / 180) * radius;
-            const y = Math.sin(angle * Math.PI / 180) * radius;
+            const baseRadius = 90;
+            const mobileRadius = 70;
+            const radius = window.innerWidth < 768 ? mobileRadius : baseRadius;
             
-            // Ensure clips stay within viewport bounds with safe margins
-            const minPadding = 20;
-            const maxX = Math.min(-x, -(minPadding));
-            const maxY = Math.min(-y, -(minPadding));
-            const safeX = Math.max(maxX, -(window.innerWidth - 120));
-            const safeY = Math.max(maxY, -(window.innerHeight - 120));
+            let x = Math.cos(angle * Math.PI / 180) * radius;
+            let y = Math.sin(angle * Math.PI / 180) * radius;
+            
+            // Dynamic bounds checking with safe margins
+            const safeMargin = 24;
+            const buttonSize = 56; // 14 * 4 = 56px (w-14 h-14)
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            
+            // Current button position relative to viewport
+            const currentX = viewportWidth - (safeMargin * 2) - Math.abs(x);
+            const currentY = viewportHeight - (safeMargin * 2) - Math.abs(y);
+            
+            // Adjust if too close to edges
+            if (currentX < buttonSize) {
+              x = -(viewportWidth - buttonSize - safeMargin * 3);
+            }
+            if (currentY < buttonSize) {
+              y = -(viewportHeight - buttonSize - safeMargin * 3);
+            }
+            
+            // Ensure minimum distance from edges
+            const minX = -(viewportWidth - buttonSize - safeMargin);
+            const minY = -(viewportHeight - buttonSize - safeMargin);
+            const maxX = -safeMargin;
+            const maxY = -safeMargin;
+            
+            const safeX = Math.max(minX, Math.min(maxX, -x));
+            const safeY = Math.max(minY, Math.min(maxY, -y));
             
             return (
               <Button
@@ -167,7 +197,9 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
           "border-2 border-slate-400 text-white bg-gradient-to-br from-slate-700 to-slate-900",
           "hover:scale-105 hover:shadow-2xl hover:drop-shadow-2xl hover:border-primary/60",
           "ring-2 ring-slate-500/20",
-          "active:scale-95", // Feedback on press
+          "active:scale-95 active:duration-75", // Quick feedback on press
+          // Pulse animation when closed
+          !isOpen && "animate-pulse hover:animate-none",
           isOpen && "rotate-45 bg-gradient-to-br from-red-600 to-red-800 border-red-400 ring-red-500/30 shadow-red-500/20"
         )}
         variant="ghost"
