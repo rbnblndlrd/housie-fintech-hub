@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
-export type ServiceLayoutType = 'cleaning' | 'tattoo' | 'default';
+export type ServiceLayoutType = 'cleaning' | 'tattoo' | 'home_services' | 'petcare' | 'default';
 
 interface ServiceLayoutDefinition {
   id: ServiceLayoutType;
@@ -25,6 +25,20 @@ export const SERVICE_LAYOUTS: Record<ServiceLayoutType, ServiceLayoutDefinition>
     annetteVoiceLine: "Tattoo mode active. Let's ink your legacy — one appointment at a time.",
     dashboardWidgets: ['upcoming_appointments', 'client_profiles', 'portfolio_builder', 'session_prep_notes'],
     bookingsFeatures: ['visual_calendar', 'prep_sheets', 'rebooking_reminders', 'recent_reviews']
+  },
+  home_services: {
+    id: 'home_services',
+    name: 'Home Services Pro',
+    annetteVoiceLine: "Circuit integrity > ego integrity. Safety protocols active.",
+    dashboardWidgets: ['diagnostic_checklist', 'safety_guidelines', 'booking_table', 'route_map'],
+    bookingsFeatures: ['booking_table', 'calendar_toggle', 'diagnostic_prefill', 'safety_reminders']
+  },
+  petcare: {
+    id: 'petcare',
+    name: 'Pet Care Specialist',
+    annetteVoiceLine: "Rebook before that puppy pees on Yelp. Tail-wagging efficiency mode activated!",
+    dashboardWidgets: ['walks_timeline', 'pet_profiles', 'rebooking_reminders', 'route_preview'],
+    bookingsFeatures: ['pet_cards', 'walk_schedule', 'rebooking_alerts', 'travel_map']
   },
   default: {
     id: 'default',
@@ -69,6 +83,28 @@ export function useServiceLayout(jobs: any[] = []) {
       type.includes('body art')
     )) {
       return 'tattoo';
+    }
+
+    // Check for home services
+    if (serviceTypes.some(type => 
+      type.includes('plumb') || 
+      type.includes('electric') || 
+      type.includes('hvac') ||
+      type.includes('repair') ||
+      type.includes('maintenance')
+    )) {
+      return 'home_services';
+    }
+
+    // Check for pet care services
+    if (serviceTypes.some(type => 
+      type.includes('pet') || 
+      type.includes('dog') || 
+      type.includes('cat') ||
+      type.includes('walk') ||
+      type.includes('grooming')
+    )) {
+      return 'petcare';
     }
 
     return 'default';

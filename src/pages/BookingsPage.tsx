@@ -29,7 +29,9 @@ const BookingsPage = () => {
   const { currentRole } = useRoleSwitch();
   const navigate = useNavigate();
   const { bookings: upcomingBookings, loading, refetch } = useBookings();
-  const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
+  const [viewMode, setViewMode] = useState<'list' | 'calendar'>(() => {
+    return (sessionStorage.getItem('housie-bookings-view-mode') as 'list' | 'calendar') || 'list';
+  });
 
   // Convert bookings to jobs format for service layout detection
   const jobsForServiceLayout = upcomingBookings.map(booking => ({
@@ -49,6 +51,11 @@ const BookingsPage = () => {
     setLayoutOverride,
     availableLayouts
   } = useServiceLayout(jobsForServiceLayout);
+
+  const handleViewModeChange = (mode: 'list' | 'calendar') => {
+    setViewMode(mode);
+    sessionStorage.setItem('housie-bookings-view-mode', mode);
+  };
 
   const handleJobAction = (jobId: string, action: string) => {
     console.log(`🎯 Booking action: ${action} for booking ${jobId}`);
@@ -111,7 +118,7 @@ const BookingsPage = () => {
                       <Button
                         variant={viewMode === 'list' ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => setViewMode('list')}
+                        onClick={() => handleViewModeChange('list')}
                         className="flex items-center gap-2"
                       >
                         <List className="h-4 w-4" />
@@ -120,7 +127,7 @@ const BookingsPage = () => {
                       <Button
                         variant={viewMode === 'calendar' ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => setViewMode('calendar')}
+                        onClick={() => handleViewModeChange('calendar')}
                         className="flex items-center gap-2"
                       >
                         <CalendarDays className="h-4 w-4" />
@@ -170,6 +177,7 @@ const BookingsPage = () => {
                     bookings={upcomingBookings}
                     loading={loading}
                     onBookingUpdate={refetch}
+                    viewMode={viewMode}
                   />
                 ) : (
                   <BookingsCalendar 
