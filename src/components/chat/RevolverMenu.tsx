@@ -110,10 +110,8 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   return (
     <div className={cn(
       "revollver-trigger fixed z-[999] transition-all duration-300 ease-out",
-      // Responsive positioning with safe margins
-      "bottom-6 right-6 sm:bottom-8 sm:right-8 md:bottom-10 md:right-10",
-      // Safe area support for iOS
-      "pb-[env(safe-area-inset-bottom)] pr-[env(safe-area-inset-right)]",
+      // Position in the free space under Today's Route panel
+      "bottom-32 right-32 lg:bottom-40 lg:right-40",
       className
     )}>
       {/* Radial Menu Items - Tactical Clip Layout */}
@@ -122,39 +120,10 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
           {menuItems.map((item, index) => {
             // Revolver cylinder positioning - clips expand upward and inward
             const angle = (index * 45) - 135; // 6 items, 45 degrees apart, starting upper-left
-            const baseRadius = 90;
-            const mobileRadius = 70;
-            const radius = window.innerWidth < 768 ? mobileRadius : baseRadius;
+            const radius = 80; // Reduced radius for the centered position
             
             let x = Math.cos(angle * Math.PI / 180) * radius;
             let y = Math.sin(angle * Math.PI / 180) * radius;
-            
-            // Dynamic bounds checking with safe margins
-            const safeMargin = 24;
-            const buttonSize = 56; // 14 * 4 = 56px (w-14 h-14)
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
-            
-            // Current button position relative to viewport
-            const currentX = viewportWidth - (safeMargin * 2) - Math.abs(x);
-            const currentY = viewportHeight - (safeMargin * 2) - Math.abs(y);
-            
-            // Adjust if too close to edges
-            if (currentX < buttonSize) {
-              x = -(viewportWidth - buttonSize - safeMargin * 3);
-            }
-            if (currentY < buttonSize) {
-              y = -(viewportHeight - buttonSize - safeMargin * 3);
-            }
-            
-            // Ensure minimum distance from edges
-            const minX = -(viewportWidth - buttonSize - safeMargin);
-            const minY = -(viewportHeight - buttonSize - safeMargin);
-            const maxX = -safeMargin;
-            const maxY = -safeMargin;
-            
-            const safeX = Math.max(minX, Math.min(maxX, -x));
-            const safeY = Math.max(minY, Math.min(maxY, -y));
             
             return (
               <Button
@@ -171,8 +140,8 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                   item.bg
                 )}
                 style={{
-                  right: `${safeX}px`,
-                  bottom: `${safeY}px`,
+                  right: `${-x}px`,
+                  bottom: `${-y}px`,
                   animationDelay: `${index * 100}ms`,
                   transformOrigin: 'bottom right'
                 }}
