@@ -48,7 +48,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
   
   // Chat state
   const [isOpen, setIsOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>(defaultTab);
+  const [activeTab, setActiveTab] = useState<'messages' | 'ai' | 'voice'>('ai'); // Always default to Annette
   const [activeSubPanel, setActiveSubPanel] = useState<'main' | 'echo' | 'threads'>('main');
   
   const haloRef = useRef<HTMLDivElement>(null);
@@ -193,6 +193,8 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
     if (isDragging) return;
     
     setIsOpen(true);
+    // Always default to Annette tab on first open each session
+    setActiveTab('ai');
     
     // First-time special animation
     if (isFirstOpen) {
@@ -278,7 +280,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
             )}
             title="Annette // AI Assistant — Drag me, click me, call me."
           >
-            {/* Main Avatar */}
+            {/* Main Avatar - Always Annette */}
             <div className="absolute inset-2 rounded-full overflow-hidden">
               <img 
                 src="/lovable-uploads/7e58a112-189a-4048-9103-cd1a291fa6a5.png" 
@@ -290,7 +292,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
             {/* Glow Ring */}
             <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-400/30 to-blue-400/30 animate-pulse" />
             
-            {/* Unread Badge */}
+            {/* Unread Badge - Only for human messages */}
             {totalUnreadCount > 0 && hasMessagesAccess && (
               <Badge
                 variant="destructive"
@@ -330,6 +332,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
                 <h3 className="font-semibold text-white">
                   {activeSubPanel === 'echo' ? '📡 Echo Feed' : 
                    activeSubPanel === 'threads' ? '👥 Crew Threads' :
+                   activeTab === 'messages' ? '💬 Messages via Annette' :
                    '🧠 Annette AI'}
                 </h3>
               </div>
@@ -357,7 +360,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
                         : "text-gray-300 hover:text-white hover:bg-slate-700"
                     )}
                   >
-                    Ask Annette
+                    🪪 Ask Annette
                     {activeTab === 'ai' && (
                       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-purple-400" />
                     )}
@@ -373,7 +376,7 @@ export const AnnetteHalo: React.FC<AnnetteHaloProps> = ({
                           : "text-gray-300 hover:text-white hover:bg-slate-700"
                       )}
                     >
-                      Messages
+                      💬 Messages
                       {totalUnreadCount > 0 && (
                         <Badge variant="destructive" className="ml-2 h-4 px-1.5 text-xs">
                           {totalUnreadCount}
