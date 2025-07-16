@@ -52,7 +52,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
 import JobDetailView from '@/components/dashboard/JobDetailView';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
-import { ChatBubble } from '@/components/chat/ChatBubble';
+
 
 const ProviderDashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
@@ -1414,12 +1414,7 @@ const ProviderDashboard = () => {
 
                     {/* Annette Assistant Widget - positioned below performance stats */}
                     <div className="flex justify-start mb-6">
-                      <div className="w-80 max-w-[90vw]">
-                        <ChatBubble 
-                          defaultTab="ai"
-                          showMicIcon={false}
-                        />
-                      </div>
+                      <AnnetteIntegration />
                     </div>
 
                     {/* Desktop Incoming Requests Table */}
