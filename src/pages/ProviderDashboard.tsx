@@ -51,7 +51,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 
 import SimpleNavigation from '@/components/dashboard/SimpleNavigation';
 import JobDetailView from '@/components/dashboard/JobDetailView';
-import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
+import { SharedDashboardOverlay } from '@/components/shared/SharedDashboardOverlay';
 
 
 const ProviderDashboard = () => {
@@ -416,39 +416,6 @@ const ProviderDashboard = () => {
                 activeTab={activeTab}
                 onTabChange={setActiveTab}
               />
-              
-              {/* Annette Widget - Below Navigation Tabs */}
-              <div className="mt-6 p-4 bg-card rounded-lg border shadow-lg">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
-                    AI
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm">Annette Assistant</h3>
-                    <p className="text-xs text-muted-foreground">Your AI helper</p>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <button 
-                    className="w-full text-xs bg-primary/10 hover:bg-primary/20 text-primary rounded px-3 py-2 transition-colors"
-                    onClick={() => {
-                      // Open chat functionality
-                      console.log('Open Annette chat');
-                    }}
-                  >
-                    💬 Start Chat
-                  </button>
-                  <button 
-                    className="w-full text-xs bg-muted hover:bg-muted/80 rounded px-3 py-2 transition-colors"
-                    onClick={() => {
-                      // Quick help functionality  
-                      console.log('Quick help');
-                    }}
-                  >
-                    ❓ Quick Help
-                  </button>
-                </div>
-              </div>
             </div>
 
             {/* Bottom Tab Bar - Mobile Only */}
@@ -1506,6 +1473,8 @@ const ProviderDashboard = () => {
         />
       )}
       
+      {/* Corner Bubbles - Same as ServiceBoard */}
+      <SharedDashboardOverlay />
     </>
   );
 };

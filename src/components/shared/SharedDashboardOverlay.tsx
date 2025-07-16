@@ -15,20 +15,18 @@ export const SharedDashboardOverlay: React.FC = () => {
     return null;
   }
 
-  // Check if we're on provider dashboard (which has sidebar)
+  // Check if we're on provider dashboard (which has sidebar navigation)
   const isProviderDashboard = location.pathname === '/dashboard';
 
   return (
     <>
-      {/* Annette BubbleChat - only render on customer dashboard, not provider dashboard */}
-      {!isProviderDashboard && (
-        <div className="fixed z-50 bottom-6 left-6">
-          <ChatBubble 
-            defaultTab="ai"
-            showMicIcon={false}
-          />
-        </div>
-      )}
+      {/* Annette BubbleChat - positioned bottom-left corner */}
+      <div className="fixed z-50 bottom-6 left-6">
+        <ChatBubble 
+          defaultTab="ai"
+          showMicIcon={false}
+        />
+      </div>
       
       {/* RevolverMenu - positioned bottom-right with higher z-index */}
       <div className="fixed bottom-6 right-6 z-50">
