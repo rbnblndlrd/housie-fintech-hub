@@ -109,18 +109,26 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
   return (
     <div className={cn(
-      "revollver-trigger fixed z-[9999] transition-all duration-300 ease-out",
-      // Phase 12.4.3 – "Revolver: Red Dot Lock-On" - Precise positioning per red square target
-      "bottom-20 right-24 sm:bottom-16 sm:right-16", // 80px from bottom, 96px from right, responsive for mobile
+      "revollver-trigger fixed transition-all duration-300 ease-out",
+      // Fixed to window positioning - bottom-right control zone
+      "bottom-[100px] right-[160px]",
+      // Responsive adjustments
+      "max-h-[700px]:bottom-[80px] max-w-[1024px]:right-[80px]",
+      // Ensure highest z-index for visibility
+      "z-[9999]",
       className
     )}>
-      {/* Radial Menu Items - Tactical Clip Layout */}
+      {/* Radial Menu Items - Expanding upward and leftward */}
       {isOpen && (
         <div className="absolute bottom-0 right-0">
           {menuItems.map((item, index) => {
-            // Fixed angle calculation - 6 items in 150° spread to ensure all are visible
-            const angle = (index * 30) - 75; // 6 items, 30 degrees apart, from -75° to +75°
-            const radius = 60; // Reduced radius to fit in corner
+            // Responsive radius - reduce by 15% on smaller screens
+            const baseRadius = 60;
+            const radius = window.innerHeight < 700 ? baseRadius * 0.85 : baseRadius;
+            
+            // 6 items in 150° spread, expanding upward and leftward
+            // Angles from -75° to +75° (upward arc)
+            const angle = (index * 30) - 75;
             
             let x = Math.cos(angle * Math.PI / 180) * radius;
             let y = Math.sin(angle * Math.PI / 180) * radius;
@@ -133,7 +141,9 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 onClick={() => handleItemClick(item)}
                 className={cn(
                   "absolute w-14 h-14 rounded-full border-2 border-slate-400/60",
-                  "backdrop-blur-sm transition-all duration-300 shadow-lg drop-shadow-lg",
+                  "backdrop-blur-[8px] transition-all duration-300 shadow-lg",
+                  // Enhanced shadow with translucent fill
+                  "bg-white/70 drop-shadow-[0_3px_10px_rgba(0,0,0,0.35)]",
                   "hover:scale-110 hover:shadow-xl hover:drop-shadow-xl hover:border-primary/60",
                   "animate-scale-in",
                   item.color,
@@ -147,14 +157,14 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 }}
                 title={item.label}
               >
-                <span className="material-symbols-outlined text-2xl">{item.icon}</span>
+                <span className="material-symbols-sharp text-2xl">{item.icon}</span>
               </Button>
             );
           })}
         </div>
       )}
 
-      {/* Central Trigger Button - Tactical Revolver */}
+      {/* Central Trigger Button - Material Symbols Sharp */}
       <Button
         ref={triggerRef}
         onDoubleClick={handleDoubleClick}
@@ -162,8 +172,11 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
         onTouchEnd={handleTouchEnd}
         onContextMenu={(e) => e.preventDefault()} // Disable right-click menu
         className={cn(
-          "relative w-16 h-16 rounded-full shadow-xl drop-shadow-xl transition-all duration-300 ease-out",
-          "border-2 border-slate-400 text-white bg-gradient-to-br from-slate-700 to-slate-900",
+          "relative w-16 h-16 rounded-full transition-all duration-300 ease-out",
+          "border-2 border-slate-400 text-white",
+          // Enhanced styling with backdrop blur and shadow
+          "bg-gradient-to-br from-slate-700 to-slate-900 backdrop-blur-[8px]",
+          "drop-shadow-[0_3px_10px_rgba(0,0,0,0.35)]",
           "hover:scale-105 hover:shadow-2xl hover:drop-shadow-2xl hover:border-primary/60",
           "ring-2 ring-slate-500/20",
           "active:scale-95 active:duration-75", // Quick feedback on press
@@ -174,9 +187,9 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
         variant="ghost"
       >
         {isOpen ? (
-          <span className="material-symbols-outlined text-3xl text-white animate-fade-in">close</span>
+          <span className="material-symbols-sharp text-3xl text-white animate-fade-in">close</span>
         ) : (
-          <span className="material-symbols-outlined text-3xl text-white animate-fade-in">apps</span>
+          <span className="material-symbols-sharp text-3xl text-white animate-fade-in">apps</span>
         )}
       </Button>
     </div>
