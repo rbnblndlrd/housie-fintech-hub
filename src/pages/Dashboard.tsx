@@ -13,6 +13,9 @@ import { CreateJobTicketButton } from '@/components/ui/CreateJobTicketButton';
 import { UXModeSelector } from '@/components/dashboard/UXModeSelector';
 import { UXModeJobCard } from '@/components/dashboard/UXModeJobCard';
 import { useUXMode } from '@/hooks/useUXMode';
+import DashboardLayoutController from '@/components/dashboard/DashboardLayoutController';
+import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
+import { useServiceLayout } from '@/hooks/useServiceLayout';
 
 const Dashboard = () => {
   // Mock jobs data for UX mode detection
@@ -30,6 +33,15 @@ const Dashboard = () => {
     isAutoDetected,
     detectedMode 
   } = useUXMode(mockJobs);
+
+  const {
+    currentLayout,
+    layoutDefinition,
+    detectedLayout,
+    isManualOverride,
+    setLayoutOverride,
+    availableLayouts
+  } = useServiceLayout(mockJobs);
 
   const handleAnnetteRecommendation = () => {
     // This would open the chat bubble with a specific context
@@ -82,48 +94,22 @@ const Dashboard = () => {
         }
         headerAction={
           <div className="flex items-center gap-3">
-            <UXModeSelector
-              currentMode={currentMode}
-              isAutoDetected={isAutoDetected}
-              detectedMode={detectedMode}
-              onModeChange={setUXMode}
-              availableModes={availableModes}
+            <ServiceLayoutSelector
+              currentLayout={currentLayout}
+              detectedLayout={detectedLayout}
+              isManualOverride={isManualOverride}
+              onLayoutChange={setLayoutOverride}
+              availableLayouts={availableLayouts}
             />
             <CreateJobTicketButton size="sm" />
           </div>
         }
       >
         {annetteCard}
-        <AnnetteInboxNotifications className="mb-6" />
-        
-        {/* UX Mode Jobs Section */}
-        <div className="space-y-4 mb-6">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold">Today's Jobs - {currentModeDefinition.name} Mode</h3>
-            <div className="text-sm text-muted-foreground">
-              {currentModeDefinition.features.length} features active
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {mockJobs.map(job => (
-              <UXModeJobCard
-                key={job.id}
-                job={{
-                  ...job,
-                  scheduledTime: '9:00 AM',
-                  estimatedDuration: '2h',
-                  total_amount: 150,
-                  address: '1234 Rue Saint-Denis, Montreal'
-                }}
-                mode={currentModeDefinition}
-                onAction={handleJobAction}
-              />
-            ))}
-          </div>
-        </div>
-        
-        <JobHub />
+        <DashboardLayoutController
+          layoutType={currentLayout}
+          jobs={mockJobs}
+        />
       </DashboardLayout>
       
       {/* Tactical HUD Anchor Card */}
