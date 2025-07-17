@@ -24,6 +24,7 @@ import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
 import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
 import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
 import { BookingsProvider } from '@/contexts/BookingsContext';
+import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 import { cn } from '@/lib/utils';
 
 const Dashboard = () => {
@@ -135,13 +136,8 @@ const Dashboard = () => {
         {/* Tactical HUD Anchor Card */}
         <TodaysRouteAnchor />
         
-        {/* Annette Halo Protocol Widget */}
-        <AnnetteHalo 
-          defaultTab="ai"
-          showMicIcon={false}
-        />
-        
-        <RevolverMenu />
+        {/* Full Annette Integration with voice lines and Revolver actions */}
+        <AnnetteIntegration />
 
         {/* Global Job Acceptance Overlay */}
         <GlobalJobAcceptanceOverlay />
