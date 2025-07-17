@@ -15,10 +15,15 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const longPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Configuration constants for orbital layout
+  const ORBIT_RADIUS = 80;
+  const CENTER_BUTTON_SIZE = 56;
+  const ORBITAL_BUTTON_SIZE = 48;
+
   const menuItems = [
     { 
       icon: 'map', 
-      label: 'Interactive Map', 
+      label: 'Map', 
       action: () => navigate('/interactive-map'),
       color: 'text-green-400 hover:text-green-300',
       bg: 'bg-green-500/20 hover:bg-green-500/30'
@@ -46,7 +51,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
     },
     { 
       icon: 'psychology_alt', 
-      label: 'Annette AI', 
+      label: 'Annette', 
       action: () => {/* Opens BubbleChat - could emit event */},
       color: 'text-cyan-400 hover:text-cyan-300',
       bg: 'bg-cyan-500/20 hover:bg-cyan-500/30'
@@ -116,117 +121,132 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
       "z-[1000]",
       className
     )}>
-      {/* Radial Menu Items - 150° arc starting at 195° */}
-      {isOpen && (
-        <div className="absolute bottom-0 right-0 overflow-visible">
-          {menuItems.map((item, index) => {
-            // Arc configuration as specified
-            const arcAngle = 150;
-            const radius = 100;
-            const startAngle = 195;
-            
-            // Calculate position using the provided trigonometry
-            const angle = (startAngle + (index * arcAngle) / (menuItems.length - 1)) * (Math.PI / 180);
-            const x = radius * Math.cos(angle);
-            const y = radius * Math.sin(angle);
-            
-            // Ensure buttons stay within viewport bounds
-            const viewportMargin = 60;
-            const rightPos = Math.max(-x, -(window.innerWidth - 160 - viewportMargin));
-            const bottomPos = Math.max(-y, -(window.innerHeight - 100 - viewportMargin));
-            
-            return (
-              <div
-                key={item.label}
-                className="absolute"
-                style={{
-                  right: `${rightPos}px`,
-                  bottom: `${bottomPos}px`,
-                  transform: isOpen ? 'scale(1)' : 'scale(0)',
-                  opacity: isOpen ? 1 : 0,
-                  transition: 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out',
-                  transitionDelay: `${index * 80}ms`,
-                  transformOrigin: 'center'
-                }}
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleItemClick(item)}
-                  className={cn(
-                    "w-16 h-16 rounded-full border-2 border-slate-400/60 overflow-visible",
-                    "backdrop-blur-[8px] transition-all duration-200",
-                    "bg-white/80 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
-                    "hover:scale-110 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
-                    "hover:border-primary/80 hover:bg-white/90",
-                    "hover:rotate-3 hover:brightness-110",
-                    item.color,
-                    item.bg
-                  )}
-                  title={item.label}
-                >
-                  <span 
-                    className="material-symbols-sharp"
-                    style={{ 
-                      fontSize: '32px',
-                      lineHeight: 1
-                    }}
-                  >
-                    {item.icon}
-                  </span>
-                </Button>
-                
-                {/* Label below button with responsive visibility */}
-                <div 
-                  className={cn(
-                    "absolute top-full left-1/2 transform -translate-x-1/2 mt-2",
-                    "text-xs text-white font-medium max-w-[80px] text-center",
-                    "hidden sm:block", // Hide labels on mobile
-                    "truncate" // Add ellipsis for long text
-                  )}
+      {/* Orbital Menu Container - Centered layout */}
+      <div className="relative flex items-center justify-center">
+        
+        {/* Orbital Menu Items - Perfect circle around center */}
+        {isOpen && (
+          <div className="absolute inset-0 overflow-visible">
+            {menuItems.map((item, index) => {
+              // Calculate orbital positions in a perfect circle
+              const angleStep = (2 * Math.PI) / menuItems.length;
+              const angle = index * angleStep - Math.PI / 2; // Start from top
+              const x = ORBIT_RADIUS * Math.cos(angle);
+              const y = ORBIT_RADIUS * Math.sin(angle);
+              
+              return (
+                <div
+                  key={item.label}
+                  className="absolute group"
                   style={{
-                    textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                    left: `calc(50% + ${x}px - ${ORBITAL_BUTTON_SIZE / 2}px)`,
+                    top: `calc(50% + ${y}px - ${ORBITAL_BUTTON_SIZE / 2}px)`,
+                    transform: isOpen ? 'scale(1) rotate(0deg)' : 'scale(0) rotate(-180deg)',
                     opacity: isOpen ? 1 : 0,
-                    transition: 'opacity 0.4s ease-in-out',
-                    transitionDelay: `${index * 80 + 150}ms`
+                    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                    transitionDelay: `${index * 60}ms`,
+                    transformOrigin: 'center'
                   }}
                 >
-                  {item.label}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleItemClick(item)}
+                    className={cn(
+                      "rounded-full border-2 border-slate-400/60 overflow-visible group relative",
+                      "backdrop-blur-[8px] transition-all duration-300",
+                      "bg-white/90 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
+                      "hover:scale-125 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.4)]",
+                      "hover:border-primary/80 hover:bg-white/95",
+                      "hover:rotate-12 hover:brightness-110",
+                      item.color,
+                      item.bg
+                    )}
+                    style={{
+                      width: `${ORBITAL_BUTTON_SIZE}px`,
+                      height: `${ORBITAL_BUTTON_SIZE}px`
+                    }}
+                    title={item.label}
+                  >
+                    <span 
+                      className="material-symbols-sharp transition-transform duration-200 group-hover:scale-110"
+                      style={{ 
+                        fontSize: '24px',
+                        lineHeight: 1
+                      }}
+                    >
+                      {item.icon}
+                    </span>
+                  </Button>
+                  
+                  {/* Hover label tooltip */}
+                  <div 
+                    className={cn(
+                      "absolute -bottom-8 left-1/2 transform -translate-x-1/2",
+                      "px-2 py-1 bg-black/80 text-white text-xs font-medium rounded",
+                      "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+                      "pointer-events-none whitespace-nowrap z-20",
+                      "hidden sm:block" // Hide on mobile
+                    )}
+                    style={{
+                      textShadow: '0 1px 2px rgba(0,0,0,0.8)'
+                    }}
+                  >
+                    {item.label}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
 
-      {/* Central Trigger Button - Material Symbols Sharp */}
-      <Button
-        ref={triggerRef}
-        onDoubleClick={handleDoubleClick}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onContextMenu={(e) => e.preventDefault()} // Disable right-click menu
-        className={cn(
-          "relative w-16 h-16 rounded-full transition-all duration-300 ease-out",
-          "border-2 border-slate-400 text-white",
-          // Enhanced styling with backdrop blur and shadow
-          "bg-gradient-to-br from-slate-700 to-slate-900 backdrop-blur-[8px]",
-          "drop-shadow-[0_3px_10px_rgba(0,0,0,0.35)]",
-          "hover:scale-105 hover:shadow-2xl hover:drop-shadow-2xl hover:border-primary/60",
-          "ring-2 ring-slate-500/20",
-          "active:scale-95 active:duration-75", // Quick feedback on press
-          // Pulse animation when closed
-          !isOpen && "animate-pulse hover:animate-none",
-          isOpen && "rotate-45 bg-gradient-to-br from-red-600 to-red-800 border-red-400 ring-red-500/30 shadow-red-500/20"
-        )}
-        variant="ghost"
-      >
-        {isOpen ? (
-          <span className="material-symbols-sharp text-3xl text-white animate-fade-in">close</span>
-        ) : (
-          <span className="material-symbols-sharp text-3xl text-white animate-fade-in">apps</span>
-        )}
-      </Button>
+        {/* Central Close/Open Button - Always visible and centered */}
+        <Button
+          ref={triggerRef}
+          onClick={toggleRevolver}
+          onDoubleClick={handleDoubleClick}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          onContextMenu={(e) => e.preventDefault()}
+          className={cn(
+            "relative rounded-full transition-all duration-400 ease-out z-10",
+            "border-2 text-white shadow-2xl",
+            // Enhanced styling with backdrop blur and shadow
+            "backdrop-blur-[8px]",
+            "hover:scale-110 hover:shadow-[0_0_30px_rgba(0,0,0,0.5)]",
+            "active:scale-95 active:duration-100",
+            // Conditional styling based on state
+            !isOpen ? [
+              "border-slate-400/80 bg-gradient-to-br from-slate-700 to-slate-900",
+              "hover:border-primary/60 hover:from-slate-600 hover:to-slate-800",
+              "ring-2 ring-slate-500/30",
+              "animate-pulse hover:animate-none"
+            ] : [
+              "border-red-400/80 bg-gradient-to-br from-red-600 to-red-800",
+              "hover:border-red-300 hover:from-red-500 hover:to-red-700",
+              "ring-4 ring-red-500/40",
+              "rotate-45"
+            ]
+          )}
+          style={{
+            width: `${CENTER_BUTTON_SIZE}px`,
+            height: `${CENTER_BUTTON_SIZE}px`
+          }}
+        >
+          <span 
+            className={cn(
+              "material-symbols-sharp transition-all duration-300",
+              isOpen && "-rotate-45" // Counter-rotate the icon when button rotates
+            )}
+            style={{ 
+              fontSize: '28px',
+              lineHeight: 1
+            }}
+          >
+            {isOpen ? 'close' : 'apps'}
+          </span>
+        </Button>
+      </div>
     </div>
   );
 };
