@@ -109,7 +109,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
   return (
     <div className={cn(
-      "revollver-trigger fixed transition-all duration-300 ease-out",
+      "revollver-trigger fixed transition-all duration-300 ease-out overflow-visible",
       // Fixed to viewport positioning - bottom-right control zone
       "bottom-[100px] right-[160px]",
       // Ensure highest z-index for visibility
@@ -118,18 +118,24 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
     )}>
       {/* Radial Menu Items - Expanding upward and leftward */}
       {isOpen && (
-        <div className="absolute bottom-0 right-0">
+        <div className="absolute bottom-0 right-0 overflow-visible">
           {menuItems.map((item, index) => {
-            // Responsive radius - reduce by 15% on smaller screens
-            const baseRadius = 60;
+            // Increased radius by 20% with 8px margin between buttons
+            const baseRadius = 72; // 60 * 1.2
             const radius = window.innerHeight < 700 ? baseRadius * 0.85 : baseRadius;
+            const buttonSpacing = 8; // 8px margin between buttons
             
             // 6 items in 150° spread, expanding upward and leftward
             // Angles from -75° to +75° (upward arc)
             const angle = (index * 30) - 75;
             
-            let x = Math.cos(angle * Math.PI / 180) * radius;
-            let y = Math.sin(angle * Math.PI / 180) * radius;
+            let x = Math.cos(angle * Math.PI / 180) * (radius + buttonSpacing);
+            let y = Math.sin(angle * Math.PI / 180) * (radius + buttonSpacing);
+            
+            // Ensure buttons stay within viewport bounds
+            const viewportMargin = 70; // minimum distance from viewport edge
+            const rightPos = Math.max(-x, -(window.innerWidth - 160 - viewportMargin));
+            const bottomPos = Math.max(-y, -(window.innerHeight - 100 - viewportMargin));
             
             return (
               <Button
@@ -139,7 +145,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 onClick={() => handleItemClick(item)}
                 className={cn(
                   "absolute w-14 h-14 rounded-full border-2 border-slate-400/60",
-                  "backdrop-blur-[8px] transition-all duration-300 shadow-lg",
+                  "backdrop-blur-[8px] transition-all duration-300 shadow-lg overflow-visible",
                   // Enhanced shadow with translucent fill
                   "bg-white/70 drop-shadow-[0_3px_10px_rgba(0,0,0,0.35)]",
                   "hover:scale-110 hover:shadow-xl hover:drop-shadow-xl hover:border-primary/60",
@@ -148,10 +154,11 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                   item.bg
                 )}
                 style={{
-                  right: `${-x}px`,
-                  bottom: `${-y}px`,
+                  right: `${rightPos}px`,
+                  bottom: `${bottomPos}px`,
                   animationDelay: `${index * 100}ms`,
-                  transformOrigin: 'bottom right'
+                  transformOrigin: 'bottom right',
+                  margin: '4px' // 8px total spacing (4px on each side)
                 }}
                 title={item.label}
               >
