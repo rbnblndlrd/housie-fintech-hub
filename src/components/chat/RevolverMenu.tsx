@@ -120,20 +120,19 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
       {isOpen && (
         <div className="absolute bottom-0 right-0 overflow-visible">
           {menuItems.map((item, index) => {
-            // Increased radius by 20% with 8px margin between buttons
-            const baseRadius = 72; // 60 * 1.2
-            const radius = window.innerHeight < 700 ? baseRadius * 0.85 : baseRadius;
-            const buttonSpacing = 8; // 8px margin between buttons
+            // 100px radius with perfect 150° arc from 270° (bottom) to 120° (left-up)
+            const radius = 100;
             
-            // 6 items in 150° spread, expanding upward and leftward
-            // Angles from -75° to +75° (upward arc)
-            const angle = (index * 30) - 75;
+            // 6 items in 150° spread at 30° intervals
+            // Starting from 270° (bottom) going counterclockwise to 120° (left-up)
+            const startAngle = 270; // bottom
+            const angle = startAngle - (index * 30); // 270°, 240°, 210°, 180°, 150°, 120°
             
-            let x = Math.cos(angle * Math.PI / 180) * (radius + buttonSpacing);
-            let y = Math.sin(angle * Math.PI / 180) * (radius + buttonSpacing);
+            const x = Math.cos(angle * Math.PI / 180) * radius;
+            const y = Math.sin(angle * Math.PI / 180) * radius;
             
             // Ensure buttons stay within viewport bounds
-            const viewportMargin = 70; // minimum distance from viewport edge
+            const viewportMargin = 60;
             const rightPos = Math.max(-x, -(window.innerWidth - 160 - viewportMargin));
             const bottomPos = Math.max(-y, -(window.innerHeight - 100 - viewportMargin));
             
@@ -144,11 +143,13 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 size="sm"
                 onClick={() => handleItemClick(item)}
                 className={cn(
-                  "absolute w-14 h-14 rounded-full border-2 border-slate-400/60",
-                  "backdrop-blur-[8px] transition-all duration-300 shadow-lg overflow-visible",
-                  // Enhanced shadow with translucent fill
-                  "bg-white/70 drop-shadow-[0_3px_10px_rgba(0,0,0,0.35)]",
-                  "hover:scale-110 hover:shadow-xl hover:drop-shadow-xl hover:border-primary/60",
+                  "absolute w-16 h-16 rounded-full border-2 border-slate-400/60 overflow-visible",
+                  "backdrop-blur-[8px] transition-all duration-[400ms] ease-in-out",
+                  // Enhanced shadows and glow effects
+                  "bg-white/80 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
+                  "hover:scale-110 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
+                  "hover:border-primary/80 hover:bg-white/90",
+                  "hover:rotate-3 hover:brightness-110",
                   "animate-scale-in",
                   item.color,
                   item.bg
@@ -156,13 +157,23 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                 style={{
                   right: `${rightPos}px`,
                   bottom: `${bottomPos}px`,
-                  animationDelay: `${index * 100}ms`,
-                  transformOrigin: 'bottom right',
-                  margin: '4px' // 8px total spacing (4px on each side)
+                  animationDelay: `${index * 80}ms`,
+                  transformOrigin: 'center',
+                  transform: `scale(${isOpen ? 1 : 0}) translate(0, 0)`,
+                  opacity: isOpen ? 1 : 0
                 }}
                 title={item.label}
               >
-                <span className="material-symbols-sharp text-2xl">{item.icon}</span>
+                <span 
+                  className="material-symbols-sharp transition-all duration-200"
+                  style={{ 
+                    fontSize: '32px',
+                    padding: '12px',
+                    lineHeight: 1
+                  }}
+                >
+                  {item.icon}
+                </span>
               </Button>
             );
           })}
