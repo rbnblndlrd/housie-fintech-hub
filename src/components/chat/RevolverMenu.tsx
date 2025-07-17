@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
+import { Navigation, CalendarCheck, Sparkles, BrainCircuit, Star, Home, RotateCcw, X } from 'lucide-react';
 
 interface RevolverMenuProps {
   className?: string;
@@ -22,46 +23,46 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
   const menuItems = [
     { 
-      icon: 'map', 
-      label: 'Map', 
+      icon: Navigation, 
+      label: 'GPS', 
       action: () => navigate('/interactive-map'),
-      color: 'text-green-400 hover:text-green-300',
-      bg: 'bg-green-500/20 hover:bg-green-500/30'
+      color: 'text-emerald-400 hover:text-emerald-300',
+      bg: 'bg-emerald-500/20 hover:bg-emerald-500/30'
     },
     { 
-      icon: 'calendar_today', 
-      label: 'Schedule', 
+      icon: CalendarCheck, 
+      label: 'Bookings', 
       action: () => navigate('/dashboard'),
-      color: 'text-blue-400 hover:text-blue-300',
-      bg: 'bg-blue-500/20 hover:bg-blue-500/30'
+      color: 'text-amber-400 hover:text-amber-300',
+      bg: 'bg-amber-500/20 hover:bg-amber-500/30'
     },
     { 
-      icon: 'analytics', 
-      label: 'Analytics', 
+      icon: Sparkles, 
+      label: 'Optimize', 
       action: () => navigate('/analytics-dashboard'),
-      color: 'text-purple-400 hover:text-purple-300',
-      bg: 'bg-purple-500/20 hover:bg-purple-500/30'
+      color: 'text-violet-400 hover:text-violet-300',
+      bg: 'bg-violet-500/20 hover:bg-violet-500/30'
     },
     { 
-      icon: 'groups', 
-      label: 'Community', 
-      action: () => navigate('/community-dashboard'),
-      color: 'text-orange-400 hover:text-orange-300',
-      bg: 'bg-orange-500/20 hover:bg-orange-500/30'
-    },
-    { 
-      icon: 'psychology_alt', 
-      label: 'Annette', 
-      action: () => {/* Opens BubbleChat - could emit event */},
+      icon: BrainCircuit, 
+      label: 'Parse', 
+      action: () => {/* Parse ticket functionality */},
       color: 'text-cyan-400 hover:text-cyan-300',
       bg: 'bg-cyan-500/20 hover:bg-cyan-500/30'
     },
     { 
-      icon: 'settings', 
-      label: 'Settings', 
-      action: () => navigate('/settings'),
-      color: 'text-gray-400 hover:text-gray-300',
-      bg: 'bg-gray-500/20 hover:bg-gray-500/30'
+      icon: Star, 
+      label: 'Prestige', 
+      action: () => navigate('/community-dashboard'),
+      color: 'text-yellow-400 hover:text-yellow-300',
+      bg: 'bg-yellow-500/20 hover:bg-yellow-500/30'
+    },
+    { 
+      icon: Home, 
+      label: 'Home', 
+      action: () => navigate('/'),
+      color: 'text-slate-400 hover:text-slate-300',
+      bg: 'bg-slate-500/20 hover:bg-slate-500/30'
     }
   ];
 
@@ -148,36 +149,31 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                     transformOrigin: 'center'
                   }}
                 >
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleItemClick(item)}
-                    className={cn(
-                      "rounded-full border-2 border-slate-400/60 overflow-visible group relative",
-                      "backdrop-blur-[8px] transition-all duration-300",
-                      "bg-white/90 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
-                      "hover:scale-125 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.4)]",
-                      "hover:border-primary/80 hover:bg-white/95",
-                      "hover:rotate-12 hover:brightness-110",
-                      item.color,
-                      item.bg
-                    )}
-                    style={{
-                      width: `${ORBITAL_BUTTON_SIZE}px`,
-                      height: `${ORBITAL_BUTTON_SIZE}px`
-                    }}
-                    title={item.label}
-                  >
-                    <span 
-                      className="material-symbols-sharp transition-transform duration-200 group-hover:scale-110"
-                      style={{ 
-                        fontSize: '24px',
-                        lineHeight: 1
-                      }}
-                    >
-                      {item.icon}
-                    </span>
-                  </Button>
+                   <Button
+                     variant="ghost"
+                     size="sm"
+                     onClick={() => handleItemClick(item)}
+                     className={cn(
+                       "rounded-full border-2 border-slate-400/60 overflow-visible group relative",
+                       "backdrop-blur-[8px] transition-all duration-300",
+                       "bg-white/90 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
+                       "hover:scale-125 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.4)]",
+                       "hover:border-primary/80 hover:bg-white/95",
+                       "hover:rotate-12 hover:brightness-110 hover:glow",
+                       item.color,
+                       item.bg
+                     )}
+                     style={{
+                       width: `${ORBITAL_BUTTON_SIZE}px`,
+                       height: `${ORBITAL_BUTTON_SIZE}px`
+                     }}
+                     title={item.label}
+                   >
+                     <item.icon 
+                       size={20} 
+                       className="transition-transform duration-200 group-hover:scale-110"
+                     />
+                   </Button>
                   
                   {/* Hover label tooltip */}
                   <div 
@@ -232,20 +228,19 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
             width: `${CENTER_BUTTON_SIZE}px`,
             height: `${CENTER_BUTTON_SIZE}px`
           }}
-        >
-          <span 
-            className={cn(
-              "material-symbols-sharp transition-all duration-300",
-              isOpen && "-rotate-45" // Counter-rotate the icon when button rotates
-            )}
-            style={{ 
-              fontSize: '28px',
-              lineHeight: 1
-            }}
-          >
-            {isOpen ? 'close' : 'apps'}
-          </span>
-        </Button>
+         >
+           {isOpen ? (
+             <X 
+               size={24} 
+               className="transition-all duration-300 -rotate-45"
+             />
+           ) : (
+             <RotateCcw 
+               size={24} 
+               className="transition-all duration-300"
+             />
+           )}
+         </Button>
       </div>
     </div>
   );
