@@ -16,7 +16,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const longPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Configuration constants for orbital layout
-  const ORBIT_RADIUS = 80;
+  const ORBIT_RADIUS = 100;
   const CENTER_BUTTON_SIZE = 56;
   const ORBITAL_BUTTON_SIZE = 48;
 
@@ -182,11 +182,11 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                   {/* Hover label tooltip */}
                   <div 
                     className={cn(
-                      "absolute -bottom-8 left-1/2 transform -translate-x-1/2",
-                      "px-2 py-1 bg-black/80 text-white text-xs font-medium rounded",
+                      "absolute -bottom-10 left-1/2 transform -translate-x-1/2",
+                      "px-2 py-1 bg-black/90 text-white text-[11px] font-medium rounded",
                       "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
                       "pointer-events-none whitespace-nowrap z-20",
-                      "hidden sm:block" // Hide on mobile
+                      "hidden sm:block max-w-[80px] text-center" // Hide on mobile, limit width
                     )}
                     style={{
                       textShadow: '0 1px 2px rgba(0,0,0,0.8)'
