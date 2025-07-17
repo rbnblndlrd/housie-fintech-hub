@@ -110,6 +110,31 @@ export const AnnetteIntegration: React.FC = () => {
     });
   };
 
+  // Handle auto-opening chat when triggered from external components (like Revolver)
+  useEffect(() => {
+    const handleAutoOpenChat = (action: string, eventData?: any) => {
+      if (eventData?.autoOpenChat && !isChatOpen) {
+        setIsChatOpen(true);
+        setHasNewMessage(false);
+      }
+    };
+
+    // Register for Annette action events
+    const originalEventBus = annetteEventBus;
+    const enhancedEventBus = (action: string, context?: any) => {
+      handleAutoOpenChat(action, context);
+      if (originalEventBus) {
+        originalEventBus(action, context);
+      }
+    };
+
+    annetteEventBus = enhancedEventBus;
+
+    return () => {
+      annetteEventBus = originalEventBus;
+    };
+  }, [isChatOpen]);
+
   const handleRevollverClose = () => {
     setIsRevollverOpen(false);
     setShowRevollverDebug(false);

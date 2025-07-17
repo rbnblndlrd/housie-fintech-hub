@@ -126,7 +126,7 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
     }
   ];
 
-  // Handle voice lines and toast notifications with cooldown
+  // Handle voice lines, message panel, and toast notifications with cooldown
   const handleVoiceAndToast = (actionKey: keyof typeof actionConfig) => {
     const now = Date.now();
     const lastActionTime = lastActionTimeRef.current[actionKey] || 0;
@@ -142,11 +142,13 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
     
     const config = actionConfig[actionKey];
     
-    // Trigger voice line through Annette system
+    // Trigger both voice and message panel through Annette system
     triggerAnnetteAction(`revolver_${actionKey}`, {
       voiceLine: config.voice,
+      response: config.voice, // Same message appears in chat
       fromRevolver: true,
-      actionKey
+      actionKey,
+      autoOpenChat: true // Signal to auto-open chat if closed
     });
     
     // Show toast notification
