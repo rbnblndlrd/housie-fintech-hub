@@ -116,20 +116,19 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
       "z-[9999]",
       className
     )}>
-      {/* Radial Menu Items - Expanding upward and leftward */}
+      {/* Radial Menu Items - 150° arc starting at 195° */}
       {isOpen && (
         <div className="absolute bottom-0 right-0 overflow-visible">
           {menuItems.map((item, index) => {
-            // 100px radius with perfect 150° arc from 270° (bottom) to 120° (left-up)
+            // Arc configuration as specified
+            const arcAngle = 150;
             const radius = 100;
+            const startAngle = 195;
             
-            // 6 items in 150° spread at 30° intervals
-            // Starting from 270° (bottom) going counterclockwise to 120° (left-up)
-            const startAngle = 270; // bottom
-            const angle = startAngle - (index * 30); // 270°, 240°, 210°, 180°, 150°, 120°
-            
-            const x = Math.cos(angle * Math.PI / 180) * radius;
-            const y = Math.sin(angle * Math.PI / 180) * radius;
+            // Calculate position using the provided trigonometry
+            const angle = (startAngle + (index * arcAngle) / (menuItems.length - 1)) * (Math.PI / 180);
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
             
             // Ensure buttons stay within viewport bounds
             const viewportMargin = 60;
@@ -137,44 +136,62 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
             const bottomPos = Math.max(-y, -(window.innerHeight - 100 - viewportMargin));
             
             return (
-              <Button
+              <div
                 key={item.label}
-                variant="ghost"
-                size="sm"
-                onClick={() => handleItemClick(item)}
-                className={cn(
-                  "absolute w-16 h-16 rounded-full border-2 border-slate-400/60 overflow-visible",
-                  "backdrop-blur-[8px] transition-all duration-[400ms] ease-in-out",
-                  // Enhanced shadows and glow effects
-                  "bg-white/80 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
-                  "hover:scale-110 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
-                  "hover:border-primary/80 hover:bg-white/90",
-                  "hover:rotate-3 hover:brightness-110",
-                  "animate-scale-in",
-                  item.color,
-                  item.bg
-                )}
+                className="absolute"
                 style={{
                   right: `${rightPos}px`,
                   bottom: `${bottomPos}px`,
-                  animationDelay: `${index * 80}ms`,
-                  transformOrigin: 'center',
-                  transform: `scale(${isOpen ? 1 : 0}) translate(0, 0)`,
-                  opacity: isOpen ? 1 : 0
+                  transform: isOpen ? 'scale(1)' : 'scale(0)',
+                  opacity: isOpen ? 1 : 0,
+                  transition: 'transform 0.3s ease-in-out, opacity 0.3s ease-in-out',
+                  transitionDelay: `${index * 80}ms`,
+                  transformOrigin: 'center'
                 }}
-                title={item.label}
               >
-                <span 
-                  className="material-symbols-sharp transition-all duration-200"
-                  style={{ 
-                    fontSize: '32px',
-                    padding: '12px',
-                    lineHeight: 1
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => handleItemClick(item)}
+                  className={cn(
+                    "w-16 h-16 rounded-full border-2 border-slate-400/60 overflow-visible",
+                    "backdrop-blur-[8px] transition-all duration-200",
+                    "bg-white/80 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
+                    "hover:scale-110 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.35)]",
+                    "hover:border-primary/80 hover:bg-white/90",
+                    "hover:rotate-3 hover:brightness-110",
+                    item.color,
+                    item.bg
+                  )}
+                  title={item.label}
+                >
+                  <span 
+                    className="material-symbols-sharp"
+                    style={{ 
+                      fontSize: '32px',
+                      lineHeight: 1
+                    }}
+                  >
+                    {item.icon}
+                  </span>
+                </Button>
+                
+                {/* Label below button */}
+                <div 
+                  className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1"
+                  style={{
+                    fontSize: '13px',
+                    color: 'white',
+                    textShadow: '0 1px 3px rgba(0,0,0,0.8)',
+                    whiteSpace: 'nowrap',
+                    opacity: isOpen ? 1 : 0,
+                    transition: 'opacity 0.3s ease-in-out',
+                    transitionDelay: `${index * 80 + 150}ms`
                   }}
                 >
-                  {item.icon}
-                </span>
-              </Button>
+                  {item.label}
+                </div>
+              </div>
             );
           })}
         </div>
