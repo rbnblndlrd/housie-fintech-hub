@@ -109,11 +109,11 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
 
   return (
     <div className={cn(
-      "revollver-trigger fixed transition-all duration-300 ease-out overflow-visible",
-      // Fixed to viewport positioning - bottom-right control zone
+      "revolver-trigger fixed transition-all duration-300 ease-out overflow-visible",
+      // Fixed to viewport positioning - bottom-right control zone  
       "bottom-[100px] right-[160px]",
-      // Ensure highest z-index for visibility
-      "z-[9999]",
+      // Ensure high z-index for visibility above all content
+      "z-[1000]",
       className
     )}>
       {/* Radial Menu Items - 150° arc starting at 195° */}
@@ -176,16 +176,18 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                   </span>
                 </Button>
                 
-                {/* Label below button */}
+                {/* Label below button with responsive visibility */}
                 <div 
-                  className="absolute top-full left-1/2 transform -translate-x-1/2 mt-1"
+                  className={cn(
+                    "absolute top-full left-1/2 transform -translate-x-1/2 mt-2",
+                    "text-xs text-white font-medium max-w-[80px] text-center",
+                    "hidden sm:block", // Hide labels on mobile
+                    "truncate" // Add ellipsis for long text
+                  )}
                   style={{
-                    fontSize: '13px',
-                    color: 'white',
                     textShadow: '0 1px 3px rgba(0,0,0,0.8)',
-                    whiteSpace: 'nowrap',
                     opacity: isOpen ? 1 : 0,
-                    transition: 'opacity 0.3s ease-in-out',
+                    transition: 'opacity 0.4s ease-in-out',
                     transitionDelay: `${index * 80 + 150}ms`
                   }}
                 >
