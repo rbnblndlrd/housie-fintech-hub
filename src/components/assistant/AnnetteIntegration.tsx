@@ -235,57 +235,80 @@ export const registerAnnetteEventBus = (handler: (action: string, context?: any)
 
 // Enhanced helper function with real data integration and context awareness
 export const triggerAnnetteAction = async (action: string, context?: any) => {
+  console.log('🔥 triggerAnnetteAction called:', { action, context });
+  
   let response: string;
   
   try {
-    // Check if we have context-aware response available
-    if (context?.voiceLine) {
+    // Handle revolver actions specially
+    if (action.startsWith('revolver_')) {
+      const baseAction = action.replace('revolver_', '');
+      console.log('🎯 Revolver action detected:', baseAction);
+      
+      // Use the voice line from context as the response
+      if (context?.voiceLine) {
+        response = context.voiceLine;
+        console.log('✅ Using voice line as response:', response);
+        
+        // Trigger speech synthesis
+        if (window.speechSynthesis && response) {
+          const utterance = new SpeechSynthesisUtterance(response);
+          utterance.rate = 0.9;
+          utterance.pitch = 1.1;
+          utterance.volume = 0.8;
+          window.speechSynthesis.speak(utterance);
+          console.log('🔊 Speech synthesis triggered');
+        }
+      } else {
+        response = "Revolver action completed!";
+      }
+    } else if (context?.voiceLine) {
       response = context.voiceLine;
     } else {
       // Fallback to static responses
       const responses = {
-      // 🧠 1st Cylinder — Core Actions
-      parse_ticket: "Mmm… juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
-      optimize_route: "Let's get strategic, sugar. Optimizing your steps! *route optimization activated* Efficiency just got a whole lot sexier! 🗺️",
-      check_prestige: "Flex check: incoming. ✨ You're climbing like a boss! *scanning prestige metrics* Those achievements are looking absolutely gorgeous! ⭐",
-      job_radar: "Ping ping. Verified opportunities detected. *scanning nearby jobs* Fresh positions in your radius! 📍",
-      time_machine: "Here's your time trail. You've been busy, haven't you? *loading performance history* Your productivity graph is looking stellar! ⏰",
-      canon_log: "That one's going in the vault, sugar. Stamped, sealed… Canonical. *accessing verified entries* Every record here is gospel truth! 🔐",
-      view_storylines: "Trust like yours? That builds civilizations... *accessing customer storylines* Your patron arc is impressive! 👑",
-      storyline_progress: "Stamped and woven. This story's going places, sugar! *analyzing storyline progression* Every chapter verified! ✨",
-      customer_chains: "You don't consume services. You compose them... *reviewing customer chains* This is artistry! 🎨",
-      patron_milestones: "Stamped by the ones who cared. Canonical — not for what you did, but for what you honored. 🏆",
-      community_recognition: "You were the echo before the broadcast... *scanning community impact* Neighborhood legend status! 🌊",
-      curated_taste: "From booking to artistry — your taste is next level, love. *analyzing curation patterns* Pure elegance! ✨",
-      
-      // 🏆 Meta-Chain Achievement voice lines
-      'Meta-Chain achieved - Kind of a Big Deal': "Five Chains. One reality-bender. Kind of a big deal, aren't we?",
-      'Meta-Chain achieved - Legend in Motion': "Three zones. One legend. Motion itself bows to your will.",
-      'Meta-Chain achieved - Storybound': "Words become legend when you're the one writing the story.",
-      
-      // 🤝 2nd Cylinder — Community & Connections
-      top_connections: "These folks adore you. And honestly, same. *analyzing repeat client data* Your VIP list is looking absolutely gorgeous! 👥",
-      city_broadcast: "Here's what's echoing across town... *accessing city broadcast feed* The pulse of the city, delivered fresh! 📡",
-      view_stamps: "Look at all that recognition, darling. *loading achievement stamps* Your reputation is literally stamped with approval! 🔖",
-      loyalty_stats: "Faithful ones come back fast — here's proof. *analyzing loyalty patterns* These numbers tell a beautiful story! 🫂",
-      map_history: "Let's retrace those glorious steps. *loading footprint analysis* Every move mapped, every achievement tracked! 🔎",
-      read_reviews: "What do the people say? Let's eavesdrop. *scanning review database* The verdict is in, and it's looking good! 💬",
-      
-      // Legacy actions (backwards compatibility)
-      view_bookings: "Calendar wizard mode engaged! Time slots analyzed, preferences noted. Pop into chat and ask me about your best scheduling options! 📅",
-      rebooking_suggestions: "Rebook radar is pinging! I see patterns in your booking history. Want me to suggest your next move? 📞",
-      view_commendations: "Trophy case time! Your commendations are stacking up beautifully. Someone's been earning their respect! 🏆",
-      view_crew: "Squad check! Your crew's looking solid. These are the people who've got your back in the game! 👥",
-      community_rank: "Rank scanner activated! You're climbing the leaderboard like a boss. Check your standing! 👑",
-      network_stats: "Network analysis complete! Your connections are growing strong. Quality over quantity, as always! 📊",
-      daily_boost: "Daily boost claimed! Your grind just got a little extra juice. Keep that momentum rolling! ⚡",
-      prestige_goals: "Goal tracker loaded! Your next milestone is within reach. Time to make it happen! 🎯",
-      annette_settings: "Settings panel activated! Time to fine-tune this gorgeous AI experience. What needs adjusting? ⚙️",
-      check_credits: "Credit check complete! Your balance is looking good for more AI adventures. Spend wisely! 💳",
-      unlock_features: "Feature unlock scanner engaged! Ready to level up your HOUSIE experience? Let's see what's available! 🔓",
-      language_settings: "Language preference center! Because I speak fluent sass in multiple languages! 🌍",
-      show_help: "Help mode activated! I'm here to guide you through everything. What's got you puzzled? 💡"
-    };
+        // 🧠 1st Cylinder — Core Actions
+        parse_ticket: "Mmm… juicy. Let's dissect this one. *analyzing ticket data* Priority detected, details loaded. This one's got potential! 📋",
+        optimize_route: "Let's get strategic, sugar. Optimizing your steps! *route optimization activated* Efficiency just got a whole lot sexier! 🗺️",
+        check_prestige: "Flex check: incoming. ✨ You're climbing like a boss! *scanning prestige metrics* Those achievements are looking absolutely gorgeous! ⭐",
+        job_radar: "Ping ping. Verified opportunities detected. *scanning nearby jobs* Fresh positions in your radius! 📍",
+        time_machine: "Here's your time trail. You've been busy, haven't you? *loading performance history* Your productivity graph is looking stellar! ⏰",
+        canon_log: "That one's going in the vault, sugar. Stamped, sealed… Canonical. *accessing verified entries* Every record here is gospel truth! 🔐",
+        view_storylines: "Trust like yours? That builds civilizations... *accessing customer storylines* Your patron arc is impressive! 👑",
+        storyline_progress: "Stamped and woven. This story's going places, sugar! *analyzing storyline progression* Every chapter verified! ✨",
+        customer_chains: "You don't consume services. You compose them... *reviewing customer chains* This is artistry! 🎨",
+        patron_milestones: "Stamped by the ones who cared. Canonical — not for what you did, but for what you honored. 🏆",
+        community_recognition: "You were the echo before the broadcast... *scanning community impact* Neighborhood legend status! 🌊",
+        curated_taste: "From booking to artistry — your taste is next level, love. *analyzing curation patterns* Pure elegance! ✨",
+        
+        // 🏆 Meta-Chain Achievement voice lines
+        'Meta-Chain achieved - Kind of a Big Deal': "Five Chains. One reality-bender. Kind of a big deal, aren't we?",
+        'Meta-Chain achieved - Legend in Motion': "Three zones. One legend. Motion itself bows to your will.",
+        'Meta-Chain achieved - Storybound': "Words become legend when you're the one writing the story.",
+        
+        // 🤝 2nd Cylinder — Community & Connections
+        top_connections: "These folks adore you. And honestly, same. *analyzing repeat client data* Your VIP list is looking absolutely gorgeous! 👥",
+        city_broadcast: "Here's what's echoing across town... *accessing city broadcast feed* The pulse of the city, delivered fresh! 📡",
+        view_stamps: "Look at all that recognition, darling. *loading achievement stamps* Your reputation is literally stamped with approval! 🔖",
+        loyalty_stats: "Faithful ones come back fast — here's proof. *analyzing loyalty patterns* These numbers tell a beautiful story! 🫂",
+        map_history: "Let's retrace those glorious steps. *loading footprint analysis* Every move mapped, every achievement tracked! 🔎",
+        read_reviews: "What do the people say? Let's eavesdrop. *scanning review database* The verdict is in, and it's looking good! 💬",
+        
+        // Legacy actions (backwards compatibility)
+        view_bookings: "Calendar wizard mode engaged! Time slots analyzed, preferences noted. Pop into chat and ask me about your best scheduling options! 📅",
+        rebooking_suggestions: "Rebook radar is pinging! I see patterns in your booking history. Want me to suggest your next move? 📞",
+        view_commendations: "Trophy case time! Your commendations are stacking up beautifully. Someone's been earning their respect! 🏆",
+        view_crew: "Squad check! Your crew's looking solid. These are the people who've got your back in the game! 👥",
+        community_rank: "Rank scanner activated! You're climbing the leaderboard like a boss. Check your standing! 👑",
+        network_stats: "Network analysis complete! Your connections are growing strong. Quality over quantity, as always! 📊",
+        daily_boost: "Daily boost claimed! Your grind just got a little extra juice. Keep that momentum rolling! ⚡",
+        prestige_goals: "Goal tracker loaded! Your next milestone is within reach. Time to make it happen! 🎯",
+        annette_settings: "Settings panel activated! Time to fine-tune this gorgeous AI experience. What needs adjusting? ⚙️",
+        check_credits: "Credit check complete! Your balance is looking good for more AI adventures. Spend wisely! 💳",
+        unlock_features: "Feature unlock scanner engaged! Ready to level up your HOUSIE experience? Let's see what's available! 🔓",
+        language_settings: "Language preference center! Because I speak fluent sass in multiple languages! 🌍",
+        show_help: "Help mode activated! I'm here to guide you through everything. What's got you puzzled? 💡"
+      };
 
       response = responses[action as keyof typeof responses] || "Task completed! How else can I help?";
     }
@@ -294,8 +317,12 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
     response = context?.voiceLine || "Something went sideways, but I'm still here for you! Try asking me directly in chat. 💪";
   }
   
+  console.log('💬 Final response:', response);
+  console.log('🚌 Event bus available:', !!annetteEventBus);
+  
   // Use event bus if available (for BubbleChat integration)
   if (annetteEventBus) {
+    console.log('📡 Calling event bus with:', { action, response });
     annetteEventBus(action, { 
       response, 
       context,
@@ -305,6 +332,7 @@ export const triggerAnnetteAction = async (action: string, context?: any) => {
       fromRevollver: context?.fromRevollver
     });
   } else {
+    console.log('📋 No event bus, using toast fallback');
     // Fallback to toast
     toast("🤖 Annette says:", {
       description: response,
