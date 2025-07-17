@@ -21,48 +21,52 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const CENTER_BUTTON_SIZE = 56;
   const ORBITAL_BUTTON_SIZE = 48;
 
+  // Provider role radial menu items in clockwise order
   const menuItems = [
     { 
       icon: Navigation, 
       label: 'GPS', 
       action: () => navigate('/interactive-map'),
-      color: 'text-emerald-400 hover:text-emerald-300',
-      bg: 'bg-emerald-500/20 hover:bg-emerald-500/30'
+      color: 'text-primary hover:text-primary/80',
+      bg: 'bg-primary/20 hover:bg-primary/30'
     },
     { 
       icon: CalendarCheck, 
       label: 'Bookings', 
       action: () => navigate('/dashboard'),
-      color: 'text-amber-400 hover:text-amber-300',
-      bg: 'bg-amber-500/20 hover:bg-amber-500/30'
+      color: 'text-accent hover:text-accent/80',
+      bg: 'bg-accent/20 hover:bg-accent/30'
     },
     { 
       icon: Sparkles, 
       label: 'Optimize', 
       action: () => navigate('/analytics-dashboard'),
-      color: 'text-violet-400 hover:text-violet-300',
-      bg: 'bg-violet-500/20 hover:bg-violet-500/30'
+      color: 'text-secondary hover:text-secondary/80',
+      bg: 'bg-secondary/20 hover:bg-secondary/30'
     },
     { 
       icon: BrainCircuit, 
       label: 'Parse', 
-      action: () => {/* Parse ticket functionality */},
-      color: 'text-cyan-400 hover:text-cyan-300',
-      bg: 'bg-cyan-500/20 hover:bg-cyan-500/30'
+      action: () => {
+        // TODO: Implement AI ticket parsing functionality
+        console.log('🧠 Parse ticket functionality to be implemented');
+      },
+      color: 'text-muted-foreground hover:text-foreground',
+      bg: 'bg-muted/20 hover:bg-muted/30'
     },
     { 
       icon: Star, 
       label: 'Prestige', 
       action: () => navigate('/community-dashboard'),
-      color: 'text-yellow-400 hover:text-yellow-300',
-      bg: 'bg-yellow-500/20 hover:bg-yellow-500/30'
+      color: 'text-accent hover:text-accent/80',
+      bg: 'bg-accent/20 hover:bg-accent/30'
     },
     { 
       icon: Home, 
       label: 'Home', 
       action: () => navigate('/'),
-      color: 'text-slate-400 hover:text-slate-300',
-      bg: 'bg-slate-500/20 hover:bg-slate-500/30'
+      color: 'text-muted-foreground hover:text-foreground',
+      bg: 'bg-muted/20 hover:bg-muted/30'
     }
   ];
 
@@ -154,12 +158,12 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                      size="sm"
                      onClick={() => handleItemClick(item)}
                      className={cn(
-                       "rounded-full border-2 border-slate-400/60 overflow-visible group relative",
+                       "rounded-full border-2 border-border/60 overflow-visible group relative",
                        "backdrop-blur-[8px] transition-all duration-300",
-                       "bg-white/90 shadow-lg drop-shadow-[0_4px_12px_rgba(0,0,0,0.25)]",
-                       "hover:scale-125 hover:shadow-2xl hover:drop-shadow-[0_8px_20px_rgba(0,0,0,0.4)]",
-                       "hover:border-primary/80 hover:bg-white/95",
-                       "hover:rotate-12 hover:brightness-110 hover:glow",
+                       "bg-background/90 shadow-lg",
+                       "hover:scale-125 hover:shadow-2xl hover:shadow-primary/20",
+                       "hover:border-primary/80 hover:bg-background/95",
+                       "hover:rotate-12 hover:brightness-110",
                        item.color,
                        item.bg
                      )}
@@ -176,18 +180,16 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
                    </Button>
                   
                   {/* Hover label tooltip */}
-                  <div 
-                    className={cn(
-                      "absolute -bottom-10 left-1/2 transform -translate-x-1/2",
-                      "px-2 py-1 bg-black/90 text-white text-[11px] font-medium rounded",
-                      "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
-                      "pointer-events-none whitespace-nowrap z-20",
-                      "hidden sm:block max-w-[80px] text-center" // Hide on mobile, limit width
-                    )}
-                    style={{
-                      textShadow: '0 1px 2px rgba(0,0,0,0.8)'
-                    }}
-                  >
+                   <div 
+                     className={cn(
+                       "absolute -bottom-12 left-1/2 transform -translate-x-1/2",
+                       "px-2 py-1 bg-popover text-popover-foreground text-[11px] font-medium rounded",
+                       "border border-border/50 shadow-md",
+                       "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
+                       "pointer-events-none whitespace-nowrap z-20",
+                       "hidden sm:block max-w-[80px] text-center"
+                     )}
+                   >
                     {item.label}
                   </div>
                 </div>
@@ -204,26 +206,24 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
           onContextMenu={(e) => e.preventDefault()}
-          className={cn(
-            "relative rounded-full transition-all duration-400 ease-out z-10",
-            "border-2 text-white shadow-2xl",
-            // Enhanced styling with backdrop blur and shadow
-            "backdrop-blur-[8px]",
-            "hover:scale-110 hover:shadow-[0_0_30px_rgba(0,0,0,0.5)]",
-            "active:scale-95 active:duration-100",
-            // Conditional styling based on state
-            !isOpen ? [
-              "border-slate-400/80 bg-gradient-to-br from-slate-700 to-slate-900",
-              "hover:border-primary/60 hover:from-slate-600 hover:to-slate-800",
-              "ring-2 ring-slate-500/30",
-              "animate-pulse hover:animate-none"
-            ] : [
-              "border-red-400/80 bg-gradient-to-br from-red-600 to-red-800",
-              "hover:border-red-300 hover:from-red-500 hover:to-red-700",
-              "ring-4 ring-red-500/40",
-              "rotate-45"
-            ]
-          )}
+           className={cn(
+             "relative rounded-full transition-all duration-400 ease-out z-10",
+             "border-2 text-primary-foreground shadow-2xl",
+             "backdrop-blur-[8px]",
+             "hover:scale-110 hover:shadow-primary/30",
+             "active:scale-95 active:duration-100",
+             !isOpen ? [
+               "border-border bg-gradient-to-br from-muted to-muted-foreground/20",
+               "hover:border-primary/60 hover:from-muted/80 hover:to-muted",
+               "ring-2 ring-muted/30",
+               "animate-pulse hover:animate-none"
+             ] : [
+               "border-destructive bg-gradient-to-br from-destructive to-destructive/80",
+               "hover:border-destructive/60 hover:from-destructive/80 hover:to-destructive",
+               "ring-4 ring-destructive/40",
+               "rotate-45"
+             ]
+           )}
           style={{
             width: `${CENTER_BUTTON_SIZE}px`,
             height: `${CENTER_BUTTON_SIZE}px`
