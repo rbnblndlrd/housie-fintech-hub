@@ -113,7 +113,9 @@ export const AnnetteIntegration: React.FC = () => {
   // Handle auto-opening chat when triggered from external components (like Revolver)
   useEffect(() => {
     const handleAutoOpenChat = (action: string, eventData?: any) => {
+      console.log('🔔 Auto-open check:', { action, autoOpenChat: eventData?.autoOpenChat, isChatOpen });
       if (eventData?.autoOpenChat && !isChatOpen) {
+        console.log('✅ Auto-opening chat panel');
         setIsChatOpen(true);
         setHasNewMessage(false);
       }
@@ -231,6 +233,33 @@ let annetteEventBus: ((action: string, context?: any) => void) | null = null;
 
 export const registerAnnetteEventBus = (handler: (action: string, context?: any) => void) => {
   annetteEventBus = handler;
+};
+
+// External message injection function for Revolver and other components
+export const triggerAnnetteMessage = ({ text, from = 'annette', source = 'external' }: {
+  text: string;
+  from?: string;
+  source?: string;
+}) => {
+  console.log('💬 triggerAnnetteMessage called:', { text, from, source });
+  
+  if (annetteEventBus) {
+    annetteEventBus(`message_${source}`, {
+      response: text,
+      voiceLine: text,
+      from,
+      source,
+      fromRevolver: source === 'revolver',
+      autoOpenChat: true
+    });
+    console.log('📡 Message sent via event bus');
+  } else {
+    console.log('📋 No event bus, using toast fallback');
+    toast("🤖 Annette says:", {
+      description: text,
+      duration: 4000
+    });
+  }
 };
 
 // Enhanced helper function with real data integration and context awareness

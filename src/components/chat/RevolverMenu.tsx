@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
 import { Navigation, CalendarCheck, Sparkles, BrainCircuit, Star, Home, RotateCcw, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { triggerAnnetteAction } from '@/components/assistant/AnnetteIntegration';
+import { triggerAnnetteAction, triggerAnnetteMessage } from '@/components/assistant/AnnetteIntegration';
 
 interface RevolverMenuProps {
   className?: string;
@@ -20,32 +20,24 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const longPressTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const lastActionTimeRef = useRef<Record<string, number>>({});
   
-  // Voice lines and toast messages for each action
-  const actionConfig = {
-    navigation: {
-      voice: "Alright sugar, let's hit the road 🚗",
-      toast: "Annette started your GPS route"
-    },
-    calendar_check: {
-      voice: "Booking calendar open. Don't forget that wedding on Sunday… again.",
-      toast: "Opened your bookings"
-    },
-    sparkle: {
-      voice: "Stand back. Route optimization sequence… engaged ✨",
-      toast: "Optimizing your route now"
-    },
-    brain_circuit: {
-      voice: "Parsing ticket… hope it's not another faucet with a vengeance.",
-      toast: "Ticket sent to Annette for summary"
-    },
-    star: {
-      voice: "Prestige incoming. You might just be a big deal.",
-      toast: "Opening your Prestige tracker"
-    },
-    home: {
-      voice: "Returning to HQ. Don't trip on the way back.",
-      toast: "Returned to Dashboard"
-    }
+  // Unified action map with voice lines and messages
+  const actionMap = {
+    gps: "Alright sugar, let's hit the road 🚗",
+    bookings: "Booking calendar open. Don't forget that wedding on Sunday… again.",
+    optimize: "Stand back. Route optimization sequence… engaged ✨",
+    parse: "Parsing ticket… hope it's not another faucet with a vengeance.",
+    prestige: "Prestige incoming. You might just be a big deal.",
+    home: "Returning to HQ. Don't trip on the way back."
+  };
+
+  // Toast messages for each action
+  const toastMap = {
+    gps: "Annette started your GPS route",
+    bookings: "Opened your bookings",
+    optimize: "Optimizing your route now",
+    parse: "Ticket sent to Annette for summary",
+    prestige: "Opening your Prestige tracker",
+    home: "Returned to Dashboard"
   };
   
   const COOLDOWN_MS = 2000;
@@ -55,112 +47,119 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
   const CENTER_BUTTON_SIZE = 56;
   const ORBITAL_BUTTON_SIZE = 48;
 
-  // Provider role radial menu items in clockwise order with voice actions
+  // Provider role radial menu items in clockwise order with unified actions
   const menuItems = [
     { 
       icon: Navigation, 
       label: 'GPS', 
-      actionKey: 'navigation' as keyof typeof actionConfig,
-      action: () => {
-        handleVoiceAndToast('navigation');
-        navigate('/interactive-map');
-      },
+      actionType: 'gps' as keyof typeof actionMap,
+      navigate: '/interactive-map',
       color: 'text-primary hover:text-primary/80',
       bg: 'bg-primary/20 hover:bg-primary/30'
     },
     { 
       icon: CalendarCheck, 
       label: 'Bookings', 
-      actionKey: 'calendar_check' as keyof typeof actionConfig,
-      action: () => {
-        handleVoiceAndToast('calendar_check');
-        navigate('/dashboard');
-      },
+      actionType: 'bookings' as keyof typeof actionMap,
+      navigate: '/dashboard',
       color: 'text-accent hover:text-accent/80',
       bg: 'bg-accent/20 hover:bg-accent/30'
     },
     { 
       icon: Sparkles, 
       label: 'Optimize', 
-      actionKey: 'sparkle' as keyof typeof actionConfig,
-      action: () => {
-        handleVoiceAndToast('sparkle');
-        navigate('/analytics-dashboard');
-      },
+      actionType: 'optimize' as keyof typeof actionMap,
+      navigate: '/analytics-dashboard',
       color: 'text-secondary hover:text-secondary/80',
       bg: 'bg-secondary/20 hover:bg-secondary/30'
     },
     { 
       icon: BrainCircuit, 
       label: 'Parse', 
-      actionKey: 'brain_circuit' as keyof typeof actionConfig,
-      action: () => {
-        handleVoiceAndToast('brain_circuit');
-        // TODO: Implement AI ticket parsing functionality
-        console.log('🧠 Parse ticket functionality to be implemented');
-      },
+      actionType: 'parse' as keyof typeof actionMap,
+      action: () => console.log('🧠 Parse ticket functionality to be implemented'),
       color: 'text-muted-foreground hover:text-foreground',
       bg: 'bg-muted/20 hover:bg-muted/30'
     },
     { 
       icon: Star, 
       label: 'Prestige', 
-      actionKey: 'star' as keyof typeof actionConfig,
-      action: () => {
-        handleVoiceAndToast('star');
-        navigate('/community-dashboard');
-      },
+      actionType: 'prestige' as keyof typeof actionMap,
+      navigate: '/community-dashboard',
       color: 'text-accent hover:text-accent/80',
       bg: 'bg-accent/20 hover:bg-accent/30'
     },
     { 
       icon: Home, 
       label: 'Home', 
-      actionKey: 'home' as keyof typeof actionConfig,
-      action: () => {
-        handleVoiceAndToast('home');
-        navigate('/');
-      },
+      actionType: 'home' as keyof typeof actionMap,
+      navigate: '/',
       color: 'text-muted-foreground hover:text-foreground',
       bg: 'bg-muted/20 hover:bg-muted/30'
     }
   ];
 
-  // Handle voice lines, message panel, and toast notifications with cooldown
-  const handleVoiceAndToast = (actionKey: keyof typeof actionConfig) => {
+  // Unified click handler for all Revolver actions
+  const handleClick = (actionType: keyof typeof actionMap) => {
     const now = Date.now();
-    const lastActionTime = lastActionTimeRef.current[actionKey] || 0;
+    const lastActionTime = lastActionTimeRef.current[actionType] || 0;
     
     // Check cooldown
     if (now - lastActionTime < COOLDOWN_MS) {
-      console.log(`🔇 Action ${actionKey} still in cooldown`);
+      console.log(`🔇 Action ${actionType} still in cooldown`);
       return;
     }
     
     // Update last action time
-    lastActionTimeRef.current[actionKey] = now;
+    lastActionTimeRef.current[actionType] = now;
     
-    const config = actionConfig[actionKey];
+    const text = actionMap[actionType];
     
     // Trigger both voice and message panel through Annette system
-    triggerAnnetteAction(`revolver_${actionKey}`, {
-      voiceLine: config.voice,
-      response: config.voice, // Same message appears in chat
+    triggerAnnetteAction(`revolver_${actionType}`, {
+      text,
+      from: 'annette',
+      source: 'revolver',
+      voiceLine: text,
+      response: text, // Same message appears in chat
       fromRevolver: true,
-      actionKey,
+      actionType,
       autoOpenChat: true // Signal to auto-open chat if closed
     });
     
+    // Trigger speech synthesis
+    if (window.speechSynthesis && text) {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.9;
+      utterance.pitch = 1.1;
+      utterance.volume = 0.8;
+      window.speechSynthesis.speak(utterance);
+    }
+    
     // Show toast notification
     toast({
-      title: "🤖 Annette",
-      description: config.toast,
+      title: "🤖 Annette says:",
+      description: toastMap[actionType],
       duration: 3000,
     });
+    
+    console.log(`🎯 Revolver action triggered: ${actionType}`);
   };
 
   const handleItemClick = (item: typeof menuItems[0]) => {
-    item.action();
+    // Trigger unified handler
+    handleClick(item.actionType);
+    
+    // Handle navigation if specified
+    if (item.navigate) {
+      navigate(item.navigate);
+    }
+    
+    // Handle custom action if specified
+    if (item.action) {
+      item.action();
+    }
+    
     setIsOpen(false);
     emitRevolverStateChange(false);
   };
@@ -330,6 +329,22 @@ export const RevolverMenu: React.FC<RevolverMenuProps> = ({ className }) => {
              />
            )}
          </Button>
+      </div>
+
+      {/* Debug Test Button - Temporary for testing */}
+      <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
+        <Button
+          onClick={() => triggerAnnetteMessage({ 
+            text: 'Debug message from Revolver test', 
+            from: 'annette', 
+            source: 'manualTest' 
+          })}
+          variant="outline"
+          size="sm"
+          className="bg-background/90 backdrop-blur-sm text-xs"
+        >
+          Test Annette Message
+        </Button>
       </div>
     </div>
   );
