@@ -61,11 +61,14 @@ export const useActiveBookings = () => {
           total_amount,
           subcategory,
           accepted_at,
-          users!inner(full_name)
+          customer_id
         `)
         .eq('provider_id', providerProfile.id)
         .in('status', ['confirmed', 'in_progress', 'pending'])
         .order('accepted_at', { ascending: false, nullsFirst: false });
+
+      console.log('Fetching bookings for provider ID:', providerProfile.id);
+      console.log('Found bookings:', activeBookings?.length || 0);
 
       if (bookingsError) {
         console.error('Error fetching active bookings:', bookingsError);
@@ -83,7 +86,7 @@ export const useActiveBookings = () => {
         priority: booking.priority || 'medium',
         address: booking.service_address || 'Address TBD',
         scheduledTime: booking.scheduled_time || 'Time TBD',
-        customer_name: booking.users?.full_name || 'Customer',
+        customer_name: 'Customer', // Will fetch separately if needed
         total_amount: booking.total_amount,
         service_subcategory: booking.subcategory,
         acceptedAt: booking.accepted_at
@@ -131,16 +134,24 @@ export const useActiveBookings = () => {
     // Listen for storage changes (when jobs are accepted on map)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'lastAcceptedJob' && e.newValue) {
-        console.log('New job accepted, refreshing bookings');
+        console.log('New job accepted via storage, refreshing bookings');
         setTimeout(fetchActiveBookings, 500); // Small delay to ensure database is updated
       }
     };
 
+    // Listen for custom events (when jobs are accepted on map)
+    const handleJobAccepted = (event: CustomEvent) => {
+      console.log('Job accepted via custom event, refreshing bookings:', event.detail);
+      setTimeout(fetchActiveBookings, 500); // Small delay to ensure database is updated
+    };
+
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('jobAccepted', handleJobAccepted as EventListener);
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('jobAccepted', handleJobAccepted as EventListener);
     };
   }, [user?.id]);
 
