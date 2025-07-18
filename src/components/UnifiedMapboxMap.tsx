@@ -128,5 +128,11 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
     });
   }, [providers, hoveredProviderId, onProviderClick]);
 
-  return <div ref={mapContainer} className={`w-full h-full rounded-lg ${className}`} />;
+  return (
+    <div 
+      ref={mapContainer} 
+      className={`w-full h-full rounded-lg border-4 border-primary ${className}`}
+      data-testid="map-container"
+    />
+  );
 };
