@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { UnifiedDashboardLayout } from '@/components/layout/UnifiedDashboardLayout';
 import { AnnetteHalo } from '@/components/chat/AnnetteHalo';
@@ -20,6 +21,7 @@ import DashboardLayoutController from '@/components/dashboard/DashboardLayoutCon
 import ServiceLayoutSelector from '@/components/dashboard/ServiceLayoutSelector';
 import { useServiceLayout } from '@/hooks/useServiceLayout';
 import { useRevolverVisibility } from '@/hooks/useRevolverVisibility';
+import { useActiveBookings } from '@/hooks/useActiveBookings';
 
 import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
 import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
@@ -28,12 +30,17 @@ import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 import { cn } from '@/lib/utils';
 
 const Dashboard = () => {
-  // Mock jobs data for UX mode detection
-  const mockJobs = [
-    { id: '1', title: 'Kitchen Sink Repair', service_subcategory: 'plumbing', customer: 'Marie Dubois', priority: 'high' },
-    { id: '2', title: 'Electrical Outlet Install', service_subcategory: 'electrical', customer: 'Jean Tremblay', priority: 'medium' },
-    { id: '3', title: 'Bathroom Cleaning', service_subcategory: 'cleaning', customer: 'Sophie Martin', priority: 'low' }
-  ];
+  // Use real bookings data instead of mock data
+  const { bookings: activeBookings, loading: bookingsLoading } = useActiveBookings();
+  
+  // Convert bookings to the format expected by the UX mode system
+  const jobs = activeBookings.map(booking => ({
+    id: booking.id,
+    title: booking.title,
+    service_subcategory: booking.service_subcategory || 'general',
+    customer: booking.customer_name || 'Customer',
+    priority: booking.priority
+  }));
 
   const { 
     currentMode, 
@@ -42,7 +49,7 @@ const Dashboard = () => {
     availableModes, 
     isAutoDetected,
     detectedMode 
-  } = useUXMode(mockJobs);
+  } = useUXMode(jobs);
 
   const {
     currentLayout,
@@ -51,18 +58,16 @@ const Dashboard = () => {
     isManualOverride,
     setLayoutOverride,
     availableLayouts
-  } = useServiceLayout(mockJobs);
+  } = useServiceLayout(jobs);
 
   const { isRevolverOpen } = useRevolverVisibility();
 
   const handleAnnetteRecommendation = () => {
-    // This would open the chat bubble with a specific context
     console.log('Opening Annette recommendations...');
   };
 
   const handleJobAction = (jobId: string, action: string) => {
     console.log(`🎯 Job action: ${action} for job ${jobId}`);
-    // Handle different actions based on UX mode
   };
 
   // Left Dock Content - Annette's BubbleChat (invisible but space reserved)
@@ -125,11 +130,21 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Main Dashboard Content */}
-            <DashboardLayoutController
-              layoutType={currentLayout}
-              jobs={mockJobs}
-            />
+            {/* Loading State */}
+            {bookingsLoading && (
+              <div className="text-center py-8">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+                <p className="text-gray-600">Loading active jobs...</p>
+              </div>
+            )}
+
+            {/* Main Dashboard Content with Real Data */}
+            {!bookingsLoading && (
+              <DashboardLayoutController
+                layoutType={currentLayout}
+                jobs={jobs}
+              />
+            )}
           </div>
         </UnifiedDashboardLayout>
         

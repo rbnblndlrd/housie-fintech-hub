@@ -57,6 +57,12 @@ const InteractiveJobsMap: React.FC = () => {
         };
         localStorage.setItem('lastAcceptedJob', JSON.stringify(acceptedJobData));
         
+        // Dispatch custom event to notify other components
+        const event = new CustomEvent('jobAccepted', { 
+          detail: acceptedJobData 
+        });
+        window.dispatchEvent(event);
+        
         setSelectedJob(null);
         console.log('✅ Job accepted and synced to dashboard');
       }
@@ -91,8 +97,6 @@ const InteractiveJobsMap: React.FC = () => {
 
       {/* Loading Overlay */}
       <LoadingOverlay loading={loading} />
-
-      {/* Job acceptance now handled by GlobalJobAcceptanceOverlay */}
     </div>
   );
 };
