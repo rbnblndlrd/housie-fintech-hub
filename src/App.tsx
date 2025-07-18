@@ -1,10 +1,10 @@
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import { LanguageProvider } from './contexts/LanguageProvider';
+import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { RoleProvider } from './contexts/RoleContext';
-import { SubscriptionProvider } from './contexts/SubscriptionProvider';
+import { SubscriptionProvider } from './contexts/SubscriptionContext';
 import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
