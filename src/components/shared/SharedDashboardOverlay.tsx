@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChatBubble } from '@/components/chat/ChatBubble';
-import { RevolverMenu } from '@/components/chat/RevolverMenu';
+import { RevolverMenu } from '@/components/chat/RevolverMenuFixed';
 import { useRoleSwitch } from '@/contexts/RoleSwitchContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLocation } from 'react-router-dom';

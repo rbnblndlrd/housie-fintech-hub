@@ -220,7 +220,8 @@ export const useEmergencyJobsData = () => {
             metadata: { 
               job_id: jobId,
               test_earnings: selectedJob.total_amount,
-              is_test: true 
+              is_test: true,
+              accepted_from: 'map_view'
             }
           });
 
@@ -232,8 +233,10 @@ export const useEmergencyJobsData = () => {
       
       // Remove from the list immediately for better UX
       setEmergencyJobs(prev => prev.filter(job => job.id !== jobId));
-      console.log('Emergency job accepted successfully with provider assigned');
-      return true;
+      console.log('✅ Emergency job accepted successfully with provider assigned');
+      
+      // Return job details for dashboard sync
+      return selectedJob || true;
     } catch (error) {
       console.error('Failed to accept emergency job:', error);
       return false;

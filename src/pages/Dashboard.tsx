@@ -1,7 +1,7 @@
 import React from 'react';
 import { UnifiedDashboardLayout } from '@/components/layout/UnifiedDashboardLayout';
 import { AnnetteHalo } from '@/components/chat/AnnetteHalo';
-import { RevolverMenu } from '@/components/chat/RevolverMenu';
+import { RevolverMenu } from '@/components/chat/RevolverMenuFixed';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import JobTicketTable from '@/components/dashboard/JobTicketTable';
 import TodaysRoutePanel from '@/components/dashboard/TodaysRoutePanel';

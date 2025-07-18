@@ -22,8 +22,9 @@ const InteractiveJobsMap: React.FC = () => {
   const handleAcceptJob = async (jobId: string) => {
     if (currentRole === 'provider') {
       const jobToAccept = selectedJob || emergencyJobs.find(job => job.id === jobId);
-      const success = await acceptEmergencyJob(jobId);
-      if (success && jobToAccept) {
+      const acceptedJob = await acceptEmergencyJob(jobId);
+      
+      if (acceptedJob && jobToAccept) {
         // Use the global job acceptance system
         showJobAccepted({
           id: jobToAccept.id,
@@ -34,7 +35,30 @@ const InteractiveJobsMap: React.FC = () => {
           dueDate: jobToAccept.scheduledTime || 'ASAP',
           location: jobToAccept.location
         });
+        
+        // Trigger Annette celebration message
+        if ((window as any).triggerAnnetteMessage) {
+          (window as any).triggerAnnetteMessage({
+            text: `Job accepted! 🎉 "${jobToAccept.title}" is now confirmed and added to your active tickets.`,
+            from: 'annette',
+            source: 'job_acceptance'
+          });
+        }
+        
+        // Store accepted job for dashboard sync
+        const acceptedJobData = {
+          id: jobToAccept.id,
+          title: jobToAccept.title,
+          status: 'confirmed',
+          priority: jobToAccept.priority,
+          address: jobToAccept.location,
+          scheduledTime: jobToAccept.scheduledTime,
+          acceptedAt: new Date().toISOString()
+        };
+        localStorage.setItem('lastAcceptedJob', JSON.stringify(acceptedJobData));
+        
         setSelectedJob(null);
+        console.log('✅ Job accepted and synced to dashboard');
       }
     }
   };
