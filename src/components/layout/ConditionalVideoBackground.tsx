@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import VideoBackground from '@/components/common/VideoBackground';
@@ -10,11 +11,6 @@ const ConditionalVideoBackground = () => {
     '/dashboard',
     '/community-dashboard',
     '/analytics-dashboard',
-    '/bookings',
-    '/profile',
-    '/notifications',
-    '/performance',
-    '/business-insights',
     '/service-board'
   ];
   

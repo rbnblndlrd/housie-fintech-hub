@@ -11,32 +11,21 @@ export interface NavigationItem {
 
 export const visitorNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
-  { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
-  { label: "Help Center", href: "/help", icon: "❓" }
+  { label: "Dashboard", href: "/dashboard", icon: "🛠️" }
 ];
 
 export const customerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
-  { label: "Board", href: "/service-board", icon: "📋" },
-  { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Calendar", href: "/calendar", icon: "📅" },
+  { label: "Service Board", href: "/service-board", icon: "📋" },
   { label: "Community", href: "/community-dashboard", icon: "👥" },
-  { label: "Map", href: "/gps", icon: "🗺️" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
-  { label: "Help Center", href: "/help", icon: "❓" }
+  { label: "Analytics", href: "/analytics-dashboard", icon: "📈" }
 ];
 
 export const providerNav: NavigationItem[] = [
   { label: "HOUSIE", href: "/", icon: "🏠" },
   { label: "Dashboard", href: "/dashboard", icon: "🛠️" },
-  { label: "Find Services", href: "/services", icon: "🔍" },
-  { label: "Calendar", href: "/calendar", icon: "📅" },
   { label: "Community", href: "/community-dashboard", icon: "👥" },
-  { label: "Map", href: "/gps", icon: "🗺️" },
-  { label: "Analytics", href: "/analytics-dashboard", icon: "📈" },
-  { label: "Us vs Them", href: "/competitive-advantage", icon: "⚔️" },
-  { label: "Help Center", href: "/help", icon: "❓" }
+  { label: "Analytics", href: "/analytics-dashboard", icon: "📈" }
 ];
 
 export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provider'): NavigationItem[] => {
@@ -57,36 +46,27 @@ export const getNavigationItems = (user: any, currentRole?: 'customer' | 'provid
 export const getUserDropdownItems = (user: any, currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   if (!user) return [];
 
-  const dashboardLabel = currentRole === 'provider' ? 'Dashboard' : 'Board';
+  const dashboardLabel = currentRole === 'provider' ? 'Dashboard' : 'Service Board';
   const dashboardHref = currentRole === 'provider' ? '/dashboard' : '/service-board';
   
   return [
-    { label: "Map", href: "/gps", icon: "🗺️" },
     { label: dashboardLabel, href: dashboardHref, icon: "📊" },
-    { label: "Calendar", href: "/calendar", icon: "📅" },
-    { label: "AI Assistant", href: "/notifications", icon: "🤖" },
+    { label: "Community", href: "/community-dashboard", icon: "👥" },
+    { label: "Analytics", href: "/analytics-dashboard", icon: "📈" },
     { separator: true, label: "", href: "", icon: "" },
-    { label: "Profile", href: "/profile", icon: "👤" },
-    { label: "Manage", href: "/subscription-management", icon: "⚙️" },
     { label: "Sign Out", href: "", icon: "🚪", action: "logout" }
   ];
 };
 
 export const getProfileMenuItems = (currentRole: 'customer' | 'provider' = 'customer'): NavigationItem[] => {
   return [
-    { label: "Profile", href: "/profile", icon: "👤" },
-    { label: "Settings", href: "/profile", icon: "⚙️" },
-    { label: "Payment Methods", href: "/payment-methods", icon: "💳" },
-    { label: "Verification Status", href: "/profile", icon: "✅" },
-    { label: "Manage", href: "/subscription-management", icon: "⚙️" },
+    { label: "Settings", href: "/dashboard", icon: "⚙️" },
     { separator: true, label: "", href: "", icon: "" }
   ];
 };
 
 export const getAnalyticsMenuItems = (): NavigationItem[] => {
   return [
-    { label: "Analytics", href: "/analytics-dashboard", icon: "📊" },
-    { label: "Business Insights", href: "/business-insights", icon: "💼" },
-    { label: "Tax Reports", href: "/tax-reports", icon: "📋" }
+    { label: "Analytics", href: "/analytics-dashboard", icon: "📊" }
   ];
 };

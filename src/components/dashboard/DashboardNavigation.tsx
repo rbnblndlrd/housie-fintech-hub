@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -5,7 +6,7 @@ import {
   Briefcase, 
   Users, 
   BarChart3, 
-  Calendar
+  ClipboardList
 } from 'lucide-react';
 
 const DashboardNavigation = () => {
@@ -21,11 +22,11 @@ const DashboardNavigation = () => {
       path: '/dashboard'
     },
     { 
-      id: 'bookings', 
-      label: 'Bookings', 
-      icon: Calendar, 
-      emoji: '📅',
-      path: '/bookings' 
+      id: 'service-board', 
+      label: 'Service Board', 
+      icon: ClipboardList, 
+      emoji: '📋',
+      path: '/service-board' 
     },
     { 
       id: 'community', 
@@ -51,7 +52,7 @@ const DashboardNavigation = () => {
     const path = location.pathname;
     if (path === '/community-dashboard') return 'community';
     if (path === '/analytics-dashboard') return 'analytics';
-    if (path === '/bookings') return 'bookings';
+    if (path === '/service-board') return 'service-board';
     return 'dashboard'; // default for /dashboard and any other paths
   };
 

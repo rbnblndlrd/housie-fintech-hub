@@ -6,23 +6,12 @@ import Header from '@/components/Header';
 const ConditionalHeader = () => {
   const location = useLocation();
   
-  // Pages that KEEP the header
+  // Only show header on auth page for now
   const pagesWithHeader = [
-    '/provider-profile/',  // This will match /provider-profile/:id
-    '/competitive-advantage',
-    '/help',
-    '/help-center',
-    '/services'
-    // Removed '/pricing' since it has its own header handling
+    '/auth'
   ];
   
-  const shouldShowHeader = pagesWithHeader.some(path => {
-    if (path.endsWith('/')) {
-      // For dynamic routes like /provider-profile/:id
-      return location.pathname.startsWith(path);
-    }
-    return location.pathname === path;
-  });
+  const shouldShowHeader = pagesWithHeader.includes(location.pathname);
   
   if (!shouldShowHeader) {
     return null;
