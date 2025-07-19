@@ -20,37 +20,40 @@ const BackNavigation: React.FC<BackNavigationProps> = ({
   const location = useLocation();
 
   const handleBack = () => {
-    console.log('⬅️ BackNavigation: Back button clicked');
+    console.log('⬅️ BackNavigation: Back button clicked', { currentPath: location.pathname });
     if (customBackAction) {
       console.log('⬅️ BackNavigation: Using custom back action');
       customBackAction();
     } else {
       // Smart back navigation - go to previous page or appropriate dashboard
-      if (window.history.length > 1) {
+      if (window.history.length > 1 && location.pathname !== '/dashboard') {
         console.log('⬅️ BackNavigation: Going back in history');
         navigate(-1);
       } else {
-        // Fallback to home or dashboard based on common patterns
+        // Fallback to appropriate dashboard based on current location
         if (location.pathname.includes('admin')) {
           console.log('⬅️ BackNavigation: Navigating to admin-dashboard');
           navigate('/admin-dashboard');
         } else if (location.pathname.includes('analytics')) {
-          console.log('⬅️ BackNavigation: Navigating to analytics-dashboard');
-          navigate('/analytics-dashboard');
-        } else if (location.pathname.includes('provider')) {
-          console.log('⬅️ BackNavigation: Navigating to dashboard');
+          console.log('⬅️ BackNavigation: Navigating to dashboard from analytics');
+          navigate('/dashboard');
+        } else if (location.pathname.includes('community')) {
+          console.log('⬅️ BackNavigation: Navigating to dashboard from community');
+          navigate('/dashboard');
+        } else if (location.pathname.includes('service-board')) {
+          console.log('⬅️ BackNavigation: Navigating to dashboard from service-board');
           navigate('/dashboard');
         } else {
-          console.log('⬅️ BackNavigation: Navigating to home');
-          navigate('/');
+          console.log('⬅️ BackNavigation: Navigating to service-board as fallback');
+          navigate('/service-board');
         }
       }
     }
   };
 
   const handleHome = () => {
-    console.log('🏠 BackNavigation: Navigating to home');
-    navigate('/');
+    console.log('🏠 BackNavigation: Navigating to dashboard');
+    navigate('/dashboard');
   };
 
   return (
