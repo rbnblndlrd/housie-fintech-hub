@@ -7,10 +7,10 @@ export const useEmergencyJobsData = () => {
   const { user } = useAuth();
   const [emergencyJobs, setEmergencyJobs] = useState([]);
   const [liveStats, setLiveStats] = useState({
-    totalJobs: 0,
-    avgResponseTime: 0,
-    activeProviders: 0,
-    completionRate: 85
+    availableProviders: 0,
+    activeZones: 0,
+    avgResponseTime: '0 min',
+    peakDemandZone: 'Downtown'
   });
   const [loading, setLoading] = useState(false);
 
@@ -123,10 +123,10 @@ export const useEmergencyJobsData = () => {
 
     setEmergencyJobs(mockJobs);
     setLiveStats({
-      totalJobs: mockJobs.length,
-      avgResponseTime: 15,
-      activeProviders: 25,
-      completionRate: 85
+      availableProviders: 25,
+      activeZones: 3,
+      avgResponseTime: '15 min',
+      peakDemandZone: 'Downtown Montreal'
     });
   }, []);
 
