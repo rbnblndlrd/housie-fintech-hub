@@ -20,21 +20,28 @@ const BackNavigation: React.FC<BackNavigationProps> = ({
   const location = useLocation();
 
   const handleBack = () => {
+    console.log('⬅️ BackNavigation: Back button clicked');
     if (customBackAction) {
+      console.log('⬅️ BackNavigation: Using custom back action');
       customBackAction();
     } else {
       // Smart back navigation - go to previous page or appropriate dashboard
       if (window.history.length > 1) {
+        console.log('⬅️ BackNavigation: Going back in history');
         navigate(-1);
       } else {
         // Fallback to home or dashboard based on common patterns
         if (location.pathname.includes('admin')) {
+          console.log('⬅️ BackNavigation: Navigating to admin-dashboard');
           navigate('/admin-dashboard');
         } else if (location.pathname.includes('analytics')) {
+          console.log('⬅️ BackNavigation: Navigating to analytics-dashboard');
           navigate('/analytics-dashboard');
         } else if (location.pathname.includes('provider')) {
+          console.log('⬅️ BackNavigation: Navigating to dashboard');
           navigate('/dashboard');
         } else {
+          console.log('⬅️ BackNavigation: Navigating to home');
           navigate('/');
         }
       }
@@ -42,6 +49,7 @@ const BackNavigation: React.FC<BackNavigationProps> = ({
   };
 
   const handleHome = () => {
+    console.log('🏠 BackNavigation: Navigating to home');
     navigate('/');
   };
 
