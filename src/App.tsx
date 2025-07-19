@@ -14,6 +14,7 @@ import FloatingNavigation from './components/layout/FloatingNavigation';
 import ConditionalSpacingWrapper from './components/layout/ConditionalSpacingWrapper';
 import ConditionalVideoBackground from './components/layout/ConditionalVideoBackground';
 
+import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
@@ -54,7 +55,7 @@ function App() {
                               <main className="conditional-main-spacing">
                                 <ConditionalSpacingWrapper>
                                   <Routes>
-                                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                                    <Route path="/" element={<Home />} />
                                     <Route path="/auth" element={<AuthPage />} />
                                     <Route path="/dashboard" element={<UnifiedDashboard />} />
                                     <Route path="/service-board" element={<ServiceBoard />} />
