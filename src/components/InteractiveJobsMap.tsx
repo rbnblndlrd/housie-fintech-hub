@@ -1,16 +1,15 @@
 
 import React, { useState } from 'react';
 import { UnifiedMapboxMap } from "@/components/UnifiedMapboxMap";
-import { useEmergencyJobsData } from '@/hooks/useEmergencyJobsData';
+import { useRealJobsData } from '@/hooks/useRealJobsData';
 import { useRole } from '@/contexts/RoleContext';
-import { montrealProviders } from '@/data/montrealProviders';
 import LiveStatsCard from './map/LiveStatsCard';
 import SelectedJobCard from './map/SelectedJobCard';
 import LoadingOverlay from './map/LoadingOverlay';
 import { useJobAcceptance } from '@/contexts/JobAcceptanceContext';
 
 const InteractiveJobsMap: React.FC = () => {
-  const { emergencyJobs, liveStats, loading, acceptEmergencyJob } = useEmergencyJobsData();
+  const { jobs, liveStats, loading, acceptJob } = useRealJobsData();
   const { currentRole } = useRole();
   const { showJobAccepted } = useJobAcceptance();
   const [selectedJob, setSelectedJob] = useState<any>(null);
@@ -21,18 +20,18 @@ const InteractiveJobsMap: React.FC = () => {
 
   const handleAcceptJob = async (jobId: string) => {
     if (currentRole === 'provider') {
-      const jobToAccept = selectedJob || emergencyJobs.find(job => job.id === jobId);
-      const acceptedJob = await acceptEmergencyJob(jobId);
+      const jobToAccept = selectedJob || jobs.find(job => job.id === jobId);
+      const acceptedJob = await acceptJob(jobId);
       
       if (acceptedJob && jobToAccept) {
         // Use the global job acceptance system
         showJobAccepted({
           id: jobToAccept.id,
-          title: jobToAccept.title || `${jobToAccept.serviceType} – ${jobToAccept.location || 'Location'}`,
+          title: jobToAccept.title || `${jobToAccept.category} – ${jobToAccept.location || 'Location'}`,
           price: jobToAccept.price || '$0',
-          customer: jobToAccept.customerName || 'Emergency Service',
-          priority: jobToAccept.priority || 'high',
-          dueDate: jobToAccept.scheduledTime || 'ASAP',
+          customer: jobToAccept.customerName || 'Customer',
+          priority: jobToAccept.priority || 'normal',
+          dueDate: jobToAccept.scheduledTime || 'TBD',
           location: jobToAccept.location
         });
         
@@ -80,8 +79,9 @@ const InteractiveJobsMap: React.FC = () => {
         center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={12}
         className="w-full h-full rounded-lg"
-        providers={montrealProviders}
-        mode="interactive"
+        jobs={jobs}
+        onJobClick={handleJobSelect}
+        mode="real-jobs"
       />
 
       {/* Live Stats Card */}
