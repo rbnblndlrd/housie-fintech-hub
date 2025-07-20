@@ -30,14 +30,22 @@ const Dashboard = () => {
   
   const { bookings: activeBookings, loading: bookingsLoading } = useActiveBookings();
 
-  // Convert bookings to jobs format
-  const jobs = activeBookings.map(booking => ({
-    id: booking.id,
-    title: booking.title,
-    service_subcategory: booking.service_subcategory || 'general',
-    customer: booking.customer_name || 'Customer',
-    priority: booking.priority
-  }));
+  // Convert bookings to jobs format - filter out mock jobs in production
+  const jobs = activeBookings
+    .filter(booking => {
+      // Only show mock jobs in development mode
+      if (booking.title?.includes('Mock') || booking.customer_name?.includes('Mock')) {
+        return process.env.NODE_ENV === 'development';
+      }
+      return true;
+    })
+    .map(booking => ({
+      id: booking.id,
+      title: booking.title,
+      service_subcategory: booking.service_subcategory || 'general',
+      customer: booking.customer_name || 'Customer',
+      priority: booking.priority
+    }));
 
   const navItems = [
     { 
@@ -83,12 +91,12 @@ const Dashboard = () => {
         );
       case 'route-schedule':
         return (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Today's Route Control</CardTitle>
+          <div className="space-y-3 md:space-y-6">
+            <Card className="overflow-hidden">
+              <CardHeader className="pb-2 md:pb-4">
+                <CardTitle className="text-base md:text-lg">Today's Route Control</CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0 space-y-3 max-h-[70vh] overflow-y-auto">
                 <TodaysRoutePanel />
               </CardContent>
             </Card>
@@ -96,9 +104,11 @@ const Dashboard = () => {
         );
       case 'metrics':
         return (
-          <div className="space-y-6">
-            <PerformanceWidgets />
-            <div className="mt-6">
+          <div className="space-y-3 md:space-y-6 max-h-[80vh] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+              <PerformanceWidgets />
+            </div>
+            <div className="mt-3 md:mt-6">
               <StampTrackerWidget />
             </div>
           </div>
@@ -225,21 +235,21 @@ const Dashboard = () => {
             </header>
 
             {/* Dashboard Content */}
-            <div className="p-4 lg:p-6 relative z-10">
-              <div className="grid grid-cols-1 gap-6">
-                {/* Main Card Block */}
+            <div className="p-2 md:p-4 lg:p-6 relative z-10">
+              <div className="grid grid-cols-1 gap-3 md:gap-6">
+                {/* Main Card Block - Compact mobile layout */}
                 <Card className="rounded-xl bg-white/10 backdrop-blur-md shadow-md border-white/20">
-                  <CardHeader>
-                    <CardTitle className="text-2xl font-bold text-foreground flex items-center justify-between">
-                      <div className="flex items-center space-x-3">
+                  <CardHeader className="pb-3 md:pb-6">
+                    <CardTitle className="text-lg md:text-2xl font-bold text-foreground flex items-center justify-between">
+                      <div className="flex items-center space-x-2 md:space-x-3">
                         Provider Dashboard
-                        <Badge variant="secondary" className="bg-muted/50">
+                        <Badge variant="secondary" className="bg-muted/50 text-xs md:text-sm">
                           Active
                         </Badge>
                       </div>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="pt-0">
                     {renderTabContent()}
                   </CardContent>
                 </Card>
