@@ -16,6 +16,7 @@ import CustomerMapMode from '@/components/map/modes/CustomerMapMode';
 import ProviderMapMode from '@/components/map/modes/ProviderMapMode';
 import FleetManagerMode from '@/components/map/modes/FleetManagerMode';
 import NeighborhoodArrowNavigation from '@/components/map/NeighborhoodArrowNavigation';
+import { useRealJobsData } from '@/hooks/useRealJobsData';
 import mapboxgl from 'mapbox-gl';
 
 type UserMode = 'customer' | 'provider' | 'fleet-manager';
@@ -36,11 +37,12 @@ const InteractiveMapPage = () => {
   const { user } = useAuth();
   const { currentRole } = useRoleSwitch();
   const { toast } = useToast();
+  const { jobs: realJobs, loading: jobsLoading } = useRealJobsData();
 
   console.log('🗺️ InteractiveMapPage render:', { hasUser: !!user, currentRole });
 
   // State management
-  const [userMode, setUserMode] = useState<UserMode>('customer');
+  const [userMode, setUserMode] = useState<UserMode>('provider');
   const [showNavigation, setShowNavigation] = useState(false);
   const [map, setMap] = useState<mapboxgl.Map | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
@@ -61,42 +63,18 @@ const InteractiveMapPage = () => {
     routeOptimization: false
   });
 
-  // Sample jobs data for Montreal area
-  const sampleJobs: Job[] = [
-    {
-      id: '1',
-      title: 'Plumbing Emergency',
-      address: '123 Rue Saint-Catherine, Montreal',
-      customerName: 'Marie Dubois',
-      customerPhone: '+1 514-555-0123',
-      estimatedDuration: '2-3 hours',
-      priority: 'emergency',
-      coordinates: { lat: 45.5088, lng: -73.5678 },
-      price: 150
-    },
-    {
-      id: '2',
-      title: 'Electrical Repair',
-      address: '456 Avenue Mont-Royal, Montreal',
-      customerName: 'Jean Tremblay',
-      customerPhone: '+1 514-555-0456',
-      estimatedDuration: '1-2 hours',
-      priority: 'high',
-      coordinates: { lat: 45.5230, lng: -73.5800 },
-      price: 85
-    },
-    {
-      id: '3',
-      title: 'House Cleaning',
-      address: '789 Rue Sherbrooke, Montreal',
-      customerName: 'Sophie Martin',
-      customerPhone: '+1 514-555-0789',
-      estimatedDuration: '3-4 hours',
-      priority: 'medium',
-      coordinates: { lat: 45.5000, lng: -73.5700 },
-      price: 120
-    }
-  ];
+  // Convert real jobs to the format expected by the map
+  const mapJobs: Job[] = realJobs.map(job => ({
+    id: job.id,
+    title: job.title,
+    address: job.location,
+    customerName: job.customerName,
+    customerPhone: '+1 514-555-0000', // Mock phone for now
+    estimatedDuration: '2-3 hours', // Mock duration for now
+    priority: job.priority === 'high' ? 'high' : job.priority === 'emergency' ? 'emergency' : 'medium',
+    coordinates: { lat: job.lat || 45.5017, lng: job.lng || -73.5673 },
+    price: parseInt(job.price.replace('$', '')) || 100
+  }));
 
   // Quebec/Montreal center coordinates
   const quebecCenter = { lat: 45.5017, lng: -73.5673 };
@@ -165,6 +143,17 @@ const InteractiveMapPage = () => {
     });
   };
 
+  if (jobsLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading jobs...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 relative">
       <Header />
@@ -202,15 +191,15 @@ const InteractiveMapPage = () => {
             {/* Revolutionary Neighborhood Arrow Navigation */}
             <NeighborhoodArrowNavigation
               map={map}
-              jobs={sampleJobs}
+              jobs={mapJobs}
               providers={[]} // Add provider data when available
               onNavigate={handleNeighborhoodNavigate}
             />
 
-            {/* Jobs Overlay */}
+            {/* Jobs Overlay - Now using real jobs */}
             <MapboxJobsOverlay
               map={map}
-              jobs={sampleJobs}
+              jobs={mapJobs}
               onJobClick={handleJobClick}
             />
 
@@ -234,7 +223,7 @@ const InteractiveMapPage = () => {
                 estimatedTime: selectedJob.estimatedDuration
               } : undefined}
               nextJob={{
-                customerName: "Mike Ross",
+                customerName: "Next Customer",
                 distance: "5.1 km",
                 estimatedTime: "12 min"
               }}

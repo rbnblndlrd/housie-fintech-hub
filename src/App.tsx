@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { RoleProvider } from './contexts/RoleContext';
-import { SubscriptionProvider } from './contexts/SubscriptionContext';
+import { SubscriptionProvider } from './contexts/SubscriptionProvider';
 import { RoleSwitchProvider } from './contexts/RoleSwitchContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { QueryClient } from './contexts/QueryClientContext';
@@ -17,9 +17,12 @@ import ConditionalVideoBackground from './components/layout/ConditionalVideoBack
 import Home from './pages/Home';
 import AuthPage from './pages/Auth';
 import UnifiedDashboard from './pages/UnifiedDashboard';
+import Dashboard from './pages/Dashboard';
 import AnalyticsDashboard from './pages/AnalyticsDashboard';
 import CommunityDashboard from './pages/CommunityDashboard';
 import ServiceBoard from './pages/ServiceBoard';
+import InteractiveMapPage from './pages/InteractiveMapPage';
+import GPS from './pages/GPS';
 
 import { Toaster } from '@/components/ui/toaster';
 import { CanonBroadcast } from '@/components/broadcast/CanonBroadcast';
@@ -57,10 +60,13 @@ function App() {
                                   <Routes>
                                     <Route path="/" element={<Home />} />
                                     <Route path="/auth" element={<AuthPage />} />
-                                    <Route path="/dashboard" element={<UnifiedDashboard />} />
+                                    <Route path="/dashboard" element={<Dashboard />} />
+                                    <Route path="/unified-dashboard" element={<UnifiedDashboard />} />
                                     <Route path="/service-board" element={<ServiceBoard />} />
                                     <Route path="/analytics-dashboard" element={<AnalyticsDashboard />} />
                                     <Route path="/community-dashboard" element={<CommunityDashboard />} />
+                                    <Route path="/interactive-map" element={<InteractiveMapPage />} />
+                                    <Route path="/gps" element={<GPS />} />
                                     <Route path="*" element={<Navigate to="/dashboard" replace />} />
                                   </Routes>
                                 </ConditionalSpacingWrapper>

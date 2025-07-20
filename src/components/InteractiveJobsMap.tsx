@@ -14,13 +14,18 @@ const InteractiveJobsMap: React.FC = () => {
   const { showJobAccepted } = useJobAcceptance();
   const [selectedJob, setSelectedJob] = useState<any>(null);
 
+  console.log('🗺️ InteractiveJobsMap rendering with', jobs.length, 'real jobs');
+
   const handleJobSelect = (job: any) => {
+    console.log('🎯 Job selected on InteractiveJobsMap:', job.title);
     setSelectedJob(job);
   };
 
   const handleAcceptJob = async (jobId: string) => {
     if (currentRole === 'provider') {
       const jobToAccept = selectedJob || jobs.find(job => job.id === jobId);
+      console.log('🎯 Attempting to accept job:', jobToAccept?.title);
+      
       const acceptedJob = await acceptJob(jobId);
       
       if (acceptedJob && jobToAccept) {
@@ -74,7 +79,7 @@ const InteractiveJobsMap: React.FC = () => {
 
   return (
     <div className="relative h-full w-full">
-      {/* Unified Mapbox Map */}
+      {/* Unified Mapbox Map with Real Jobs */}
       <UnifiedMapboxMap
         center={{ lat: 45.5017, lng: -73.5673 }}
         zoom={12}

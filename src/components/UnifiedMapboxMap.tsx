@@ -100,22 +100,20 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
 
     // Show jobs in real-jobs mode, otherwise show providers
     if (mode === 'real-jobs' && jobs.length > 0) {
+      console.log('🗺️ Displaying', jobs.length, 'real jobs on map');
+      
       // Add job markers
       jobs.forEach(job => {
-        if (!job.lat || !job.lng) return;
+        if (!job.lat || !job.lng) {
+          console.log('⚠️ Job missing coordinates:', job.id, job.title);
+          return;
+        }
         
         // Create marker element for jobs
         const el = document.createElement('div');
         el.className = 'job-marker';
         
-        // Color based on priority
-        const priorityColors = {
-          'high': '#ef4444',    // red
-          'medium': '#f59e0b',  // amber  
-          'normal': '#10b981',  // green
-          'low': '#6b7280'      // gray
-        };
-        
+        // Color based on status
         const statusColors = {
           'pending': '#f59e0b',     // amber
           'confirmed': '#10b981',   // green
@@ -123,21 +121,42 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
           'completed': '#6b7280'    // gray
         };
 
-        el.style.backgroundColor = statusColors[job.status as keyof typeof statusColors] || '#10b981';
-        el.style.width = '24px';
-        el.style.height = '24px';
+        const priorityColors = {
+          'high': '#ef4444',    // red
+          'emergency': '#dc2626', // dark red
+          'medium': '#f59e0b',  // amber  
+          'normal': '#10b981',  // green
+          'low': '#6b7280'      // gray
+        };
+
+        // Use status color primarily, fallback to priority color
+        const markerColor = statusColors[job.status as keyof typeof statusColors] || 
+                           priorityColors[job.priority as keyof typeof priorityColors] || 
+                           '#10b981';
+
+        el.style.backgroundColor = markerColor;
+        el.style.width = '28px';
+        el.style.height = '28px';
         el.style.borderRadius = '50%';
         el.style.border = '3px solid white';
         el.style.cursor = 'pointer';
         el.style.transition = 'all 0.2s ease';
-        el.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+        el.style.boxShadow = '0 4px 12px rgba(0,0,0,0.3)';
         el.style.display = 'flex';
         el.style.alignItems = 'center';
         el.style.justifyContent = 'center';
-        el.style.fontSize = '10px';
+        el.style.fontSize = '11px';
         el.style.fontWeight = 'bold';
         el.style.color = 'white';
-        el.innerText = job.priority === 'high' ? '!' : job.price.replace('$', '');
+        
+        // Show price or priority indicator
+        if (job.priority === 'emergency') {
+          el.innerText = '⚡';
+        } else if (job.priority === 'high') {
+          el.innerText = '!';
+        } else {
+          el.innerText = job.price.replace('$', '');
+        }
 
         // Create popup for jobs
         const popup = new mapboxgl.Popup({ offset: 25 }).setHTML(`
@@ -148,8 +167,9 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
               <div>📍 ${job.location}</div>
               <div>💰 ${job.price}</div>
               <div>⏰ ${job.scheduledTime}</div>
-              <div>📋 Status: <span class="capitalize">${job.status}</span></div>
-              <div>🚨 Priority: <span class="capitalize">${job.priority}</span></div>
+              <div>📋 Status: <span class="capitalize font-medium" style="color: ${markerColor}">${job.status}</span></div>
+              <div>🚨 Priority: <span class="capitalize font-medium">${job.priority}</span></div>
+              <div>🏷️ Category: <span class="capitalize">${job.category}</span></div>
             </div>
           </div>
         `);
@@ -162,6 +182,7 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
 
         // Add click event for jobs
         el.addEventListener('click', () => {
+          console.log('🎯 Job marker clicked:', job.title);
           if (onJobClick) {
             onJobClick(job);
           }
@@ -169,11 +190,13 @@ export const UnifiedMapboxMap: React.FC<UnifiedMapboxMapProps> = ({
 
         markers.current.push(marker);
       });
-    } else {
+    } else if (providers.length > 0) {
       // Show providers (original logic)
       const uniqueProviders = providers.filter((provider, index, self) => 
         index === self.findIndex(p => p.id === provider.id)
       );
+
+      console.log('🗺️ Displaying', uniqueProviders.length, 'providers on map');
 
       // Add provider markers
       uniqueProviders.forEach(provider => {
