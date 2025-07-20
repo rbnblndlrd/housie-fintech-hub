@@ -9,7 +9,24 @@ import { useAuth } from '@/contexts/AuthContext';
 
 const Home = () => {
   console.log('🏠 Home page rendering...');
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+
+  // Show loading state while auth is initializing
+  if (loading) {
+    console.log('⏳ Home page showing loading state...');
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800">
+        <div className="text-center">
+          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center mx-auto mb-4 animate-pulse">
+            <span className="text-primary-foreground font-bold text-sm">H</span>
+          </div>
+          <p className="text-muted-foreground">Loading HOUSIE...</p>
+        </div>
+      </div>
+    );
+  }
+
+  console.log('✅ Home page auth resolved, user:', user?.email || 'anonymous');
 
   return (
     <>
