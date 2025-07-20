@@ -15,9 +15,10 @@ import JobHub from '@/components/dashboard/JobHub';
 import TodaysRoutePanel from '@/components/dashboard/TodaysRoutePanel';
 import PerformanceWidgets from '@/components/dashboard/PerformanceWidgets';
 import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
-import { AnnetteBubbleChat } from '@/components/assistant/AnnetteBubbleChat';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 import { TodaysRouteAnchor } from '@/components/dashboard/TacticalHUD/TodaysRouteAnchor';
+import { LeftDockPanel } from '@/components/dashboard/LeftDockPanel';
+import { LeftAlignedRevollver } from '@/components/dashboard/LeftAlignedRevollver';
 import { useActiveBookings } from '@/hooks/useActiveBookings';
 import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
 import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
@@ -26,7 +27,8 @@ import { BookingsProvider } from '@/contexts/BookingsContext';
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState('job-hub');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isBubbleChatOpen, setIsBubbleChatOpen] = useState(false);
+  const [leftPanelOpen, setLeftPanelOpen] = useState(false);
+  const [revollverMounted, setRevollverMounted] = useState(true); // Auto-mount for demo
   
   const { bookings: activeBookings, loading: bookingsLoading } = useActiveBookings();
 
@@ -120,16 +122,58 @@ const Dashboard = () => {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <MessageCircle className="h-5 w-5" />
-                  Chat with Annette
+                  Annette AI Assistant
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <Button
-                  onClick={() => setIsBubbleChatOpen(true)}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-                >
-                  💅 Start Conversation with Annette
-                </Button>
+              <CardContent className="space-y-4">
+                <div className="text-center py-8">
+                  <div className="text-6xl mb-4">💅</div>
+                  <h3 className="text-lg font-semibold mb-2">Annette is Ready</h3>
+                  <p className="text-muted-foreground mb-6">
+                    Your AI assistant is ready to help with route optimization, ticket parsing, and more.
+                  </p>
+                  <Button
+                    onClick={() => setLeftPanelOpen(true)}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  >
+                    Open Chat Panel
+                  </Button>
+                </div>
+                
+                {/* Revollver Status */}
+                <div className="border-t pt-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-sm font-medium">Revollver™ Status</span>
+                    </div>
+                    <Badge variant={revollverMounted ? "default" : "secondary"}>
+                      {revollverMounted ? "Active" : "Standby"}
+                    </Badge>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    {revollverMounted 
+                      ? "Radial assistant menu is active and ready for voice commands."
+                      : "Revollver is in standby mode."
+                    }
+                  </p>
+                  
+                  {/* Debug Controls - Development Only */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <div className="mt-4 p-3 bg-muted/50 rounded-lg">
+                      <p className="text-xs font-medium mb-2">Debug Controls:</p>
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => setRevollverMounted(!revollverMounted)}
+                        >
+                          {revollverMounted ? "Disable" : "Enable"} Revollver
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -202,18 +246,6 @@ const Dashboard = () => {
                   })}
                 </div>
               </div>
-
-              {/* Annette Chat Button - Only show when not in Annette tab */}
-              {activeTab !== 'annette' && (
-                <div className="mt-auto pt-4">
-                  <Button
-                    onClick={() => setIsBubbleChatOpen(true)}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
-                  >
-                    💅 Chat with Annette
-                  </Button>
-                </div>
-              )}
             </div>
           </aside>
 
@@ -260,13 +292,20 @@ const Dashboard = () => {
           {/* Tactical HUD Anchor Card */}
           <TodaysRouteAnchor />
           
-          {/* Full Annette Integration with voice lines and Revolver actions */}
+          {/* Full Annette Integration with voice lines */}
           <AnnetteIntegration />
 
-          {/* Annette BubbleChat */}
-          <AnnetteBubbleChat 
-            isOpen={isBubbleChatOpen}
-            onClose={() => setIsBubbleChatOpen(false)}
+          {/* Left Dock Panel for Annette Chat */}
+          <LeftDockPanel 
+            isOpen={leftPanelOpen}
+            onToggle={() => setLeftPanelOpen(!leftPanelOpen)}
+            activeTab={activeTab}
+          />
+
+          {/* Left-Aligned Revollver */}
+          <LeftAlignedRevollver
+            isVisible={revollverMounted}
+            activeTab={activeTab}
           />
 
           {/* Global Job Acceptance Overlay */}
