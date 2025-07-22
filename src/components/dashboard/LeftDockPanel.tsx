@@ -26,9 +26,9 @@ export const LeftDockPanel: React.FC<LeftDockPanelProps> = ({
 
   return (
     <>
-      {/* Desktop Left Panel */}
+      {/* Desktop Left Panel - Below compact tabs */}
       <div className={cn(
-        "fixed left-0 top-20 bottom-0 z-40 transition-all duration-300 ease-in-out",
+        "fixed left-0 top-28 bottom-0 z-40 transition-all duration-300 ease-in-out",
         "hidden lg:block",
         isOpen ? "w-80" : "w-0"
       )}>

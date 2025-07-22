@@ -151,118 +151,107 @@ const CommunityDashboard = () => {
         />
       )}
 
-      {/* Sidebar */}
-      <aside className={`
-        fixed top-0 left-0 h-full bg-transparent text-white z-50 transition-transform duration-300
-        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        w-64
-      `}>
-        <div className="p-6 h-full flex flex-col">
-          {/* Mobile Close Button */}
-          <div className="flex justify-end mb-8 lg:hidden">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          </div>
-
-          {/* Community Navigation */}
-          <div className="space-y-4 flex-1">
-            <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-              Community Dashboard
-            </h3>
-            <div className="space-y-2">
-              {navItems.map((item) => {
-                const IconComponent = item.icon;
-                const isActive = activeTab === item.id;
-                
-                return (
-                  <Button
-                    key={item.id}
-                    variant="ghost"
-                    onClick={() => onTabChange(item.id)}
-                    className={`
-                      w-full justify-start h-14 px-5 text-left transition-all duration-200 ease-in-out relative
-                      ${isActive 
-                        ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-500/30' 
-                        : 'bg-white/5 text-gray-300 hover:bg-blue-500/30 hover:text-white'
-                      }
-                      rounded-lg font-medium
-                    `}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl">{item.emoji}</span>
-                      <span className="font-semibold text-sm tracking-wide">{item.label}</span>
-                    </div>
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Annette BubbleChat - Fixed at bottom of sidebar */}
-          <div className="mt-auto pt-4">
-            <Button
-              onClick={() => setIsBubbleChatOpen(true)}
-              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg"
-            >
-              💅 Chat with Annette
-            </Button>
+      {/* Compact Tab Strip - Below HOUSIE Header */}
+      <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/20">
+        <div className="px-4 py-2">
+          <div className="flex gap-1 overflow-x-auto">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <Button
+                  key={item.id}
+                  variant="ghost"
+                  onClick={() => onTabChange(item.id)}
+                  className={`
+                    flex-shrink-0 h-10 px-3 text-sm transition-all duration-200
+                    ${isActive 
+                      ? 'bg-primary text-primary-foreground shadow-md' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    }
+                    rounded-md font-medium
+                  `}
+                >
+                  <span className="mr-2">{item.emoji}</span>
+                  <span>{item.label}</span>
+                </Button>
+              );
+            })}
           </div>
         </div>
-      </aside>
+      </div>
 
-      {/* Main Content */}
-      <div className="lg:ml-64">
-        {/* Mobile Header */}
-        <header className="lg:hidden sticky top-0 bg-card/95 backdrop-blur-md border-b border-border/20 z-30 p-4">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-            <h1 className="font-bold text-lg">Hall of Prestige</h1>
-            <div className="w-8" />
+      {/* Mobile Sidebar for legacy support */}
+      {sidebarOpen && (
+        <aside className="fixed top-0 left-0 h-full bg-background/95 backdrop-blur-md border-r border-border/20 text-foreground z-50 transition-transform duration-300 w-64 lg:hidden">
+          <div className="p-4 h-full flex flex-col">
+            <div className="flex justify-end mb-4">
+              <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
+            <div className="space-y-2 flex-1">
+              {navItems.map((item) => (
+                <Button
+                  key={item.id}
+                  variant="ghost"
+                  onClick={() => {
+                    onTabChange(item.id);
+                    setSidebarOpen(false);
+                  }}
+                  className="w-full justify-start h-10 px-3 text-left"
+                >
+                  <span className="mr-2">{item.emoji}</span>
+                  <span className="text-sm">{item.label}</span>
+                </Button>
+              ))}
+            </div>
+            <div className="mt-4">
+              <Button
+                onClick={() => setIsBubbleChatOpen(true)}
+                className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg text-sm"
+              >
+                💅 Chat with Annette
+              </Button>
+            </div>
           </div>
-        </header>
+        </aside>
+      )}
 
-        {/* Dashboard Content */}
-        <div className="p-4 lg:p-6 relative z-10">
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-5 mb-6">
-            {/* Main Card Block */}
-            <Card className="xl:col-span-3 rounded-xl bg-white/10 backdrop-blur-md shadow-md border-white/20">
-              <CardHeader>
-                <CardTitle className="text-2xl font-bold text-foreground flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    Hall of Prestige
-                    <Badge variant="secondary" className="bg-muted/50">
-                      Active
-                    </Badge>
-                  </div>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+      {/* Main Content - Compact Layout */}
+      <div className="pt-28">
+        {/* Mobile Tab Menu Toggle */}
+        <div className="lg:hidden fixed top-16 right-4 z-50">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarOpen(true)}
+            className="bg-background/80 backdrop-blur-sm"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        </div>
+
+        {/* Compact Community Content */}
+        <div className="px-2 md:px-4 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 mb-4">
+              {/* Main Echo Feed & Reputation Board - Full Height */}
+              <div className="xl:col-span-3 space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto">
                 {renderTabContent()}
-              </CardContent>
-            </Card>
+              </div>
 
-            {/* Right Panel */}
-            <Card className="rounded-xl bg-white/10 backdrop-blur-md shadow-md border-white/20">
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold text-foreground">
-                  Community Hub
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {rightPanelContent}
-              </CardContent>
-            </Card>
+              {/* Right Panel - Community Hub */}
+              <Card className="rounded-xl bg-card/95 backdrop-blur-md shadow-md border-border/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-semibold text-foreground">
+                    Community Hub
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  {rightPanelContent}
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </div>

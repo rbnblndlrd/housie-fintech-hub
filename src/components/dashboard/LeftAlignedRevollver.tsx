@@ -147,10 +147,10 @@ export const LeftAlignedRevollver: React.FC<LeftAlignedRevollverProps> = ({
   return (
     <div className={cn(
       "fixed z-50 transition-all duration-300 ease-in-out",
-      // Desktop positioning - left side
+      // Desktop positioning - left side, below compact tabs
       "lg:bottom-32 lg:left-6",
-      // Mobile positioning - bottom right (traditional)
-      "bottom-20 right-6 lg:bottom-32 lg:right-auto",
+      // Mobile positioning - bottom right (avoid tab strip)
+      "bottom-24 right-6 lg:bottom-32 lg:right-auto",
       isVisible ? "opacity-100 scale-100" : "opacity-0 scale-95 pointer-events-none"
     )}>
       <div className="relative flex items-center justify-center">

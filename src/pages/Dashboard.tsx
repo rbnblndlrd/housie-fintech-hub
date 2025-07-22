@@ -80,11 +80,11 @@ const Dashboard = () => {
     switch (activeTab) {
       case 'job-hub':
         return (
-          <div className="space-y-6">
+          <div className="space-y-3">
             {bookingsLoading ? (
-              <div className="text-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-                <p className="text-muted-foreground">Loading active jobs...</p>
+              <div className="text-center py-6">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-3"></div>
+                <p className="text-muted-foreground text-sm">Loading active jobs...</p>
               </div>
             ) : (
               <JobHub />
@@ -93,89 +93,72 @@ const Dashboard = () => {
         );
       case 'route-schedule':
         return (
-          <div className="space-y-3 md:space-y-6">
-            <Card className="overflow-hidden">
-              <CardHeader className="pb-2 md:pb-4">
-                <CardTitle className="text-base md:text-lg">Today's Route Control</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0 space-y-3 max-h-[70vh] overflow-y-auto">
-                <TodaysRoutePanel />
-              </CardContent>
-            </Card>
-          </div>
+          <Card className="overflow-hidden">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-lg">Today's Route Control</CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0 space-y-2 max-h-[calc(100vh-12rem)] overflow-y-auto">
+              <TodaysRoutePanel />
+            </CardContent>
+          </Card>
         );
       case 'metrics':
         return (
-          <div className="space-y-3 md:space-y-6 max-h-[80vh] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+          <div className="space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
               <PerformanceWidgets />
             </div>
-            <div className="mt-3 md:mt-6">
-              <StampTrackerWidget />
-            </div>
+            <StampTrackerWidget />
           </div>
         );
       case 'annette':
         return (
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageCircle className="h-5 w-5" />
-                  Annette AI Assistant
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="text-center py-8">
-                  <div className="text-6xl mb-4">💅</div>
-                  <h3 className="text-lg font-semibold mb-2">Annette is Ready</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Your AI assistant is ready to help with route optimization, ticket parsing, and more.
-                  </p>
+          <div className="min-h-[calc(100vh-10rem)] flex flex-col bg-gradient-to-br from-background to-muted/20 rounded-lg">
+            {/* Compact Annette Header */}
+            <div className="p-4 border-b border-border/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="text-3xl">💅</div>
+                  <div>
+                    <h3 className="text-lg font-semibold">Annette AI Assistant</h3>
+                    <p className="text-sm text-muted-foreground">Your intelligent service companion</p>
+                  </div>
+                </div>
+                <Badge variant={revollverMounted ? "default" : "secondary"} className="text-xs">
+                  {revollverMounted ? "Active" : "Standby"}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Chat Interface Area - Full Height */}
+            <div className="flex-1 p-4">
+              <div className="text-center py-12">
+                <Button
+                  onClick={() => setLeftPanelOpen(true)}
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-3"
+                >
+                  💅 Start Conversation
+                </Button>
+                <p className="text-sm text-muted-foreground mt-4">
+                  Ready for route optimization, ticket parsing, and smart insights
+                </p>
+              </div>
+              
+              {/* Debug Controls - Development Only */}
+              {process.env.NODE_ENV === 'development' && (
+                <div className="mt-8 p-3 bg-muted/30 rounded-lg max-w-md mx-auto">
+                  <p className="text-xs font-medium mb-2">Debug Controls:</p>
                   <Button
-                    onClick={() => setLeftPanelOpen(true)}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setRevollverMounted(!revollverMounted)}
+                    className="text-xs"
                   >
-                    Open Chat Panel
+                    {revollverMounted ? "Disable" : "Enable"} Revollver
                   </Button>
                 </div>
-                
-                {/* Revollver Status */}
-                <div className="border-t pt-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                      <span className="text-sm font-medium">Revollver™ Status</span>
-                    </div>
-                    <Badge variant={revollverMounted ? "default" : "secondary"}>
-                      {revollverMounted ? "Active" : "Standby"}
-                    </Badge>
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {revollverMounted 
-                      ? "Radial assistant menu is active and ready for voice commands."
-                      : "Revollver is in standby mode."
-                    }
-                  </p>
-                  
-                  {/* Debug Controls - Development Only */}
-                  {process.env.NODE_ENV === 'development' && (
-                    <div className="mt-4 p-3 bg-muted/50 rounded-lg">
-                      <p className="text-xs font-medium mb-2">Debug Controls:</p>
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setRevollverMounted(!revollverMounted)}
-                        >
-                          {revollverMounted ? "Disable" : "Enable"} Revollver
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+              )}
+            </div>
           </div>
         );
       default:
@@ -195,97 +178,94 @@ const Dashboard = () => {
             />
           )}
 
-          {/* Sidebar */}
-          <aside className={`
-            fixed top-0 left-0 h-full bg-transparent text-white z-50 transition-transform duration-300
-            ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-            w-64
-          `}>
-            <div className="p-6 h-full flex flex-col">
-              {/* Mobile Close Button */}
-              <div className="flex justify-end mb-8 lg:hidden">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarOpen(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Dashboard Navigation */}
-              <div className="space-y-4 flex-1">
-                <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-wide">
-                  Dashboard
-                </h3>
-                <div className="space-y-2">
-                  {navItems.map((item) => {
-                    const IconComponent = item.icon;
-                    const isActive = activeTab === item.id;
-                    
-                    return (
-                      <Button
-                        key={item.id}
-                        variant="ghost"
-                        onClick={() => setActiveTab(item.id)}
-                        className={`
-                          w-full justify-start h-14 px-5 text-left transition-all duration-200 ease-in-out relative
-                          ${isActive 
-                            ? 'bg-blue-600 text-white font-bold shadow-lg shadow-blue-500/30' 
-                            : 'bg-white/5 text-gray-300 hover:bg-blue-500/30 hover:text-white'
-                          }
-                          rounded-lg font-medium
-                        `}
-                      >
-                        <div className="flex items-center gap-3">
-                          <span className="text-xl">{item.emoji}</span>
-                          <span className="font-semibold text-sm tracking-wide">{item.label}</span>
-                        </div>
-                      </Button>
-                    );
-                  })}
-                </div>
+          {/* Compact Tab Strip - Below HOUSIE Header */}
+          <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/20">
+            <div className="px-4 py-2">
+              <div className="flex gap-1 overflow-x-auto">
+                {navItems.map((item) => {
+                  const isActive = activeTab === item.id;
+                  return (
+                    <Button
+                      key={item.id}
+                      variant="ghost"
+                      onClick={() => setActiveTab(item.id)}
+                      className={`
+                        flex-shrink-0 h-10 px-3 text-sm transition-all duration-200
+                        ${isActive 
+                          ? 'bg-primary text-primary-foreground shadow-md' 
+                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                        }
+                        rounded-md font-medium
+                      `}
+                    >
+                      <span className="mr-2">{item.emoji}</span>
+                      <span>{item.label}</span>
+                    </Button>
+                  );
+                })}
               </div>
             </div>
-          </aside>
+          </div>
 
-          {/* Main Content */}
-          <div className="lg:ml-64">
-            {/* Mobile Header */}
-            <header className="lg:hidden sticky top-0 bg-card/95 backdrop-blur-md border-b border-border/20 z-30 p-4">
-              <div className="flex items-center justify-between">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setSidebarOpen(true)}
-                >
-                  <Menu className="h-5 w-5" />
-                </Button>
-                <h1 className="font-bold text-lg">Dashboard</h1>
-                <div className="w-8" />
+          {/* Mobile Sidebar for legacy support */}
+          {sidebarOpen && (
+            <aside className="fixed top-0 left-0 h-full bg-background/95 backdrop-blur-md border-r border-border/20 text-foreground z-50 transition-transform duration-300 w-64 lg:hidden">
+              <div className="p-4 h-full flex flex-col">
+                <div className="flex justify-end mb-4">
+                  <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                </div>
+                <div className="space-y-2">
+                  {navItems.map((item) => (
+                    <Button
+                      key={item.id}
+                      variant="ghost"
+                      onClick={() => {
+                        setActiveTab(item.id);
+                        setSidebarOpen(false);
+                      }}
+                      className="w-full justify-start h-10 px-3 text-left"
+                    >
+                      <span className="mr-2">{item.emoji}</span>
+                      <span className="text-sm">{item.label}</span>
+                    </Button>
+                  ))}
+                </div>
               </div>
-            </header>
+            </aside>
+          )}
 
-            {/* Dashboard Content */}
-            <div className="p-2 md:p-4 lg:p-6 relative z-10">
-              <div className="grid grid-cols-1 gap-3 md:gap-6">
-                {/* Main Card Block - Compact mobile layout */}
-                <Card className="rounded-xl bg-white/10 backdrop-blur-md shadow-md border-white/20">
-                  <CardHeader className="pb-3 md:pb-6">
-                    <CardTitle className="text-lg md:text-2xl font-bold text-foreground flex items-center justify-between">
-                      <div className="flex items-center space-x-2 md:space-x-3">
-                        Provider Dashboard
-                        <Badge variant="secondary" className="bg-muted/50 text-xs md:text-sm">
-                          Active
-                        </Badge>
-                      </div>
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="pt-0">
+          {/* Main Content - Compact Layout */}
+          <div className="pt-28">
+            {/* Mobile Tab Menu Toggle */}
+            <div className="lg:hidden fixed top-16 right-4 z-50">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(true)}
+                className="bg-background/80 backdrop-blur-sm"
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
+            </div>
+
+            {/* Compact Dashboard Content */}
+            <div className="px-2 md:px-4 relative z-10">
+              {/* Annette Chat Integration - Primary Widget */}
+              {activeTab === 'annette' ? (
+                <div className="min-h-[calc(100vh-8rem)] flex flex-col">
+                  <div className="flex-1 max-w-4xl mx-auto w-full">
                     {renderTabContent()}
-                  </CardContent>
-                </Card>
-              </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="max-w-7xl mx-auto">
+                  <div className="space-y-3">
+                    {renderTabContent()}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

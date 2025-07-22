@@ -62,18 +62,18 @@ const ServiceBoard = () => {
         </div>
 
         {/* Content */}
-        <div className="relative z-10 min-h-screen p-4 md:p-6">
-          <div className="max-w-7xl mx-auto space-y-4 md:space-y-6">
-            {/* Header */}
-            <div className="text-center mb-6 md:mb-8">
+        <div className="relative z-10 min-h-screen pt-20 px-2 md:px-4">
+          <div className="max-w-7xl mx-auto space-y-3">
+            {/* Compact Header - Below tabs */}
+            <div className="text-center mb-4">
               <div className="video-text-overlay inline-block">
-                <h1 className="text-2xl md:text-3xl font-bold mb-2">Service Board</h1>
-                <p className="text-sm md:text-base opacity-90">Manage your service requests, track spending, and discover trusted providers</p>
+                <h1 className="text-xl md:text-2xl font-bold mb-1">Service Board</h1>
+                <p className="text-xs md:text-sm opacity-90">Client messaging system and service management</p>
               </div>
             </div>
 
-            {/* Mobile Stack Layout */}
-            <div className="block lg:hidden space-y-4">
+            {/* Mobile Stack Layout - Compact */}
+            <div className="block lg:hidden space-y-3">
               <AnnetteCustomerInsights />
               <CustomerJobTicketList />
               <SpendingSummaryChart />
@@ -82,19 +82,19 @@ const ServiceBoard = () => {
               <SmartVerificationReview />
             </div>
 
-            {/* Desktop Grid Layout */}
-            <div className="hidden lg:block space-y-6">
+            {/* Desktop Grid Layout - Compact */}
+            <div className="hidden lg:block space-y-4">
               <AnnetteCustomerInsights />
               
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Left Column - Job Tickets and Spending */}
-                <div className="lg:col-span-2 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                {/* Left Column - Client Messaging System (Primary Widget) */}
+                <div className="lg:col-span-2 space-y-4 max-h-[calc(100vh-16rem)] overflow-y-auto">
                   <CustomerJobTicketList />
                   <SpendingSummaryChart />
                 </div>
 
                 {/* Right Column - Prestige and Rebooking */}
-                <div className="space-y-6">
+                <div className="space-y-4">
                   <CustomerPrestigePanel />
                   <RebookingSuggestionPanel />
                 </div>
