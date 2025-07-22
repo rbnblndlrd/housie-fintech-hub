@@ -152,10 +152,10 @@ const CommunityDashboard = () => {
         />
       )}
 
-      {/* Compact Tab Strip - Below HOUSIE Header */}
+      {/* Unified Tab Strip - Directly Below HOUSIE Header */}
       <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/20">
-        <div className="px-4 py-2">
-          <div className="flex gap-1 overflow-x-auto">
+        <div className="px-3 py-1.5">
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
             {navItems.map((item) => {
               const isActive = activeTab === item.id;
               return (
@@ -164,15 +164,15 @@ const CommunityDashboard = () => {
                   variant="ghost"
                   onClick={() => onTabChange(item.id)}
                   className={`
-                    flex-shrink-0 h-10 px-3 text-sm transition-all duration-200
+                    flex-shrink-0 h-9 px-3 text-sm transition-all duration-200
                     ${isActive 
-                      ? 'bg-primary text-primary-foreground shadow-md' 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                     }
                     rounded-md font-medium
                   `}
                 >
-                  <span className="mr-2">{item.emoji}</span>
+                  <span className="mr-1.5">{item.emoji}</span>
                   <span>{item.label}</span>
                 </Button>
               );
@@ -218,40 +218,42 @@ const CommunityDashboard = () => {
         </aside>
       )}
 
-      {/* Main Content - Compact Layout */}
-      <div className="pt-28">
+      {/* Unified Main Content Area */}
+      <div className="pt-26">
         {/* Mobile Tab Menu Toggle */}
-        <div className="lg:hidden fixed top-16 right-4 z-50">
+        <div className="lg:hidden fixed top-16 right-3 z-50">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setSidebarOpen(true)}
-            className="bg-background/80 backdrop-blur-sm"
+            className="bg-background/80 backdrop-blur-sm h-8 w-8 p-0"
           >
             <Menu className="h-4 w-4" />
           </Button>
         </div>
 
-        {/* Compact Community Content */}
-        <div className="px-2 md:px-4 relative z-10">
+        {/* Unified Community Content - Consistent Layout */}
+        <div className="px-3 md:px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 mb-4">
-              {/* Main Echo Feed & Reputation Board - Full Height */}
-              <div className="xl:col-span-3 space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto">
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+              {/* Main Community Feed - Compact Vertical Flow */}
+              <div className="xl:col-span-3 space-y-4 max-h-[calc(100vh-9rem)] overflow-y-auto">
                 {renderTabContent()}
               </div>
 
-              {/* Right Panel - Community Hub */}
-              <Card className="rounded-xl bg-card/95 backdrop-blur-md shadow-md border-border/20">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg font-semibold text-foreground">
-                    Community Hub
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  {rightPanelContent}
-                </CardContent>
-              </Card>
+              {/* Right Panel - Community Hub - Aligned */}
+              <div className="space-y-4">
+                <Card className="bg-card/95 backdrop-blur-md border-border/20">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-lg font-semibold">
+                      Community Hub
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    {rightPanelContent}
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </div>
         </div>

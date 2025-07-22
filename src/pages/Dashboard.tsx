@@ -80,45 +80,106 @@ const Dashboard = () => {
     switch (activeTab) {
       case 'job-hub':
         return (
-          <div className="space-y-3">
-            {bookingsLoading ? (
-              <div className="text-center py-6">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-3"></div>
-                <p className="text-muted-foreground text-sm">Loading active jobs...</p>
-              </div>
-            ) : (
-              <JobHub />
-            )}
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+            {/* Main Job Hub Content */}
+            <div className="xl:col-span-3 space-y-4">
+              {bookingsLoading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary mx-auto mb-3"></div>
+                  <p className="text-muted-foreground text-sm">Loading active jobs...</p>
+                </div>
+              ) : (
+                <JobHub />
+              )}
+            </div>
+            {/* Right Panel - Job Hub Tools */}
+            <Card className="bg-card/95 backdrop-blur-md border-border/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <Briefcase className="h-4 w-4 mr-2" />
+                  View All Jobs
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <Route className="h-4 w-4 mr-2" />
+                  Plan Route
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         );
       case 'route-schedule':
         return (
-          <Card className="overflow-hidden">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-lg">Today's Route Control</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0 space-y-2 max-h-[calc(100vh-12rem)] overflow-y-auto">
-              <TodaysRoutePanel />
-            </CardContent>
-          </Card>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+            {/* Main Route Content */}
+            <div className="xl:col-span-3">
+              <Card className="bg-card/95 backdrop-blur-md border-border/20">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">Today's Route Control</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0 space-y-3 max-h-[calc(100vh-10rem)] overflow-y-auto">
+                  <TodaysRoutePanel />
+                </CardContent>
+              </Card>
+            </div>
+            {/* Right Panel - Route Tools */}
+            <Card className="bg-card/95 backdrop-blur-md border-border/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Route Tools</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <Route className="h-4 w-4 mr-2" />
+                  GPS Navigation
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  Optimize Route
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
         );
       case 'metrics':
         return (
-          <div className="space-y-3 max-h-[calc(100vh-12rem)] overflow-y-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-              <PerformanceWidgets />
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+            {/* Main Metrics Content */}
+            <div className="xl:col-span-3 space-y-4">
+              {/* Performance Widgets - Consistent with Analytics Style */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <PerformanceWidgets />
+              </div>
+              {/* Stamp MVP - Fully Restored */}
+              <StampTrackerWidget showBroadcastControls={false} />
             </div>
-            <StampTrackerWidget />
+            {/* Right Panel - Metrics Tools */}
+            <Card className="bg-card/95 backdrop-blur-md border-border/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Performance Tools</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <BarChart3 className="h-4 w-4 mr-2" />
+                  View Reports
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  <MessageCircle className="h-4 w-4 mr-2" />
+                  Ask Annette
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         );
       case 'annette':
         return (
-          <div className="min-h-[calc(100vh-10rem)] flex flex-col bg-gradient-to-br from-background to-muted/20 rounded-lg">
-            {/* Compact Annette Header */}
+          <div className="min-h-[calc(100vh-8rem)] flex flex-col bg-gradient-to-br from-background to-muted/20 rounded-lg border border-border/20">
+            {/* Unified Annette Header */}
             <div className="p-4 border-b border-border/20">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="text-3xl">💅</div>
+                  <div className="text-2xl">💅</div>
                   <div>
                     <h3 className="text-lg font-semibold">Annette AI Assistant</h3>
                     <p className="text-sm text-muted-foreground">Your intelligent service companion</p>
@@ -130,26 +191,26 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Radial Revolver Status */}
-            <div className="flex-1 p-4">
-              <div className="text-center py-12">
+            {/* Annette Chat Interface */}
+            <div className="flex-1 p-6">
+              <div className="text-center py-8">
                 <div className="flex items-center justify-center gap-3 mb-6">
                   <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-lg font-semibold">Revolver™ is mounted!</span>
-                  <Badge variant="default" className="bg-green-600">Active</Badge>
+                  <Badge variant="default" className="bg-green-600 text-xs">Active</Badge>
                 </div>
-                <div className="space-y-4">
+                <div className="space-y-4 max-w-md mx-auto">
                   <Button
                     onClick={() => setLeftPanelOpen(true)}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-3"
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-3 w-full"
                   >
                     💅 Start Conversation
                   </Button>
                   <p className="text-sm text-muted-foreground">
                     Ready for route optimization, ticket parsing, and smart insights
                   </p>
-                  <div className="text-xs text-muted-foreground mt-2 bg-muted/30 rounded p-2">
-                    🎯 <strong>Revolver Ready:</strong> Right-click or long-press the radial menu (bottom-right) for quick actions
+                  <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
+                    🎯 <strong>Revolver Ready:</strong> Right-click the radial menu (bottom-right) for quick actions
                   </div>
                 </div>
               </div>
@@ -173,34 +234,34 @@ const Dashboard = () => {
             />
           )}
 
-          {/* Compact Tab Strip - Below HOUSIE Header */}
-          <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/20">
-            <div className="px-4 py-2">
-              <div className="flex gap-1 overflow-x-auto">
-                {navItems.map((item) => {
-                  const isActive = activeTab === item.id;
-                  return (
-                    <Button
-                      key={item.id}
-                      variant="ghost"
-                      onClick={() => setActiveTab(item.id)}
-                      className={`
-                        flex-shrink-0 h-10 px-3 text-sm transition-all duration-200
-                        ${isActive 
-                          ? 'bg-primary text-primary-foreground shadow-md' 
-                          : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                        }
-                        rounded-md font-medium
-                      `}
-                    >
-                      <span className="mr-2">{item.emoji}</span>
-                      <span>{item.label}</span>
-                    </Button>
-                  );
-                })}
-              </div>
-            </div>
+      {/* Unified Tab Strip - Directly Below HOUSIE Header */}
+      <div className="fixed top-16 left-0 right-0 z-40 bg-background/95 backdrop-blur-md border-b border-border/20">
+        <div className="px-3 py-1.5">
+          <div className="flex gap-1 overflow-x-auto scrollbar-hide">
+            {navItems.map((item) => {
+              const isActive = activeTab === item.id;
+              return (
+                <Button
+                  key={item.id}
+                  variant="ghost"
+                  onClick={() => setActiveTab(item.id)}
+                  className={`
+                    flex-shrink-0 h-9 px-3 text-sm transition-all duration-200
+                    ${isActive 
+                      ? 'bg-primary text-primary-foreground shadow-sm' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+                    }
+                    rounded-md font-medium
+                  `}
+                >
+                  <span className="mr-1.5">{item.emoji}</span>
+                  <span>{item.label}</span>
+                </Button>
+              );
+            })}
           </div>
+        </div>
+      </div>
 
           {/* Mobile Sidebar for legacy support */}
           {sidebarOpen && (
@@ -231,38 +292,37 @@ const Dashboard = () => {
             </aside>
           )}
 
-          {/* Main Content - Compact Layout */}
-          <div className="pt-28">
-            {/* Mobile Tab Menu Toggle */}
-            <div className="lg:hidden fixed top-16 right-4 z-50">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSidebarOpen(true)}
-                className="bg-background/80 backdrop-blur-sm"
-              >
-                <Menu className="h-4 w-4" />
-              </Button>
-            </div>
+      {/* Unified Main Content Area */}
+      <div className="pt-26">
+        {/* Mobile Tab Menu Toggle */}
+        <div className="lg:hidden fixed top-16 right-3 z-50">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setSidebarOpen(true)}
+            className="bg-background/80 backdrop-blur-sm h-8 w-8 p-0"
+          >
+            <Menu className="h-4 w-4" />
+          </Button>
+        </div>
 
-            {/* Compact Dashboard Content */}
-            <div className="px-2 md:px-4 relative z-10">
-              {/* Annette Chat Integration - Primary Widget */}
-              {activeTab === 'annette' ? (
-                <div className="min-h-[calc(100vh-8rem)] flex flex-col">
-                  <div className="flex-1 max-w-4xl mx-auto w-full">
-                    {renderTabContent()}
-                  </div>
+        {/* Unified Dashboard Content - Analytics-Style Layout */}
+        <div className="px-3 md:px-4 relative z-10">
+          <div className="max-w-7xl mx-auto">
+            {activeTab === 'annette' ? (
+              <div className="min-h-[calc(100vh-7rem)] flex flex-col">
+                <div className="flex-1 max-w-5xl mx-auto w-full">
+                  {renderTabContent()}
                 </div>
-              ) : (
-                <div className="max-w-7xl mx-auto">
-                  <div className="space-y-3">
-                    {renderTabContent()}
-                  </div>
-                </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {renderTabContent()}
+              </div>
+            )}
           </div>
+        </div>
+      </div>
 
           {/* Tactical HUD Anchor Card */}
           <TodaysRouteAnchor />
