@@ -54,11 +54,11 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
 
   function getRandomWelcomeMessage(): string {
     const welcomeMessages = [
-      "Hi sugar! I'm Annette — your local job-sorting, route-taming, title-tracking AI wizard. Wanna parse a ticket? 💅",
-      "Need help? I've got button-clickin' fingers and achievement-tracking eyes. What's the mission?",
-      "Well look who showed up to work. You ready to run this dashboard or what? ✨",
-      "Ask me anything. I've got data, sass, and an extremely organized brain.",
-      "Hey there! I'm Annette, your crew coordinator & prestige whisperer. Let's make some magic happen! 🚀"
+      "Hi! I'm your Assistant — your local job-sorting, route-taming, title-tracking AI companion. Ready to optimize? 🤖",
+      "Need help? I've got processing power and achievement-tracking capabilities. What's the mission?",
+      "Well look who showed up to work. Ready to run this dashboard efficiently? ✨",
+      "Ask me anything. I've got data, logic, and an extremely organized processing core.",
+      "Hey there! I'm Assistant, your job & prestige companion. Let's make some magic happen! 🚀"
     ];
     return welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
   }
@@ -267,11 +267,11 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
               </Avatar>
               <div>
                 <CardTitle className="text-sm font-medium text-foreground flex items-center">
-                  Annette 💅
+                  Assistant 🤖
                   <Sparkles className="h-3 w-3 ml-1 text-yellow-500" />
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
-                  {isTyping ? 'Cranking the gears...' : 'Crew Coordinator & Prestige Whisperer'}
+                  {isTyping ? 'Processing...' : 'Job & Prestige Companion'}
                 </p>
               </div>
             </div>
@@ -415,7 +415,7 @@ export const AnnetteBubbleChat: React.FC<AnnetteBubbleChatProps> = ({
                   value={inputValue}
                   onChange={(e) => setInputValue(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask Annette anything..."
+                  placeholder="Ask Assistant anything..."
                   disabled={isTyping}
                   className="flex-1 bg-muted/30 border-border/20"
                 />

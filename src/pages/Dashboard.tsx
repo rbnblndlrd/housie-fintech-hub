@@ -69,10 +69,10 @@ const Dashboard = () => {
       emoji: '📊'
     },
     { 
-      id: 'annette', 
-      label: 'Annette', 
+      id: 'assistant', 
+      label: 'Assistant', 
       icon: MessageCircle, 
-      emoji: '💅'
+      emoji: '🤖'
     }
   ];
 
@@ -172,49 +172,66 @@ const Dashboard = () => {
             </Card>
           </div>
         );
-      case 'annette':
+      case 'assistant':
         return (
-          <div className="min-h-[calc(100vh-8rem)] flex flex-col bg-gradient-to-br from-background to-muted/20 rounded-lg border border-border/20">
-            {/* Unified Annette Header */}
-            <div className="p-4 border-b border-border/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="text-2xl">💅</div>
-                  <div>
-                    <h3 className="text-lg font-semibold">Annette AI Assistant</h3>
-                    <p className="text-sm text-muted-foreground">Your intelligent service companion</p>
+          <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+            {/* Assistant Action Log - Left Panel */}
+            <div className="xl:col-span-3">
+              <Card className="bg-card/95 backdrop-blur-md border-border/20 min-h-[calc(100vh-10rem)]">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="text-2xl">🤖</div>
+                      <div>
+                        <CardTitle className="text-lg">Assistant • Job & Prestige Companion</CardTitle>
+                        <p className="text-sm text-muted-foreground">Action log and system responses</p>
+                      </div>
+                    </div>
+                    <Badge variant={revollverMounted ? "default" : "secondary"} className="text-xs">
+                      {revollverMounted ? "Active" : "Standby"}
+                    </Badge>
                   </div>
-                </div>
-                <Badge variant={revollverMounted ? "default" : "secondary"} className="text-xs">
-                  {revollverMounted ? "Active" : "Standby"}
-                </Badge>
-              </div>
-            </div>
-
-            {/* Annette Chat Interface */}
-            <div className="flex-1 p-6">
-              <div className="text-center py-8">
-                <div className="flex items-center justify-center gap-3 mb-6">
-                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-lg font-semibold">Revolver™ is mounted!</span>
-                  <Badge variant="default" className="bg-green-600 text-xs">Active</Badge>
-                </div>
-                <div className="space-y-4 max-w-md mx-auto">
-                  <Button
-                    onClick={() => setLeftPanelOpen(true)}
-                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-3 w-full"
-                  >
-                    💅 Start Conversation
-                  </Button>
-                  <p className="text-sm text-muted-foreground">
-                    Ready for route optimization, ticket parsing, and smart insights
-                  </p>
-                  <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
-                    🎯 <strong>Revolver Ready:</strong> Right-click the radial menu (bottom-right) for quick actions
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="text-center py-8">
+                    <div className="flex items-center justify-center gap-3 mb-6">
+                      <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                      <span className="text-lg font-semibold">Assistant Ready</span>
+                    </div>
+                    <p className="text-sm text-muted-foreground mb-4">
+                      Revolver actions will appear here with detailed responses
+                    </p>
+                    {process.env.NODE_ENV === 'development' && (
+                      <Button
+                        onClick={() => setLeftPanelOpen(true)}
+                        variant="outline"
+                        className="text-sm"
+                      >
+                        Test Assistant Message
+                      </Button>
+                    )}
                   </div>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </div>
+            
+            {/* Right Panel - Assistant Tools */}
+            <Card className="bg-card/95 backdrop-blur-md border-border/20">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg">Quick Actions</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  🤖 <span className="ml-2">Chat with Assistant</span>
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  📊 <span className="ml-2">View Analytics</span>
+                </Button>
+                <Button variant="outline" className="w-full justify-start text-sm">
+                  🎯 <span className="ml-2">Optimize Route</span>
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         );
       default:
@@ -309,7 +326,7 @@ const Dashboard = () => {
         {/* Unified Dashboard Content - Analytics-Style Layout */}
         <div className="px-3 md:px-4 relative z-10">
           <div className="max-w-7xl mx-auto">
-            {activeTab === 'annette' ? (
+            {activeTab === 'assistant' ? (
               <div className="min-h-[calc(100vh-7rem)] flex flex-col">
                 <div className="flex-1 max-w-5xl mx-auto w-full">
                   {renderTabContent()}

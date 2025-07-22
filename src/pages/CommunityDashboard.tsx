@@ -211,7 +211,7 @@ const CommunityDashboard = () => {
                 onClick={() => setIsBubbleChatOpen(true)}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg text-sm"
               >
-                💅 Chat with Annette
+                💅 Chat with Assistant
               </Button>
             </div>
           </div>
@@ -259,7 +259,7 @@ const CommunityDashboard = () => {
         </div>
       </div>
 
-      {/* Annette BubbleChat */}
+      {/* Assistant BubbleChat */}
       <AnnetteBubbleChat 
         isOpen={isBubbleChatOpen}
         onClose={() => setIsBubbleChatOpen(false)}
