@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
+import { RevolverMenu } from '@/components/chat/RevolverMenu';
 import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 
 const AnalyticsDashboard = () => {
@@ -469,6 +470,11 @@ const AnalyticsDashboard = () => {
       
       {/* Annette Assistant */}
       <AnnetteIntegration />
+      
+      {/* Working Radial Revolver */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <RevolverMenu />
+      </div>
     </>
   );
 };

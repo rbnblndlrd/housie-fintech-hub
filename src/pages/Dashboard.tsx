@@ -18,7 +18,7 @@ import { StampTrackerWidget } from '@/components/stamps/StampTrackerWidget';
 import { AnnetteIntegration } from '@/components/assistant/AnnetteIntegration';
 import { TodaysRouteAnchor } from '@/components/dashboard/TacticalHUD/TodaysRouteAnchor';
 import { LeftDockPanel } from '@/components/dashboard/LeftDockPanel';
-import { LeftAlignedRevollver } from '@/components/dashboard/LeftAlignedRevollver';
+import { RevolverMenu } from '@/components/chat/RevolverMenu';
 import { useActiveBookings } from '@/hooks/useActiveBookings';
 import { JobAcceptanceProvider } from '@/contexts/JobAcceptanceContext';
 import { GlobalJobAcceptanceOverlay } from '@/components/overlays/GlobalJobAcceptanceOverlay';
@@ -130,34 +130,29 @@ const Dashboard = () => {
               </div>
             </div>
 
-            {/* Chat Interface Area - Full Height */}
+            {/* Radial Revolver Status */}
             <div className="flex-1 p-4">
               <div className="text-center py-12">
-                <Button
-                  onClick={() => setLeftPanelOpen(true)}
-                  className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-3"
-                >
-                  💅 Start Conversation
-                </Button>
-                <p className="text-sm text-muted-foreground mt-4">
-                  Ready for route optimization, ticket parsing, and smart insights
-                </p>
-              </div>
-              
-              {/* Debug Controls - Development Only */}
-              {process.env.NODE_ENV === 'development' && (
-                <div className="mt-8 p-3 bg-muted/30 rounded-lg max-w-md mx-auto">
-                  <p className="text-xs font-medium mb-2">Debug Controls:</p>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => setRevollverMounted(!revollverMounted)}
-                    className="text-xs"
-                  >
-                    {revollverMounted ? "Disable" : "Enable"} Revollver
-                  </Button>
+                <div className="flex items-center justify-center gap-3 mb-6">
+                  <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-lg font-semibold">Revolver™ is mounted!</span>
+                  <Badge variant="default" className="bg-green-600">Active</Badge>
                 </div>
-              )}
+                <div className="space-y-4">
+                  <Button
+                    onClick={() => setLeftPanelOpen(true)}
+                    className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg px-8 py-3"
+                  >
+                    💅 Start Conversation
+                  </Button>
+                  <p className="text-sm text-muted-foreground">
+                    Ready for route optimization, ticket parsing, and smart insights
+                  </p>
+                  <div className="text-xs text-muted-foreground mt-2 bg-muted/30 rounded p-2">
+                    🎯 <strong>Revolver Ready:</strong> Right-click or long-press the radial menu (bottom-right) for quick actions
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         );
@@ -282,11 +277,10 @@ const Dashboard = () => {
             activeTab={activeTab}
           />
 
-          {/* Left-Aligned Revollver */}
-          <LeftAlignedRevollver
-            isVisible={revollverMounted}
-            activeTab={activeTab}
-          />
+          {/* Working Radial Revolver - Positioned bottom-right */}
+          <div className="fixed bottom-6 right-6 z-50">
+            <RevolverMenu />
+          </div>
 
           {/* Global Job Acceptance Overlay */}
           <GlobalJobAcceptanceOverlay />

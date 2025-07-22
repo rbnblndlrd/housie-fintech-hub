@@ -12,6 +12,7 @@ import {
   Star
 } from 'lucide-react';
 import { AnnetteBubbleChat } from '@/components/assistant/AnnetteBubbleChat';
+import { RevolverMenu } from '@/components/chat/RevolverMenu';
 import PrestigeContent from '@/components/community/PrestigeContent';
 import CanonicalChainBrowser from '@/components/prestige/CanonicalChainBrowser';
 import RecentStampsWall from '@/components/stamps/RecentStampsWall';
@@ -261,6 +262,11 @@ const CommunityDashboard = () => {
         isOpen={isBubbleChatOpen}
         onClose={() => setIsBubbleChatOpen(false)}
       />
+      
+      {/* Working Radial Revolver */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <RevolverMenu />
+      </div>
     </div>
   );
 
